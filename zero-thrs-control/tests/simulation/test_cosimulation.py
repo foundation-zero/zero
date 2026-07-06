@@ -7,8 +7,8 @@ from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
-    SimulationValues,
     Stamped,
+    ThrsValues,
 )
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.dhw import (
@@ -41,22 +41,27 @@ class DrivesDhwSimulationInputs(SimulationInputs):
     drives_propdrive_fwd2: simulation.PropulsionDrive
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
-    dhw_lt2_supply: simulation.Boundary
-    dhw_fahrenheit_supply: simulation.Boundary
-    dhw_ht_supply: simulation.Boundary
+    dhw_dc_supply: simulation.Boundary
+    dhw_adsorption_supply: simulation.Boundary
+    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
 
 
-class DrivesDhwSimulationOutputs(SimulationValues):
+class DrivesDhwSimulationOutputs(ThrsValues):
     drives_seawater_return: simulation.TemperatureBoundary
+    drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary
+    dhw_drives_exchanger: simulation.ExchangerBoundary
     dhw_drives_return: simulation.TemperatureBoundary
-    dhw_lt2_return: simulation.TemperatureBoundary
-    dhw_fahrenheit_return: simulation.TemperatureBoundary
-    dhw_ht_return: simulation.TemperatureBoundary
+    dhw_dc_exchanger: simulation.ExchangerBoundary
+    dhw_dc_return: simulation.TemperatureBoundary
+    dhw_adsorption_exchanger: simulation.ExchangerBoundary
+    dhw_adsorption_return: simulation.TemperatureBoundary
+    dhw_consumers_exchanger: simulation.ExchangerBoundary
+    dhw_consumers_return: simulation.TemperatureBoundary
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.FlowBoundary
@@ -85,14 +90,14 @@ def test_cosimulation_input_routing():
 
     drives_mock = MockFmu(
         {
-            "drives_flow_recovery__flow__l_min": 42.0,
-            "drives_temperature_recovery__temperature__C": 35.0,
+            "drives_dhw_exchanger__flow__l_min": 42.0,
+            "drives_dhw_exchanger__temperature_supply__C": 35.0,
         }
     )
     dhw_mock = MockFmu(
         {
-            "dhw_flow_drives__flow__l_min": 15.0,
-            "dhw_temperature_freshwater_supply__temperature__C": 55.0,
+            "dhw_drives_exchanger__flow__l_min": 15.0,
+            "dhw_drives_exchanger__temperature_supply__C": 55.0,
         }
     )
 
@@ -110,7 +115,7 @@ def test_cosimulation_input_routing():
                     ),
                     Coupling(
                         "dhw_drives_exchanger",
-                        "temperature",
+                        "temperature_supply",
                         "drives_dhw_supply",
                         "temperature",
                         30.0,
@@ -129,7 +134,7 @@ def test_cosimulation_input_routing():
                     ),
                     Coupling(
                         "drives_dhw_exchanger",
-                        "temperature",
+                        "temperature_supply",
                         "dhw_drives_supply",
                         "temperature",
                         30.0,
@@ -158,13 +163,13 @@ def test_cosimulation_input_routing():
     )
 
     simulation_inputs = DrivesDhwSimulationInputs(
-        dhw_lt2_supply=simulation.Boundary(
+        dhw_dc_supply=simulation.Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(60)
         ),
-        dhw_fahrenheit_supply=simulation.Boundary(
+        dhw_adsorption_supply=simulation.Boundary(
             temperature=Stamped.stamp(30), flow=Stamped.stamp(45)
         ),
-        dhw_ht_supply=simulation.Boundary(
+        dhw_consumers_supply=simulation.Boundary(
             temperature=Stamped.stamp(70), flow=Stamped.stamp(0)
         ),
         dhw_freshwater_supply=simulation.OverpressureTemperatureBoundary(

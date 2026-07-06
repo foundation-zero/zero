@@ -27,12 +27,13 @@ def control(simulation):
 def simulation_inputs():
     return PcmSimulationInputs(
         pcm_thrusters_supply=Boundary(
-            temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
+            temperature=Stamped.stamp(70), flow=Stamped.stamp(40)
         ),
         pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(60)),
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
+        pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(70)),
     )
 
 

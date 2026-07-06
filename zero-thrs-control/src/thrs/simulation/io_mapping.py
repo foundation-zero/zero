@@ -57,7 +57,7 @@ class IoMapping[S, C, I, O](ABC):
     ) -> tuple[S, O, dict[str, Any]]: ...
 
 
-class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
+class CombinedIoMapping[I: SimulationInputs, O: ThrsValues](
     IoMapping[CombinedValues, CombinedValues, I, O]
 ):
     def __init__(

@@ -68,12 +68,12 @@ compile_fmu file:
 [parallel]
 compile_fmus: \
     (compile_fmu "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Adsorption_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DC_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DHW_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Drives_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/HT_SystemV14.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Adsorption_ModuleV1.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Consumer_ModuleV10.fmu") \
+    (compile_fmu "src/thrs/simulation/models/DC_ModuleV1_1.fmu") \
+    (compile_fmu "src/thrs/simulation/models/DHW_ModuleV1_1.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Drives_ModuleV1_1.fmu") \
+    (compile_fmu "src/thrs/simulation/models/HT_SystemV15.fmu") \
     (compile_fmu "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
     (compile_fmu "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
     (compile_fmu "src/thrs/simulation/models/Thruster_Module_V19.fmu")

@@ -148,7 +148,7 @@ class AdsorptionSimulationInputs(SimulationInputs):
     adsorption_chiller: Annotated[
         simulation.AdsorptionChiller, component_meta(included_in_fmu=False)
     ]
-    adsorption_ht_supply: simulation.Boundary
+    adsorption_consumers_supply: simulation.Boundary
     adsorption_dhw_supply: simulation.Boundary
 
 
@@ -156,4 +156,6 @@ class AdsorptionSimulationOutputs(SimulationValues):
     adsorption_cooling_return: simulation.Boundary
     adsorption_seawater_return: simulation.TemperatureBoundary
     adsorption_dhw_exchanger: simulation.ExchangerBoundary
+    adsorption_dhw_return: simulation.TemperatureBoundary
     adsorption_consumers_exchanger: simulation.ExchangerBoundary
+    adsorption_consumers_return: simulation.TemperatureBoundary

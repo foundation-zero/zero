@@ -187,15 +187,15 @@ class DhwSensorValues(ThrsValues):
     dhw_level_switch_tank1: Annotated[
         sensor.LevelSwitch,
         component_meta(yard_tag="50001098-01", component_type="level_switch"),
-    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
+    ]
     dhw_level_switch_tank2: Annotated[
         sensor.LevelSwitch,
         component_meta(yard_tag="50001098-02", component_type="level_switch"),
-    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
+    ]
     dhw_level_switch_tank3: Annotated[
         sensor.LevelSwitch,
         component_meta(yard_tag="50001098-03", component_type="level_switch"),
-    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
+    ]
     dhw_pressure: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
@@ -362,7 +362,11 @@ class DhwSensorValues(ThrsValues):
         component_meta(yard_tag="25001038-1", included_in_fmu=False),
     ]
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
     @property
     def dhw_freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
@@ -610,7 +614,7 @@ class DhwSimulationInputs(SimulationInputs):
     dhw_drives_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
-    dhw_ht_supply: simulation.Boundary
+    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
@@ -650,8 +654,8 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def consumers_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_ht_supply.flow),
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature),
+            flow=cast(Stamped, self.dhw_consumers_supply.flow),
+            temperature=cast(Stamped, self.dhw_consumers_supply.temperature),
         )
 
     @computed_field(
@@ -662,7 +666,7 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def consumers_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature)
+            temperature=cast(Stamped, self.dhw_consumers_supply.temperature)
         )
 
     @computed_field(
@@ -691,9 +695,13 @@ class DhwSimulationInputs(SimulationInputs):
 
 class DhwSimulationOutputs(SimulationValues):
     dhw_drives_exchanger: simulation.ExchangerBoundary
+    dhw_drives_return: simulation.TemperatureBoundary
     dhw_dc_exchanger: simulation.ExchangerBoundary
+    dhw_dc_return: simulation.TemperatureBoundary
     dhw_adsorption_exchanger: simulation.ExchangerBoundary
+    dhw_adsorption_return: simulation.TemperatureBoundary
     dhw_consumers_exchanger: simulation.ExchangerBoundary
+    dhw_consumers_return: simulation.TemperatureBoundary
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.Boundary

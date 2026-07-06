@@ -279,3 +279,4 @@ class DrivesSimulationInputs(SimulationInputs):
 class DrivesSimulationOutputs(SimulationValues):
     drives_seawater_return: simulation.TemperatureBoundary
     drives_dhw_exchanger: simulation.ExchangerBoundary
+    drives_dhw_return: simulation.TemperatureBoundary

@@ -46,7 +46,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(45),
         ),
-        dhw_ht_supply=Boundary(
+        dhw_consumers_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),
         ),

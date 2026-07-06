@@ -126,7 +126,7 @@ def test_boosting_transitions(
     # filling and no ht available (switch to heat pump)
     simulation_inputs_no_ht = simulation_inputs.model_copy(
         update={
-            "dhw_ht_supply": simulation_inputs.dhw_ht_supply.model_copy(
+            "dhw_consumers_supply": simulation_inputs.dhw_consumers_supply.model_copy(
                 update={"flow": Stamped.stamp(0)}
             )
         }
