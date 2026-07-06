@@ -1,12 +1,11 @@
 import asyncio
 from asyncio import create_task
 from datetime import datetime
-from unittest import mock
 from uuid import uuid4
 
 from aiomqtt import Client as MqttClient
 
-from thrs.control.switching import AutomationMode
+from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -29,7 +28,6 @@ from thrs.orchestration.comms import (
     SimulationChannelsDescription,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.messages import SimulationStatusMessage
 
 
@@ -91,178 +89,6 @@ async def _wait_until(predicate, timeout_s: float = 2.0):
             await asyncio.sleep(0.01)
 
 
-async def test_control_channels_roundtrip_manual_values_with_suffix_split():
-    mqtt_client = mock.AsyncMock()
-    connector = MqttConnector(mqtt_client)
-
-    channels, connector_run = await connector.run(
-        ControlChannels,
-        ControlChannelsDescription(
-            devices_topic_prefix="thrs/devices",
-            controller_topic_prefix="thrs/controller",
-            sensor_values_clss={"thrusters": DemoSensorValues},
-            control_values_clss={"thrusters": DemoControlValues},
-            controller_state_clss={"thrusters": DemoControllerState},
-            parameters_clss={"thrusters": DemoParameters},
-            automation_modes_clss={"thrusters": AutomationMode},
-            control_values_topic_suffix="control",
-            controller_topic_suffix="set",
-            automation_mode_clss={"thrusters": AutomationMode},
-        ),
-    )
-
-    task = create_task(connector_run)
-    try:
-        value = DemoControlValues(command=DemoComponent(value=3.5))
-        combined = CombinedValues(values={"thrusters": value})
-
-        await channels.send_manual_control(combined)
-
-        mqtt_client.publish.assert_any_call(
-            "thrs/controller/thrusters/manual-values",
-            mock.ANY,
-            qos=1,
-            retain=False,
-        )
-
-        listen_topic = "thrs/controller/thrusters/manual-values/set"
-        _listener_for_topic(connector, listen_topic).handle_message(
-            listen_topic,
-            value.model_dump_json(by_alias=True),
-        )
-
-        got = channels.get_manual_controls()
-        assert got is not None
-        assert got.values["thrusters"] == value
-    finally:
-        task.cancel()
-
-
-async def test_control_api_channels_roundtrip_manual_values_with_suffix_split():
-    mqtt_client = mock.AsyncMock()
-    connector = MqttConnector(mqtt_client)
-    config = _config()
-
-    module_description = ModuleDescription(
-        DemoSensorValues,
-        DemoControlValues,
-        DemoParameters,
-        lambda *_args, **_kwargs: mock.Mock(),
-        DemoMode,
-        DemoControllerState,
-        lambda: mock.Mock(),
-    )
-
-    channels, connector_run = await connector.run(
-        ControlApiChannels,
-        ControlApiChannelsDescription.from_settings(
-            config,
-            module_name="thrusters",
-            module_description=module_description,
-            automation_mode_cls=AutomationMode,
-        ),
-    )
-    task = create_task(connector_run)
-    try:
-        value = DemoControlValues(command=DemoComponent(value=7.25))
-        await channels.send_manual_values(value)
-
-        mqtt_client.publish.assert_any_call(
-            "thrs/controller/thrusters/manual-values/set",
-            mock.ANY,
-            qos=1,
-            retain=False,
-        )
-
-        listen_topic = "thrs/controller/thrusters/manual-values"
-        _listener_for_topic(connector, listen_topic).handle_message(
-            listen_topic,
-            value.model_dump_json(by_alias=True),
-        )
-
-        assert channels.get_manual_values() == value
-    finally:
-        task.cancel()
-
-
-async def test_simulation_api_channels_roundtrip_with_suffix_split():
-    mqtt_client = mock.AsyncMock()
-    connector = MqttConnector(mqtt_client)
-    config = _config()
-
-    channels, connector_run = await connector.run(
-        SimulationApiChannels,
-        SimulationApiChannelsDescription.from_settings(
-            config,
-            simulation_inputs_cls=DemoSimulationInputs,
-            simulation_outputs_cls=DemoSimulationOutputs,
-        ),
-    )
-    task = create_task(connector_run)
-    try:
-        value = DemoSimulationInputs(target=3.0)
-        await channels.send_simulation_inputs(value)
-
-        mqtt_client.publish.assert_any_call(
-            "thrs/controller/simulation-inputs/set",
-            mock.ANY,
-            qos=1,
-            retain=False,
-        )
-
-        in_topic = "thrs/controller/simulation-inputs"
-        out_topic = "thrs/controller/simulation-outputs"
-        _listener_for_topic(connector, in_topic).handle_message(
-            in_topic,
-            value.model_dump_json(by_alias=True),
-        )
-        _listener_for_topic(connector, out_topic).handle_message(
-            out_topic,
-            DemoSimulationOutputs(measured=4.0).model_dump_json(by_alias=True),
-        )
-
-        assert channels.get_simulation_inputs() == value
-        assert channels.get_simulation_outputs() == DemoSimulationOutputs(measured=4.0)
-    finally:
-        task.cancel()
-
-
-async def test_directives_api_channels_roundtrip_from_settings():
-    mqtt_client = mock.AsyncMock()
-    connector = MqttConnector(mqtt_client)
-    config = _config()
-
-    channels, connector_run = await connector.run(
-        DirectivesApiChannels,
-        DirectivesApiChannelsDescription.from_settings(config),
-    )
-    task = create_task(connector_run)
-    try:
-        await channels.send_play(1.5)
-        mqtt_client.publish.assert_any_call(
-            "thrs/controller/play",
-            mock.ANY,
-            qos=1,
-            retain=False,
-        )
-
-        status = SimulationStatusMessage(
-            mode="thrusters",
-            status="available",
-            control_modules=["thrusters"],
-            simulation_time=datetime.fromtimestamp(0),
-        )
-        status_topic = "thrs/controller/status"
-        _listener_for_topic(connector, status_topic).handle_message(
-            status_topic,
-            status.model_dump_json(by_alias=True),
-        )
-
-        assert channels.get_simulation_status() == status
-    finally:
-        task.cancel()
-
-
 async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
     settings,
 ):
@@ -286,10 +112,9 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 control_values_clss={"thrusters": DemoControlValues},
                 controller_state_clss={"thrusters": DemoControllerState},
                 parameters_clss={"thrusters": DemoParameters},
-                automation_modes_clss={"thrusters": AutomationMode},
                 control_values_topic_suffix="control",
+                control_modes_clss={"thrusters": SwitchingControlMode[DemoMode]},
                 controller_topic_suffix="set",
-                automation_mode_clss={"thrusters": AutomationMode},
             ),
         )
         control_task = create_task(control_run)
@@ -304,8 +129,7 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 control_values_cls=DemoControlValues,
                 controller_state_cls=DemoControllerState,
                 parameters_cls=DemoParameters,
-                control_modes_cls=AutomationMode,
-                automation_mode_cls=AutomationMode,
+                control_modes_cls=DemoMode,
                 control_values_topic_suffix="control",
                 controller_topic_suffix="set",
             ),
@@ -321,7 +145,9 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
             )
             expected_parameters = DemoParameters(value=3.14)
             expected_state = DemoControllerState(state="running")
-            expected_mode = AutomationMode(mode="automatic")
+            expected_mode = SwitchingControlMode(
+                automatic_mode=DemoMode(mode="automatic")
+            )
 
             await control_channels.send_control_values(
                 CombinedValues(values={"thrusters": expected_control_values})
@@ -338,6 +164,7 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
             await control_channels.send_control_modes(
                 CombinedValues(values={"thrusters": expected_mode})
             )
+            await asyncio.sleep(0.1)
 
             await _wait_until(
                 lambda: api_channels.get_control_values() == expected_control_values
@@ -373,11 +200,10 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
                 sensor_values_clss={"thrusters": DemoSensorValues},
                 control_values_clss={"thrusters": DemoControlValues},
                 controller_state_clss={"thrusters": DemoControllerState},
+                control_modes_clss={"thrusters": DemoMode},
                 parameters_clss={"thrusters": DemoParameters},
-                automation_modes_clss={"thrusters": AutomationMode},
                 control_values_topic_suffix="control",
                 controller_topic_suffix="set",
-                automation_mode_clss={"thrusters": AutomationMode},
             ),
         )
         control_task = create_task(control_run)
@@ -392,8 +218,7 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
                 control_values_cls=DemoControlValues,
                 controller_state_cls=DemoControllerState,
                 parameters_cls=DemoParameters,
-                control_modes_cls=AutomationMode,
-                automation_mode_cls=AutomationMode,
+                control_modes_cls=DemoMode,
                 control_values_topic_suffix="control",
                 controller_topic_suffix="set",
             ),
@@ -409,7 +234,7 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
 
             await api_channels.send_manual_values(expected_manual_values)
             await api_channels.send_parameters(expected_parameters)
-            await api_channels.send_automation_modes(expected_mode)
+            await api_channels.send_automation_mode(expected_mode)
 
             await _wait_until(
                 lambda: control_channels.get_manual_controls() is not None

@@ -56,7 +56,7 @@ def resolve_module(
             ThrustersParametersType, module.parameters
         ),
         control_mode=SwitchingControlModeType.from_pydantic(
-            ThrustersControlModeType, module.control_mode.mode
+            ThrustersControlModeType, module.control_mode
         )
         if module.control_mode
         else None,

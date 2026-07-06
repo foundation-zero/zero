@@ -1,6 +1,3 @@
-from asyncio import Event
-from asyncio import timeout as async_timeout
-from dataclasses import dataclass
 from typing import Callable, Coroutine, Literal, cast
 
 from thrs.control.switching import AutomationMode
@@ -16,14 +13,7 @@ from thrs.orchestration.comms import (
     SimulationApiChannels,
 )
 from thrs.orchestration.module import ModuleDescription
-from thrs.runtime.messages import (
-    SimulationStatusMessage,
-)
-
-
-@dataclass
-class ControlModeEnvelope[T: ThrsValues]:
-    mode: T
+from thrs.runtime.messages import SimulationStatusMessage
 
 
 class ControlMessaging[
@@ -109,22 +99,22 @@ class ControlMessaging[
 
     def wait_for_control_mode(
         self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, ControlModeEnvelope[Mode]]:
+    ) -> Coroutine[None, None, Mode]:
         async def _wait():
             mode = await self._channels.wait_for_control_modes(
                 lambda m: bool(getattr(m, "automatic", False)) == automatic,
                 timeout,
             )
-            return ControlModeEnvelope(mode=cast(Mode, mode))
+            return cast(Mode, mode)
 
         return _wait()
 
     @property
-    def control_mode(self) -> ControlModeEnvelope[Mode] | None:
+    def control_mode(self) -> Mode | None:
         mode = self._channels.get_control_modes()
         if mode is None:
             return None
-        return ControlModeEnvelope(mode=cast(Mode, mode))
+        return cast(Mode, mode)
 
 
 class SimulationMessaging:
@@ -168,7 +158,6 @@ class DirectiveMessaging:
         self._directives_channels = directives_channels
 
         self._simulation_status: SimulationStatusMessage | None = None
-        self._simulation_status_event = Event()
         self._directives_channels.on_simulation_status(self._on_simulation_status)
 
     async def _on_simulation_status(self, status: SimulationStatusMessage):
@@ -176,7 +165,6 @@ class DirectiveMessaging:
             return
 
         self._simulation_status = status
-        self._simulation_status_event.set()
 
         for module in self._control_modules:
             module.active = module.module_name in status.control_modules
@@ -200,18 +188,10 @@ class DirectiveMessaging:
         *_args,
         timeout: float,
     ) -> Coroutine[None, None, SimulationStatusMessage]:
-        async def _wait():
-            async with async_timeout(timeout):
-                while True:
-                    if (
-                        self._simulation_status is not None
-                        and self._simulation_status.status == status
-                    ):
-                        return self._simulation_status
-                    await self._simulation_status_event.wait()
-                    self._simulation_status_event.clear()
-
-        return _wait()
+        return self._directives_channels.wait_for_simulation_status_where(
+            lambda simulation_status: simulation_status.status == status,
+            timeout,
+        )
 
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:

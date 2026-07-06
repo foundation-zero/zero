@@ -54,7 +54,7 @@ def resolve_module(
             DrivesParametersType, module.parameters
         ),
         control_mode=SwitchingControlModeType.from_pydantic(
-            DrivesControlModeType, module.control_mode.mode
+            DrivesControlModeType, module.control_mode
         )
         if module.control_mode
         else None,

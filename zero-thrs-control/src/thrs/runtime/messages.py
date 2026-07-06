@@ -1,73 +1,10 @@
 from abc import abstractmethod
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Annotated, Any, Awaitable, Callable, Literal, cast
+from typing import Annotated, Literal
 
-from aiomqtt import Client as MqttClient
-from pydantic import Field, ValidationInfo, model_validator
+from pydantic import Field
 
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
-
-
-@dataclass
-class MqttContext:
-    topic: str
-
-    @property
-    def module(self) -> str:
-        return self.topic.split("/")[0]
-
-
-class Messaging:
-    def __init__(self, client: MqttClient):
-        self._client = client
-        self._handlers: list[
-            tuple[
-                type[IncomingMessage],
-                Callable[[IncomingMessage], Awaitable[None]],
-            ]
-        ] = []
-
-    async def send(self, topic_prefix: str, message: "OutgoingMessage"):
-        await self._client.publish(
-            f"{topic_prefix}/{message.topic()}",
-            message.model_dump_json(),
-            qos=1,
-            retain=message.retained(),
-        )
-
-    async def register[T: "IncomingMessage"](
-        self,
-        topic_prefix: str,
-        message: type[T],
-        handler: Callable[[T], Awaitable[None]],
-    ):
-        await self._client.subscribe(
-            f"{topic_prefix}/{message.subscribe_topic()}", qos=1
-        )
-
-        async def _wrapped(msg: IncomingMessage) -> None:
-            await handler(cast(T, msg))
-
-        self._handlers.append((type(message), _wrapped))
-
-    async def run(self):
-        async for msg in self._client.messages:
-            for message_type, handler in self._handlers:
-                if msg.topic.matches(f"{message_type.subscribe_topic()}"):
-                    if not isinstance(msg.payload, str | bytes):
-                        raise ValueError("Message payload is not bytes")
-                    payload = message_type.model_validate_json(msg.payload)
-                    await handler(payload)
-
-    async def clear(self, topic_prefix: str, messages: "list[type[OutgoingMessage]]"):
-        for message in messages:
-            await self._client.publish(
-                f"{topic_prefix}/{message.subscribe_topic()}",
-                b"",
-                qos=1,
-                retain=True,
-            )
 
 
 class IncomingMessage(ThrsValues):
@@ -91,17 +28,6 @@ class IncomingMessage(ThrsValues):
 
     def topic(self) -> str:
         return self.subscribe_topic()
-
-
-class IncomingModuleMessage(IncomingMessage):
-    module: Annotated[str, Field(exclude=True, default=None)]
-
-    @model_validator(mode="before")
-    @classmethod
-    def module_from_topic(cls, data: Any, info: ValidationInfo[MqttContext]) -> Any:
-        if "module" not in data and info.context:
-            data["module"] = info.context.module
-        return data
 
 
 class OutgoingMessage(ThrsValues):

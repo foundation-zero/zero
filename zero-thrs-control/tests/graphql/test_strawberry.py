@@ -8,11 +8,6 @@ from aiomqtt import Client as MqttClient
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from thrs.cli.simulation_controls import (
-    ControlModeMessage,
-    SimulationInputMessage,
-    SimulationStatusMessage,
-)
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.dhw import DhwParameters
 from thrs.control.modules.pcm import PcmParameters
@@ -23,7 +18,7 @@ from thrs.control.modules.thrusters import (
     ThrustersControlMode,
     ThrustersParameters,
 )
-from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.control.switching import SwitchingControlMode
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.helpers import UnstampedInput
@@ -70,6 +65,7 @@ from thrs.orchestration.comms import (
     SimulationApiChannels,
     SimulationApiChannelsDescription,
 )
+from thrs.runtime.messages import SimulationStatusMessage
 
 
 class _FloatShapesStampedModel(ThrsValues):
@@ -151,16 +147,15 @@ async def thrusters_messaging_mock():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
-    mock.control_mode = ControlModeMessage(
-        module="thrusters",
-        mode=SwitchingControlMode(automatic_mode=ThrustersControlMode(mode="idle")),
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=ThrustersControlMode(mode="idle")
     )
 
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
 
@@ -171,14 +166,11 @@ async def pvt_messaging_mock():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
-    mock.control_mode = ControlModeMessage(
-        module="pvt",
-        mode=SwitchingControlMode(
-            automatic_mode=PvtControlMode(
-                aft=PvtGroupControlMode(mode="idle"),
-                fwd=PvtGroupControlMode(mode="idle"),
-                owners=PvtGroupControlMode(mode="idle"),
-            )
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=PvtControlMode(
+            aft=PvtGroupControlMode(mode="idle"),
+            fwd=PvtGroupControlMode(mode="idle"),
+            owners=PvtGroupControlMode(mode="idle"),
         ),
     )
 
@@ -186,7 +178,7 @@ async def pvt_messaging_mock():
         return None
 
     mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
 
@@ -197,15 +189,13 @@ async def pcm_messaging_mock():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
-    mock.control_mode = ControlModeMessage(
-        module="pcm", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.control_mode = SwitchingControlMode(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
 
@@ -216,15 +206,13 @@ async def consumers_messaging_mock():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
-    mock.control_mode = ControlModeMessage(
-        module="consumers", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.control_mode = SwitchingControlMode(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
 
@@ -235,15 +223,13 @@ async def dhw_messaging_mock():
     mock.sensor_values = DhwSensorValues.zero()
     mock.control_values = DhwControlValues.zero()
     mock.parameters = DhwParameters()
-    mock.control_mode = ControlModeMessage(
-        module="dhw", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.control_mode = SwitchingControlMode(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
 
@@ -490,7 +476,6 @@ async def test_query_simulation_inputs_actual(
             controller_state_cls=THRUSTERS_MODULE_DESCRIPTION.controller_state_cls,
             parameters_cls=THRUSTERS_MODULE_DESCRIPTION.parameters_cls,
             control_modes_cls=THRUSTERS_MODULE_DESCRIPTION.control_mode_cls,
-            automation_mode_cls=AutomationMode,
             control_values_topic_suffix="",
             controller_topic_suffix="",
         ),
@@ -536,17 +521,17 @@ async def test_query_simulation_inputs_actual(
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
 
-    await mqtt_client2.publish("test_simulation_topic/inputs", None, qos=1, retain=True)
+    await mqtt_client2.publish(
+        "test_simulation_topic/simulation-inputs", None, qos=1, retain=True
+    )
     await mqtt_client2.publish("test_simulation_topic/status", None, qos=1, retain=True)
 
     run_task = create_task(await msg.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(
-            "test_simulation_topic/inputs",
-            SimulationInputMessage[ThrustersSimulationInputs](
-                inputs=ThrustersSimulationInputs.zero()
-            ).model_dump_json(),
+            "test_simulation_topic/simulation-inputs",
+            ThrustersSimulationInputs.zero().model_dump_json(),
         )
         await sleep(0.1)
         await mqtt_client2.publish(
