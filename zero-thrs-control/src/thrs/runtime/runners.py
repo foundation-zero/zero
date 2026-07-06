@@ -28,10 +28,10 @@ class LockstepRunner[
     def __init__(
         self,
         control: CombinedControl,
-        control_channels: ControlChannels[S, P],
+        control_channels: ControlChannels,
         simulation_module_name: str,
         simulation: Simulation[S, CombinedValues, I, O],
-        simulation_channels: SimulationChannels[S, C, I, O],
+        simulation_channels: SimulationChannels[I, O],
         alarms: CombinedAlarms,
     ):
         self._control = control
@@ -97,7 +97,7 @@ class ControlRunner[
 ](Runner):
     def __init__(
         self,
-        channels: ControlChannels[S, P],
+        channels: ControlChannels,
         control: CombinedControl,
         alarms: CombinedAlarms,
     ):
@@ -148,7 +148,7 @@ class SimulationRunner[S: CombinedValues, C, I: SimulationInputs, O: SimulationV
 ):
     def __init__(
         self,
-        channels: SimulationChannels[S, C, I, O],
+        channels: SimulationChannels[I, O],
         simulation: Simulation[S, C, I, O],
     ):
         self._channels = channels

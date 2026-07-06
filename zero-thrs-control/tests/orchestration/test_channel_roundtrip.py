@@ -99,12 +99,12 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
         combined_module = CombinedModule(modules={"thrusters": demo_module})
 
         control_channels = ControlChannels(control_connector, settings, combined_module)
-        control_task = create_task(control_connector.run())
+        control_task = create_task(await control_connector.run())
 
         api_channels = ControlApiChannels(
             api_connector, settings, "thrusters", demo_module
         )
-        api_task = create_task(api_connector.run())
+        api_task = create_task(await api_connector.run())
 
         try:
             expected_control_values = DemoControlValues(
@@ -161,12 +161,12 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
         api_connector = MqttConnector(api_client)
 
         control_channels = ControlChannels(control_connector, settings, combined_module)
-        control_task = create_task(control_connector.run())
+        control_task = create_task(await control_connector.run())
 
         api_channels = ControlApiChannels(
             api_connector, settings, "thrusters", demo_module
         )
-        api_task = create_task(api_connector.run())
+        api_task = create_task(await api_connector.run())
 
         try:
             expected_manual_values = DemoControlValues(
@@ -216,17 +216,17 @@ async def test_simulation_channels_to_simulation_api_channels_roundtrip_all_chan
         simulation_channels = SimulationChannels(
             connector,
             settings,
-            DemoSensorValues,
-            DemoControlValues,
+            {"thrusters": DemoSensorValues},
+            {"thrusters": DemoControlValues},
             DemoSimulationInputs,
             DemoSimulationOutputs,
         )
-        simulation_task = create_task(simulation_connector.run())
+        simulation_task = create_task(await simulation_connector.run())
 
         api_channels = SimulationApiChannels(
             connector, settings, DemoSimulationInputs, DemoSimulationOutputs
         )
-        api_task = create_task(connector.run())
+        api_task = create_task(await connector.run())
 
         try:
             sim_to_api_inputs = DemoSimulationInputs(target=10.0)
@@ -262,10 +262,10 @@ async def test_directives_channels_to_directives_api_channels_roundtrip_all_chan
         api_connector = MqttConnector(api_client)
 
         directives_channels = DirectivesChannels(api_connector, settings)
-        directives_task = create_task(directives_connector.run())
+        directives_task = create_task(await directives_connector.run())
 
         api_channels = DirectivesApiChannels(api_connector, settings)
-        api_task = create_task(api_connector.run())
+        api_task = create_task(await api_connector.run())
 
         try:
             received: dict[str, object] = {}

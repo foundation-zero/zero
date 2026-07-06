@@ -5,6 +5,7 @@ from inspect import isawaitable
 from typing import (
     Awaitable,
     Callable,
+    Coroutine,
     Protocol,
     cast,
 )
@@ -317,6 +318,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 
 type Publisher[T] = Callable[[T], Awaitable[None]]
 
+
 class ControlChannels:
     def __init__(
         self,
@@ -407,8 +409,6 @@ class ControlChannels:
 
 
 class SimulationChannels[
-    S: ThrsValues,
-    C: ThrsValues,
     I: SimulationInputs,
     O: SimulationValues,
 ]:
@@ -416,16 +416,16 @@ class SimulationChannels[
         self,
         connector: "MqttConnector",
         config: "Config",
-        sensor_values_clss: S,
-        control_values_clss: C,
+        sensor_values_clss: ModuleClassMap,
+        control_values_clss: ModuleClassMap,
         simulation_inputs_cls: type[I] | tuple[type[I], ...],
         simulation_outputs_cls: type[O] | tuple[type[O], ...],
     ) -> None:
         simulation_inputs_topic = (
-            f"{config.mqtt_controller_topic_prefix}/simulation-inputs"
+            f"{config.mqtt_simulator_topic_prefix}/simulation-inputs"
         )
         simulation_outputs_topic = (
-            f"{config.mqtt_controller_topic_prefix}/simulation-outputs"
+            f"{config.mqtt_simulator_topic_prefix}/simulation-outputs"
         )
 
         control_values_mapping = ModuleMqttMapping(
@@ -438,7 +438,7 @@ class SimulationChannels[
         simulation_inputs_mapping = DirectMqttMapping(
             simulation_inputs_cls,
             simulation_inputs_topic,
-            config.mqtt_controller_topic_suffix,
+            config.mqtt_simulator_topic_suffix,
         )
         connector._register_listener(simulation_inputs_mapping)
         self.send_sensor_values = connector._create_publisher(
@@ -572,20 +572,20 @@ class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
     ) -> None:
         self.simulation_inputs_mapping = DirectMqttMapping(
             simulation_inputs_cls,
-            f"{config.mqtt_controller_topic_prefix}/simulation-inputs",
+            f"{config.mqtt_simulator_topic_prefix}/simulation-inputs",
         )
         connector._register_listener(self.simulation_inputs_mapping)
 
         self.simulation_outputs_mapping = DirectMqttMapping(
             simulation_outputs_cls,
-            f"{config.mqtt_controller_topic_prefix}/simulation-outputs",
+            f"{config.mqtt_simulator_topic_prefix}/simulation-outputs",
         )
         connector._register_listener(self.simulation_outputs_mapping)
 
         self.send_simulation_inputs = connector._create_publisher(
             DirectMqttMapping(
                 simulation_inputs_cls,
-                f"{config.mqtt_controller_topic_prefix}/simulation-inputs/{config.mqtt_controller_topic_suffix}",
+                f"{config.mqtt_simulator_topic_prefix}/simulation-inputs/{config.mqtt_simulator_topic_suffix}",
             )
         )
 
@@ -606,23 +606,23 @@ class DirectivesChannels:
         self._connector = connector
         play_mapping = DirectMqttMapping(
             PlayMessage,
-            f"{(config.mqtt_controller_topic_prefix,)}/{PlayMessage.subscribe_topic()}",
+            f"{config.mqtt_simulator_topic_prefix}/{PlayMessage.subscribe_topic()}",
         )
         connector._register_listener(play_mapping)
 
         step_mapping = DirectMqttMapping(
             StepMessage,
-            f"{(config.mqtt_controller_topic_prefix,)}/{StepMessage.subscribe_topic()}",
+            f"{config.mqtt_simulator_topic_prefix}/{StepMessage.subscribe_topic()}",
         )
         connector._register_listener(step_mapping)
 
         pause_mapping = DirectMqttMapping(
             PauseMessage,
-            f"{(config.mqtt_controller_topic_prefix,)}/{PauseMessage.subscribe_topic()}",
+            f"{config.mqtt_simulator_topic_prefix}/{PauseMessage.subscribe_topic()}",
         )
         connector._register_listener(pause_mapping)
 
-        self._status_topic = f"{(config.mqtt_controller_topic_prefix,)}/{SimulationStatusMessage.subscribe_topic()}"
+        self._status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
 
         self.send_simulation_status = connector._create_publisher(
             DirectMqttMapping(SimulationStatusMessage, self._status_topic), retain=True
@@ -640,7 +640,7 @@ class DirectivesChannels:
 
 class DirectivesApiChannels:
     def __init__(self, connector: "MqttConnector", config: "Config") -> None:
-        status_topic = f"{config.mqtt_controller_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
+        status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
         simulation_status_mapping = DirectMqttMapping(
             SimulationStatusMessage, status_topic
         )
@@ -650,19 +650,19 @@ class DirectivesApiChannels:
         self._send_play = connector._create_publisher(
             DirectMqttMapping(
                 PlayMessage,
-                f"{config.mqtt_controller_topic_prefix}/{PlayMessage.subscribe_topic()}",
+                f"{config.mqtt_simulator_topic_prefix}/{PlayMessage.subscribe_topic()}",
             )
         )
         self._send_step = connector._create_publisher(
             DirectMqttMapping(
                 StepMessage,
-                f"{config.mqtt_controller_topic_prefix}/{StepMessage.subscribe_topic()}",
+                f"{config.mqtt_simulator_topic_prefix}/{StepMessage.subscribe_topic()}",
             )
         )
         self._send_pause = connector._create_publisher(
             DirectMqttMapping(
                 PauseMessage,
-                f"{config.mqtt_controller_topic_prefix}/{PauseMessage.subscribe_topic()}",
+                f"{config.mqtt_simulator_topic_prefix}/{PauseMessage.subscribe_topic()}",
             )
         )
 
@@ -730,7 +730,7 @@ class MqttConnector:
             for topic in mapping.subscribe_topics():
                 await self._mqtt_client.subscribe(topic, qos=1)
 
-    async def run(self) -> None:
+    async def run(self) -> Coroutine[None, None, None]:
         await self._start()
         self._started = True
-        return await self._listen()
+        return self._listen()
