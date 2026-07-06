@@ -51,7 +51,7 @@ class ControlRunner[
         if sensor_values is None:
             sensor_values = await self._channels.wait_for_sensor_values()
 
-        await self._channels.send_computed_sensor_values(sensor_values)
+        await self._channels.send_computed_values(sensor_values)
         return sensor_values
 
     async def _send_control_updates(self):

@@ -396,7 +396,7 @@ class ControlChannels:
                 config.mqtt_control_topic_suffix,
             ),
         )
-        self.send_computed_sensor_values = connector._create_publisher(
+        self.send_computed_values = connector._create_publisher(
             ModuleMqttMapping(
                 control_module.sensor_values_clss,
                 PartialMqttMapping.only_computed_fields,

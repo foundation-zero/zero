@@ -78,7 +78,7 @@ class LockstepRunner[
         sim_result: SimulationResult[S, CombinedValues, I, O] = self._simulation.tick(
             self._control_values
         )
-        await self._control_channels.send_computed_sensor_values(
+        await self._control_channels.send_computed_values(
             sim_result.sensor_values
         )
         await self._simulation_channels.send_sensor_values(sim_result.sensor_values)
