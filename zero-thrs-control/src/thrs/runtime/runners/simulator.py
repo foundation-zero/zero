@@ -24,7 +24,9 @@ class SimulationRunner[S: CombinedValues, C, I: SimulationInputs, O: SimulationV
         for _ in range(n_ticks):
             control_values: C = await self._sync_channels_state()
 
-            sim_result: SimulationResult[S, C, I, O] = self._simulation.tick(control_values)
+            sim_result: SimulationResult[S, C, I, O] = self._simulation.tick(
+                control_values
+            )
             await self._send_simulation_updates(sim_result)
 
     async def _sync_channels_state(self) -> C:

@@ -210,10 +210,20 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     assert channels.send_simulation_outputs.await_count == 4
 
     simulation.tick.assert_has_calls(
-        [call(control_values), call(control_values), call(control_values), call(control_values)]
+        [
+            call(control_values),
+            call(control_values),
+            call(control_values),
+            call(control_values),
+        ]
     )
     channels.send_sensor_values.assert_has_awaits(
-        [call(sensor_values), call(sensor_values), call(sensor_values), call(sensor_values)]
+        [
+            call(sensor_values),
+            call(sensor_values),
+            call(sensor_values),
+            call(sensor_values),
+        ]
     )
     channels.send_simulation_inputs.assert_has_awaits(
         [
