@@ -22,7 +22,7 @@ class ControlCmd(Config):
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_control(settings, self.mode) as runtime:
             await runtime.loop.play(1)
-            logger.debug("Running control")
+            logger.info("Running control")
             await runtime.start()
 
 
@@ -32,7 +32,7 @@ class SimulationCmd(Config):
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_simulation(settings, self.mode) as runtime:
             await runtime.loop.play(1)
-            logger.debug("Running simulation")
+            logger.info("Running simulation")
             await runtime.start()
 
 
@@ -42,7 +42,7 @@ class LockstepCmd(Config):
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_lockstep(settings, self.mode) as runtime:
             await runtime.clear_previous()
-            logger.debug("Running lockstep")
+            logger.info("Running lockstep")
             await runtime.start()
 
 

@@ -2,10 +2,10 @@ from datetime import datetime
 from functools import partial
 from typing import Callable
 
+from thrs.orchestration.comms import DirectivesChannels
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.runtime.loop import Loop, LoopHooks
 from thrs.runtime.messages import (
-    Messaging,
     PauseMessage,
     PlayMessage,
     SimulationStatus,
@@ -15,15 +15,14 @@ from thrs.runtime.messages import (
 
 
 class DirectiveHandler:
-    def __init__(self, messaging: Messaging, loop: Loop, topic_prefix: str):
+    def __init__(self, channels: DirectivesChannels, loop: Loop):
         self._loop = loop
-        self._messaging = messaging
-        self._topic_prefix = topic_prefix
+        self._channels = channels
 
     async def register(self):
-        await self._messaging.register(self._topic_prefix, PlayMessage, self._on_play)
-        await self._messaging.register(self._topic_prefix, StepMessage, self._on_step)
-        await self._messaging.register(self._topic_prefix, PauseMessage, self._on_pause)
+        self._channels.on_play(self._on_play)
+        self._channels.on_step(self._on_step)
+        self._channels.on_pause(self._on_pause)
 
     async def _on_play(self, msg: PlayMessage):
         await self._loop.play(msg.playback_rate)
@@ -38,18 +37,16 @@ class DirectiveHandler:
 class DirectiveHandling:
     def __init__(
         self,
-        messaging: Messaging,
+        channels: DirectivesChannels,
         mode: Mode,
         time_fn: Callable[[], datetime],
-        topic_prefix: str,
     ):
-        self._messaging = messaging
+        self._channels = channels
         self._mode = mode
         self._time_fn = time_fn
-        self._topic_prefix = topic_prefix
 
     def handler(self, loop: Loop):
-        return DirectiveHandler(self._messaging, loop, self._topic_prefix)
+        return DirectiveHandler(self._channels, loop)
 
     def status_hooks(self) -> LoopHooks:
         return LoopHooks(
@@ -59,7 +56,7 @@ class DirectiveHandling:
         )
 
     async def clear_previous(self):
-        await self._messaging.clear(self._topic_prefix, [SimulationStatusMessage])
+        await self._channels.clear_simulation_status()
 
     async def send_status(self, _loop: Loop, status: SimulationStatus):
         msg = SimulationStatusMessage(
@@ -68,7 +65,7 @@ class DirectiveHandling:
             control_modules=self._mode.control_module.modules,
             simulation_time=self._time_fn(),
         )
-        await self._messaging.send(self._topic_prefix, msg)
+        await self._channels.send_simulation_status(msg)
 
     async def run(self):
-        await self._messaging.run()
+        return

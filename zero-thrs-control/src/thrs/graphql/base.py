@@ -39,7 +39,11 @@ from thrs.graphql.helpers import (
     ensure_input_type,
     optional_pydantic_to_graphql,
 )
-from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
+from thrs.graphql.messaging import (
+    ControlMessaging,
+    DirectiveMessaging,
+    SimulationMessaging,
+)
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
@@ -202,7 +206,7 @@ class ControlModule[
 
 @dataclass
 class ThrsContext(BaseContext):
-    messaging: Messaging
+    messaging: DirectiveMessaging
     thrusters_messaging: ThrustersMessaging
     pvt_messaging: PvtMessaging
     pcm_messaging: PcmMessaging
@@ -251,7 +255,7 @@ def add_control_mutations(
                     raise Exception("No control values available to modify")
                 pydantic_value = component.to_pydantic().to_stamped()
                 setattr(control_values, name, pydantic_value)
-                expect = mod.wait_for_control_values(
+                expect = mod.wait_for_manual_values(
                     lambda v: getattr(v, name) == pydantic_value, timeout=2.0
                 )
                 await mod.send_manual_controls(control_values)

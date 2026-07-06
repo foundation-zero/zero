@@ -5,7 +5,7 @@ from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.connector import Connector
+from thrs.orchestration.comms import Connector
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 

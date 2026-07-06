@@ -1,15 +1,14 @@
 import warnings
 from typing import Protocol
 
-from thrs.classes.control import Control
-from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
     SimulationValues,
 )
-from thrs.orchestration.connector import Connector
-from thrs.orchestration.simulation import Simulation, SimulationResult
+from thrs.orchestration.comms import ControlChannels, SimulationChannels
+from thrs.orchestration.module import CombinedAlarms, CombinedControl
+from thrs.orchestration.simulation import Simulation
 
 
 class Runner(Protocol):
@@ -17,49 +16,56 @@ class Runner(Protocol):
 
 
 class LockstepRunner[
-    S,
-    C,
-    P,
-    M,
+    S: CombinedValues,
+    C: CombinedValues,
+    P: CombinedValues,
+    M: CombinedValues,
     I: SimulationInputs,
     O: SimulationValues,
-    CS,
+    CS: CombinedValues,
 ](Runner):
     """Runs a module for a number of ticks."""
 
     def __init__(
         self,
-        control: Control[S, C, P, M, CS],
-        control_connector: Connector[S, C],
+        control: CombinedControl,
+        control_channels: ControlChannels[S, P],
         simulation_module_name: str,
         simulation: Simulation[S, C, I, O],
-        simulation_connector: Connector[C, S],
-        alarms: BaseAlarms[S, C, P],
-        mode_name: str,
+        simulation_channels: SimulationChannels[I, O],
+        alarms: CombinedAlarms,
     ):
         self._control = control
-        self._control_connector = control_connector
+        self._control_channels = control_channels
         self._simulation_module_name = simulation_module_name
         self._simulation = simulation
-        self._simulation_connector = simulation_connector
+        self._simulation_channels = simulation_channels
         self._alarms = alarms
         self._control_values, self._controller_state = self._control.initial()
-        self._mode_name = mode_name  # TODO: Remove this 'mode_name' parameter when 'CombinedValues' is removed as controller_state type
 
     async def run(self, n_ticks: int) -> None:
-        """Run simulation and control together."""
         for _ in range(n_ticks):
-            await self._control_connector.send_output(self._control_values)
+            parameters = self._control_channels.get_parameters()
+            if parameters is not None:
+                self._control.update_parameters(parameters)
 
-            sim_result: SimulationResult[S, C, I, O] = self._simulation.tick(
-                self._control_values
+            manual_modes = self._control_channels.get_automation_modes()
+            if manual_modes is not None:
+                self._control.update_automation_modes(manual_modes)
+            simulation_inputs = self._simulation_channels.get_simulation_inputs()
+            if simulation_inputs is not None:
+                self._simulation.update_simulation_inputs(simulation_inputs)
+
+            await self._control_channels.send_control_values(self._control_values)
+
+            sim_result = self._simulation.tick(self._control_values)
+            await self._control_channels.send_computed_values(sim_result.sensor_values)
+            await self._simulation_channels.send_sensor_values(sim_result.sensor_values)
+            await self._simulation_channels.send_simulation_inputs(
+                sim_result.simulation_inputs
             )
-            await self._simulation_connector.send_computed_input(
-                sim_result.sensor_values
-            )
-            await self._simulation_connector.send_output(sim_result.sensor_values)
-            await self._simulation_connector.send_controller_state(
-                CombinedValues(values={self._mode_name: sim_result.simulation_outputs})
+            await self._simulation_channels.send_simulation_outputs(
+                sim_result.simulation_outputs
             )
 
             self._control_values, self._controller_state = self._control.control(
@@ -69,45 +75,64 @@ class LockstepRunner[
                 sim_result.sensor_values, self._control_values, self._control.parameters
             )
 
+            await self._control_channels.send_controller_state(self._controller_state)
+            await self._control_channels.send_parameters(self._control.parameters)
+            if self._control.mode is not None:
+                await self._control_channels.send_control_modes(self._control.mode)
+            await self._control_channels.send_manual_control(
+                self._control.manual_controls
+            )
+
             if alarms:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
                 )  # TODO: properly handle alarms
 
 
-class ControlRunner[S, C, P, M, CS](Runner):
+class ControlRunner[
+    S: CombinedValues,
+    C: CombinedValues,
+    P: CombinedValues,
+    M: CombinedValues,
+    CS: CombinedValues,
+](Runner):
     def __init__(
         self,
-        connector: Connector[S, C],
-        control: Control[S, C, P, M, CS],
-        alarms: BaseAlarms[S, C, P],
+        channels: ControlChannels[S, P],
+        control: CombinedControl,
+        alarms: CombinedAlarms,
     ):
-        self._connector = connector
+        self._channels = channels
         self._control = control
         self._alarms = alarms
         self._control_values, self._controller_state = self._control.initial()
 
     async def run(self, n_ticks: int) -> None:
-        """Run control only, without simulation.
-        1. Get sensor values from MQTT
-        2. Send computed values and control values to MQTT
-        3. Tick control with sensor values
-        4. Send control values to MQTT
-        5. Check for alarms
-        """
         for _ in range(n_ticks):
-            sensor_values = await self._connector.get_input_values()
+            parameters = self._channels.get_parameters()
+            if parameters is not None:
+                self._control.update_parameters(parameters)
 
-            # Computed values are added (using a builder()) to sensor values when they are received from mqtt and
-            # should therefore be exposed to MQTT.
-            await self._connector.send_computed_input(sensor_values)
+            manual_modes = self._channels.get_automation_modes()
+            if manual_modes is not None:
+                self._control.update_automation_modes(manual_modes)
+
+            sensor_values = self._channels.get_sensor_values()
+            if sensor_values is None:
+                sensor_values = await self._channels.wait_for_sensor_values()
+
+            await self._channels.send_computed_values(sensor_values)
 
             self._control_values, self._controller_state = self._control.control(
                 sensor_values
             )
 
-            await self._connector.send_output(self._control_values)
-            await self._connector.send_controller_state(self._controller_state)
+            await self._channels.send_control_values(self._control_values)
+            await self._channels.send_controller_state(self._controller_state)
+            await self._channels.send_parameters(self._control.parameters)
+            if self._control.mode is not None:
+                await self._channels.send_control_modes(self._control.mode)
+            await self._channels.send_manual_control(self._control.manual_controls)
 
             self._check_alarms(sensor_values)
 
@@ -119,31 +144,26 @@ class ControlRunner[S, C, P, M, CS](Runner):
             warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
 
 
-class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
+class SimulationRunner[S: CombinedValues, C, I: SimulationInputs, O: SimulationValues](
+    Runner
+):
     def __init__(
-        self,
-        connector: Connector[C, S],
-        simulation: Simulation[S, C, I, O],
-        mode_name: str,  # TODO: Remove this 'mode_name' parameter when 'CombinedValues' is removed as controller_state type
+        self, channels: SimulationChannels[I, O], simulation: Simulation[S, C, I, O]
     ):
-        self._connector = connector
+        self._channels = channels
         self._simulation = simulation
-        self._mode_name = mode_name
 
     async def run(self, n_ticks: int) -> None:
-        """Run simulation only, without control.
-        1. Get control values from MQTT
-        2. Tick simulation with control values
-        3. Send sensor values to MQTT
-        4. Send simulation outputs to MQTT"""
-
         for _ in range(n_ticks):
-            control_values = await self._connector.get_input_values()
-            sim_result = self._simulation.tick(control_values)
-            await self._connector.send_output(
-                sim_result.sensor_values
-            )  # Simulator creates sensor_values, so treat them as output values
+            control_values = self._channels.get_control_values()
+            if control_values is None:
+                control_values = await self._channels.wait_for_control_values()
 
-            await self._connector.send_controller_state(
-                CombinedValues(values={self._mode_name: sim_result.simulation_outputs})
-            )
+            simulation_inputs = self._channels.get_simulation_inputs()
+            if simulation_inputs is not None:
+                self._simulation.update_simulation_inputs(simulation_inputs)
+
+            sim_result = self._simulation.tick(control_values)
+            await self._channels.send_sensor_values(sim_result.sensor_values)
+            await self._channels.send_simulation_inputs(sim_result.simulation_inputs)
+            await self._channels.send_simulation_outputs(sim_result.simulation_outputs)

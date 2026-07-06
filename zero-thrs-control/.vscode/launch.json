@@ -13,13 +13,13 @@
       "justMyCode": false,
     },
     {
-      "name": "THRS: Debug simulation thrusters",
+      "name": "THRS: Debug lockstep thrusters",
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
       "args": [
-        "run",
-        "thrusters"
+        "lockstep",
+        "--mode=thrusters"
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
