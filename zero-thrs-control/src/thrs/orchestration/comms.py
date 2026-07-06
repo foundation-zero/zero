@@ -1,15 +1,11 @@
 import logging
 from asyncio import Event, Future, ensure_future, gather, timeout
 from collections.abc import Mapping
-from dataclasses import dataclass
 from inspect import isawaitable
 from typing import (
     Awaitable,
     Callable,
-    Coroutine,
     Protocol,
-    TypeVarTuple,
-    Unpack,
     cast,
 )
 
@@ -28,7 +24,6 @@ from thrs.input_output.base import (
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import CombinedModule, ModuleClassMap, ModuleDescription
-from thrs.orchestration.simulation import Simulation
 from thrs.runtime.messages import (
     PauseMessage,
     PlayMessage,
@@ -323,345 +318,153 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 type Publisher[T] = Callable[[T], Awaitable[None]]
 
 
-class Channels[D, C](Protocol):
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: D,
-    ) -> C: ...
+class Channels(Protocol):
+    pass
 
 
-Ts = TypeVarTuple("Ts")
-
-
-class MqttConnectorBuilder[*Ts]:
+class ControlChannels(Channels):
     def __init__(
         self,
         connector: "MqttConnector",
-        registrations: tuple[Callable[[], object], ...] = (),
-    ):
-        self._connector = connector
-        self._registrations = registrations
-
-    def add[D, C](
-        self,
-        channels_type: type[Channels[D, C]],
-        description: D,
-    ) -> "MqttConnectorBuilder[*Ts, C]":
-        def _register() -> C:
-            return channels_type._register(self._connector, description)
-
-        return cast(
-            MqttConnectorBuilder[*Ts, C],
-            MqttConnectorBuilder(
-                self._connector,
-                (*self._registrations, _register),
-            ),
-        )
-
-    def register(self) -> tuple[Unpack[Ts]]:
-        return cast(
-            tuple[Unpack[Ts]], tuple(register() for register in self._registrations)
-        )
-
-    async def run(self) -> tuple[tuple[Unpack[Ts]], Coroutine[None, None, None]]:
-        channels = self.register()
-        await self._connector._start()
-        return cast(tuple[Unpack[Ts]], channels), self._connector._listen()
-
-
-@dataclass
-class ControlChannelsDescription:
-    devices_topic_prefix: str
-    controller_topic_prefix: str
-    sensor_values_clss: ModuleClassMap
-    control_values_clss: ModuleClassMap
-    controller_state_clss: ModuleClassMap
-    parameters_clss: ModuleClassMap
-    control_modes_clss: ModuleClassMap
-    control_values_topic_suffix: str
-    controller_topic_suffix: str
-
-    @staticmethod
-    def from_settings(
-        config: "Config", control_module: "CombinedModule"
-    ) -> "ControlChannelsDescription":
-        return ControlChannelsDescription(
-            devices_topic_prefix=config.mqtt_devices_topic_prefix,
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
-            sensor_values_clss=control_module.sensor_values_clss,
-            control_values_clss=control_module.control_values_clss,
-            controller_state_clss=control_module.controller_state_clss,
-            control_values_topic_suffix=config.mqtt_control_topic_suffix,
-            control_modes_clss=control_module.control_modes_clss,
-            parameters_clss=control_module.parameters_clss,
-            controller_topic_suffix=config.mqtt_controller_topic_suffix,
-        )
-
-
-class ControlChannels[S: CombinedValues, P: CombinedValues](
-    Channels[ControlChannelsDescription, "ControlChannels[S, P]"]
-):
-    def __init__(
-        self,
-        sensor_values_mapping: ModuleMqttMapping[S],
-        send_control_values: Publisher[CombinedValues],
-        send_computed_values: Publisher[CombinedValues],
-        send_controller_state: Publisher[CombinedValues],
-        parameters_mapping: ModuleMqttMapping[P],
-        send_parameters: Publisher[CombinedValues],
-        send_control_modes: Publisher[CombinedValues],
-        send_manual_control: Publisher[CombinedValues],
-        automation_mode_mapping: ModuleMqttMapping[CombinedValues],
-        manual_controls_mapping: ModuleMqttMapping[CombinedValues],
-    ):
-        """Don't ever call this directly, use `MqttController#run` instead"""
-        self.get_sensor_values = sensor_values_mapping.result
-        self.wait_for_sensor_values = sensor_values_mapping.wait_for_result
-        self.send_control_values = send_control_values
-        self.send_computed_values = send_computed_values
-        self.send_controller_state = send_controller_state
-        self.get_parameters = parameters_mapping.result
-        self.send_parameters = send_parameters
-        self.send_control_modes = send_control_modes
-        self.send_manual_control = send_manual_control
-        self.get_automation_modes = automation_mode_mapping.result
-        self.get_manual_controls = manual_controls_mapping.result
-
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: ControlChannelsDescription,
-    ) -> "ControlChannels[S, P]":
+        config: "Config",
+        control_module: "CombinedModule",
+    ) -> None:
         sensor_values_mapping = ModuleMqttMapping(
-            description.sensor_values_clss,
+            control_module.sensor_values_clss,
             PartialMqttMapping,
-            description.devices_topic_prefix,
+            config.mqtt_devices_topic_prefix,
         )
         connector._register_listener(sensor_values_mapping)
 
         parameters_mapping = ModuleMqttMapping(
-            description.parameters_clss,
+            control_module.parameters_clss,
             DirectMqttMapping.for_module_type("parameters"),
-            description.controller_topic_prefix,
-            description.controller_topic_suffix,
+            config.mqtt_controller_topic_prefix,
+            config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(parameters_mapping)
 
         manual_mode_mapping = ModuleMqttMapping(
-            {key: AutomationMode for key in description.control_modes_clss.keys()},
+            {key: AutomationMode for key in control_module.control_modes_clss.keys()},
             DirectMqttMapping.for_module_type("automation-mode"),
-            description.controller_topic_prefix,
-            description.controller_topic_suffix,
+            config.mqtt_controller_topic_prefix,
+            config.mqtt_controller_topic_suffix,
             allow_incomplete=True,
         )
         connector._register_listener(manual_mode_mapping)
         manual_controls_mapping = ModuleMqttMapping(
-            description.control_values_clss,
+            control_module.control_values_clss,
             DirectMqttMapping.for_module_type("manual-values"),
-            description.controller_topic_prefix,
-            description.controller_topic_suffix,
+            config.mqtt_controller_topic_prefix,
+            config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(manual_controls_mapping)
 
-        return ControlChannels(
-            sensor_values_mapping=sensor_values_mapping,
-            send_control_values=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.control_values_clss,
-                    PartialMqttMapping,
-                    description.devices_topic_prefix,
-                    description.control_values_topic_suffix,
-                ),
+        self.send_control_values = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.control_values_clss,
+                PartialMqttMapping,
+                config.mqtt_devices_topic_prefix,
+                config.mqtt_control_topic_suffix,
             ),
-            send_computed_values=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.sensor_values_clss,
-                    PartialMqttMapping.only_computed_fields,
-                    description.controller_topic_prefix,
-                )
+        )
+        self.send_computed_values = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.sensor_values_clss,
+                PartialMqttMapping.only_computed_fields,
+                config.mqtt_controller_topic_prefix,
+            )
+        )
+        self.send_controller_state = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.controller_state_clss,
+                DirectMqttMapping.for_module_type("controller-state"),
+                config.mqtt_controller_topic_prefix,
             ),
-            send_controller_state=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.controller_state_clss,
-                    DirectMqttMapping.for_module_type("controller-state"),
-                    description.controller_topic_prefix,
-                ),
-            ),
-            parameters_mapping=parameters_mapping,
-            send_parameters=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.parameters_clss,
-                    DirectMqttMapping.for_module_type("parameters"),
-                    description.controller_topic_prefix,
-                )
-            ),
-            send_control_modes=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.control_modes_clss,
-                    DirectMqttMapping.for_module_type("control-mode"),
-                    description.controller_topic_prefix,
-                )
-            ),
-            send_manual_control=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.control_values_clss,
-                    DirectMqttMapping.for_module_type("manual-values"),
-                    description.controller_topic_prefix,
-                )
-            ),
-            automation_mode_mapping=manual_mode_mapping,
-            manual_controls_mapping=manual_controls_mapping,
+        )
+        self.send_parameters = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.parameters_clss,
+                DirectMqttMapping.for_module_type("parameters"),
+                config.mqtt_controller_topic_prefix,
+            )
+        )
+        self.send_control_modes = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.control_modes_clss,
+                DirectMqttMapping.for_module_type("control-mode"),
+                config.mqtt_controller_topic_prefix,
+            )
+        )
+        self.send_manual_control = connector._create_publisher(
+            ModuleMqttMapping(
+                control_module.control_values_clss,
+                DirectMqttMapping.for_module_type("manual-values"),
+                config.mqtt_controller_topic_prefix,
+            )
         )
 
-
-@dataclass
-class SimulationChannelsDescription[I: SimulationInputs, O: SimulationValues]:
-    devices_topic_prefix: str
-    controller_topic_prefix: str
-    sensor_values_clss: ModuleClassMap
-    control_values_clss: ModuleClassMap
-    simulation_inputs_cls: type[I]
-    simulation_outputs_cls: type[O]
-    control_values_topic_suffix: str
-    controller_topic_suffix: str
-
-    @staticmethod
-    def from_settings[I2: SimulationInputs, O2: SimulationValues](
-        config: "Config",
-        control_module: "CombinedModule",
-        simulation: "Simulation[ThrsValues, ThrsValues, I2, O2]",
-    ) -> "SimulationChannelsDescription[I2, O2]":
-        return SimulationChannelsDescription(
-            devices_topic_prefix=config.mqtt_devices_topic_prefix,
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
-            sensor_values_clss=control_module.sensor_values_clss,
-            control_values_clss=control_module.control_values_clss,
-            simulation_inputs_cls=simulation.inputs_cls,
-            simulation_outputs_cls=simulation.outputs_cls,
-            control_values_topic_suffix=config.mqtt_control_topic_suffix,
-            controller_topic_suffix=config.mqtt_controller_topic_suffix,
-        )
+        self.get_sensor_values = sensor_values_mapping.result
+        self.wait_for_sensor_values = sensor_values_mapping.wait_for_result
+        self.get_parameters = parameters_mapping.result
+        self.get_automation_modes = manual_mode_mapping.result
+        self.get_manual_controls = manual_controls_mapping.result
 
 
-class SimulationChannels[I: SimulationInputs, O: SimulationValues](
-    Channels[SimulationChannelsDescription[I, O], "SimulationChannels[I, O]"]
-):
+class SimulationChannels[
+    S: ThrsValues,
+    C: ThrsValues,
+    I: SimulationInputs,
+    O: SimulationValues,
+](Channels):
     def __init__(
         self,
-        send_sensor_values: Publisher[CombinedValues],
-        control_values_mapping: ModuleMqttMapping,
-        simulation_inputs_mapping: DirectMqttMapping[I],
-        send_simulation_inputs: Publisher[I],
-        send_simulation_outputs: Publisher[O],
-    ):
-        """Don't ever call this directly, use `MqttController#run` instead"""
-        self.send_sensor_values = send_sensor_values
+        connector: "MqttConnector",
+        config: "Config",
+        sensor_values_clss: S,
+        control_values_clss: C,
+        simulation_inputs_cls: type[I] | tuple[type[I], ...],
+        simulation_outputs_cls: type[O] | tuple[type[O], ...],
+    ) -> None:
+        simulation_inputs_topic = (
+            f"{config.mqtt_controller_topic_prefix}/simulation-inputs"
+        )
+        simulation_outputs_topic = (
+            f"{config.mqtt_controller_topic_prefix}/simulation-outputs"
+        )
+
+        control_values_mapping = ModuleMqttMapping(
+            control_values_clss,
+            PartialMqttMapping,
+            config.mqtt_devices_topic_prefix,
+            config.mqtt_control_topic_suffix,
+        )
+        connector._register_listener(control_values_mapping)
+        simulation_inputs_mapping = DirectMqttMapping(
+            simulation_inputs_cls,
+            simulation_inputs_topic,
+            config.mqtt_controller_topic_suffix,
+        )
+        connector._register_listener(simulation_inputs_mapping)
+        self.send_sensor_values = connector._create_publisher(
+            ModuleMqttMapping(
+                sensor_values_clss,
+                PartialMqttMapping,
+                config.mqtt_devices_topic_prefix,
+            )
+        )
+
+        self.send_simulation_inputs = connector._create_publisher(
+            DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic)
+        )
+        self.send_simulation_outputs = connector._create_publisher(
+            DirectMqttMapping(simulation_outputs_cls, simulation_outputs_topic),
+        )
+
         self.get_control_values = control_values_mapping.result
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
         self.wait_for_simulation_inputs = simulation_inputs_mapping.wait_for_result
-        self.send_simulation_inputs = send_simulation_inputs
-        self.send_simulation_outputs = send_simulation_outputs
-
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: SimulationChannelsDescription[I, O],
-    ) -> "SimulationChannels[I, O]":
-        simulation_inputs_topic = (
-            f"{description.controller_topic_prefix}/simulation-inputs"
-        )
-        simulation_outputs_topic = (
-            f"{description.controller_topic_prefix}/simulation-outputs"
-        )
-
-        control_values_mapping = ModuleMqttMapping(
-            description.control_values_clss,
-            PartialMqttMapping,
-            description.devices_topic_prefix,
-            description.control_values_topic_suffix,
-        )
-        connector._register_listener(control_values_mapping)
-        simulation_inputs_mapping = DirectMqttMapping(
-            description.simulation_inputs_cls,
-            simulation_inputs_topic,
-            description.controller_topic_suffix,
-        )
-        connector._register_listener(simulation_inputs_mapping)
-        return SimulationChannels(
-            send_sensor_values=connector._create_publisher(
-                ModuleMqttMapping(
-                    description.sensor_values_clss,
-                    PartialMqttMapping,
-                    description.devices_topic_prefix,
-                ),
-            ),
-            control_values_mapping=control_values_mapping,
-            simulation_inputs_mapping=simulation_inputs_mapping,
-            send_simulation_inputs=connector._create_publisher(
-                DirectMqttMapping(
-                    description.simulation_inputs_cls,
-                    simulation_inputs_topic,
-                )
-            ),
-            send_simulation_outputs=connector._create_publisher(
-                DirectMqttMapping(
-                    description.simulation_outputs_cls,
-                    simulation_outputs_topic,
-                ),
-            ),
-        )
-
-
-@dataclass
-class ControlApiChannelsDescription[
-    S: ThrsValues,
-    C: ThrsValues,
-    P: ThrsValues,
-    M: ThrsValues,
-    CS: ThrsValues,
-]:
-    module_name: str
-    devices_topic_prefix: str
-    controller_topic_prefix: str
-    sensor_values_cls: type[S]
-    control_values_cls: type[C]
-    controller_state_cls: type[CS]
-    parameters_cls: type[P]
-    control_modes_cls: type[M]
-    control_values_topic_suffix: str
-    controller_topic_suffix: str
-
-    @staticmethod
-    def from_settings[
-        S2: ThrsValues,
-        C2: ThrsValues,
-        P2: ThrsValues,
-        M2: ThrsValues,
-        CS2: ThrsValues,
-        A2: ThrsValues,
-    ](
-        config: "Config",
-        module_name: str,
-        module_description: "ModuleDescription[S2, C2, P2, M2, CS2]",
-        automation_mode_cls: type[A2],
-    ) -> "ControlApiChannelsDescription[S2, C2, P2, M2, CS2]":
-        return ControlApiChannelsDescription(
-            module_name=module_name,
-            devices_topic_prefix=config.mqtt_devices_topic_prefix,
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
-            sensor_values_cls=module_description.sensor_values_cls,
-            control_values_cls=module_description.control_values_cls,
-            controller_state_cls=module_description.controller_state_cls,
-            parameters_cls=module_description.parameters_cls,
-            control_modes_cls=module_description.control_mode_cls,
-            control_values_topic_suffix=config.mqtt_control_topic_suffix,
-            controller_topic_suffix=config.mqtt_controller_topic_suffix,
-        )
 
 
 class ControlApiChannels[
@@ -670,25 +473,89 @@ class ControlApiChannels[
     P: ThrsValues,
     M: ThrsValues,
     CS: ThrsValues,
-](
-    Channels[
-        ControlApiChannelsDescription[S, C, P, M, CS],
-        "ControlApiChannels[S, C, P, M, CS]",
-    ]
-):
+](Channels):
     def __init__(
         self,
-        sensor_values_mapping: PartialMqttMapping[S],
-        control_values_mapping: PartialMqttMapping[C],
-        manual_values_mapping: DirectMqttMapping[C],
-        control_modes_mapping: DirectMqttMapping[M],
-        parameters_mapping: DirectMqttMapping[P],
-        controller_state_mapping: DirectMqttMapping[CS],
-        send_manual_values: Publisher[C],
-        send_automation_mode: Publisher[AutomationMode],
-        send_parameters: Publisher[P],
-    ):
-        """Don't ever call this directly, use `MqttConnector#run` instead"""
+        connector: "MqttConnector",
+        config: "Config",
+        module_name: str,
+        module_description: "ModuleDescription[S, C, P, M, CS]",
+    ) -> None:
+        sensor_values_mapping = PartialMqttMapping(
+            module_description.sensor_values_cls,
+            config.mqtt_devices_topic_prefix,
+            module_name,
+        )
+        connector._register_listener(sensor_values_mapping)
+
+        control_values_mapping = PartialMqttMapping(
+            module_description.control_values_cls,
+            config.mqtt_devices_topic_prefix,
+            module_name,
+            config.mqtt_control_topic_suffix,
+        )
+        connector._register_listener(control_values_mapping)
+
+        manual_values_mapping = DirectMqttMapping.for_module(
+            module_description.control_values_cls,
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="manual-values",
+        )
+        connector._register_listener(manual_values_mapping)
+
+        control_modes_mapping = DirectMqttMapping.for_module(
+            SwitchingControlMode[module_description.control_mode_cls],
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="control-mode",
+        )
+        connector._register_listener(control_modes_mapping)
+
+        parameters_mapping = DirectMqttMapping.for_module(
+            module_description.parameters_cls,
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="parameters",
+        )
+        connector._register_listener(parameters_mapping)
+
+        controller_state_mapping = DirectMqttMapping.for_module(
+            module_description.controller_state_cls,
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="controller-state",
+        )
+        connector._register_listener(controller_state_mapping)
+
+        self.send_manual_values = connector._create_publisher(
+            DirectMqttMapping.for_module(
+                module_description.control_values_cls,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                config.mqtt_controller_topic_suffix,
+                type_topic="manual-values",
+            )
+        )
+        self.send_automation_mode = connector._create_publisher(
+            DirectMqttMapping.for_module(
+                AutomationMode,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                config.mqtt_controller_topic_suffix,
+                type_topic="automation-mode",
+            )
+        )
+        self.send_parameters = connector._create_publisher(
+            DirectMqttMapping.for_module(
+                module_description.parameters_cls,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                config.mqtt_controller_topic_suffix,
+                type_topic="parameters",
+            )
+        )
+
         self.get_sensor_values = sensor_values_mapping.result
         self.get_control_values = control_values_mapping.result
         self.get_manual_values = manual_values_mapping.result
@@ -698,263 +565,116 @@ class ControlApiChannels[
         self.wait_for_manual_values = manual_values_mapping.wait_for
         self.wait_for_parameters = parameters_mapping.wait_for
         self.wait_for_control_modes = control_modes_mapping.wait_for
-        self.send_manual_values = send_manual_values
-        self.send_automation_mode = send_automation_mode
-        self.send_parameters = send_parameters
 
-    @classmethod
-    def _register(
-        cls,
+
+class SimulationApiChannels[I: SimulationInputs, O: SimulationValues](Channels):
+    def __init__(
+        self,
         connector: "MqttConnector",
-        description: ControlApiChannelsDescription[S, C, P, M, CS],
-    ) -> "ControlApiChannels[S, C, P, M, CS]":
-        sensor_values_mapping = PartialMqttMapping(
-            description.sensor_values_cls,
-            description.devices_topic_prefix,
-            description.module_name,
-        )
-        connector._register_listener(sensor_values_mapping)
-
-        control_values_mapping = PartialMqttMapping(
-            description.control_values_cls,
-            description.devices_topic_prefix,
-            description.module_name,
-            description.control_values_topic_suffix,
-        )
-        connector._register_listener(control_values_mapping)
-
-        manual_values_mapping = DirectMqttMapping.for_module(
-            description.control_values_cls,
-            description.controller_topic_prefix,
-            description.module_name,
-            type_topic="manual-values",
-        )
-        connector._register_listener(manual_values_mapping)
-
-        control_modes_mapping = DirectMqttMapping.for_module(
-            SwitchingControlMode[description.control_modes_cls],
-            description.controller_topic_prefix,
-            description.module_name,
-            type_topic="control-mode",
-        )
-        connector._register_listener(control_modes_mapping)
-
-        parameters_mapping = DirectMqttMapping.for_module(
-            description.parameters_cls,
-            description.controller_topic_prefix,
-            description.module_name,
-            type_topic="parameters",
-        )
-        connector._register_listener(parameters_mapping)
-
-        controller_state_mapping = DirectMqttMapping.for_module(
-            description.controller_state_cls,
-            description.controller_topic_prefix,
-            description.module_name,
-            type_topic="controller-state",
-        )
-        connector._register_listener(controller_state_mapping)
-
-        return ControlApiChannels(
-            sensor_values_mapping=sensor_values_mapping,
-            control_values_mapping=control_values_mapping,
-            manual_values_mapping=manual_values_mapping,
-            control_modes_mapping=control_modes_mapping,
-            parameters_mapping=parameters_mapping,
-            controller_state_mapping=controller_state_mapping,
-            send_manual_values=connector._create_publisher(
-                DirectMqttMapping.for_module(
-                    description.control_values_cls,
-                    description.controller_topic_prefix,
-                    description.module_name,
-                    description.controller_topic_suffix,
-                    type_topic="manual-values",
-                ),
-            ),
-            send_automation_mode=connector._create_publisher(
-                DirectMqttMapping.for_module(
-                    AutomationMode,
-                    description.controller_topic_prefix,
-                    description.module_name,
-                    description.controller_topic_suffix,
-                    type_topic="automation-mode",
-                ),
-            ),
-            send_parameters=connector._create_publisher(
-                DirectMqttMapping.for_module(
-                    description.parameters_cls,
-                    description.controller_topic_prefix,
-                    description.module_name,
-                    description.controller_topic_suffix,
-                    type_topic="parameters",
-                ),
-            ),
-        )
-
-
-@dataclass
-class SimulationApiChannelsDescription[I: SimulationInputs, O: SimulationValues]:
-    controller_topic_prefix: str
-    controller_topic_suffix: str
-    simulation_inputs_cls: type[I] | tuple[type[I], ...]
-    simulation_outputs_cls: type[O] | tuple[type[O], ...]
-
-    @staticmethod
-    def from_settings[I2: SimulationInputs, O2: SimulationValues](
         config: "Config",
-        simulation_inputs_cls: type[I2] | tuple[type[I2], ...],
-        simulation_outputs_cls: type[O2] | tuple[type[O2], ...],
-    ) -> "SimulationApiChannelsDescription[I2, O2]":
-        return SimulationApiChannelsDescription(
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
-            controller_topic_suffix=config.mqtt_controller_topic_suffix,
-            simulation_inputs_cls=simulation_inputs_cls,
-            simulation_outputs_cls=simulation_outputs_cls,
+        simulation_inputs_cls: type[I] | tuple[type[I], ...],
+        simulation_outputs_cls: type[O] | tuple[type[O], ...],
+    ) -> None:
+        self.simulation_inputs_mapping = DirectMqttMapping(
+            simulation_inputs_cls,
+            f"{config.mqtt_controller_topic_prefix}/simulation-inputs",
+        )
+        connector._register_listener(self.simulation_inputs_mapping)
+
+        self.simulation_outputs_mapping = DirectMqttMapping(
+            simulation_outputs_cls,
+            f"{config.mqtt_controller_topic_prefix}/simulation-outputs",
+        )
+        connector._register_listener(self.simulation_outputs_mapping)
+
+        self.send_simulation_inputs = connector._create_publisher(
+            DirectMqttMapping(
+                simulation_inputs_cls,
+                f"{config.mqtt_controller_topic_prefix}/simulation-inputs/{config.mqtt_controller_topic_suffix}",
+            )
+        )
+
+        self.get_simulation_inputs = self.simulation_inputs_mapping.result
+        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for_result
+        self.get_simulation_outputs = self.simulation_outputs_mapping.result
+        self.wait_for_simulation_outputs = (
+            self.simulation_outputs_mapping.wait_for_result
+        )
+        self.wait_for_simulation_inputs_where = self.simulation_inputs_mapping.wait_for
+        self.wait_for_simulation_outputs_where = (
+            self.simulation_outputs_mapping.wait_for
         )
 
 
-class SimulationApiChannels[I: SimulationInputs, O: SimulationValues](
-    Channels[SimulationApiChannelsDescription[I, O], "SimulationApiChannels[I, O]"]
-):
-    def __init__(
-        self,
-        simulation_inputs_mapping: DirectMqttMapping[I],
-        simulation_outputs_mapping: DirectMqttMapping[O],
-        send_simulation_inputs: Publisher[I],
-    ):
-        """Don't ever call this directly, use `MqttConnector#run` instead"""
-        self.get_simulation_inputs = simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = simulation_inputs_mapping.wait_for_result
-        self.get_simulation_outputs = simulation_outputs_mapping.result
-        self.wait_for_simulation_outputs = simulation_outputs_mapping.wait_for_result
-        self.wait_for_simulation_inputs_where = simulation_inputs_mapping.wait_for
-        self.wait_for_simulation_outputs_where = simulation_outputs_mapping.wait_for
-        self.send_simulation_inputs = send_simulation_inputs
-
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: SimulationApiChannelsDescription[I, O],
-    ) -> "SimulationApiChannels[I, O]":
-        simulation_inputs_mapping = DirectMqttMapping(
-            description.simulation_inputs_cls,
-            f"{description.controller_topic_prefix}/simulation-inputs",
-        )
-        connector._register_listener(simulation_inputs_mapping)
-
-        simulation_outputs_mapping = DirectMqttMapping(
-            description.simulation_outputs_cls,
-            f"{description.controller_topic_prefix}/simulation-outputs",
-        )
-        connector._register_listener(simulation_outputs_mapping)
-
-        return SimulationApiChannels(
-            simulation_inputs_mapping=simulation_inputs_mapping,
-            simulation_outputs_mapping=simulation_outputs_mapping,
-            send_simulation_inputs=connector._create_publisher(
-                DirectMqttMapping(
-                    description.simulation_inputs_cls,
-                    f"{description.controller_topic_prefix}/simulation-inputs/{description.controller_topic_suffix}",
-                ),
-            ),
-        )
-
-
-@dataclass
-class DirectivesChannelsDescription:
-    controller_topic_prefix: str
-
-    @staticmethod
-    def from_settings(config: "Config") -> "DirectivesChannelsDescription":
-        return DirectivesChannelsDescription(
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
-        )
-
-
-class DirectivesChannels(Channels[DirectivesChannelsDescription, "DirectivesChannels"]):
-    def __init__(
-        self,
-        play_mapping: DirectMqttMapping[PlayMessage],
-        step_mapping: DirectMqttMapping[StepMessage],
-        pause_mapping: DirectMqttMapping[PauseMessage],
-        send_simulation_status: Publisher[SimulationStatusMessage],
-        clear_simulation_status: Callable[[], Awaitable[None]],
-    ):
-        self.on_play = play_mapping.add_hook
-        self.on_step = step_mapping.add_hook
-        self.on_pause = pause_mapping.add_hook
-        self.send_simulation_status = send_simulation_status
-        self.clear_simulation_status = clear_simulation_status
-
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: DirectivesChannelsDescription,
-    ) -> "DirectivesChannels":
+class DirectivesChannels(Channels):
+    def __init__(self, connector: "MqttConnector", config: "Config") -> None:
+        self._connector = connector
         play_mapping = DirectMqttMapping(
             PlayMessage,
-            f"{description.controller_topic_prefix}/{PlayMessage.subscribe_topic()}",
+            f"{(config.mqtt_controller_topic_prefix,)}/{PlayMessage.subscribe_topic()}",
         )
         connector._register_listener(play_mapping)
 
         step_mapping = DirectMqttMapping(
             StepMessage,
-            f"{description.controller_topic_prefix}/{StepMessage.subscribe_topic()}",
+            f"{(config.mqtt_controller_topic_prefix,)}/{StepMessage.subscribe_topic()}",
         )
         connector._register_listener(step_mapping)
 
         pause_mapping = DirectMqttMapping(
             PauseMessage,
-            f"{description.controller_topic_prefix}/{PauseMessage.subscribe_topic()}",
+            f"{(config.mqtt_controller_topic_prefix,)}/{PauseMessage.subscribe_topic()}",
         )
         connector._register_listener(pause_mapping)
 
-        status_topic = f"{description.controller_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
+        self._status_topic = f"{(config.mqtt_controller_topic_prefix,)}/{SimulationStatusMessage.subscribe_topic()}"
 
-        async def _clear_simulation_status():
-            await connector._mqtt_client.publish(status_topic, b"", qos=1, retain=True)
+        self.send_simulation_status = connector._create_publisher(
+            DirectMqttMapping(SimulationStatusMessage, self._status_topic), retain=True
+        )
 
-        return DirectivesChannels(
-            play_mapping=play_mapping,
-            step_mapping=step_mapping,
-            pause_mapping=pause_mapping,
-            send_simulation_status=connector._create_publisher(
-                DirectMqttMapping(SimulationStatusMessage, status_topic), retain=True
-            ),
-            clear_simulation_status=_clear_simulation_status,
+        self.on_play = play_mapping.add_hook
+        self.on_step = step_mapping.add_hook
+        self.on_pause = pause_mapping.add_hook
+
+    async def clear_simulation_status(self):
+        await self._connector._mqtt_client.publish(
+            self._status_topic, b"", qos=1, retain=True
         )
 
 
-@dataclass
-class DirectivesApiChannelsDescription:
-    controller_topic_prefix: str
+class DirectivesApiChannels(Channels):
+    def __init__(self, connector: "MqttConnector", config: "Config") -> None:
+        status_topic = f"{config.mqtt_controller_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
+        simulation_status_mapping = DirectMqttMapping(
+            SimulationStatusMessage, status_topic
+        )
+        connector._register_listener(simulation_status_mapping)
 
-    @staticmethod
-    def from_settings(config: "Config") -> "DirectivesApiChannelsDescription":
-        return DirectivesApiChannelsDescription(
-            controller_topic_prefix=config.mqtt_controller_topic_prefix,
+        self.on_simulation_status = simulation_status_mapping.add_hook
+        self._send_play = connector._create_publisher(
+            DirectMqttMapping(
+                PlayMessage,
+                f"{config.mqtt_controller_topic_prefix}/{PlayMessage.subscribe_topic()}",
+            )
+        )
+        self._send_step = connector._create_publisher(
+            DirectMqttMapping(
+                StepMessage,
+                f"{config.mqtt_controller_topic_prefix}/{StepMessage.subscribe_topic()}",
+            )
+        )
+        self._send_pause = connector._create_publisher(
+            DirectMqttMapping(
+                PauseMessage,
+                f"{config.mqtt_controller_topic_prefix}/{PauseMessage.subscribe_topic()}",
+            )
         )
 
-
-class DirectivesApiChannels(
-    Channels[DirectivesApiChannelsDescription, "DirectivesApiChannels"]
-):
-    def __init__(
-        self,
-        simulation_status_mapping: DirectMqttMapping[SimulationStatusMessage],
-        _send_play: Publisher[PlayMessage],
-        _send_step: Publisher[StepMessage],
-        _send_pause: Publisher[PauseMessage],
-    ):
         self.get_simulation_status = simulation_status_mapping.result
         self.wait_for_simulation_status = simulation_status_mapping.wait_for_result
         self.wait_for_simulation_status_where = simulation_status_mapping.wait_for
         self.on_simulation_status = simulation_status_mapping.add_hook
-        self._send_play = _send_play
-        self._send_step = _send_step
-        self._send_pause = _send_pause
 
     async def send_play(self, playback_rate: float):
         await self._send_play(PlayMessage(playback_rate=playback_rate))
@@ -965,61 +685,18 @@ class DirectivesApiChannels(
     async def send_pause(self):
         await self._send_pause(PauseMessage())
 
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: DirectivesApiChannelsDescription,
-    ) -> "DirectivesApiChannels":
-        status_topic = f"{description.controller_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
-        simulation_status_mapping = DirectMqttMapping(
-            SimulationStatusMessage, status_topic
-        )
-        connector._register_listener(simulation_status_mapping)
-
-        return DirectivesApiChannels(
-            simulation_status_mapping=simulation_status_mapping,
-            _send_play=connector._create_publisher(
-                DirectMqttMapping(
-                    PlayMessage,
-                    f"{description.controller_topic_prefix}/{PlayMessage.subscribe_topic()}",
-                )
-            ),
-            _send_step=connector._create_publisher(
-                DirectMqttMapping(
-                    StepMessage,
-                    f"{description.controller_topic_prefix}/{StepMessage.subscribe_topic()}",
-                )
-            ),
-            _send_pause=connector._create_publisher(
-                DirectMqttMapping(
-                    PauseMessage,
-                    f"{description.controller_topic_prefix}/{PauseMessage.subscribe_topic()}",
-                )
-            ),
-        )
-
 
 class MqttConnector:
     def __init__(self, mqtt_client: Client):
         self._mqtt_client = mqtt_client
         self._listeners: list[MqttReceiveMapping[object]] = []
+        self._started = False
 
-    @property
-    def listeners(self) -> list[MqttReceiveMapping[object]]:
-        return self._listeners
+    def _register_listener[T](self, receiver: MqttReceiveMapping[T]) -> None:
+        if self._started:
+            raise Exception("Can't register listeners after start")
 
-    def clear_listeners(self):
-        self._listeners.clear()
-
-    def build(self) -> MqttConnectorBuilder[()]:
-        return MqttConnectorBuilder(self)
-
-    def _register_listener[T](
-        self, receiver: MqttReceiveMapping[T]
-    ) -> MqttReceiveMapping[T]:
         self._listeners.append(receiver)
-        return receiver
 
     def _create_publisher[T](
         self, sender: MqttSendMapping[T], qos: int = 1, retain: bool = False
@@ -1058,9 +735,7 @@ class MqttConnector:
             for topic in mapping.subscribe_topics():
                 await self._mqtt_client.subscribe(topic, qos=1)
 
-    async def run[D, C](
-        self, channels_type: type[Channels[D, C]], description: D
-    ) -> tuple[C, Coroutine[None, None, None]]:
-        channels = channels_type._register(self, description)
+    async def run(self) -> None:
         await self._start()
-        return channels, self._listen()
+        self._started = True
+        return await self._listen()

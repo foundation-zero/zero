@@ -58,12 +58,9 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.comms import (
     ControlApiChannels,
-    ControlApiChannelsDescription,
     DirectivesApiChannels,
-    DirectivesApiChannelsDescription,
     MqttConnector,
     SimulationApiChannels,
-    SimulationApiChannelsDescription,
 )
 from thrs.runtime.messages import SimulationStatusMessage
 
@@ -462,23 +459,11 @@ mqtt_client2 = pytest.fixture(_mqtt_client)
 
 
 async def test_query_simulation_inputs_actual(
-    app, test_client, mqtt_client, mqtt_client2
+    app, test_client, mqtt_client, mqtt_client2, settings
 ):
     control_connector = MqttConnector(mqtt_client)
-    control_channels = ControlApiChannels._register(
-        control_connector,
-        ControlApiChannelsDescription(
-            module_name="thrusters",
-            devices_topic_prefix="test_devices_topic",
-            controller_topic_prefix="test_controller_topic",
-            sensor_values_cls=THRUSTERS_MODULE_DESCRIPTION.sensor_values_cls,
-            control_values_cls=THRUSTERS_MODULE_DESCRIPTION.control_values_cls,
-            controller_state_cls=THRUSTERS_MODULE_DESCRIPTION.controller_state_cls,
-            parameters_cls=THRUSTERS_MODULE_DESCRIPTION.parameters_cls,
-            control_modes_cls=THRUSTERS_MODULE_DESCRIPTION.control_mode_cls,
-            control_values_topic_suffix="",
-            controller_topic_suffix="",
-        ),
+    control_channels = ControlApiChannels(
+        control_connector, settings, "thrusters", THRUSTERS_MODULE_DESCRIPTION
     )
 
     thrusters_msg: ThrustersMessaging = ControlMessaging(
@@ -487,30 +472,18 @@ async def test_query_simulation_inputs_actual(
         control_channels,
     )
     simulation_msg = SimulationMessaging(
-        SimulationApiChannels._register(
+        SimulationApiChannels(
             control_connector,
-            SimulationApiChannelsDescription(
-                controller_topic_prefix="test_simulation_topic",
-                controller_topic_suffix="set",
-                simulation_inputs_cls=tuple(
-                    dict.fromkeys(
-                        inputs for inputs, _ in simulation.io_mapping.values()
-                    )
-                ),
-                simulation_outputs_cls=tuple(
-                    dict.fromkeys(
-                        outputs for _, outputs in simulation.io_mapping.values()
-                    )
-                ),
+            settings,
+            simulation_inputs_cls=tuple(
+                dict.fromkeys(inputs for inputs, _ in simulation.io_mapping.values())
+            ),
+            simulation_outputs_cls=tuple(
+                dict.fromkeys(outputs for _, outputs in simulation.io_mapping.values())
             ),
         ),
     )
-    directives_channels = DirectivesApiChannels._register(
-        control_connector,
-        DirectivesApiChannelsDescription(
-            controller_topic_prefix="test_simulation_topic",
-        ),
-    )
+    directives_channels = DirectivesApiChannels(control_connector, settings)
     msg = DirectiveMessaging(
         [thrusters_msg],
         simulation_msg,
