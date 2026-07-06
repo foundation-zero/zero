@@ -26,6 +26,19 @@
       "cwd": "${workspaceFolder}",
     },
     {
+      "name": "THRS: Debug simulation dhw",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "thrs.cli",
+      "args": [
+        "run",
+        "dhw"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+    },
+    {
       "name": "THRS: Debug graphql api",
       "type": "debugpy",
       "request": "launch",
