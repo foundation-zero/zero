@@ -77,7 +77,7 @@ class ReferenceValues(Base):  # type:ignore
     load_case_id = Column(
         UUID(as_uuid=True), ForeignKey("load_cases.id"), nullable=False, index=True
     )
-    variable_id = Column(String, nullable=False)
+    variable_key = Column(String, nullable=False)
     alarm_low = Column(Float, nullable=True)
     warning_low = Column(Float, nullable=True)
     target = Column(Float, nullable=True)

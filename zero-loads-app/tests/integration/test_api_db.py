@@ -47,14 +47,21 @@ async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
 @pytest.mark.asyncio
 async def test_reference_values_variable_ids_in_registry(sessionmanager):
     async with sessionmanager.session() as session:
-        query = select(ReferenceValues.variable_id).distinct()
+        query = select(ReferenceValues.variable_key).distinct()
         result = await session.execute(query)
-        db_variable_ids = {
+
+        db_variable_keys = {
             LEGACY_VARIABLE_ID_ALIASES.get(variable_id, variable_id)
             for variable_id in result.scalars().all()
         }
-        registry_variable_ids = set(VARIABLES.keys())
-        missing_variables = db_variable_ids - registry_variable_ids
+
+        registry_variable_keys = set(
+            [
+                var.applicability.variable_key if var.applicability else var.id
+                for var in VARIABLES.values()
+            ]
+        )
+        missing_variables = db_variable_keys - registry_variable_keys
         assert not missing_variables, (
-            f"The following variable_ids from reference_values are not in VARIABLES registry: {missing_variables}"
+            f"The following variable_keys from reference_values are not in VARIABLES registry: {missing_variables}"
         )

@@ -1,5 +1,5 @@
 import logging
-from typing import Sequence
+from typing import Literal, Sequence
 
 from sqlalchemy import Column, Subquery, cast, literal, or_, select, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT, insert
@@ -9,6 +9,7 @@ from sqlalchemy.sql.selectable import ScalarSelect
 from strawberry import ID
 
 from loads.registry import ALARMS, VARIABLES, AlarmDefinition, VariableDefinition
+from loads.registry.registry import Applicability
 
 from .schema import (
     AwaRanges,
@@ -36,15 +37,14 @@ logger = logging.getLogger("api")
 
 
 async def get_loads_reference_values(
-    variables: list[str],
+    variable_keys: list[str],
     case: CaseInput,
     session: AsyncSession,
 ) -> list[ReferenceValue]:
     """Return all reference values that match the current sails and conditions."""
-
     query = (
         select(ReferenceValues)
-        .where(ReferenceValues.variable_id.in_(variables))
+        .where(ReferenceValues.variable_key.in_(variable_keys))
         .where(
             ReferenceValues.load_case.has(
                 LoadCases.awa_range.has(AwaRanges.id == case.awa_range.value)
@@ -70,7 +70,7 @@ async def get_loads_reference_values(
     if reference_values:
         return [
             ReferenceValue(
-                id=ref_value.variable_id,  # type: ignore
+                id=ref_value.variable_key,  # type: ignore
                 alarm_low=ref_value.alarm_low,  # type: ignore
                 warning_low=ref_value.warning_low,  # type: ignore
                 target=ref_value.target,  # type: ignore
@@ -98,7 +98,7 @@ async def set_loads_reference_values(
     insert_statement = insert(ReferenceValues).from_select(
         [
             ReferenceValues.load_case_id,
-            ReferenceValues.variable_id,
+            ReferenceValues.variable_key,
             ReferenceValues.alarm_low,
             ReferenceValues.warning_low,
             ReferenceValues.target,
@@ -119,7 +119,7 @@ async def set_loads_reference_values(
     statement = insert_statement.on_conflict_do_update(
         index_elements=[
             ReferenceValues.load_case_id,
-            ReferenceValues.variable_id,
+            ReferenceValues.variable_key,
         ],
         set_={
             "alarm_low": insert_statement.excluded.alarm_low,
@@ -133,12 +133,12 @@ async def set_loads_reference_values(
     await session.execute(statement)
 
 
-async def get_variables(ids: Sequence[str]) -> list[VariableType]:
-    variables: list[VariableDefinition] = [
-        VARIABLES[id] for id in ids if id in VARIABLES
-    ]
+def resolve_variable_definitions(ids: Sequence[str]) -> list[VariableDefinition]:
+    return [VARIABLES[id] for id in ids if id in VARIABLES]
 
-    if variables:
+
+def get_variables(ids: Sequence[str]) -> list[VariableType]:
+    if variables := resolve_variable_definitions(ids):
         return [
             VariableType(
                 id=ID(var.id),
@@ -154,6 +154,34 @@ async def get_variables(ids: Sequence[str]) -> list[VariableType]:
     else:
         logger.info(f"No variables found for ids: {ids}")
         return []
+
+
+APPLICABILITIES: dict[
+    Literal["port", "starboard"],
+    set[tuple[Literal["port", "starboard"], Literal["windward", "leeward"]]],
+] = {
+    "port": {("port", "windward"), ("starboard", "leeward")},
+    "starboard": {("starboard", "windward"), ("port", "leeward")},
+}
+
+
+def resolve_variable_keys(
+    variables: Sequence[VariableDefinition],
+    wind_direction: Literal["port", "starboard"],
+) -> list[str]:
+    def _apply_applicability(variable: VariableDefinition):
+        match variable.applicability:
+            case None:
+                return variable.id
+            case Applicability(key, side, applies_if) if (
+                side,
+                applies_if,
+            ) in APPLICABILITIES[wind_direction]:
+                return key
+            case _:
+                return None
+
+    return [key for var in variables if (key := _apply_applicability(var))]
 
 
 async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:

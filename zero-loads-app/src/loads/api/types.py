@@ -47,10 +47,17 @@ class AwsRange(Enum):
     aws_40_plus = "[40,)"
 
 
+@strawberry.enum
+class WindDirection(Enum):
+    port = "port"
+    starboard = "starboard"
+
+
 @strawberry.input
 class CaseInput:
     awa_range: AwaRange
     aws_range: AwsRange
+    wind_direction: WindDirection
     sailset: list[strawberry.ID]
 
     def __hash__(self) -> int:

@@ -27,9 +27,9 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-runner-ps-load"]) {
+                    variables(variables: ["main-checkstay-ps-load"]) {
                         id
-                        reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -60,14 +60,146 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             "data": {
                 "variables": [
                     {
-                        "id": "main-runner-ps-load",
+                        "id": "main-checkstay-ps-load",
                         "reference": {
+                            "alarmLow": None,
+                            "warningLow": None,
+                            "target": 1.3,
+                            "warningHigh": 12.42,
+                            "alarmHigh": 13.8,
+                        },
+                        "actual": {
+                            "id": "main-checkstay-ps-load",
+                            "value": 42.0,
+                        },
+                        "variable": {
+                            "id": "main-checkstay-ps-load",
+                            "name": "Checkstay PS",
+                            "unit": "tonne",
+                            "scaleMin": 0.0,
+                            "scaleMax": 15.0,
+                            "scaleMinLabel": None,
+                            "scaleMaxLabel": None,
+                        },
+                    },
+                ]
+            }
+        }
+
+
+@pytest.mark.asyncio
+async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    runner_sb: variables(variables: ["main-runner-sb-load"]) {
+                        id
+                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        variable {
+                            id
+                            name
+                            unit
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
+                        }
+                        actual {
+                            id
+                            value
+                        }
+                    }
+                    runner_ps: variables(variables: ["main-runner-ps-load"]) {
+                        id
+                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        variable {
+                            id
+                            name
+                            unit
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
+                        }
+                        actual {
+                            id
+                            value
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "runner_sb": [
+                    {
+                        "id": "main-runner-sb-load",
+                        "port_wind": None,
+                        "starboard_wind": {
                             "alarmLow": None,
                             "warningLow": None,
                             "target": 17.3,
                             "warningHigh": 23.76,
                             "alarmHigh": 26.4,
                         },
+                        "actual": {
+                            "id": "main-runner-sb-load",
+                            "value": 42.0,
+                        },
+                        "variable": {
+                            "id": "main-runner-sb-load",
+                            "name": "Runner SB",
+                            "unit": "tonne",
+                            "scaleMin": 0.0,
+                            "scaleMax": 29.0,
+                            "scaleMinLabel": None,
+                            "scaleMaxLabel": None,
+                        },
+                    },
+                ],
+                "runner_ps": [
+                    {
+                        "id": "main-runner-ps-load",
+                        "port_wind": {
+                            "alarmLow": None,
+                            "warningLow": None,
+                            "target": 17.3,
+                            "warningHigh": 23.76,
+                            "alarmHigh": 26.4,
+                        },
+                        "starboard_wind": None,
                         "actual": {
                             "id": "main-runner-ps-load",
                             "value": 42.0,
@@ -82,7 +214,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                             "scaleMaxLabel": None,
                         },
                     },
-                ]
+                ],
             }
         }
 
@@ -114,10 +246,10 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
             query {
                 variables(variables: ["blade-adjuster-load"]) {
                     id
-                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, sailset: ["full-main", "full-mizzen"]}) {
+                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, windDirection: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
-                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, sailset: ["full-main", "full-mizzen"]}) {
+                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, windDirection: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
                 }
@@ -216,16 +348,16 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         json={
             "query": """
             query {
-                variables(variables: ["main-runner-ps-load"]) {
+                variables(variables: ["main-checkstay-ps-load"]) {
                     id
-                    a: reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    a: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
                         alarmHigh
                         target
                         warningHigh
                         warningLow
                     }
-                    b: reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    b: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
                         alarmHigh
                         target
@@ -243,20 +375,20 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-runner-ps-load",
+                    "id": "main-checkstay-ps-load",
                     "a": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 17.3,
-                        "warningHigh": 23.76,
-                        "alarmHigh": 26.4,
+                        "target": 1.3,
+                        "warningHigh": 12.42,
+                        "alarmHigh": 13.8,
                     },
                     "b": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 17.3,
-                        "warningHigh": 23.76,
-                        "alarmHigh": 26.4,
+                        "target": 1.3,
+                        "warningHigh": 12.42,
+                        "alarmHigh": 13.8,
                     },
                 },
             ]

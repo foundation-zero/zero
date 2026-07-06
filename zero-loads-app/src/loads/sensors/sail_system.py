@@ -677,7 +677,14 @@ class MainRunnerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=29),
-        VariableMeta(display_name="Runner PT", scale_min=0, scale_max=29),
+        VariableMeta(
+            display_name="Runner PT",
+            scale_min=0,
+            scale_max=29,
+            side="port",
+            applies_if="windward",
+            variable_key="main-runner-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -689,7 +696,14 @@ class MainRunnerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=29),
-        VariableMeta(display_name="Runner SB", scale_min=0, scale_max=29),
+        VariableMeta(
+            display_name="Runner SB",
+            scale_min=0,
+            scale_max=29,
+            side="starboard",
+            applies_if="windward",
+            variable_key="main-runner-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -984,7 +998,14 @@ class MizzenRunnerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=12.6),
-        VariableMeta(display_name="Runner PT", scale_min=0, scale_max=12.6),
+        VariableMeta(
+            display_name="Runner PT",
+            scale_min=0,
+            scale_max=12.6,
+            side="port",
+            applies_if="windward",
+            variable_key="mizzen-runner-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -996,7 +1017,14 @@ class MizzenRunnerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=12.6),
-        VariableMeta(display_name="Runner SB", scale_min=0, scale_max=12.6),
+        VariableMeta(
+            display_name="Runner SB",
+            scale_min=0,
+            scale_max=12.6,
+            side="starboard",
+            applies_if="windward",
+            variable_key="mizzen-runner-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm

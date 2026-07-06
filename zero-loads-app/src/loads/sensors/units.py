@@ -10,6 +10,7 @@ from loads.util import hyphenize
 class VariableMeta:
     unit: str | None = None
     name: str | None = None
+    key: str | None = None
     display_name: str | None = None
     scale_min: float | None = None
     scale_max: float | None = None
@@ -18,6 +19,9 @@ class VariableMeta:
     type: Literal["actual", "alarm", "alarm_threshold"] | None = None
     alarm_for: str | None = None
     threshold_for: str | None = None
+    variable_key: str | None = None
+    side: Literal["port", "starboard"] | None = None
+    applies_if: Literal["windward", "leeward"] | None = None
 
     @property
     def is_actual(self) -> bool:
@@ -43,6 +47,9 @@ class VariableMeta:
             else self.scale_max,
             scale_min_label=other.scale_min_label or self.scale_min_label,
             scale_max_label=other.scale_max_label or self.scale_max_label,
+            variable_key=other.variable_key or self.variable_key,
+            side=other.side or self.side,
+            applies_if=other.applies_if or self.applies_if,
         )
 
     @property

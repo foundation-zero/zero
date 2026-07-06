@@ -1,9 +1,9 @@
 DELETE FROM loads.reference_values;
 
 -- Maximum working loads
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+INSERT INTO loads.reference_values (variable_key, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    v.variable_id,
+    v.variable_key,
     load_cases.id,
     v.alarm_low,
     NULL,
@@ -12,8 +12,7 @@ SELECT
     v.alarm_high
 FROM (VALUES
     -- MAIN MAST
-    ('main-runner-ps-load', NULL, 26.4),
-    ('main-runner-sb-load', NULL, 26.4),
+    ('main-runner-load', NULL, 26.4),
     ('main-checkstay-ps-load', NULL, 13.8),
     ('main-checkstay-sb-load', NULL, 13.8),
     ('main-checkstay-deflector-load', NULL, 6.9),
@@ -31,8 +30,7 @@ FROM (VALUES
     ('main-preventer-load', NULL, 21.0),
 
     -- MIZZEN MAST
-    ('mizzen-runner-ps-load', NULL, 11.5),
-    ('mizzen-runner-sb-load', NULL, 11.5),
+    ('mizzen-runner-load', NULL, 11.5),
     ('mizzen-checkstay-ps-load', NULL, 2.45),
     ('mizzen-checkstay-sb-load', NULL, 2.45),
     ('mizzen-checkstay-deflector-load', NULL, 0.75),
@@ -72,15 +70,15 @@ FROM (VALUES
     -- STORM JIB
     ('storm-jib-tack-load', NULL, 27.0)
     -- sheets loads on primary winches, defined sail-specific below
-) AS v(variable_id, alarm_low, alarm_high)
+) AS v(variable_key, alarm_low, alarm_high)
 CROSS JOIN loads.load_cases;
 
 -- Winch max loads for specific sails
 
 -- CODE ZERO
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+INSERT INTO loads.reference_values (variable_key, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    v.variable_id,
+    v.variable_key,
     load_cases.id,
     NULL,
     NULL,
@@ -90,7 +88,7 @@ SELECT
 FROM (VALUES
     ('primary-winch-ps-load', 12.0),
     ('primary-winch-sb-load', 12.0)
-) AS v(variable_id, alarm_high)
+) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
 WHERE sail_set.sail_id = 'code-zero'
@@ -101,9 +99,9 @@ AND sail_set.sail_set_id NOT IN (
 );
 
 -- MIZZEN HEADSAIL
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+INSERT INTO loads.reference_values (variable_key, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    v.variable_id,
+    v.variable_key,
     load_cases.id,
     NULL,
     NULL,
@@ -113,15 +111,15 @@ SELECT
 FROM (VALUES
     ('aft-winch-ps-load', 9.0),
     ('aft-winch-sb-load', 9.0)
-) AS v(variable_id, alarm_high)
+) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
 WHERE sail_set.sail_id = 'mizzen-jib';
 
 -- STORM JIB
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+INSERT INTO loads.reference_values (variable_key, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    v.variable_id,
+    v.variable_key,
     load_cases.id,
     NULL,
     NULL,
@@ -131,7 +129,7 @@ SELECT
 FROM (VALUES
     ('primary-winch-ps-load', 13.3),
     ('primary-winch-sb-load', 13.3)
-) AS v(variable_id, alarm_high)
+) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
 WHERE sail_set.sail_id = 'storm-jib'
@@ -149,9 +147,9 @@ WHERE alarm_high IS NOT NULL;
 
 -- Reference values for specific load cases
 
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+INSERT INTO loads.reference_values (variable_key, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    v.variable_id,
+    v.variable_key,
     load_cases.id,
     NULL,
     NULL,
@@ -160,8 +158,7 @@ SELECT
     NULL
 FROM (VALUES
     -- MAIN MAST
-    ('main-runner-ps-load', 17.3),
-    ('main-runner-sb-load', 17.3),
+    ('main-runner-load', 17.3),
     ('main-checkstay-ps-load', 1.3),
     ('main-checkstay-sb-load', 1.3),
     ('main-checkstay-deflector-load', 0.2),
@@ -181,8 +178,7 @@ FROM (VALUES
     ('main-preventer-load', 0.0),
 
     -- MIZZEN MAST
-    ('mizzen-runner-ps-load', 0.2),
-    ('mizzen-runner-sb-load', 0.2),
+    ('mizzen-runner-load', 0.2),
     ('mizzen-checkstay-ps-load', 0.3),
     ('mizzen-checkstay-sb-load', 0.3),
     ('mizzen-checkstay-deflector-load', 0.1),
@@ -206,7 +202,7 @@ FROM (VALUES
     ('blade-tweaker-ps-load', 4.4),
     ('blade-sheet-feeder-sb-load', 9.8),
     ('blade-tweaker-sb-load', 4.4)
-) AS v(variable_id, target)
+) AS v(variable_key, target)
 CROSS JOIN loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
@@ -214,5 +210,5 @@ JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.i
 WHERE awa_range.id = 'upwind'
 AND aws_range.aws_range = '[20,25)'::numrange
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen']
-ON CONFLICT (load_case_id, variable_id) DO UPDATE
+ON CONFLICT (load_case_id, variable_key) DO UPDATE
     SET target = EXCLUDED.target;
