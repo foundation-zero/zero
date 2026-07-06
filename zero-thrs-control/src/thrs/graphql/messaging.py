@@ -170,8 +170,7 @@ class DirectiveMessaging:
             module.active = module.module_name in status.control_modules
 
     async def run(self) -> Coroutine[None, None, None]:
-        await self._connector._start()
-        return self._connector._listen()
+        return self._connector.run()
 
     async def play_simulation(self, playback_rate: float):
         await self._directives_channels.send_play(playback_rate)

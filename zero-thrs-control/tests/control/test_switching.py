@@ -3,6 +3,7 @@ from datetime import datetime
 from tests.orchestration.simples import SimpleControl, SimpleInOut, SimpleParameters
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
+    AutomationMode,
     SwitchingControl,
     SwitchingControlMode,
 )
@@ -25,7 +26,7 @@ def test_switching_control():
     assert controller_state
     assert control_values.go_with_the.flow.value == 42.0
 
-    switching_control.switch_mode("automatic")
+    switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(SimpleInOut.zero())
 
     assert switching_control.automatic

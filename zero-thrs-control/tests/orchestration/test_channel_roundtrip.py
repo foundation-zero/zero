@@ -1,8 +1,9 @@
 import asyncio
 from asyncio import create_task
 from datetime import datetime
-from uuid import uuid4
+from unittest import mock
 
+import pytest
 from aiomqtt import Client as MqttClient
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
@@ -14,20 +15,15 @@ from thrs.input_output.base import (
 )
 from thrs.orchestration.comms import (
     ControlApiChannels,
-    ControlApiChannelsDescription,
     ControlChannels,
-    ControlChannelsDescription,
     DirectivesApiChannels,
-    DirectivesApiChannelsDescription,
     DirectivesChannels,
-    DirectivesChannelsDescription,
     MqttConnector,
     SimulationApiChannels,
-    SimulationApiChannelsDescription,
     SimulationChannels,
-    SimulationChannelsDescription,
 )
 from thrs.orchestration.config import Config
+from thrs.orchestration.module import CombinedModule, ModuleDescription
 from thrs.runtime.messages import SimulationStatusMessage
 
 
@@ -63,22 +59,23 @@ class DemoSimulationOutputs(SimulationValues):
     measured: float = 2.0
 
 
-def _config() -> Config:
-    return Config(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        mqtt_devices_topic_prefix="thrs/devices",
-        mqtt_controller_topic_prefix="thrs/controller",
-        mqtt_simulation_topic_prefix="thrs/simulation",
-        mqtt_control_topic_suffix="control",
-        mqtt_controller_topic_suffix="set",
+@pytest.fixture
+def demo_module() -> ModuleDescription:
+    return ModuleDescription(
+        DemoSensorValues,
+        DemoControlValues,
+        DemoParameters,
+        lambda *_args, **_kwargs: mock.Mock(),
+        DemoMode,
+        DemoControllerState,
+        lambda: mock.Mock(),
     )
 
 
 def _listener_for_topic(connector: MqttConnector, topic: str):
     return next(
         listener
-        for listener in connector.listeners
+        for listener in connector._listeners
         if topic in listener.subscribe_topics()
     )
 
@@ -90,12 +87,8 @@ async def _wait_until(predicate, timeout_s: float = 2.0):
 
 
 async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
-    settings,
+    settings: Config, demo_module: ModuleDescription
 ):
-    test_id = uuid4().hex[:8]
-    devices_prefix = f"test_devices_topic/{test_id}"
-    controller_prefix = f"test_controller_topic/{test_id}"
-
     async with (
         MqttClient(settings.mqtt_host, settings.mqtt_port) as control_client,
         MqttClient(settings.mqtt_host, settings.mqtt_port) as api_client,
@@ -103,38 +96,15 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
         control_connector = MqttConnector(control_client)
         api_connector = MqttConnector(api_client)
 
-        control_channels, control_run = await control_connector.run(
-            ControlChannels,
-            ControlChannelsDescription(
-                devices_topic_prefix=devices_prefix,
-                controller_topic_prefix=controller_prefix,
-                sensor_values_clss={"thrusters": DemoSensorValues},
-                control_values_clss={"thrusters": DemoControlValues},
-                controller_state_clss={"thrusters": DemoControllerState},
-                parameters_clss={"thrusters": DemoParameters},
-                control_values_topic_suffix="control",
-                control_modes_clss={"thrusters": SwitchingControlMode[DemoMode]},
-                controller_topic_suffix="set",
-            ),
-        )
-        control_task = create_task(control_run)
+        combined_module = CombinedModule(modules={"thrusters": demo_module})
 
-        api_channels, api_run = await api_connector.run(
-            ControlApiChannels,
-            ControlApiChannelsDescription(
-                module_name="thrusters",
-                devices_topic_prefix=devices_prefix,
-                controller_topic_prefix=controller_prefix,
-                sensor_values_cls=DemoSensorValues,
-                control_values_cls=DemoControlValues,
-                controller_state_cls=DemoControllerState,
-                parameters_cls=DemoParameters,
-                control_modes_cls=DemoMode,
-                control_values_topic_suffix="control",
-                controller_topic_suffix="set",
-            ),
+        control_channels = ControlChannels(control_connector, settings, combined_module)
+        control_task = create_task(control_connector.run())
+
+        api_channels = ControlApiChannels(
+            api_connector, settings, "thrusters", demo_module
         )
-        api_task = create_task(api_run)
+        api_task = create_task(api_connector.run())
 
         try:
             expected_control_values = DemoControlValues(
@@ -179,11 +149,9 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
 
 
 async def test_control_api_channels_to_control_channels_roundtrip_shared_channels(
-    settings,
+    settings: Config, demo_module: ModuleDescription
 ):
-    test_id = uuid4().hex[:8]
-    devices_prefix = f"test_devices_topic/{test_id}"
-    controller_prefix = f"test_controller_topic/{test_id}"
+    combined_module = CombinedModule(modules={"thrusters": demo_module})
 
     async with (
         MqttClient(settings.mqtt_host, settings.mqtt_port) as control_client,
@@ -192,38 +160,13 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
         control_connector = MqttConnector(control_client)
         api_connector = MqttConnector(api_client)
 
-        control_channels, control_run = await control_connector.run(
-            ControlChannels,
-            ControlChannelsDescription(
-                devices_topic_prefix=devices_prefix,
-                controller_topic_prefix=controller_prefix,
-                sensor_values_clss={"thrusters": DemoSensorValues},
-                control_values_clss={"thrusters": DemoControlValues},
-                controller_state_clss={"thrusters": DemoControllerState},
-                control_modes_clss={"thrusters": DemoMode},
-                parameters_clss={"thrusters": DemoParameters},
-                control_values_topic_suffix="control",
-                controller_topic_suffix="set",
-            ),
-        )
-        control_task = create_task(control_run)
+        control_channels = ControlChannels(control_connector, settings, combined_module)
+        control_task = create_task(control_connector.run())
 
-        api_channels, api_run = await api_connector.run(
-            ControlApiChannels,
-            ControlApiChannelsDescription(
-                module_name="thrusters",
-                devices_topic_prefix=devices_prefix,
-                controller_topic_prefix=controller_prefix,
-                sensor_values_cls=DemoSensorValues,
-                control_values_cls=DemoControlValues,
-                controller_state_cls=DemoControllerState,
-                parameters_cls=DemoParameters,
-                control_modes_cls=DemoMode,
-                control_values_topic_suffix="control",
-                controller_topic_suffix="set",
-            ),
+        api_channels = ControlApiChannels(
+            api_connector, settings, "thrusters", demo_module
         )
-        api_task = create_task(api_run)
+        api_task = create_task(api_connector.run())
 
         try:
             expected_manual_values = DemoControlValues(
@@ -239,8 +182,9 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
             await _wait_until(
                 lambda: control_channels.get_manual_controls() is not None
                 and control_channels.get_parameters() is not None
-                and control_channels.get_automation_modes() is not None
-                and "thrusters" in control_channels.get_automation_modes().values
+                and (automation_mode := control_channels.get_automation_modes())
+                is not None
+                and "thrusters" in automation_mode.values
             )
 
             manual_values = control_channels.get_manual_controls()
@@ -260,44 +204,29 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
 
 
 async def test_simulation_channels_to_simulation_api_channels_roundtrip_all_channels(
-    settings,
+    settings: Config,
 ):
-    test_id = uuid4().hex[:8]
-    devices_prefix = f"test_devices_topic/{test_id}"
-    controller_prefix = f"test_controller_topic/{test_id}"
-
     async with (
         MqttClient(settings.mqtt_host, settings.mqtt_port) as simulation_client,
         MqttClient(settings.mqtt_host, settings.mqtt_port) as api_client,
     ):
         simulation_connector = MqttConnector(simulation_client)
-        api_connector = MqttConnector(api_client)
+        connector = MqttConnector(api_client)
 
-        simulation_channels, simulation_run = await simulation_connector.run(
-            SimulationChannels,
-            SimulationChannelsDescription(
-                devices_topic_prefix=devices_prefix,
-                controller_topic_prefix=controller_prefix,
-                sensor_values_clss={"thrusters": DemoSensorValues},
-                control_values_clss={"thrusters": DemoControlValues},
-                simulation_inputs_cls=DemoSimulationInputs,
-                simulation_outputs_cls=DemoSimulationOutputs,
-                control_values_topic_suffix="control",
-                controller_topic_suffix="set",
-            ),
+        simulation_channels = SimulationChannels(
+            connector,
+            settings,
+            DemoSensorValues,
+            DemoControlValues,
+            DemoSimulationInputs,
+            DemoSimulationOutputs,
         )
-        simulation_task = create_task(simulation_run)
+        simulation_task = create_task(simulation_connector.run())
 
-        api_channels, api_run = await api_connector.run(
-            SimulationApiChannels,
-            SimulationApiChannelsDescription(
-                controller_topic_prefix=controller_prefix,
-                controller_topic_suffix="set",
-                simulation_inputs_cls=DemoSimulationInputs,
-                simulation_outputs_cls=DemoSimulationOutputs,
-            ),
+        api_channels = SimulationApiChannels(
+            connector, settings, DemoSimulationInputs, DemoSimulationOutputs
         )
-        api_task = create_task(api_run)
+        api_task = create_task(connector.run())
 
         try:
             sim_to_api_inputs = DemoSimulationInputs(target=10.0)
@@ -323,11 +252,8 @@ async def test_simulation_channels_to_simulation_api_channels_roundtrip_all_chan
 
 
 async def test_directives_channels_to_directives_api_channels_roundtrip_all_channels(
-    settings,
+    settings: Config,
 ):
-    test_id = uuid4().hex[:8]
-    controller_prefix = f"test_controller_topic/{test_id}"
-
     async with (
         MqttClient(settings.mqtt_host, settings.mqtt_port) as directives_client,
         MqttClient(settings.mqtt_host, settings.mqtt_port) as api_client,
@@ -335,17 +261,11 @@ async def test_directives_channels_to_directives_api_channels_roundtrip_all_chan
         directives_connector = MqttConnector(directives_client)
         api_connector = MqttConnector(api_client)
 
-        directives_channels, directives_run = await directives_connector.run(
-            DirectivesChannels,
-            DirectivesChannelsDescription(controller_topic_prefix=controller_prefix),
-        )
-        directives_task = create_task(directives_run)
+        directives_channels = DirectivesChannels(api_connector, settings)
+        directives_task = create_task(directives_connector.run())
 
-        api_channels, api_run = await api_connector.run(
-            DirectivesApiChannels,
-            DirectivesApiChannelsDescription(controller_topic_prefix=controller_prefix),
-        )
-        api_task = create_task(api_run)
+        api_channels = DirectivesApiChannels(api_connector, settings)
+        api_task = create_task(api_connector.run())
 
         try:
             received: dict[str, object] = {}

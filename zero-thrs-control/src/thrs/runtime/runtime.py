@@ -8,12 +8,9 @@ from aiomqtt import Client as MqttClient
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
     ControlChannels,
-    ControlChannelsDescription,
     DirectivesChannels,
-    DirectivesChannelsDescription,
     MqttConnector,
     SimulationChannels,
-    SimulationChannelsDescription,
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import CombinedControl
@@ -56,18 +53,20 @@ class Runtime:
             raise ValueError("simulation must be defined for simulation mode")
 
         async with MqttClient(config.mqtt_host, config.mqtt_port) as simulation_client:
-            channels, connector_run = await MqttConnector(
-                mqtt_client=simulation_client,
-            ).run(
-                SimulationChannels,
-                SimulationChannelsDescription.from_settings(
-                    config, mode.control_module, simulation
-                ),
+            connector = MqttConnector(mqtt_client=simulation_client)
+
+            channels = SimulationChannels(
+                connector,
+                config,
+                mode.control_module.sensor_values_clss,
+                mode.control_module.control_values_clss,
+                simulation.inputs_cls,
+                simulation.outputs_cls,
             )
             yield Runtime(
                 SimulationRunner(channels, simulation),
                 simulation.tick_duration,
-                connector_runs=[connector_run],
+                connector_runs=[connector.run()],
             )
 
     @asynccontextmanager
@@ -84,11 +83,11 @@ class Runtime:
             MqttClient(config.mqtt_host, config.mqtt_port) as simulation_client,
             MqttClient(config.mqtt_host, config.mqtt_port) as control_client,
         ):
-            control_channels, control_connector_run = await MqttConnector(
-                control_client
-            ).run(
-                ControlChannels,
-                ControlChannelsDescription.from_settings(config, mode.control_module),
+            control_connector = MqttConnector(control_client)
+            control_channels = ControlChannels(
+                control_connector,
+                config,
+                mode.control_module,
             )
 
             parameters = {
@@ -100,14 +99,14 @@ class Runtime:
                 CombinedValues(parameters), simulation.time
             )
 
-            (
-                simulation_channels,
-                simulation_connector_run,
-            ) = await MqttConnector(simulation_client).run(
-                SimulationChannels,
-                SimulationChannelsDescription.from_settings(
-                    config, mode.control_module, simulation
-                ),
+            simulation_connector = MqttConnector(simulation_client)
+            simulation_channels = SimulationChannels(
+                simulation_connector,
+                config,
+                mode.control_module.sensor_values_clss,
+                mode.control_module.control_values_clss,
+                simulation.inputs_cls,
+                simulation.outputs_cls,
             )
             runner = LockstepRunner(
                 control=control,
@@ -119,13 +118,8 @@ class Runtime:
             )
 
             directive_connector = MqttConnector(directive_client)
-            (
-                directives_channels,
-                directive_connector_run,
-            ) = await directive_connector.run(
-                DirectivesChannels,
-                DirectivesChannelsDescription.from_settings(config),
-            )
+
+            directives_channels = DirectivesChannels(directive_connector, config)
 
             directive_handling = DirectiveHandling(
                 directives_channels,
@@ -137,9 +131,9 @@ class Runtime:
                 simulation.tick_duration,
                 directive_handling,
                 connector_runs=[
-                    control_connector_run,
-                    simulation_connector_run,
-                    directive_connector_run,
+                    control_connector.run(),
+                    simulation_connector.run(),
+                    directive_connector.run(),
                 ],
             )
 
@@ -150,9 +144,9 @@ class Runtime:
     ) -> "AsyncGenerator[Runtime, None]":
         mode = Runtime._lookup_mode(selected_mode)
         async with MqttClient(config.mqtt_host, config.mqtt_port) as control_client:
-            control_channels, connector_run = await MqttConnector(control_client).run(
-                ControlChannels[CombinedValues, CombinedValues],
-                ControlChannelsDescription.from_settings(config, mode.control_module),
+            connector = MqttConnector(control_client)
+            control_channels = ControlChannels[CombinedValues, CombinedValues](
+                connector, config, mode.control_module
             )
 
             parameters = {
@@ -168,7 +162,9 @@ class Runtime:
                 control=control,
                 alarms=mode.control_module.alarms(),
             )
-            yield Runtime(runner, timedelta(seconds=1), connector_runs=[connector_run])
+            yield Runtime(
+                runner, timedelta(seconds=1), connector_runs=[connector.run()]
+            )
 
     async def start(self):
         """Start the runtime, including the loop and any directive handling if present. Hooks are used to send status messages for directive handling."""
