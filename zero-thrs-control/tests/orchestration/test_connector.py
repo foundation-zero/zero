@@ -25,9 +25,11 @@ from thrs.orchestration.connector import (
 
 class ValuesWithTopics(ThrsValues):
     go_with_the: FlowSensor
-    go_with_the_topic: Annotated[FlowSensor, component_meta(topic="flow-topic")]
+    go_with_the_topic: Annotated[
+        FlowSensor, component_meta(topic_override="flow-topic")
+    ]
 
-    @computed_field(json_schema_extra=computed_meta(topic="flow-delta"))
+    @computed_field(json_schema_extra=computed_meta(topic_override="flow-delta"))
     @property
     def flow_delta(self) -> TemperatureDelta:
         return TemperatureDelta.from_temperature_sensors(
