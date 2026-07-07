@@ -106,15 +106,9 @@ class CombinedControl(
             values={name: module.mode for name, module in self._modules.items()}
         )
 
-    def mode_for(self, module: str) -> SwitchingControlMode[ThrsValues]:
-        return self._modules[module].mode
-
     def update_parameters(self, parameters: CombinedValues):
         for name, params in parameters.values.items():
             self._modules[name].update_parameters(params)
-
-    def update_parameters_for(self, module: str, parameters: ThrsValues):
-        self._modules[module].update_parameters(parameters)
 
     def update_manual_controls(self, module: str, control_values: ThrsValues):
         self._modules[module].update_manual_controls(control_values)

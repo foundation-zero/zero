@@ -48,8 +48,6 @@ EMPTY_HOOKS = LoopHooks(empty_hook, empty_hook, empty_hook)
 
 class Loop:
     def __init__(self, tick_duration: timedelta):
-        self._playing = False
-        self._playback_rate = 1.0
         self._commands = Queue[Play | Pause | Step]()
         self._tick_duration = tick_duration
 
@@ -61,8 +59,6 @@ class Loop:
             result = await self._commands.get()
             match result:
                 case Play(playback_rate):
-                    self._playing = True
-                    self._playback_rate = playback_rate
                     sleep_duration = self._tick_duration.total_seconds() / playback_rate
                     await hooks.running(self)
 
@@ -74,7 +70,6 @@ class Loop:
                         try:
                             command = self._commands.get_nowait()
                             if isinstance(command, Pause):
-                                self._playing = False
                                 break
                             else:
                                 pass  # continue running

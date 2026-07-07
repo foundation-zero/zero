@@ -109,7 +109,6 @@ class Runtime:
             runner = LockstepRunner(
                 control=control,
                 control_channels=control_channels,
-                simulation_module_name=mode.name,
                 simulation=simulation,
                 simulation_channels=simulation_channels,
                 alarms=mode.control_module.alarms(),

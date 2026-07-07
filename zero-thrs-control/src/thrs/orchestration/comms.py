@@ -7,7 +7,6 @@ from typing import (
     Callable,
     Coroutine,
     Protocol,
-    TypeVarTuple,
     cast,
 )
 
@@ -255,7 +254,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
     MQTT mapping for modules
 
     Accepts a `ModuleClassMap` instead of a single class.
-    Delegates to `PartialMqttMapping` for each sub-model.
+    Delegates to `sub_mapping` for each sub-model.
     """
 
     def __init__(
@@ -266,7 +265,6 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         topic_suffix: str | None = None,
         allow_incomplete: bool = False,
     ):
-        self._clss = clss
         self._topic_prefix = topic_prefix
         self._mappings: Mapping[str, MqttMapping[ThrsValues]] = {
             name: sub_mapping(
@@ -319,35 +317,6 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             *(builder.wait_for_result() for builder in self._mappings.values())
         )
         return cast(T, CombinedValues(dict(zip(self._mappings.keys(), results))))
-
-
-type Publisher[T] = Callable[[T], Awaitable[None]]
-
-
-class Connector(Protocol):
-    """Compatibility protocol used by tests and legacy code paths."""
-
-    async def run(self): ...
-
-    async def get_input_values(self): ...
-
-    async def send_output(self, values): ...
-
-    async def send_computed_input(self, computed_values): ...
-
-    async def send_controller_state(self, values): ...
-
-
-class Channels[D, C](Protocol):
-    @classmethod
-    def _register(
-        cls,
-        connector: "MqttConnector",
-        description: D,
-    ) -> C: ...
-
-
-Ts = TypeVarTuple("Ts")
 
 
 class ControlChannels:
@@ -623,13 +592,7 @@ class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
         self.get_simulation_inputs = self.simulation_inputs_mapping.result
         self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for_result
         self.get_simulation_outputs = self.simulation_outputs_mapping.result
-        self.wait_for_simulation_outputs = (
-            self.simulation_outputs_mapping.wait_for_result
-        )
         self.wait_for_simulation_inputs_where = self.simulation_inputs_mapping.wait_for
-        self.wait_for_simulation_outputs_where = (
-            self.simulation_outputs_mapping.wait_for
-        )
 
 
 class DirectivesChannels:

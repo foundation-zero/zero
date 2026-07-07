@@ -26,14 +26,12 @@ class LockstepRunner[
         self,
         control: CombinedControl,
         control_channels: ControlChannels,
-        simulation_module_name: str,
         simulation: Simulation[S, CombinedValues, I, O],
         simulation_channels: SimulationChannels[I, O],
         alarms: CombinedAlarms,
     ) -> None:
         self._control = control
         self._control_channels = control_channels
-        self._simulation_module_name = simulation_module_name
         self._simulation = simulation
         self._simulation_channels = simulation_channels
         self._alarms = alarms

@@ -108,11 +108,6 @@ class SimulationState:
 
 
 @strawberry.type
-class ControlState:
-    automatic: bool
-
-
-@strawberry.type
 class Query:
     @strawberry.field()
     def modules(self, info: strawberry.Info[ThrsContext]) -> ControlModules:

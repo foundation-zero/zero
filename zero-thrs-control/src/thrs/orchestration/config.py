@@ -13,5 +13,3 @@ class Config(BaseSettings):
     mqtt_simulator_topic_prefix: str
     mqtt_simulator_topic_suffix: str
     mqtt_control_topic_suffix: str
-
-    minimal_time_between_tick_iterations: float = 1.0

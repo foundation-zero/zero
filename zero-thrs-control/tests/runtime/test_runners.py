@@ -48,7 +48,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     runner = LockstepRunner(
         control,
         control_channels,
-        "simple",
         simulation,
         simulation_channels,
         alarms,
