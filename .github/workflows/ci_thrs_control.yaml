@@ -51,9 +51,6 @@ jobs:
       - run: poetry install --with dev,test
         working-directory: zero-thrs-control
 
-      - run: just compile_fmus
-        working-directory: zero-thrs-control
-
       - run: just type_check
         working-directory: zero-thrs-control
 
