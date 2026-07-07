@@ -16,7 +16,20 @@ export const thrappRoutes: RouteRecordRaw = {
       component: () => import("@/modules/thrapp/views/Mimic.vue"),
       meta: {
         toolbarLeft: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/navigation/MimicTabs.vue"),
+          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
+        ),
+        toolbarRight: defineAsyncComponent(
+          () => import("@/modules/thrs/components/ControlActions.vue"),
+        ),
+      },
+    },
+    {
+      path: "control/:module",
+      name: "thrapp/control",
+      component: () => import("@/modules/thrapp/views/Control.vue"),
+      meta: {
+        toolbarLeft: defineAsyncComponent(
+          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
         ),
         toolbarRight: defineAsyncComponent(
           () => import("@/modules/thrs/components/ControlActions.vue"),

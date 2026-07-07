@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useAutomaticMode } from "../../state";
-import { injectControlValueForm } from "../providers/forms";
+import { injectHideEditorIfNotEditable, injectValueForm } from "../providers/forms";
 
-const isAutomaticMode = useAutomaticMode();
-const form = injectControlValueForm();
+const form = injectValueForm();
+const hideEditorIfNotEditable = injectHideEditorIfNotEditable();
 </script>
 
 <template>
   <slot
-    v-if="!isAutomaticMode && form?.editable.value"
+    v-if="form?.isEditable.value || !hideEditorIfNotEditable"
     name="editor"
   />
   <slot v-else />

@@ -10,7 +10,7 @@
 import { Unstamp } from "@/modules/common/types";
 import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrs/types";
 import { ModuleField, provideFieldValueSource } from ".";
-import { provideControlValue } from "./forms";
+import { provideControlValue } from "./forms.control";
 
 const props = defineProps<{
   source: ModuleField<Control>;

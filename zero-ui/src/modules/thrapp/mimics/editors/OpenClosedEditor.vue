@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/modules/common/lib/utils.ts";
 import { computed, toRef } from "vue";
 import { VALVE_OPEN_THRESHOLD } from "../../utils/consts.ts";
 import { getFieldValue } from "../providers/index.ts";
@@ -18,7 +19,7 @@ const state = computed({
 </script>
 
 <template>
-  <span class="flex items-center gap-1">
+  <span :class="cn('flex items-center gap-1', props.class)">
     <EditableField>
       <slot />
       <template #editor>

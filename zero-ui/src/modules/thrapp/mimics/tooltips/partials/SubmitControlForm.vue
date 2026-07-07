@@ -2,10 +2,10 @@
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { useAutomaticMode } from "@/modules/thrapp/state";
 import { FieldEditor } from "../../editors";
-import { injectControlValueForm } from "../../providers/forms";
+import { injectValueForm } from "../../providers/forms";
 
 const automaticMode = useAutomaticMode();
-const form = injectControlValueForm();
+const form = injectValueForm();
 </script>
 
 <template>

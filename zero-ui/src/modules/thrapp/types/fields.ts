@@ -195,7 +195,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
     temperature: ParametersType.Temperature;
   };
   [MimicComponentType.FlowSensor]: {
-    flow: ParametersType.Flow;
+    flow: ParametersType.FlowControl | ParametersType.Flow;
   };
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
@@ -204,11 +204,11 @@ export type ParameterFieldDefinitions = ParameterFields<{
   };
   [MimicComponentType.HVAC]: {
     temperature: ParametersType.Temperature;
-    flow: ParametersType.Flow;
+    flow: ParametersType.FlowControl;
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
-    flow: ParametersType.Flow;
+    flow: ParametersType.FlowControl;
   };
 }>;
 

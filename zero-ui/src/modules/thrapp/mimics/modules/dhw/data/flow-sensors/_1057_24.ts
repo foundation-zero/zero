@@ -22,7 +22,7 @@ export default toInstance<MimicComponentType.FlowSensor>({
   },
   custom: {},
   parameters: {
-    flow: getField(ParametersType.Flow, "dhw", "drivesFlowcontrolMinimumSetpoint"),
+    flow: getField(ParametersType.FlowControl, "dhw", "drivesFlowcontrolMinimumSetpoint"),
   },
   source: getField(SensorComponentType.Flow, "dhw", "dhwFlowDrives"),
   sensors: {

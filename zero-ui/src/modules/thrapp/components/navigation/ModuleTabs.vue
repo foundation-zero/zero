@@ -2,10 +2,13 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RouterLinkWithFallback from "@/modules/common/components/RouterLinkWithFallback.vue";
 import { ThrsModules } from "@/modules/thrs/lib/consts";
+import { useRoute } from "vue-router";
 
 defineProps<{ modules: Array<keyof ThrsModules>; activeModule?: keyof ThrsModules }>();
 
 const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw"];
+
+const currentRoute = useRoute();
 </script>
 
 <template>
@@ -18,7 +21,7 @@ const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw"];
         v-for="key in modules"
         :key="key"
         :to="{
-          name: 'thrapp/mimics',
+          name: currentRoute.name as string,
           params: { module: key },
         }"
         :disabled="!SUPPORTED_MIMICS.includes(key)"

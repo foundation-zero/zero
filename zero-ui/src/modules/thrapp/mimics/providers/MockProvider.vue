@@ -69,8 +69,10 @@ const getControllerState = <
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
-  getParameterValue,
+  getParameter: getParameterValue,
   getControllerState,
+  setParameter: async () => {},
+  setControlValue: async () => {},
   getComponentState: () =>
     useRandomizedState([
       MimicComponentState.Normal,

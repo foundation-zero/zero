@@ -14,7 +14,7 @@ const props = defineProps<{
   source: ModuleField<Parameter>;
 }>();
 
-const { getParameterValue } = getMimicDataProvider();
+const { getParameter: getParameterValue } = getMimicDataProvider();
 
 const parameter = getParameterValue(props.source);
 

@@ -16,6 +16,7 @@ import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   activeModule: string;
+  modules?: string[];
 }>();
 
 const t = tScoped("thrs.components.controlActions");
@@ -69,11 +70,11 @@ const toggleAutomaticMode = async () => {
     <Switch
       :model-value="isAutomatic || showManualModeDialog"
       :disabled="isProcessing"
-      class="data-[state=unchecked]:*:data-[slot=switch-thumb]:bg-warning! data-[state=unchecked]:border-warning relative w-9 data-[state=checked]:*:data-[slot=switch-thumb]:translate-x-[calc(100%+2px)]"
+      class="data-[state=unchecked]:*:data-[slot=switch-thumb]:bg-warning! data-[state=unchecked]:border-warning relative w-9 data-[state=checked]:*:data-[slot=switch-thumb]:translate-x-[calc(100%+8px)]"
     >
       <template #default>
         <RiLock2Fill
-          class="text-inverse-foreground absolute left-0.75 size-3.5"
+          class="text-brand absolute left-1 size-3"
           :class="{ 'opacity-0': !isAutomatic }"
         />
       </template>

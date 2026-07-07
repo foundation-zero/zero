@@ -13,7 +13,7 @@ const editor = computed(() => {
     case "temperatureSetpoint":
       return FieldEditor.Temperature;
     case "on":
-      return FieldEditor.OnOff;
+      return FieldEditor.Toggle;
     case "setpoint":
     case "dutypoint":
       return FieldEditor.Percentage;

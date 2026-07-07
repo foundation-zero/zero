@@ -366,10 +366,10 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
     componentType: ParametersType.dT,
   },
   drivesFlowcontrolMinimumSetpoint: {
-    componentType: ParametersType.Flow,
+    componentType: ParametersType.FlowControl,
   },
   dcFlowcontrolMinimumSetpoint: {
-    componentType: ParametersType.Flow,
+    componentType: ParametersType.FlowControl,
   },
   fillingTemperatureSetpoint: {
     componentType: ParametersType.Temperature,

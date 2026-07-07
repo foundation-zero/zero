@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NavTabs from "@/modules/thrapp/components/navigation/MainNav.vue";
+import MainNav from "@/modules/thrapp/components/navigation/MainNav.vue";
 import { useI18n } from "vue-i18n";
 
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
@@ -37,12 +37,7 @@ provide("currentModule", currentModuleKey);
         <TopNavAppLogo>
           {{ t("apps.thrapp") }}
         </TopNavAppLogo>
-
-        <NavTabs
-          :active-module="currentModuleKey"
-          class="md:ml-4"
-          :modules="modules"
-        />
+        <MainNav class="md:ml-4" />
       </template>
     </TopNavToolbar>
     <TopNavToolbar class="py-1 transition-all duration-300 md:py-2">
