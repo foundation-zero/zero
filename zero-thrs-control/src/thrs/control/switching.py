@@ -1,7 +1,7 @@
 from typing import Literal
 
 from thrs.classes.control import Control
-from thrs.control.manual import EmptyControllerState, ManualControl
+from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 
 

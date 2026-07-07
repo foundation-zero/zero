@@ -17,6 +17,9 @@
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      },
       "args": [
         "lockstep",
         "--mode=thrusters"
@@ -26,13 +29,16 @@
       "cwd": "${workspaceFolder}",
     },
     {
-      "name": "THRS: Debug simulation dhw",
+      "name": "THRS: Debug lockstep dhw",
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      },
       "args": [
-        "run",
-        "dhw"
+        "lockstep",
+        "--mode=dhw"
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
