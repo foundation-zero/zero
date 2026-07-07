@@ -15,7 +15,7 @@ import { computed, Ref } from "vue";
 import { QUERY_ALL, THRS } from "../lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "../types";
 
-export const AMOUNT_OF_ENTRIES_TO_CACHE = 100;
+export const AMOUNT_OF_ENTRIES_TO_CACHE = 1;
 
 type Component = Record<string, Stamped<ChartDataType>>;
 type Components = Record<string, Component>;

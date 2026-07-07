@@ -17,7 +17,7 @@ export default toInstance<MimicComponentType.HotWaterCircuit>({
     tOut: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
   },
   tooltip: tooltip({
-    title: "Fresh Water System",
+    title: "Fresh Water",
     technicalName: "domestic-hot-water",
   }),
 });

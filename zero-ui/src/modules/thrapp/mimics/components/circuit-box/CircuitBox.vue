@@ -43,14 +43,11 @@ const borderColor = computed(() => {
           class="w-3 rounded-tl-md rounded-bl-md transition-colors"
           :style="{ 'background-color': borderColor }"
         />
-        <div class="relative grow p-2 pb-1">
-          <div
-            class="bg-background pointer-events-none absolute top-0 left-0 h-full w-full grow rounded-tr-md rounded-br-md border border-dashed transition-all"
-            :style="{ 'border-color': borderColor, 'border-width': strokeWidth + 'px' }"
-          />
-          <div class="relative">
-            <slot />
-          </div>
+        <div
+          class="bg-background pointer-events-none grow rounded-tr-md rounded-br-md border border-dashed p-2 pb-1 transition-all"
+          :style="{ 'border-color': borderColor, 'border-width': strokeWidth + 'px' }"
+        >
+          <slot />
         </div>
       </div>
     </foreignObject>
