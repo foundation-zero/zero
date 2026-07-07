@@ -131,7 +131,6 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.get_parameters.return_value = None
     channels.get_automation_modes.return_value = None
     channels.get_sensor_values.return_value = sensor_values
-    channels.wait_for_sensor_values = AsyncMock()
     channels.send_computed_values = AsyncMock()
     channels.send_control_values = AsyncMock()
     channels.send_controller_state = AsyncMock()
@@ -148,7 +147,6 @@ async def test_control_runner_ticks_and_uses_channels():
 
     assert control.initial.call_count == 1
     assert channels.get_sensor_values.call_count == 2
-    assert channels.wait_for_sensor_values.await_count == 0
     assert channels.send_computed_values.await_count == 2
     assert control.control.call_count == 2
     assert alarms.check.call_count == 2

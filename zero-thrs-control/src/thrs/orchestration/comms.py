@@ -402,7 +402,6 @@ class ControlChannels:
         )
 
         self.get_sensor_values = sensor_values_mapping.result
-        self.wait_for_sensor_values = sensor_values_mapping.wait_for_result
         self.get_parameters = parameters_mapping.result
         self.get_automation_modes = manual_mode_mapping.result
         self.get_manual_controls = manual_controls_mapping.result

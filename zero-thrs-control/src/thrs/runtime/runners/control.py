@@ -49,7 +49,7 @@ class ControlRunner[
 
         sensor_values = self._channels.get_sensor_values()
         if sensor_values is None:
-            sensor_values = await self._channels.wait_for_sensor_values()
+            sensor_values = CombinedValues(values={})
 
         await self._channels.send_computed_values(sensor_values)
         return sensor_values
