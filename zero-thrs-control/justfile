@@ -74,9 +74,8 @@ compile_fmus: \
     (compile_fmu "src/thrs/simulation/models/DHW_ModuleV1_1.fmu") \
     (compile_fmu "src/thrs/simulation/models/Drives_ModuleV1_1.fmu") \
     (compile_fmu "src/thrs/simulation/models/HT_SystemV15.fmu") \
-    (compile_fmu "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
+    (compile_fmu "src/thrs/simulation/models/PCM_ModuleV9_2.fmu") \
     (compile_fmu "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
     (compile_fmu "src/thrs/simulation/models/Thruster_Module_V19.fmu")
 
-generate_schema:
     poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql

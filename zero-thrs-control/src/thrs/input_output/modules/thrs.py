@@ -162,31 +162,41 @@ participants = [
         HighTemperatureSimulationOutputs,
         [
             # dhw to consumers
-            Coupling("dhw_ht_supply", "flow", "consumers_dhw_supply", "flow", 0.0),
             Coupling(
-                "dhw_ht_supply",
-                "temperature",
+                "dhw_consumers_exchanger", "flow", "consumers_dhw_supply", "flow", 0.0
+            ),
+            Coupling(
+                "dhw_consumers_exchanger",
+                "temperature_supply",
                 "consumers_dhw_supply",
                 "temperature",
                 30.0,
             ),
             Coupling(
-                "consumers_flow_adsorption", "flow", "adsorption_ht_supply", "flow", 0.0
+                "consumers_adsorption_exchanger",
+                "flow",
+                "adsorption_consumers_supply",
+                "flow",
+                0.0,
             ),
             Coupling(
-                "consumers_temperature_adsorption_supply",
-                "temperature",
-                "adsorption_ht_supply",
+                "consumers_adsorption_exchanger",
+                "temperature_supply",
+                "adsorption_consumers_supply",
                 "temperature",
                 30.0,
             ),
             # adsorption to consumers
             Coupling(
-                "adsorption_flow_ht", "flow", "consumers_adsorption_supply", "flow", 0.0
+                "adsorption_consumers_exchanger",
+                "flow",
+                "consumers_adsorption_supply",
+                "flow",
+                0.0,
             ),
             Coupling(
-                "adsorption_temperature_ht_supply",
-                "temperature",
+                "adsorption_consumers_exchanger",
+                "temperature_supply",
                 "consumers_adsorption_supply",
                 "temperature",
                 30.0,
@@ -202,20 +212,24 @@ participants = [
         [
             # consumers to adsorption
             Coupling(
-                "consumers_flow_adsorption", "flow", "adsorption_ht_supply", "flow", 0.0
+                "consumers_adsorption_exchanger",
+                "flow",
+                "adsorption_consumers_supply",
+                "flow",
+                0.0,
             ),
             Coupling(
-                "consumers_temperature_adsorption_supply",
-                "temperature",
-                "adsorption_ht_supply",
+                "consumers_adsorption_exchanger",
+                "temperature_supply",
+                "adsorption_consumers_supply",
                 "temperature",
                 30.0,
             ),
             # dhw to adsorption
-            Coupling("dhw_flow_dc", "flow", "adsorption_dhw_supply", "flow", 0.0),
+            Coupling("dhw_dc_exchanger", "flow", "adsorption_dhw_supply", "flow", 0.0),
             Coupling(
-                "dhw_temperature_freshwater_supply",
-                "temperature",
+                "dhw_dc_exchanger",
+                "temperature_supply",
                 "adsorption_dhw_supply",
                 "temperature",
                 30.0,
@@ -235,8 +249,8 @@ participants = [
             ),
             Coupling(
                 "consumers_dhw_exchanger",
-                "temperature",
-                "dhw_ht_supply",
+                "temperature_supply",
+                "dhw_consumers_supply",
                 "temperature",
                 30.0,
             ),
@@ -246,7 +260,7 @@ participants = [
             ),
             Coupling(
                 "adsorption_dhw_exchanger",
-                "temperature",
+                "temperature_supply",
                 "dhw_adsorption_supply",
                 "temperature",
                 30.0,
@@ -255,7 +269,7 @@ participants = [
             Coupling("dc_dhw_exchanger", "flow", "dhw_dc_supply", "flow", 0.0),
             Coupling(
                 "dc_dhw_exchanger",
-                "temperature",
+                "temperature_supply",
                 "dhw_dc_supply",
                 "temperature",
                 30.0,
@@ -264,7 +278,7 @@ participants = [
             Coupling("drives_dhw_exchanger", "flow", "dhw_drives_supply", "flow", 0.0),
             Coupling(
                 "drives_dhw_exchanger",
-                "temperature",
+                "temperature_supply",
                 "dhw_drives_supply",
                 "temperature",
                 30.0,
@@ -282,7 +296,7 @@ participants = [
             Coupling("dhw_dc_exchanger", "flow", "dc_dhw_supply", "flow", 0.0),
             Coupling(
                 "dhw_dc_exchanger",
-                "temperature",
+                "temperature_supply",
                 "dc_dhw_supply",
                 "temperature",
                 30.0,
@@ -300,7 +314,7 @@ participants = [
             Coupling("dhw_drives_exchanger", "flow", "drives_dhw_supply", "flow", 0.0),
             Coupling(
                 "dhw_drives_exchanger",
-                "temperature",
+                "temperature_supply",
                 "drives_dhw_supply",
                 "temperature",
                 30.0,
@@ -310,8 +324,3 @@ participants = [
 ]
 
 thrs_cosimulation = CoSimulationMaster(participants)
-
-# add ability to pass multiple control values and sensor values
-# do we need couplings per participant? or just pass a long list to the master.. or as annotations!?
-# need to deal with combinedmodule input mapping..? look up how the flatten was done for HighTemperatureModule
-# OR should we move the cosimulation master to the Simulation level, and deal with the inputs in the IOmapping?

@@ -1,4 +1,3 @@
-import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
@@ -28,9 +27,6 @@ def test_all_idle(
             assert sensor.flow.value == approx(0.0, abs=0.01)
 
 
-@pytest.mark.skip(
-    reason="This test is currently failing due to a change in the FMU. Needs to be updated."
-)
 def test_only_brightloops_aft(
     control: DcControl,
     runner: SimulationTestRunner,
@@ -57,9 +53,6 @@ def test_only_brightloops_aft(
     )
 
 
-@pytest.mark.skip(
-    reason="This test is currently failing due to a change in the FMU. Needs to be updated."
-)
 def test_only_one_brightloop(
     control: DcControl,
     runner: SimulationTestRunner,
