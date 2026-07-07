@@ -48,9 +48,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     runner = LockstepRunner(
         control,
         control_channels,
+        alarms,
         simulation,
         simulation_channels,
-        alarms,
     )
 
     await runner.run(3)
@@ -121,7 +121,6 @@ async def test_control_runner_ticks_and_uses_channels():
     sensor_values = CombinedValues(values={})
 
     control = Mock()
-    control.initial.return_value = (control_values, controller_state)
     control.control.return_value = (control_values, controller_state)
     control.parameters = parameters
     control.mode = None
@@ -141,11 +140,10 @@ async def test_control_runner_ticks_and_uses_channels():
     alarms = Mock()
     alarms.check.return_value = []
 
-    runner = ControlRunner(channels, control, alarms)
+    runner = ControlRunner(control, channels, alarms)
 
     await runner.run(2)
 
-    assert control.initial.call_count == 1
     assert channels.get_sensor_values.call_count == 2
     assert channels.send_computed_values.await_count == 2
     assert control.control.call_count == 2
@@ -193,7 +191,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
 
-    runner = SimulationRunner(channels, simulation)
+    runner = SimulationRunner(simulation, channels)
 
     await runner.run(4)
 

@@ -38,12 +38,13 @@ def lookup_mode(mode: Modes) -> Mode:
 
 def setup_simulation(
     connector: MqttConnector, config: Config, mode: Mode
-) -> tuple[SimulationChannels, Simulation]:
+) -> tuple[Simulation, SimulationChannels]:
     simulation = mode.setup_simulation()
     if simulation is None:
         raise ValueError("simulation must be defined for simulation mode")
 
     return (
+        simulation,
         SimulationChannels(
             connector,
             config,
@@ -52,7 +53,6 @@ def setup_simulation(
             simulation.inputs_cls,
             simulation.outputs_cls,
         ),
-        simulation,
     )
 
 
@@ -61,7 +61,7 @@ def setup_control(
     config: Config,
     mode: Mode,
     time_fn: Callable[[], datetime],
-) -> tuple[ControlChannels, CombinedControl, CombinedAlarms]:
+) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
     control_channels = ControlChannels(connector, config, mode.control_module)
 
     parameters = {
@@ -71,7 +71,7 @@ def setup_control(
 
     control = mode.control_module.control(CombinedValues(parameters), time_fn)
 
-    return control_channels, control, mode.control_module.alarms()
+    return control, control_channels, mode.control_module.alarms()
 
 
 class ControlCmd(Config):
@@ -100,8 +100,8 @@ class SimulationCmd(Config):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
 
-            channels, simulation = setup_simulation(connector, settings, mode)
-            runner = SimulationRunner(channels, simulation)
+            simulation, channels = setup_simulation(connector, settings, mode)
+            runner = SimulationRunner(simulation, channels)
             runtime = Runtime(runner, connector, simulation.tick_duration)
 
             await runtime.loop.play(1)
@@ -119,20 +119,20 @@ class LockstepCmd(Config):
         ):
             connector = MqttConnector(mqtt_client)
 
-            simulation_channels, simulation = setup_simulation(
+            simulation, simulation_channels = setup_simulation(
                 connector, settings, mode
             )
 
-            control_channels, control, alarms = setup_control(
+            control, control_channels, alarms = setup_control(
                 connector, settings, mode, simulation.time
             )
 
             runner = LockstepRunner(
                 control=control,
                 control_channels=control_channels,
+                alarms=alarms,
                 simulation=simulation,
                 simulation_channels=simulation_channels,
-                alarms=alarms,
             )
 
             directives_channels = DirectivesChannels(connector, settings)
