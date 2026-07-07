@@ -1,13 +1,12 @@
 import logging
 from asyncio import (
     Queue,
-    QueueEmpty,
     TaskGroup,
     sleep,
 )
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, assert_never
 
 from thrs.runtime.runners.base import Runner
 
@@ -62,26 +61,23 @@ class Loop:
                     sleep_duration = self._tick_duration.total_seconds() / playback_rate
                     await hooks.running(self)
 
-                    while True:
+                    while self._commands.empty():
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
                             tg.create_task(runner.run(1))
 
-                        try:
-                            command = self._commands.get_nowait()
-                            if isinstance(command, Pause):
-                                break
-                            else:
-                                pass  # continue running
-                        except QueueEmpty:
-                            pass
                 case Step(seconds):
                     await hooks.stepping(self)
-                    ticks = max(
-                        1,
-                        int(seconds / self._tick_duration.total_seconds()),
+                    ticks_for_seconds = int(
+                        seconds / self._tick_duration.total_seconds()
                     )
+                    ticks = max(1, ticks_for_seconds)
                     await runner.run(ticks)
+                case Pause():
+                    # Do nothing (pause until next command)
+                    pass
+                case _:
+                    assert_never(result)
 
     async def play(self, playback_rate: float):
         logger.debug("Loop play requested: %s", playback_rate)
