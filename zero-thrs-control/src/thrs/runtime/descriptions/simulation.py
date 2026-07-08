@@ -193,7 +193,7 @@ SIMULATION_INPUTS = {
 }
 
 
-type Modes = Literal[
+type ModeNames = Literal[
     "thrusters",
     "pvt",
     "pcm",
@@ -209,9 +209,13 @@ type Modes = Literal[
 
 @dataclass
 class Mode:
-    name: Modes
+    name: ModeNames
     control_module: CombinedModule
     setup_simulation: Callable[[], Simulation | None]
+
+
+def lookup_mode(mode_name: ModeNames) -> Mode:
+    return next((m for m in MODES if m.name == mode_name))
 
 
 MODES: list[Mode] = [

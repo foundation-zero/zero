@@ -6,7 +6,6 @@ from typing import cast
 import pytest
 from aiomqtt import Client
 
-from thrs.cli.cli import lookup_mode, setup_control, setup_simulation
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
@@ -16,6 +15,8 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
+from thrs.orchestration.setup import setup_control, setup_simulation
+from thrs.runtime.descriptions.simulation import lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.messages import SimulationStatusMessage
 from thrs.runtime.runners.lockstep import LockstepRunner

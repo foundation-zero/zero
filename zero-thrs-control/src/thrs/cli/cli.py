@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-from typing import Callable
 
 from aiomqtt import Client as MqttClient
 from pydantic_settings import (
@@ -10,18 +9,14 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
-    ControlChannels,
     DirectivesChannels,
     MqttConnector,
-    SimulationChannels,
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
-from thrs.orchestration.module import CombinedAlarms, CombinedControl
-from thrs.orchestration.simulation import Simulation
-from thrs.runtime.descriptions.simulation import MODES, Mode, Modes
+from thrs.orchestration.setup import setup_control, setup_simulation
+from thrs.runtime.descriptions.simulation import ModeNames, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
@@ -32,57 +27,15 @@ logger: logging.Logger = logging.getLogger(__name__)
 settings = Config()  # type: ignore
 
 
-def lookup_mode(mode: Modes) -> Mode:
-    return next((m for m in MODES if m.name == mode))
-
-
-def setup_simulation(
-    connector: MqttConnector, config: Config, mode: Mode
-) -> tuple[Simulation, SimulationChannels]:
-    simulation = mode.setup_simulation()
-    if simulation is None:
-        raise ValueError("simulation must be defined for simulation mode")
-
-    return (
-        simulation,
-        SimulationChannels(
-            connector,
-            config,
-            mode.control_module.sensor_values_clss,
-            mode.control_module.control_values_clss,
-            simulation.inputs_cls,
-            simulation.outputs_cls,
-        ),
-    )
-
-
-def setup_control(
-    connector: MqttConnector,
-    config: Config,
-    mode: Mode,
-    time_fn: Callable[[], datetime],
-) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
-    control_channels = ControlChannels(connector, config, mode.control_module)
-
-    parameters = {
-        module: mode.control_module.parameters_for_module(module)()
-        for module in mode.control_module.modules
-    }
-
-    control = mode.control_module.control(CombinedValues(parameters), time_fn)
-
-    return control, control_channels, mode.control_module.alarms()
-
-
 class ControlCmd(Config):
-    mode: Modes
+    mode: ModeNames
 
     async def cli_cmd(self) -> None:
-        mode = lookup_mode(self.mode)
+        control_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            runner_args = setup_control(connector, settings, mode, datetime.now)
+            runner_args = setup_control(connector, settings, control_mode, datetime.now)
             runner = ControlRunner(*runner_args)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
@@ -92,15 +45,16 @@ class ControlCmd(Config):
 
 
 class SimulationCmd(Config):
-    mode: Modes
+    mode: ModeNames
 
     async def cli_cmd(self) -> None:
-        mode = lookup_mode(self.mode)
-
+        simulation_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
 
-            simulation, channels = setup_simulation(connector, settings, mode)
+            simulation, channels = setup_simulation(
+                connector, settings, simulation_mode
+            )
             runner = SimulationRunner(simulation, channels)
             runtime = Runtime(runner, connector, simulation.tick_duration)
 
@@ -110,7 +64,7 @@ class SimulationCmd(Config):
 
 
 class LockstepCmd(Config):
-    mode: Modes
+    mode: ModeNames
 
     async def cli_cmd(self) -> None:
         mode = lookup_mode(self.mode)
