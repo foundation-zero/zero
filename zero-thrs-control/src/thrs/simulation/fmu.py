@@ -1,8 +1,9 @@
 import logging
 import os
+import shutil
 from base64 import b64encode
 from datetime import timedelta
-from tempfile import gettempdir
+from tempfile import TemporaryDirectory, gettempdir
 from types import TracebackType
 from typing import Any, Callable, Iterable, Protocol, Self, cast, runtime_checkable
 
@@ -48,18 +49,7 @@ class Fmu:
     ):
         self._model_description = read_model_description(file)
 
-        tmp_dir = gettempdir()
-        self._temp_unzip_dir = os.path.join(
-            tmp_dir, f"fmu_{b64encode(file.encode()).decode()}"
-        )
-
-        logger.debug("Using FMU: %s", file)
-
-        if not os.path.exists(self._temp_unzip_dir) or os.path.getmtime(
-            file
-        ) > os.path.getmtime(self._temp_unzip_dir):
-            os.makedirs(self._temp_unzip_dir, exist_ok=True)
-            extract(file, self._temp_unzip_dir)
+        self._extract_fmu_contents(file)
 
         self._fmu_instance: FMU2Slave | None = None
         self._var_mapper = _var_mapper(self._model_description)
@@ -69,6 +59,36 @@ class Fmu:
             for var in self._model_description.modelVariables
             if var.causality == "output"
         ]
+
+    def _extract_fmu_contents(self, file):
+        file_path = os.path.abspath(file)
+        file_key = b64encode(file_path.encode()).decode().replace("=", "")
+        cache_root = os.path.join(gettempdir(), "thrs_fmu_cache")
+        os.makedirs(cache_root, exist_ok=True)
+        self._cached_unzip_dir = os.path.join(cache_root, f"fmu_{file_key}")
+
+        if not os.path.exists(self._cached_unzip_dir) or os.path.getmtime(
+            file_path
+        ) > os.path.getmtime(self._cached_unzip_dir):
+            if os.path.exists(self._cached_unzip_dir):
+                shutil.rmtree(self._cached_unzip_dir, ignore_errors=True)
+
+            extract(file_path, self._cached_unzip_dir)
+
+        # Due to test issues, use an instance-local extraction directory to avoid file locking
+        # collisions when multiple tests/processes initialize the same FMU.
+        self._temp_dir = TemporaryDirectory(
+            prefix=f"fmu_instance_{file_key}_",
+            ignore_cleanup_errors=True,
+        )
+        self._temp_unzip_dir = self._temp_dir.name
+
+        # Copy cached extraction into an instance-local directory to keep DLLs isolated.
+        shutil.copytree(
+            self._cached_unzip_dir,
+            self._temp_unzip_dir,
+            dirs_exist_ok=True,
+        )
 
     def initialize(self, inputs: dict[str, Any]):
         fmu = FMU2Slave(
