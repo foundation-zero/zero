@@ -6,10 +6,18 @@ export const VARIABLE_REFERENCE_VALUES = gql`
     $sailset: [ID!]!
     $awaRange: AwaRange!
     $awsRange: AwsRange!
+    $windDirection: WindDirection!
   ) {
     variables(variables: $variables) {
       id
-      reference(case: { sailset: $sailset, awaRange: $awaRange, awsRange: $awsRange }) {
+      reference(
+        case: {
+          sailset: $sailset
+          awaRange: $awaRange
+          awsRange: $awsRange
+          windDirection: $windDirection
+        }
+      ) {
         alarmHigh
         alarmLow
         target
