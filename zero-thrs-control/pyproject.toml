@@ -63,7 +63,10 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
-markers = ["io: tests that check code against IOlist outside this repo"]
+markers = [
+  "io: tests that check code against IOlist outside this repo",
+  "mqtt: tests requiring a running MQTT broker",
+]
 
 [tool.ruff]
 fix = true

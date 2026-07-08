@@ -39,7 +39,11 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     def mode(self) -> EmptyMode:
         return EmptyMode()
 
-    def manual_controls(self, control_values: ControlValues):
+    @property
+    def controls(self) -> ControlValues:
+        return self._control_values
+
+    def update_controls(self, control_values: ControlValues):
         self._control_values = control_values
 
     def initial(self) -> tuple[ControlValues, EmptyControllerState]:

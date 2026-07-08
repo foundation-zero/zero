@@ -13,26 +13,32 @@
       "justMyCode": false,
     },
     {
-      "name": "THRS: Debug simulation thrusters",
+      "name": "THRS: Debug lockstep thrusters",
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      },
       "args": [
-        "run",
-        "thrusters"
+        "lockstep",
+        "--mode=thrusters"
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
     },
     {
-      "name": "THRS: Debug simulation dhw",
+      "name": "THRS: Debug lockstep dhw",
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      },
       "args": [
-        "run",
-        "dhw"
+        "lockstep",
+        "--mode=dhw"
       ],
       "console": "integratedTerminal",
       "justMyCode": false,

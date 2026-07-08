@@ -21,12 +21,30 @@ poetry run fmpy compile <path-to-fmu-file>
 CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
 ```
 
+## Lockstep
+
+Run the lockstep with:
+
+```bash
+poetry run python -m thrs.cli lockstep --mode <module>
+```
+Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+
+## Control
+
+Run the control with:
+
+```bash
+poetry run python -m thrs.cli control --mode <module>
+```
+Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+
 ## Simulator
 
 Run the simulator with:
 
 ```bash
-poetry run python -m thrs.cli run <module>
+poetry run python -m thrs.cli simulation --mode <module>
 ```
 
 Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.

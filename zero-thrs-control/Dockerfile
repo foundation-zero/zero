@@ -43,7 +43,7 @@ RUN apt-get update && \
 
 FROM prod-base AS simulation
 USER 1001
-ENTRYPOINT [ "python", "-m", "thrs.cli", "run"]
+ENTRYPOINT [ "python", "-m", "thrs.cli"]
 
 FROM prod-base AS control
 USER 1001

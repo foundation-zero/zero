@@ -6,11 +6,17 @@ default: run
 run_api:
     poetry run fastapi dev src/thrs/graphql/asgi.py
 
-run_control module='thrusters':
-    poetry run python -m thrs.cli run {{ module }}
+run_control module='dhw':
+    poetry run python -m thrs.cli control --mode {{ module }}
+
+run_simulation module='dhw':
+    poetry run python -m thrs.cli simulation --mode {{ module }}
+
+run_lockstep module='dhw':
+    poetry run python -m thrs.cli lockstep --mode {{ module }}
 
 [parallel]
-run module='thrusters': run_api (run_control module)
+run module='dhw': run_api (run_lockstep module)
 
 check: lint type_check test
 

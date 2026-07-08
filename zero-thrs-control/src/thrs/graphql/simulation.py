@@ -59,6 +59,16 @@ outputs_strawberry_type_mapping = {
     for name, (_, outputs) in io_mapping.items()
 }
 
+inputs_strawberry_type_by_cls = {
+    inputs_cls: inputs_strawberry_type_mapping[name]
+    for name, (inputs_cls, _) in io_mapping.items()
+}
+
+outputs_strawberry_type_by_cls = {
+    outputs_cls: outputs_strawberry_type_mapping[name]
+    for name, (_, outputs_cls) in io_mapping.items()
+}
+
 SimulationInputsType = strawberry.union(
     "SimulationInputsType", tuple(inputs_strawberry_type_mapping.values())
 )
@@ -71,27 +81,29 @@ SimulationOutputsType = strawberry.union(
 def resolve_inputs(
     simulation: SimulationMessaging,
 ) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    return (
-        optional_pydantic_to_graphql(
-            inputs_strawberry_type_mapping[simulation.mode],
-            simulation.simulation_inputs,
-        )
-        if simulation.mode
-        else None
-    )
+    inputs = simulation.simulation_inputs
+    if inputs is None:
+        return None
+
+    graphql_type = inputs_strawberry_type_by_cls.get(type(inputs))
+    if graphql_type is None:
+        raise ValueError(f"Unsupported simulation inputs type: {type(inputs)}")
+
+    return optional_pydantic_to_graphql(graphql_type, inputs)
 
 
 def resolve_outputs(
     simulation: SimulationMessaging,
 ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    return (
-        optional_pydantic_to_graphql(
-            outputs_strawberry_type_mapping[simulation.mode],
-            simulation.simulation_outputs,
-        )
-        if simulation.mode
-        else None
-    )
+    outputs = simulation.simulation_outputs
+    if outputs is None:
+        return None
+
+    graphql_type = outputs_strawberry_type_by_cls.get(type(outputs))
+    if graphql_type is None:
+        raise ValueError(f"Unsupported simulation outputs type: {type(outputs)}")
+
+    return optional_pydantic_to_graphql(graphql_type, outputs)
 
 
 @strawberry.type
