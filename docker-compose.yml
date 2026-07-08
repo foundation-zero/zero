@@ -352,24 +352,17 @@ services:
       target: simulation
     profiles:
       - thrs
-    environment: &thrs_env
-        MQTT_HOST: vernemq
-        MQTT_PORT: 1883
-        MQTT_DEVICES_TOPIC_PREFIX: devices_topic
-        MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
-        MQTT_SIMULATOR_TOPIC_PREFIX: simulation_topic
-        MQTT_CONTROL_TOPIC_SUFFIX: Command
-        MQTT_CONTROLLER_TOPIC_SUFFIX: set
-        MQTT_SIMULATOR_TOPIC_SUFFIX: set
+    environment:
+      <<: *thrs_env
     depends_on:
       vernemq:
         condition: service_healthy
     command: ["lockstep", "--mode=thrusters"]
-    
+
   thrs-simulation-high-temperature:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["lockstep", "--mode=high-temperature"]
+    command: ["lockstep", "--mode=high_temperature"]
 
   thrs-simulation-pvt:
     <<: *thrs_simulation
