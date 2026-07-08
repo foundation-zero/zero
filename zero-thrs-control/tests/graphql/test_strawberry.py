@@ -20,7 +20,6 @@ from thrs.control.modules.thrusters import (
 )
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql import simulation
-from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.helpers import UnstampedInput
 from thrs.graphql.messaging import (
     ControlMessaging,
@@ -467,11 +466,7 @@ async def test_query_simulation_inputs_actual(
         control_connector, settings, "thrusters", THRUSTERS_MODULE_DESCRIPTION
     )
 
-    thrusters_msg: ThrustersMessaging = ControlMessaging(
-        "thrusters",
-        THRUSTERS_MODULE_DESCRIPTION,
-        control_channels,
-    )
+    thrusters_msg = ControlMessaging(control_channels)
     simulation_msg = SimulationMessaging(
         SimulationApiChannels(
             control_connector,

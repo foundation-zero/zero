@@ -475,6 +475,7 @@ class ControlApiChannels[
         module_name: str,
         module_description: "ModuleDescription[S, C, P, M, CS]",
     ) -> None:
+        self.module_name = module_name
         sensor_values_mapping = PartialMqttMapping(
             module_description.sensor_values_cls,
             config.mqtt_devices_topic_prefix,

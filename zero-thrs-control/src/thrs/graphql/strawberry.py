@@ -30,11 +30,8 @@ from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.graphql.base import (
-    AdsorptionMessaging,
     ConsumersMessaging,
-    DcMessaging,
     DhwMessaging,
-    DrivesMessaging,
     FieldMutation,
     PcmMessaging,
     PvtMessaging,
@@ -314,49 +311,15 @@ def create_app(settings: Config):
             )
             directives_channels = DirectivesApiChannels(messaging_connector, settings)
 
-            thrusters_messaging: ThrustersMessaging = ControlMessaging(
-                "thrusters",
-                THRUSTERS_MODULE_DESCRIPTION,
-                thrusters_channels,
-            )
-            pvt_messaging: PvtMessaging = ControlMessaging(
-                "pvt",
-                PVT_MODULE_DESCRIPTION,
-                pvt_channels,
-            )
-            pcm_messaging: PcmMessaging = ControlMessaging(
-                "pcm",
-                PCM_MODULE_DESCRIPTION,
-                pcm_channels,
-            )
-            consumers_messaging: ConsumersMessaging = ControlMessaging(
-                "consumers",
-                CONSUMERS_MODULE_DESCRIPTION,
-                consumers_channels,
-            )
-            adsorption_messaging: AdsorptionMessaging = ControlMessaging(
-                "adsorption",
-                ADSORPTION_MODULE_DESCRIPTION,
-                adsorption_channels,
-            )
-            drives_messaging: DrivesMessaging = ControlMessaging(
-                "drives",
-                DRIVES_MODULE_DESCRIPTION,
-                drives_channels,
-            )
-            dc_messaging: DcMessaging = ControlMessaging(
-                "dc",
-                DC_MODULE_DESCRIPTION,
-                dc_channels,
-            )
-            dhw_messaging: DhwMessaging = ControlMessaging(
-                "dhw",
-                DHW_MODULE_DESCRIPTION,
-                dhw_channels,
-            )
-            simulation_messaging: SimulationMessaging = SimulationMessaging(
-                simulation_channels,
-            )
+            thrusters_messaging = ControlMessaging(thrusters_channels)
+            pvt_messaging = ControlMessaging(pvt_channels)
+            pcm_messaging = ControlMessaging(pcm_channels)
+            consumers_messaging = ControlMessaging(consumers_channels)
+            adsorption_messaging = ControlMessaging(adsorption_channels)
+            drives_messaging = ControlMessaging(drives_channels)
+            dc_messaging = ControlMessaging(dc_channels)
+            dhw_messaging = ControlMessaging(dhw_channels)
+            simulation_messaging = SimulationMessaging(simulation_channels)
             messaging = DirectiveMessaging(
                 [
                     thrusters_messaging,

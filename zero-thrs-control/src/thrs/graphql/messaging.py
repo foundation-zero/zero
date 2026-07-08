@@ -12,7 +12,6 @@ from thrs.orchestration.comms import (
     MqttConnector,
     SimulationApiChannels,
 )
-from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.messages import SimulationStatusMessage
 
 
@@ -23,12 +22,10 @@ class ControlMessaging[
     Mode: ThrsValues,
     ControllerState: ThrsValues,
 ]:
+    active: bool
+
     def __init__(
         self,
-        module_name: str,
-        module_description: ModuleDescription[
-            SensorValues, ControlValues, Parameters, Mode, ControllerState
-        ],
         channels: ControlApiChannels[
             SensorValues,
             ControlValues,
@@ -37,24 +34,11 @@ class ControlMessaging[
             ControllerState,
         ],
     ):
-        self.module_name = module_name
-        self._active = False
-
-        self.sensor_values_cls = module_description.sensor_values_cls
-        self.control_values_cls = module_description.control_values_cls
-
+        self.active = False
         self._channels = channels
 
-    @property
-    def active(self) -> bool:
-        return self._active
-
-    @active.setter
-    def active(self, value: bool):
-        self._active = value
-
     async def send_manual_controls(self, control_values: ControlValues):
-        if not self._active:
+        if not self.active:
             raise Exception("Cannot send manual controls to inactive module")
         await self._channels.send_manual_values(control_values)
 
@@ -167,7 +151,7 @@ class DirectiveMessaging:
         self._simulation_status = status
 
         for module in self._control_modules:
-            module.active = module.module_name in status.control_modules
+            module.active = module._channels.module_name in status.control_modules
 
     async def run(self) -> Coroutine[None, None, None]:
         return await self._connector.run()
