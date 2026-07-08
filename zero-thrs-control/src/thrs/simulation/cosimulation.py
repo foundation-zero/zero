@@ -8,7 +8,7 @@ from typing import Any, Self
 
 from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.simulation.fmu import Fmu
+from thrs.simulation.fmu import Fmu, FmuLike
 
 
 @dataclass
@@ -63,7 +63,7 @@ class CoSimulationParticipant:
                 )
 
 
-class CoSimulationMaster(ExitStack):
+class CoSimulationMaster(ExitStack, FmuLike):
     """Connect multiple FMU, behaving like a single FMU."""
 
     def __init__(self, participants: list[CoSimulationParticipant]):

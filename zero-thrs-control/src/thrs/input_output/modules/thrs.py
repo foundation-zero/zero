@@ -78,9 +78,6 @@ class ThrsSimulationInputs(SimulationInputs):
     pvt_seawater_supply: simulation.Boundary
     # pcm
     pcm_freshwater_supply: simulation.Boundary
-    # consumers
-    consumers_dhw_supply: simulation.Boundary
-    consumers_adsorption_supply: simulation.Boundary
     # adsorption
     adsorption_cooling_supply: simulation.TemperatureBoundary
     adsorption_seawater_supply: simulation.Boundary
@@ -96,13 +93,7 @@ class ThrsSimulationInputs(SimulationInputs):
     adsorption_chiller: Annotated[
         simulation.AdsorptionChiller, component_meta(included_in_fmu=False)
     ]
-    adsorption_consumers_supply: simulation.Boundary
-    adsorption_dhw_supply: simulation.Boundary
     # dhw
-    dhw_drives_supply: simulation.Boundary
-    dhw_dc_supply: simulation.Boundary
-    dhw_adsorption_supply: simulation.Boundary
-    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
@@ -117,7 +108,6 @@ class ThrsSimulationInputs(SimulationInputs):
     dc_brightloop_aft3: simulation.Converter
     dc_brightloop_aft4: simulation.Converter
     dc_seawater_supply: simulation.Boundary
-    dc_dhw_supply: simulation.Boundary
     # drives
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
@@ -127,7 +117,6 @@ class ThrsSimulationInputs(SimulationInputs):
     drives_propdrive_fwd2: simulation.PropulsionDrive
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
-    drives_dhw_supply: simulation.Boundary
 
 
 class ThrsSimulationOutputs(
@@ -169,20 +158,6 @@ participants = [
                 "dhw_consumers_exchanger",
                 "temperature_supply",
                 "consumers_dhw_supply",
-                "temperature",
-                30.0,
-            ),
-            Coupling(
-                "consumers_adsorption_exchanger",
-                "flow",
-                "adsorption_consumers_supply",
-                "flow",
-                0.0,
-            ),
-            Coupling(
-                "consumers_adsorption_exchanger",
-                "temperature_supply",
-                "adsorption_consumers_supply",
                 "temperature",
                 30.0,
             ),

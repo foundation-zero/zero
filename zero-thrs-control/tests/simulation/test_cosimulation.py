@@ -32,6 +32,27 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping
 
 
+class MockFmu(Fmu):
+    # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
+    def __init__(self, outputs: dict[str, Any]):
+        self.inputs: list[dict[str, Any]] = []
+        self._outputs = outputs
+
+    def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
+        self.inputs.append(dict(inputs))
+        return self._outputs
+
+    def __enter__(self) -> "MockFmu":
+        return self
+
+    def __exit__(self, *_) -> bool:
+        return True
+
+    @property
+    def solver_time(self) -> float:
+        return 0.0
+
+
 class DrivesDhwSimulationInputs(SimulationInputs):
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
@@ -68,26 +89,6 @@ class DrivesDhwSimulationOutputs(ThrsValues):
 
 
 def test_cosimulation_input_routing():
-    class MockFmu(Fmu):
-        # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
-        def __init__(self, outputs: dict[str, Any]):
-            self.inputs: list[dict[str, Any]] = []
-            self._outputs = outputs
-
-        def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
-            self.inputs.append(dict(inputs))
-            return self._outputs
-
-        def __enter__(self) -> "MockFmu":
-            return self
-
-        def __exit__(self, *_) -> bool:
-            return True
-
-        @property
-        def solver_time(self) -> float:
-            return 0.0
-
     drives_mock = MockFmu(
         {
             "drives_dhw_exchanger__flow__l_min": 42.0,
