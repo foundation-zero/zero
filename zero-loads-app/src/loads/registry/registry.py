@@ -12,7 +12,7 @@ from loads.util import camel_to_kebab, hyphenize
 @dataclass
 class Applicability:
     variable_key: str
-    applies_if: Literal["port", "starboard"]
+    applies_to_tack: Literal["port", "starboard"]
 
 
 @dataclass
@@ -72,17 +72,17 @@ def _build_loads_model_variable_definitions(
 
 
 def _applicability_for(meta: VariableMeta) -> Applicability | None:
-    match (meta.variable_key, meta.applies_if):
-        case (str(key), str(applies_if)):
+    match (meta.variable_key, meta.applies_to_tack):
+        case (str(key), str(applies_to_tack)):
             return Applicability(
                 key,
-                applies_if,
+                applies_to_tack,
             )
         case (None, None):
             return None
         case _:
             raise ValueError(
-                f"variable_key and applies_if need to be either both present or None: {(meta.variable_key, meta.applies_if)}"
+                f"variable_key and applies_to_tack need to be either both present or None: {(meta.variable_key, meta.applies_to_tack)}"
             )
 
 

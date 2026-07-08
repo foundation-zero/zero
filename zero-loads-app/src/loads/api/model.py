@@ -164,7 +164,7 @@ def resolve_variable_keys(
         match variable.applicability:
             case None:
                 return variable.id
-            case Applicability(key, applies_if) if applies_if == tack:
+            case Applicability(key, applies_to_tack) if applies_to_tack == tack:
                 return key
             case _:
                 return None
