@@ -68,7 +68,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from thrs.orchestration.module import CombinedModule
+from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
@@ -210,7 +210,7 @@ type ModeNames = Literal[
 @dataclass
 class Mode:
     name: ModeNames
-    control_module: CombinedModule
+    control_modules: dict[str, ModuleDescription]
     setup_simulation: Callable[[], Simulation | None]
 
 
@@ -221,11 +221,7 @@ def lookup_mode(mode_name: ModeNames) -> Mode:
 MODES: list[Mode] = [
     Mode(
         name="thrusters",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-            },
-        ),
+        control_modules={"thrusters": THRUSTERS_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"thrusters": ThrustersSensorValues},
             ThrustersSimulationOutputs,
@@ -237,9 +233,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="pvt",
-        control_module=CombinedModule(
-            {"pvt": PVT_MODULE_DESCRIPTION},
-        ),
+        control_modules={"pvt": PVT_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"pvt": PvtSensorValues},
             PvtSimulationOutputs,
@@ -251,9 +245,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="pcm",
-        control_module=CombinedModule(
-            {"pcm": PCM_MODULE_DESCRIPTION},
-        ),
+        control_modules={"pcm": PCM_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"pcm": PcmSensorValues},
             PcmSimulationOutputs,
@@ -265,9 +257,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="consumers",
-        control_module=CombinedModule(
-            {"consumers": CONSUMERS_MODULE_DESCRIPTION},
-        ),
+        control_modules={"consumers": CONSUMERS_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"consumers": ConsumersSensorValues},
             ConsumersSimulationOutputs,
@@ -279,9 +269,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="adsorption",
-        control_module=CombinedModule(
-            {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
-        ),
+        control_modules={"adsorption": ADSORPTION_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"adsorption": AdsorptionSensorValues},
             AdsorptionSimulationOutputs,
@@ -293,9 +281,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="drives",
-        control_module=CombinedModule(
-            {"drives": DRIVES_MODULE_DESCRIPTION},
-        ),
+        control_modules={"drives": DRIVES_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"drives": DrivesSensorValues},
             DrivesSimulationOutputs,
@@ -307,9 +293,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="dc",
-        control_module=CombinedModule(
-            {"dc": DC_MODULE_DESCRIPTION},
-        ),
+        control_modules={"dc": DC_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"dc": DcSensorValues},
             DcSimulationOutputs,
@@ -321,9 +305,7 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="dhw",
-        control_module=CombinedModule(
-            {"dhw": DHW_MODULE_DESCRIPTION},
-        ),
+        control_modules={"dhw": DHW_MODULE_DESCRIPTION},
         setup_simulation=lambda: Simulation(
             {"dhw": DhwSensorValues},
             DhwSimulationOutputs,
@@ -335,14 +317,12 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="high_temperature",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-                "pvt": PVT_MODULE_DESCRIPTION,
-                "pcm": PCM_MODULE_DESCRIPTION,
-                "consumers": CONSUMERS_MODULE_DESCRIPTION,
-            },
-        ),
+        control_modules={
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+        },
         setup_simulation=lambda: Simulation(
             {"high_temperature": HighTemperatureSimulationInputs},
             HighTemperatureSimulationOutputs,
@@ -354,18 +334,16 @@ MODES: list[Mode] = [
     ),
     Mode(
         name="boat",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-                "pvt": PVT_MODULE_DESCRIPTION,
-                "pcm": PCM_MODULE_DESCRIPTION,
-                "consumers": CONSUMERS_MODULE_DESCRIPTION,
-                "adsorption": ADSORPTION_MODULE_DESCRIPTION,
-                "drives": DRIVES_MODULE_DESCRIPTION,
-                "dc": DC_MODULE_DESCRIPTION,
-                "dhw": DHW_MODULE_DESCRIPTION,
-            }
-        ),
+        control_modules={
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+            "adsorption": ADSORPTION_MODULE_DESCRIPTION,
+            "drives": DRIVES_MODULE_DESCRIPTION,
+            "dc": DC_MODULE_DESCRIPTION,
+            "dhw": DHW_MODULE_DESCRIPTION,
+        },
         setup_simulation=lambda: None,
     ),
 ]

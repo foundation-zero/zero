@@ -1,14 +1,9 @@
-from datetime import datetime
-from typing import Callable
-
-from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
     SimulationChannels,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import CombinedAlarms, CombinedControl
 from thrs.orchestration.simulation import Simulation
 from thrs.runtime.descriptions.simulation import Mode
 
@@ -27,8 +22,14 @@ def setup_simulation(
         SimulationChannels(
             connector,
             config,
-            mode.control_module.sensor_values_clss,
-            mode.control_module.control_values_clss,
+            {
+                module: desc.sensor_values_cls
+                for module, desc in mode.control_modules.items()
+            },
+            {
+                module: desc.control_values_cls
+                for module, desc in mode.control_modules.items()
+            },
             simulation.inputs_cls,
             simulation.outputs_cls,
         ),
@@ -39,15 +40,8 @@ def setup_control(
     connector: MqttConnector,
     config: Config,
     mode: Mode,
-    time_fn: Callable[[], datetime],
-) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
-    control_channels = ControlChannels(connector, config, mode.control_module)
-
-    parameters = {
-        module: mode.control_module.parameters_for_module(module)()
-        for module in mode.control_module.modules
+) -> dict[str, ControlChannels]:
+    return {
+        module_name: ControlChannels(connector, config, module_name, module)
+        for module_name, module in mode.control_modules.items()
     }
-
-    control = mode.control_module.control(CombinedValues(parameters), time_fn)
-
-    return control, control_channels, mode.control_module.alarms()

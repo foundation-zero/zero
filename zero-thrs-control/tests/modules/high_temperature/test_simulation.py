@@ -29,7 +29,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 def test_high_temperature_simulation_inputs(
-    control, simulation, incorrect_simulation_inputs
+    modules, simulation, incorrect_simulation_inputs
 ):
     with Fmu(high_temperature_path) as fmu:
         simulation = Simulation(
@@ -49,5 +49,10 @@ def test_high_temperature_simulation_inputs(
         with pytest.raises(Exception):
             for i in range(300):
                 simulation.tick(
-                    control.initial(datetime.now()),
+                    {
+                        module_name: module.control(
+                            module.parameters_cls(), simulation.time
+                        ).initial()[0]
+                        for module_name, module in modules.items()
+                    }
                 )

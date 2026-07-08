@@ -1,5 +1,5 @@
 import warnings
-from typing import Callable, overload
+from typing import Callable
 
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control
@@ -11,7 +11,7 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.module import CombinedModule, ModuleDescription
+from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.simulation.io_mapping import flatten_model_values
 
@@ -43,7 +43,6 @@ class SimulationTestRunner[
         self.last_tick_result: SimulationResult | None = None
 
     @staticmethod
-    @overload
     def from_module[
         S2: ThrsValues,
         C2: ThrsValues,
@@ -56,36 +55,7 @@ class SimulationTestRunner[
         module: ModuleDescription[S2, C2, P2, M2, CS2],
         initial_control_parameters: P2,
         simulation: Simulation[S2, C2, I2, O2],
-    ) -> "SimulationTestRunner[S2, C2, I2, O2, P2, M2, CS2]": ...
-
-    @staticmethod
-    @overload
-    def from_module[
-        I2: SimulationInputs,
-        O2: SimulationValues,
-    ](
-        module: CombinedModule,
-        initial_control_parameters: CombinedValues,
-        simulation: Simulation[CombinedValues, CombinedValues, I2, O2],
-    ) -> "SimulationTestRunner[CombinedValues, CombinedValues, I2, O2, CombinedValues, CombinedValues, CombinedValues]": ...
-
-    @staticmethod
-    def from_module(
-        module: ModuleDescription | CombinedModule,
-        initial_control_parameters: ThrsValues | CombinedValues,
-        simulation: Simulation,
-    ) -> "SimulationTestRunner":
-        if isinstance(module, CombinedModule):
-            if not isinstance(initial_control_parameters, CombinedValues):
-                raise TypeError(
-                    "CombinedModule requires CombinedValues as initial parameters"
-                )
-            return SimulationTestRunner(
-                simulation,
-                module.control(initial_control_parameters, simulation.time),
-                module.alarms(),
-            )
-
+    ) -> "SimulationTestRunner[S2, C2, I2, O2, P2, M2, CS2]":
         return SimulationTestRunner(
             simulation,
             module.control(initial_control_parameters, simulation.time),

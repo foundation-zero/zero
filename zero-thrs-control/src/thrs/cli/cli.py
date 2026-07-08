@@ -36,8 +36,10 @@ class ControlCmd(BaseSettings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            runner_args = setup_control(connector, settings, control_mode, datetime.now)
-            runner = ControlRunner(*runner_args)
+            control_channels = setup_control(connector, settings, control_mode)
+            runner = ControlRunner(
+                control_mode.control_modules, datetime.now, control_channels
+            )
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
@@ -76,14 +78,12 @@ class LockstepCmd(BaseSettings):
 
         simulation, simulation_channels = setup_simulation(connector, settings, mode)
 
-        control, control_channels, alarms = setup_control(
-            connector, settings, mode, simulation.time
-        )
+        control_channels = setup_control(connector, settings, mode)
 
         runner = LockstepRunner(
-            control=control,
+            control_modules=mode.control_modules,
+            time_fn=simulation.time,
             control_channels=control_channels,
-            alarms=alarms,
             simulation=simulation,
             simulation_channels=simulation_channels,
         )

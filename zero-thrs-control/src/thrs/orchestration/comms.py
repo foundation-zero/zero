@@ -25,7 +25,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import CombinedModule, ModuleClassMap, ModuleDescription
+from thrs.orchestration.module import ModuleClassMap, ModuleDescription
 from thrs.runtime.messages import (
     PauseMessage,
     PlayMessage,
@@ -183,33 +183,15 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         message_type: type[M],
         topic_prefix: str,
         module_name: str,
-        topic_suffix: str | None = None,
         *,
         type_topic: str | None = None,
+        topic_suffix: str | None = None,
     ) -> "DirectMqttMapping[M]":
         base = f"{topic_prefix}/{module_name}{f'/{type_topic}' if type_topic else ''}"
         return DirectMqttMapping(
             message_type,
             f"{base}{f'/{topic_suffix}' if topic_suffix else ''}",
         )
-
-    @staticmethod
-    def for_module_type(type_topic: str) -> "MappingForModule":
-        def _fn(
-            message_type,
-            topic_prefix: str,
-            module_name: str,
-            topic_suffix: str | None = None,
-        ) -> "DirectMqttMapping":
-            return DirectMqttMapping.for_module(
-                message_type,
-                topic_prefix,
-                module_name,
-                topic_suffix,
-                type_topic=type_topic,
-            )
-
-        return _fn  # type: ignore[return-value]
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         return {self._topic: model.model_dump_json(by_alias=True)}
@@ -324,80 +306,88 @@ class ControlChannels:
         self,
         connector: "MqttConnector",
         config: "Config",
-        control_module: "CombinedModule",
+        module_name: str,
+        control_module: ModuleDescription,
     ) -> None:
-        sensor_values_mapping = ModuleMqttMapping(
-            control_module.sensor_values_clss,
-            PartialMqttMapping,
+        sensor_values_mapping = PartialMqttMapping(
+            control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
+            module_name,
         )
         connector._register_listener(sensor_values_mapping)
 
-        parameters_mapping = ModuleMqttMapping(
-            control_module.parameters_clss,
-            DirectMqttMapping.for_module_type("parameters"),
+        parameters_mapping = DirectMqttMapping.for_module(
+            control_module.parameters_cls,
             config.mqtt_controller_topic_prefix,
-            config.mqtt_controller_topic_suffix,
+            module_name,
+            type_topic="parameters",
+            topic_suffix=config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(parameters_mapping)
 
-        manual_mode_mapping = ModuleMqttMapping(
-            {key: AutomationMode for key in control_module.control_modes_clss.keys()},
-            DirectMqttMapping.for_module_type("automation-mode"),
+        manual_mode_mapping = DirectMqttMapping.for_module(
+            AutomationMode,
             config.mqtt_controller_topic_prefix,
-            config.mqtt_controller_topic_suffix,
-            allow_incomplete=True,
+            module_name,
+            type_topic="automation-mode",
+            topic_suffix=config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(manual_mode_mapping)
-        manual_controls_mapping = ModuleMqttMapping(
-            control_module.control_values_clss,
-            DirectMqttMapping.for_module_type("manual-values"),
+        manual_controls_mapping = DirectMqttMapping.for_module(
+            control_module.control_values_cls,
             config.mqtt_controller_topic_prefix,
-            config.mqtt_controller_topic_suffix,
+            module_name,
+            type_topic="manual-values",
+            topic_suffix=config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(manual_controls_mapping)
 
         self.send_control_values = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.control_values_clss,
-                PartialMqttMapping,
+            PartialMqttMapping(
+                control_module.control_values_cls,
                 config.mqtt_devices_topic_prefix,
+                module_name,
                 config.mqtt_control_topic_suffix,
             ),
         )
         self.send_computed_values = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.sensor_values_clss,
-                PartialMqttMapping.only_computed_fields,
+            PartialMqttMapping(
+                control_module.sensor_values_cls,
                 config.mqtt_controller_topic_prefix,
+                module_name,
+                only_computed_fields=True,
             )
         )
         self.send_controller_state = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.controller_state_clss,
-                DirectMqttMapping.for_module_type("controller-state"),
+            DirectMqttMapping.for_module(
+                control_module.controller_state_cls,
                 config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="controller-state",
             ),
         )
         self.send_parameters = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.parameters_clss,
-                DirectMqttMapping.for_module_type("parameters"),
+            DirectMqttMapping.for_module(
+                control_module.parameters_cls,
                 config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="parameters",
             )
         )
         self.send_control_modes = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.control_modes_clss,
-                DirectMqttMapping.for_module_type("control-mode"),
+            DirectMqttMapping.for_module(
+                control_module.control_mode_cls,
                 config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="control-mode",
             )
         )
         self.send_manual_control = connector._create_publisher(
-            ModuleMqttMapping(
-                control_module.control_values_clss,
-                DirectMqttMapping.for_module_type("manual-values"),
+            DirectMqttMapping.for_module(
+                control_module.control_values_cls,
                 config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="manual-values",
             )
         )
 
@@ -528,8 +518,8 @@ class ControlApiChannels[
                 module_description.control_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
-                config.mqtt_controller_topic_suffix,
                 type_topic="manual-values",
+                topic_suffix=config.mqtt_controller_topic_suffix,
             )
         )
         self.send_automation_mode = connector._create_publisher(
@@ -537,8 +527,8 @@ class ControlApiChannels[
                 AutomationMode,
                 config.mqtt_controller_topic_prefix,
                 module_name,
-                config.mqtt_controller_topic_suffix,
                 type_topic="automation-mode",
+                topic_suffix=config.mqtt_controller_topic_suffix,
             )
         )
         self.send_parameters = connector._create_publisher(
@@ -546,8 +536,8 @@ class ControlApiChannels[
                 module_description.parameters_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
-                config.mqtt_controller_topic_suffix,
                 type_topic="parameters",
+                topic_suffix=config.mqtt_controller_topic_suffix,
             )
         )
 
