@@ -75,10 +75,10 @@ def setup_control(
 
 
 class ControlCmd(Config):
-    modes: Modes
+    mode: Modes
 
     async def cli_cmd(self) -> None:
-        mode = lookup_mode(self.modes)
+        mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
@@ -92,10 +92,10 @@ class ControlCmd(Config):
 
 
 class SimulationCmd(Config):
-    modes: Modes
+    mode: Modes
 
     async def cli_cmd(self) -> None:
-        mode = lookup_mode(self.modes)
+        mode = lookup_mode(self.mode)
 
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
@@ -110,10 +110,10 @@ class SimulationCmd(Config):
 
 
 class LockstepCmd(Config):
-    modes: Modes
+    mode: Modes
 
     async def cli_cmd(self) -> None:
-        mode = lookup_mode(self.modes)
+        mode = lookup_mode(self.mode)
         async with (
             MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
         ):
