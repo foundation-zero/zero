@@ -29,7 +29,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                 query {
                     variables(variables: ["main-checkstay-ps-load"]) {
                         id
-                        reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -74,7 +74,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                         },
                         "variable": {
                             "id": "main-checkstay-ps-load",
-                            "name": "Checkstay PS",
+                            "name": "Checkstay PT",
                             "unit": "tonne",
                             "scaleMin": 0.0,
                             "scaleMax": 15.0,
@@ -97,14 +97,14 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                 query {
                     runner_sb: variables(variables: ["main-runner-sb-load"]) {
                         id
-                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
                             warningHigh
                             warningLow
                         }
-                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -127,14 +127,14 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                     }
                     runner_ps: variables(variables: ["main-runner-ps-load"]) {
                         id
-                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
                             warningHigh
                             warningLow
                         }
-                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        port_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -246,10 +246,10 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
             query {
                 variables(variables: ["blade-adjuster-load"]) {
                     id
-                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, windDirection: starboard, sailset: ["full-main", "full-mizzen"]}) {
+                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, tack: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
-                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, windDirection: starboard, sailset: ["full-main", "full-mizzen"]}) {
+                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, tack: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
                 }
@@ -350,14 +350,14 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
             query {
                 variables(variables: ["main-checkstay-ps-load"]) {
                     id
-                    a: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    a: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
                         alarmHigh
                         target
                         warningHigh
                         warningLow
                     }
-                    b: reference(case: {awaRange: upwind, awsRange: aws_20_25, windDirection: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    b: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
                         alarmHigh
                         target

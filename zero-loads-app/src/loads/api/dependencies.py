@@ -90,7 +90,7 @@ async def get_reference_values(
         for case, group in by_case:
             variable_ids = [str(var_id) for var_id, _ in group]
             variables = resolve_variable_definitions(variable_ids)
-            variable_keys = resolve_variable_keys(variables, case.wind_direction.value)
+            variable_keys = resolve_variable_keys(variables, case.tack.value)
             key_to_id = dict(zip(variable_keys, variable_ids))
             values = (
                 await get_loads_reference_values(

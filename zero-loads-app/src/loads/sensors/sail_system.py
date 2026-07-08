@@ -681,8 +681,7 @@ class MainRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             scale_min=0,
             scale_max=29,
-            side="port",
-            applies_if="windward",
+            applies_if="port",
             variable_key="main-runner-load",
         ),
     ]
@@ -700,8 +699,7 @@ class MainRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             scale_min=0,
             scale_max=29,
-            side="starboard",
-            applies_if="windward",
+            applies_if="starboard",
             variable_key="main-runner-load",
         ),
     ]
@@ -1002,8 +1000,7 @@ class MizzenRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             scale_min=0,
             scale_max=12.6,
-            side="port",
-            applies_if="windward",
+            applies_if="port",
             variable_key="mizzen-runner-load",
         ),
     ]
@@ -1021,8 +1018,7 @@ class MizzenRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             scale_min=0,
             scale_max=12.6,
-            side="starboard",
-            applies_if="windward",
+            applies_if="starboard",
             variable_key="mizzen-runner-load",
         ),
     ]

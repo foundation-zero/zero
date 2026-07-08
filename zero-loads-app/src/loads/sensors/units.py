@@ -20,8 +20,7 @@ class VariableMeta:
     alarm_for: str | None = None
     threshold_for: str | None = None
     variable_key: str | None = None
-    side: Literal["port", "starboard"] | None = None
-    applies_if: Literal["windward", "leeward"] | None = None
+    applies_if: Literal["port", "starboard"] | None = None
 
     @property
     def is_actual(self) -> bool:
@@ -48,7 +47,6 @@ class VariableMeta:
             scale_min_label=other.scale_min_label or self.scale_min_label,
             scale_max_label=other.scale_max_label or self.scale_max_label,
             variable_key=other.variable_key or self.variable_key,
-            side=other.side or self.side,
             applies_if=other.applies_if or self.applies_if,
         )
 

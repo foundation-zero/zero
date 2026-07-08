@@ -156,27 +156,15 @@ def get_variables(ids: Sequence[str]) -> list[VariableType]:
         return []
 
 
-APPLICABILITIES: dict[
-    Literal["port", "starboard"],
-    set[tuple[Literal["port", "starboard"], Literal["windward", "leeward"]]],
-] = {
-    "port": {("port", "windward"), ("starboard", "leeward")},
-    "starboard": {("starboard", "windward"), ("port", "leeward")},
-}
-
-
 def resolve_variable_keys(
     variables: Sequence[VariableDefinition],
-    wind_direction: Literal["port", "starboard"],
+    tack: Literal["port", "starboard"],
 ) -> list[str]:
     def _apply_applicability(variable: VariableDefinition):
         match variable.applicability:
             case None:
                 return variable.id
-            case Applicability(key, side, applies_if) if (
-                side,
-                applies_if,
-            ) in APPLICABILITIES[wind_direction]:
+            case Applicability(key, applies_if) if applies_if == tack:
                 return key
             case _:
                 return None

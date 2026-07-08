@@ -48,7 +48,7 @@ class AwsRange(Enum):
 
 
 @strawberry.enum
-class WindDirection(Enum):
+class Tack(Enum):
     port = "port"
     starboard = "starboard"
 
@@ -57,13 +57,11 @@ class WindDirection(Enum):
 class CaseInput:
     awa_range: AwaRange
     aws_range: AwsRange
-    wind_direction: WindDirection
+    tack: Tack
     sailset: list[strawberry.ID]
 
     def __hash__(self) -> int:
-        return hash(
-            (self.awa_range, self.aws_range, tuple(self.sailset), self.wind_direction)
-        )
+        return hash((self.awa_range, self.aws_range, tuple(self.sailset), self.tack))
 
 
 @strawberry.type
