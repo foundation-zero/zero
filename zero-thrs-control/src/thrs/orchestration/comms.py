@@ -640,7 +640,6 @@ class DirectivesApiChannels:
         )
         connector._register_listener(simulation_status_mapping)
 
-        self.on_simulation_status = simulation_status_mapping.add_hook
         self._send_play = connector._create_publisher(
             DirectMqttMapping(
                 PlayMessage,
