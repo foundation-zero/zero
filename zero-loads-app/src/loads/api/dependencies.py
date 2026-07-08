@@ -22,7 +22,11 @@ from loads.registry import (
 
 from .db import SessionManager
 from .messaging import Messaging
-from .model import get_loads_reference_values
+from .model import (
+    get_loads_reference_values,
+    resolve_variable_definitions,
+    resolve_variable_keys,
+)
 from .model import (
     get_variables as model_get_variables,
 )
@@ -84,25 +88,28 @@ async def get_reference_values(
         by_case = groupby(keys, lambda x: x[1])
         by_id_case = {}
         for case, group in by_case:
-            variables = [str(var_id) for var_id, _ in group]
+            variable_ids = [str(var_id) for var_id, _ in group]
+            variables = resolve_variable_definitions(variable_ids)
+            variable_keys = resolve_variable_keys(variables, case.tack.value)
+            key_to_id = dict(zip(variable_keys, variable_ids))
             values = (
                 await get_loads_reference_values(
-                    variables=variables,
+                    variable_keys=variable_keys,
                     case=case,
                     session=session,
                 )
                 or []
             )
             for value in values:
-                by_id_case[(value.id, case)] = value
+                by_id_case[(key_to_id.get(value.id), case)] = value
 
-    return [by_id_case.get((var_id, case)) for var_id, case in keys]
+    return [by_id_case.get((var_id, case), None) for var_id, case in keys]
 
 
 async def get_variables(
     ids: Sequence[str], context: LoadsContext
 ) -> list[VariableType | None]:
-    variables = await model_get_variables(ids)
+    variables = model_get_variables(ids)
     vars_by_id = {str(var.id): var for var in variables}
     result: list[None | VariableType] = [vars_by_id.get(var_id) for var_id in ids]
 

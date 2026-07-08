@@ -56,13 +56,13 @@ CREATE TABLE loads.load_cases (
 CREATE TABLE loads.reference_values (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     load_case_id UUID NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
-    variable_id TEXT NOT NULL,
+    variable_key TEXT NOT NULL,
     alarm_low NUMERIC,
     warning_low NUMERIC,
     target NUMERIC,
     warning_high NUMERIC,
     alarm_high NUMERIC,
-    UNIQUE(load_case_id, variable_id),
+    UNIQUE(load_case_id, variable_key),
     CHECK (
         (alarm_low IS NULL OR warning_low IS NULL OR alarm_low <= warning_low) AND
         (warning_low IS NULL OR target IS NULL OR warning_low <= target) AND

@@ -1,9 +1,18 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, cast
+from typing import Callable, Literal, cast
+
+from pydantic.fields import FieldInfo
 
 from loads.sensors import LoadsModel, at, fiber_optic, sail_system
+from loads.sensors.units import VariableMeta
 from loads.util import camel_to_kebab, hyphenize
+
+
+@dataclass
+class Applicability:
+    variable_key: str
+    applies_to_tack: Literal["port", "starboard"]
 
 
 @dataclass
@@ -17,6 +26,7 @@ class VariableDefinition:
     scale_max: float | None
     scale_min_label: str | None
     scale_max_label: str | None
+    applicability: Applicability | None
 
 
 @dataclass
@@ -35,24 +45,45 @@ def _build_loads_model_variable_definitions(
 ) -> list[VariableDefinition]:
     function_id = camel_to_kebab(model.__name__)
 
-    return [
-        VariableDefinition(
-            id=f"{function_id}-{hyphenize(variable_meta.name or field)}",
+    def _variable_definition(field: str, field_info: FieldInfo, meta: VariableMeta):
+        applicability = _applicability_for(meta)
+
+        return VariableDefinition(
+            id=f"{function_id}-{hyphenize(meta.name or field)}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_actual=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
-            unit=cast(str, variable_meta.unit),
-            scale_min=variable_meta.scale_min,
-            scale_max=variable_meta.scale_max,
-            scale_min_label=variable_meta.scale_min_label,
-            scale_max_label=variable_meta.scale_max_label,
+            unit=cast(str, meta.unit),
+            scale_min=meta.scale_min,
+            scale_max=meta.scale_max,
+            scale_min_label=meta.scale_min_label,
+            scale_max_label=meta.scale_max_label,
+            applicability=applicability,
         )
+
+    return [
+        _variable_definition(field, field_info, variable_meta)
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.type == "actual"
     ]
+
+
+def _applicability_for(meta: VariableMeta) -> Applicability | None:
+    match (meta.variable_key, meta.applies_to_tack):
+        case (str(key), str(applies_to_tack)):
+            return Applicability(
+                key,
+                applies_to_tack,
+            )
+        case (None, None):
+            return None
+        case _:
+            raise ValueError(
+                f"variable_key and applies_to_tack need to be either both present or None: {(meta.variable_key, meta.applies_to_tack)}"
+            )
 
 
 def _lookup_variable_definition_by_id(
@@ -207,6 +238,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         scale_max=variable_meta.scale_max,
         scale_min_label=variable_meta.scale_min_label,
         scale_max_label=variable_meta.scale_max_label,
+        applicability=None,
     )
 
 
