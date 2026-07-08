@@ -61,7 +61,9 @@ class CaseInput:
     sailset: list[strawberry.ID]
 
     def __hash__(self) -> int:
-        return hash((self.awa_range, self.aws_range, tuple(self.sailset)))
+        return hash(
+            (self.awa_range, self.aws_range, tuple(self.sailset), self.wind_direction)
+        )
 
 
 @strawberry.type
