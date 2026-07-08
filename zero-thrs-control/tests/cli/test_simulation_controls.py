@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import create_task, sleep
 from contextlib import suppress
+from typing import cast
 
 import pytest
 from aiomqtt import Client
@@ -494,7 +495,11 @@ async def test_simulation_controls_automated_control(
                 continue
             field_name = msg.topic.value.split("/")[-2].replace("-", "_")
             if field_name in ThrustersControlValues.model_fields:
-                control_builder.input(field_name, msg.payload)
+                payload = msg.payload
+                if isinstance(payload, bytearray):
+                    payload = bytes(payload)
+                assert isinstance(payload, str | bytes)
+                control_builder.input(field_name, payload)
 
         control_values = control_builder.result()
         assert control_values is not None
@@ -569,6 +574,7 @@ async def test_simulation_controls_set_parameters(
         )
         parameters = await anext(test_client.messages)
         assert parameters.topic.value == parameters_topic
+        assert isinstance(parameters.payload, str | bytes | bytearray)
         parsed_initial = ThrustersParameters.model_validate_json(parameters.payload)
 
         new_parameters = parsed_initial.model_copy(update={"cooling_flow": 999})
@@ -589,6 +595,7 @@ async def test_simulation_controls_set_parameters(
                 updated = await anext(test_client.messages)
                 if updated.topic.value != parameters_topic:
                     continue
+                assert isinstance(updated.payload, str | bytes | bytearray)
                 parsed_updated = ThrustersParameters.model_validate_json(
                     updated.payload
                 )
@@ -668,10 +675,11 @@ async def test_simulation_controls_set_simulation_inputs(
         )
         initial_inputs = await anext(test_client.messages)
         assert initial_inputs.topic.value == simulation_inputs_topic
+        assert isinstance(initial_inputs.payload, str | bytes | bytearray)
         initial_model = ThrustersSimulationInputs.model_validate_json(
             initial_inputs.payload
         )
-        assert initial_model.thrusters_thruster_aft.heat_flow.value != 0.0
+        assert cast(float, initial_model.thrusters_thruster_aft.heat_flow.value) != 0.0
 
         new_inputs = ThrustersSimulationInputs.zero()
         await controls_client.publish(
@@ -690,14 +698,15 @@ async def test_simulation_controls_set_simulation_inputs(
             updated_inputs = await anext(test_client.messages)
             if updated_inputs.topic.value != simulation_inputs_topic:
                 continue
+            assert isinstance(updated_inputs.payload, str | bytes | bytearray)
             updated_model = ThrustersSimulationInputs.model_validate_json(
                 updated_inputs.payload
             )
-            if updated_model.thrusters_thruster_aft.heat_flow.value == 0.0:
+            if cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0:
                 break
 
         assert updated_model is not None
-        assert updated_model.thrusters_thruster_aft.heat_flow.value == 0.0
+        assert cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):
@@ -773,10 +782,11 @@ async def test_simulation_controls_simulation_output(
 
         simulation_output = await anext(test_client.messages)
         assert simulation_output.topic.value == simulation_outputs_topic
+        assert isinstance(simulation_output.payload, str | bytes | bytearray)
         output_model = ThrustersSimulationOutputs.model_validate_json(
             simulation_output.payload
         )
-        assert output_model.thrusters_pcm_return.temperature.value > 0
+        assert cast(float, output_model.thrusters_pcm_return.temperature.value) > 0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):
