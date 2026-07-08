@@ -17,6 +17,7 @@ class VariableMeta:
     scale_max_label: str | None = None
     type: Literal["actual", "alarm", "alarm_threshold"] | None = None
     alarm_for: str | None = None
+    threshold_for: str | None = None
 
     @property
     def is_actual(self) -> bool:
@@ -33,6 +34,7 @@ class VariableMeta:
             display_name=other.display_name or self.display_name,
             type=other.type or self.type,
             alarm_for=other.alarm_for or self.alarm_for,
+            threshold_for=other.threshold_for or self.threshold_for,
             scale_min=other.scale_min
             if other.scale_min is not None
             else self.scale_min,
@@ -45,7 +47,11 @@ class VariableMeta:
 
     @property
     def alarm_for_field(self) -> str | None:
-        return hyphenize(self.alarm_for or "load") if self.type == "alarm" else None
+        return (
+            hyphenize(self.alarm_for)
+            if self.type == "alarm" and self.alarm_for
+            else None
+        )
 
 
 @dataclass
@@ -85,7 +91,7 @@ Load: TypeAlias = Annotated[
     float,
     VariableMeta(unit="tonne", type="actual"),
 ]
-ReliefLoad: TypeAlias = Annotated[
+MaxLoad: TypeAlias = Annotated[
     float,
     VariableMeta(unit="tonne", type="alarm_threshold"),
 ]
