@@ -1,8 +1,7 @@
 set dotenv-load := true
 set dotenv-required := true
 
-fmu_files := "\
-src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu \
+fmu_files := "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu \
 src/thrs/simulation/models/Adsorption_ModuleV1.fmu \
 src/thrs/simulation/models/Consumer_ModuleV10.fmu \
 src/thrs/simulation/models/DC_ModuleV1_1.fmu \
@@ -59,19 +58,27 @@ build_fmu_compile_container:
 
 compile_fmu_for_linux file: build_fmu_compile_container
     -docker rm fmu_compile
-    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CONTAINER_FILE=\"/app/\${FILE#src/}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"\${CONTAINER_FILE}\""
-    sh -c 'file="{{ file }}"; container_file="/app/${file#src/}"; docker cp "fmu_compile:${container_file}" "$file"; echo "copied $container_file -> $file"'
+    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
+    bash -c "export FILE={{ file }}; docker cp fmu_compile:/\${FILE/src/app} {{ file }}"
 
 compile_fmus_for_linux: build_fmu_compile_container
-    -docker rm -f fmu_compile_all
-    docker run -d --name fmu_compile_all --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
+    -docker rm -f fmu_compile
+    docker run -d --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
+
     for file in {{ fmu_files }}; do \
-        container_file="/app/${file#src/}"; \
-        docker exec fmu_compile_all /bin/bash -c "export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"$container_file\""; \
-        docker cp "fmu_compile_all:$container_file" "$file"; \
+        container_file="/${file/src/app}"; \
+        docker cp "$file" "fmu_compile:$container_file"; \
+        echo "copied in $file -> $container_file"; \
+    done
+
+    docker exec fmu_compile /bin/bash -c 'export CFLAGS="-std=gnu17 -include unistd.h"; for FILE in {{ fmu_files }}; do fmpy compile "/${FILE/src/app}"; done'
+
+    for file in {{ fmu_files }}; do \
+        container_file="/${file/src/app}"; \
+        docker cp "fmu_compile:$container_file" "$file"; \
         echo "copied $container_file -> $file"; \
     done
-    docker rm -f fmu_compile_all
+    docker rm -f fmu_compile
 
 compile_fmu file:
     CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}

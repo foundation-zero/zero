@@ -81,8 +81,9 @@ SIMULATION_INPUTS = {
     ),
     "pcm": PcmSimulationInputs(
         pcm_thrusters_supply=Boundary(
-            temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
+            temperature=Stamped.stamp(70), flow=Stamped.stamp(40)
         ),
+        pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(50)),
         pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(30)),
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
@@ -145,7 +146,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(45),
         ),
-        dhw_ht_supply=Boundary(
+        dhw_consumers_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),
         ),
