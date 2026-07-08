@@ -188,7 +188,7 @@ export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SimulationComponentType.Temperature,
   },
-  adsorptionHtSupply: {
+  adsorptionConsumersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   adsorptionDhwSupply: {
@@ -206,7 +206,7 @@ export const ADSORPTION_SIMULATION_OUTPUTS = toSimulationDefinition({
   adsorptionDhwReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  adsorptionHtReturn: {
+  adsorptionConsumersReturn: {
     componentType: SimulationComponentType.Temperature,
   },
 });
@@ -1138,23 +1138,18 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   drivesDelta: {
-    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dcDelta: {
-    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   consumersDelta: {
-    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   adsorptionDelta: {
-    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dhwFreshwaterFlowSupply: {
-    yardTag: "",
     componentType: SensorComponentType.CalculatedFlow,
   },
   dhwHvacExchanger: {
@@ -1193,7 +1188,7 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
   dhwAdsorptionSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  dhwHtSupply: {
+  dhwConsumersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   dhwFreshwaterSupply: {
@@ -1220,7 +1215,7 @@ export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
   dhwAdsorptionReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  dhwHtReturn: {
+  dhwConsumersReturn: {
     componentType: SimulationComponentType.Temperature,
   },
   dhwSeawaterReturn: {
@@ -1574,6 +1569,9 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS = toSimulationDefinition({
   pcmConsumersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
+  pcmThrustersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
   pcmPvtReturn: {
     componentType: SimulationComponentType.Boundary,
   },
@@ -1775,6 +1773,9 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
+  pcmPvtSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
   pcmThrustersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
@@ -1788,6 +1789,9 @@ export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
 
 export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
   pcmConsumersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmThrustersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmPvtReturn: {

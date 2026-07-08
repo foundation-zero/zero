@@ -119,7 +119,7 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
-  adsorptionHtSupply {
+  adsorptionConsumersSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -140,7 +140,7 @@ export const ADSORPTION_SIMULATION_OUTPUTS_QUERY = `
   adsorptionDhwReturn {
     temperature { value timestamp }
   }
-  adsorptionHtReturn {
+  adsorptionConsumersReturn {
     temperature { value timestamp }
   }
 `;
@@ -885,7 +885,7 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  dhwHtSupply {
+  dhwConsumersSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -915,7 +915,7 @@ export const DHW_SIMULATION_OUTPUTS_QUERY = `
   dhwAdsorptionReturn {
     temperature { value timestamp }
   }
-  dhwHtReturn {
+  dhwConsumersReturn {
     temperature { value timestamp }
   }
   dhwSeawaterReturn {
@@ -1210,6 +1210,10 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
+  pcmThrustersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   pcmPvtReturn {
     temperature { value timestamp }
     flow { value timestamp }
@@ -1351,6 +1355,10 @@ export const PCM_SENSOR_QUERY = `
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
+  pcmPvtSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   pcmThrustersSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -1366,6 +1374,10 @@ export const PCM_SIMULATION_INPUTS_QUERY = `
 
 export const PCM_SIMULATION_OUTPUTS_QUERY = `
   pcmConsumersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmThrustersReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
