@@ -7,8 +7,8 @@ from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
+    SimulationValues,
     Stamped,
-    ThrsValues,
 )
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.dhw import (
@@ -71,7 +71,7 @@ class DrivesDhwSimulationInputs(SimulationInputs):
     dhw_hotwater_demand: simulation.FlowBoundary
 
 
-class DrivesDhwSimulationOutputs(ThrsValues):
+class DrivesDhwSimulationOutputs(SimulationValues):
     drives_seawater_return: simulation.TemperatureBoundary
     drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary
@@ -105,7 +105,7 @@ def test_cosimulation_input_routing():
     drives_dhw = CoSimulationMaster(
         [
             CoSimulationParticipant(
-                drives_mock,
+                lambda: drives_mock,
                 [DrivesSensorValues],
                 [DrivesControlValues],
                 DrivesSimulationInputs,
@@ -124,7 +124,7 @@ def test_cosimulation_input_routing():
                 ],
             ),
             CoSimulationParticipant(
-                dhw_mock,
+                lambda: dhw_mock,
                 [DhwSensorValues],
                 [DhwControlValues],
                 DhwSimulationInputs,

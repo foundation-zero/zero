@@ -22,7 +22,7 @@ class SimulationResult[
     S,
     C,
     I: SimulationInputs,
-    O: ThrsValues,
+    O: SimulationValues,
 ]:
     timestamp: datetime
     sensor_values: S

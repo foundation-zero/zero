@@ -134,7 +134,7 @@ class ThrsSimulationOutputs(
 
 participants = [
     CoSimulationParticipant(
-        Fmu(high_temperature_path),
+        lambda: Fmu(high_temperature_path),
         [
             ThrustersSensorValues,
             PvtSensorValues,
@@ -179,7 +179,7 @@ participants = [
         ],
     ),
     CoSimulationParticipant(
-        Fmu(adsorption_path),
+        lambda: Fmu(adsorption_path),
         [AdsorptionSensorValues],
         [AdsorptionControlValues],
         AdsorptionSimulationInputs,
@@ -201,9 +201,11 @@ participants = [
                 30.0,
             ),
             # dhw to adsorption
-            Coupling("dhw_dc_exchanger", "flow", "adsorption_dhw_supply", "flow", 0.0),
             Coupling(
-                "dhw_dc_exchanger",
+                "dhw_adsorption_exchanger", "flow", "adsorption_dhw_supply", "flow", 0.0
+            ),
+            Coupling(
+                "dhw_adsorption_exchanger",
                 "temperature_supply",
                 "adsorption_dhw_supply",
                 "temperature",
@@ -212,7 +214,7 @@ participants = [
         ],
     ),
     CoSimulationParticipant(
-        Fmu(dhw_path),
+        lambda: Fmu(dhw_path),
         [DhwSensorValues],
         [DhwControlValues],
         DhwSimulationInputs,
@@ -220,7 +222,7 @@ participants = [
         [
             # consumers to dhw
             Coupling(
-                "consumers_dhw_exchanger", "flow", "dhw_adsorption_supply", "flow", 0.0
+                "consumers_dhw_exchanger", "flow", "dhw_consumers_supply", "flow", 0.0
             ),
             Coupling(
                 "consumers_dhw_exchanger",
@@ -261,7 +263,7 @@ participants = [
         ],
     ),
     CoSimulationParticipant(
-        Fmu(dc_path),
+        lambda: Fmu(dc_path),
         [DcSensorValues],
         [DcControlValues],
         DcSimulationInputs,
@@ -279,7 +281,7 @@ participants = [
         ],
     ),
     CoSimulationParticipant(
-        Fmu(drives_path),
+        lambda: Fmu(drives_path),
         [DrivesSensorValues],
         [DrivesControlValues],
         DrivesSimulationInputs,

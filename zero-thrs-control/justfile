@@ -1,6 +1,18 @@
 set dotenv-load := true
 set dotenv-required := true
 
+fmu_files := "\
+src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu \
+src/thrs/simulation/models/Adsorption_ModuleV1.fmu \
+src/thrs/simulation/models/Consumer_ModuleV10.fmu \
+src/thrs/simulation/models/DC_ModuleV1_1.fmu \
+src/thrs/simulation/models/DHW_ModuleV1_1.fmu \
+src/thrs/simulation/models/Drives_ModuleV1_1.fmu \
+src/thrs/simulation/models/HT_SystemV15_1.fmu \
+src/thrs/simulation/models/PCM_ModuleV9_2.fmu \
+src/thrs/simulation/models/PVT_ModuleV16.fmu \
+src/thrs/simulation/models/Thruster_Module_V19.fmu"
+
 default: run
 
 run_api:
@@ -47,35 +59,29 @@ build_fmu_compile_container:
 
 compile_fmu_for_linux file: build_fmu_compile_container
     -docker rm fmu_compile
-    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
-    bash -c "export FILE={{ file }}; docker cp fmu_compile:/\${FILE/src/app} {{ file }}"
+    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CONTAINER_FILE=\"/app/\${FILE#src/}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"\${CONTAINER_FILE}\""
+    sh -c 'file="{{ file }}"; container_file="/app/${file#src/}"; docker cp "fmu_compile:${container_file}" "$file"; echo "copied $container_file -> $file"'
 
-compile_fmus_for_linux: \
-    (compile_fmu_for_linux "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Adsorption_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/DC_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/DHW_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Drives_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/HT_SystemV14.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Thruster_Module_V19.fmu")
+compile_fmus_for_linux: build_fmu_compile_container
+    -docker rm -f fmu_compile_all
+    docker run -d --name fmu_compile_all --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
+    for file in {{ fmu_files }}; do \
+        container_file="/app/${file#src/}"; \
+        docker exec fmu_compile_all /bin/bash -c "export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"$container_file\""; \
+        docker cp "fmu_compile_all:$container_file" "$file"; \
+        echo "copied $container_file -> $file"; \
+    done
+    docker rm -f fmu_compile_all
 
 compile_fmu file:
     CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}
 
-[parallel]
-compile_fmus: \
-    (compile_fmu "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Adsorption_ModuleV1.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Consumer_ModuleV10.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DC_ModuleV1_1.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DHW_ModuleV1_1.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Drives_ModuleV1_1.fmu") \
-    (compile_fmu "src/thrs/simulation/models/HT_SystemV15.fmu") \
-    (compile_fmu "src/thrs/simulation/models/PCM_ModuleV9_2.fmu") \
-    (compile_fmu "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Thruster_Module_V19.fmu")
+compile_fmus:
+    for file in {{ fmu_files }}; do \
+        just compile_fmu "$file"; \
+    done
 
+compile_fmus_all: compile_fmus compile_fmus_for_linux
+
+export_schema:
     poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql

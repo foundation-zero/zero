@@ -4,7 +4,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import timedelta
 from functools import reduce
-from typing import Any, Self
+from typing import Any, Callable, Self
 
 from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
@@ -24,7 +24,7 @@ class Coupling:
 class CoSimulationParticipant:
     """An FMU, its schemas, and how it relates to other FMU and initial boundary conditions."""
 
-    fmu: Fmu
+    fmu_getter: Callable[[], Fmu]
     sensor_values_clss: list[type[ThrsValues]]
     control_values_clss: list[type[ThrsValues]]
     simulation_inputs_cls: type[SimulationInputs]
@@ -32,8 +32,18 @@ class CoSimulationParticipant:
 
     couplings: list[Coupling]
 
+    _fmu: Fmu | None = dataclasses.field(init=False, default=None, repr=False)
     fmu_key_input_mapping: dict[tuple[str, str], str] = dataclasses.field(init=False)
     fmu_key_output_mapping: dict[tuple[str, str], str] = dataclasses.field(init=False)
+
+    def resolve_fmu(self) -> Fmu:
+        if self._fmu is None:
+            self._fmu = self.fmu_getter()
+        return self._fmu
+
+    @property
+    def fmu(self) -> Fmu:
+        return self.resolve_fmu()
 
     def __post_init__(self):
         self.fmu_key_input_mapping = reduce(
@@ -119,7 +129,7 @@ class CoSimulationMaster(ExitStack, FmuLike):
 
         try:
             for participant in self._participants:
-                self.enter_context(participant.fmu)
+                self.enter_context(participant.resolve_fmu())
         except Exception:
             super().__exit__(None, None, None)
             raise
@@ -149,7 +159,9 @@ class CoSimulationMaster(ExitStack, FmuLike):
 
             participant_inputs = {**direct_inputs, **inputs_from_coupling}
 
-            participant_outputs = participant.fmu.tick(participant_inputs, duration)
+            participant_outputs = participant.resolve_fmu().tick(
+                participant_inputs, duration
+            )
             current_outputs.update(participant_outputs)
 
         self._previous_outputs = current_outputs
@@ -157,4 +169,4 @@ class CoSimulationMaster(ExitStack, FmuLike):
 
     @property
     def solver_time(self) -> float:
-        return self._participants[-1].fmu.solver_time
+        return self._participants[-1].resolve_fmu().solver_time

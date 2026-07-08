@@ -258,14 +258,19 @@ def test_thrs_simulation_inputs(
 def test_thrs_cosimulation_coupling_routes_previous_outputs(
     control, thrs_sensor_values, simulation_inputs
 ):
+    mock_fmus = [
+        MockFmu(
+            {
+                output_key: float(index + 1)
+                for output_key in participant.fmu_key_output_mapping.values()
+            }
+        )
+        for index, participant in enumerate(participants)
+    ]
+
     mock_participants = [
         CoSimulationParticipant(
-            MockFmu(
-                {
-                    output_key: float(index + 1)
-                    for output_key in participant.fmu_key_output_mapping.values()
-                }
-            ),
+            lambda mock=mock_fmus[index]: mock,
             participant.sensor_values_clss,
             participant.control_values_clss,
             participant.simulation_inputs_cls,

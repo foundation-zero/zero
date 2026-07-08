@@ -1,6 +1,11 @@
 from typing import Annotated
 
-from thrs.input_output.base import SimulationInputs, ThrsValues, component_meta
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+    component_meta,
+)
 from thrs.input_output.definitions import control, sensor
 
 
@@ -415,5 +420,5 @@ class CoolingPanelsSimulationInputs(SimulationInputs):
     pass
 
 
-class CoolingPanelsSimulationOutputs(ThrsValues):
+class CoolingPanelsSimulationOutputs(SimulationValues):
     pass

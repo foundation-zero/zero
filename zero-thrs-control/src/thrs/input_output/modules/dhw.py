@@ -714,7 +714,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_exchanger.temperature_supply)
+            temperature=cast(Stamped, self.dhw_drives_exchanger.temperature_return)
         )
 
     @computed_field(

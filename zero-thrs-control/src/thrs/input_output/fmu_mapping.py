@@ -95,7 +95,7 @@ def extract_non_fmu_values(
             }
         # Otherwise, only return fields that are excluded
         component_type = (
-            sensor_component_field.json_schema_extra
+            sensor_component_field.return_type
             if isinstance(sensor_component_field, ComputedFieldInfo)
             else sensor_component_field.annotation
         )
