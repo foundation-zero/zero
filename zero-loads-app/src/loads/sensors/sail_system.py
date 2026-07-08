@@ -826,7 +826,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadPs/i_Load", ge=0, le=2.7),
         VariableMeta(
-            name="ps-load", display_name="Checkstay PS", scale_min=0, scale_max=2.7
+            name="ps-load", display_name="Checkstay PT", scale_min=0, scale_max=2.7
         ),
     ]
     load_sb_failure: Annotated[
@@ -843,7 +843,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/i_MaxLoadSetting", ge=0, le=2.7),
         VariableMeta(
             name="max-ps-load",
-            display_name="Checkstay PS Max Load",
+            display_name="Checkstay PT Max Load",
             scale_min=0,
             scale_max=2.7,
             threshold_for="load_ps_alarm",
@@ -854,7 +854,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/x_MaxLimitReached"),
         VariableMeta(
             name="ps-load-alarm",
-            display_name="Checkstay PS Load Alarm",
+            display_name="Checkstay PT Load Alarm",
             alarm_for="ps_load",
         ),
     ]
