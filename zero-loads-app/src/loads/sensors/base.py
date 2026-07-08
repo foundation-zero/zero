@@ -75,12 +75,12 @@ class LoadsModel(BaseModel):
             return create_generator(type)
 
     @staticmethod
-    def extract_minimum(meta: list[Any]) -> float:
-        return next(cast(float, m.ge) for m in meta if isinstance(m, Ge))
+    def extract_minimum(meta: list[Any]) -> float | None:
+        return next((cast(float, m.ge) for m in meta if isinstance(m, Ge)), None)
 
     @staticmethod
-    def extract_maximum(meta: list[Any]) -> float:
-        return next(cast(float, m.le) for m in meta if isinstance(m, Le))
+    def extract_maximum(meta: list[Any]) -> float | None:
+        return next((cast(float, m.le) for m in meta if isinstance(m, Le)), None)
 
     @staticmethod
     def _extract_inverse_scaling_conversion(meta: list[Any]) -> Callable | None:

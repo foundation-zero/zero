@@ -103,6 +103,9 @@ def _build_sail_system_alarm_definitions(
 
         threshold_field = thresholds[0] if thresholds else None
 
+        if threshold_field is None:
+            return lambda _model_instance: None
+
         return partial(
             lambda field, model_instance: getattr(model_instance, field),
             threshold_field,
@@ -110,7 +113,7 @@ def _build_sail_system_alarm_definitions(
 
     return [
         AlarmDefinition(
-            id=f"{function_id}-{variable_meta.alarm_for_field}-alarm",
+            id=f"{function_id}-{hyphenize(f'{variable_meta.name}')}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_active=partial(

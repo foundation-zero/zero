@@ -120,7 +120,7 @@ def test_build_alarm_defintitions(message):
     assert len(alarm_definitions) == 1
 
     alarm = alarm_definitions[0]
-    assert alarm.id == "sail-system-sensor-load-alarm"
+    assert alarm.id == "sail-system-sensor-max-load-alarm"
     assert alarm.actual_definition.id == "sail-system-sensor-load"
     assert alarm.get_active(sensor) is True
     assert alarm.get_actual(sensor) == 15.0
