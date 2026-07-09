@@ -1,8 +1,8 @@
-import warnings
-from typing import Callable
+from typing import Callable, cast
 
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control
+from thrs.control.switching import AutomationMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -11,19 +11,37 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.module import ModuleDescription
-from thrs.orchestration.simulation import Simulation, SimulationResult
+from thrs.orchestration.comms import ControlChannels, SimulationChannels
+from thrs.orchestration.module import Module, ModuleDescription
+from thrs.orchestration.simulation import Simulation, SimulationModule
 from thrs.simulation.io_mapping import flatten_model_values
 
 
+def _flatten_for_collector(values: ThrsValues | CombinedValues) -> dict[str, float]:
+    if isinstance(values, CombinedValues):
+        return {
+            key: value
+            for model in values.values.values()
+            for key, value in flatten_model_values(
+                model,
+                build_fmu_key_mapping(type(model), fmu_only=False),
+            ).items()
+        }
+
+    return flatten_model_values(
+        values,
+        build_fmu_key_mapping(type(values), fmu_only=False),
+    )
+
+
 class SimulationTestRunner[
-    S: ThrsValues | CombinedValues,
-    C: ThrsValues | CombinedValues,
+    S: ThrsValues,
+    C: ThrsValues,
     I: SimulationInputs,
     O: SimulationValues,
-    P: ThrsValues | CombinedValues,
-    M,
-    CS: ThrsValues | CombinedValues,
+    P: ThrsValues,
+    M: ThrsValues,
+    CS: ThrsValues,
 ]:
     """Runs a module for a number of ticks
 
@@ -36,11 +54,18 @@ class SimulationTestRunner[
         control: Control[S, C, P, M, CS],
         alarms: BaseAlarms[S, C, P],
     ):
-        self._control = control
         self._simulation = simulation
-        self._alarms = alarms
-        self._control_values, self._controller_state = self._control.initial()
-        self.last_tick_result: SimulationResult | None = None
+
+        self._control_values, self._controller_state = control.initial()
+
+        # Since we are not sending or receiving we use None as channels for simplicity
+        self._control_module = Module(
+            "test", control, alarms, cast(ControlChannels, None)
+        )
+        self._control_module._control.switch_mode(AutomationMode(mode="automatic"))
+        self._simulation_module = SimulationModule(
+            simulation, cast(SimulationChannels, None)
+        )
 
     @staticmethod
     def from_module[
@@ -62,72 +87,42 @@ class SimulationTestRunner[
             module.alarms(),
         )
 
-    @staticmethod
-    def _flatten_for_collector(values: ThrsValues | CombinedValues) -> dict[str, float]:
-        if isinstance(values, CombinedValues):
-            return {
-                key: value
-                for model in values.values.values()
-                for key, value in flatten_model_values(
-                    model,
-                    build_fmu_key_mapping(type(model), fmu_only=False),
-                ).items()
-            }
+    def tick(self, collector: Collector | None = None) -> tuple[S | None, C, CS]:
+        result = self._simulation_module.execute_simulation_tick(self._control_values)
 
-        return flatten_model_values(
-            values,
-            build_fmu_key_mapping(type(values), fmu_only=False),
-        )
-
-    def tick(
-        self, collector: Collector | None = None
-    ) -> tuple[SimulationResult[S, C, I, O] | None, C, CS]:
-        result = self._simulation.tick(self._control_values)
         if collector is not None:
             collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
                 {
-                    **SimulationTestRunner._flatten_for_collector(result.sensor_values),
-                    **SimulationTestRunner._flatten_for_collector(
-                        result.control_values
-                    ),
-                    **SimulationTestRunner._flatten_for_collector(
-                        self._controller_state
-                    ),
-                    **SimulationTestRunner._flatten_for_collector(
-                        result.simulation_outputs
-                    ),
-                    **SimulationTestRunner._flatten_for_collector(
-                        result.simulation_inputs
-                    ),
+                    **_flatten_for_collector(result.sensor_values),
+                    **_flatten_for_collector(result.control_values),
+                    **_flatten_for_collector(self._controller_state),
+                    **_flatten_for_collector(result.simulation_outputs),
+                    **_flatten_for_collector(result.simulation_inputs),
                 },
-                str(self._control.mode),
+                str(self._control_module._control.mode),
                 result.timestamp,
             )
-        self._control_values, self._controller_state = self._control.control(
-            result.sensor_values
+
+        self._control_values, self._controller_state = (
+            self._control_module.execute_control_tick(result.sensor_values)
         )
-        alarms = self._alarms.check(
-            result.sensor_values, self._control_values, self._control.parameters
-        )
-        if alarms:
-            warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
-        self.last_tick_result = result
-        return self.last_tick_result, self._control_values, self._controller_state
+
+        return result.sensor_values, self._control_values, self._controller_state
 
     def run(
         self, n_ticks: int, collector: Collector | None = None
-    ) -> tuple[SimulationResult[S, C, I, O] | None, C, CS]:
+    ) -> tuple[S | None, C, CS]:
+        result = (None, self._control_values, self._controller_state)
         for _ in range(n_ticks):
-            self.tick(collector)
-        return self.last_tick_result, self._control_values, self._controller_state
+            result = self.tick(collector)
+        return result
 
     def run_until(
         self,
-        condition: Callable[[SimulationResult[S, C, I, O] | None, C, CS], bool],
+        condition: Callable[[S | None, C, CS], bool],
         collector: Collector | None = None,
-    ) -> tuple[SimulationResult[S, C, I, O] | None, C, CS]:
-        while not condition(
-            self.last_tick_result, self._control_values, self._controller_state
-        ):
-            self.tick(collector)
-        return self.last_tick_result, self._control_values, self._controller_state
+    ) -> tuple[S | None, C, CS]:
+        result = self.tick(collector)
+        while not condition(*result):
+            result = self.tick(collector)
+        return result

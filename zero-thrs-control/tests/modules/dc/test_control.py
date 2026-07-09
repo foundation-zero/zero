@@ -6,24 +6,24 @@ from thrs.control.modules.dc import DcControl, DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import Converter
-from thrs.input_output.modules.dc import DcSimulationInputs
-from thrs.orchestration.simulation import SimulationResult
+from thrs.input_output.modules.dc import DcSensorValues, DcSimulationInputs
 
 
 def test_all_idle(
-    runner: SimulationTestRunner, simulation_inputs_inactive: DcSimulationInputs
+    control: DcControl,
+    runner: SimulationTestRunner,
+    simulation_inputs_inactive: DcSimulationInputs,
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result, _, _ = runner.run(90)
+    sensor_values, *_ = runner.run(90)
 
-    assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_idle
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert control.mode.brightloops_aft.is_idle
+    assert control.mode.brightloops_fwd.is_idle
+    assert control.mode.ugrids.is_idle
 
-    assert isinstance(result, SimulationResult)
-    for _, sensor in result.sensor_values:
+    assert isinstance(sensor_values, DcSensorValues)
+    for _, sensor in sensor_values:
         if isinstance(sensor, FlowSensor):
             assert sensor.flow.value == approx(0.0, abs=0.01)
 
@@ -32,6 +32,7 @@ def test_all_idle(
     reason="This test is currently failing due to a change in the FMU. Needs to be updated."
 )
 def test_only_brightloops_aft(
+    control: DcControl,
     runner: SimulationTestRunner,
     simulation_inputs_brightloops_aft_active: DcSimulationInputs,
 ):
@@ -39,21 +40,20 @@ def test_only_brightloops_aft(
         simulation_inputs_brightloops_aft_active
     )
 
-    result, _, _ = runner.run(180)
+    sensor_values, *_ = runner.run(180)
 
-    assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert control.mode.brightloops_aft.is_recovery
+    assert control.mode.brightloops_fwd.is_idle
+    assert control.mode.ugrids.is_idle
 
-    assert isinstance(result, SimulationResult)
-    assert result.sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
-    assert result.sensor_values.dc_flow_aft2.flow.value == approx(5, abs=0.1)
-    assert result.sensor_values.dc_flow_aft3.flow.value == approx(5, abs=0.1)
-    assert result.sensor_values.dc_flow_aft4.flow.value == approx(5, abs=0.1)
+    assert isinstance(sensor_values, DcSensorValues)
+    assert sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
+    assert sensor_values.dc_flow_aft2.flow.value == approx(5, abs=0.1)
+    assert sensor_values.dc_flow_aft3.flow.value == approx(5, abs=0.1)
+    assert sensor_values.dc_flow_aft4.flow.value == approx(5, abs=0.1)
     assert (
-        result.sensor_values.dc_temperature_aft1_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft1_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
 
 
@@ -61,7 +61,9 @@ def test_only_brightloops_aft(
     reason="This test is currently failing due to a change in the FMU. Needs to be updated."
 )
 def test_only_one_brightloop(
-    runner: SimulationTestRunner, simulation_inputs_inactive: DcSimulationInputs
+    control: DcControl,
+    runner: SimulationTestRunner,
+    simulation_inputs_inactive: DcSimulationInputs,
 ):
     simulation_inputs_aft1_active = simulation_inputs_inactive.model_copy(
         update={
@@ -72,26 +74,25 @@ def test_only_one_brightloop(
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
-    result, _, _ = runner.run(240)
+    sensor_values, *_ = runner.run(240)
 
-    assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert control.mode.brightloops_aft.is_recovery
+    assert control.mode.brightloops_fwd.is_idle
+    assert control.mode.ugrids.is_idle
 
-    assert isinstance(result, SimulationResult)
-    assert result.sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
-    assert result.sensor_values.dc_flow_aft2.flow.value == approx(0, abs=0.1)
-    assert result.sensor_values.dc_flow_aft3.flow.value == approx(0, abs=0.1)
-    assert result.sensor_values.dc_flow_aft4.flow.value == approx(0, abs=0.1)
+    assert isinstance(sensor_values, DcSensorValues)
+    assert sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
+    assert sensor_values.dc_flow_aft2.flow.value == approx(0, abs=0.1)
+    assert sensor_values.dc_flow_aft3.flow.value == approx(0, abs=0.1)
+    assert sensor_values.dc_flow_aft4.flow.value == approx(0, abs=0.1)
     assert (
-        result.sensor_values.dc_temperature_aft1_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft1_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
 
 
-def test_recovery(runner: SimulationTestRunner):
-    runner._control.update_parameters(
+def test_recovery(control: DcControl, runner: SimulationTestRunner):
+    control.update_parameters(
         DcParameters(
             recovery_temperature=45,
             brightloop_return_temperature=45,
@@ -99,54 +100,51 @@ def test_recovery(runner: SimulationTestRunner):
         )
     )
 
-    result, _, _ = runner.run(1200)
+    sensor_values, *_ = runner.run(1200)
 
-    assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_recovery
-    assert runner._control.mode.ugrids.is_recovery
+    assert control.mode.brightloops_aft.is_recovery
+    assert control.mode.brightloops_fwd.is_recovery
+    assert control.mode.ugrids.is_recovery
 
-    assert isinstance(result, SimulationResult)
+    assert isinstance(sensor_values, DcSensorValues)
     assert (
-        result.sensor_values.dc_temperature_aft1_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft1_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_aft2_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft2_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_aft3_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft3_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_aft4_return.temperature.value
-        > result.sensor_values.dc_temperature_aft_supply.temperature.value
+        sensor_values.dc_temperature_aft4_return.temperature.value
+        > sensor_values.dc_temperature_aft_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_fwd1_return.temperature.value
-        > result.sensor_values.dc_temperature_fwd_supply.temperature.value
+        sensor_values.dc_temperature_fwd1_return.temperature.value
+        > sensor_values.dc_temperature_fwd_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_fwd2_return.temperature.value
-        > result.sensor_values.dc_temperature_fwd_supply.temperature.value
+        sensor_values.dc_temperature_fwd2_return.temperature.value
+        > sensor_values.dc_temperature_fwd_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_ugrid1_return.temperature.value
-        > result.sensor_values.dc_temperature_ugrid_supply.temperature.value
+        sensor_values.dc_temperature_ugrid1_return.temperature.value
+        > sensor_values.dc_temperature_ugrid_supply.temperature.value
     )
     assert (
-        result.sensor_values.dc_temperature_ugrid2_return.temperature.value
-        > result.sensor_values.dc_temperature_ugrid_supply.temperature.value
-    )
-
-    assert result.sensor_values.dc_temperature_recovery.temperature.value == approx(
-        45, abs=1
+        sensor_values.dc_temperature_ugrid2_return.temperature.value
+        > sensor_values.dc_temperature_ugrid_supply.temperature.value
     )
 
+    assert sensor_values.dc_temperature_recovery.temperature.value == approx(45, abs=1)
 
-def test_heat_dump(runner: SimulationTestRunner):
-    runner._control.update_parameters(
+
+def test_heat_dump(control: DcControl, runner: SimulationTestRunner):
+    control.update_parameters(
         DcParameters(
             recovery_temperature=50,
             brightloop_return_temperature=50,
@@ -155,12 +153,8 @@ def test_heat_dump(runner: SimulationTestRunner):
         )
     )
 
-    result, _, _ = runner.run(960)
+    sensor_values, *_ = runner.run(960)
 
-    assert isinstance(result, SimulationResult)
-    assert result.sensor_values.dc_temperature_recovery.temperature.value == approx(
-        50, abs=1
-    )
-    assert result.sensor_values.dc_temperature_supply.temperature.value == approx(
-        45, abs=1
-    )
+    assert isinstance(sensor_values, DcSensorValues)
+    assert sensor_values.dc_temperature_recovery.temperature.value == approx(50, abs=1)
+    assert sensor_values.dc_temperature_supply.temperature.value == approx(45, abs=1)
