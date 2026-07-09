@@ -301,22 +301,28 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         return cast(T, CombinedValues(dict(zip(self._mappings.keys(), results))))
 
 
-class ControlChannels:
+class ControlChannels[
+    S: ThrsValues,
+    C: ThrsValues,
+    P: ThrsValues,
+    M: ThrsValues,
+    CS: ThrsValues,
+]:
     def __init__(
         self,
         connector: "MqttConnector",
-        config: "Config",
+        config: Config,
         module_name: str,
-        control_module: ModuleDescription,
+        control_module: ModuleDescription[S, C, P, M, CS],
     ) -> None:
-        sensor_values_mapping = PartialMqttMapping(
+        sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
             module_name,
         )
         connector._register_listener(sensor_values_mapping)
 
-        parameters_mapping = DirectMqttMapping.for_module(
+        parameters_mapping = DirectMqttMapping[P].for_module(
             control_module.parameters_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -325,7 +331,7 @@ class ControlChannels:
         )
         connector._register_listener(parameters_mapping)
 
-        manual_mode_mapping = DirectMqttMapping.for_module(
+        manual_mode_mapping = DirectMqttMapping[AutomationMode].for_module(
             AutomationMode,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -333,7 +339,7 @@ class ControlChannels:
             topic_suffix=config.mqtt_controller_topic_suffix,
         )
         connector._register_listener(manual_mode_mapping)
-        manual_controls_mapping = DirectMqttMapping.for_module(
+        manual_controls_mapping = DirectMqttMapping[C].for_module(
             control_module.control_values_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -343,7 +349,7 @@ class ControlChannels:
         connector._register_listener(manual_controls_mapping)
 
         self.send_control_values = connector._create_publisher(
-            PartialMqttMapping(
+            PartialMqttMapping[C](
                 control_module.control_values_cls,
                 config.mqtt_devices_topic_prefix,
                 module_name,
@@ -351,7 +357,7 @@ class ControlChannels:
             ),
         )
         self.send_computed_values = connector._create_publisher(
-            PartialMqttMapping(
+            PartialMqttMapping[S](
                 control_module.sensor_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -359,7 +365,7 @@ class ControlChannels:
             )
         )
         self.send_controller_state = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[CS].for_module(
                 control_module.controller_state_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -367,7 +373,7 @@ class ControlChannels:
             ),
         )
         self.send_parameters = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[P].for_module(
                 control_module.parameters_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -375,7 +381,7 @@ class ControlChannels:
             )
         )
         self.send_control_modes = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[M].for_module(
                 control_module.control_mode_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -383,7 +389,7 @@ class ControlChannels:
             )
         )
         self.send_manual_control = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -466,14 +472,14 @@ class ControlApiChannels[
         module_description: "ModuleDescription[S, C, P, M, CS]",
     ) -> None:
         self.module_name = module_name
-        sensor_values_mapping = PartialMqttMapping(
+        sensor_values_mapping = PartialMqttMapping[S](
             module_description.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
             module_name,
         )
         connector._register_listener(sensor_values_mapping)
 
-        control_values_mapping = PartialMqttMapping(
+        control_values_mapping = PartialMqttMapping[C](
             module_description.control_values_cls,
             config.mqtt_devices_topic_prefix,
             module_name,
@@ -481,7 +487,7 @@ class ControlApiChannels[
         )
         connector._register_listener(control_values_mapping)
 
-        manual_values_mapping = DirectMqttMapping.for_module(
+        manual_values_mapping = DirectMqttMapping[C].for_module(
             module_description.control_values_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -489,7 +495,7 @@ class ControlApiChannels[
         )
         connector._register_listener(manual_values_mapping)
 
-        control_modes_mapping = DirectMqttMapping.for_module(
+        control_modes_mapping = DirectMqttMapping[SwitchingControlMode].for_module(
             SwitchingControlMode[module_description.control_mode_cls],
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -497,7 +503,7 @@ class ControlApiChannels[
         )
         connector._register_listener(control_modes_mapping)
 
-        parameters_mapping = DirectMqttMapping.for_module(
+        parameters_mapping = DirectMqttMapping[P].for_module(
             module_description.parameters_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -505,7 +511,7 @@ class ControlApiChannels[
         )
         connector._register_listener(parameters_mapping)
 
-        controller_state_mapping = DirectMqttMapping.for_module(
+        controller_state_mapping = DirectMqttMapping[CS].for_module(
             module_description.controller_state_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
@@ -514,7 +520,7 @@ class ControlApiChannels[
         connector._register_listener(controller_state_mapping)
 
         self.send_manual_values = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[C].for_module(
                 module_description.control_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -523,7 +529,7 @@ class ControlApiChannels[
             )
         )
         self.send_automation_mode = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[AutomationMode].for_module(
                 AutomationMode,
                 config.mqtt_controller_topic_prefix,
                 module_name,
@@ -532,7 +538,7 @@ class ControlApiChannels[
             )
         )
         self.send_parameters = connector._create_publisher(
-            DirectMqttMapping.for_module(
+            DirectMqttMapping[P].for_module(
                 module_description.parameters_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
