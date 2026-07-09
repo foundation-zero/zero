@@ -1,13 +1,7 @@
-from datetime import datetime
-from typing import Callable
-
 from thrs.input_output.base import CombinedValues, SimulationInputs, SimulationValues
-from thrs.orchestration.comms import ControlChannels, SimulationChannels
-from thrs.orchestration.module import ModuleDescription
-from thrs.orchestration.simulation import Simulation
+from thrs.orchestration.module import Module
+from thrs.orchestration.simulation import SimulationModule
 from thrs.runtime.runners.base import Runner
-from thrs.runtime.runners.control import ControlRunner
-from thrs.runtime.runners.simulator import SimulationRunner
 
 
 class LockstepRunner[
@@ -15,57 +9,53 @@ class LockstepRunner[
     I: SimulationInputs,
     O: SimulationValues,
 ](Runner):
-    """Runs a module for a number of ticks."""
+    """Runs a module for a tick."""
 
     def __init__(
         self,
-        control_modules: dict[str, ModuleDescription],
-        time_fn: Callable[[], datetime],
-        control_channels: dict[str, ControlChannels],
-        simulation: Simulation[S, CombinedValues, I, O],
-        simulation_channels: SimulationChannels[I, O],
+        control_modules: list[Module],
+        simulation_module: SimulationModule[S, CombinedValues, I, O],
     ) -> None:
-        self.control_runner = ControlRunner(control_modules, time_fn, control_channels)
-        self.simulation_runner = SimulationRunner(simulation, simulation_channels)
+        self.control_modules = control_modules
+        self.simulation_module = simulation_module
 
         self._control_values = CombinedValues(
             values={
-                module_name: control.initial()[0]
-                for module_name, control in self.control_runner._controls.items()
+                module.name: module._control.initial()[0] for module in control_modules
             }
         )
 
-    async def run(self, n_ticks: int) -> None:
-        """Run simulation and control in lockstep for a number of ticks.
+    async def run(self) -> None:
+        """Run simulation and control in lockstep for a tick.
         Retrieve parameters and automation modes from the control channels, and simulation inputs from the simulation channels.
         Send control values to the simulation channels, and sensor values to the control channels.
         """
-        for _ in range(n_ticks):
-            await self._sync_channels_state()
-
-            sim_result = await self.simulation_runner._execute_simulation_tick(
-                self._control_values
-            )
-
-            control_values_map = {}
-            for name in self.control_runner._controls:
-                control_values = await self.control_runner._execute_control_tick(
-                    name, sim_result.sensor_values.values[name]
-                )
-                if control_values is not None:
-                    control_values_map[name] = control_values
-            self._control_values = CombinedValues(values=control_values_map)
-
-    async def _sync_channels_state(self) -> None:
-        """Synchronize parameters, automation modes, and simulation inputs."""
         # We are ignoring the sensor values here since we get them from the simulation result
-        for name in self.control_runner._controls:
-            await self.control_runner._sync_control_channels_state(name)
+        for module in self.control_modules:
+            await module.sync_control_channels_state()
 
-        simulation_inputs = (
-            self.simulation_runner._simulation_channels.get_simulation_inputs()
+        self.simulation_module.sync_simulation_inputs()
+
+        sim_result = self.simulation_module.execute_simulation_tick(
+            self._control_values
         )
-        if simulation_inputs is not None:
-            self.simulation_runner._simulation.update_simulation_inputs(
-                simulation_inputs
+
+        await self.simulation_module.send_simulation_updates(sim_result)
+
+        control_values_map = {}
+        for module in self.control_modules:
+            sensor_values = sim_result.sensor_values.values.get(module.name)
+
+            if sensor_values is None:
+                continue
+
+            control_values, controller_state = module.execute_control_tick(
+                sensor_values
             )
+
+            await module.send_control_updates(
+                sensor_values, control_values, controller_state
+            )
+
+            control_values_map[module.name] = control_values
+        self._control_values = CombinedValues(values=control_values_map)

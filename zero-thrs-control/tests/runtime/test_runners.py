@@ -3,8 +3,9 @@ from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
 
 from thrs.control.switching import AutomationMode
-from thrs.input_output.base import CombinedValues, ThrsValues
-from thrs.orchestration.module import ModuleDescription
+from thrs.input_output.base import CombinedValues
+from thrs.orchestration.module import Module
+from thrs.orchestration.simulation import SimulationModule
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
@@ -18,8 +19,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
 
     combined_sensor_values = CombinedValues(values={"module": sensor_values})  # type: ignore
     combined_control_values = CombinedValues(values={"module": control_values})  # type: ignore
-
-    time_fn = Mock()
 
     control = Mock()
     control.initial.return_value = (control_values, controller_state)
@@ -55,28 +54,14 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     alarms = Mock()
     alarms.check.return_value = []
 
-    module = ModuleDescription(
-        ThrsValues,
-        ThrsValues,
-        ThrsValues,
-        lambda a, b: control,
-        ThrsValues,
-        ThrsValues,
-        lambda: alarms,
-    )
+    module = Module("module", control, alarms, control_channels)
+    module._control.switch_mode(AutomationMode(mode="automatic"))
 
-    runner = LockstepRunner(
-        {"module": module},
-        time_fn,
-        {"module": control_channels},
-        simulation,
-        simulation_channels,
-    )
-    runner.control_runner._controls["module"].switch_mode(
-        AutomationMode(mode="automatic")
-    )
+    simulation_module = SimulationModule(simulation, simulation_channels)
+    runner = LockstepRunner([module], simulation_module)
 
-    await runner.run(3)
+    for _ in range(3):
+        await runner.run()
 
     assert control_channels.send_control_values.await_count == 3
     assert simulation_channels.send_sensor_values.await_count == 3
@@ -157,12 +142,10 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
 
 
 async def test_control_runner_ticks_and_uses_channels():
-    control_values = {}
+    control_values = mock.sentinel.control
     controller_state = {}
     parameters = {}
     sensor_values = {"something": True}
-
-    time_fn = Mock()
 
     control = Mock()
     control.initial.return_value = (control_values, controller_state)
@@ -174,9 +157,8 @@ async def test_control_runner_ticks_and_uses_channels():
     channels = Mock()
     channels.get_parameters.return_value = parameters
     channels.get_automation_modes.return_value = None
-    channels.get_manual_controls.return_value = control_values
+    channels.get_manual_controls.return_value = mock.sentinel.control_new
     channels.get_sensor_values.return_value = sensor_values
-    channels.get_manual_controls.return_value = control_values
     channels.send_computed_values = AsyncMock()
     channels.send_control_values = AsyncMock()
     channels.send_controller_state = AsyncMock()
@@ -187,28 +169,21 @@ async def test_control_runner_ticks_and_uses_channels():
     alarms = Mock()
     alarms.check.return_value = []
 
-    module = ModuleDescription(
-        ThrsValues,
-        ThrsValues,
-        ThrsValues,
-        lambda a, b: control,
-        ThrsValues,
-        ThrsValues,
-        lambda: alarms,
-    )
+    module = Module("module", control, alarms, channels)
+    module._control.switch_mode(AutomationMode(mode="automatic"))
 
-    runner = ControlRunner({"module": module}, time_fn, {"module": channels})
-    runner._controls["module"].switch_mode(AutomationMode(mode="automatic"))
+    runner = ControlRunner([module])
 
-    await runner.run(2)
+    for _ in range(2):
+        await runner.run()
 
     assert channels.get_sensor_values.call_count == 2
     assert channels.send_computed_values.await_count == 2
     assert control.control.call_count == 2
     assert alarms.check.call_count == 2
 
-    control.update_parameters.call_count == 2
-    control.update_manual_controls.call_count == 2
+    assert control.update_parameters.call_count == 2
+    assert module._control._manual_control._control_values == mock.sentinel.control_new
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2
@@ -227,7 +202,7 @@ async def test_control_runner_ticks_and_uses_channels():
     )
     channels.send_parameters.assert_has_awaits([call(parameters), call(parameters)])
     channels.send_manual_control.assert_has_awaits(
-        [call(control_values), call(control_values)]
+        [call(mock.sentinel.control_new), call(mock.sentinel.control_new)]
     )
 
 
@@ -252,9 +227,12 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
 
-    runner = SimulationRunner(simulation, channels)
+    simulation_module = SimulationModule(simulation, channels)
 
-    await runner.run(4)
+    runner = SimulationRunner(simulation_module)
+
+    for _ in range(4):
+        await runner.run()
 
     assert channels.get_control_values.call_count == 4
     assert channels.wait_for_control_values.await_count == 0

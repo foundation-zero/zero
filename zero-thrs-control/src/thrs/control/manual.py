@@ -1,6 +1,3 @@
-from datetime import datetime
-from typing import Callable
-
 from thrs.classes.control import Control
 from thrs.input_output.base import ThrsValues
 
@@ -25,11 +22,8 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     def __init__(
         self,
         control_values: ControlValues,
-        time_fn: Callable[[], datetime],
-        parameters: EmptyParameters = EmptyParameters(),
     ):
         self._control_values = control_values
-        self._time_fn = time_fn
 
     @property
     def parameters(self) -> EmptyParameters:

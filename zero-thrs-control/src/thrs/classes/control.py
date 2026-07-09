@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Callable, Protocol
+from typing import Protocol
 
 from thrs.input_output.base import ThrsValues
 
@@ -7,8 +6,6 @@ from thrs.input_output.base import ThrsValues
 class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerState](
     Protocol
 ):
-    def __init__(self, parameters: Parameters, time_fn: Callable[[], datetime]): ...
-
     def initial(self) -> tuple[ControlValues, ControllerState]: ...
 
     def control(

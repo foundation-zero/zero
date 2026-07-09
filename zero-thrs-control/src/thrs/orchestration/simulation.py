@@ -1,10 +1,15 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from types import TracebackType
-from typing import Any, Self
+from typing import Any
 
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import (
+    CombinedValues,
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+)
+from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.module import ModuleClassMap
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
@@ -54,22 +59,6 @@ class Simulation[
             else ThrsModelIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
         )
 
-    def __enter__(self) -> Self:
-        self._fmu.__enter__()
-        return self
-
-    def __exit__(
-        self,
-        type_: type[BaseException] | None,
-        value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> bool | None:
-        return self._fmu.__exit__(type_, value, traceback)
-
-    @property
-    def start_time(self) -> datetime:
-        return self._start_time
-
     @property
     def tick_duration(self) -> timedelta:
         return self._tick_duration
@@ -101,14 +90,62 @@ class Simulation[
     def update_simulation_inputs(self, simulation_inputs: I):
         self._simulation_inputs = simulation_inputs
 
-    @property
-    def inputs_cls(self) -> type[I]:
-        return type(self._simulation_inputs)
+
+@dataclass
+class SimulationDescription:
+    simulation_outputs_cls: type[SimulationValues]
+    fmu: Fmu
+    simulation_inputs: SimulationInputs
+
+
+class SimulationModule[
+    S: ThrsValues | CombinedValues,
+    C: ThrsValues | CombinedValues,
+    I: SimulationInputs,
+    O: SimulationValues,
+]:
+    channels: SimulationChannels[I, O]
+
+    def __init__(
+        self,
+        simulation: Simulation[S, C, I, O],
+        channels: SimulationChannels[I, O],
+    ):
+        self._simulation = simulation
+        self._channels = channels
+
+    async def sync_simulation_channels_state(self) -> C:
+        """Synchronize control values and simulation inputs."""
+
+        self.sync_simulation_inputs()
+
+        control_values = self._channels.get_control_values()
+        if control_values is None:
+            control_values = await self._channels.wait_for_control_values()
+        return control_values
+
+    def execute_simulation_tick(
+        self, control_values: C
+    ) -> SimulationResult[S, C, I, O]:
+        """Execute a simulation tick and send the results to the appropriate channels."""
+        return self._simulation.tick(control_values)
+
+    async def send_simulation_updates(
+        self, sim_result: SimulationResult[S, C, I, O]
+    ) -> None:
+        """Send sensor values, simulation inputs, and simulation outputs to the appropriate channels."""
+        await self._channels.send_sensor_values(sim_result.sensor_values)
+        await self._channels.send_simulation_inputs(sim_result.simulation_inputs)
+        await self._channels.send_simulation_outputs(sim_result.simulation_outputs)
 
     @property
-    def simulation_inputs(self) -> I:
-        return self._simulation_inputs
+    def tick_duration(self) -> timedelta:
+        return self._simulation.tick_duration
 
-    @property
-    def outputs_cls(self) -> type[O]:
-        return self._simulation_outputs_cls
+    def time(self):
+        return self._simulation.time()
+
+    def sync_simulation_inputs(self):
+        simulation_inputs = self._channels.get_simulation_inputs()
+        if simulation_inputs is not None:
+            self._simulation.update_simulation_inputs(simulation_inputs)

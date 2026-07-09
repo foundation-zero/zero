@@ -495,7 +495,9 @@ class ControlApiChannels[
         )
         connector._register_listener(manual_values_mapping)
 
-        control_modes_mapping = DirectMqttMapping[SwitchingControlMode].for_module(
+        # We should not need to wrap here with SwitchingControlMode because it exposes SwitchingControlMode
+        # which we should not have to know about here... This needs a refactor of how switching control is handled
+        control_modes_mapping = DirectMqttMapping[SwitchingControlMode[M]].for_module(
             SwitchingControlMode[module_description.control_mode_cls],
             config.mqtt_controller_topic_prefix,
             module_name,

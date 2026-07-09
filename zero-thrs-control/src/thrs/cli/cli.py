@@ -2,21 +2,13 @@ import logging
 from datetime import datetime, timedelta
 
 from aiomqtt import Client as MqttClient
-from pydantic_settings import (
-    BaseSettings,
-    CliApp,
-    CliSubCommand,
-    SettingsConfigDict,
-)
+from pydantic_settings import BaseSettings, CliApp, CliSubCommand, SettingsConfigDict
 
-from thrs.orchestration.comms import (
-    DirectivesChannels,
-    MqttConnector,
-)
+from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
-from thrs.orchestration.setup import setup_control, setup_simulation
-from thrs.runtime.descriptions.simulation import ModeNames, lookup_mode
+from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
+from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
@@ -27,7 +19,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 class ControlCmd(BaseSettings):
-    mode: ModeNames
+    mode: ModeName
 
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
@@ -36,10 +28,13 @@ class ControlCmd(BaseSettings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            control_channels = setup_control(connector, settings, control_mode)
-            runner = ControlRunner(
-                control_mode.control_modules, datetime.now, control_channels
+            control_modules = setup_control_modules(
+                connector,
+                settings,
+                control_mode.control_modules,
+                datetime.now,
             )
+            runner = ControlRunner(control_modules)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
@@ -48,7 +43,7 @@ class ControlCmd(BaseSettings):
 
 
 class SimulationCmd(BaseSettings):
-    mode: ModeNames
+    mode: ModeName
 
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
@@ -57,11 +52,18 @@ class SimulationCmd(BaseSettings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
 
-            simulation, channels = setup_simulation(
-                connector, settings, simulation_mode
+            if simulation_mode.simulation_description is None:
+                raise ValueError("simulation must be defined for simulation mode")
+
+            simulation_module = setup_simulation_module(
+                connector,
+                settings,
+                simulation_mode.control_modules,
+                simulation_mode.simulation_description,
             )
-            runner = SimulationRunner(simulation, channels)
-            runtime = Runtime(runner, connector, simulation.tick_duration)
+
+            runner = SimulationRunner(simulation_module)
+            runtime = Runtime(runner, connector, simulation_module.tick_duration)
 
             await runtime.loop.play(1)
             logger.info("Running simulation")
@@ -69,45 +71,50 @@ class SimulationCmd(BaseSettings):
 
 
 class LockstepCmd(BaseSettings):
-    mode: ModeNames
+    mode: ModeName
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         mode = lookup_mode(self.mode)
 
         connector = MqttConnector(mqtt_client)
 
-        simulation, simulation_channels = setup_simulation(connector, settings, mode)
+        if mode.simulation_description is None:
+            raise ValueError("simulation must be defined for lockstep mode")
 
-        control_channels = setup_control(connector, settings, mode)
-
-        runner = LockstepRunner(
-            control_modules=mode.control_modules,
-            time_fn=simulation.time,
-            control_channels=control_channels,
-            simulation=simulation,
-            simulation_channels=simulation_channels,
+        simulation_module = setup_simulation_module(
+            connector,
+            settings,
+            mode.control_modules,
+            mode.simulation_description,
         )
+
+        control_modules = setup_control_modules(
+            connector,
+            settings,
+            mode.control_modules,
+            time_fn=simulation_module.time,
+        )
+
+        runner = LockstepRunner(control_modules, simulation_module)
 
         directives_channels = DirectivesChannels(connector, settings)
 
         directive_handling = DirectiveHandling(
             directives_channels,
             mode,
-            simulation.time,
+            simulation_module.time,
         )
         return Runtime(
             runner,
             connector,
-            simulation.tick_duration,
+            simulation_module.tick_duration,
             directive_handling,
         )
 
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
 
-        async with (
-            MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
-        ):
+        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             runtime = self.setup(settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")

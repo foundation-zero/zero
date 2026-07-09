@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import timedelta
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 
@@ -12,10 +12,10 @@ from thrs.runtime.loop import Loop, LoopHooks
 def make_runner(block_after_first_call: bool = False):
     started = asyncio.Event()
     release = asyncio.Event()
-    calls: list[int] = []
+    calls = Mock()
 
-    async def run(n_ticks: int) -> None:
-        calls.append(n_ticks)
+    async def run() -> None:
+        calls()
         started.set()
 
         if block_after_first_call:
@@ -56,8 +56,8 @@ async def test_loop_steps_runner_for_requested_ticks():
 
         await asyncio.wait_for(runner.started.wait(), timeout=1)
 
-        assert runner.calls == [2]
-        runner.run.assert_awaited_once_with(2)
+        assert runner.calls.call_count == 2
+        runner.run.assert_awaited()
         assert hook_calls[:2] == ["available", "stepping"]
     finally:
         loop_task.cancel()
@@ -78,14 +78,14 @@ async def test_loop_play_runs_until_pause():
         await loop.play(2.0)
 
         await asyncio.wait_for(runner.started.wait(), timeout=1)
-        assert runner.calls == [1]
-        runner.run.assert_awaited_once_with(1)
+        assert runner.calls.call_count == 1
+        runner.run.assert_awaited()
         assert hook_calls == ["available", "running"]
 
         await loop.pause()
         runner.release.set()
 
-        assert runner.calls == [1]
+        assert runner.calls.call_count == 1
         assert hook_calls[:2] == ["available", "running"]
     finally:
         loop_task.cancel()
