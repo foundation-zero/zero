@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { INCLUDED_APPS, ZeroApps } from "@/apps";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RiApps2Line } from "@remixicon/vue";
@@ -8,32 +9,32 @@ import { ZeroLogo } from "../zero-logo";
 const { t } = useI18n();
 
 type App = {
-  name: string;
+  name: ZeroApps;
   link: string;
 };
 
 const APPS: App[] = [
   {
-    name: "loads",
+    name: ZeroApps.loads,
     link: "/loads",
   },
   {
-    name: "thrs",
+    name: ZeroApps.thrs,
     link: "/thrs",
   },
   {
-    name: "thrapp",
-    link: "/thrapp",
+    name: ZeroApps.thrsim,
+    link: "/thrsim",
   },
   {
-    name: "domestic",
+    name: ZeroApps.domestic,
     link: "/domestic",
   },
   {
-    name: "grafana",
+    name: ZeroApps.grafana,
     link: "/grafana",
   },
-];
+].filter((app) => INCLUDED_APPS.includes(app.name));
 </script>
 <template>
   <Popover>

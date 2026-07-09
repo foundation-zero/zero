@@ -2,17 +2,18 @@ import { defineAsyncComponent } from "vue";
 import { RouteRecordRaw } from "vue-router";
 
 export const thrappRoutes: RouteRecordRaw = {
-  path: "/thrapp",
-  name: "thrapp",
+  path: "/thrs",
+  name: "thrs",
+  alias: "/thrapp",
   meta: {
     layout: defineAsyncComponent(() => import("@/modules/thrapp/layouts/DefaultLayout.vue")),
     requiresAuth: false,
   },
-  redirect: () => ({ path: "/thrapp/mimics/dhw", query: {} }),
+  redirect: () => ({ path: "/thrs/mimics/dhw", query: {} }),
   children: [
     {
       path: "mimics/:module",
-      name: "thrapp/mimics",
+      name: "thrs/mimics",
       component: () => import("@/modules/thrapp/views/Mimic.vue"),
       meta: {
         toolbarLeft: defineAsyncComponent(
@@ -25,7 +26,7 @@ export const thrappRoutes: RouteRecordRaw = {
     },
     {
       path: "control/:module",
-      name: "thrapp/control",
+      name: "thrs/control",
       component: () => import("@/modules/thrapp/views/Control.vue"),
       meta: {
         toolbarLeft: defineAsyncComponent(
