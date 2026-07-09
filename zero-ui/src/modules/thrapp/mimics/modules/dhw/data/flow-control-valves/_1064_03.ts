@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.FlowControlValve>({
   },
   custom: {},
   parameters: {
-    flow: getField(ParametersType.Flow, "dhw", "dcFlowcontrolMinimumSetpoint"),
+    flow: getField(ParametersType.FlowControl, "dhw", "dcFlowcontrolMinimumSetpoint"),
   },
   source: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
   sensors: {

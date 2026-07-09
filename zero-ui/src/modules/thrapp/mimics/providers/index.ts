@@ -6,6 +6,7 @@ import {
   ControllerStateComponentType,
   ControllerStateDefinitionMap,
   ControllerStateDefinitions,
+  ControlValues,
   ParameterDefinitionMap,
   ParameterDefinitions,
   ParametersType,
@@ -25,6 +26,7 @@ export { default as ControlValueForm } from "./ControlValueForm.vue";
 export { default as GraphQLProvider } from "./GraphQLProvider.vue";
 export { default as MockProvider } from "./MockProvider.vue";
 export { default as ParameterValue } from "./ParameterValue.vue";
+export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
 export const getField = <
@@ -72,7 +74,7 @@ export interface MimicDataProvider {
   getControlValue: <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
   ) => Ref<ControlDefinitionMap[Type] | undefined>;
-  getParameterValue: <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
+  getParameter: <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
   ) => Ref<ParameterDefinitionMap[Type] | undefined>;
   getComponentState: (
@@ -84,6 +86,21 @@ export interface MimicDataProvider {
   >(
     prop: ModuleField<Type, Module>,
   ) => Ref<ControllerStateDefinitionMap[Type] | undefined>;
+  setControlValue: <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
+    prop: ModuleField<Type, Module>,
+    value: ControlValues<Type>,
+  ) => Promise<void>;
+  setParameter: <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
+    prop: ModuleField<Type, Module>,
+    value: ParameterDefinitionMap[Type],
+  ) => Promise<void>;
+  // setControllerState: <
+  //   Type extends ControllerStateComponentType,
+  //   Module extends keyof ThrsDefinitions,
+  // >(
+  //   prop: ModuleField<Type, Module>,
+  //   value: ControllerStateDefinitionMap[Type],
+  // ) => Promise<void>;
 }
 
 export interface FieldValueProvider<T> {

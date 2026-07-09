@@ -17,7 +17,12 @@ const { t } = useI18n();
       as="nav"
       class="py-0"
     >
-      <RouterLink :to="{ name: 'thrapp/mimics' }">
+      <RouterLink :to="{ name: 'thrapp/control', params: { module: 'dhw' } }">
+        <TabsTrigger value="thrapp/control">
+          {{ t("thrapp.views.control.title") }}
+        </TabsTrigger>
+      </RouterLink>
+      <RouterLink :to="{ name: 'thrapp/mimics', params: { module: 'dhw' } }">
         <TabsTrigger value="thrapp/mimics">
           {{ t("thrapp.views.mimics.title") }}
         </TabsTrigger>

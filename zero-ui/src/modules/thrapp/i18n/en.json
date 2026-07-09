@@ -1,8 +1,57 @@
 {
   "thrapp": {
+    "parameters": {
+      "actions": {
+        "resetToDefaults": "Reset to defaults"
+      },
+      "dhw": {
+        "title": "Domestic hot water parameters",
+        "items": {
+          "minimumTankLevel": "Minimum tank level",
+          "maximumTankLevel": "Maximum tank level",
+          "fillingTemperature": "Filling temperature",
+          "minimumFlowDrives": "Minimum flow valve position - drives & shorepower",
+          "minimumFlowDC": "Minimum flow valve position - DC converters",
+          "tank1": "Tank 1",
+          "tank2": "Tank 2",
+          "tank3": "Tank 3",
+          "boostingDelta": "Boosting Delta",
+          "minimumTankTemperature": "Minimum tank temperature",
+          "maximumTankTemperature": "Maximum tank temperature",
+          "heatpumpBoosting": "Heatpump boosting",
+          "highTemperatureBoosting": "High temperature boosting",
+          "heatpumpTemperature": "Heatpump temperature",
+          "heatpumpFlow": "Heatpump flow",
+          "boostingTemperature": "Boosting temperature"
+        },
+        "tankSelection": {
+          "title": "Tank selection",
+          "description": "A maximum of 1 tank can be disabled. A disabled tank will not fill or boost and all tank valves will remain closed."
+        },
+        "fillingParameters": {
+          "title": "Filling",
+          "description": "Settings that determine filling initiation, filling temperature and minimum flows."
+        },
+        "boostingModeSelection": {
+          "title": "Boosting mode selection",
+          "description": "Determine boosting initiation, source & temperatures."
+        },
+        "boostingHeatpump": {
+          "title": "Boosting heatpump",
+          "description": "Heatpump boosting settings"
+        },
+        "boostingHighTemperature": {
+          "title": "Boosting high temperature",
+          "description": "Input for high temperature boosting"
+        }
+      }
+    },
     "views": {
       "mimics": {
         "title": "Mimic"
+      },
+      "control": {
+        "title": "Control"
       }
     },
     "dialogs": {

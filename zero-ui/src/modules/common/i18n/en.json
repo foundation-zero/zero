@@ -2,6 +2,12 @@
   "app": {
     "title": "ZERO"
   },
+  "quantities": {
+    "temperature": "Temperature",
+    "liter": "Liter",
+    "flow": "Flow",
+    "position": "Position"
+  },
   "units": {
     "bar": "bar",
     "celsius": "°C",
@@ -37,6 +43,9 @@
       "short": "A/C",
       "long": "Air conditioning"
     },
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "on": "On",
     "control": "Control",
     "back": "Back",
     "clear": "Clear",

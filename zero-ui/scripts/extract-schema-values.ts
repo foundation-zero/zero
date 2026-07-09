@@ -184,6 +184,7 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   const lowerFieldName = fieldName.toLowerCase();
   if (lowerFieldName.endsWith("tuning")) return "Tuning";
   if (lowerFieldName.includes("temperature")) return "Temperature";
+  if (lowerFieldName.includes("flowcontrol")) return "FlowControl";
   if (lowerFieldName.includes("flow")) return "Flow";
   if (lowerFieldName.includes("enabled")) return "Enabled";
   if (lowerFieldName.includes("ratio")) return "Ratio";
@@ -252,7 +253,7 @@ function processControlField(
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag || "",
+    yardTag: directiveArgs.yardTag,
     fieldType: fieldType,
   };
 
@@ -273,7 +274,7 @@ function processSensorField(
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag ?? "",
+    yardTag: directiveArgs.yardTag,
     fieldType: fieldType,
   };
 
@@ -415,8 +416,8 @@ function generatePropertyLines(value: ExtractedValue, definitionType: Definition
   const props: string[] = [];
 
   // Add yardTag for control and sensor definitions
-  if ((definitionType === "control" || definitionType === "sensor") && value.yardTag) {
-    props.push(`yardTag: "${value.yardTag}"`);
+  if (definitionType === "control" || definitionType === "sensor") {
+    props.push(`yardTag: "${value.yardTag ?? ""}"`);
   }
 
   // Add componentType based on definition type

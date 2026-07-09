@@ -19,7 +19,7 @@ const { items, sources } = useTranslations();
 
 defineProps<{
   controller: ModuleField<ControllerStateComponentType.PIDController>;
-  setpoint: ModuleField<ParametersType.Flow>;
+  setpoint: ModuleField<ParametersType.FlowControl | ParametersType.Flow>;
   measurement: ModuleField<SensorComponentType.Flow>;
 }>();
 </script>
