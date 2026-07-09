@@ -33,6 +33,10 @@ class ControlRunner[
         if parameters is not None:
             self._control.update_parameters(parameters)
 
+        manual_control_values = self._control_channels.get_manual_controls()
+        if manual_control_values is not None:
+            self._control.update_manual_controls(manual_control_values)
+
         manual_modes = self._control_channels.get_automation_modes()
         if manual_modes is not None:
             self._control.update_automation_modes(manual_modes)
