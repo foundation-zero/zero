@@ -24,13 +24,14 @@ from thrs.runtime.runners.simulator import SimulationRunner
 from thrs.runtime.runtime import Runtime
 
 logger: logging.Logger = logging.getLogger(__name__)
-settings = Config()  # type: ignore
 
 
-class ControlCmd(Config):
+class ControlCmd(BaseSettings):
     mode: ModeNames
 
     async def cli_cmd(self) -> None:
+        settings = Config()  # type: ignore
+
         control_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
@@ -44,10 +45,12 @@ class ControlCmd(Config):
             await runtime.start()
 
 
-class SimulationCmd(Config):
+class SimulationCmd(BaseSettings):
     mode: ModeNames
 
     async def cli_cmd(self) -> None:
+        settings = Config()  # type: ignore
+
         simulation_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
@@ -63,46 +66,49 @@ class SimulationCmd(Config):
             await runtime.start()
 
 
-class LockstepCmd(Config):
+class LockstepCmd(BaseSettings):
     mode: ModeNames
 
-    async def cli_cmd(self) -> None:
+    def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         mode = lookup_mode(self.mode)
+
+        connector = MqttConnector(mqtt_client)
+
+        simulation, simulation_channels = setup_simulation(connector, settings, mode)
+
+        control, control_channels, alarms = setup_control(
+            connector, settings, mode, simulation.time
+        )
+
+        runner = LockstepRunner(
+            control=control,
+            control_channels=control_channels,
+            alarms=alarms,
+            simulation=simulation,
+            simulation_channels=simulation_channels,
+        )
+
+        directives_channels = DirectivesChannels(connector, settings)
+
+        directive_handling = DirectiveHandling(
+            directives_channels,
+            mode,
+            simulation.time,
+        )
+        return Runtime(
+            runner,
+            connector,
+            simulation.tick_duration,
+            directive_handling,
+        )
+
+    async def cli_cmd(self) -> None:
+        settings = Config()  # type: ignore
+
         async with (
             MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
         ):
-            connector = MqttConnector(mqtt_client)
-
-            simulation, simulation_channels = setup_simulation(
-                connector, settings, mode
-            )
-
-            control, control_channels, alarms = setup_control(
-                connector, settings, mode, simulation.time
-            )
-
-            runner = LockstepRunner(
-                control=control,
-                control_channels=control_channels,
-                alarms=alarms,
-                simulation=simulation,
-                simulation_channels=simulation_channels,
-            )
-
-            directives_channels = DirectivesChannels(connector, settings)
-
-            directive_handling = DirectiveHandling(
-                directives_channels,
-                mode,
-                simulation.time,
-            )
-            runtime = Runtime(
-                runner,
-                connector,
-                simulation.tick_duration,
-                directive_handling,
-            )
-
+            runtime = self.setup(settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")
             await runtime.start()

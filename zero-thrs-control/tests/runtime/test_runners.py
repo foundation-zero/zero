@@ -27,8 +27,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     )
 
     control_channels = Mock()
-    control_channels.get_parameters.return_value = None
+    control_channels.get_parameters.return_value = parameters
     control_channels.get_automation_modes.return_value = None
+    control_channels.get_manual_controls.return_value = control_values
     control_channels.send_control_values = AsyncMock()
     control_channels.send_computed_values = AsyncMock()
     control_channels.send_controller_state = AsyncMock()
@@ -74,6 +75,12 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
         [call(control_values), call(control_values), call(control_values)]
     )
     control.control.assert_has_calls(
+        [call(control_values), call(control_values), call(control_values)]
+    )
+    control.update_parameters.assert_has_calls(
+        [call(parameters), call(parameters), call(parameters)]
+    )
+    control.update_manual_controls.assert_has_calls(
         [call(control_values), call(control_values), call(control_values)]
     )
     alarms.check.assert_has_calls(
@@ -127,8 +134,9 @@ async def test_control_runner_ticks_and_uses_channels():
     control.manual_controls = control_values
 
     channels = Mock()
-    channels.get_parameters.return_value = None
+    channels.get_parameters.return_value = parameters
     channels.get_automation_modes.return_value = None
+    channels.get_manual_controls.return_value = control_values
     channels.get_sensor_values.return_value = sensor_values
     channels.send_computed_values = AsyncMock()
     channels.send_control_values = AsyncMock()
@@ -148,6 +156,9 @@ async def test_control_runner_ticks_and_uses_channels():
     assert channels.send_computed_values.await_count == 2
     assert control.control.call_count == 2
     assert alarms.check.call_count == 2
+
+    control.update_parameters.call_count == 2
+    control.update_manual_controls.call_count == 2
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2

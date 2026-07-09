@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
 from typing import cast
@@ -6,6 +7,7 @@ from typing import cast
 import pytest
 from aiomqtt import Client
 
+from thrs.cli.cli import LockstepCmd
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
@@ -13,16 +15,12 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
-from thrs.orchestration.setup import setup_control, setup_simulation
-from thrs.runtime.descriptions.simulation import lookup_mode
-from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.messages import SimulationStatusMessage
-from thrs.runtime.runners.lockstep import LockstepRunner
-from thrs.runtime.runtime import Runtime
 
 pytestmark = pytest.mark.mqtt
+
+logger = logging.getLogger(__name__)
 
 
 async def _mqtt_client(settings: Config):
@@ -30,50 +28,27 @@ async def _mqtt_client(settings: Config):
         yield client
 
 
-mqtt_client = pytest.fixture(_mqtt_client)
-mqtt_client2 = pytest.fixture(_mqtt_client)
-mqtt_client3 = pytest.fixture(_mqtt_client)
-mqtt_client4 = pytest.fixture(_mqtt_client)
+controls_client = pytest.fixture(_mqtt_client)
+runtime_client = pytest.fixture(_mqtt_client)
+test_client = pytest.fixture(_mqtt_client)
+status_client = pytest.fixture(_mqtt_client)
 
 
+@pytest.mark.timeout(30)
+@pytest.mark.slow
 async def test_simulation_run_start_stop(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies the simulation can transition from available to running and back to available.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
+    controls_client = controls_client
 
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await test_client.subscribe(f"{settings.mqtt_devices_topic_prefix}/thrusters/#")
@@ -81,6 +56,7 @@ async def test_simulation_run_start_stop(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert available.topic.value == status_topic
         assert isinstance(available.payload, str | bytes)
@@ -94,6 +70,7 @@ async def test_simulation_run_start_stop(
             "{}",
             qos=1,
         )
+        logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -112,6 +89,7 @@ async def test_simulation_run_start_stop(
         )
         paused = None
         for _ in range(3):
+            logger.info("Waiting on message")
             status_message = await anext(status_client.messages)
             if not isinstance(status_message.payload, str | bytes):
                 continue
@@ -141,45 +119,20 @@ async def test_simulation_run_start_stop(
             await run_task
 
 
+@pytest.mark.timeout(30)
+@pytest.mark.slow
 async def test_simulation_run_playback_rate(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies a higher playback rate produces more simulation output messages in equal wall time.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -187,6 +140,7 @@ async def test_simulation_run_playback_rate(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -199,6 +153,7 @@ async def test_simulation_run_playback_rate(
             '{"playback_rate": 1}',
             qos=1,
         )
+        logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -212,6 +167,7 @@ async def test_simulation_run_playback_rate(
             "{}",
             qos=1,
         )
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -221,6 +177,7 @@ async def test_simulation_run_playback_rate(
 
         rate_1_count = 0
         while len(test_client.messages) != 0:
+            logger.info("Waiting on message")
             msg = await anext(test_client.messages)
             if msg.topic.value == outputs_topic:
                 rate_1_count += 1
@@ -232,6 +189,7 @@ async def test_simulation_run_playback_rate(
         )
         running = None
         for _ in range(2):
+            logger.info("Waiting on message")
             status_message = await anext(status_client.messages)
             assert isinstance(status_message.payload, str | bytes)
             if (
@@ -250,6 +208,7 @@ async def test_simulation_run_playback_rate(
             "{}",
             qos=1,
         )
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -259,6 +218,7 @@ async def test_simulation_run_playback_rate(
 
         rate_2_count = 0
         while len(test_client.messages) != 0:
+            logger.info("Waiting on message")
             msg = await anext(test_client.messages)
             if msg.topic.value == outputs_topic:
                 rate_2_count += 1
@@ -271,45 +231,20 @@ async def test_simulation_run_playback_rate(
             await run_task
 
 
+@pytest.mark.timeout(5)
+@pytest.mark.slow
 async def test_simulation_run_step(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies step directives progress the simulation and publish outputs for each requested duration.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -317,6 +252,7 @@ async def test_simulation_run_step(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -329,6 +265,7 @@ async def test_simulation_run_step(
             '{"seconds": 1}',
             qos=1,
         )
+        logger.info("Waiting on message")
         stepping = await anext(status_client.messages)
         assert isinstance(stepping.payload, str | bytes)
         assert (
@@ -336,6 +273,7 @@ async def test_simulation_run_step(
             == "stepping"
         )
 
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -346,6 +284,7 @@ async def test_simulation_run_step(
         await sleep(0.2)
         step_1_outputs = 0
         while len(test_client.messages) != 0:
+            logger.info("Waiting on message")
             msg = await anext(test_client.messages)
             if msg.topic.value == outputs_topic:
                 step_1_outputs += 1
@@ -355,6 +294,7 @@ async def test_simulation_run_step(
             '{"seconds": 2}',
             qos=1,
         )
+        logger.info("Waiting on message")
         stepping = await anext(status_client.messages)
         assert isinstance(stepping.payload, str | bytes)
         assert (
@@ -362,6 +302,7 @@ async def test_simulation_run_step(
             == "stepping"
         )
 
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -372,6 +313,7 @@ async def test_simulation_run_step(
         await sleep(0.2)
         step_2_outputs = 0
         while len(test_client.messages) != 0:
+            logger.info("Waiting on message")
             msg = await anext(test_client.messages)
             if msg.topic.value == outputs_topic:
                 step_2_outputs += 1
@@ -384,11 +326,13 @@ async def test_simulation_run_step(
             await run_task
 
 
+@pytest.mark.timeout(10)
+@pytest.mark.slow
 async def test_simulation_controls_automated_control(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies switching to automatic mode results in non-default automatic control outputs.
@@ -398,34 +342,7 @@ async def test_simulation_controls_automated_control(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await test_client.subscribe(
@@ -435,6 +352,7 @@ async def test_simulation_controls_automated_control(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert available.topic.value == status_topic
         assert isinstance(available.payload, str | bytes)
@@ -455,6 +373,7 @@ async def test_simulation_controls_automated_control(
             qos=1,
         )
 
+        logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -472,6 +391,7 @@ async def test_simulation_controls_automated_control(
         )
         paused = None
         for _ in range(3):
+            logger.info("Waiting on message")
             status_message = await anext(status_client.messages)
             if not isinstance(status_message.payload, str | bytes):
                 continue
@@ -491,6 +411,7 @@ async def test_simulation_controls_automated_control(
 
         control_builder = PartialModelBuilder(ThrustersControlValues)
         while len(test_client.messages) != 0:
+            logger.info("Waiting on message")
             msg = await anext(test_client.messages)
             if not msg.topic.value.endswith(settings.mqtt_control_topic_suffix):
                 continue
@@ -511,11 +432,13 @@ async def test_simulation_controls_automated_control(
             await run_task
 
 
+@pytest.mark.timeout(5)
+@pytest.mark.slow
 async def test_simulation_controls_set_parameters(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies runtime applies updated controller parameters sent over MQTT.
@@ -526,34 +449,7 @@ async def test_simulation_controls_set_parameters(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -561,6 +457,7 @@ async def test_simulation_controls_set_parameters(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -573,6 +470,7 @@ async def test_simulation_controls_set_parameters(
             '{"seconds": 1}',
             qos=1,
         )
+        logger.info("Waiting on message")
         parameters = await anext(test_client.messages)
         assert parameters.topic.value == parameters_topic
         assert isinstance(parameters.payload, str | bytes | bytearray)
@@ -593,6 +491,7 @@ async def test_simulation_controls_set_parameters(
 
         async with asyncio.timeout(5.0):
             while True:
+                logger.info("Waiting on message")
                 updated = await anext(test_client.messages)
                 if updated.topic.value != parameters_topic:
                     continue
@@ -610,11 +509,13 @@ async def test_simulation_controls_set_parameters(
             await run_task
 
 
+@pytest.mark.timeout(5)
+@pytest.mark.slow
 async def test_simulation_controls_set_simulation_inputs(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies externally provided simulation inputs are accepted and reflected in later ticks.
@@ -627,34 +528,7 @@ async def test_simulation_controls_set_simulation_inputs(
         f"{settings.mqtt_simulator_topic_suffix}"
     )
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -662,6 +536,7 @@ async def test_simulation_controls_set_simulation_inputs(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -674,6 +549,7 @@ async def test_simulation_controls_set_simulation_inputs(
             '{"seconds": 1}',
             qos=1,
         )
+        logger.info("Waiting on message")
         initial_inputs = await anext(test_client.messages)
         assert initial_inputs.topic.value == simulation_inputs_topic
         assert isinstance(initial_inputs.payload, str | bytes | bytearray)
@@ -696,6 +572,7 @@ async def test_simulation_controls_set_simulation_inputs(
                 '{"seconds": 1}',
                 qos=1,
             )
+            logger.info("Waiting on message")
             updated_inputs = await anext(test_client.messages)
             if updated_inputs.topic.value != simulation_inputs_topic:
                 continue
@@ -714,11 +591,13 @@ async def test_simulation_controls_set_simulation_inputs(
             await run_task
 
 
+@pytest.mark.timeout(10)
+@pytest.mark.slow
 async def test_simulation_controls_simulation_output(
-    mqtt_client: Client,
-    mqtt_client2: Client,
-    mqtt_client3: Client,
-    mqtt_client4: Client,
+    controls_client: Client,
+    runtime_client: Client,
+    test_client: Client,
+    status_client: Client,
     settings: Config,
 ):
     # Verifies simulation outputs are published with physically valid values while running.
@@ -727,34 +606,7 @@ async def test_simulation_controls_simulation_output(
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
     )
 
-    controls_client = mqtt_client
-    runtime_client = mqtt_client2
-    test_client = mqtt_client3
-    status_client = mqtt_client4
-
-    mode = lookup_mode("thrusters")
-    connector = MqttConnector(runtime_client)
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-    control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
-    )
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-    runtime = Runtime(
-        runner=runner,
-        connector=connector,
-        tick_duration=simulation.tick_duration,
-        directive_handling=DirectiveHandling(
-            DirectivesChannels(connector, settings),
-            mode,
-            simulation.time,
-        ),
-    )
+    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -762,6 +614,7 @@ async def test_simulation_controls_simulation_output(
 
     run_task = create_task(runtime.start())
     try:
+        logger.info("Waiting on message")
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -774,6 +627,7 @@ async def test_simulation_controls_simulation_output(
             "{}",
             qos=1,
         )
+        logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -781,6 +635,7 @@ async def test_simulation_controls_simulation_output(
             == "running"
         )
 
+        logger.info("Waiting on message")
         simulation_output = await anext(test_client.messages)
         assert simulation_output.topic.value == simulation_outputs_topic
         assert isinstance(simulation_output.payload, str | bytes | bytearray)

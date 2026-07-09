@@ -110,8 +110,9 @@ class CombinedControl(
         for name, params in parameters.values.items():
             self._modules[name].update_parameters(params)
 
-    def update_manual_controls(self, module: str, control_values: ThrsValues):
-        self._modules[module].update_manual_controls(control_values)
+    def update_manual_controls(self, control_valuess: CombinedValues):
+        for name, control_values in control_valuess.values.items():
+            self._modules[name].update_manual_controls(control_values)
 
     @property
     def manual_controls(self) -> CombinedValues:

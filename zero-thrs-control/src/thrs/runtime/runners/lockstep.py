@@ -45,13 +45,8 @@ class LockstepRunner[
 
     async def _sync_channels_state(self) -> None:
         """Synchronize parameters, automation modes, and simulation inputs."""
-        parameters = self.control_runner._control_channels.get_parameters()
-        if parameters is not None:
-            self.control_runner._control.update_parameters(parameters)
-
-        manual_modes = self.control_runner._control_channels.get_automation_modes()
-        if manual_modes is not None:
-            self.control_runner._control.update_automation_modes(manual_modes)
+        # We are ignoring the sensor values here since we get them from the simulation result
+        await self.control_runner._sync_control_channels_state()
 
         simulation_inputs = (
             self.simulation_runner._simulation_channels.get_simulation_inputs()
