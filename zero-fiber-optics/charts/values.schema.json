@@ -67,6 +67,27 @@
           "description": "Kubernetes service type for the UDP listener.",
           "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
         },
+        "annotations": {
+          "type": "object",
+          "description": "Annotations added to the UDP service.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "labels": {
+          "type": "object",
+          "description": "Labels added to the UDP service.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "externalIPs": {
+          "type": "array",
+          "description": "External IPs assigned to the UDP service.",
+          "items": {
+            "type": "string"
+          }
+        },
         "ports": {
           "type": "array",
           "description": "UDP ports exposed by the service and container.",

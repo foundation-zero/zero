@@ -17,6 +17,9 @@ mqtt:
 
 udp:
   serviceType: ClusterIP
+  annotations: {}
+  labels: {}
+  externalIPs: []
   ports:
     - 50000
 
@@ -30,9 +33,6 @@ fullnameOverride: ""
 podAnnotations: {}
 podLabels: {}
 
-service:
-  annotations: {}
-  labels: {}
 
 nodeSelector: {}
 
