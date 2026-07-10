@@ -2,6 +2,7 @@ import logging
 import warnings
 
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -30,6 +31,7 @@ class Runner[S, C, P, M, CV]:
         self._alarms = alarms
         self._control_values, self._controller_state = self._control.initial()
 
+    @StateLogger.log_alarms
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._control_connector.transceive(
@@ -64,4 +66,4 @@ class Runner[S, C, P, M, CV]:
             if alarms:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
-                )  # TODO: properly handle alarms
+                )
