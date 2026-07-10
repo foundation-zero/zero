@@ -11,18 +11,20 @@ import {
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag/index.ts";
+import { FieldEditor } from "../editors/index.ts";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
-import { ControlValue } from "../providers/index.ts";
+import { ControlValue, ControlValueForm } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import ManualControl from "./partials/ManualControl.vue";
+import SubmitControlForm from "./partials/SubmitControlForm.vue";
 import ValvePosition from "./partials/ValvePosition.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
-const { labels, items } = useTranslations();
+const { labels, items, sources } = useTranslations();
 </script>
 
 <template>
@@ -39,20 +41,25 @@ const { labels, items } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ControlValue
-        :source="controls.valve"
-        field="setpoint"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("setpoint") }}
-            <FieldRenderer.Source :source="custom.tank?.controller" />
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.ValveState />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ControlValue>
+      <ControlValueForm :source="controls.valve">
+        <ControlValue
+          :source="controls.valve"
+          field="setpoint"
+        >
+          <TooltipListItem>
+            <TooltipListItemTitle>
+              {{ items("setpoint") }}
+              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+            </TooltipListItemTitle>
+            <FieldEditor.OpenClosed>
+              <TooltipListItemValue>
+                <FieldRenderer.ValveState />
+              </TooltipListItemValue>
+            </FieldEditor.OpenClosed>
+          </TooltipListItem>
+        </ControlValue>
+        <SubmitControlForm />
+      </ControlValueForm>
     </TooltipList>
 
     <TooltipList>

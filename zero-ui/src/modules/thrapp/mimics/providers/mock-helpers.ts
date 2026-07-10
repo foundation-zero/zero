@@ -193,9 +193,10 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
 
 export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
   [ParametersType.Disabled]: () => useRandomizedBoolean(),
-  [ParametersType.Dutypoint]: () => useRandomizedNumber(0, 100),
+  [ParametersType.Dutypoint]: () => useRandomizedRatio(),
   [ParametersType.Enabled]: () => useRandomizedBoolean(),
   [ParametersType.Flow]: () => useRandomizedNumber(0, 10),
+  [ParametersType.FlowControl]: () => useRandomizedRatio(),
   [ParametersType.Level]: () => useRandomizedNumber(0, 100),
   [ParametersType.Ratio]: () => useRandomizedRatio(),
   [ParametersType.Temperature]: () => useRandomizedNumber(20, 100),

@@ -104,7 +104,7 @@ class ComponentMeta(BaseModel):
     included_in_fmu: bool = True
     component_type: str | None = None
     valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
-    topic: str | None = None
+    topic_override: str | None = None
 
 
 def computed_meta(**kwargs):
@@ -119,7 +119,7 @@ def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
     if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
         return None
 
-    return field.json_schema_extra.get("topic")  # type: ignore
+    return field.json_schema_extra.get("topic_override")  # type: ignore
 
 
 @dataclass

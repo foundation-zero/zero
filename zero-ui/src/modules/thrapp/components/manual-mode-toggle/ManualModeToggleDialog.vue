@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { useSimulationStore } from "@/modules/thrs/stores/simulation";
 import { RiLock2Line } from "@remixicon/vue";
 import { useCountdown } from "@vueuse/core";
-import { ref } from "vue";
+import { inject, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAutomaticMode } from "../../state";
 
 const { t } = useI18n();
 
@@ -19,19 +19,27 @@ const cancel = () => {
   stop();
 };
 
-const COOLDOWN_SECONDS = 10;
+const COOLDOWN_SECONDS = 5;
 const MATCH_PASSWORD = "zerosecurity";
 const password = ref("");
 
-const automaticMode = useAutomaticMode();
+const { setAutomatedControl } = useSimulationStore();
+const currentDefinition = inject<Ref<string>>("currentModule")!;
 
 const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
   immediate: false,
   onComplete: async () => {
-    automaticMode.value = false;
+    await setAutomatedControl(currentDefinition.value)(false);
+
     cancel();
   },
 });
+
+const validateAndStart = () => {
+  if (password.value === MATCH_PASSWORD) {
+    start();
+  }
+};
 </script>
 
 <template>
@@ -47,6 +55,7 @@ const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
         v-model="password"
         :placeholder="t('thrapp.dialogs.manualMode.password')"
         type="password"
+        @keyup.enter="validateAndStart"
       />
       <InputGroupAddon>
         <RiLock2Line />
@@ -56,7 +65,7 @@ const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
     <div class="flex items-center gap-6">
       <Button
         :disabled="password !== MATCH_PASSWORD || isActive"
-        @click="() => start()"
+        @click="validateAndStart"
         >{{ t("thrapp.dialogs.manualMode.confirm") }}</Button
       >
       <Button @click="cancel">

@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from tests.orchestration.simples import SimpleInOut
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
+from thrs.input_output.model_builder import PartialModelBuilder
 
 
 class SimpleSensors(ThrsValues):
@@ -53,28 +52,3 @@ def test_partial_model_builder():
     assert result is not None
     assert result.thrusters_flow_fwd.flow.value == 14.12
     assert result.thrusters_flow_aft.flow.value == 12.12
-
-
-def test_combined_model_builder():
-    flow_message = """{
-        "Flow": {
-            "Value": 12.12,
-            "HasValue": true,
-            "IsValid": true,
-            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
-        },
-        "Temperature": {
-            "Value": 17.12,
-            "HasValue": true,
-            "IsValid": true,
-            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
-        }
-    }"""
-
-    builder = CombinedModelBuilder({"module1": SimpleInOut})
-    builder.input("module1/go_with_the", flow_message)
-    result = builder.result()
-    assert result is not None
-    module1 = result.values["module1"]
-    assert isinstance(module1, SimpleInOut)
-    assert module1.go_with_the.flow.value == 12.12

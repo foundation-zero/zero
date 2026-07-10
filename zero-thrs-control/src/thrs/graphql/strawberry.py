@@ -30,11 +30,8 @@ from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.graphql.base import (
-    AdsorptionMessaging,
     ConsumersMessaging,
-    DcMessaging,
     DhwMessaging,
-    DrivesMessaging,
     FieldMutation,
     PcmMessaging,
     PvtMessaging,
@@ -44,7 +41,11 @@ from thrs.graphql.base import (
 from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
 from thrs.graphql.dhw import DhwModule, DhwMutations
 from thrs.graphql.helpers import ensure_input_type
-from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
+from thrs.graphql.messaging import (
+    ControlMessaging,
+    DirectiveMessaging,
+    SimulationMessaging,
+)
 from thrs.graphql.pcm import PcmModule, PcmMutations
 from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.simulation import (
@@ -53,6 +54,12 @@ from thrs.graphql.simulation import (
     SimulationOutputsType,
 )
 from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
+from thrs.orchestration.comms import (
+    ControlApiChannels,
+    DirectivesApiChannels,
+    MqttConnector,
+    SimulationApiChannels,
+)
 from thrs.orchestration.config import Config
 
 logger = logging.getLogger(__name__)
@@ -95,11 +102,6 @@ class SimulationState:
         self, info: strawberry.Info[ThrsContext]
     ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
         return simulation.resolve_outputs(info.context.simulation_messaging)
-
-
-@strawberry.type
-class ControlState:
-    automatic: bool
 
 
 @strawberry.type
@@ -186,7 +188,7 @@ class Mutation(
         await expect_status
 
 
-def messaging(request: Request) -> Messaging:
+def messaging(request: Request) -> DirectiveMessaging:
     return request.app.state.messaging
 
 
@@ -215,7 +217,7 @@ def simulation_messaging(request: Request) -> SimulationMessaging:
 
 
 async def get_context(
-    messaging: Annotated[Messaging, Depends(messaging)],
+    messaging: Annotated[DirectiveMessaging, Depends(messaging)],
     thrusters_messaging: Annotated[ThrustersMessaging, Depends(thrusters_messaging)],
     pvt_messaging: Annotated[PvtMessaging, Depends(pvt_messaging)],
     pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
@@ -243,75 +245,82 @@ def create_app(settings: Config):
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-            thrusters_messaging: ThrustersMessaging = ControlMessaging(
-                "thrusters",
-                THRUSTERS_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            messaging_connector = MqttConnector(mqtt)
+
+            thrusters_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="thrusters",
+                module_description=THRUSTERS_MODULE_DESCRIPTION,
             )
-            pvt_messaging: PvtMessaging = ControlMessaging(
-                "pvt",
-                PVT_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            pvt_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="pvt",
+                module_description=PVT_MODULE_DESCRIPTION,
             )
-            pcm_messaging: PcmMessaging = ControlMessaging(
-                "pcm",
-                PCM_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            pcm_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="pcm",
+                module_description=PCM_MODULE_DESCRIPTION,
             )
-            consumers_messaging: ConsumersMessaging = ControlMessaging(
-                "consumers",
-                CONSUMERS_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            consumers_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="consumers",
+                module_description=CONSUMERS_MODULE_DESCRIPTION,
             )
-            adsorption_messaging: AdsorptionMessaging = ControlMessaging(
-                "adsorption",
-                ADSORPTION_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            adsorption_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="adsorption",
+                module_description=ADSORPTION_MODULE_DESCRIPTION,
             )
-            drives_messaging: DrivesMessaging = ControlMessaging(
-                "drives",
-                DRIVES_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            drives_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="drives",
+                module_description=DRIVES_MODULE_DESCRIPTION,
             )
-            dc_messaging: DcMessaging = ControlMessaging(
-                "dc",
-                DC_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            dc_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="dc",
+                module_description=DC_MODULE_DESCRIPTION,
             )
-            dhw_messaging: DhwMessaging = ControlMessaging(
-                "dhw",
-                DHW_MODULE_DESCRIPTION,
-                mqtt,
-                settings.mqtt_devices_topic_prefix,
-                settings.mqtt_controller_topic_prefix,
-                settings.mqtt_control_topic_suffix,
+            dhw_channels = ControlApiChannels(
+                messaging_connector,
+                settings,
+                module_name="dhw",
+                module_description=DHW_MODULE_DESCRIPTION,
             )
-            simulation_messaging: SimulationMessaging = SimulationMessaging(
-                simulation.io_mapping, mqtt, settings.mqtt_simulation_topic_prefix
+            simulation_channels = SimulationApiChannels(
+                messaging_connector,
+                settings,
+                simulation_inputs_cls=tuple(
+                    dict.fromkeys(
+                        inputs for inputs, _ in simulation.io_mapping.values()
+                    )
+                ),
+                simulation_outputs_cls=tuple(
+                    dict.fromkeys(
+                        outputs for _, outputs in simulation.io_mapping.values()
+                    )
+                ),
             )
-            messaging = Messaging(
-                mqtt,
+            directives_channels = DirectivesApiChannels(messaging_connector, settings)
+
+            thrusters_messaging = ControlMessaging(thrusters_channels)
+            pvt_messaging = ControlMessaging(pvt_channels)
+            pcm_messaging = ControlMessaging(pcm_channels)
+            consumers_messaging = ControlMessaging(consumers_channels)
+            adsorption_messaging = ControlMessaging(adsorption_channels)
+            drives_messaging = ControlMessaging(drives_channels)
+            dc_messaging = ControlMessaging(dc_channels)
+            dhw_messaging = ControlMessaging(dhw_channels)
+            simulation_messaging = SimulationMessaging(simulation_channels)
+            messaging = DirectiveMessaging(
                 [
                     thrusters_messaging,
                     pvt_messaging,
@@ -323,7 +332,8 @@ def create_app(settings: Config):
                     dhw_messaging,
                 ],
                 simulation_messaging,
-                settings.mqtt_simulation_topic_prefix,
+                directives_channels,
+                messaging_connector,
             )
             run_task = create_task(await messaging.run())
 

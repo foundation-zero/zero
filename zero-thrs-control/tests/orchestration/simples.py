@@ -3,9 +3,8 @@ from typing import Callable
 
 from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, ThrsValues
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.connector import Connector
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
@@ -17,20 +16,8 @@ class SimpleSimulationInputs(SimulationInputs):
     pass
 
 
-class SimpleSimulationOutputs(ThrsValues):
+class SimpleSimulationOutputs(SimulationValues):
     pass
-
-
-class SimpleConnector(Connector):
-    def __init__(self):
-        self.controls = []
-
-    async def run(self):
-        pass
-
-    async def transceive(self, control_values, controller_state):
-        self.controls.append((control_values, controller_state))
-        return control_values
 
 
 class SimpleSimulation(

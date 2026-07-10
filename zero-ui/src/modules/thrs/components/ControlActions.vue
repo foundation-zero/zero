@@ -15,7 +15,8 @@ import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
-  module: string;
+  activeModule: string;
+  modules?: string[];
 }>();
 
 const t = tScoped("thrs.components.controlActions");
@@ -26,11 +27,12 @@ const { control, isProcessing } = toRefs(useSimulationStore());
 const isAutomatic = useAutomaticMode();
 
 const mode = computed(() => {
-  const automaticMode = control.value?.modules?.[props.module as K]?.controlMode?.automaticMode;
+  const automaticMode =
+    control.value?.modules?.[props.activeModule as K]?.controlMode?.automaticMode;
 
-  if (!automaticMode || !te(`modes.${props.module}`)) {
+  if (!automaticMode || !te(`modes.${props.activeModule}`)) {
     return undefined;
-  } else if (props.module === "pvt") {
+  } else if (props.activeModule === "pvt") {
     const pvtMode = automaticMode as PvtAutomaticMode;
 
     return t("modes.pvt", {
@@ -39,13 +41,13 @@ const mode = computed(() => {
       ownersMode: pvtMode.owners.mode,
     });
   } else {
-    return t(`modes.${props.module}`, automaticMode);
+    return t(`modes.${props.activeModule}`, automaticMode);
   }
 });
 
 const showManualModeDialog = ref(false);
 
-const toggleAutomaticMode = () => {
+const toggleAutomaticMode = async () => {
   if (isAutomatic.value) {
     showManualModeDialog.value = true;
   } else {
@@ -68,11 +70,11 @@ const toggleAutomaticMode = () => {
     <Switch
       :model-value="isAutomatic || showManualModeDialog"
       :disabled="isProcessing"
-      class="data-[state=unchecked]:*:data-[slot=switch-thumb]:bg-warning! data-[state=unchecked]:border-warning relative w-9 data-[state=checked]:*:data-[slot=switch-thumb]:translate-x-[calc(100%+2px)]"
+      class="data-[state=unchecked]:*:data-[slot=switch-thumb]:bg-warning! data-[state=unchecked]:border-warning relative w-9 data-[state=checked]:*:data-[slot=switch-thumb]:translate-x-[calc(100%+8px)]"
     >
       <template #default>
         <RiLock2Fill
-          class="text-inverse-foreground absolute left-0.75 size-3.5"
+          class="text-brand absolute left-1 size-3"
           :class="{ 'opacity-0': !isAutomatic }"
         />
       </template>

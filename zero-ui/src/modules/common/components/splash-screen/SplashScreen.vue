@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ENV } from "@/settings";
-import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   HERO_DESCRIPTION_DELAY,
@@ -33,10 +31,6 @@ import SplashScreenTileIcon from "./tile/SplashScreenTileIcon.vue";
 import SplashScreenTileTitle from "./tile/SplashScreenTileTitle.vue";
 
 const { t } = useI18n();
-const hasGrafanaUrl = computed(() => (ENV.VITE_GRAFANA_URL ?? "").trim().length > 0);
-const visibleAppLinks = computed(() =>
-  SPLASH_APP_LINKS.filter((appLink) => appLink.id !== "grafana" || hasGrafanaUrl.value),
-);
 </script>
 
 <template>
@@ -78,7 +72,7 @@ const visibleAppLinks = computed(() =>
 
         <div class="mt-12 grid gap-4 md:mt-16 md:grid-cols-2 xl:grid-cols-4">
           <SplashScreenTile
-            v-for="(appLink, index) in visibleAppLinks"
+            v-for="(appLink, index) in SPLASH_APP_LINKS"
             :key="appLink.id"
             :to="appLink.to"
             :animation-delay="TILE_INITIAL_DELAY + index * TILE_ANIMATION_INTERVAL"

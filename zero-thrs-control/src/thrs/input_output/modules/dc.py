@@ -232,49 +232,73 @@ class DcSensorValues(ThrsValues):
     dc_brightloop_aft1: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002076", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002076",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-aft1-active",
         ),
     ]
     dc_brightloop_aft2: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002075", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002075",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-aft2-active",
         ),
     ]
     dc_brightloop_aft3: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002074", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002074",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-aft3-active",
         ),
     ]
     dc_brightloop_aft4: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002073", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002073",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-aft4-active",
         ),
     ]
     dc_brightloop_fwd1: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002078", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002078",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-fwd1-active",
         ),
     ]
     dc_brightloop_fwd2: Annotated[
         sensor.Brightloop,
         component_meta(
-            yard_tag="45002077", component_type="brightloop", included_in_fmu=False
+            yard_tag="45002077",
+            component_type="brightloop",
+            included_in_fmu=False,
+            topic_override="dummy-pms/brightloop-fwd2-active",
         ),
     ]
     dc_ugrid1: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002082", component_type="ugrid", included_in_fmu=False
+            yard_tag="45002082",
+            component_type="ugrid",
+            included_in_fmu=False,
+            topic_override="dummy-pms/ugrid1-active",
         ),
     ]
     dc_ugrid2: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002081", component_type="ugrid", included_in_fmu=False
+            yard_tag="45002081",
+            component_type="ugrid",
+            included_in_fmu=False,
+            topic_override="dummy-pms/ugrid2-active",
         ),
     ]
 

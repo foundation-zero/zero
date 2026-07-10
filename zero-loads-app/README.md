@@ -71,7 +71,7 @@ poetry run loads api
 
 Run the sails sensor stub to simulate sensor data over MQTT:
 ```bash
-poetry run loads sails-stub
+poetry run loads sail-system-sensors-stub
 ```
 
 Run the A+T sensor stub to simulate sensor data over MQTT:

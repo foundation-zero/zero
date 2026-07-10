@@ -1,7 +1,9 @@
 import { NumberFormatter } from "@/modules/common/lib/utils.ts";
 import { HTMLAttributes } from "vue";
+import Auto from "./AutoRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
 import DeltaT from "./DeltaTRenderer.vue";
+import EnabledDisabled from "./EnabledDisabledRenderer.vue";
 import Energy from "./EnergyRenderer.vue";
 import FlowRate from "./FlowRateRenderer.vue";
 import Frequency from "./FrequencyRenderer.vue";
@@ -48,4 +50,6 @@ export const FieldRenderer = {
   Power,
   Frequency,
   QuantityLiters,
+  Auto,
+  EnabledDisabled,
 };

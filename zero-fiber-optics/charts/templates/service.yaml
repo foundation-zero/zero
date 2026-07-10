@@ -5,15 +5,17 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-fiber-optics.labels" . | nindent 4 }}
-    {{- with .Values.service.labels }}
+    {{- with .Values.udp.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.service.annotations }}
+  {{- with .Values.udp.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.udp.serviceType }}
+  externalIPs:
+    {{- toYaml .Values.udp.externalIPs | nindent 4 }}
   selector:
     {{- include "zero-fiber-optics.selectorLabels" . | nindent 4 }}
   ports:

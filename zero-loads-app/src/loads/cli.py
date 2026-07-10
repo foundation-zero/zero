@@ -13,7 +13,7 @@ from pydantic_settings import (
 
 from loads.api.auth import generate_jwt
 from loads.config import Settings
-from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
+from loads.control import ConditionsStub, Control
 from loads.logging_config import setup_logging
 from loads.registry import (
     MessagingModule,
@@ -42,38 +42,6 @@ class GenerateJWT(Settings):
 
     async def cli_cmd(self) -> None:
         await generate_jwt(self, roles=self.roles, jwt_secret=self.jwt_secret)
-
-
-class AdapterCmd(Settings):
-    canbus_ip: str
-    canbus_port: int
-    canbus_buffer_size: int
-
-    async def cli_cmd(self) -> None:
-        logger.info("Running adapter...")
-        async with PCanAdapter.init_from_settings(
-            self,
-            canbus_ip=self.canbus_ip,
-            canbus_port=self.canbus_port,
-            canbus_buffer_size=self.canbus_buffer_size,
-        ) as adapter:
-            await adapter.run()
-
-
-class PCanStubCmd(Settings):
-    canbus_ip: str
-    canbus_port: int
-    canbus_buffer_size: int
-
-    async def cli_cmd(self) -> None:
-        logger.info("Running pcan stub...")
-        async with PCanStub.init_from_settings(
-            self,
-            canbus_ip=self.canbus_ip,
-            canbus_port=self.canbus_port,
-            canbus_buffer_size=self.canbus_buffer_size,
-        ) as stub:
-            await stub.run()
 
 
 class ConditionsStubCmd(Settings):
@@ -150,8 +118,6 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
 
     api: CliSubCommand[ApiCli]
     generate_jwt: CliSubCommand[GenerateJWT]
-    adapter: CliSubCommand[AdapterCmd]
-    pcan_stub: CliSubCommand[PCanStubCmd]
     conditions_stub: CliSubCommand[ConditionsStubCmd]
     control: CliSubCommand[ControlCli]
     at_sensors_stub: CliSubCommand[ATSensorsStubCmd]

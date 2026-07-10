@@ -50,7 +50,7 @@ def resolve_module(
         ),
         parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
         control_mode=SwitchingControlModeType.from_pydantic(
-            PcmControlModeType, module.control_mode.mode
+            PcmControlModeType, module.control_mode
         )
         if module.control_mode
         else None,

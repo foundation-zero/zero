@@ -2,11 +2,11 @@ import { defineStore } from "pinia";
 
 import { keysOf, toTimeSeriesData, tuple } from "@/modules/common/lib/utils";
 import { ChartDataType, SeriesChart, Stamped, TimeSeriesData } from "@/modules/common/types";
-import { context } from "@/modules/thrs/graphql/client";
-import { useQuery } from "@urql/vue";
-import { objectEntries, useLocalStorage } from "@vueuse/core";
+import { client, context } from "@/modules/thrs/graphql/client";
+import { DocumentInput, useQuery } from "@urql/vue";
+import { objectEntries, useLocalStorage, watchOnce } from "@vueuse/core";
 import { useObservable } from "@vueuse/rxjs";
-import { Subject, tap } from "rxjs";
+import { merge, Subject, tap } from "rxjs";
 import { timer } from "rxjs/internal/observable/timer";
 import { scan } from "rxjs/internal/operators/scan";
 import { startWith } from "rxjs/internal/operators/startWith";
@@ -15,7 +15,7 @@ import { computed, Ref } from "vue";
 import { QUERY_ALL, THRS } from "../lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "../types";
 
-export const AMOUNT_OF_ENTRIES_TO_CACHE = 100;
+export const AMOUNT_OF_ENTRIES_TO_CACHE = 1;
 
 type Component = Record<string, Stamped<ChartDataType>>;
 type Components = Record<string, Component>;
@@ -82,11 +82,18 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   const cachedData = useLocalStorage<ModuleHistory>("thrs-history", {});
 
   const restartTrigger$ = new Subject<void>();
+  const updateTrigger$ = new Subject<void>();
 
   const clear = () => {
     cachedData.value = {};
     lastUpdate.value = null;
     restartTrigger$.next();
+  };
+
+  const refresh = () => {
+    updateTrigger$.next();
+
+    return new Promise<void>((resolve) => watchOnce(lastUpdate, () => resolve()));
   };
 
   const { data, executeQuery: update } = useQuery<THRS>({
@@ -96,9 +103,13 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   });
 
   const history: Ref<ModuleHistory> = useObservable(
-    restartTrigger$.pipe(
-      startWith(null),
-      switchMap(() => timer(0, 5000)),
+    merge(
+      restartTrigger$.pipe(
+        startWith(null),
+        switchMap(() => timer(0, 5000)),
+      ),
+      updateTrigger$,
+    ).pipe(
       switchMap(async () => {
         await update();
 
@@ -136,11 +147,17 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
       }));
     });
 
+  const mutate = (query: DocumentInput, variables: Record<string, unknown>) => {
+    return client.mutation(query, variables).toPromise();
+  };
+
   return {
     data,
     history,
     lastUpdate,
     useHistory,
     clear,
+    refresh,
+    mutate,
   };
 });

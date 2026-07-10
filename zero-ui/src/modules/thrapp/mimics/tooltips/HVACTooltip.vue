@@ -10,12 +10,12 @@ import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
 import HVACInstance from "../instances/HVACInstance.vue";
-import { ParameterValue, SensorValue } from "../providers/index.ts";
+import { SensorValue } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
+import Circuit from "./partials/Circuit.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
-import ManualControl from "./partials/ManualControl.vue";
 
 const { items, labels, sources } = useTranslations();
 
@@ -34,36 +34,6 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
-      <ManualControl />
-    </TooltipList>
-
-    <TooltipList>
-      <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ParameterValue :source="parameters.temperature">
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("maximumTemperature") }}
-            <FieldRenderer.Source external>
-              {{ sources("hvacController") }}
-            </FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ParameterValue>
-
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("heatflow") }}
-          <FieldRenderer.Source url>
-            {{ sources("hvacHeatFlow") }}
-          </FieldRenderer.Source>
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
-          <FieldRenderer.Heat :value="200" />
-        </TooltipListItemValue>
-      </TooltipListItem>
     </TooltipList>
 
     <TooltipList>
@@ -95,32 +65,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>
-      <SensorValue
-        :source="sensors.incoming"
-        field="temperature"
-      >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("incomingTemperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
-      <SensorValue
-        :source="sensors.outgoing"
-        field="temperature"
-      >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("outgoingTemperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
+      <Circuit :sensors="sensors" />
     </TooltipList>
 
     <TooltipList>
@@ -128,7 +73,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
       <FlowController
         :controller="controllerState.controller"
         :setpoint="parameters.flow"
-        :measurement="sensors.measurement"
+        :measurement="sensors.flow"
       />
     </TooltipList>
   </MimicTooltip>

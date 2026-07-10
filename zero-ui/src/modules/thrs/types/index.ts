@@ -55,6 +55,12 @@ export type HeatpumpControl = {
   on: Stamped<boolean>;
 };
 
+export type ControlValueFields =
+  | keyof PumpControl
+  | keyof ValveControl
+  | keyof PcmControl
+  | keyof HeatpumpControl;
+
 export type ControlFields = {
   [ControlComponentType.Pump]: (keyof PumpControl)[];
   [ControlComponentType.Valve]: (keyof ValveControl)[];
@@ -66,6 +72,18 @@ export type ControllerStateFields = {
   [ControllerStateComponentType.DhwTanksController]: (keyof DhwTankController)[];
   [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
 };
+
+export type SensorValueFields =
+  | keyof PumpSensor
+  | keyof TemperatureSensor
+  | keyof FlowSensor
+  | keyof PressureSensor
+  | keyof ThrusterSensor
+  | keyof PcsSensor
+  | keyof LevelSensor
+  | keyof DeltaTSensor
+  | keyof HeatExchangerSensor
+  | keyof Valve;
 
 export type SensorFields = {
   [SensorComponentType.Flow]: (keyof FlowSensor)[];
@@ -156,6 +174,7 @@ export type SensorType =
   | DeltaTSensor;
 
 export type ControlType = PumpControl | ValveControl | PcmControl | HeatpumpControl;
+
 export type ControllerStateType = DhwTankController | PIDController;
 export type Sensors = Record<string, SensorType>;
 export type Controls = Record<string, ControlType>;
@@ -218,6 +237,10 @@ export type ControlDefinitionMap = {
   [ControlComponentType.Valve]: ValveControl;
   [ControlComponentType.Pcm]: PcmControl;
   [ControlComponentType.Heatpump]: HeatpumpControl;
+};
+
+export type ControlValues<T extends ControlComponentType> = {
+  [K in keyof ControlDefinitionMap[T]]: Unstamp<ControlDefinitionMap[T][K]>;
 };
 
 export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
@@ -358,6 +381,7 @@ export type PID = [proportional: number, integral: number, derivative: number];
 export const enum ParametersType {
   Temperature = "temperature",
   Flow = "flow",
+  FlowControl = "flowcontrol",
   Tuning = "tuning",
   Enabled = "enabled",
   Ratio = "ratio",
@@ -372,6 +396,7 @@ export type ParameterDefinition<T extends ParametersType = ParametersType> = Sch
 export type ParameterDefinitions = SchemaDefinitions<ParameterDefinition>;
 export type TemperatureParameterDefinition = ParameterDefinition<ParametersType.Temperature>;
 export type FlowParameterDefinition = ParameterDefinition<ParametersType.Flow>;
+export type FlowControlParameterDefinition = ParameterDefinition<ParametersType.FlowControl>;
 export type TuningParameterDefinition = ParameterDefinition<ParametersType.Tuning>;
 export type EnabledParameterDefinition = ParameterDefinition<ParametersType.Enabled>;
 export type RatioParameterDefinition = ParameterDefinition<ParametersType.Ratio>;
@@ -379,16 +404,17 @@ export type DutypointParameterDefinition = ParameterDefinition<ParametersType.Du
 export type dTParameterDefinition = ParameterDefinition<ParametersType.dT>;
 export type LevelParameterDefinition = ParameterDefinition<ParametersType.Level>;
 export type DisabledParameterDefinition = ParameterDefinition<ParametersType.Disabled>;
-export type ParameterType = number | PID;
+export type ParameterType = number | PID | boolean;
 export type Parameters = Record<string, ParameterType>;
 
 export type ParameterDefinitionMap = {
   [ParametersType.Temperature]: number;
   [ParametersType.Flow]: number;
+  [ParametersType.FlowControl]: Ratio;
   [ParametersType.Tuning]: PID;
   [ParametersType.Enabled]: boolean;
-  [ParametersType.Ratio]: number;
-  [ParametersType.Dutypoint]: number;
+  [ParametersType.Ratio]: Ratio;
+  [ParametersType.Dutypoint]: Ratio;
   [ParametersType.dT]: number;
   [ParametersType.Level]: number;
   [ParametersType.Disabled]: boolean;

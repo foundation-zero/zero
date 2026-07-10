@@ -14,7 +14,8 @@ metadata:
     {{- end }}
 spec:
   type: LoadBalancer
-  externalIPs: {{ .Values.api.service.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.api.service.externalIPs | nindent 4 }}
   ports:
     - port: 5101
       targetPort: http

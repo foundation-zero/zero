@@ -49,12 +49,14 @@ const getReferenceValues = async (
   sailset: SailId[],
   awaRange: AWA = AWA_VALUES[0].id,
   awsRange: NumRangeId = AWS_VALUES[0].id,
+  tack: "port" | "starboard" = "starboard",
 ) => {
   return (_referenceValues ??= await client.query<QueryVariableReference>(VARIABLE_ACTUALS, {
     variables,
     sailset,
     awaRange,
     awsRange,
+    tack,
   }));
 };
 

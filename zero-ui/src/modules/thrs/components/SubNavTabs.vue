@@ -5,22 +5,30 @@ import { useRoute } from "vue-router";
 
 const { t } = useI18n();
 
+const DEFAULT_PARAMS = {
+  module: "dhw",
+};
+
 const menuItems = [
   {
     title: t("thrs.views.monitoring.title"),
-    to: "thrs/hmi/monitoring",
+    to: "thrsim/monitoring",
+    params: DEFAULT_PARAMS,
   },
   {
     title: t("thrs.views.controls.title"),
-    to: "thrs/hmi/controls",
+    to: "thrsim/controls",
+    params: DEFAULT_PARAMS,
   },
   {
     title: t("thrs.views.parameters.title"),
-    to: "thrs/hmi/parameters",
+    to: "thrsim/parameters",
+    params: DEFAULT_PARAMS,
   },
   {
     title: t("thrs.views.mimic.title"),
-    to: "thrs/hmi/mimic",
+    to: "thrsim/mimic",
+    params: DEFAULT_PARAMS,
   },
 ];
 
@@ -36,7 +44,7 @@ const route = useRoute();
       <RouterLink
         v-for="item in menuItems"
         :key="item.to"
-        :to="{ name: item.to }"
+        :to="item"
       >
         <TabsTrigger :value="item.to">
           {{ item.title }}

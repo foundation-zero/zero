@@ -1,9 +1,18 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, cast
+from typing import Callable, Literal, cast
+
+from pydantic.fields import FieldInfo
 
 from loads.sensors import LoadsModel, at, fiber_optic, sail_system
+from loads.sensors.units import VariableMeta
 from loads.util import camel_to_kebab, hyphenize
+
+
+@dataclass
+class Applicability:
+    variable_key: str
+    applies_to_tack: Literal["port", "starboard"]
 
 
 @dataclass
@@ -17,6 +26,7 @@ class VariableDefinition:
     scale_max: float | None
     scale_min_label: str | None
     scale_max_label: str | None
+    applicability: Applicability | None
 
 
 @dataclass
@@ -35,24 +45,45 @@ def _build_loads_model_variable_definitions(
 ) -> list[VariableDefinition]:
     function_id = camel_to_kebab(model.__name__)
 
-    return [
-        VariableDefinition(
-            id=f"{function_id}-{hyphenize(variable_meta.name or field)}",
+    def _variable_definition(field: str, field_info: FieldInfo, meta: VariableMeta):
+        applicability = _applicability_for(meta)
+
+        return VariableDefinition(
+            id=f"{function_id}-{hyphenize(meta.name or field)}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_actual=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
-            unit=cast(str, variable_meta.unit),
-            scale_min=variable_meta.scale_min,
-            scale_max=variable_meta.scale_max,
-            scale_min_label=variable_meta.scale_min_label,
-            scale_max_label=variable_meta.scale_max_label,
+            unit=cast(str, meta.unit),
+            scale_min=meta.scale_min,
+            scale_max=meta.scale_max,
+            scale_min_label=meta.scale_min_label,
+            scale_max_label=meta.scale_max_label,
+            applicability=applicability,
         )
+
+    return [
+        _variable_definition(field, field_info, variable_meta)
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.type == "actual"
     ]
+
+
+def _applicability_for(meta: VariableMeta) -> Applicability | None:
+    match (meta.variable_key, meta.applies_to_tack):
+        case (str(key), str(applies_to_tack)):
+            return Applicability(
+                key,
+                applies_to_tack,
+            )
+        case (None, None):
+            return None
+        case _:
+            raise ValueError(
+                f"variable_key and applies_to_tack need to be either both present or None: {(meta.variable_key, meta.applies_to_tack)}"
+            )
 
 
 def _lookup_variable_definition_by_id(
@@ -78,21 +109,55 @@ def _build_sail_system_alarm_definitions(
                 f"No variable definition found for alarm {alarm} with id: {id}", e
             )
 
+    def _lookup_threshold_getter(
+        alarm_field: str,
+    ) -> Callable[[LoadsModel], float | None]:
+        thresholds = [
+            field
+            for field, field_info in model.model_fields.items()
+            if (
+                threshold_meta := model.extract_variable_meta(
+                    field, field_info.metadata
+                )
+            )
+            and threshold_meta.type == "alarm_threshold"
+            and threshold_meta.threshold_for is not None
+            and threshold_meta.threshold_for == alarm_field
+        ]
+
+        if len(thresholds) > 1:
+            raise ValueError(
+                f"Multiple thresholds for alarm field '{alarm_field}' "
+                f"in {model.__name__}: "
+                f"thresholds={thresholds}"
+            )
+
+        threshold_field = thresholds[0] if thresholds else None
+
+        if threshold_field is None:
+            return lambda _model_instance: None
+
+        return partial(
+            lambda field, model_instance: getattr(model_instance, field),
+            threshold_field,
+        )
+
     return [
         AlarmDefinition(
-            id=f"{function_id}-alarm",
+            id=f"{function_id}-{hyphenize(f'{variable_meta.name}')}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_active=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             get_actual=actual_definition.get_actual,
-            get_threshold=lambda model_instance: model_instance.relief_load,  # type: ignore[attr-defined]
+            get_threshold=_lookup_threshold_getter(field),
             actual_definition=actual_definition,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
-        and variable_meta.is_alarm
+        and variable_meta.alarm_for
+        and variable_meta.alarm_for_field
         and (
             actual_definition := _lookup_variable_definition(
                 field,
@@ -115,9 +180,8 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.BladeTweakerSb,
     sail_system.CodeZeroTack,
     sail_system.A2Tack,
-    sail_system.StormJibTack,
     sail_system.MainHeadstayCombined,
-    sail_system.HeadsailLocks,
+    sail_system.Mast,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,
     sail_system.MainHalyard,
@@ -131,7 +195,6 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.MizzenCheckstay,
     sail_system.MizzenCunningham,
     sail_system.MizzenHalyard,
-    sail_system.MizzenHeadsailLocks,
     sail_system.MizzenHeadsailTackAdjuster,
     sail_system.MizzenOuthaul,
     sail_system.MizzenPreventer,
@@ -175,6 +238,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         scale_max=variable_meta.scale_max,
         scale_min_label=variable_meta.scale_min_label,
         scale_max_label=variable_meta.scale_max_label,
+        applicability=None,
     )
 
 

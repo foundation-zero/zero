@@ -16,7 +16,9 @@ class Config(BaseSettings):
     mqtt_port: int
     mqtt_devices_topic_prefix: str
     mqtt_controller_topic_prefix: str
-    mqtt_simulation_topic_prefix: str
+    mqtt_controller_topic_suffix: str
+    mqtt_simulator_topic_prefix: str
+    mqtt_simulator_topic_suffix: str
     mqtt_control_topic_suffix: str
 
     @property

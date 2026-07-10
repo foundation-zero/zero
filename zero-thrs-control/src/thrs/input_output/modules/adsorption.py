@@ -72,15 +72,21 @@ class AdsorptionSensorValues(ThrsValues):
     ]
     adsorption_available_hot_temperature: Annotated[
         sensor.TemperatureSensor,
-        component_meta(component_type="external_sensor", included_in_fmu=False),
+        component_meta(
+            component_type="external_sensor", included_in_fmu=False
+        ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
     ]
     adsorption_available_cold_temperature: Annotated[
         sensor.TemperatureSensor,
-        component_meta(component_type="external_sensor", included_in_fmu=False),
+        component_meta(
+            component_type="external_sensor", included_in_fmu=False
+        ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
     ]
     adsorption_available_seawater_temperature: Annotated[
         sensor.TemperatureSensor,
-        component_meta(component_type="external_sensor", included_in_fmu=False),
+        component_meta(
+            component_type="external_sensor", included_in_fmu=False
+        ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
     ]
 
 

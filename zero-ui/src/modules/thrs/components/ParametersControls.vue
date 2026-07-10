@@ -35,10 +35,11 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
   [ParametersType.Tuning]: PIDParameter,
   [ParametersType.Enabled]: BooleanParameter,
   [ParametersType.Ratio]: RatioParameter,
-  [ParametersType.Dutypoint]: NumberParameter,
+  [ParametersType.Dutypoint]: RatioParameter,
   [ParametersType.dT]: NumberParameter,
   [ParametersType.Level]: NumberParameter,
   [ParametersType.Disabled]: BooleanParameter,
+  [ParametersType.FlowControl]: RatioParameter,
 };
 </script>
 <template>

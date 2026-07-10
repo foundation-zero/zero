@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
-from asyncio import Future, gather
-from collections.abc import Mapping
+from asyncio import Future
 from typing import Any
 
 from pydantic import TypeAdapter
 
-from thrs.input_output.base import CombinedValues, ThrsValues
-from thrs.orchestration.module import ModuleClassMap
+from thrs.input_output.base import ThrsValues
 
 
 class ModelBuilder[T](ABC):
@@ -61,37 +59,3 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
     async def wait_for_result(self) -> T:
         return await self._complete_model
-
-
-class CombinedModelBuilder(ModelBuilder[CombinedValues]):
-    """
-    Model builder that handles multiple modules.
-
-    It builds a ModuleClassMap instead of a single class.
-    """
-
-    def __init__(self, clss: ModuleClassMap):
-        self._model_builders: Mapping[str, ModelBuilder[ThrsValues]] = {
-            name: PartialModelBuilder(module_cls) for name, module_cls in clss.items()
-        }
-
-    def input(self, field: str, json: str | bytes):
-        module_name, field_name, *rest = field.split("/")
-        self._model_builders[module_name].input(field_name, json)
-
-    def result(self) -> CombinedValues | None:
-        values: dict[str, ThrsValues] = {
-            name: res
-            for name, builder in self._model_builders.items()
-            if (res := builder.result())
-        }
-        if set(values.keys()) == set(self._model_builders.keys()):
-            return CombinedValues(values=values)
-        else:
-            return None
-
-    async def wait_for_result(self) -> CombinedValues:
-        results = await gather(
-            *(builder.wait_for_result() for builder in self._model_builders.values())
-        )
-        return CombinedValues(dict(zip(self._model_builders.keys(), results)))

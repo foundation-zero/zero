@@ -1,9 +1,13 @@
 from datetime import datetime
-from typing import Callable, Mapping
+from typing import Callable, Mapping, cast
 
 from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
-from thrs.control.switching import SwitchingControl, SwitchingControlMode
+from thrs.control.switching import (
+    AutomationMode,
+    SwitchingControl,
+    SwitchingControlMode,
+)
 from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -102,21 +106,31 @@ class CombinedControl(
             values={name: module.mode for name, module in self._modules.items()}
         )
 
-    def mode_for(self, module: str) -> SwitchingControlMode[ThrsValues]:
-        return self._modules[module].mode
-
     def update_parameters(self, parameters: CombinedValues):
         for name, params in parameters.values.items():
             self._modules[name].update_parameters(params)
 
-    def update_parameters_for(self, module: str, parameters: ThrsValues):
-        self._modules[module].update_parameters(parameters)
+    def update_manual_controls(self, control_valuess: CombinedValues):
+        for name, control_values in control_valuess.values.items():
+            self._modules[name].update_manual_controls(control_values)
 
-    def manual_controls(self, module: str, control_values: ThrsValues):
-        self._modules[module].manual_controls(control_values)
+    @property
+    def manual_controls(self) -> CombinedValues:
+        return CombinedValues(
+            values={
+                name: module.manual_controls for name, module in self._modules.items()
+            }
+        )
 
-    def set_automation_mode(self, module: str, automation: bool):
-        self._modules[module].switch_mode("automatic" if automation else "manual")
+    def update_automation_modes(self, combined_modes: CombinedValues):
+        for module, mode in combined_modes.values.items():
+            expected_mode = cast(AutomationMode, mode)
+            self._modules[module].switch_mode(expected_mode)
+
+    def set_automation_mode(self, module: str, automatic: bool):
+        self._modules[module].switch_mode(
+            AutomationMode(mode="automatic" if automatic else "manual")
+        )
 
 
 class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues]):
@@ -162,6 +176,13 @@ class CombinedModule:
         }
         self.controller_state_clss: ModuleClassMap = {
             module: desc.controller_state_cls for module, desc in modules.items()
+        }
+        self.parameters_clss: ModuleClassMap = {
+            module: desc.parameters_cls for module, desc in modules.items()
+        }
+        self.control_modes_clss: ModuleClassMap = {
+            module: SwitchingControlMode[desc.control_mode_cls]
+            for module, desc in modules.items()
         }
 
     @property

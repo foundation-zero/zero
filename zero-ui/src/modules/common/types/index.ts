@@ -2,7 +2,13 @@ import { PID } from "@/modules/thrs/types";
 import { Ref } from "vue";
 
 export type Stamped<T> = { value: T; timestamp: Date };
-export type Unstamp<T> = T extends Stamped<infer U> ? U : never;
+export type Unstamp<T> =
+  T extends Stamped<infer U>
+    ? U
+    : T extends Record<string, Stamped<unknown>>
+      ? { [K in keyof T]: Unstamp<T[K]> }
+      : never;
+
 export type History<T> =
   T extends Stamped<infer U extends ChartDataType>
     ? TimeSeriesData<U>[]

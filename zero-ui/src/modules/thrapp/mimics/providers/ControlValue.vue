@@ -7,27 +7,20 @@
     Value extends Unstamp<ControlDefinitionMap[Control][Key]>
   "
 >
-import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
 import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrs/types";
-import { computed } from "vue";
-import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValueSource } from ".";
+import { ModuleField, provideFieldValueSource } from ".";
+import { provideControlValue } from "./forms.control";
 
 const props = defineProps<{
   source: ModuleField<Control>;
   field?: Key;
 }>();
 
-const { getControlValue } = getMimicDataProvider();
-
-const control = getControlValue(props.source);
-const value = computed(() =>
-  props.field ? (unstamp(control.value?.[props.field]) as Value | undefined) : undefined,
-);
-provideFieldValue(value);
+const value = provideControlValue<Control, Key>(props.source, props.field);
 provideFieldValueSource(props.source);
 </script>
 
 <template>
-  <slot v-bind="{ source, value, control }" />
+  <slot v-bind="{ source, value: value as Value }" />
 </template>

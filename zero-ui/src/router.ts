@@ -1,12 +1,24 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { INCLUDED_APPS, ZeroApps } from "./apps";
 import { grafanaRoute, sharedRoutes } from "./modules/common/router";
 import { domesticRoutes } from "./modules/domestic/router";
 import { loadsRoutes } from "./modules/loads/router";
-import { thrsRoutes } from "./modules/thrs/router";
+import { thrappRoutes } from "./modules/thrapp/router";
+import { thrsimRoutes } from "./modules/thrs/router";
+
+const appRoutes: Record<ZeroApps, RouteRecordRaw> = {
+  [ZeroApps.grafana]: grafanaRoute,
+  [ZeroApps.thrsim]: thrsimRoutes,
+  [ZeroApps.domestic]: domesticRoutes,
+  [ZeroApps.loads]: loadsRoutes,
+  [ZeroApps.thrs]: thrappRoutes,
+};
+
+const includedRoutes = INCLUDED_APPS.map((app) => appRoutes[app]);
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [sharedRoutes, grafanaRoute, thrsRoutes, domesticRoutes, loadsRoutes],
+  routes: [sharedRoutes, ...includedRoutes],
 });
 
 export default router;

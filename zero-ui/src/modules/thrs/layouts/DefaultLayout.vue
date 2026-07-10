@@ -67,7 +67,7 @@ provide("currentModule", currentModuleKey);
         v-if="currentRoute.params.module"
         #right
       >
-        <ControlActions :module="currentModuleKey" />
+        <ControlActions :active-module="currentModuleKey" />
       </template>
     </TopNavToolbar>
   </TopNav>

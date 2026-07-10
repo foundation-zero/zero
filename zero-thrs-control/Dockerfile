@@ -1,4 +1,4 @@
-FROM python:3.13-slim-bookworm AS builder
+FROM python:3.13-slim-trixie AS builder
 
 ENV POETRY_VERSION=2.2.1 \
     POETRY_HOME=/opt/poetry \
@@ -17,7 +17,7 @@ WORKDIR /app
 COPY ./pyproject.toml ./poetry.lock ./
 RUN poetry install --no-root
 
-FROM python:3.13-slim-bookworm AS prod-base
+FROM python:3.13-slim-trixie AS prod-base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
@@ -34,16 +34,16 @@ WORKDIR /app
 
 COPY --chown=1001:1001 ./src/thrs/ thrs/
 
-FROM prod-base AS simulation
+FROM prod-base AS fmu_compile
 
 RUN apt-get update && \
     apt-get install -y ca-certificates curl gnupg build-essential && \
     rm -rf /var/lib/apt/lists/*
 
-RUN fmpy compile /app/thrs/simulation/models/Thruster_Module_V19.fmu
 
+FROM prod-base AS simulation
 USER 1001
-ENTRYPOINT [ "python", "-m", "thrs.cli", "run"]
+ENTRYPOINT [ "python", "-m", "thrs.cli"]
 
 FROM prod-base AS control
 USER 1001
