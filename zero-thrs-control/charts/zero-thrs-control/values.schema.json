@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Values",
+    "required": [
+        "mqtt",
+        "api",
+        "control"
+    ],
+    "properties": {
+        "mqtt": {
+            "type": "object",
+            "required": [
+                "host",
+                "port",
+                "username",
+                "devicesTopicPrefix",
+                "controllerTopicPrefix",
+                "simulatorTopicPrefix",
+                "controlTopicSuffix",
+                "controllerTopicSuffix",
+                "simulatorTopicSuffix"
+            ],
+            "properties": {
+                "host": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "port": {
+                    "type": "integer",
+                    "default": 1883
+                },
+                "username": {
+                    "type": "string"
+                },
+                "devicesTopicPrefix": {
+                    "type": "string"
+                },
+                "controllerTopicPrefix": {
+                    "type": "string"
+                },
+                "simulatorTopicPrefix": {
+                    "type": "string"
+                },
+                "controlTopicSuffix": {
+                    "type": "string"
+                },
+                "controllerTopicSuffix": {
+                    "type": "string"
+                },
+                "simulatorTopicSuffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "api": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        },
+        "control": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

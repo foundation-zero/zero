@@ -1,23 +1,27 @@
 # Required: MQTT host
 mqtt:
-  host:
+  host: localhost
   port: 1883
   username: thrs
   existingSecret:
   existingSecretPasswordKey: password
   devicesTopicPrefix: thrs
-  controllerTopicPrefix: thrs
-  simulationTopicPrefix: thrs
-
+  controllerTopicPrefix: thrs/controller
+  simulatorTopicPrefix: thrs/simulator
+  controlTopicSuffix: Command
+  controllerTopicSuffix: set
+  simulatorTopicSuffix: set
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
 api:
   enabled: true
-  image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
-    # This sets the pull policy for images.
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
   resources: {}
   service:
     labels: {}
@@ -29,14 +33,13 @@ api:
 
 control:
   enabled: false
-  image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
-    # This sets the pull policy for images.
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
   resources: {}
   types: ["boat"]
+
+simulation:
+  enabled: false
+  resources: {}
+  type: "boat"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
