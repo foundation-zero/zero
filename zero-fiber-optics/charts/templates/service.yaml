@@ -14,7 +14,8 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.udp.serviceType }}
-  externalIPs: {{ .Values.udp.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.udp.externalIPs | nindent 4 }}
   selector:
     {{- include "zero-fiber-optics.selectorLabels" . | nindent 4 }}
   ports:
