@@ -4,24 +4,31 @@ import { Switch } from "@/components/ui/switch";
 import { BoilerLegend, LegendTrigger } from "@/modules/thrapp/components/legends";
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
-import { DHW_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/dhw/data";
 import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
-import { THRUSTERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/thrusters/data";
+import PvtModule from "@/modules/thrapp/mimics/modules/pvt/PvtModule.vue";
 import ThrustersModule from "@/modules/thrapp/mimics/modules/thrusters/ThrustersModule.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { computed, inject, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { DHW_MIMIC_DATA } from "../mimics/modules/dhw/data";
+import { PVT_MIMIC_DATA } from "../mimics/modules/pvt/data";
+import { THRUSTERS_MIMIC_DATA } from "../mimics/modules/thrusters/data";
 
 const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
 
 const demoMode = ref(false);
 const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider));
 const source = computed(() => {
-  if (currentDefinition.value === "thrusters") return THRUSTERS_MIMIC_DATA;
-
-  return DHW_MIMIC_DATA;
+  switch (currentDefinition.value) {
+    case "thrusters":
+      return THRUSTERS_MIMIC_DATA;
+    case "pvt":
+      return PVT_MIMIC_DATA;
+    default:
+      return DHW_MIMIC_DATA;
+  }
 });
 
 const { t } = useI18n();
@@ -54,6 +61,10 @@ const { t } = useI18n();
         />
         <ThrustersModule
           v-if="currentDefinition === 'thrusters'"
+          class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
+        />
+        <PvtModule
+          v-if="currentDefinition === 'pvt'"
           class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
         />
       </MimicTooltipProvider>

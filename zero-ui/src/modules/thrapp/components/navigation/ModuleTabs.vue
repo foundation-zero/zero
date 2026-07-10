@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 
 defineProps<{ modules: Array<keyof ThrsModules>; activeModule?: keyof ThrsModules }>();
 
-const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw", "thrusters"];
+const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw", "thrusters", "pvt"];
 
 const currentRoute = useRoute();
 </script>

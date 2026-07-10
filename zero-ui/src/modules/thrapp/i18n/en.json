@@ -238,6 +238,21 @@
             "regeneration": "Regeneration"
           }
         }
+      },
+      "pvt": {
+        "assets": {
+          "fwdTitle": "PVT FWD",
+          "aftTitle": "PVT AFT",
+          "ownersTitle": "PVT OWNERS",
+          "labels": {
+            "power": "Power",
+            "temperature": "Temp"
+          },
+          "modes": {
+            "harvesting": "Harvesting",
+            "idle": "Idle"
+          }
+        }
       }
     },
     "legends": {

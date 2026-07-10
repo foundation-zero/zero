@@ -18,6 +18,7 @@ export { default as PressureGaugeInstance } from "./PressureGaugeInstance.vue";
 export { default as PressureLabelInstance } from "./PressureLabelInstance.vue";
 export { default as PressureSensorInstance } from "./PressureSensorInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
+export { default as PvtInstance } from "./PvtInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";
 export { default as TagLabelInstance } from "./TagLabelInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";
