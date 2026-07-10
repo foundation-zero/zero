@@ -1,19 +1,22 @@
+from typing import Self
+
 from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    DeltaT,
     Hz,
-    Kelvin,
-    LMin,
     Liter,
+    LMin,
     NoError,
     OnOff,
     Operating,
     OptionalCelsius,
     PcsMode,
     Ratio,
-    seconds,
+    Seconds,
     Watt,
 )
 
@@ -25,7 +28,7 @@ class FlowSensor(ThrsValues):
 
 class Pump(ThrsValues):
     speed: Stamped[Hz]
-    op_time: Stamped[seconds]
+    op_time: Stamped[Seconds]
     flow: Stamped[LMin]
 
 
@@ -52,8 +55,71 @@ class CalculatedTemperature(ThrsValues):
         )
 
 
+class CalculatedFlow(ThrsValues):
+    flow: Stamped[LMin]
+
+
+class TemperatureDelta(ThrsValues):
+    delta_t: Stamped[DeltaT]
+
+    @classmethod
+    def from_temperature_sensors(
+        cls, temperature_supply: Stamped[Celsius], temperature_return: Stamped[Celsius]
+    ) -> Self:
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_return.value - temperature_supply.value,
+        )
+        return cls(delta_t=delta_t)
+
+
+class HeatTransferDevice(ThrsValues):
+    delta_t: Stamped[DeltaT]
+    heat: Stamped[Watt]
+
+    @classmethod
+    def from_sensors(
+        cls,
+        temperature_supply: Stamped[Celsius],
+        temperature_return: Stamped[Celsius],
+        flow: Stamped[LMin],
+        heat_transfer_conversion: float,
+    ) -> Self:
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_return.value - temperature_supply.value,
+        )
+        heat = Stamped.combine(
+            delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
+        )
+        return cls(delta_t=delta_t, heat=heat)
+
+
+class HvacExchanger(HeatTransferDevice):
+    pass
+
+
+class HeatPump(HeatTransferDevice):
+    pass
+
+
+class HeatExchanger(HeatTransferDevice):
+    pass
+
+
 class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
+
+
+def valves_open_closed(open_valves: list[Valve], closed_valves: list[Valve]) -> bool:
+    return all(
+        valve.position_rel.value == control.Valve.OPEN for valve in open_valves
+    ) and all(
+        valve.position_rel.value < (control.Valve.CLOSED + 0.01)
+        for valve in closed_valves
+    )
 
 
 class PressureSensor(ThrsValues):
@@ -72,6 +138,14 @@ class ShorePowerConverter(ThrsValues):
     active: Stamped[OnOff]
 
 
+class Brightloop(ThrsValues):
+    active: Stamped[OnOff]
+
+
+class Ugrid(ThrsValues):
+    active: Stamped[OnOff]
+
+
 class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
@@ -81,7 +155,7 @@ class Pcm(ThrsValues):
 
 
 # Leaving in commented fields as we might need these IOs in the future, but need to accomodate for them in the SimulationInputs or in the FMU first as they are currently not part of the FMU. For now, they are to be used as reference for the IOs that we might want to add in the future.
-class Fahrenheit(ThrsValues):
+class AdsorptionChiller(ThrsValues):
     operating: Stamped[Operating]
     no_error: Stamped[NoError]
     free_cooling: Stamped[OnOff]
@@ -104,10 +178,10 @@ class Fahrenheit(ThrsValues):
     # ]
     # available_temperature_waste: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
     # operating_hours_adsorption: Annotated[
-    #    Stamped[seconds], field_meta(included_in_fmu=False)
+    #    Stamped[Seconds], field_meta(included_in_fmu=False)
     # ]
     # operating_hours_free_cooling: Annotated[
-    #    Stamped[seconds], field_meta(included_in_fmu=False)
+    #    Stamped[Seconds], field_meta(included_in_fmu=False)
     # ]
     # cooling_energy: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)]
     pump_speed_hot: Stamped[Ratio]
@@ -126,7 +200,7 @@ class Fahrenheit(ThrsValues):
 class PowerSensor(ThrsValues):
     flow: Stamped[LMin]
     power: Stamped[Watt]
-    delta_t: Stamped[Kelvin]
+    delta_t: Stamped[DeltaT]
     temperature_warm: Stamped[Celsius]
     temperature_cold: Stamped[Celsius]
 
@@ -135,13 +209,23 @@ __all__ = [
     "FlowSensor",
     "Pump",
     "TemperatureSensor",
+    "TemperatureDelta",
     "CalculatedTemperature",
+    "CalculatedFlow",
+    "HeatTransferDevice",
+    "HvacExchanger",
+    "HeatPump",
+    "HeatExchanger",
     "Valve",
     "PressureSensor",
     "Thruster",
+    "PropulsionDrive",
+    "ShorePowerConverter",
+    "Brightloop",
+    "Ugrid",
     "Pcs",
     "Pcm",
-    "Fahrenheit",
+    "AdsorptionChiller",
     "PowerSensor",
     "LevelSensor",
 ]

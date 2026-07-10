@@ -2,19 +2,19 @@
 import { Switch } from "@/components/ui/switch";
 import { Room, ValidationStatus } from "@/modules/domestic/types";
 import { ValueTile } from "@common/components/value-tile";
-import { Lightbulb, LightbulbOff } from "lucide-vue-next";
+import { RiLightbulbFlashLine, RiLightbulbLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useToggleableLights } from ".";
 
 const props = defineProps<{ room: Room }>();
 
-const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() => [props.room]));
+const { groups, someLightsAreOn, toggle } = useToggleableLights(computed(() => [props.room]));
 </script>
 
 <template>
   <ValueTile
-    v-if="controls.length > 0"
-    :title="room.name"
+    v-if="groups.length > 0"
+    :title="room.name!"
     :class="{ on: someLightsAreOn }"
     selectable
     :state="ValidationStatus.OK"
@@ -27,12 +27,12 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
       />
     </template>
     <template #bottom-right>
-      <Lightbulb
+      <RiLightbulbFlashLine
         v-if="someLightsAreOn"
         class="mb-1 h-[1.5em] w-[1.5em]"
         stroke-width="2.5"
       />
-      <LightbulbOff
+      <RiLightbulbLine
         v-else
         class="mb-1 h-[1.5em] w-[1.5em]"
         stroke-width="1"

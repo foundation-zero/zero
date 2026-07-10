@@ -6,7 +6,9 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
-      "purpose": ["debug-test"],
+      "purpose": [
+        "debug-test"
+      ],
       "console": "integratedTerminal",
       "justMyCode": false,
     },
@@ -14,8 +16,24 @@
       "name": "THRS: Debug simulation thrusters",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/cli/__main__.py",
-      "args": ["run", "thrusters"],
+      "module": "thrs.cli",
+      "args": [
+        "run",
+        "thrusters"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "name": "THRS: Debug graphql api",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "fastapi",
+      "args": [
+        "dev",
+        "src/thrs/graphql/asgi.py"
+      ],
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",

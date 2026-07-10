@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CaretDownIcon } from "@radix-icons/vue";
+import { RiArrowDownSLine } from "@remixicon/vue";
 
 defineProps({
   title: {
@@ -30,7 +30,7 @@ const toggle = () => {
     >
       <span>{{ title }}</span>
       <button v-if="collapsible">
-        <CaretDownIcon
+        <RiArrowDownSLine
           stroke-width="2"
           class="h-5 w-5 transition-transform duration-200"
           :class="{ '-rotate-90': !isOpen }"

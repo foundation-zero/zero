@@ -12,6 +12,7 @@ services:
       - domestic
       - loads
       - thrs
+      - data-collection
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
@@ -45,72 +46,6 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DB}
 
-  setup-postgres:
-    build:
-      context: ./data
-    command: setup_postgres --target docker
-    profiles:
-      - zero
-      - domestic
-      - loads
-      - data
-    environment: &setup
-      PG_HOST: postgres
-      PG_HOST_DOCKER: postgres
-      PG_PORT: 5432
-      PG_USER: ${PG_USER}
-      PG_PASSWORD: ${PG_PASSWORD}
-      PG_DB: ${PG_DB}
-      MQTT_PROTOCOL: mqtt
-      MQTT_HOST: vernemq
-      MQTT_PORT: 1883
-      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  risingwave:
-    image: risingwavelabs/risingwave:v2.7.2
-    command:
-      - single_node
-      - --config-path
-      - /risingwave.toml
-    ports:
-      - 4566:4566
-      - 5691:5691
-    profiles:
-      - zero
-      - domestic
-      - data
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/6660; exit $?;'
-        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/5688; exit $?;'
-        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/4566; exit $?;'
-        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/5690; exit $?;'
-      interval: 1s
-      timeout: 5s
-    depends_on:
-      - vernemq
-    volumes:
-      - ./risingwave.toml:/risingwave.toml
-
-  setup-risingwave:
-    build:
-      context: ./data
-    command: setup_risingwave --target docker
-    profiles:
-      - zero
-      - domestic
-      - data
-    environment:
-      <<: *setup
-    depends_on:
-      risingwave:
-        condition: service_healthy
-      setup-postgres:
-        condition: service_completed_successfully
   grafana:
     build:
       context: ./zero-dashboards
@@ -121,7 +56,9 @@ services:
     volumes:
       - "grafana:/var/lib/grafana"
       - "./grafana/electrical_flow.png:/usr/share/grafana/public/extra/electrical_flow.png"
+      - "./grafana/zero_outline.png:/usr/share/grafana/public/extra/zero_outline.png"
       - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
+      - "./grafana/greptime.yaml:/etc/grafana/provisioning/datasources/greptime.yaml"
     profiles:
       - data
     environment:
@@ -162,13 +99,11 @@ services:
     volumes:
       - ./hasura/metadata:/hasura-metadata
     depends_on:
-      risingwave:
-        condition: service_healthy
       postgres:
         condition: service_healthy
 
   hass:
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2026.5.4
     profiles:
       - zero
       - domestic
@@ -254,7 +189,6 @@ services:
       --mysql-addr 0.0.0.0:4002
       --postgres-addr 0.0.0.0:4003
 
-
   # ---- domestic-control ----
   domestic-control-api:
     command: api
@@ -275,15 +209,17 @@ services:
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
-      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
       JWT_SECRET: ${JWT_SECRET}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       HOME_ASSISTANT_URL: http://hass:8123/api
       HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
       HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
-      TERMODINAMICA_HOST: domestic-control-stub
-      TERMODINAMICA_PORT: 502
+      AIR_CONDITIONING_HOST: domestic-control-stub
+      AIR_CONDITIONING_PORT: 1502
+      VENTILATION_HOST: domestic-control-stub
+      VENTILATION_PORT: 1503
+      GREPTIME_URL: mysql://app@greptimedb:4002/public
       CANBUS_IP: 127.0.0.1
       CANBUS_PORT: 55001
       CANBUS_BUFFER_SIZE: 1024
@@ -315,7 +251,6 @@ services:
         condition: service_healthy
     environment:
       <<: *app_env
-      TERMODINAMICA_HOST: 0.0.0.0
 
   # ---- loads ----
   loads-api:
@@ -398,24 +333,59 @@ services:
     environment: &thrs_env
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
-      MQTT_TOPIC_PREFIX: thrs
+      MQTT_DEVICES_TOPIC_PREFIX: devices_topic
+      MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
+      MQTT_SIMULATION_TOPIC_PREFIX: simulation_topic
       MQTT_CONTROL_TOPIC_SUFFIX: Command
     depends_on:
       vernemq:
         condition: service_healthy
 
-  thrs-thruster-simulation:
+  thrs-thruster-simulation-thrusters: &thrs_simulation
+    image: zero-thrs-simulation:local
+    pull_policy: never
     build:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: simulation
     profiles:
       - thrs
-    environment:
-      <<: *thrs_env
+    environment: &thrs_env
+        MQTT_HOST: vernemq
+        MQTT_PORT: 1883
+        MQTT_DEVICES_TOPIC_PREFIX: devices_topic
+        MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
+        MQTT_SIMULATION_TOPIC_PREFIX: simulation_topic
+        MQTT_CONTROL_TOPIC_SUFFIX: Command
     depends_on:
       vernemq:
         condition: service_healthy
+    command: ["thrusters"]
+    
+  thrs-thruster-simulation-high-temperature:
+    <<: *thrs_simulation
+    profiles: ["thrs-extra"]
+    command: ["high_temperature"]
+
+  thrs-thruster-simulation-pvt:
+    <<: *thrs_simulation
+    profiles: ["thrs-extra"]
+    command: ["pvt"]
+
+  thrs-thruster-simulation-pcm:
+    <<: *thrs_simulation
+    profiles: ["thrs-extra"]
+    command: ["pcm"]
+
+  thrs-thruster-simulation-consumers:
+    <<: *thrs_simulation
+    profiles: ["thrs-extra"]
+    command: ["consumers"]
+
+  thrs-thruster-simulation-dhw:
+    <<: *thrs_simulation
+    profiles: ["thrs-extra"]
+    command: ["dhw"]
 
 volumes:
   db_data:

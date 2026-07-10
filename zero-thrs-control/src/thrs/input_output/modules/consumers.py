@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
@@ -9,35 +10,35 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ConsumersSensorValues(ThrsValues):
-    consumers_temperature_boosting_return: Annotated[
+    consumers_temperature_dhw_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-48", component_type="temperature_sensor"),
     ]
-    consumers_temperature_fahrenheit_return: Annotated[
+    consumers_temperature_adsorption_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-49", component_type="temperature_sensor"),
     ]
-    consumers_temperature_boosting_supply: Annotated[
+    consumers_temperature_dhw_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-53", component_type="temperature_sensor"),
     ]
-    consumers_temperature_fahrenheit_supply: Annotated[
+    consumers_temperature_adsorption_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-54", component_type="temperature_sensor"),
     ]
-    consumers_flow_boosting: Annotated[
+    consumers_flow_dhw: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-07", component_type="flow_sensor"),
     ]
-    consumers_flow_fahrenheit: Annotated[
+    consumers_flow_adsorption: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-08", component_type="flow_sensor"),
     ]
     consumers_flow_bypass: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001060-01", component_type="flow_sensor"),
+        component_meta(yard_tag="50001192", component_type="flow_sensor"),
     ]
-    consumers_flowcontrol_fahrenheit: Annotated[
+    consumers_flowcontrol_adsorption: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001061", component_type="valve", valve_type="flowcontrol"
@@ -49,20 +50,20 @@ class ConsumersSensorValues(ThrsValues):
             yard_tag="50001062-01", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    consumers_flowcontrol_boosting: Annotated[
+    consumers_flowcontrol_dhw: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001065-01", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    consumers_switch_fahrenheit_exchanger: Annotated[
+    consumers_switch_adsorption: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001066-02", component_type="valve", valve_type="switch"
         ),
     ]
 
-    consumers_switch_boosting: Annotated[
+    consumers_switch_dhw: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001067-15", component_type="valve", valve_type="switch"
@@ -71,7 +72,7 @@ class ConsumersSensorValues(ThrsValues):
 
 
 class ConsumersControlValues(ThrsValues):
-    consumers_flowcontrol_fahrenheit: Annotated[
+    consumers_flowcontrol_adsorption: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001061", component_type="valve", valve_type="flowcontrol"
@@ -83,20 +84,20 @@ class ConsumersControlValues(ThrsValues):
             yard_tag="50001062-01", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    consumers_flowcontrol_boosting: Annotated[
+    consumers_flowcontrol_dhw: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001065-01", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    consumers_switch_fahrenheit_exchanger: Annotated[
+    consumers_switch_adsorption: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001066-02", component_type="valve", valve_type="switch"
         ),
     ]
 
-    consumers_switch_boosting: Annotated[
+    consumers_switch_dhw: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001067-15", component_type="valve", valve_type="switch"
@@ -105,12 +106,12 @@ class ConsumersControlValues(ThrsValues):
 
 
 class ConsumersSimulationInputs(SimulationInputs):
-    consumers_fahrenheit_supply: simulation.Boundary
-    consumers_boosting_supply: simulation.Boundary
-    consumers_module_supply: simulation.Boundary
+    consumers_adsorption_supply: simulation.Boundary
+    consumers_dhw_supply: simulation.Boundary
+    consumers_pcm_supply: simulation.Boundary
 
 
 class ConsumersSimulationOutputs(SimulationValues):
-    consumers_fahrenheit_return: simulation.TemperatureBoundary
-    consumers_boosting_return: simulation.TemperatureBoundary
-    consumers_module_return: simulation.Boundary
+    consumers_adsorption_return: simulation.TemperatureBoundary
+    consumers_dhw_return: simulation.TemperatureBoundary
+    consumers_pcm_return: simulation.Boundary

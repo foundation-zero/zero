@@ -9,10 +9,9 @@ from zero_prop_test.io_link import Client as IoLinkClient
 from zero_prop_test.loop import AddressType, Loop
 from zero_prop_test.modbus import ADDRESSES as MODBUS_ADDRESSES
 from zero_prop_test.modbus import Client as ModbusClient
-from zero_prop_test.settings import Settings, TwinCatOnlySettings
+from zero_prop_test.settings import Settings, TwinCatOnlySettings, TwinCatSettings
 from zero_prop_test.setup_logging import setup_logging
-from zero_prop_test.twincat import VARIABLES as TWINCAT_VARIABLES
-from zero_prop_test.twincat import Client as TwinCatClient
+from zero_prop_test.twincat import Client as TwinCatClient, TwincatProject
 
 
 class RunCommand(BaseModel):
@@ -23,7 +22,7 @@ class RunCommand(BaseModel):
 
     async def cli_cmd(self) -> None:
         settings = Settings()  # pyright: ignore[reportCallIssue]
-        addresses = self._build_addresses()
+        addresses = self._build_addresses(settings)
         if not addresses:
             raise ValueError("At least one data source must be enabled")
 
@@ -49,14 +48,14 @@ class RunCommand(BaseModel):
             ) as loop:
                 await loop.run(addresses)
 
-    def _build_addresses(self) -> list[AddressType]:
+    def _build_addresses(self, settings: TwinCatSettings) -> list[AddressType]:
         addresses: list[AddressType] = []
         if not self.disable_io_link:
             addresses.extend(IOLINK_ADDRESSES)
         if not self.disable_modbus:
             addresses.extend(MODBUS_ADDRESSES)
         if not self.disable_twincat:
-            addresses.extend(TWINCAT_VARIABLES)
+            addresses.extend(TwincatProject.variables_from_settings(settings))
         return addresses
 
 
@@ -65,13 +64,22 @@ class TwinCatCommand(BaseModel):
 
     async def cli_cmd(self) -> None:
         settings = TwinCatOnlySettings()  # pyright: ignore[reportCallIssue]
+        addresses = list(TwincatProject.variables_from_settings(settings))
         with TwinCatClient.from_settings(settings) as twincat_client:
             async with Loop.from_settings(
                 settings=settings,
                 twincat_client=twincat_client,
                 interval=timedelta(seconds=self.interval_seconds),
             ) as loop:
-                await loop.run(list(TWINCAT_VARIABLES))
+                await loop.run(addresses)
+
+
+class TwinCatVariablesCommand(BaseModel):
+    async def cli_cmd(self) -> None:
+        settings = TwinCatOnlySettings()  # pyright: ignore[reportCallIssue]
+        addresses = list(TwincatProject.variables_from_settings(settings))
+        for address in addresses:
+            print(address)
 
 
 class App(BaseSettings):
@@ -82,6 +90,7 @@ class App(BaseSettings):
 
     run: CliSubCommand[RunCommand]
     twincat: CliSubCommand[TwinCatCommand]
+    twincat_variables: CliSubCommand[TwinCatVariablesCommand]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

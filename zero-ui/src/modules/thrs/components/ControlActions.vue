@@ -1,42 +1,88 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="K extends keyof ControlStatus['modules']">
+import Label from "@/components/ui/label/Label.vue";
 import { Switch } from "@/components/ui/switch";
-import { useSimulationStore } from "@/modules/thrs/stores/simulation";
-import { computed, toRefs } from "vue";
+import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
+import { tScoped } from "@/modules/common/lib/utils";
+import { ManualModeToggleDialog } from "@/modules/thrapp/components/manual-mode-toggle";
+import { useAutomaticMode } from "@/modules/thrapp/state";
+import {
+  ControlStatus,
+  PvtAutomaticMode,
+  useSimulationStore,
+} from "@/modules/thrs/stores/simulation";
+import { RiLock2Fill } from "@remixicon/vue";
+import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   module: string;
 }>();
 
-const { t } = useI18n();
+const t = tScoped("thrs.components.controlActions");
+const { te } = useI18n();
 
 const { control, isProcessing } = toRefs(useSimulationStore());
-const simulationStore = useSimulationStore();
-const setAutomatedControl = simulationStore.setAutomatedControl(props.module);
 
-const isAutomated = computed(
-  () => !!control.value?.modules?.[props.module]?.controlMode?.automatic,
-);
+const isAutomatic = useAutomaticMode();
 
-const mode = computed(
-  () => control.value?.modules?.[props.module]?.controlMode?.automaticMode?.mode,
-);
+const mode = computed(() => {
+  const automaticMode = control.value?.modules?.[props.module as K]?.controlMode?.automaticMode;
+
+  if (!automaticMode || !te(`modes.${props.module}`)) {
+    return undefined;
+  } else if (props.module === "pvt") {
+    const pvtMode = automaticMode as PvtAutomaticMode;
+
+    return t("modes.pvt", {
+      aftMode: pvtMode.aft.mode,
+      fwdMode: pvtMode.fwd.mode,
+      ownersMode: pvtMode.owners.mode,
+    });
+  } else {
+    return t(`modes.${props.module}`, automaticMode);
+  }
+});
+
+const showManualModeDialog = ref(false);
+
+const toggleAutomaticMode = () => {
+  if (isAutomatic.value) {
+    showManualModeDialog.value = true;
+  } else {
+    isAutomatic.value = true;
+  }
+};
 </script>
 
 <template>
   <div
     class="flex cursor-pointer items-center gap-4"
-    @click="setAutomatedControl(!isAutomated)"
+    @click="toggleAutomaticMode"
   >
-    <span class="flex flex-col items-end text-sm">
-      {{ t("thrs.components.controlActions.automatedControl") }}
-      <span class="text-muted-foreground text-xs font-light uppercase">
-        {{ isAutomated ? mode : $t("thrs.components.controlActions.off") }}
-      </span>
+    <span
+      class="text-sm"
+      :class="{ 'text-warning': !isAutomatic }"
+    >
+      {{ isAutomatic ? t("automatedControl") : t("manualControl") }}
     </span>
     <Switch
-      :model-value="isAutomated"
+      :model-value="isAutomatic || showManualModeDialog"
       :disabled="isProcessing"
-    />
+      class="data-[state=unchecked]:*:data-[slot=switch-thumb]:bg-warning! data-[state=unchecked]:border-warning relative w-9 data-[state=checked]:*:data-[slot=switch-thumb]:translate-x-[calc(100%+2px)]"
+    >
+      <template #default>
+        <RiLock2Fill
+          class="text-inverse-foreground absolute left-0.75 size-3.5"
+          :class="{ 'opacity-0': !isAutomatic }"
+        />
+      </template>
+    </Switch>
+    <Label v-if="mode">{{ mode }}</Label>
   </div>
+  <ResponsivePopup
+    v-model:open="showManualModeDialog"
+    class="bg-background px-0 pb-0 max-md:px-4"
+  >
+    <ManualModeToggleDialog @close="showManualModeDialog = false" />
+  </ResponsivePopup>
 </template>

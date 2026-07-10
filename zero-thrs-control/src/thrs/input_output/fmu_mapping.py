@@ -2,9 +2,14 @@ import operator
 from datetime import datetime
 from typing import Any, overload
 
-from pydantic.fields import FieldInfo, ComputedFieldInfo
+from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.base import (
+    SimulationValues,
+    Stamped,
+    ThrsValues,
+)
+from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
@@ -23,34 +28,95 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     )  # type: ignore
 
 
+def _fmu_key_for_field(
+    component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
+) -> str:
+    annotation = (
+        field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
+    )
+    meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
+    if meta:
+        return f"{component_name}__{field_name}__{meta.modelica_name}"
+    return f"{component_name}__{field_name}"
+
+
+def build_fmu_key_mapping(
+    cls: type[ThrsValues], fmu_only: bool = True
+) -> dict[tuple[str, str], str]:
+    """Return a dict mapping a (component_name, field_name) tuple to a Modelica name str for a ThrsValues model."""
+
+    component_classes = [
+        (
+            component_name,
+            component.annotation
+            if isinstance(component, FieldInfo)
+            else component.return_type,  ##TODO: return type of json_schema_extra?
+        )
+        for component_name, component in {
+            **cls.model_fields,
+            **cls.model_computed_fields,
+        }.items()
+        if fmu_only is False or included_in_fmu(component)
+    ]
+
+    component_fields = [
+        (component_name, field_name, field)
+        for component_name, component_cls in component_classes
+        for field_name, field in {
+            **component_cls.model_fields,  # type: ignore
+            **component_cls.model_computed_fields,  # type: ignore
+        }.items()
+        if fmu_only is False or included_in_fmu(field)
+    ]
+
+    mapping = {
+        (component_name, field_name): _fmu_key_for_field(
+            component_name, field_name, field
+        )
+        for component_name, field_name, field in component_fields
+    }
+
+    return mapping
+
+
 def extract_non_fmu_values(
-    simulation_inputs: SimulationInputs, sensor_cls: type[ThrsValues]
+    simulation_values: SimulationValues, sensor_cls: type[ThrsValues]
 ) -> dict[str, dict[str, Stamped[Any]]]:
-    """Extract values from simulation inputs that are not included in the FMU."""
+    """Extract values from simulation values that are not included in the FMU."""
 
     def _lookup_values(
-        simulation_inputs: SimulationInputs, sensor_component_field: FieldInfo
+        simulation_input: ThrsValues,
+        sensor_component_field: FieldInfo | ComputedFieldInfo,
     ):
-        component_type = sensor_component_field.annotation
-        # If the whole component is excluded, return all fields
+        # If the whole component is excluded from FMU, extract all available fields
         if not included_in_fmu(sensor_component_field):
             return {
-                name: getattr(simulation_inputs, name)
-                for name in component_type.model_fields.keys()  # type: ignore
+                name: getattr(simulation_input, name)
+                for name in type(simulation_input).model_fields
             }
         # Otherwise, only return fields that are excluded
+        component_type = (
+            sensor_component_field.return_type
+            if isinstance(sensor_component_field, ComputedFieldInfo)
+            else sensor_component_field.annotation
+        )
         return {
-            name: getattr(simulation_inputs, name)
+            name: getattr(simulation_input, name)
             for name, field in component_type.model_fields.items()  # type: ignore
             if not included_in_fmu(field)
         }
 
+    all_sensor_fields: dict[str, FieldInfo | ComputedFieldInfo] = {
+        **sensor_cls.model_fields,
+        **sensor_cls.model_computed_fields,
+    }
+
     return {
         component_name: values
-        for component_name, field in sensor_cls.model_fields.items()
-        if hasattr(simulation_inputs, component_name)
+        for component_name, field in all_sensor_fields.items()
+        if hasattr(simulation_values, component_name)
         and (
-            values := _lookup_values(getattr(simulation_inputs, component_name), field)
+            values := _lookup_values(getattr(simulation_values, component_name), field)
         )
     }
 

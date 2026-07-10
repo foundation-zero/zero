@@ -7,6 +7,8 @@ metadata:
 data:
   MQTT_HOST: {{ .Values.mqtt.host }}
   MQTT_PORT: {{ .Values.mqtt.port | quote }}
-  MQTT_TOPIC_PREFIX: thrs
+  MQTT_DEVICES_TOPIC_PREFIX: {{ .Values.mqtt.devicesTopicPrefix }}
+  MQTT_CONTROLLER_TOPIC_PREFIX: {{ .Values.mqtt.controllerTopicPrefix }}
+  MQTT_SIMULATION_TOPIC_PREFIX: {{ .Values.mqtt.simulationTopicPrefix }}
   MQTT_CONTROL_TOPIC_SUFFIX: Command
   MQTT_USERNAME: {{ .Values.mqtt.username }}

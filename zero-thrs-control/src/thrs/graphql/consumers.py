@@ -1,25 +1,24 @@
 import strawberry
 
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.graphql.base import (
-    ConsumersMessaging,
-    SwitchingControlModeType,
+from thrs.control.modules.consumers import (
+    ConsumersParameters,
 )
 from thrs.graphql.base import (
+    ConsumersMessaging,
     ControlModule,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
-
 
 ConsumersSensorValuesType = pydantic_to_strawberry_type(ConsumersSensorValues)
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
@@ -31,11 +30,17 @@ class ConsumersControlModeType:
     _empty: None = None
 
 
+@strawberry.type()
+class ConsumersControllerStateType:
+    _empty: None = None
+
+
 ConsumersModule = ControlModule[
     ConsumersSensorValuesType,
     ConsumersControlValuesType,
     ConsumersParametersType,
     ConsumersControlModeType,
+    ConsumersControllerStateType,
 ]
 
 
@@ -57,6 +62,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        controller_state=optional_pydantic_to_graphql(
+            ConsumersControllerStateType, module.controller_state
+        ),
     )
 
 

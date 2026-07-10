@@ -1,0 +1,20 @@
+table:
+  name: air_conditioning
+  schema: domestic
+object_relationships:
+  - name: room
+    using:
+      foreign_key_constraint_on: id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - actual_humidity
+        - actual_temperature
+        - humidity_setpoint
+        - temperature_setpoint
+        - id
+      filter:
+        id:
+          _eq: X-Hasura-Cabin
+    comment: ""

@@ -1,65 +1,14 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger } from "@common/components/bottom-tabs";
-import { useUIStore } from "@common/stores/ui";
-import { Blinds, LampCeiling, Snowflake } from "lucide-vue-next";
-import { toRefs } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import BottomTabs from "@/modules/common/components/navigation/BottomTabs.vue";
+import { NavItem } from "@/modules/common/types";
 
-const { hasScroll, isBottom } = toRefs(useUIStore());
-const { name } = toRefs(useRoute());
-
-const { t } = useI18n();
+const navItems: NavItem[] = [
+  { title: "labels.airConditioning.short", to: "cabin:air-conditioning" },
+  { title: "labels.lights", to: "cabin:lights" },
+  { title: "labels.blinds", to: "cabin:blinds" },
+];
 </script>
 
 <template>
-  <Tabs
-    as="nav"
-    :model-value="String(name)"
-    class="fixed bottom-0 w-full"
-  >
-    <div
-      class="bg-background/80 sm:bg-background absolute top-0 right-0 bottom-0 left-0 backdrop-blur-md transition-all"
-      :class="{ 'border-t': hasScroll && !isBottom }"
-    ></div>
-
-    <TabsList class="relative grid grid-cols-3">
-      <RouterLink
-        :to="{ name: 'cabin:airconditioning' }"
-        class="text-center"
-      >
-        <TabsTrigger value="cabin:airconditioning">
-          <Snowflake
-            :size="22"
-            stroke-width="2"
-          />
-          {{ t("labels.airconditioning.short") }}
-        </TabsTrigger>
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'cabin:lights' }"
-        class="text-center"
-      >
-        <TabsTrigger value="cabin:lights">
-          <LampCeiling
-            :size="24"
-            stroke-width="2"
-          />
-          {{ t("labels.lights") }}
-        </TabsTrigger>
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'cabin:blinds' }"
-        class="text-center"
-      >
-        <TabsTrigger value="cabin:blinds">
-          <Blinds
-            :size="22"
-            stroke-width="2"
-          />
-          {{ t("labels.blinds") }}
-        </TabsTrigger>
-      </RouterLink>
-    </TabsList>
-  </Tabs>
+  <BottomTabs :items="navItems" />
 </template>

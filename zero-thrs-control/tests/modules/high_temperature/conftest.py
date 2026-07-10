@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.high_temperature import (
-    HighTemperatureModule,
+from thrs.control.modules.consumers import (
+    CONSUMERS_MODULE_DESCRIPTION,
+    ConsumersParameters,
 )
-from thrs.control.modules.pvt import PvtParameters
-from thrs.input_output.base import Stamped, CombinedValues
+from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION, PcmParameters
+from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION, PvtParameters
+from thrs.control.modules.thrusters import (
+    THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersParameters,
+)
+from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
@@ -16,10 +20,16 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.consumers import ConsumersSensorValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.input_output.modules.pcm import PcmSensorValues
+from thrs.input_output.modules.pvt import PvtSensorValues
+from thrs.input_output.modules.thrusters import ThrustersSensorValues
+from thrs.orchestration.module import CombinedModule
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
@@ -27,10 +37,10 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
 @fixture
 def simulation_inputs():
     return HighTemperatureSimulationInputs(
-        thrusters_aft=Thruster(
+        thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
         ),
-        thrusters_fwd=Thruster(
+        thrusters_thruster_fwd=Thruster(
             heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
@@ -46,11 +56,11 @@ def simulation_inputs():
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
-        consumers_fahrenheit_supply=Boundary(
+        consumers_adsorption_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
         ),
-        consumers_boosting_supply=Boundary(
+        consumers_dhw_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
@@ -59,11 +69,18 @@ def simulation_inputs():
 
 @fixture
 def module():
-    return HighTemperatureModule()
+    return CombinedModule(
+        {
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+        },
+    )
 
 
 @fixture
-def control(module, executor):
+def control(module, simulation):
     return module.control(
         CombinedValues(
             {
@@ -73,18 +90,23 @@ def control(module, executor):
                 "consumers": ConsumersParameters(),
             }
         ),
-        executor.time,
+        simulation.time,
     )
 
 
 @fixture
-def io_mapping(module):
-    return module.io_mapping()
-
-
-@fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(high_temperature_path) as fmu:
-        yield SimulationExecutor(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        yield Simulation(
+            {
+                "thrusters": ThrustersSensorValues,
+                "pvt": PvtSensorValues,
+                "pcm": PcmSensorValues,
+                "consumers": ConsumersSensorValues,
+            },
+            HighTemperatureSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

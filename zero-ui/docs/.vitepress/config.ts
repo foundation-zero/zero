@@ -11,6 +11,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Components", link: "/components/" },
+      { text: "Mimics", link: "/mimics/" },
     ],
 
     sidebar: [
@@ -18,6 +19,7 @@ export default defineConfig({
         text: "Getting Started",
         items: [
           { text: "Introduction", link: "/" },
+          { text: "Figma MCP Bridge", link: "/figma-mcp-bridge" },
           { text: "Typography", link: "/typography" },
           { text: "Colors", link: "/colors" },
         ],
@@ -47,6 +49,48 @@ export default defineConfig({
           { text: "Select", link: "/components/select" },
           { text: "TWA Selector", link: "/components/twa-selector" },
           { text: "TWS Selector", link: "/components/tws-selector" },
+        ],
+      },
+
+      {
+        text: "Mimics",
+        items: [
+          { text: "Overview", link: "/mimics/" },
+          { text: "Authoring New Components", link: "/mimics/authoring-workflow" },
+          { text: "Updating Components", link: "/mimics/updating-components" },
+        ],
+      },
+      {
+        text: "Actuated Components",
+        items: [
+          { text: "Actuated Valve", link: "/mimics/actuated-valve" },
+          { text: "Pump", link: "/mimics/pump" },
+          { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
+          { text: "Pipe Heat Exchanger", link: "/mimics/pipe-heat-exchanger" },
+        ],
+      },
+      {
+        text: "Manual Components",
+        items: [
+          { text: "Manual Valve", link: "/mimics/manual-valve" },
+          { text: "Check Valve", link: "/mimics/check-valve" },
+          { text: "Pressure Gauge", link: "/mimics/pressure-gauge" },
+        ],
+      },
+      {
+        text: "Sensors",
+        items: [
+          { text: "Temperature Sensor", link: "/mimics/temperature-sensor" },
+          { text: "Flow Sensor", link: "/mimics/flow-sensor" },
+          { text: "Pressure Sensor", link: "/mimics/pressure-sensor" },
+          { text: "Level Sensor", link: "/mimics/level-sensor" },
+        ],
+      },
+      {
+        text: "Modules",
+        items: [
+          { text: "Overview", link: "/mimics/modules/" },
+          { text: "DHW Module", link: "/mimics/modules/dhw-module" },
         ],
       },
     ],

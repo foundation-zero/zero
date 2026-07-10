@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import RoomTiles from "@/modules/domestic/admin/components/room-tiles/RoomTiles.vue";
 import TileCO2 from "@/modules/domestic/admin/components/room-tiles/TileCO2.vue";
-import { useI18n } from "vue-i18n";
+import { computed } from "vue";
+import { useHistoryStore } from "../../stores/history";
 
-const { t } = useI18n();
+const history = useHistoryStore();
+
+const ventilationByRoom = computed(() => {
+  return Object.fromEntries(
+    (history.ventilationLog?.rooms ?? []).map((room) => [room.id, room.ventilationLog]),
+  );
+});
 </script>
 
 <template>
-  <h1 class="mb-6 text-4xl font-bold md:mb-12 md:text-6xl">
-    {{ t("labels.ventilation") }}
-  </h1>
   <RoomTiles>
     <template #default="{ room }">
-      <TileCO2 :room="room" />
+      <TileCO2
+        :room="room"
+        :ventilation-log="ventilationByRoom[room.id]"
+      />
     </template>
   </RoomTiles>
 </template>

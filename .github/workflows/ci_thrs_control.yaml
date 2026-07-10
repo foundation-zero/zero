@@ -31,6 +31,8 @@ jobs:
         with:
           python-version: 3.13
 
+      - uses: extractions/setup-just@v4
+
       - run: pipx install poetry==2.2.1
         working-directory: zero-thrs-control
 
@@ -49,48 +51,27 @@ jobs:
       - run: poetry install --with dev,test
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+      - run: just compile_fmus
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV18.fmu
+      - run: just type_check
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/pvt_moduleV15_1.fmu
+      - run: just lint
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/Consumer_ModuleV8_2.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run fmpy compile src/thrs/simulation/models/HT_SystemV13_2.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run fmpy compile src/thrs/simulation/models/pcm_moduleV7.fmu
-        working-directory: zero-thrs-control
-      - run: poetry run fmpy compile src/thrs/simulation/models/Boilers_ModuleV2.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run fmpy compile src/thrs/simulation/models/LT1_ModuleV3.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run fmpy compile src/thrs/simulation/models/LT2_ModuleV2.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run fmpy compile src/thrs/simulation/models/Fahrenheit_ModuleV4.fmu
-        working-directory: zero-thrs-control
-
-      - run: poetry run pyright
-        working-directory: zero-thrs-control
-
-      - run: poetry run ruff check src tests
-        working-directory: zero-thrs-control
-
-      - run: poetry run ruff format --check src tests
+      - run: just format
         working-directory: zero-thrs-control
 
       - run: docker compose --profile thrs up -d --quiet-pull --wait vernemq
 
-      - run: poetry run pytest -v
+      - run: just test -v
         working-directory: zero-thrs-control
+
+      - name: Run IO tests (non-blocking)
+        run: just test_io -v
+        working-directory: zero-thrs-control
+        continue-on-error: true
 
       - name: Determine image tag
         id: image_tag

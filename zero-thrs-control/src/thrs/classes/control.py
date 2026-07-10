@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Callable, Protocol
 
@@ -9,28 +8,26 @@ if TYPE_CHECKING:
     from thrs.classes.machine_state_logger import StateLogger
 
 
-@dataclass
-class ControlResult[C]:
-    timestamp: datetime
-    values: C
+class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerState](
+    Protocol
+):
+    def __init__(self, parameters: Parameters, time_fn: Callable[[], datetime]): ...
 
+    def initial(self) -> tuple[ControlValues, ControllerState]: ...
 
-class Control[S, C, P, M](Protocol):
-    def __init__(self, parameters: P, time_fn: Callable[[], datetime]): ...
-
-    def initial(self) -> ControlResult[C]: ...
-
-    def control(self, sensor_values: S) -> ControlResult[C]: ...
+    def control(
+        self, sensor_values: SensorValues
+    ) -> tuple[ControlValues, ControllerState]: ...
 
     @property
-    def parameters(self) -> P: ...
+    def parameters(self) -> Parameters: ...
 
     _parameters: "P"
 
     @property
-    def mode(self) -> M | None: ...
+    def mode(self) -> ControlMode | None: ...
 
-    def update_parameters(self, parameters: P): ...
+    def update_parameters(self, parameters: Parameters): ...
 
     state: str  # Set by transitions logic
     state_logger: "StateLogger"
@@ -42,7 +39,7 @@ class ControlMode(ThrsValues):
             getattr(self, field_name)
             if isinstance(getattr(self, field_name), str)
             else f"{field_name}: {str(getattr(self, field_name))}"
-            for field_name, field_info in self.model_fields.items()
+            for field_name, field_info in type(self).model_fields.items()
         ]
 
         return ", ".join(values)

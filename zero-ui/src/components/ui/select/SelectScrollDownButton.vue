@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@common/lib/utils";
+import { RiArrowDownSLine } from "@remixicon/vue";
 import { reactiveOmit } from "@vueuse/core";
-import { ChevronDown } from "lucide-vue-next";
 import type { SelectScrollDownButtonProps } from "reka-ui";
 import { SelectScrollDownButton, useForwardProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
@@ -20,7 +20,7 @@ const forwardedProps = useForwardProps(delegatedProps);
     :class="cn('flex cursor-default items-center justify-center py-1', props.class)"
   >
     <slot>
-      <ChevronDown class="size-4" />
+      <RiArrowDownSLine class="size-4" />
     </slot>
   </SelectScrollDownButton>
 </template>

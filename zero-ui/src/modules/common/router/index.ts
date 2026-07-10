@@ -9,3 +9,15 @@ export const sharedRoutes: RouteRecordRaw = {
   },
   component: () => import("@/modules/common/views/SplashScreen.vue"),
 };
+
+export const grafanaRoute: RouteRecordRaw = {
+  path: "/grafana",
+  name: "grafana",
+  meta: {
+    requiresAuth: false,
+    layout: defineAsyncComponent(() => import("../layouts/SplashLayout.vue")),
+  },
+  component: () => import("@/modules/common/views/Grafana.vue"),
+};
+
+export const getRootRoute = (route: string = "") => route.split(":")[0];

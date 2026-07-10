@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import Callable
-from thrs.classes.control import ControlResult
+
+from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.executor import ExecutionResult, Executor
-from thrs.orchestration.cycler import Control
+from thrs.orchestration.connector import Connector
+from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
 class SimpleInOut(ThrsValues):
@@ -16,11 +17,27 @@ class SimpleSimulationInputs(SimulationInputs):
     pass
 
 
-class SimpleSimulationOutputs(SimulationValues):
+class SimpleSimulationOutputs(ThrsValues):
     pass
 
 
-class SimpleExecutor(Executor):
+class SimpleConnector(Connector):
+    def __init__(self):
+        self.controls = []
+
+    async def run(self):
+        pass
+
+    async def transceive(self, control_values, controller_state):
+        self.controls.append((control_values, controller_state))
+        return control_values
+
+
+class SimpleSimulation(
+    Simulation[
+        SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs
+    ]
+):
     def __init__(self, start_time):
         self.controls = []
         self._start_time = start_time
@@ -28,9 +45,20 @@ class SimpleExecutor(Executor):
     async def start(self):
         pass
 
-    async def tick(self, control_values):
+    def tick(
+        self, control_values: SimpleInOut
+    ) -> SimulationResult[
+        SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs
+    ]:
         self.controls.append(control_values)
-        return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)
+        return SimulationResult(
+            timestamp=datetime.now(),
+            sensor_values=control_values,
+            control_values=control_values,
+            simulation_outputs=SimpleSimulationOutputs(),
+            simulation_inputs=SimpleSimulationInputs(),
+            raw={},
+        )
 
     @property
     def start_time(self):
@@ -48,16 +76,26 @@ class SimpleMode(ThrsValues):
     pass
 
 
-class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode]):
+class SimpleControllerState(ThrsValues):
+    pass
+
+
+class SimpleControl(
+    Control[
+        SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode, SimpleControllerState
+    ]
+):
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
 
-    def initial(self) -> ControlResult[SimpleInOut]:
-        return ControlResult(self._time(), SimpleInOut.zero())
+    def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
+        return (SimpleInOut.zero(), SimpleControllerState())
 
-    def control(self, sensor_values: SimpleInOut) -> ControlResult[SimpleInOut]:
-        return ControlResult(self._time(), sensor_values)
+    def control(
+        self, sensor_values: SimpleInOut
+    ) -> tuple[SimpleInOut, SimpleControllerState]:
+        return (sensor_values, SimpleControllerState())
 
     @staticmethod
     def modes() -> list[str]:
@@ -79,5 +117,5 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMo
         pass
 
 
-class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut]):
+class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters]):
     pass

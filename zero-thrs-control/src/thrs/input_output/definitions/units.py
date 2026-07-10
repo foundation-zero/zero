@@ -8,12 +8,13 @@ from typing import (
     Literal,
     TypeAlias,
     TypeAliasType,
+    Union,
     get_args,
     get_origin,
 )
-from typing_extensions import _AnnotatedAlias
 
 from pydantic import AfterValidator, Field
+from typing_extensions import _AnnotatedAlias
 
 
 @dataclass(eq=True, frozen=True)
@@ -65,16 +66,23 @@ def zero_for_unit(unit: Any) -> Any:
 
     elif get_origin(unit) is Annotated:
         unit = get_args(unit)[0]
+
+    if get_origin(unit) in (UnionType, Union):
+        if type(None) in get_args(unit):
+            return None
+        else:
+            return zero_for_unit(next(arg for arg in get_args(unit)))
+
     if unit is float:
         return 0.0
-    elif unit == float | None:
-        return None
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
-    elif issubclass(unit, Enum):
+    elif isinstance(unit, type) and issubclass(unit, Enum):
         return next(e for e in unit)
     elif unit is bool:
         return False
+    elif get_origin(unit) is tuple:
+        return tuple(zero_for_unit(arg) for arg in get_args(unit))
     else:
         raise ValueError(f"Unsupported unit type: {unit}")
 
@@ -99,11 +107,13 @@ def validate_nonzero_float_within_precision(
     return value
 
 
+WATER_HEAT_TRANSFER_CONVERSION = 4184 / 60  # kW min/(l*K)
+
 OptionalCelsius: TypeAlias = Annotated[
     float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
 ]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
-Kelvin: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="K")]
+DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
 LMin: TypeAlias = Annotated[
     float,
     Field(ge=-0.1),
@@ -115,9 +125,9 @@ Ratio: TypeAlias = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-Bar: TypeAlias = Annotated[float, Field(ge=-1e-2), UnitMeta(modelica_name="Bar")]
+Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
 Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
-seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
+Seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
 Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]
 OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
@@ -129,6 +139,16 @@ Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
 
 
+class TankState(Enum):
+    IN_USE = "in use"
+    FILLING = "filling"
+    BOOSTING = "boosting"
+    DISABLED = "disabled"
+    NEEDS_BOOST = "needs boost"
+    NEEDS_FILL = "needs fill"
+    STANDBY = "standby"
+
+
 class PcsMode(Enum):
     OFF = "off"
     MANEUVERING = "maneuvering"
@@ -136,11 +156,11 @@ class PcsMode(Enum):
     REGENERATION = "regeneration"
 
 
-FAHRENHEIT_MODE_OFF = 0
-FAHRENHEIT_MODE_ON = 1
-FAHRENHEIT_MODE_VALVE_RUN = 2
-FAHRENHEIT_MODE_ACTIVATION = 3
-FahrenheitMode: TypeAlias = Literal[0, 1, 2, 3]
+ADSORPTION_CHILLER_MODE_OFF = 0
+ADSORPTION_CHILLER_MODE_ON = 1
+ADSORPTION_CHILLER_MODE_VALVE_RUN = 2
+ADSORPTION_CHILLER_MODE_ACTIVATION = 3
+AdsorptionChillerMode: TypeAlias = Literal[0, 1, 2, 3]
 
 FREE_COOLING_MODE_OFF = 0
 FREE_COOLING_MODE_ON = 1

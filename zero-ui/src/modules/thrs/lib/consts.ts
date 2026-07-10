@@ -1,6 +1,8 @@
 import {
   ControlComponentType,
   ControlFields,
+  ControllerStateComponentType,
+  ControllerStateFields,
   ModuleDefinition,
   SensorComponentType,
   SensorFields,
@@ -11,29 +13,40 @@ import {
 } from "@/modules/thrs/types";
 import { gql } from "@urql/vue";
 import {
-  BOILERS_CONTROL_DEFINITION,
-  BOILERS_PARAMETER_DEFINITION,
-  BOILERS_SENSOR_DEFINITION,
-  BOILERS_SIMULATION_INPUTS,
-  BOILERS_SIMULATION_OUTPUTS,
+  ADSORPTION_SIMULATION_INPUTS,
+  ADSORPTION_SIMULATION_OUTPUTS,
   CONSUMERS_CONTROL_DEFINITION,
+  CONSUMERS_CONTROLLER_STATE,
   CONSUMERS_PARAMETER_DEFINITION,
   CONSUMERS_SENSOR_DEFINITION,
   CONSUMERS_SIMULATION_INPUTS,
   CONSUMERS_SIMULATION_OUTPUTS,
+  DC_SIMULATION_INPUTS,
+  DC_SIMULATION_OUTPUTS,
+  DHW_CONTROL_DEFINITION,
+  DHW_CONTROLLER_STATE,
+  DHW_PARAMETER_DEFINITION,
+  DHW_SENSOR_DEFINITION,
+  DHW_SIMULATION_INPUTS,
+  DHW_SIMULATION_OUTPUTS,
+  DRIVES_SIMULATION_INPUTS,
+  DRIVES_SIMULATION_OUTPUTS,
   HIGH_TEMPERATURE_SIMULATION_INPUTS,
   HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
   PCM_CONTROL_DEFINITION,
+  PCM_CONTROLLER_STATE,
   PCM_PARAMETER_DEFINITION,
   PCM_SENSOR_DEFINITION,
   PCM_SIMULATION_INPUTS,
   PCM_SIMULATION_OUTPUTS,
   PVT_CONTROL_DEFINITION,
+  PVT_CONTROLLER_STATE,
   PVT_PARAMETER_DEFINITION,
   PVT_SENSOR_DEFINITION,
   PVT_SIMULATION_INPUTS,
   PVT_SIMULATION_OUTPUTS,
   THRUSTERS_CONTROL_DEFINITION,
+  THRUSTERS_CONTROLLER_STATE,
   THRUSTERS_PARAMETER_DEFINITION,
   THRUSTERS_SENSOR_DEFINITION,
   THRUSTERS_SIMULATION_INPUTS,
@@ -46,29 +59,34 @@ import {
   ThrsSimulationType,
 } from "./consts.types";
 import {
-  BOILERS_CONTROL_QUERY,
-  BOILERS_PARAMETERS_QUERY,
-  BOILERS_SENSOR_QUERY,
-  BOILERS_SIMULATION_INPUTS_QUERY,
-  BOILERS_SIMULATION_OUTPUTS_QUERY,
   CONSUMERS_CONTROL_QUERY,
+  CONSUMERS_CONTROLLER_STATE_QUERY,
   CONSUMERS_PARAMETERS_QUERY,
   CONSUMERS_SENSOR_QUERY,
   CONSUMERS_SIMULATION_INPUTS_QUERY,
   CONSUMERS_SIMULATION_OUTPUTS_QUERY,
+  DHW_CONTROL_QUERY,
+  DHW_CONTROLLER_STATE_QUERY,
+  DHW_PARAMETERS_QUERY,
+  DHW_SENSOR_QUERY,
+  DHW_SIMULATION_INPUTS_QUERY,
+  DHW_SIMULATION_OUTPUTS_QUERY,
   HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
   HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
   PCM_CONTROL_QUERY,
+  PCM_CONTROLLER_STATE_QUERY,
   PCM_PARAMETERS_QUERY,
   PCM_SENSOR_QUERY,
   PCM_SIMULATION_INPUTS_QUERY,
   PCM_SIMULATION_OUTPUTS_QUERY,
   PVT_CONTROL_QUERY,
+  PVT_CONTROLLER_STATE_QUERY,
   PVT_PARAMETERS_QUERY,
   PVT_SENSOR_QUERY,
   PVT_SIMULATION_INPUTS_QUERY,
   PVT_SIMULATION_OUTPUTS_QUERY,
   THRUSTERS_CONTROL_QUERY,
+  THRUSTERS_CONTROLLER_STATE_QUERY,
   THRUSTERS_PARAMETERS_QUERY,
   THRUSTERS_SENSOR_QUERY,
   THRUSTERS_SIMULATION_INPUTS_QUERY,
@@ -112,28 +130,35 @@ export const DEFINITIONS = toDefinitions({
     sensorValues: THRUSTERS_SENSOR_DEFINITION,
     controlValues: THRUSTERS_CONTROL_DEFINITION,
     parameters: THRUSTERS_PARAMETER_DEFINITION,
+    controllerState: THRUSTERS_CONTROLLER_STATE,
   },
   pcm: {
     sensorValues: PCM_SENSOR_DEFINITION,
     controlValues: PCM_CONTROL_DEFINITION,
     parameters: PCM_PARAMETER_DEFINITION,
+    controllerState: PCM_CONTROLLER_STATE,
   },
   pvt: {
     sensorValues: PVT_SENSOR_DEFINITION,
     controlValues: PVT_CONTROL_DEFINITION,
     parameters: PVT_PARAMETER_DEFINITION,
+    controllerState: PVT_CONTROLLER_STATE,
   },
   consumers: {
     sensorValues: CONSUMERS_SENSOR_DEFINITION,
     controlValues: CONSUMERS_CONTROL_DEFINITION,
     parameters: CONSUMERS_PARAMETER_DEFINITION,
+    controllerState: CONSUMERS_CONTROLLER_STATE,
   },
-  boilers: {
-    sensorValues: BOILERS_SENSOR_DEFINITION,
-    controlValues: BOILERS_CONTROL_DEFINITION,
-    parameters: BOILERS_PARAMETER_DEFINITION,
+  dhw: {
+    sensorValues: DHW_SENSOR_DEFINITION,
+    controlValues: DHW_CONTROL_DEFINITION,
+    parameters: DHW_PARAMETER_DEFINITION,
+    controllerState: DHW_CONTROLLER_STATE,
   },
 });
+
+export type ThrsDefinitions = typeof DEFINITIONS;
 
 export const SIMULATION = toSimulation(
   {
@@ -141,16 +166,22 @@ export const SIMULATION = toSimulation(
     thrusters: THRUSTERS_SIMULATION_INPUTS,
     pcm: PCM_SIMULATION_INPUTS,
     pvt: PVT_SIMULATION_INPUTS,
+    adsorption: ADSORPTION_SIMULATION_INPUTS,
     consumers: CONSUMERS_SIMULATION_INPUTS,
-    boilers: BOILERS_SIMULATION_INPUTS,
+    dc: DC_SIMULATION_INPUTS,
+    dhw: DHW_SIMULATION_INPUTS,
+    drives: DRIVES_SIMULATION_INPUTS,
   },
   {
     highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
     thrusters: THRUSTERS_SIMULATION_OUTPUTS,
     pcm: PCM_SIMULATION_OUTPUTS,
     pvt: PVT_SIMULATION_OUTPUTS,
+    adsorption: ADSORPTION_SIMULATION_OUTPUTS,
     consumers: CONSUMERS_SIMULATION_OUTPUTS,
-    boilers: BOILERS_SIMULATION_OUTPUTS,
+    dc: DC_SIMULATION_OUTPUTS,
+    dhw: DHW_SIMULATION_OUTPUTS,
+    drives: DRIVES_SIMULATION_OUTPUTS,
   },
 );
 
@@ -158,7 +189,25 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Pump]: ["dutypoint", "on"],
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
-  [ControlComponentType.Heatpump]: ["dutypoint", "on"],
+  [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
+};
+
+export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
+  [ControllerStateComponentType.DhwTanksController]: [
+    "tank1State",
+    "tank2State",
+    "tank3State",
+    "timeToFill",
+  ],
+  [ControllerStateComponentType.PIDController]: [
+    "setpoint",
+    "measurement",
+    "output",
+    "error",
+    "enabled",
+    "tuning",
+    "components",
+  ],
 };
 
 export const SENSOR_FIELDS: SensorFields = {
@@ -180,6 +229,8 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.Thruster]: ["active", "heatFlow"],
   [SimulationComponentType.Boundary]: ["temperature", "flow"],
   [SimulationComponentType.HeatSource]: ["heatFlow"],
+  [SimulationComponentType.Flow]: ["flow"],
+  [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
 };
 
 export const toQueries = <
@@ -194,26 +245,31 @@ export const QUERIES = toQueries({
     controlValues: THRUSTERS_CONTROL_QUERY,
     parameters: THRUSTERS_PARAMETERS_QUERY,
     sensorValues: THRUSTERS_SENSOR_QUERY,
+    controllerState: THRUSTERS_CONTROLLER_STATE_QUERY,
   },
   pcm: {
     controlValues: PCM_CONTROL_QUERY,
     parameters: PCM_PARAMETERS_QUERY,
     sensorValues: PCM_SENSOR_QUERY,
+    controllerState: PCM_CONTROLLER_STATE_QUERY,
   },
   pvt: {
     controlValues: PVT_CONTROL_QUERY,
     parameters: PVT_PARAMETERS_QUERY,
     sensorValues: PVT_SENSOR_QUERY,
+    controllerState: PVT_CONTROLLER_STATE_QUERY,
   },
   consumers: {
     controlValues: CONSUMERS_CONTROL_QUERY,
     parameters: CONSUMERS_PARAMETERS_QUERY,
     sensorValues: CONSUMERS_SENSOR_QUERY,
+    controllerState: CONSUMERS_CONTROLLER_STATE_QUERY,
   },
-  boilers: {
-    controlValues: BOILERS_CONTROL_QUERY,
-    parameters: BOILERS_PARAMETERS_QUERY,
-    sensorValues: BOILERS_SENSOR_QUERY,
+  dhw: {
+    controlValues: DHW_CONTROL_QUERY,
+    parameters: DHW_PARAMETERS_QUERY,
+    sensorValues: DHW_SENSOR_QUERY,
+    controllerState: DHW_CONTROLLER_STATE_QUERY,
   },
 });
 
@@ -223,7 +279,7 @@ export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
   pcm: PCM_SIMULATION_INPUTS_QUERY,
   pvt: PVT_SIMULATION_INPUTS_QUERY,
   consumers: CONSUMERS_SIMULATION_INPUTS_QUERY,
-  boilers: BOILERS_SIMULATION_INPUTS_QUERY,
+  dhw: DHW_SIMULATION_INPUTS_QUERY,
 };
 
 export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
@@ -232,7 +288,7 @@ export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
   pcm: PCM_SIMULATION_OUTPUTS_QUERY,
   pvt: PVT_SIMULATION_OUTPUTS_QUERY,
   consumers: CONSUMERS_SIMULATION_OUTPUTS_QUERY,
-  boilers: BOILERS_SIMULATION_OUTPUTS_QUERY,
+  dhw: DHW_SIMULATION_OUTPUTS_QUERY,
 };
 
 const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>
@@ -270,6 +326,9 @@ export const QUERY_ALL = gql`
         parameters {
           ${THRUSTERS_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
       pcm {
         sensorValues {
@@ -280,6 +339,9 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${PCM_PARAMETERS_QUERY}
+        }
+        controllerState {
+          Empty
         }
       }
       pvt {
@@ -292,6 +354,9 @@ export const QUERY_ALL = gql`
         parameters {
           ${PVT_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
       consumers {
         sensorValues {
@@ -303,16 +368,22 @@ export const QUERY_ALL = gql`
         parameters {
           ${CONSUMERS_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
-      boilers {
+      dhw {
         sensorValues {
-          ${BOILERS_SENSOR_QUERY}
+          ${DHW_SENSOR_QUERY}
         }
         controlValues {
-          ${BOILERS_CONTROL_QUERY}
+          ${DHW_CONTROL_QUERY}
         }
         parameters {
-          ${BOILERS_PARAMETERS_QUERY}
+          ${DHW_PARAMETERS_QUERY}
+        }
+        controllerState {
+          ${DHW_CONTROLLER_STATE_QUERY}
         }
       }
     }

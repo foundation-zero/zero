@@ -1,31 +1,57 @@
 from dataclasses import dataclass
 from inspect import isclass
 from typing import Callable, Coroutine
-import strawberry
-from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
-from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
-from thrs.control.switching import SwitchingControlMode
-from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
-import thrs.input_output.definitions.sensor as sensor
-import thrs.input_output.definitions.control as control
-from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
-from strawberry.fastapi import BaseContext
-from pydantic.fields import FieldInfo
 
+import strawberry
+from pydantic.fields import FieldInfo
+from strawberry.fastapi import BaseContext
+
+import thrs.input_output.definitions.control as control
+import thrs.input_output.definitions.controllers as controllers
+import thrs.input_output.definitions.sensor as sensor
+from thrs.control.modules.adsorption import (
+    AdsorptionControllerState,
+    AdsorptionControlMode,
+    AdsorptionParameters,
+)
+from thrs.control.modules.consumers import (
+    ConsumersControllerState,
+    ConsumersControlMode,
+    ConsumersParameters,
+)
+from thrs.control.modules.dc import DcControllerState, DcControlMode, DcParameters
+from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
+from thrs.control.modules.drives import (
+    DrivesControllerState,
+    DrivesControlMode,
+    DrivesParameters,
+)
+from thrs.control.modules.pcm import PcmControllerState, PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import (
+    ThrustersControllerState,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
+from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.helpers import (
     JsonSchemaDirective,
     ensure_input_type,
     optional_pydantic_to_graphql,
 )
-
-from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
+from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
+from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.modules.adsorption import (
+    AdsorptionControlValues,
+    AdsorptionSensorValues,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
+from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
+from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -44,6 +70,7 @@ type ThrustersMessaging = ControlMessaging[
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControlMode,
+    ThrustersControllerState,
 ]
 
 type PvtMessaging = ControlMessaging[
@@ -51,6 +78,7 @@ type PvtMessaging = ControlMessaging[
     PvtControlValues,
     PvtParameters,
     PvtControlMode,
+    PvtControllerState,
 ]
 
 
@@ -59,6 +87,7 @@ type PcmMessaging = ControlMessaging[
     PcmControlValues,
     PcmParameters,
     PcmControlMode,
+    PcmControllerState,
 ]
 
 
@@ -67,13 +96,39 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControlMode,
+    ConsumersControllerState,
 ]
 
-type BoilersMessaging = ControlMessaging[
-    BoilersSensorValues,
-    BoilersControlValues,
-    BoilersParameters,
-    BoilersControlMode,
+type AdsorptionMessaging = ControlMessaging[
+    AdsorptionSensorValues,
+    AdsorptionControlValues,
+    AdsorptionParameters,
+    AdsorptionControlMode,
+    AdsorptionControllerState,
+]
+
+type DrivesMessaging = ControlMessaging[
+    DrivesSensorValues,
+    DrivesControlValues,
+    DrivesParameters,
+    DrivesControlMode,
+    DrivesControllerState,
+]
+
+type DcMessaging = ControlMessaging[
+    DcSensorValues,
+    DcControlValues,
+    DcParameters,
+    DcControlMode,
+    DcControllerState,
+]
+
+type DhwMessaging = ControlMessaging[
+    DhwSensorValues,
+    DhwControlValues,
+    DhwParameters,
+    DhwControlMode,
+    DhwControllerState,
 ]
 
 
@@ -109,6 +164,7 @@ def convert_module(module, class_name_prefix: str):
 
 convert_module(sensor, "Sensor")
 convert_module(control, "Control")
+convert_module(controllers, "Controller")
 
 
 # TODO: check if this can't just be based on the pydantic model directly
@@ -135,11 +191,13 @@ class ControlModule[
     ControlValuesType,
     ParametersType,
     Mode,
+    ControllerStateType,
 ]:
     sensor_values: SensorValuesType | None
     control_values: ControlValuesType | None
     parameters: ParametersType | None
     control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
+    controller_state: ControllerStateType | None
 
 
 @dataclass
@@ -149,7 +207,7 @@ class ThrsContext(BaseContext):
     pvt_messaging: PvtMessaging
     pcm_messaging: PcmMessaging
     consumers_messaging: ConsumersMessaging
-    boilers_messaging: BoilersMessaging
+    dhw_messaging: DhwMessaging
     simulation_messaging: SimulationMessaging
 
 

@@ -6,13 +6,16 @@
       "pcm": "PCM",
       "pvt": "PVT",
       "consumers": "Consumers",
-      "boilers": "Boilers"
+      "dhw": "DHW"
     },
     "title": "HMI",
     "views": {
       "monitoring": {
         "title": "Monitoring",
         "description": "Monitor the sensor and control values in real-time."
+      },
+      "mimic": {
+        "title": "Mimic"
       },
       "simulation": {
         "title": "Simulation",
@@ -61,7 +64,15 @@
       },
       "controlActions": {
         "automatedControl": "Automated control",
-        "off": "Off"
+        "manualControl": "Manual control",
+        "off": "Off",
+        "modes": {
+          "thrusters": "{mode}",
+          "pcm": "{mode}",
+          "consumers": "{mode}",
+          "pvt": "aft: {aftMode} / fwd: {fwdMode} / owners: {ownersMode}",
+          "dhw": "boosting: {boostingMode} / filling: {fillingMode}"
+        }
       },
       "clearChartHistory": {
         "title": "Clear Chart History",
@@ -80,6 +91,7 @@
       "parameters": "Parameters",
       "sensors": "Sensors",
       "controlParameters": "Control parameters",
+      "controllerState": "Controller values",
       "controlMode": "Control mode",
       "setValues": "Set values",
       "start": "Start",

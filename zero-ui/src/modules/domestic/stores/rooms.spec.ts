@@ -15,6 +15,8 @@ import {
   extractActualHumidity,
   extractActualTemperature,
   extractAmplifierStatus,
+  extractCO2Setpoint,
+  extractHumiditySetpoint,
   extractTemperatureSetpoint,
 } from "@common/lib/utils";
 import { createTestingPinia, TestingPinia } from "@pinia/testing";
@@ -38,15 +40,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import allRooms from "../../../../tests/data/all-rooms";
 import { tokens } from "../../../../tests/lib/auth";
-import {
-  toAmplifierStatus,
-  toBlindsControl,
-  toCO2Sensor,
-  toHumiditySensor,
-  toLightingControl,
-  toTemperatureControl,
-  toTemperatureSensor,
-} from "../../../../tests/lib/helpers";
+import { DomesticRooms } from "../gql/graphql";
 import { useRoomStore } from "./rooms";
 
 vi.mock(import("vue-i18n"), async (importOriginal) => ({
@@ -122,7 +116,7 @@ describe("Rooms Store", () => {
       expect(store.areas.flatMap((area) => area.rooms)).toHaveLength(allRooms.rooms.length);
     });
 
-    test('it subscribes to "subscribeToRoom" query', () => {
+    test('it subscribes to "subscribeToRooms" query', () => {
       expect(useSubscription).toHaveBeenCalled();
       expect(useSubscription.mock.calls[0][0].query).toEqual(subscribeToRooms);
       expect(useSubscription.mock.calls[0][0].variables).toEqual(undefined);
@@ -136,50 +130,107 @@ describe("Rooms Store", () => {
       setupStore(Roles.Admin, allRooms.rooms, room.id);
     });
 
-    test("it updates the control data", async () => {
-      const controls: Room["roomControls"] = [
-        toAmplifierStatus(false),
-        toTemperatureControl(99),
-        toBlindsControl(0.5),
-        toLightingControl(50),
-      ];
-
+    test("it updates the air conditioning", async () => {
       data.value = subscriptionCallback([], {
         rooms: [
           {
             ...room,
-            roomControls: controls,
-            roomSensors: [],
+            airConditioning: {
+              id: "1",
+              room: {} as DomesticRooms,
+              actualTemperature: 25,
+              temperatureSetpoint: 22,
+              actualHumidity: 50,
+              humiditySetpoint: 45,
+            },
           },
         ],
       });
 
-      expect(store.currentRoom.roomControls).toMatchObject(controls);
-      expect(extractTemperatureSetpoint(store.currentRoom)).toBe(99);
-      expect(extractAmplifierStatus(store.currentRoom)).toBe(0);
+      expect(extractActualTemperature(store.currentRoom)).toBe(25);
+      expect(extractTemperatureSetpoint(store.currentRoom)).toBe(22);
+      expect(extractActualHumidity(store.currentRoom)).toBe(50);
+      expect(extractHumiditySetpoint(store.currentRoom)).toBe(45);
     });
 
-    test("it updates the sensor data", async () => {
-      const sensors: Room["roomSensors"] = [
-        toTemperatureSensor(25),
-        toHumiditySensor(50),
-        toCO2Sensor(400),
+    test("it updates the ventilation", async () => {
+      data.value = subscriptionCallback([], {
+        rooms: [
+          {
+            ...room,
+            ventilation: {
+              id: "1",
+              room: {} as DomesticRooms,
+              actualCo2: 400,
+              co2Setpoint: 600,
+            },
+          },
+        ],
+      });
+
+      expect(extractActualCO2(store.currentRoom)).toBe(400);
+      expect(extractCO2Setpoint(store.currentRoom)).toBe(600);
+    });
+
+    test("it updates the amplifier", async () => {
+      data.value = subscriptionCallback([], {
+        rooms: [
+          {
+            ...room,
+            amplifier: {
+              on: true,
+              id: "1",
+              room: {} as DomesticRooms,
+            },
+          },
+        ],
+      });
+
+      expect(extractAmplifierStatus(store.currentRoom)).toBe(true);
+    });
+
+    test("it updates the blinds", async () => {
+      const blinds = [
+        {
+          id: "1",
+          name: "Blind 1",
+          level: 0.5,
+          group: "Group 1",
+          opacity: "blind" as const,
+        },
       ];
 
       data.value = subscriptionCallback([], {
         rooms: [
           {
             ...room,
-            roomControls: [],
-            roomSensors: sensors,
+            blinds,
           },
         ],
       });
 
-      expect(store.currentRoom.roomSensors).toMatchObject(sensors);
-      expect(extractActualHumidity(store.currentRoom)).toBe(50);
-      expect(extractActualTemperature(store.currentRoom)).toBe(25);
-      expect(extractActualCO2(store.currentRoom)).toBe(400);
+      expect(store.currentRoom.blinds).toMatchObject(blinds);
+    });
+
+    test("it updates the lighting groups", async () => {
+      const lightingGroups = [
+        {
+          id: "1",
+          name: "Lighting Group 1",
+          level: 0.75,
+        },
+      ];
+
+      data.value = subscriptionCallback([], {
+        rooms: [
+          {
+            ...room,
+            lightingGroups,
+          },
+        ],
+      });
+
+      expect(store.currentRoom.lightingGroups).toMatchObject(lightingGroups);
     });
   });
 
@@ -251,7 +302,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setBlindsLevelMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: "1",
+          ids: ["1"],
           level: nextLevel,
         });
       });
@@ -259,11 +310,11 @@ describe("Rooms Store", () => {
       test("it sends a mutation to change the light level", async () => {
         const nextLevel = 0.75;
 
-        await store.setLightLevel("1", nextLevel);
+        await store.setLightingGroupsLevel(["1"], nextLevel);
 
         expect(useMutation).toHaveBeenCalledWith(setLightingGroupsLevelMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: "1",
+          ids: ["1"],
           level: nextLevel,
         });
       });

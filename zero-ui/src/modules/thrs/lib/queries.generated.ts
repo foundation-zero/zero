@@ -1,71 +1,318 @@
-export const BOILERS_CONTROL_QUERY = `
-  boilersPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
+export const ADSORPTION_CONTROL_QUERY = `
+
+`;
+
+export const ADSORPTION_CONTROLLER_STATE_QUERY = `
+
+`;
+
+export const ADSORPTION_PARAMETERS_QUERY = `
+
+`;
+
+export const ADSORPTION_SENSOR_QUERY = `
+
+`;
+
+export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
+  adsorptionCoolingSupply {
+    temperature { value timestamp }
   }
-  boilersHeatpump {
-    temperatureSetpoint { value timestamp }
-    on { value timestamp }
+  adsorptionSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
   }
-  boilersFlowcontrolLt2 {
+  adsorptionAvailableHotTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableColdTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableSeawaterTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionHtSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const ADSORPTION_SIMULATION_OUTPUTS_QUERY = `
+  adsorptionCoolingReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionSeawaterReturn {
+    temperature { value timestamp }
+  }
+  adsorptionDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionHtReturn {
+    temperature { value timestamp }
+  }
+`;
+
+export const CONSUMERS_CONTROL_QUERY = `
+  consumersFlowcontrolAdsorption {
     setpoint { value timestamp }
   }
-  boilersFlowcontrolLt1 {
+  consumersFlowcontrolBypass {
     setpoint { value timestamp }
   }
-  boilersSwitchTank3Fill {
+  consumersFlowcontrolDhw {
     setpoint { value timestamp }
   }
-  boilersSwitchTank3BoostingReturn {
+  consumersSwitchAdsorption {
     setpoint { value timestamp }
   }
-  boilersSwitchTank3Empty {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank3BoostingSupply {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank2Fill {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank2BoostingReturn {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank2Empty {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank2BoostingSupply {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank1Fill {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank1BoostingReturn {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank1Empty {
-    setpoint { value timestamp }
-  }
-  boilersSwitchTank1BoostingSupply {
-    setpoint { value timestamp }
-  }
-  boilersSwitchLowTemperature {
-    setpoint { value timestamp }
-  }
-  boilersSwitchHeatpump {
-    setpoint { value timestamp }
-  }
-  boilersSwitchHighTemperature {
+  consumersSwitchDhw {
     setpoint { value timestamp }
   }
 `;
 
-export const BOILERS_PARAMETERS_QUERY = `
+export const CONSUMERS_CONTROLLER_STATE_QUERY = `
+
+`;
+
+export const CONSUMERS_PARAMETERS_QUERY = `
+  dhwEnabled
+  dhwFlowRatioSetpoint
+  adsorptionEnabled
+  adsorptionFlowRatioSetpoint
+  dhwFlowBalanceTuning
+  bypassFlowBalanceTuning
+  adsorptionFlowBalanceTuning
+`;
+
+export const CONSUMERS_SENSOR_QUERY = `
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwSupply {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionSupply {
+    temperature { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowAdsorption {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowcontrolAdsorption {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolBypass {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolDhw {
+    positionRel { value timestamp }
+  }
+  consumersSwitchAdsorption {
+    positionRel { value timestamp }
+  }
+  consumersSwitchDhw {
+    positionRel { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
+  consumersAdsorptionSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersPcmSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
+  consumersAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const DC_CONTROL_QUERY = `
+
+`;
+
+export const DC_CONTROLLER_STATE_QUERY = `
+
+`;
+
+export const DC_PARAMETERS_QUERY = `
+
+`;
+
+export const DC_SENSOR_QUERY = `
+
+`;
+
+export const DC_SIMULATION_INPUTS_QUERY = `
+  dcSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  dcDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const DC_SIMULATION_OUTPUTS_QUERY = `
+  dcSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dcDhwReturn {
+    temperature { value timestamp }
+  }
+`;
+
+export const DHW_CONTROL_QUERY = `
+  dhwPump {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  dhwHeatpump {
+    temperatureSetpoint { value timestamp }
+    on { value timestamp }
+  }
+  dhwFlowcontrolDc {
+    setpoint { value timestamp }
+  }
+  dhwFlowcontrolDrives {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3Outlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2Outlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1Outlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchLowTemperature {
+    setpoint { value timestamp }
+  }
+  dhwSwitchHeatpump {
+    setpoint { value timestamp }
+  }
+  dhwSwitchHighTemperature {
+    setpoint { value timestamp }
+  }
+`;
+
+export const DHW_CONTROLLER_STATE_QUERY = `
+  dhwTanksController {
+    tank1State { value timestamp }
+    tank2State { value timestamp }
+    tank3State { value timestamp }
+    timeToFill { value timestamp }
+  }
+  dhwPumpFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dhwPumpTemperatureController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dhwDrivesFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dhwDcFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+`;
+
+export const DHW_PARAMETERS_QUERY = `
+  heatpumpBoostingEnabled
+  htBoostingEnabled
   heatpumpFlowSetpoint
-  boostingTemperatureSetpoint
-  tankTemperatureSetpoint
-  lt1FlowcontrolMinimumSetpoint
-  lt2FlowcontrolMinimumSetpoint
+  heatpumpTemperatureSetpoint
+  htBoostingTemperatureSetpoint
+  minimumTankTemperature
+  maximumTankTemperature
+  boostingDelta
+  drivesFlowcontrolMinimumSetpoint
+  dcFlowcontrolMinimumSetpoint
   fillingTemperatureSetpoint
   minimumTankLevel
   maximumTankLevel
@@ -74,277 +321,315 @@ export const BOILERS_PARAMETERS_QUERY = `
   tank3Disabled
   pumpTemperatureTuning
   pumpFlowTuning
-  lt2FlowTuning
-  lt1FlowTuning
+  dcFlowTuning
+  drivesFlowTuning
 `;
 
-export const BOILERS_SENSOR_QUERY = `
-  boilersPump {
+export const DHW_SENSOR_QUERY = `
+  dhwPump {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
   }
-  boilersTemperatureChillerReturn {
+  dhwTemperatureHvacExchangerReturn {
     temperature { value timestamp }
   }
-  boilersTemperatureLt2Return {
+  dhwTemperatureDcReturn {
     temperature { value timestamp }
   }
-  boilersTemperatureTank3 {
+  dhwTemperatureTank3 {
     temperature { value timestamp }
   }
-  boilersTemperatureTank2 {
+  dhwTemperatureTank2 {
     temperature { value timestamp }
   }
-  boilersTemperatureTank1 {
+  dhwTemperatureTank1 {
     temperature { value timestamp }
   }
-  boilersTemperatureLt1Return {
+  dhwTemperatureDrivesReturn {
     temperature { value timestamp }
   }
-  boilersTemperatureFreshwaterSupply {
+  dhwTemperatureFreshwaterSupply {
     temperature { value timestamp }
   }
-  boilersTemperatureFahrenheitReturn {
+  dhwTemperatureAdsorptionReturn {
     temperature { value timestamp }
   }
-  boilersTemperatureBoostingSupply {
+  dhwTemperatureBoostingReturn {
     temperature { value timestamp }
   }
-  boilersTemperatureBoostingReturn {
+  dhwTemperatureBoostingSupply {
     temperature { value timestamp }
   }
-  boilersLevelTank1 {
+  dhwLevelTank1 {
     level { value timestamp }
   }
-  boilersLevelTank2 {
+  dhwLevelTank2 {
     level { value timestamp }
   }
-  boilersLevelTank3 {
+  dhwLevelTank3 {
     level { value timestamp }
   }
-  boilersFlowLt2 {
+  dhwFlowDc {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  boilersFlowLt1 {
+  dhwFlowDrives {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  boilersFlowBoosting {
+  dhwFlowBoosting {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  boilersFlowcontrolLt2 {
+  dhwFlowcontrolDc {
     positionRel { value timestamp }
   }
-  boilersFlowcontrolLt1 {
+  dhwFlowcontrolDrives {
     positionRel { value timestamp }
   }
-  boilersSwitchTank3Fill {
+  dhwSwitchTank3Inlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank3BoostingReturn {
+  dhwSwitchTank3BoostingReturn {
     positionRel { value timestamp }
   }
-  boilersSwitchTank3Empty {
+  dhwSwitchTank3Outlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank3BoostingSupply {
+  dhwSwitchTank3BoostingSupply {
     positionRel { value timestamp }
   }
-  boilersSwitchTank2Fill {
+  dhwSwitchTank2Inlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank2BoostingReturn {
+  dhwSwitchTank2BoostingReturn {
     positionRel { value timestamp }
   }
-  boilersSwitchTank2Empty {
+  dhwSwitchTank2Outlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank2BoostingSupply {
+  dhwSwitchTank2BoostingSupply {
     positionRel { value timestamp }
   }
-  boilersSwitchTank1Fill {
+  dhwSwitchTank1Inlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank1BoostingReturn {
+  dhwSwitchTank1BoostingReturn {
     positionRel { value timestamp }
   }
-  boilersSwitchTank1Empty {
+  dhwSwitchTank1Outlet {
     positionRel { value timestamp }
   }
-  boilersSwitchTank1BoostingSupply {
+  dhwSwitchTank1BoostingSupply {
     positionRel { value timestamp }
   }
-  boilersSwitchLowTemperature {
+  dhwSwitchLowTemperature {
     positionRel { value timestamp }
   }
-  boilersSwitchHeatpump {
+  dhwSwitchHeatpump {
     positionRel { value timestamp }
   }
-  boilersSwitchHighTemperature {
+  dhwSwitchHighTemperature {
     positionRel { value timestamp }
+  }
+  dhwPressure {
+    pressure { value timestamp }
+  }
+  drivesFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  dcFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwSupply {
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterFlow {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterTemperature {
+    temperature { value timestamp }
+  }
+  drivesDelta {
+    deltaT { value timestamp }
+  }
+  dcDelta {
+    deltaT { value timestamp }
+  }
+  consumersDelta {
+    deltaT { value timestamp }
+  }
+  adsorptionDelta {
+    deltaT { value timestamp }
+  }
+  dhwFreshwaterFlowSupply {
+    flow { value timestamp }
+  }
+  dhwHvacExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwHeatpump {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwAdsorptionExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwConsumersExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwDcExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwDrivesExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 
-export const BOILERS_SIMULATION_INPUTS_QUERY = `
-  boilersLt1Supply {
+export const DHW_SIMULATION_INPUTS_QUERY = `
+  dhwDrivesSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  boilersLt2Supply {
+  dhwDcSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  boilersFahrenheitSupply {
+  dhwAdsorptionSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  boilersHtSupply {
+  dhwHtSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  boilersFreshwaterSupply {
+  dhwFreshwaterSupply {
     temperature { value timestamp }
     overpressure { value timestamp }
   }
-  boilersExchangerGas {
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    temperature { value timestamp }
+  }
+  dhwHotwaterDemand {
+    flow { value timestamp }
+  }
+`;
+
+export const DHW_SIMULATION_OUTPUTS_QUERY = `
+  dhwDrivesReturn {
+    temperature { value timestamp }
+  }
+  dhwDcReturn {
+    temperature { value timestamp }
+  }
+  dhwAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  dhwHtReturn {
+    temperature { value timestamp }
+  }
+  dhwSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    flow { value timestamp }
+  }
+  dhwFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const DRIVES_CONTROL_QUERY = `
+
+`;
+
+export const DRIVES_CONTROLLER_STATE_QUERY = `
+
+`;
+
+export const DRIVES_PARAMETERS_QUERY = `
+
+`;
+
+export const DRIVES_SENSOR_QUERY = `
+
+`;
+
+export const DRIVES_SIMULATION_INPUTS_QUERY = `
+  drivesOilCoolerAft {
     heatFlow { value timestamp }
   }
-  boilersSeawaterSupply {
-    temperature { value timestamp }
+  drivesOilCoolerFwd {
+    heatFlow { value timestamp }
   }
-`;
-
-export const BOILERS_SIMULATION_OUTPUTS_QUERY = `
-  boilersLt1Return {
-    temperature { value timestamp }
-  }
-  boilersLt2Return {
-    temperature { value timestamp }
-  }
-  boilersFahrenheitReturn {
-    temperature { value timestamp }
-  }
-  boilersHtReturn {
-    temperature { value timestamp }
-  }
-  boilersFreshwaterReturn {
-    flow { value timestamp }
-  }
-  boilersSeawaterReturn {
-    temperature { value timestamp }
-  }
-  boilersSeawaterSupply {
-    flow { value timestamp }
-  }
-`;
-
-export const CONSUMERS_CONTROL_QUERY = `
-  consumersFlowcontrolFahrenheit {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolBoosting {
-    setpoint { value timestamp }
-  }
-  consumersSwitchFahrenheitExchanger {
-    setpoint { value timestamp }
-  }
-  consumersSwitchBoosting {
-    setpoint { value timestamp }
-  }
-`;
-
-export const CONSUMERS_PARAMETERS_QUERY = `
-  boostingEnabled
-  boostingFlowRatioSetpoint
-  fahrenheitEnabled
-  fahrenheitFlowRatioSetpoint
-  boostingFlowBalanceTuning
-  bypassFlowBalanceTuning
-  fahrenheitFlowBalanceTuning
-`;
-
-export const CONSUMERS_SENSOR_QUERY = `
-  consumersTemperatureBoostingReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureFahrenheitReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureBoostingSupply {
-    temperature { value timestamp }
-  }
-  consumersTemperatureFahrenheitSupply {
-    temperature { value timestamp }
-  }
-  consumersFlowBoosting {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowFahrenheit {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowBypass {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowcontrolFahrenheit {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolBoosting {
-    positionRel { value timestamp }
-  }
-  consumersSwitchFahrenheitExchanger {
-    positionRel { value timestamp }
-  }
-  consumersSwitchBoosting {
-    positionRel { value timestamp }
-  }
-`;
-
-export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
-  consumersFahrenheitSupply {
+  drivesSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  consumersBoostingSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersModuleSupply {
+  drivesDhwSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
 `;
 
-export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
-  consumersFahrenheitReturn {
+export const DRIVES_SIMULATION_OUTPUTS_QUERY = `
+  drivesSeawaterReturn {
     temperature { value timestamp }
   }
-  consumersBoostingReturn {
+  drivesDhwReturn {
     temperature { value timestamp }
-  }
-  consumersModuleReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
   }
 `;
 
 export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
-  thrustersAft {
+  thrustersThrusterAft {
     heatFlow { value timestamp }
     active { value timestamp }
   }
-  thrustersFwd {
+  thrustersThrusterFwd {
     heatFlow { value timestamp }
     active { value timestamp }
   }
@@ -372,11 +657,11 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  consumersFahrenheitSupply {
+  consumersDhwSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  consumersBoostingSupply {
+  consumersAdsorptionSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -386,30 +671,30 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
   thrustersSeawaterReturn {
     temperature { value timestamp }
   }
-  thrustersModuleSupply {
+  thrustersPcmSupply {
     flow { value timestamp }
   }
-  thrustersModuleReturn {
+  thrustersPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pvtModuleReturn {
+  pvtPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pvtModuleSupply {
+  pvtPcmSupply {
     flow { value timestamp }
   }
   pvtSeawaterReturn {
     temperature { value timestamp }
   }
-  consumersFahrenheitReturn {
+  consumersAdsorptionReturn {
     temperature { value timestamp }
   }
-  consumersBoostingReturn {
+  consumersDhwReturn {
     temperature { value timestamp }
   }
-  consumersModuleReturn {
+  consumersPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -417,7 +702,7 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmProducersReturn {
+  pcmPvtReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -461,6 +746,10 @@ export const PCM_CONTROL_QUERY = `
   }
 `;
 
+export const PCM_CONTROLLER_STATE_QUERY = `
+
+`;
+
 export const PCM_PARAMETERS_QUERY = `
   pcmDischargeFlow
   pcmChargeFlow
@@ -487,16 +776,16 @@ export const PCM_SENSOR_QUERY = `
   pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
-  pcmTemperatureModule1Out {
+  pcmTemperatureModule1 {
     temperature { value timestamp }
   }
-  pcmTemperatureModule2Out {
+  pcmTemperatureModule2 {
     temperature { value timestamp }
   }
-  pcmTemperatureModule3Out {
+  pcmTemperatureModule3 {
     temperature { value timestamp }
   }
-  pcmTemperatureModule4Out {
+  pcmTemperatureModule4 {
     temperature { value timestamp }
   }
   pcmModule1 {
@@ -554,16 +843,16 @@ export const PCM_SENSOR_QUERY = `
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
-  pcmProducersSupply {
+  pcmThrustersSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
   pcmConsumersSupply {
     temperature { value timestamp }
-  }
-  pcmFreshwaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
   }
 `;
 
@@ -572,7 +861,7 @@ export const PCM_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmProducersReturn {
+  pcmPvtReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -616,6 +905,10 @@ export const PVT_CONTROL_QUERY = `
   pvtMixExchanger {
     setpoint { value timestamp }
   }
+`;
+
+export const PVT_CONTROLLER_STATE_QUERY = `
+
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -700,7 +993,7 @@ export const PVT_SENSOR_QUERY = `
   pvtPressureOwners {
     pressure { value timestamp }
   }
-  pvtPressureSupply {
+  pvtPressureSystem {
     pressure { value timestamp }
   }
   pvtSwitchMainFwd {
@@ -962,7 +1255,7 @@ export const PVT_SIMULATION_INPUTS_QUERY = `
   pvtOwners {
     heatFlow { value timestamp }
   }
-  pvtModuleSupply {
+  pvtPcmSupply {
     temperature { value timestamp }
   }
   pvtSeawaterSupply {
@@ -972,11 +1265,11 @@ export const PVT_SIMULATION_INPUTS_QUERY = `
 `;
 
 export const PVT_SIMULATION_OUTPUTS_QUERY = `
-  pvtModuleReturn {
+  pvtPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pvtModuleSupply {
+  pvtPcmSupply {
     flow { value timestamp }
   }
   pvtSeawaterReturn {
@@ -1005,7 +1298,7 @@ export const THRUSTERS_CONTROL_QUERY = `
   thrustersFlowcontrolFwd {
     setpoint { value timestamp }
   }
-  thrustersShutoffRecovery {
+  thrustersSwitchRecovery {
     setpoint { value timestamp }
   }
   thrustersSwitchAft {
@@ -1014,6 +1307,10 @@ export const THRUSTERS_CONTROL_QUERY = `
   thrustersSwitchFwd {
     setpoint { value timestamp }
   }
+`;
+
+export const THRUSTERS_CONTROLLER_STATE_QUERY = `
+
 `;
 
 export const THRUSTERS_PARAMETERS_QUERY = `
@@ -1044,10 +1341,10 @@ export const THRUSTERS_SENSOR_QUERY = `
     speed { value timestamp }
     opTime { value timestamp }
   }
-  thrustersTemperatureAftReturn {
+  thrustersTemperatureAft {
     temperature { value timestamp }
   }
-  thrustersTemperatureFwdReturn {
+  thrustersTemperatureFwd {
     temperature { value timestamp }
   }
   thrustersTemperatureSupply {
@@ -1076,7 +1373,7 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFlowcontrolFwd {
     positionRel { value timestamp }
   }
-  thrustersShutoffRecovery {
+  thrustersSwitchRecovery {
     positionRel { value timestamp }
   }
   thrustersSwitchAft {
@@ -1089,16 +1386,16 @@ export const THRUSTERS_SENSOR_QUERY = `
     flow { value timestamp }
     temperature { value timestamp }
   }
-  thrustersPressurePump {
+  thrustersPressureDischarge {
     pressure { value timestamp }
   }
-  thrustersPressureRelief {
+  thrustersPressureSystem {
     pressure { value timestamp }
   }
-  thrustersAft {
+  thrustersThrusterAft {
     active { value timestamp }
   }
-  thrustersFwd {
+  thrustersThrusterFwd {
     active { value timestamp }
   }
   thrustersPcs {
@@ -1107,11 +1404,11 @@ export const THRUSTERS_SENSOR_QUERY = `
 `;
 
 export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
-  thrustersAft {
+  thrustersThrusterAft {
     heatFlow { value timestamp }
     active { value timestamp }
   }
-  thrustersFwd {
+  thrustersThrusterFwd {
     heatFlow { value timestamp }
     active { value timestamp }
   }
@@ -1119,7 +1416,7 @@ export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  thrustersModuleSupply {
+  thrustersPcmSupply {
     temperature { value timestamp }
   }
   thrustersPcs {
@@ -1131,10 +1428,10 @@ export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
   thrustersSeawaterReturn {
     temperature { value timestamp }
   }
-  thrustersModuleSupply {
+  thrustersPcmSupply {
     flow { value timestamp }
   }
-  thrustersModuleReturn {
+  thrustersPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }

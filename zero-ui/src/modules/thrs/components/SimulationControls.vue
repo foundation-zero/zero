@@ -4,11 +4,17 @@ import {
   SIMULATION_INPUT_QUERIES,
   ThrsSimulationType,
 } from "@/modules/thrs/lib/consts";
-import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrs/types";
+import {
+  ExtractAllValues,
+  SimulationComponentType,
+  SimulationDefinitions,
+} from "@/modules/thrs/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history";
 import BoundaryControl from "./controls/BoundaryControl.vue";
+import FlowControl from "./controls/FlowControl.vue";
 import HeatSourceControl from "./controls/HeatSourceControl.vue";
+import HvacControl from "./controls/HvacControl.vue";
 import ModuleControls from "./controls/ModuleControls.vue";
 import OverpressureTemperatureControl from "./controls/OverpressureTemperatureControl.vue";
 import PcsControl from "./controls/PcsControl.vue";
@@ -18,11 +24,12 @@ import ThrustersControl from "./controls/ThrustersControl.vue";
 const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.Thruster]: ThrustersControl,
   [SimulationComponentType.Boundary]: BoundaryControl,
-  [SimulationComponentType.Flow]: null,
+  [SimulationComponentType.Flow]: FlowControl,
   [SimulationComponentType.Temperature]: TemperatureControl,
   [SimulationComponentType.OverpressureTemperature]: OverpressureTemperatureControl,
   [SimulationComponentType.Pcs]: PcsControl,
   [SimulationComponentType.HeatSource]: HeatSourceControl,
+  [SimulationComponentType.HvacExchanger]: HvacControl,
 };
 
 const { data } = toRefs(useThrsHistory());
@@ -31,7 +38,9 @@ const props = defineProps<{ type: ThrsSimulationType }>();
 
 const definition = computed(() => SIMULATION.inputs[props.type] as SimulationDefinitions);
 
-const simulationInputsData = computed(() => data.value?.simulation.inputs);
+const simulationInputsData = computed(
+  () => data.value?.simulation.inputs as unknown as ExtractAllValues<SimulationDefinitions>,
+);
 </script>
 <template>
   <ModuleControls

@@ -10,7 +10,7 @@ data:
   PG_PORT: {{ .Values.postgresql.port | quote }}
   PG_USER: {{ .Values.postgresql.user }}
   PG_DB: {{ .Values.postgresql.db }}
-  RISINGWAVE_URL: {{ .Values.risingwave.url }}
+  GREPTIME_URL: {{ .Values.greptime.url }}
   {{- if .Values.hasura.secret }}
   JWT_SECRET: {{ .Values.hasura.secret }}
   {{- end }}

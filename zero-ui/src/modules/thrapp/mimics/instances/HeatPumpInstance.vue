@@ -1,0 +1,64 @@
+<script setup lang="ts">
+import { RiTempHotLine } from "@remixicon/vue";
+import { computed } from "vue";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
+import { HeatPump, HeatPumpMode, HeatPumpModes, HeatPumpTitle } from "../components/heat-pump";
+import {
+  ValueList,
+  ValueListDeltaTItem,
+  ValueListHeatPowerItem,
+  ValueListSeparator,
+} from "../components/value-list";
+import { YardTag } from "../components/yard-tag";
+import { getMimicDataProvider } from "../providers";
+
+const props = defineProps<
+  MimicComponentInstanceProps &
+    TooltipComponentContext<MimicComponentType.HeatPump> & {
+      width?: number | string;
+      height?: number | string;
+      forceHeight?: boolean;
+    }
+>();
+
+const { getSensorValue, getComponentState, getControlValue } = getMimicDataProvider();
+
+const heatExchanger = getSensorValue(props.source);
+const heatpump = getControlValue(props.controls.heatpump);
+const state = getComponentState();
+
+const mode = computed(() => {
+  if (heatpump.value?.on.value) return HeatPumpModes.Active;
+  else return HeatPumpModes.Inactive;
+});
+</script>
+
+<template>
+  <MimicTooltipTrigger
+    :type="MimicComponentType.HeatPump"
+    :data="props"
+  >
+    <HeatPump
+      v-bind="props"
+      :state="state"
+    >
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <HeatPumpTitle class="gap-1 py-1">
+        <RiTempHotLine class="text-brand inline h-4 w-4" />
+        {{ tooltip?.title }}
+      </HeatPumpTitle>
+      <HeatPumpMode
+        :mode="mode"
+        :state="state"
+      />
+      <ValueList class="gap-0">
+        <ValueListSeparator />
+        <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />
+        <ValueListDeltaTItem :value="heatExchanger?.deltaT.value" />
+        <ValueListSeparator />
+      </ValueList>
+    </HeatPump>
+  </MimicTooltipTrigger>
+</template>

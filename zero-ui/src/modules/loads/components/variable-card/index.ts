@@ -1,6 +1,9 @@
 export { default as VariableCard } from "./VariableCard.vue";
+export { default as VariableCardFooter } from "./VariableCardFooter.vue";
 export { default as VariableCardReferenceTarget } from "./VariableCardReferenceTarget.vue";
 export { default as VariableCardReferenceThresholds } from "./VariableCardReferenceThresholds.vue";
+export { default as VariableCardState } from "./VariableCardState.vue";
+export { default as VariableCardStateLabel } from "./VariableCardStateLabel.vue";
 export { default as VariableCardTitle } from "./VariableCardTitle.vue";
 export { default as VariableCardValue } from "./VariableCardValue.vue";
 

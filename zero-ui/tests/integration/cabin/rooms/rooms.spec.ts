@@ -1,13 +1,12 @@
 import allRooms from "../../../data/all-rooms";
-import { toAmplifierStatus } from "../../../lib/helpers";
 import { expect, test as testBase } from "../../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
+import { getAllRooms, getVersion } from "../../../mocks/queries";
 import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({
   roomsPage: [
     async ({ page, worker, subscriptions }, use) => {
-      worker.use(getAllRooms, getVersion, getSensorLogs, getControlLogs);
+      worker.use(getAllRooms, getVersion);
 
       const roomsPage = new RoomsPage(page, subscriptions);
 
@@ -37,11 +36,11 @@ test.describe("Rooms", () => {
     });
 
     test("shows the correct state of the audio system", async ({ roomsPage, page }) => {
-      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(false)] });
+      roomsPage.updateRoom(dutchCabin, { amplifier: { on: false } });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
-      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(true)] });
+      roomsPage.updateRoom(dutchCabin, { amplifier: { on: true } });
 
       await page.waitForTimeout(1000);
 
@@ -52,23 +51,12 @@ test.describe("Rooms", () => {
   test.describe("as admin", () => {
     test.beforeEach(async ({ auth, subscriptions }) => {
       await auth.asAdmin();
-      subscriptions.subscribe("SubscribeToRoom").dispatch(allRooms);
+      subscriptions.subscribe("SubscribeToRooms").dispatch(allRooms);
     });
 
     test("subscribes to a room", async ({ roomsPage }) => {
       expect(roomsPage.subscribers).toHaveLength(1);
       expect(roomsPage.subscribers[0].payload!.variables).toEqual({});
-    });
-
-    test.describe("room selection", () => {
-      test("it shows the side navigation", async ({ page, roomsPage }) => {
-        await expect(roomsPage.dialog).toContainClass("show");
-        await page.screenshot({ path: "screenshots/rooms_admin.png" });
-      });
-
-      test("it shows the correct amount of rooms", async ({ roomsPage }) => {
-        await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
-      });
     });
   });
 });

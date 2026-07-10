@@ -15,8 +15,8 @@ from thrs.input_output.modules.thrusters import (
 
 
 class HighTemperatureSimulationInputs(SimulationInputs):
-    thrusters_aft: simulation.Thruster
-    thrusters_fwd: simulation.Thruster
+    thrusters_thruster_aft: simulation.Thruster
+    thrusters_thruster_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary
     thrusters_pcs: simulation.Pcs
     pvt_main_fwd: simulation.HeatSource
@@ -24,8 +24,8 @@ class HighTemperatureSimulationInputs(SimulationInputs):
     pvt_owners: simulation.HeatSource
     pvt_seawater_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
-    consumers_fahrenheit_supply: simulation.Boundary
-    consumers_boosting_supply: simulation.Boundary
+    consumers_dhw_supply: simulation.Boundary
+    consumers_adsorption_supply: simulation.Boundary
 
 
 class HighTemperatureSimulationOutputs(

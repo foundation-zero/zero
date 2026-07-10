@@ -1,9 +1,8 @@
 from fastapi.testclient import TestClient
-from domestic_control.app import app
 
 
-def test_version():
-    client = TestClient(app)
+def test_version(test_app):
+    client = TestClient(test_app)
     response = client.post("/graphql", json={"query": "query { version }"})
 
     assert response.status_code == 200

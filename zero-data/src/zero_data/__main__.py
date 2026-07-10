@@ -5,7 +5,6 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
-from zero_data.dbt_gen import generate_dbt
 from zero_data.data_gen import generate_data
 from zero_data.vector_gen import generate_vector
 
@@ -33,13 +32,6 @@ class GenerateDataCmd(BaseModel):
         generate_data(excluded_io_list_names=self.exclude_io_lists)
 
 
-class GenerateDbtCmd(BaseModel):
-    """Generate all dbt resources"""
-
-    def cli_cmd(self):
-        generate_dbt()
-
-
 class GenerateVectorCmd(BaseModel):
     """Generate all vector resources"""
 
@@ -59,7 +51,6 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     """
 
     generate_data: CliSubCommand[GenerateDataCmd]
-    generate_dbt: CliSubCommand[GenerateDbtCmd]
     generate_vector: CliSubCommand[GenerateVectorCmd]
 
     def cli_cmd(self):

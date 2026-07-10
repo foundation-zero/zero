@@ -1,15 +1,26 @@
 from abc import ABC, abstractmethod
 from asyncio import Future, gather
+from collections.abc import Mapping
 from typing import Any
 
 from pydantic import TypeAdapter
-from thrs.input_output.base import ThrsValues, CombinedValues
-from thrs.utils.string import dash_to_snake
+
+from thrs.input_output.base import CombinedValues, ThrsValues
+from thrs.orchestration.module import ModuleClassMap
 
 
 class ModelBuilder[T](ABC):
+    """
+    ModelBuilders is used to build instances of a class
+
+    It accepts a class and one or more input calls. If those `input` calls give enough information
+    to create a instance of that class, `result` will return an instance.
+
+    Given more `input` calls the class will keep `result` updated.
+    """
+
     @abstractmethod
-    def input(self, topic: str, json: str | bytes): ...
+    def input(self, field: str, json: str | bytes): ...
 
     @abstractmethod
     def result(self) -> T | None: ...
@@ -19,6 +30,12 @@ class ModelBuilder[T](ABC):
 
 
 class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
+    """
+    ModelBuilder that handles partial input.
+
+    Each input call is expected to set one field in the model.
+    """
+
     def __init__(self, cls: type[T]):
         self._cls = cls
         self._value: T | None = None
@@ -29,8 +46,7 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         }
         self._complete_model = Future()
 
-    def input(self, topic: str, json: str | bytes):
-        field = dash_to_snake(topic)
+    def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(json)
         if self._value is not None:
             setattr(self._value, field, value)
@@ -48,14 +64,20 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
 
 class CombinedModelBuilder(ModelBuilder[CombinedValues]):
-    def __init__(self, clss: dict[str, type[ThrsValues]]):
-        self._model_builders: dict[str, ModelBuilder[ThrsValues]] = {
-            name: PartialModelBuilder(cls) for name, cls in clss.items()
+    """
+    Model builder that handles multiple modules.
+
+    It builds a ModuleClassMap instead of a single class.
+    """
+
+    def __init__(self, clss: ModuleClassMap):
+        self._model_builders: Mapping[str, ModelBuilder[ThrsValues]] = {
+            name: PartialModelBuilder(module_cls) for name, module_cls in clss.items()
         }
 
-    def input(self, topic: str, json: str | bytes):
-        module_name, field, *rest = topic.split("/")
-        self._model_builders[module_name].input(field, json)
+    def input(self, field: str, json: str | bytes):
+        module_name, field_name, *rest = field.split("/")
+        self._model_builders[module_name].input(field_name, json)
 
     def result(self) -> CombinedValues | None:
         values: dict[str, ThrsValues] = {

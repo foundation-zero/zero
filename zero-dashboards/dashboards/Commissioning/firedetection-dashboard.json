@@ -26,7 +26,7 @@
       "includeVars": false,
       "keepTime": true,
       "tags": [
-        "commisssioning"
+        "commissioning"
       ],
       "targetBlank": false,
       "title": "Dashboards",
@@ -77,7 +77,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -471,13 +471,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DETECT_FAULT\").value ORDER BY time)                         AS detect_fault,\r\n  LAST_VALUE((\"DOOR_POWERSUPPLYFAIL\").value ORDER BY time)                 AS door_power_supply_fail,\r\n  LAST_VALUE((\"AUXILIARY_SYSTEM_SERVICESUPPLYFAIL\").value ORDER BY time)   AS aux_sys_service_supply_fail,\r\n  LAST_VALUE((\"AUXILIARY_SYSTEM_EMERGENCYSUPPLYFAIL\").value ORDER BY time) AS aux_sys_emergency_supply_fail\r\nFROM marpower.\"450000_firedetection_general\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdetect_fault__value as detect_fault,\r\n\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -503,7 +517,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -656,13 +670,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DOORS_RELEASE\").value ORDER BY time)         AS doors_release\r\nFROM marpower.\"450000_firedetection_general\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -698,7 +726,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -783,13 +811,27 @@
             {
               "dataset": "dev",
               "datasource": {
-                "type": "grafana-postgresql-datasource",
+                "type": "info8fcc-greptimedb-datasource",
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"DETECT_FAULT\").value                         AS detect_fault,\r\n  (\"DOOR_POWERSUPPLYFAIL\").value                 AS door_power_supply_fail,\r\n  (\"AUXILIARY_SYSTEM_SERVICESUPPLYFAIL\").value   AS aux_sys_service_supply_fail,\r\n  (\"AUXILIARY_SYSTEM_EMERGENCYSUPPLYFAIL\").value AS aux_sys_emergency_supply_fail,\r\n\r\n  -- Status\r\n  (\"DOORS_RELEASE\").value                        AS doors_release,\r\n  (\"DOOR_GALLEY_KEEL_OPEN\").value                AS door_galley_keel_open\r\nFROM marpower.\"450000_firedetection_general\"\r\nWHERE $__timeFilter(time)",
+              "rawSql": "SELECT timestamp, detect_fault__value AS detect_fault,\r\n\t\t\t\t\t\t\t\t\tdoor_powersupplyfail__value AS door_power_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_servicesupplyfail__value AS aux_sys_service_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\t\t\t\t\t\t\t\t\tdoors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -851,7 +893,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -883,12 +925,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -926,6 +968,18 @@
                 "value": 450
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disabled"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 73
+              }
+            ]
           }
         ]
       },
@@ -950,13 +1004,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1000,7 +1068,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1032,12 +1100,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1075,6 +1143,18 @@
                 "value": 450
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fault"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 50
+              }
+            ]
           }
         ]
       },
@@ -1099,13 +1179,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1149,7 +1243,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1181,12 +1275,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1248,13 +1342,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1298,7 +1406,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1330,12 +1438,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1397,13 +1505,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1460,7 +1582,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1492,12 +1614,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1559,13 +1681,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Storage%' OR meta.room_or_area LIKE '%Office%' OR meta.room_or_area LIKE '%Galley%' OR meta.room_or_area LIKE '%Laundry%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (\r\n    meta.room_or_area LIKE '%Storage%' \r\n    OR meta.room_or_area LIKE '%Office%' \r\n    OR meta.room_or_area LIKE '%Galley%' \r\n    OR meta.room_or_area LIKE '%Laundry%'\r\n  )\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1609,7 +1745,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1641,12 +1777,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1708,13 +1844,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1771,7 +1921,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1803,12 +1953,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1870,13 +2020,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND meta.room_or_area LIKE '%Battery%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Battery%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1920,7 +2084,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1952,12 +2116,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2019,13 +2183,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND (meta.room_or_area LIKE '%Fore%' OR meta.room_or_area LIKE '%Lazarette%' OR meta.room_or_area LIKE '%Bilge%' OR meta.room_or_area LIKE '%Pod%')\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND (\r\n    meta.room_or_area LIKE '%Fore%' \r\n    OR meta.room_or_area LIKE '%Lazarette%' \r\n    OR meta.room_or_area LIKE '%Bilge%' \r\n    OR meta.room_or_area LIKE '%Pod%'\r\n  )\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2069,7 +2247,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2101,12 +2279,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2168,13 +2346,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND meta.room_or_area LIKE '%Technical%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Technical%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2231,7 +2423,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2263,12 +2455,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2310,7 +2502,7 @@
         ]
       },
       "gridPos": {
-        "h": 14,
+        "h": 13,
         "w": 12,
         "x": 0,
         "y": 84
@@ -2330,13 +2522,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Hatch'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Hatch'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2380,7 +2586,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2412,12 +2618,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2479,13 +2685,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Storage'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Storage'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2532,18 +2752,18 @@
   "refresh": "5s",
   "schemaVersion": 42,
   "tags": [
-    "commisssioning"
+    "commissioning"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"

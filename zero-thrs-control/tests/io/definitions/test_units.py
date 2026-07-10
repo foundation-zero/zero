@@ -7,8 +7,8 @@ from thrs.input_output.base import Stamped, StampedDf, ThrsValues
 from thrs.input_output.definitions.units import (
     LMin,
     PcsMode,
-    unit_for_annotation,
     Ratio,
+    unit_for_annotation,
     zero_for_unit,
 )
 

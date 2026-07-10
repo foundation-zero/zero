@@ -1,13 +1,15 @@
 from contextlib import asynccontextmanager
 import re
 from aiomqtt import Client as MqttClient, Message
+from domestic_control.mqtt import DataCollection
 from pydantic import AliasChoices, BaseModel, Field
 from typing import Annotated, AsyncIterable, Coroutine, List, Literal
 
 from domestic_control.config import Settings
 from domestic_control.messages import Amplifier
-from domestic_control.mqtt import DataCollection
+from domestic_control.sink import CompositeSink, PostgresSink, Sink
 from domestic_control.util import invert_dict
+from sqlalchemy.ext.asyncio import create_async_engine
 
 FWD_PDU = "00:00:00:00:00:00"
 AFT_PDU = "00:00:00:00:00:01"
@@ -116,7 +118,7 @@ class Gude:
 class Av:
     """AV switching control"""
 
-    def __init__(self, gude: Gude, data: DataCollection):
+    def __init__(self, gude: Gude, data: Sink):
         self._gude = gude
         self._data = data
 
@@ -124,10 +126,10 @@ class Av:
         pdu, switch = lookup_pdu_switch(room_id)
         await self._gude.switch(pdu, switch, on)
         # Also send directly to MQTT, telemetry is only send every so often, so this will be faster
-        await self._data.send_amplifier(
+        await self._data.send(
             Amplifier(
                 id=room_id,
-                is_on=on,
+                on=on,
             )
         )
 
@@ -139,20 +141,21 @@ class Av:
 class AvControl:
     """AV control which collects and forwards the PDU telemetry to MQTT"""
 
-    def __init__(self, gude: Gude, data: DataCollection):
+    def __init__(self, gude: Gude, data: Sink):
         self._gude = gude
         self._data = data
+        self._last_states: dict[str, bool] = {}
 
     async def handle_telemetry(self, pdu: str, telemetry: Telemetry):
         for port_state in telemetry.port_states:
             room_id = lookup_room_id(pdu, port_state.port)
             if room_id is not None:
-                await self._data.send_amplifier(
-                    Amplifier(
-                        id=room_id,
-                        is_on=bool(port_state.state),
-                    )
-                )
+                is_on = bool(port_state.state)
+                if self._last_states.get(room_id) == is_on:
+                    continue
+
+                self._last_states[room_id] = is_on
+                await self._data.send(Amplifier(id=room_id, on=is_on))
 
     async def run(self) -> Coroutine[None, None, None]:
         """Run the AvControl service.
@@ -172,4 +175,8 @@ class AvControl:
     @staticmethod
     async def init_from_settings(settings: Settings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
-            yield AvControl(Gude(mqtt_client), DataCollection(mqtt_client))
+            sink = CompositeSink(
+                begin_sinks=[PostgresSink(create_async_engine(settings.pg_url))],
+                sinks=[DataCollection(mqtt_client)],
+            )
+            yield AvControl(Gude(mqtt_client), sink)

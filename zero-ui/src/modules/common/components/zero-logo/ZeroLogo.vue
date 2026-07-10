@@ -20,7 +20,7 @@ const props = withDefaults(
   <component
     :is="props.tag"
     ref="title"
-    :class="cn('tracking-ultrawide text-center text-xl font-bold uppercase', props.class)"
+    :class="cn('tracking-ultrawide text-center font-bold uppercase', props.class)"
   >
     {{ t("app.title") }}
   </component>

@@ -1,5 +1,7 @@
 export {
+  VariableCardFooter as PositionCardFooter,
   VariableCardReferenceTarget as PositionCardReferenceTarget,
+  VariableCardStateLabel as PositionCardStateLabel,
   VariableCardTitle as PositionCardTitle,
   VariableCardValue as PositionCardValue,
 } from "../variable-card";

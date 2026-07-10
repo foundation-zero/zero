@@ -4,12 +4,12 @@ import { useI18n } from "vue-i18n";
 
 import SimulationActions from "@/modules/thrs/components/SimulationActions.vue";
 
-import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
-import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
-import { ZeroLogo } from "@/modules/common/components/zero-logo";
+import TopNav from "@/modules/common/components/navigation/TopNav.vue";
+import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
+import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
 import { ThrsModules } from "@/modules/thrs/lib/consts.types";
-import { DividerVerticalIcon } from "@radix-icons/vue";
+import { RiSeparator } from "@remixicon/vue";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
@@ -24,16 +24,16 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof ThrsModules> = ["thrusters", "pvt", "pcm", "consumers", "boilers"];
+const modules: Array<keyof ThrsModules> = ["thrusters", "pvt", "pcm", "consumers", "dhw"];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
 provide("currentModule", currentModuleKey);
 </script>
 
 <template>
-  <main class="h-svh pt-[12em] pb-8 md:pt-[14em]">
+  <main class="h-svh pt-[12em]">
     <Suspense>
-      <article class="px-4 pb-8 md:px-6">
+      <article class="h-full px-4 pb-4 md:px-6 md:pb-6">
         <slot />
       </article>
     </Suspense>
@@ -41,24 +41,24 @@ provide("currentModule", currentModuleKey);
   <TopNav class="z-1">
     <TopNavToolbar>
       <template #left-content>
-        <ZeroLogo />
-        <span class="text-disabled-foreground ml-1 text-xs font-extralight">{{
-          t("apps.thrs")
-        }}</span>
+        <TopNavAppLogo>
+          {{ t("apps.thrs") }}
+        </TopNavAppLogo>
+
         <NavTabs
           :active-module="currentModuleKey"
-          class="md:ml-12"
+          class="md:ml-4"
           :modules="modules"
         />
       </template>
 
       <template #right-content>
         <ClearChartHistory />
-        <DividerVerticalIcon class="text-disabled-foreground" />
+        <RiSeparator class="text-disabled-foreground" />
         <SimulationActions class="max-md:hidden" />
       </template>
     </TopNavToolbar>
-    <TopNavToolbar class="py-2 transition-all duration-300">
+    <TopNavToolbar class="py-1 transition-all duration-300 md:py-2">
       <template #left>
         <SubNavTabs v-if="currentRoute.params.module" />
         <SimulationTabs v-else />

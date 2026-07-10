@@ -33,10 +33,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroupChangePolicy: Always
-        sysctls: []
-        supplementalGroups: []
         fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: domestic-control
           securityContext:
@@ -44,24 +43,22 @@ spec:
             capabilities:
               drop:
               - ALL
-            privileged: false
             readOnlyRootFilesystem: true
-            runAsGroup: 1001
             runAsNonRoot: true
-            runAsUser: 1001
-            seLinuxOptions: {}
-            seccompProfile:
-              type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["python", "-m", "domestic_control", "control"]
           resources:
             {{- toYaml .Values.resources.control | nindent 12 }}
           env:
-            - name: TERMODINAMICA_HOST
+            - name: AIR_CONDITIONING_HOST
               value: {{ .Values.stub.host | quote }}
-            - name: TERMODINAMICA_PORT
+            - name: AIR_CONDITIONING_PORT
               value: {{ .Values.stub.port | quote }}
+            - name: VENTILATION_HOST
+              value: {{ .Values.stub.host | quote }}
+            - name: VENTILATION_PORT
+              value: {{ .Values.stub.ventilationPort | quote }}
             {{- include "zero-domestic-control.postgresqlPasswordEnvFromSecret" . | nindent 12 -}}
             {{- include "zero-domestic-control.hasuraJwtEnvFromSecret" . | indent 12 -}}
             {{- include "zero-domestic-control.homeAssistantTokenEnvFromSecret" . | indent 12 }}

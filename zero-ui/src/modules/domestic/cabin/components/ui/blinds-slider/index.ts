@@ -1,4 +1,4 @@
-import { BlindsControl } from "@/modules/domestic/types";
+import { Blind } from "@/modules/domestic/types";
 import { inject, Ref } from "vue";
 
 export { default as BlindsControl } from "./BlindsControl.vue";
@@ -13,7 +13,7 @@ export type BlindsControlContext = {
   commit: () => void;
   disabled: Ref<boolean>;
   editable: Ref<boolean>;
-  control: Ref<BlindsControl>;
+  control: Ref<Blind>;
 };
 
 export const getContext = (): BlindsControlContext => {
@@ -21,7 +21,7 @@ export const getContext = (): BlindsControlContext => {
   const commit = inject("commit") as () => void;
   const disabled = inject("disabled") as Ref<boolean>;
   const editable = inject("editable") as Ref<boolean>;
-  const control = inject("control") as Ref<BlindsControl>;
+  const control = inject("control") as Ref<Blind>;
 
   if (!value || !commit || !disabled || !editable || !control) {
     throw new Error("BlindsControl components must be used within a BlindsControlProvider");

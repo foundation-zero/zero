@@ -1,3 +1,4 @@
+import { PID } from "@/modules/thrs/types";
 import { Ref } from "vue";
 
 export type Stamped<T> = { value: T; timestamp: Date };
@@ -12,7 +13,7 @@ export type History<T> =
 export type Field<T> = Record<string, Stamped<T>>;
 export type Component = Record<string, Field<number>>;
 
-export type ChartDataType = number | boolean | string;
+export type ChartDataType = number | boolean | string | undefined | PID;
 export type TimeSeriesData<T extends ChartDataType = ChartDataType> = [time: Date, value: T];
 export type SeriesData = { value: number };
 
@@ -45,3 +46,8 @@ export type Refs<T extends object> = {
   [K in keyof T]: Ref<T[K]>;
 };
 export type Entries<K, V> = [key: K, value: V][];
+
+export type NavItem = {
+  title: string;
+  to: string;
+};

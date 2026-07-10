@@ -2,7 +2,7 @@ import { gql } from "@urql/vue";
 import { mutationResponse } from ".";
 
 export const BlindsFragment = gql`
-  fragment BlindsItem on Blinds {
+  fragment BlindsItem on DomesticBlinds {
     id
     name
     level

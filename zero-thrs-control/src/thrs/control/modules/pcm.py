@@ -2,13 +2,15 @@ from datetime import datetime
 from typing import Callable
 
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller, FlowBalanceController
+
+from thrs.classes.control import Control, ControlMode
+from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class PcmParameters(ThrsValues):
@@ -19,10 +21,10 @@ class PcmParameters(ThrsValues):
     pump_tuning: Tuning = (0.01, 0.001, 0)
     supplying_enabled: bool = True
     charging_enabled: bool = True
-    module_1_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
-    module_2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
-    module_3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
-    module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module1_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
@@ -34,16 +36,16 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
         pcm_switch_charging_return=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
         ),
-        pcm_flowcontrol_module_1=Valve(
+        pcm_flowcontrol_module1=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
-        pcm_flowcontrol_module_2=Valve(
+        pcm_flowcontrol_module2=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
-        pcm_flowcontrol_module_3=Valve(
+        pcm_flowcontrol_module3=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
-        pcm_flowcontrol_module_4=Valve(
+        pcm_flowcontrol_module4=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
         pcm_switch_discharging=Valve(
@@ -55,7 +57,7 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
         pcm_switch_consumers=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
-        pcm_module_1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
+        pcm_module1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
     )
 
 
@@ -79,8 +81,18 @@ class PcmControlMode(ControlMode):
         return self.mode == "boosting"
 
 
+class PcmControllerState(ThrsValues):
+    pass
+
+
 class PcmControl(
-    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControlMode]
+    Control[
+        PcmSensorValues,
+        PcmControlValues,
+        PcmParameters,
+        PcmControlMode,
+        PcmControllerState,
+    ]
 ):
     def __init__(
         self, parameters: PcmParameters, time_fn: Callable[[], datetime]
@@ -161,53 +173,53 @@ class PcmControl(
             initial="idle",
         )
 
-        self._pump_flow_controller = Controller[Ratio, LMin](
+        self._pump_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_pump.dutypoint.value,
             0,
             lambda: self._parameters.pump_tuning,
             self._time,
         )
 
-        self.module_1_flow_controller = Controller[Ratio, LMin](
-            self._current_values.pcm_flowcontrol_module_1.setpoint.value,
+        self.module1_flow_controller = PidController[Ratio, LMin](
+            self._current_values.pcm_flowcontrol_module1.setpoint.value,
             0,
-            lambda: self._parameters.module_1_flow_balance_tuning,
+            lambda: self._parameters.module1_flow_balance_tuning,
             self._time,
         )
 
-        self.module_2_flow_controller = Controller[Ratio, LMin](
-            self._current_values.pcm_flowcontrol_module_2.setpoint.value,
+        self.module2_flow_controller = PidController[Ratio, LMin](
+            self._current_values.pcm_flowcontrol_module2.setpoint.value,
             0,
-            lambda: self._parameters.module_2_flow_balance_tuning,
+            lambda: self._parameters.module2_flow_balance_tuning,
             self._time,
         )
 
-        self.module_3_flow_controller = Controller[Ratio, LMin](
-            self._current_values.pcm_flowcontrol_module_3.setpoint.value,
+        self.module3_flow_controller = PidController[Ratio, LMin](
+            self._current_values.pcm_flowcontrol_module3.setpoint.value,
             0,
-            lambda: self._parameters.module_3_flow_balance_tuning,
+            lambda: self._parameters.module3_flow_balance_tuning,
             self._time,
         )
 
-        self.module_4_flow_controller = Controller[Ratio, LMin](
-            self._current_values.pcm_flowcontrol_module_4.setpoint.value,
+        self.module4_flow_controller = PidController[Ratio, LMin](
+            self._current_values.pcm_flowcontrol_module4.setpoint.value,
             0,
-            lambda: self._parameters.module_4_flow_balance_tuning,
+            lambda: self._parameters.module4_flow_balance_tuning,
             self._time,
         )
 
         self._flow_balance_controller = FlowBalanceController(
             [
-                self._current_values.pcm_flowcontrol_module_1,
-                self._current_values.pcm_flowcontrol_module_2,
-                self._current_values.pcm_flowcontrol_module_3,
-                self._current_values.pcm_flowcontrol_module_4,
+                self._current_values.pcm_flowcontrol_module1,
+                self._current_values.pcm_flowcontrol_module2,
+                self._current_values.pcm_flowcontrol_module3,
+                self._current_values.pcm_flowcontrol_module4,
             ],
             [
-                self.module_1_flow_controller,
-                self.module_2_flow_controller,
-                self.module_3_flow_controller,
-                self.module_4_flow_controller,
+                self.module1_flow_controller,
+                self.module2_flow_controller,
+                self.module3_flow_controller,
+                self.module4_flow_controller,
             ],
             self._current_values.pcm_pump,
             self._pump_flow_controller,
@@ -231,13 +243,15 @@ class PcmControl(
         mode: str = self.state  # type: ignore
         return PcmControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[PcmControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), PcmControllerState())
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
-    def control(self, sensor_values: PcmSensorValues) -> ControlResult:
+    def control(
+        self, sensor_values: PcmSensorValues
+    ) -> tuple[PcmControlValues, PcmControllerState]:
         self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
         self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
@@ -250,15 +264,15 @@ class PcmControl(
 
         self._control_flow_balance(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return (self._current_values, PcmControllerState())
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(
             (
-                sensor_values.pcm_module_1.charged.value,
-                sensor_values.pcm_module_2.charged.value,
-                sensor_values.pcm_module_3.charged.value,
-                sensor_values.pcm_module_4.charged.value,
+                sensor_values.pcm_module1.charged.value,
+                sensor_values.pcm_module2.charged.value,
+                sensor_values.pcm_module3.charged.value,
+                sensor_values.pcm_module4.charged.value,
             )
         )
 
@@ -273,22 +287,22 @@ class PcmControl(
             (
                 (
                     sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module_1_out.temperature.value
+                    - sensor_values.pcm_temperature_module1.temperature.value
                 )
                 > self._parameters.minimum_charging_dt,
                 (
                     sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module_2_out.temperature.value
+                    - sensor_values.pcm_temperature_module2.temperature.value
                 )
                 > self._parameters.minimum_charging_dt,
                 (
                     sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module_3_out.temperature.value
+                    - sensor_values.pcm_temperature_module3.temperature.value
                 )
                 > self._parameters.minimum_charging_dt,
                 (
                     sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module_4_out.temperature.value
+                    - sensor_values.pcm_temperature_module4.temperature.value
                 )
                 > self._parameters.minimum_charging_dt,
             )
@@ -297,10 +311,10 @@ class PcmControl(
     def _set_supplying_flow_setpoints(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller.set_pump(self._current_values.pcm_pump)
         charged_modules = [
-            sensor_values.pcm_module_1.charged.value,
-            sensor_values.pcm_module_2.charged.value,
-            sensor_values.pcm_module_3.charged.value,
-            sensor_values.pcm_module_4.charged.value,
+            sensor_values.pcm_module1.charged.value,
+            sensor_values.pcm_module2.charged.value,
+            sensor_values.pcm_module3.charged.value,
+            sensor_values.pcm_module4.charged.value,
         ]
 
         self._flow_balance_controller.set_active_valves(charged_modules)
@@ -321,10 +335,10 @@ class PcmControl(
             )
             > self.parameters.minimum_charging_dt
             for temp_out in [
-                sensor_values.pcm_temperature_module_1_out.temperature.value,
-                sensor_values.pcm_temperature_module_2_out.temperature.value,
-                sensor_values.pcm_temperature_module_3_out.temperature.value,
-                sensor_values.pcm_temperature_module_4_out.temperature.value,
+                sensor_values.pcm_temperature_module1.temperature.value,
+                sensor_values.pcm_temperature_module2.temperature.value,
+                sensor_values.pcm_temperature_module3.temperature.value,
+                sensor_values.pcm_temperature_module4.temperature.value,
             ]
         ]
 
@@ -345,10 +359,10 @@ class PcmControl(
     def _control_flow_balance(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller(
             [
-                sensor_values.pcm_flow_module_1.flow.value,
-                sensor_values.pcm_flow_module_2.flow.value,
-                sensor_values.pcm_flow_module_3.flow.value,
-                sensor_values.pcm_flow_module_4.flow.value,
+                sensor_values.pcm_flow_module1.flow.value,
+                sensor_values.pcm_flow_module2.flow.value,
+                sensor_values.pcm_flow_module3.flow.value,
+                sensor_values.pcm_flow_module4.flow.value,
             ]
         )
 
@@ -418,3 +432,14 @@ class PcmControl(
 
 class PcmAlarms(BaseAlarms):
     pass
+
+
+PCM_MODULE_DESCRIPTION = ModuleDescription(
+    PcmSensorValues,
+    PcmControlValues,
+    PcmParameters,
+    PcmControl,
+    PcmControlMode,
+    PcmControllerState,
+    PcmAlarms,
+)

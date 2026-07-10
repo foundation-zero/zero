@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import RoomTiles from "@/modules/domestic/admin/components/room-tiles/RoomTiles.vue";
 import TileHumidity from "@/modules/domestic/admin/components/room-tiles/TileHumidity.vue";
-import { useI18n } from "vue-i18n";
+import { computed } from "vue";
+import { useHistoryStore } from "../../stores/history";
 
-const { t } = useI18n();
+const history = useHistoryStore();
+
+const humidityByRoom = computed(() => {
+  return Object.fromEntries(
+    (history.airConditioningLog?.rooms ?? []).map((room) => [room.id, room.airConditioningLog]),
+  );
+});
 </script>
 
 <template>
-  <h1 class="mb-6 text-4xl font-bold md:mb-12 md:text-6xl">{{ t("labels.humidity") }}</h1>
   <RoomTiles>
     <template #default="{ room }">
-      <TileHumidity :room="room" />
+      <TileHumidity
+        :room="room"
+        :humidity-log="humidityByRoom[room.id]"
+      />
     </template>
   </RoomTiles>
 </template>

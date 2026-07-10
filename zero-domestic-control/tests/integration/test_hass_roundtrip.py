@@ -1,18 +1,21 @@
 import asyncio
-from fastapi.testclient import TestClient
-from pytest import fixture
-from homeassistant_api import Client as HassClient, WebsocketClient as HassWsClient
+
+import pytest
 from aiomqtt import Client as MqttClient
-from domestic_control.app import app
+from fastapi.testclient import TestClient
+from homeassistant_api import Client as HassClient
+from homeassistant_api import WebsocketClient as HassWsClient
+from pytest import fixture
+
 from domestic_control.config import Settings
-from domestic_control.services.hass import Hass, HassControl
 from domestic_control.messages import Blind, LightingGroup
 from domestic_control.mqtt import DataCollection
+from domestic_control.services.hass import Hass, HassControl
 
 
 @fixture
 def settings():
-    return Settings()
+    return Settings()  # type: ignore
 
 
 @fixture
@@ -40,16 +43,9 @@ async def mqtt(settings):
 mqtt_two = mqtt
 
 
-def test_version():
-    client = TestClient(app)
-    response = client.post("/graphql", json={"query": "query { version }"})
-
-    assert response.status_code == 200
-    assert response.json() == {"data": {"version": "1.0.0"}}
-
-
-async def test_lighting_group_to_hass(hass):
-    client = TestClient(app)
+@pytest.mark.timeout(10)
+async def test_lighting_group_to_hass(hass, test_app):
+    client = TestClient(test_app)
     response = client.post(
         "/graphql",
         json={
@@ -63,6 +59,7 @@ async def test_lighting_group_to_hass(hass):
     assert light.state.state == "50.0"
 
 
+@pytest.mark.timeout(10)
 async def test_hass_lighting_group_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
@@ -74,29 +71,30 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     control_task = asyncio.create_task(control.run())
 
     # ensure lighting changes in the actual call, if not different, hass doesn't trigger
-    diff_msg = LightingGroup(id="owners-cabin/mood", level=0.1)
+    diff_msg = LightingGroup(id="owners-cabin/mood", room_id="owners-cabin", level=0.1)
     await hass_wrapped.set_lighting_group(diff_msg)
     await asyncio.sleep(0.1)
 
     await mqtt_two.subscribe("domestic/lighting-groups")
-    msg = LightingGroup(id="owners-cabin/mood", level=0.5)
+    msg = LightingGroup(id="owners-cabin/mood", room_id="owners-cabin", level=0.5)
     await hass_wrapped.set_lighting_group(msg)
     await asyncio.sleep(0.2)
 
     result = await anext(mqtt_two.messages)
-    if LightingGroup.model_validate_json(result.payload).level == 0.1:
+    if LightingGroup.model_validate_json(result.payload).level == 0.1:  # type: ignore
         result = await anext(mqtt_two.messages)
-    if LightingGroup.model_validate_json(result.payload).level == 0.1:
+    if LightingGroup.model_validate_json(result.payload).level == 0.1:  # type: ignore
         result = await anext(mqtt_two.messages)
 
     assert result.topic.value == "domestic/lighting-groups"
-    assert LightingGroup.model_validate_json(result.payload) == msg
+    assert LightingGroup.model_validate_json(result.payload) == msg  # type: ignore
 
     control_task.cancel()
 
 
-async def test_blind_to_hass(hass):
-    client = TestClient(app)
+@pytest.mark.timeout(10)
+async def test_blind_to_hass(hass, test_app):
+    client = TestClient(test_app)
     response = client.post(
         "/graphql",
         json={
@@ -110,6 +108,7 @@ async def test_blind_to_hass(hass):
     assert blind.state.attributes["current_position"] == 50.0
 
 
+@pytest.mark.timeout(10)
 async def test_hass_blind_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
@@ -121,21 +120,21 @@ async def test_hass_blind_to_control_to_mqtt(
     control_task = asyncio.create_task(control.run())
 
     # ensure lighting changes in the actual call, if not different, hass doesn't trigger
-    diff_msg = Blind(id="owners-cabin/main/shear", level=0.1)
+    diff_msg = Blind(id="owners-cabin/main/shear", room_id="owners-cabin", level=0.1)
     await hass_wrapped.set_blind(diff_msg)
     await asyncio.sleep(0.2)
 
     await mqtt_two.subscribe("domestic/blinds")
-    msg = Blind(id="owners-cabin/main/shear", level=0.5)
+    msg = Blind(id="owners-cabin/main/shear", room_id="owners-cabin", level=0.5)
     await hass_wrapped.set_blind(msg)
 
     result = await anext(mqtt_two.messages)
-    if Blind.model_validate_json(result.payload).level == 0.1:
+    if Blind.model_validate_json(result.payload).level == 0.1:  # type: ignore
         result = await anext(mqtt_two.messages)
-    if Blind.model_validate_json(result.payload).level == 0.1:
+    if Blind.model_validate_json(result.payload).level == 0.1:  # type: ignore
         result = await anext(mqtt_two.messages)
 
     assert result.topic.value == "domestic/blinds"
-    assert Blind.model_validate_json(result.payload) == msg
+    assert Blind.model_validate_json(result.payload) == msg  # type: ignore
 
     control_task.cancel()

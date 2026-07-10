@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-hull-temperature
+  pullPolicy: IfNotPresent
+  tag: ""
+
+mqtt:
+  host: ""
+  port: 1883
+  username: hull-temperature
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+modbus:
+  host: ""
+  port: 502
+
+hullTemperature:
+  sendTopic: "hull-temperature/temperatures"
+  intervalSeconds: 300
+  "n": -1
+  activateTopic: marpower/450000-amcs/Command
+  activateJsonPath: $.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

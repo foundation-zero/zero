@@ -1,22 +1,31 @@
 import { gql } from "@urql/vue";
-import { ControlsLogItem, SensorsLogItem } from ".";
 
-export const getControlLogs = gql`
-  query GetControlLogs($type: String) {
-    controlsLog: domesticControlsLog(where: { control: { type: { _eq: $type } } }) {
-      ...ControlsLogItem
+export const getRoomAirConditioningLog = gql`
+  query GetRoomAirConditioningLog($period: TimePeriod!) {
+    rooms: domesticRooms {
+      id
+      name
+      airConditioningLog(period: $period) {
+        timestamp
+        actualTemperature
+        temperatureSetpoint
+        actualHumidity
+        humiditySetpoint
+      }
     }
   }
-
-  ${ControlsLogItem}
 `;
 
-export const getSensorLogs = gql`
-  query GetSensorLogs($type: String) {
-    sensorsLog: domesticSensorsLog(where: { sensor: { type: { _eq: $type } } }) {
-      ...SensorsLogItem
+export const getRoomVentilationLog = gql`
+  query GetRoomVentilationLog($period: TimePeriod!) {
+    rooms: domesticRooms {
+      id
+      name
+      ventilationLog(period: $period) {
+        timestamp
+        actualCo2
+        co2Setpoint
+      }
     }
   }
-
-  ${SensorsLogItem}
 `;

@@ -1,0 +1,83 @@
+<script setup lang="ts">
+import { MimicComponentBaseProps } from "..";
+import MimicComponent from "../MimicComponent.vue";
+import {
+  PRESSURE_SENSOR_BASE_ORIENTATION,
+  PRESSURE_SENSOR_BODY_FILL,
+  PRESSURE_SENSOR_HEIGHT,
+  PRESSURE_SENSOR_MARK_COLOR,
+  PRESSURE_SENSOR_WIDTH,
+} from "./index";
+
+withDefaults(defineProps<MimicComponentBaseProps>(), {
+  orientation: PRESSURE_SENSOR_BASE_ORIENTATION,
+});
+</script>
+
+<template>
+  <MimicComponent
+    :width="PRESSURE_SENSOR_WIDTH"
+    :height="PRESSURE_SENSOR_HEIGHT"
+    :base-orientation="PRESSURE_SENSOR_BASE_ORIENTATION"
+    :orientation="orientation"
+    :state="state"
+    data-slot="pressure-sensor"
+    class="fill-muted"
+  >
+    <template #default="{ stateColor, strokeWidth }">
+      <!--
+      Original Figma geometry is 24×30. Centered in a 32×32 square canvas
+      with translate(4 1) to prevent clipping on 90° rotations.
+    -->
+      <g transform="translate(4 1)">
+        <rect
+          x="0.5"
+          y="0.5"
+          width="23"
+          height="11"
+          :fill="PRESSURE_SENSOR_BODY_FILL"
+          :stroke="stateColor"
+          :stroke-width="strokeWidth"
+        />
+        <path
+          d="M5.01619 10V5.1H6.70319C6.96686 5.1 7.20486 5.16533 7.41719 5.296C7.63186 5.42667 7.80219 5.60283 7.92819 5.8245C8.05652 6.04617 8.12069 6.29117 8.12069 6.5595C8.12069 6.8325 8.05536 7.07983 7.92469 7.3015C7.79636 7.52083 7.62486 7.69583 7.41019 7.8265C7.19552 7.95717 6.95986 8.0225 6.70319 8.0225H5.74419V10H5.01619ZM5.74419 7.2945H6.62969C6.76969 7.2945 6.89686 7.2595 7.01119 7.1895C7.12786 7.1195 7.22002 7.02617 7.28769 6.9095C7.35769 6.79283 7.39269 6.661 7.39269 6.514C7.39269 6.367 7.35769 6.23517 7.28769 6.1185C7.22002 5.9995 7.12786 5.90617 7.01119 5.8385C6.89686 5.7685 6.76969 5.7335 6.62969 5.7335H5.74419V7.2945Z"
+          :fill="PRESSURE_SENSOR_MARK_COLOR"
+        />
+        <path
+          d="M17.1373 6.98389V1.73389H17.8653V6.98389H17.1373Z"
+          :fill="PRESSURE_SENSOR_MARK_COLOR"
+        />
+        <path
+          d="M1 0.670982L23.0008 11.3237"
+          :stroke="stateColor"
+        />
+        <rect
+          x="0.5"
+          y="12.5"
+          width="23"
+          height="11"
+          :fill="PRESSURE_SENSOR_BODY_FILL"
+          :stroke="stateColor"
+          :stroke-width="strokeWidth"
+        />
+        <path
+          d="M10 14L8.47796 22H4L5.52204 14H10ZM5.19574 21.2208H7.57811L8.11721 18.3896H5.73484L5.19574 21.2208ZM5.88279 17.6104H8.26516L8.80426 14.7792H6.42189L5.88279 17.6104Z"
+          :fill="PRESSURE_SENSOR_MARK_COLOR"
+        />
+        <path
+          d="M10.5219 14L15 14L13.4781 22H9L10.5219 14ZM13.2651 17.6103L13.8036 14.7794L11.4218 14.7791L10.8831 17.6108L13.2651 17.6103ZM12.5782 21.2209L13.1167 18.39L10.7349 18.3897L10.1963 21.2213L12.5782 21.2209Z"
+          :fill="PRESSURE_SENSOR_MARK_COLOR"
+        />
+        <path
+          d="M15.5219 14L20 14L18.4781 22H14L15.5219 14ZM18.2651 17.6103L18.8036 14.7794L16.4218 14.7791L15.8831 17.6108L18.2651 17.6103ZM17.5782 21.2209L18.1167 18.39L15.7349 18.3897L15.1963 21.2213L17.5782 21.2209Z"
+          :fill="PRESSURE_SENSOR_MARK_COLOR"
+        />
+        <path
+          d="M12 24L12 30"
+          :stroke="stateColor"
+          :stroke-width="strokeWidth"
+        />
+      </g>
+    </template>
+  </MimicComponent>
+</template>

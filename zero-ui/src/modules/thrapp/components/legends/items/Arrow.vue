@@ -1,0 +1,45 @@
+<template>
+  <svg
+    viewBox="0 0 28 10"
+    fill="none"
+    width="28"
+    height="10"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g>
+      <defs>
+        <marker
+          id="flows-dir-arrow-legend"
+          markerWidth="6"
+          markerHeight="7"
+          refX="3.5"
+          refY="3.5"
+          orient="auto"
+          markerUnits="userSpaceOnUse"
+        >
+          <path
+            d="M0.75 0.75L4.25 3.5L0.75 6.25"
+            class="stroke-flows-pipe-arrow"
+            fill="none"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </marker>
+      </defs>
+      <g
+        class="stroke-flows-pipe-arrow"
+        stroke-width="1"
+        fill="none"
+        marker-end="url(#flows-dir-arrow-legend)"
+      >
+        <line
+          x1="0"
+          y1="5"
+          x2="24"
+          y2="5"
+        />
+      </g>
+    </g>
+  </svg>
+</template>

@@ -3,19 +3,26 @@ import { computed } from "vue";
 import { getContext } from ".";
 import { useVariablesStore } from "../../stores/variables";
 import { Variable, VariableUnit } from "../../types";
-import LoadsCard from "../loads-card/LoadsCard.vue";
-import MastLock from "../mast-lock/MastLock.vue";
+import { LoadsCard, LoadsCardFooter, LoadsCardStateLabel, LoadsCardTitle } from "../loads-card";
+import { MastLock } from "../mast-lock";
+import { MastLockCompact } from "../mast-lock-compact";
 import {
   PositionCard,
+  PositionCardFooter,
   PositionCardReferenceTarget,
   PositionCardSlider,
+  PositionCardStateLabel,
   PositionCardTitle,
   PositionCardValue,
 } from "../position-card";
-import { VariableCard, VariableCardReferenceThresholds, VariableCardValue } from "../variable-card";
-import VariableCardReferenceTarget from "../variable-card/VariableCardReferenceTarget.vue";
-import VariableCardState from "../variable-card/VariableCardState.vue";
-import VariableCardTitle from "../variable-card/VariableCardTitle.vue";
+import {
+  VariableCard,
+  VariableCardReferenceTarget,
+  VariableCardReferenceThresholds,
+  VariableCardState,
+  VariableCardTitle,
+  VariableCardValue,
+} from "../variable-card";
 
 const props = defineProps<{ id: string; variable: Variable }>();
 
@@ -42,13 +49,21 @@ const overhoist = computed(() => {
 
 <template>
   <MastLock
-    v-if="isMastLock"
-    class="col-span-2 w-full max-w-full"
+    v-if="isMastLock && type === 'graphical'"
+    class="col-span-1 w-full max-w-full"
     :locked="!!variable.actual?.value"
     :overhoist="!!overhoist?.actual?.value"
   >
     {{ variable?.variable?.name }}
   </MastLock>
+  <MastLockCompact
+    v-else-if="isMastLock && type === 'numerical'"
+    class="col-span-1 w-full max-w-full"
+    :locked="!!variable.actual?.value"
+    :overhoist="!!overhoist?.actual?.value"
+  >
+    {{ variable?.variable?.name }}
+  </MastLockCompact>
   <VariableCard
     v-else-if="isNumerical"
     :thresholds="variable?.reference"
@@ -78,9 +93,15 @@ const overhoist = computed(() => {
     :scale="[variable.variable.scaleMin, variable.variable.scaleMax]"
     class="col-span-1 w-full max-w-full"
   >
-    <VariableCardTitle class="-mt-2 w-full justify-center">{{
-      variable?.variable?.name
-    }}</VariableCardTitle>
+    <LoadsCardFooter>
+      <LoadsCardStateLabel class="w-1/5 text-center">{{
+        variable?.variable.scaleMinLabel
+      }}</LoadsCardStateLabel>
+      <LoadsCardTitle class="justify-center">{{ variable?.variable?.name }}</LoadsCardTitle>
+      <LoadsCardStateLabel class="w-1/5 text-center">{{
+        variable?.variable.scaleMaxLabel
+      }}</LoadsCardStateLabel>
+    </LoadsCardFooter>
   </LoadsCard>
   <PositionCard
     v-else
@@ -91,8 +112,14 @@ const overhoist = computed(() => {
     <PositionCardReferenceTarget />
     <PositionCardSlider :type="variable.variable.scaleMin < 0 ? 'symmetric' : 'asymmetric'" />
     <PositionCardValue />
-    <PositionCardTitle class="w-full justify-center">{{
-      variable?.variable?.name
-    }}</PositionCardTitle>
+    <PositionCardFooter>
+      <PositionCardStateLabel class="w-1/5 text-center">{{
+        variable?.variable.scaleMinLabel
+      }}</PositionCardStateLabel>
+      <PositionCardTitle class="justify-center">{{ variable?.variable?.name }}</PositionCardTitle>
+      <PositionCardStateLabel class="w-1/5 text-center">{{
+        variable?.variable.scaleMaxLabel
+      }}</PositionCardStateLabel>
+    </PositionCardFooter>
   </PositionCard>
 </template>

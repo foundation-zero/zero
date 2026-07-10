@@ -1,8 +1,10 @@
-from typing import Annotated, get_args
-from pydantic import Field, create_model, BaseModel
+from typing import Annotated, get_args, get_origin
+
 import strawberry
+from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
-from thrs.input_output.base import ThrsValues, Stamped, SimulationValues
+
+from thrs.input_output.base import SimulationValues, Stamped, ThrsValues
 from thrs.input_output.definitions.units import unit_for_annotation
 
 
@@ -47,7 +49,9 @@ def ensure_dedataframes(cls):
 
 
 def pydantic_to_strawberry_type(
-    pydantic_model: type[BaseModel], suffix: str = "Type"
+    pydantic_model: type[BaseModel],
+    suffix: str = "Type",
+    include_computed: bool = False,
 ) -> type:
     """
     Convert a Pydantic model to a Strawberry GraphQL type.
@@ -55,6 +59,7 @@ def pydantic_to_strawberry_type(
     Args:
         pydantic_model: The Pydantic model class to convert
         suffix: Suffix to add to the type name (default: "Type")
+        include_computed: Whether to include computed fields (default: False)
 
     Returns:
         A Strawberry GraphQL type class
@@ -78,6 +83,7 @@ def pydantic_to_strawberry_type(
     return strawberry.experimental.pydantic.type(
         model=pydantic_model,
         all_fields=True,
+        include_computed=include_computed,
         json_schema_directive=JsonSchemaDirective,
         use_pydantic_alias=False,
     )(graphql_class)
@@ -196,9 +202,13 @@ class UnstampedInput(ThrsValues):
         Returns:
             A new Pydantic model class with unstamped fields
         """
+
+        def _unstamped_type(unit):
+            return get_args(unit)[0] if get_origin(unit) is Annotated else unit
+
         fields = {
             key: Annotated[
-                get_args(unit)[0] if get_args(unit) else unit,
+                _unstamped_type(unit),
                 Field(),
             ]
             for key, field in model.model_fields.items()

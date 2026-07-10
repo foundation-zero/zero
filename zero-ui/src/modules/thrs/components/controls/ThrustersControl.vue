@@ -12,7 +12,7 @@ import { ThrsModules, ThrsSimulationType } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { ThrusterSimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
-import { Loader2Icon, SendIcon } from "lucide-vue-next";
+import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -78,11 +78,11 @@ const { submit, isSubmitting, error, active, heatFlow } = controlValuesForm(
           :disabled="isSubmitting || (!heatFlow.isDirty.value && !active.isDirty.value)"
           @click="submit"
         >
-          <Loader2Icon
+          <RiLoader2Line
             v-if="isSubmitting"
             class="animate-spin"
           />
-          <SendIcon v-else />
+          <RiSendPlaneLine v-else />
         </Button>
       </div>
     </div>

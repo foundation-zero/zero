@@ -1,7 +1,9 @@
 from functools import partial
 from typing import cast
-from pydantic import BaseModel
+
 import pytest
+from pydantic import BaseModel
+
 from thrs.input_output.base import SimulationInputs
 from thrs.input_output.fmu_mapping import included_in_fmu
 

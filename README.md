@@ -20,7 +20,7 @@ docker compose --profile <profile_name> up
 
 | Profile | Description | Included Services |
 |---------|-------------|-------------------|
-| `zero` | Core infrastructure services required for the platform foundation. | MQTT, Postgres, RisingWave, Hasura, Home Assistant |
+| `zero` | Core infrastructure services required for the platform foundation. | MQTT, Postgres, GreptimeDB, Hasura, Home Assistant |
 | `data` | Tools for data generation and DBT model generation. | Core Infra + Data Generators, DBT |
 | `data-collection` | Ingestion pipeline for collecting MQTT data and storing time-series data. | Core Infra + Vector, GreptimeDB |
 | `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
@@ -35,10 +35,9 @@ docker compose --profile <profile_name> up
 ### Core Infrastructure
 *   **vernemq**: High-performance MQTT broker used for messaging between services and devices.
 *   **postgres**: Primary relational database for persistent storage and metadata.
-*   **risingwave**: Streaming database for real-time data processing and analytics.
-*   **hasura**: GraphQL engine providing an instant API over Postgres and RisingWave.
+*   **hasura**: GraphQL engine providing an instant API over Postgres and GreptimeDB.
+*   **greptimedb**: Time-series database used to store and query collected data.
 *   **hass**: Home Assistant instance for home automation integration.
-*   **setup-postgres / setup-risingwave**: Initialization containers that configure schemas and sources on startup.
 
 ### Data Tools
 *   **data-gen**: Python tool to generate synthetic data for testing.

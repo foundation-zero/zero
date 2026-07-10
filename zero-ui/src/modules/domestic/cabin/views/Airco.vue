@@ -3,29 +3,23 @@ import RoomTemperature from "@/modules/domestic/cabin/components/RoomTemperature
 import { HeavySlider } from "@/modules/domestic/cabin/components/ui/heavy-slider";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { TemperatureDisplay } from "@common/components/temperature-display";
-import {
-  extractTemperatureSetpoint,
-  isTemperatureControl,
-  valueAsArray,
-  valueWithValidation,
-} from "@common/lib/utils";
+import { valueAsArray, valueWithValidation } from "@common/lib/utils";
 import { useUIStore } from "@common/stores/ui";
 import { computed, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 const MIN_VALUE = 18;
 
 const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
+
 const { setTemperatureSetpoint } = useRoomStore();
 const { t } = useI18n();
 const { breakpoints } = useUIStore();
 
-const hasTemperatureControl = computed(() =>
-  currentRoom.value.roomControls.some(isTemperatureControl),
-);
-const temperature = ref(extractTemperatureSetpoint(currentRoom.value) ?? 0);
+const hasTemperatureControl = computed(() => !!currentRoom.value.airConditioning);
+const temperature = ref(currentRoom.value.airConditioning?.temperatureSetpoint ?? 0);
 
 watch(currentRoom, (room) => {
-  temperature.value = extractTemperatureSetpoint(room) ?? 0;
+  temperature.value = room.airConditioning?.temperatureSetpoint ?? 0;
 });
 
 const value = valueAsArray(valueWithValidation(temperature, (val) => val >= MIN_VALUE));
@@ -38,7 +32,7 @@ const commit = async () => {
 
   watch(
     hasPendingRequests,
-    () => (temperature.value = extractTemperatureSetpoint(currentRoom.value) ?? 0),
+    () => (temperature.value = currentRoom.value.airConditioning?.temperatureSetpoint ?? 0),
     { once: true },
   );
 };
@@ -46,7 +40,7 @@ const commit = async () => {
 
 <template>
   <section
-    class="flex grow flex-col items-center justify-around max-md:pb-[96px] md:pb-[32px]"
+    class="mt-4 flex grow flex-col items-center justify-around max-md:pb-24 md:pb-8"
     :class="{ container: !breakpoints.touch, 'w-full px-4 md:px-6': breakpoints.touch }"
   >
     <RoomTemperature

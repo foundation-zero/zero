@@ -1,0 +1,127 @@
+Name (old),Technical name (Loads app),name in LC sheet by Stevo,Sailpack table name,Sailpack row label,Sailpack column label,Note on getting var from Sailpack,Group,Label name (Loads app)
+PT Blade Sheet ,blade-sheet-feeder-ps-load,Jib sheet,CABLE DATA,CABLE_JIBSHEET,Load (N),,Blade,Sheet PS
+STB Blade Tweaker ,blade-tweaker-sb-relative-position,- Jib tweaker position (remap),CABLE DATA,CABLE_BLADE_UP_DOWN,Trimming value (N or m),,Blade,Tweaker SB
+STB Blade Sheet ,blade-sheet-feeder-sb-load,Jib sheet,CABLE DATA,CABLE_JIBSHEET,Load (N),,Blade,Sheet SB
+Blade RT Adjuster,blade-adjuster-load,Main head stay,CABLE DATA,CABLE__FS,Load (N),,Blade,Adjuster
+Blade RT Adjuster,blade-adjuster-relative-position,- Main head stay position (remap),CABLE DATA,CABLE__FS,Trimming value (N or m),Should not be adjusted once rig is set up. For monitoring purposes only,Blade,Adjuster
+Blade Cunningham ,blade-cunningham-load,Jib tack,CABLE DATA,CABLE_BladeTACK,Load (N),,Blade,Cunningham
+Blade Cunningham ,blade-cunningham-relative-position,- Jib tack position (remap),CABLE DATA,CABLE_BladeTACK,Trimming value (N or m),,Blade,Cunningham
+PT Blade Tweaker ,blade-tweaker-ps-load,Jib tweaker,CABLE DATA,CABLE_BLADE_UP_DOWN,Load (N),,Blade,Tweaker PS
+PT Blade Tweaker ,blade-tweaker-ps-relative-position,- Jib tweaker position (remap),CABLE DATA,CABLE_BLADE_UP_DOWN,Trimming value (N or m),,Blade,Tweaker PS
+STB Blade Tweaker ,blade-tweaker-sb-load,Jib tweaker,CABLE DATA,CABLE_BLADE_UP_DOWN,Load (N),,Blade,Tweaker SB
+PT Staysail Sheet,staysail-sheet-feeder-ps-load,Staysail sheet,CABLE DATA,CABLE_staysail_SHEET,Load (N),,Staysail,Sheet PS
+STB Staysail Sheet  ,staysail-sheet-feeder-sb-load,Staysail sheet,CABLE DATA,CABLE_staysail_SHEET,Load (N),,Staysail,Sheet SB
+Staysail RT Adjuster ,staysail-stay-adjuster-load,Staysail tack,CABLE DATA,CABLE_STAYSAIL_Tack,Load (N),,Staysail,Adjuster
+Staysail RT Adjuster ,staysail-stay-adjuster-relative-position,- Staysail tack (remap),CABLE DATA,CABLE_STAYSAIL_Tack,Trimming value (N or m),,Staysail,Adjuster
+PT Primary Winch  ,primary-winch-ps-load,Jib sheet - Outboard,CABLE DATA,CABLE_JIBSHEET_OB,Load (N),,Outboard Lead,Primary PS
+STB Primary Winch ,primary-winch-sb-load,Jib sheet - Outboard,CABLE DATA,CABLE_JIBSHEET_OB,Load (N),,Outboard Lead,Primary SB
+Storm Jib Tack ,storm-jib-tack-load,Storm jib tack,CABLE DATA,CABLE_Storm_Jib_SHEET,Load (N),,Storm Jib,Tack
+PT Primary Winch,primary-winch-ps-load,Storm jib sheet - outboard,CABLE DATA,CABLE_STORM_JIB_OB_SHEET,Load (N),,Storm Jib,Primary PS
+STB Primary Winch  ,primary-winch-sb-load,Storm jib sheet - outboard,CABLE DATA,CABLE_STORM_JIB_OB_SHEET,Load (N),,Storm Jib,Primary SB
+Code 0 Tack ,code-zero-tack-load,Mast head zero,CABLE DATA,CABLE_CODE_0_TACK,Load (N),,Code 0,Tack
+Code 0 Tack ,code-zero-tack-relative-position,- Mast head zero tack position (remap),CABLE DATA,CABLE_CODE_0_TACK,Trimming value (N or m),,Code 0,Tack
+PT Primary Winch ,primary-winch-ps-load,Mast head zero sheet load,CABLE DATA,CABLE_CODE_0_SHEET,Load (N),,Code 0,Primary PS
+STB Primary Winch ,primary-winch-sb-load,Mast head zero sheet load,CABLE DATA,CABLE_CODE_0_SHEET,Load (N),,Code 0,Primary SB
+A2 Tack ,a2-tack-load,Not yet modelled - A3 only at this stage,,,,,A2,Tack
+PT Primary Winch ,primary-winch-ps-load,Not yet modelled - A3 only at this stage,,,,,A2,Primary PS
+STB Primary Winch  ,primary-winch-sb-load,Not yet modelled - A3 only at this stage,,,,,A2,Primary SB
+Code 0 Tack ,code-zero-tack-load,Double up with row 21,,,,,A3,Tack
+Code 0 Tack ,code-zero-tack-relative-position,Double up with row 22,,,,,A3,Tack
+PT Primary Winch  ,primary-winch-ps-load,Seems like a double up of row 23??,,,,,A3,Primary PS
+STB Primary Winch  ,primary-winch-sb-load,Seems like a double up of row 24??,,,,,A3,Primary SB
+Halyard lock,headsail-locks-lock-staysail,,CABLE DATA,CABLE_Staysail_HALYARD,Load (N),,Headsail locks,SS lock
+Halyard overhoist,headsail-locks-overhoist-staysail,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Headsail locks,SS overhoist
+Halyard lock,headsail-locks-lock-stormjib,,CABLE DATA,CABLE_Storm_Jib_HALYARD,Load (N),,Headsail locks,SJ lock
+Halyard overhoist,headsail-locks-overhoist-stormjib,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Headsail locks,SJ overhoist
+Halyard lock,headsail-locks-lock-a3c0,,CABLE DATA,CABLE_CL_A3_halyard,Load (N),,Headsail locks,C0 lock
+Halyard overhoist,headsail-locks-overhoist-a3c0,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Headsail locks,C0 overhoist
+Halyard lock,headsail-locks-lock-Jib,,CABLE DATA,CABLE_BladeHEAD,Load (N),,Headsail locks,A3 lock
+Halyard overhoist,headsail-locks-overhoist-Jib,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Headsail locks,A3 overhoist
+Halyard lock,headsail-locks-lock-a2,Not yet modelled - A3 only at this stage,,,,,Headsail locks,A2 lock
+Halyard overhoist,headsail-locks-overhoist-a2,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Headsail locks,A2 overhoist
+Main Runner and Checkstay Combined STB,,,CABLE DATA,RUNNER_TAIL,Load (N),"Runner Tail load x 2 basically, but calculated as per SW email 20/3/26",Main Mast,Main Runner and Checkstay Combined STB
+Headstay Load Combined ,main-headstay-combined-load,Main combined headstay,CABLE DATA,CABLE__FS,Load (N),Sum of these two cells,Main Mast,Headstay Combined
+Headstay Load Combined ,main-headstay-combined-load,Main combined headstay,CABLE DATA,CABLE_BladeTACK,Load (N),,Main Mast,Headstay Combined
+STB Main V1 ,fiber-optic-main-v1-sb,Main V1 - Stbd,CABLE DATA,CABLE_V1S,Load (N),,Main Mast,V1 SB
+PT Main D1,fiber-optic-main-d1-ps,Main D1 - Port,CABLE DATA,CABLE_D1P,Load (N),,Main Mast,D1 PS
+STB Main D1 ,fiber-optic-main-d1-sb,Main D1 - Stbd,CABLE DATA,CABLE_D1S,Load (N),,Main Mast,D1 SB
+Main Runner and Checkstay Combined PS,,,CABLE DATA,RUNNER_TAIL,Load (N),"Runner Tail load x 2 basically, but calculated as per SW email 20/3/26",Main Mast,Runner Combined
+PT Main Runner ,main-runner-ps-load,Main runner (remap?),CABLE DATA,CABLE_RUNNER,Load (N),,Main Mast,Main Runner PS
+STB Main Runner ,main-runner-sb-load,Main runner (remap?),CABLE DATA,CABLE_RUNNER,Load (N),,Main Mast,Main Runner SB
+PT Main Checkstay ,main-checkstay-ps-load,Main checkstay,CABLE DATA,CABLE_CHECKSTAY,Load (N),,Main Mast,Checkstay PS
+STB Main Checkstay ,main-checkstay-sb-load,Main checkstay,CABLE DATA,CABLE_CHECKSTAY,Load (N),,Main Mast,Checkstay SB
+Main Deflector ,main-checkstay-deflector-load,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),,Main Mast,Deflector
+Main Deflector ,main-checkstay-deflector-relative-position,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),,Main Mast,Deflector
+PT Main V1  ,fiber-optic-main-v1-ps,Main V1 - Port,CABLE DATA,CABLE_V1P,Load (N),,Main Mast,V1 PT
+Main Vang,main-vang-relative-position,Main vang (remap),CABLE DATA,CABLE_VANG,Trimming value (N or m),,Main sail,Vang
+Main Halyard ,main-halyard-load,-,CABLE DATA,CABLE_MAINHEAD_V,Load (N),,Main sail,Halyard
+Main Vang,main-vang-load,Main vang,CABLE DATA,CABLE_VANG,Load (N),,Main sail,Vang
+Mainsheet ,main-sheet-load,Main sheet load,CABLE DATA,CABLE_MAINSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 2:1,Main sail,Sheet
+Main Preventer,main-preventer-load,Preventer,CABLE DATA,CABLE_PREVENTER,Load (N),,Main sail,Preventer
+Main Cunningham ,main-cunningham-load,Main cunno,CABLE DATA,CABLE_MAIN_CUNN,Load (N),,Main sail,Cunningham
+Main Cunningham ,main-cunningham-stroke,Main cunno,CABLE DATA,CABLE_MAIN_CUNN,Trimming value (N or m),,Main sail,Cunningham
+Main Outhaul ,main-outhaul-load,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),,Main sail,Outhaul
+Main Outhaul ,main-outhaul-relative-position,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Trimming value (N or m),,Main sail,Outhaul
+Main Traveller ,main-traveller-relative-position,Main traveller - Port,CABLE DATA,CABLE_TRAVELLER_WW,Trimming value (N or m),,Main sail,Traveller
+Main Vang,main-vang-load,-,CABLE DATA,CABLE_VANG,Load (N),,Trisail,Vang
+Main Vang,main-vang-relative-position,Double up with row 58,,,,,Trisail,Vang
+Aft Winch PT ,aft-winch-ps-load,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example,Trisail,Aft Winch PS
+Aft Winch STB ,aft-winch-sb-load,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),May also loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example,Trisail,Aft Winch SB
+Main Traveller ,main-traveller-relative-position,Main traveller - Stbd,CABLE DATA,CABLE_TRAVELLER_LW,Trimming value (N or m),,Trisail,Traveller
+Main Halyard ,main-halyard-load,Double up with row 57,,,,,Trisail,Main Halyard 
+Headboard lock,main-halyard-lock-full,Double up with row 57 - Lock Load is the Halyard Load,,,,,Main locks,Headboard lock
+Headboard overhoist,main-halyard-overhoist-full,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Main locks,Headboard overhoist
+Reef 1 lock,main-halyard-lock-1,,CABLE DATA,CABLE_MAINHEADV_R1,Load (N),,Main locks,Reef 1 lock
+Reef 1 overhoist,main-halyard-overhoist-1,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Main locks,Reef 1 overhoist
+Reef 2 lock,main-halyard-lock-2,,CABLE DATA,CABLE_MAINHEADV_R2,Load (N),,Main locks,Reef 2 lock
+Reef 2 overhoist,main-halyard-overhoist-2,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Main locks,Reef 2 overhoist
+Reef 3 lock,main-halyard-lock-3,,CABLE DATA,CABLE_MAINHEADV_R3,Load (N),,Main locks,Reef 3 lock
+Reef 3 overhoist,main-halyard-overhoist-3,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Main locks,Reef 3 overhoist
+Boom reef 1 lock,main-halyard-boom-lock-1,,CABLE DATA,CABLE_MAINHEADV_R3,Load (N),,Main locks,Boom reef 1 lock
+Boom reef 2 lock,main-halyard-boom-lock-2,,CABLE DATA,CABLE_MAINHEADV_R3,Load (N),,Main locks,Boom reef 2 lock
+Boom reef 3 lock,main-halyard-boom-lock-3,,CABLE DATA,CABLE_MAINHEADV_R3,Load (N),,Main locks,Boom reef 3 lock
+Boom reef 3 lock,main-halyard-boom-lock-3,Double up with row 57 - Lock Load is the Halyard Load,,,,,Trisail Locks,Boom reef 3 lock
+Mizzen Jib Tack ,mizzen-headsail-tack-adjuster-load,Mizzen tack,CABLE DATA,CABLE_MIZZEN_JIB_Tack,Load (N),,Mizzen Jib,Tack
+Mizzen JibTack ,mizzen-headsail-tack-adjuster-relative-position,- Mizzen tack (remap?),CABLE DATA,CABLE_MIZZEN_JIB_Tack,Trimming value (N or m),,Mizzen Jib,Tack
+PT Aft Winch  ,aft-winch-ps-load,Mizzen jib sheet load,CABLE DATA,CABLE_MIZZEN_JIB_SHEET,Load (N),,Mizzen Jib,Aft Winch PS
+STB Aft Winch  ,aft-winch-sb-load,Mizzen jib sheet load,CABLE DATA,CABLE_MIZZEN_JIB_SHEET,Load (N),,Mizzen Jib,Aft Winch SB
+Main Traveller ,main-traveller-relative-position,Double up with row 70,,,,,Mizzen Jib,Traveller
+Main Preventer,main-preventer-load,Double up with row 60,,,,,Mizzen Jib,Preventer
+Mizzen Staysail Tack ,mizzen-headsail-tack-adjuster-load,,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Load (N),,Mizzen Staysail,Tack
+Mizzen Staysail Tack ,mizzen-headsail-tack-adjuster-relative-position,,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Trimming value (N or m),,Mizzen Staysail,Tack
+Main Traveller ,main-traveller-relative-position,Double up with row 70,,,,,Main Boom,Traveller
+Main Preventer,main-preventer-load,Double up with row 60,,,,,Main Boom ,Preventer
+Halyard lock,mizzen-headsail-locks-lock,Mizzen Jib,CABLE DATA,CABLE_MIZZEN_JIBl_HALYARD,Load (N),,Mizzen Headsail Locks,Halyard lock
+Halyard overhoist,mizzen-headsail-locks-overhoist,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Mizzen Headsail Locks,Halyard overhoist
+Halyard lock,mizzen-headsail-locks-lock,Mizzen Staysail,CABLE DATA,CABLE_MIZZEN_STAYSAIL_HALYARD,Load (N),,,
+Halyard overhoist,mizzen-headsail-locks-overhoist,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,,
+Mizzen Forestay,fiber-optic-mizzen-forestay,Mizzen headstay,CABLE DATA,CABLE_MIZ_FS,Load (N),,Mizzen mast,Forestay
+STB Mizzen V1 ,fiber-optic-mizzen-v1-sb,Mizzen V1,CABLE DATA,CABLE_M_V1S,Load (N),,Mizzen mast,V1 SB
+PT Mizzen D1 ,fiber-optic-mizzen-d1-ps,Mizzen D1,CABLE DATA,CABLE_MD1P,Load (N),,Mizzen mast,D1 PS
+STB Mizzen D1 ,fiber-optic-mizzen-d1-sb,mizzen D1,CABLE DATA,CABLE_MD1S,Load (N),,Mizzen mast,D1 SB
+,,Mizzen runner flyblock,,,,,Mizzen mast,Runner combined PS
+,,Mizzen runner flyblock,,,,,Mizzen mast,Runner combined SB
+PT Mizzen Runner ,mizzen-runner-ps-load,Mizzen runner (remap?),CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),,Mizzen mast,Runner PS
+STB Mizzen Runner  ,mizzen-runner-sb-load,Mizzen runner (remap?),CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),,Mizzen mast,Runner SB
+PT Mizzen Checkstay ,mizzen-checkstay-ps-load,Mizzen checkstay,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),,Mizzen mast,Checkstay PS
+STB Mizzen Checkstay ,mizzen-checkstay-sb-load,Mizzen checkstay,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),,Mizzen mast,Checkstay SB
+Mizzen Deflector ,mizzen-checkstay-deflector-load,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),,Mizzen mast,Deflector
+Mizzen Deflector ,mizzen-checkstay-deflector-relative-position,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),,Mizzen mast,Deflector
+PT Mizzen V1 ,fiber-optic-mizzen-v1-ps,Mizzen V1,CABLE DATA,CABLE_M_V1P,Load (N),,Mizzen mast,V1 PS
+Mizzen Vang,mizzen-vang-load,Mizzen vang,CABLE DATA,CABLE_MIZZEN_VANG,Load (N),,Mizzen Sail,Vang
+Mizzen Vang ,mizzen-vang-relative-position,Mizzen vang (remap),CABLE DATA,CABLE_MIZZEN_VANG,Trimming value (N or m),,Mizzen Sail,Vang
+Mizzen Sheet ,mizzen-sheet-load,Mizzen sheet load,CABLE DATA,CABLE_MIZZENSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 1:1,Mizzen Sail,Sheet
+Mizzen Preventer ,mizzen-preventer-load,Mizzen Preventer sheet,CABLE DATA,CABLE_MIZZEN_PREVENTER,Load (N),,Mizzen Sail,Preventer
+Mizzen Cunningham ,mizzen-cunningham-load,Mizzen cunno,CABLE DATA,CABLE_MIZZEN_CUNN,Load (N),,Mizzen Sail,Cunningham
+Mizzen Cunningham ,mizzen-cunningham-stroke,Mizzen cunno,CABLE DATA,CABLE_MIZZEN_CUNN,Trimming value (N or m),,Mizzen Sail,Cunningham
+Mizzen Outhaul ,mizzen-outhaul-load,Mizzen outhaul / REEF,CABLE DATA,CABLE_MIZZENCLEW,Load (N),,Mizzen Sail,Outhaul
+Mizzen Outhaul ,mizzen-outhaul-relative-position,Mizzen outhaul / REEF,CABLE DATA,CABLE_MIZZENCLEW,Trimming value (N or m),,Mizzen Sail,Outhaul
+Mizzen Halyard ,mizzen-halyard-load,-,CABLE DATA,CABLE_MIZZENHEAD_V,Load (N),,Mizzen Sail,Halyard
+Headboard lock,mizzen-halyard-lock-full,Double up with row 119 - Lock Load is the Halyard Load,,,,,Mizzen Locks,Headboard lock
+Headboard overhoist,mizzen-halyard-overhoist-full,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Mizzen Locks,Headboard overhoist
+Reef 1 lock,mizzen-halyard-lock-1,,CABLE DATA,CABLE_MIZZENHEAD_R1_V,Load (N),,Mizzen Locks,Reef 1 lock
+Reef 1 overhoist,mizzen-halyard-overhoist-1,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Mizzen Locks,Reef 1 overhoist
+Reef 2 lock,mizzen-halyard-lock-2,,CABLE DATA,CABLE_MIZZENHEAD_R2_V,Load (N),,Mizzen Locks,Reef 2 lock
+Reef 2 overhoist,mizzen-halyard-overhoist-2,"No reference in SailPack as to whether this is on or off, other than if it on there would be a value in the above",,,,,Mizzen Locks,Reef 2 overhoist
+Boom reef 1 lock,mizzen-halyard-boom-lock-1,,CABLE DATA,CABLE_MIZZEN_CLEW_STROP_R1,Load (N),,Mizzen Locks,Boom reef 1 lock
+Boom reef 2 lock,mizzen-halyard-boom-lock-2,,CABLE DATA,CABLE_MIZZEN_CLEW_STROP_R2,Load (N),,Mizzen Locks,Boom reef 2 lock

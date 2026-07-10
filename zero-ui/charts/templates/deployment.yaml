@@ -32,26 +32,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroupChangePolicy: Always
-        sysctls: []
-        supplementalGroups: []
-        fsGroup: 1001
+        fsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ui
           securityContext:
-            securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
               - ALL
-            privileged: false
             readOnlyRootFilesystem: true
-            runAsGroup: 1001
             runAsNonRoot: true
-            runAsUser: 1001
-            seLinuxOptions: {}
-            seccompProfile:
-              type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -80,7 +72,7 @@ spec:
         - name: config
           configMap:
             name: {{ include "..fullname" . }}-config
-            items: 
+            items:
               - key: env.json
                 path: env.json
         - emptyDir: {}

@@ -6,8 +6,13 @@ metadata:
   name: {{ include "zero-domestic-control.stub" . }}
 spec:
   ports:
-  - port: {{ .Values.stub.port }}
-    targetPort: modbus
+  - name: ac
+    port: {{ .Values.stub.port }}
+    targetPort: ac
+    protocol: TCP
+  - name: ventilation
+    port: {{ .Values.stub.ventilationPort }}
+    targetPort: ventilation
     protocol: TCP
   selector:
     {{- include "zero-domestic-control.selectorLabels" . | nindent 4 }}

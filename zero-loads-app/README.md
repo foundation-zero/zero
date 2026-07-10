@@ -3,7 +3,6 @@
 The Loads app processes data as follows:
 - Sensor equipment transmits sensor data via PCan UDP.
 - The `adapter` module receives these messages, interprets them, and forwards the data to MQTT.
-- RisingWave ingests relevant sensor data, constructs load conditions, and publishes them to MQTT.
 - The `control` process consumes load conditions from MQTT, determines the load case by computing the sea state, and publishes the results to MQTT, where RisingWave sinks them into Postgres.
 - When reference values are requested via the API, the current load case is retrieved from Postgres, and the corresponding reference values are returned.
 

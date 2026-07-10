@@ -1,40 +1,48 @@
 from asyncio import create_task, sleep
 from datetime import datetime
 from unittest.mock import Mock
-from aiomqtt import Client as MqttClient
-from httpx import ASGITransport, AsyncClient
+
 import pytest
+import strawberry
+from aiomqtt import Client as MqttClient
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
 from thrs.cli.simulation_controls import (
     ControlModeMessage,
     SimulationInputMessage,
     SimulationStatusMessage,
 )
-from thrs.control.modules.boilers import BoilersParameters
 from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.dhw import DhwParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.thrusters import (
+    THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
+from thrs.graphql.helpers import UnstampedInput
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.strawberry import (
-    app,
-    boilers_messaging,
     consumers_messaging,
+    dhw_messaging,
     messaging,
     pcm_messaging,
     pvt_messaging,
     simulation_messaging,
     thrusters_messaging,
 )
-
-from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -51,15 +59,81 @@ from thrs.input_output.modules.thrusters import (
 )
 
 
+class _FloatShapesStampedModel(ThrsValues):
+    required_float: Stamped[float]
+    optional_float: Stamped[float | None]
+    tuple_float: Stamped[tuple[float, float, float]]
+    optional_tuple_float: Stamped[tuple[float, float, float] | None]
+
+
+def _schema_block(schema_str: str, type_kind: str, type_name: str) -> str:
+    start = schema_str.index(f"{type_kind} {type_name} {{")
+    end = schema_str.index("\n}\n", start)
+    return schema_str[start:end]
+
+
+def test_unstamped_input_generation_keeps_optional_and_tuple_types():
+    model = UnstampedInput.generate_for_model(
+        "FloatShapesInputType", _FloatShapesStampedModel
+    )
+
+    input_type = strawberry.experimental.pydantic.input(
+        model=model,
+        all_fields=True,
+        use_pydantic_alias=False,
+    )(type("FloatShapesInput", (object,), {}))
+
+    @strawberry.type
+    class _Query:
+        @strawberry.field
+        def ok(self) -> bool:
+            return True
+
+    @strawberry.type
+    class _Mutation:
+        @strawberry.mutation
+        def set_values(self, value: input_type) -> bool:  # type: ignore
+            return True
+
+    schema_str = str(strawberry.Schema(query=_Query, mutation=_Mutation))
+    block = _schema_block(schema_str, "input", "FloatShapesInput")
+
+    assert "requiredFloat: Float!" in block
+    assert "optionalFloat: Float" in block
+    assert "optionalFloat: Float!" not in block
+    assert "tupleFloat: [Float!]!" in block
+    assert "optionalTupleFloat: [Float!]" in block
+    assert "optionalTupleFloat: [Float!]!" not in block
+
+
 @pytest.fixture
-async def async_client():
-    async with AsyncClient(
-        base_url="http://test", transport=ASGITransport(app)
-    ) as client:
-        yield client
+def test_client(app: FastAPI):
+    return TestClient(app, "http://test")
 
 
-async def override_thrusters_messaging():
+@pytest.fixture
+def app(
+    app: FastAPI,
+    thrusters_messaging_mock: Mock,
+    messaging_mock: Mock,
+    pvt_messaging_mock: Mock,
+    pcm_messaging_mock: Mock,
+    consumers_messaging_mock: Mock,
+    dhw_messaging_mock: Mock,
+    simulation_messaging_mock: Mock,
+):
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+    app.dependency_overrides[thrusters_messaging] = lambda: thrusters_messaging_mock
+    app.dependency_overrides[pvt_messaging] = lambda: pvt_messaging_mock
+    app.dependency_overrides[pcm_messaging] = lambda: pcm_messaging_mock
+    app.dependency_overrides[consumers_messaging] = lambda: consumers_messaging_mock
+    app.dependency_overrides[dhw_messaging] = lambda: dhw_messaging_mock
+    app.dependency_overrides[simulation_messaging] = lambda: simulation_messaging_mock
+    return app
+
+
+@pytest.fixture
+async def thrusters_messaging_mock():
     mock = Mock(ControlMessaging)
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
@@ -78,7 +152,8 @@ async def override_thrusters_messaging():
     return mock
 
 
-async def override_pvt_messaging():
+@pytest.fixture
+async def pvt_messaging_mock():
     mock = Mock(ControlMessaging)
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
@@ -103,7 +178,8 @@ async def override_pvt_messaging():
     return mock
 
 
-async def override_pcm_messaging():
+@pytest.fixture
+async def pcm_messaging_mock():
     mock = Mock(ControlMessaging)
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
@@ -121,7 +197,8 @@ async def override_pcm_messaging():
     return mock
 
 
-async def override_consumers_messaging():
+@pytest.fixture
+async def consumers_messaging_mock():
     mock = Mock(ControlMessaging)
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
@@ -139,13 +216,14 @@ async def override_consumers_messaging():
     return mock
 
 
-async def override_boilers_messaging():
+@pytest.fixture
+async def dhw_messaging_mock():
     mock = Mock(ControlMessaging)
-    mock.sensor_values = BoilersSensorValues.zero()
-    mock.control_values = BoilersControlValues.zero()
-    mock.parameters = BoilersParameters()
+    mock.sensor_values = DhwSensorValues.zero()
+    mock.control_values = DhwControlValues.zero()
+    mock.parameters = DhwParameters()
     mock.control_mode = ControlModeMessage(
-        module="boilers", mode=SwitchingControlMode(automatic_mode=None)
+        module="dhw", mode=SwitchingControlMode(automatic_mode=None)
     )
 
     async def wait(condition, *_args, timeout):
@@ -157,7 +235,8 @@ async def override_boilers_messaging():
     return mock
 
 
-async def override_messaging():
+@pytest.fixture
+async def messaging_mock():
     mock = Mock(Messaging)
     mock.simulation_status = SimulationStatusMessage(
         mode="thrusters",
@@ -173,7 +252,8 @@ async def override_messaging():
     return mock
 
 
-async def override_simulation_messaging():
+@pytest.fixture
+async def simulation_messaging_mock():
     mock = Mock(SimulationMessaging)
     mock.mode = "thrusters"
     mock.simulation_inputs = ThrustersSimulationInputs.zero()
@@ -186,15 +266,8 @@ async def override_simulation_messaging():
     return mock
 
 
-async def test_query_sensor_values(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_query_sensor_values(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """{
@@ -224,15 +297,8 @@ async def test_query_sensor_values(async_client):
     }
 
 
-async def test_query_control_values(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_query_control_values(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """{
@@ -262,15 +328,8 @@ async def test_query_control_values(async_client):
     }
 
 
-async def test_query_parameters(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_query_parameters(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """{
@@ -294,15 +353,8 @@ async def test_query_parameters(async_client):
     }
 
 
-async def test_query_control_mode(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_query_control_mode(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """{
@@ -373,139 +425,16 @@ async def test_query_control_mode(async_client):
     }
 
 
-async def test_query_simulation_inputs(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_query_simulation_inputs(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """{
                 simulation {
                     inputs {
                         ... on ThrustersSimulationInputsType {
-                            thrustersAft {
+                            thrustersThrusterAft {
                                 active {
-                                    value
-                                }
-                            }
-                        }
-                    }
-                }
-            }"""
-        },
-    )
-    assert response.status_code == 200
-    assert response.json() == {
-        "data": {"simulation": {"inputs": {"thrustersAft": {"active": {"value": 0.0}}}}}
-    }
-
-
-async def _mqtt_client(settings):
-    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
-        yield client
-
-
-mqtt_client = pytest.fixture(_mqtt_client)
-mqtt_client2 = pytest.fixture(_mqtt_client)
-
-
-async def test_query_simulation_inputs_actual(async_client, mqtt_client, mqtt_client2):
-    thrusters_msg: ThrustersMessaging = ControlMessaging(
-        "thrusters",
-        ThrustersSensorValues,
-        ThrustersControlValues,
-        ThrustersParameters,
-        ThrustersControlMode,
-        mqtt_client,
-    )
-    simulation_msg = SimulationMessaging(simulation.io_mapping, mqtt_client)
-    msg = Messaging(mqtt_client, [thrusters_msg], simulation_msg)
-    app.dependency_overrides[messaging] = lambda: msg
-    app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
-
-    await mqtt_client2.publish("thrs/simulation/inputs", None, qos=1, retain=True)
-    await mqtt_client2.publish("thrs/simulation/status", None, qos=1, retain=True)
-
-    run_task = create_task(await msg.run())
-    try:
-        # Simulation should be able to handle some time skew between status and inputs
-        await mqtt_client2.publish(
-            "thrs/simulation/inputs",
-            SimulationInputMessage[ThrustersSimulationInputs](
-                inputs=ThrustersSimulationInputs.zero()
-            ).model_dump_json(),
-        )
-        await sleep(0.1)
-        await mqtt_client2.publish(
-            "thrs/simulation/status",
-            SimulationStatusMessage(
-                mode="thrusters",
-                status="available",
-                simulation_time=datetime.fromtimestamp(0),
-                control_modules=["thrusters"],
-            ).model_dump_json(),
-        )
-        await sleep(0.1)
-
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """{
-                    simulation {
-                        inputs {
-                            ... on ThrustersSimulationInputsType {
-                                thrustersAft {
-                                    active {
-                                        value
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }"""
-            },
-        )
-        assert response.status_code == 200
-        assert response.json() == {
-            "data": {
-                "simulation": {"inputs": {"thrustersAft": {"active": {"value": 0.0}}}}
-            }
-        }
-    finally:
-        run_task.cancel()
-
-
-async def test_query_simulation_outputs(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-
-    sim = await override_simulation_messaging()
-    sim.simulation_outputs.thrusters_module_return.flow.value = 10.0  # type: ignore
-    app.dependency_overrides[simulation_messaging] = lambda: sim
-
-    response = await async_client.post(
-        "/graphql",
-        json={
-            "query": """{
-                simulation {
-                    outputs {
-                        ... on ThrustersSimulationOutputsType {
-                            thrustersModuleReturn {
-                                flow {
                                     value
                                 }
                             }
@@ -519,20 +448,128 @@ async def test_query_simulation_outputs(async_client):
     assert response.json() == {
         "data": {
             "simulation": {
-                "outputs": {"thrustersModuleReturn": {"flow": {"value": 10.0}}}
+                "inputs": {"thrustersThrusterAft": {"active": {"value": 0.0}}}
             }
         }
     }
 
 
-async def test_query_simulation_state(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def _mqtt_client(settings):
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
+        yield client
+
+
+mqtt_client = pytest.fixture(_mqtt_client)
+mqtt_client2 = pytest.fixture(_mqtt_client)
+
+
+async def test_query_simulation_inputs_actual(
+    app, test_client, mqtt_client, mqtt_client2
+):
+    thrusters_msg: ThrustersMessaging = ControlMessaging(
+        "thrusters",
+        THRUSTERS_MODULE_DESCRIPTION,
+        mqtt_client,
+        "test_devices_topic",
+        "test_controller_topic",
+    )
+    simulation_msg = SimulationMessaging(
+        simulation.io_mapping,
+        mqtt_client,
+        "test_simulation_topic",
+    )
+    msg = Messaging(
+        mqtt_client, [thrusters_msg], simulation_msg, "test_simulation_topic"
+    )
+    app.dependency_overrides[messaging] = lambda: msg
+    app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
+    app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
+
+    await mqtt_client2.publish("test_simulation_topic/inputs", None, qos=1, retain=True)
+    await mqtt_client2.publish("test_simulation_topic/status", None, qos=1, retain=True)
+
+    run_task = create_task(await msg.run())
+    try:
+        # Simulation should be able to handle some time skew between status and inputs
+        await mqtt_client2.publish(
+            "test_simulation_topic/inputs",
+            SimulationInputMessage[ThrustersSimulationInputs](
+                inputs=ThrustersSimulationInputs.zero()
+            ).model_dump_json(),
+        )
+        await sleep(0.1)
+        await mqtt_client2.publish(
+            "test_simulation_topic/status",
+            SimulationStatusMessage(
+                mode="thrusters",
+                status="available",
+                simulation_time=datetime.fromtimestamp(0),
+                control_modules=["thrusters"],
+            ).model_dump_json(),
+        )
+        await sleep(0.1)
+
+        response = test_client.post(
+            "/graphql",
+            json={
+                "query": """{
+                    simulation {
+                        inputs {
+                            ... on ThrustersSimulationInputsType {
+                                thrustersThrusterAft {
+                                    active {
+                                        value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }"""
+            },
+        )
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "simulation": {
+                    "inputs": {"thrustersThrusterAft": {"active": {"value": 0.0}}}
+                }
+            }
+        }
+    finally:
+        run_task.cancel()
+
+
+async def test_query_simulation_outputs(app, test_client, simulation_messaging_mock):
+    simulation_messaging_mock.simulation_outputs.thrusters_pcm_return.flow.value = 10.0  # type: ignore
+
+    response = test_client.post(
+        "/graphql",
+        json={
+            "query": """{
+                simulation {
+                    outputs {
+                        ... on ThrustersSimulationOutputsType {
+                            thrustersPcmReturn {
+                                flow {
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "simulation": {"outputs": {"thrustersPcmReturn": {"flow": {"value": 10.0}}}}
+        }
+    }
+
+
+def test_query_simulation_state(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """query {
@@ -547,15 +584,8 @@ async def test_query_simulation_state(async_client):
     assert response.json() == {"data": {"simulation": {"status": "available"}}}
 
 
-async def test_query_control_automation_mode(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+def test_query_control_automation_mode(app, test_client):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """query {
@@ -576,17 +606,8 @@ async def test_query_control_automation_mode(async_client):
     }
 
 
-async def test_mutation_simulation_play(async_client):
-    messaging_mock = await override_messaging()
-    app.dependency_overrides[messaging] = lambda: messaging_mock
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-
-    response = await async_client.post(
+async def test_mutation_simulation_play(app, test_client, messaging_mock):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -599,23 +620,15 @@ async def test_mutation_simulation_play(async_client):
     messaging_mock.play_simulation.assert_awaited_once_with(1.0)
 
 
-async def test_mutation_simulation_pause(async_client):
-    messaging_mock = await override_messaging()
+async def test_mutation_simulation_pause(app, test_client, messaging_mock):
     messaging_mock.simulation_status = SimulationStatusMessage(
         mode="thrusters",
         status="running",
         simulation_time=datetime.fromtimestamp(0),
         control_modules=["thrusters"],
     )
-    app.dependency_overrides[messaging] = lambda: messaging_mock
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
-    response = await async_client.post(
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -628,16 +641,8 @@ async def test_mutation_simulation_pause(async_client):
     messaging_mock.pause_simulation.assert_awaited_once()
 
 
-async def test_mutation_simulation_step(async_client):
-    messaging_mock = await override_messaging()
-    app.dependency_overrides[messaging] = lambda: messaging_mock
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_mutation_simulation_step(app, test_client, messaging_mock):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -650,16 +655,8 @@ async def test_mutation_simulation_step(async_client):
     messaging_mock.step_simulation.assert_awaited_once_with(2.0)
 
 
-async def test_mutation_control_value(async_client):
-    thrusters_mock = await override_thrusters_messaging()
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = lambda: thrusters_mock
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-    response = await async_client.post(
+async def test_mutation_control_value(app, test_client, thrusters_messaging_mock):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -681,23 +678,16 @@ async def test_mutation_control_value(async_client):
             }
         }
     }
-    thrusters_mock.send_manual_controls.assert_awaited_once()
-    control_values = thrusters_mock.send_manual_controls.call_args[0][0]
-    assert control_values.thrusters_pump_1.dutypoint.value == 0.5
-    assert control_values.thrusters_pump_1.on.value
+    thrusters_messaging_mock.send_manual_controls.assert_awaited_once()
+    control_values = thrusters_messaging_mock.send_manual_controls.call_args[0][0]
+    assert control_values.thrusters_pump1.dutypoint.value == 0.5
+    assert control_values.thrusters_pump1.on.value
 
 
-async def test_mutation_control_set_automation_mode(async_client):
-    app.dependency_overrides[messaging] = override_messaging
-    messaging_mock = await override_thrusters_messaging()
-    app.dependency_overrides[thrusters_messaging] = lambda: messaging_mock
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-
-    response = await async_client.post(
+async def test_mutation_control_set_automation_mode(
+    app, test_client, thrusters_messaging_mock
+):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -707,20 +697,11 @@ async def test_mutation_control_set_automation_mode(async_client):
     )
     assert response.status_code == 200
     assert response.json() == {"data": {"thrustersSetAutomationMode": True}}
-    messaging_mock.set_automation_mode.assert_awaited_once_with(True)
+    thrusters_messaging_mock.set_automation_mode.assert_awaited_once_with(True)
 
 
-async def test_mutation_control_values_hanging_around(async_client):
-    messaging_mock = await override_messaging()
-    app.dependency_overrides[messaging] = lambda: messaging_mock
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-
-    await async_client.post(
+async def test_mutation_control_values_hanging_around(app, test_client, messaging_mock):
+    test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -734,7 +715,7 @@ async def test_mutation_control_values_hanging_around(async_client):
         },
     )
     messaging_mock.control_values = ThrustersControlValues.zero()
-    response2 = await async_client.post(
+    response2 = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -764,17 +745,8 @@ async def test_mutation_control_values_hanging_around(async_client):
     }
 
 
-async def test_mutation_parameter(async_client):
-    messaging_mock = await override_thrusters_messaging()
-    app.dependency_overrides[thrusters_messaging] = lambda: messaging_mock
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
-
-    response = await async_client.post(
+async def test_mutation_parameter(app, test_client, thrusters_messaging_mock):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
@@ -788,27 +760,20 @@ async def test_mutation_parameter(async_client):
     assert response.json() == {
         "data": {"thrustersParameterSetCoolingFlow": {"coolingFlow": 99.0}}
     }
-    messaging_mock.set_parameters.assert_awaited_once()
-    parameters = messaging_mock.set_parameters.call_args[0][0]
+    thrusters_messaging_mock.set_parameters.assert_awaited_once()
+    parameters = thrusters_messaging_mock.set_parameters.call_args[0][0]
     assert parameters.cooling_flow == 99.0
 
 
-async def test_mutation_set_simulation_inputs(async_client):
-    simulation_mock = await override_simulation_messaging()
-    app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
-    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
-    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
-    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
-    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
-    app.dependency_overrides[simulation_messaging] = lambda: simulation_mock
-
-    response = await async_client.post(
+async def test_mutation_set_simulation_inputs(
+    app, test_client, simulation_messaging_mock
+):
+    response = test_client.post(
         "/graphql",
         json={
             "query": """mutation {
-                thrustersSimulationSetThrustersAft(component: { heatFlow: 99.0, active: false }) {
-                    thrustersAft {
+                thrustersSimulationSetThrustersThrusterAft(component: { heatFlow: 99.0, active: false }) {
+                    thrustersThrusterAft {
                         heatFlow {
                             value
                         }
@@ -820,11 +785,11 @@ async def test_mutation_set_simulation_inputs(async_client):
     assert response.status_code == 200
     assert response.json() == {
         "data": {
-            "thrustersSimulationSetThrustersAft": {
-                "thrustersAft": {"heatFlow": {"value": 99.0}}
+            "thrustersSimulationSetThrustersThrusterAft": {
+                "thrustersThrusterAft": {"heatFlow": {"value": 99.0}}
             }
         }
     }
-    simulation_mock.set_simulation_inputs.assert_awaited_once()
-    inputs = simulation_mock.set_simulation_inputs.call_args[0][0]
-    assert inputs.thrusters_aft.heat_flow.value == 99.0
+    simulation_messaging_mock.set_simulation_inputs.assert_awaited_once()
+    inputs = simulation_messaging_mock.set_simulation_inputs.call_args[0][0]
+    assert inputs.thrusters_thruster_aft.heat_flow.value == 99.0

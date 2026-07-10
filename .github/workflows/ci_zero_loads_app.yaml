@@ -57,8 +57,13 @@ jobs:
       - name: Run services
         run: docker compose --profile zero up -d --quiet-pull --wait postgres vernemq
         working-directory: zero-loads-app
-      - name: Set up postgres
-        run: docker compose --profile zero up setup-postgres
+      - name: Set up postgres schema
+        run: docker compose --profile zero up -d --wait hasura
+      - name: Install Hasura CLI
+        run: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+      - name: Seed reference values
+        run: hasura seed apply --file loads_reference_values.sql --endpoint http://localhost:8080 --admin-secret myadminsecretkey --database-name zero
+        working-directory: hasura
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-loads-app

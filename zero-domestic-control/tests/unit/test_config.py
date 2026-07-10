@@ -17,14 +17,16 @@ def test_config():
         "pg_user": "test_user",
         "pg_password": "test_password",
         "pg_db": "test_db",
-        "risingwave_url": "localhost:4566",
+        "greptime_url": "localhost:4566",
         "mqtt_host": "localhost",
         "mqtt_port": "1883",
         "home_assistant_url": "http://localhost:8123/api",
         "home_assistant_ws_url": "ws://localhost:8123/api/websocket",
         "home_assistant_token": "home_assistant_token",
-        "termodinamica_host": "localhost",
-        "termodinamica_port": 502,
+        "air_conditioning_host": "localhost",
+        "air_conditioning_port": 502,
+        "ventilation_host": "localhost",
+        "ventilation_port": 503,
     }
 
     config = ConfigTestSettings(**input_config)
@@ -35,12 +37,15 @@ def test_config():
     assert config.pg_password == "test_password"
     assert config.pg_db == "test_db"
     assert (
-        config.pg_url == "postgresql://test_user:test_password@localhost:5432/test_db"
+        config.pg_url
+        == "postgresql+psycopg://test_user:test_password@localhost:5432/test_db"
     )
-    assert config.risingwave_url == "localhost:4566"
+    assert config.greptime_url == "localhost:4566"
     assert config.mqtt_host == "localhost"
     assert config.home_assistant_url == "http://localhost:8123/api"
     assert config.home_assistant_ws_url == "ws://localhost:8123/api/websocket"
     assert config.home_assistant_token == "home_assistant_token"
-    assert config.termodinamica_host == "localhost"
-    assert config.termodinamica_port == 502
+    assert config.air_conditioning_host == "localhost"
+    assert config.air_conditioning_port == 502
+    assert config.ventilation_host == "localhost"
+    assert config.ventilation_port == 503

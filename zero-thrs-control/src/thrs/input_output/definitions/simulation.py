@@ -1,4 +1,7 @@
 from typing import Annotated
+
+from pydantic.json_schema import SkipJsonSchema
+
 from thrs.input_output.base import Stamped, StampedDf, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Bar,
@@ -9,13 +12,17 @@ from thrs.input_output.definitions.units import (
     PcsMode,
     Watt,
 )
-from pydantic.json_schema import SkipJsonSchema
 
 type Stamp[T] = Stamped[T] | SkipJsonSchema[StampedDf[T]]
 
 
 class HeatSource(ThrsValues):
     heat_flow: Stamp[Watt]
+
+
+class HvacExchanger(ThrsValues):
+    heat_flow: Stamp[Watt]
+    maximum_temperature: Stamp[Celsius]
 
 
 class Boundary(ThrsValues):
@@ -48,7 +55,7 @@ class PropulsionDrive(HeatSource):
     active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
 
-class ShorePowerConverter(HeatSource):
+class Converter(HeatSource):
     active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
 
@@ -59,7 +66,7 @@ class Pcs(ThrsValues):
     ]
 
 
-class Fahrenheit(ThrsValues):
+class AdsorptionChiller(ThrsValues):
     free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
 
 

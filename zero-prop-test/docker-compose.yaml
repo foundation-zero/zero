@@ -1,0 +1,7 @@
+services:
+  prop-test:
+    build:
+      context: .
+      dockerfile: uv.Dockerfile
+    env_file: .env
+    restart: unless-stopped

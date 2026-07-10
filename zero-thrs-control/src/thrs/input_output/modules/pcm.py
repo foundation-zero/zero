@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
@@ -20,47 +21,47 @@ class PcmSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-55", component_type="temperature_sensor"),
     ]
-    pcm_temperature_module_1_out: Annotated[
+    pcm_temperature_module1: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-60", component_type="temperature_sensor"),
     ]
-    pcm_temperature_module_2_out: Annotated[
+    pcm_temperature_module2: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-33", component_type="temperature_sensor"),
     ]
-    pcm_temperature_module_3_out: Annotated[
+    pcm_temperature_module3: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-34", component_type="temperature_sensor"),
     ]
-    pcm_temperature_module_4_out: Annotated[
+    pcm_temperature_module4: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-35", component_type="temperature_sensor"),
     ]
-    pcm_module_1: Annotated[
+    pcm_module1: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
     ]
-    pcm_module_2: Annotated[
+    pcm_module2: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001050", component_type="pcm")
     ]
-    pcm_module_3: Annotated[
+    pcm_module3: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001051", component_type="pcm")
     ]
-    pcm_module_4: Annotated[
+    pcm_module4: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001052", component_type="pcm")
     ]
-    pcm_flow_module_1: Annotated[
+    pcm_flow_module1: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-18", component_type="flow_sensor"),
     ]
-    pcm_flow_module_2: Annotated[
+    pcm_flow_module2: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-19", component_type="flow_sensor"),
     ]
-    pcm_flow_module_3: Annotated[
+    pcm_flow_module3: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-20", component_type="flow_sensor"),
     ]
-    pcm_flow_module_4: Annotated[
+    pcm_flow_module4: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-21", component_type="flow_sensor"),
     ]
@@ -70,25 +71,25 @@ class PcmSensorValues(ThrsValues):
             yard_tag="50001062-02", component_type="valve", valve_type="switch"
         ),
     ]
-    pcm_flowcontrol_module_1: Annotated[
+    pcm_flowcontrol_module1: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-04", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_2: Annotated[
+    pcm_flowcontrol_module2: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-05", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_3: Annotated[
+    pcm_flowcontrol_module3: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-06", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_4: Annotated[
+    pcm_flowcontrol_module4: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-07", component_type="valve", valve_type="flowcontrol"
@@ -103,7 +104,7 @@ class PcmSensorValues(ThrsValues):
     pcm_switch_charging_supply: Annotated[
         sensor.Valve,
         component_meta(
-            yard_tag="50001090-01", component_type="valve", valve_type="switch"
+            yard_tag="50001190-01", component_type="valve", valve_type="switch"
         ),
     ]
     pcm_switch_consumers: Annotated[
@@ -124,25 +125,25 @@ class PcmControlValues(ThrsValues):
             yard_tag="50001062-02", component_type="valve", valve_type="switch"
         ),
     ]
-    pcm_flowcontrol_module_1: Annotated[
+    pcm_flowcontrol_module1: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-04", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_2: Annotated[
+    pcm_flowcontrol_module2: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-05", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_3: Annotated[
+    pcm_flowcontrol_module3: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-06", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    pcm_flowcontrol_module_4: Annotated[
+    pcm_flowcontrol_module4: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-07", component_type="valve", valve_type="flowcontrol"
@@ -157,7 +158,7 @@ class PcmControlValues(ThrsValues):
     pcm_switch_charging_supply: Annotated[
         control.Valve,
         component_meta(
-            yard_tag="50001090-01", component_type="valve", valve_type="switch"
+            yard_tag="50001190-01", component_type="valve", valve_type="switch"
         ),
     ]
     pcm_switch_consumers: Annotated[
@@ -166,18 +167,20 @@ class PcmControlValues(ThrsValues):
             yard_tag="50001071-02", component_type="valve", valve_type="switch"
         ),
     ]
-    pcm_module_1: Annotated[
+    pcm_module1: Annotated[
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
     ]
 
 
 class PcmSimulationInputs(SimulationInputs):
-    pcm_producers_supply: simulation.Boundary
-    pcm_consumers_supply: simulation.TemperatureBoundary
+    # pcm_producers_supply: simulation.Boundary #TODO: make into pcm_pvt_supply
+    pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
+    pcm_consumers_supply: simulation.TemperatureBoundary
 
 
 class PcmSimulationOutputs(SimulationValues):
     pcm_consumers_return: simulation.Boundary
-    pcm_producers_return: simulation.Boundary
+    # pcm_thrusters_return: simulation.Boundary
+    pcm_pvt_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary

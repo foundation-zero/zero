@@ -1,3 +1,5 @@
+import { DomesticBlinds, DomesticLightingGroups, DomesticRooms } from "../gql/graphql";
+
 export const enum ControlType {
   LIGHT = "lights",
   BLIND = "blinds",
@@ -19,32 +21,6 @@ export interface ValueWithTime {
   value: number;
 }
 
-export type ControlLog<Type extends ControlType = ControlType> = ValueWithTime & {
-  id: string;
-  control: RoomControl<Type>;
-};
-
-export type SensorLog<Type extends SensorType = SensorType> = ValueWithTime & {
-  id: string;
-  sensor: RoomSensor<Type>;
-};
-
-export interface RoomControl<Type extends ControlType = ControlType> {
-  id: string;
-  type: Type;
-  time: number;
-  value: number;
-  name: string;
-}
-
-export interface RoomSensor<Type extends SensorType = SensorType> {
-  id: string;
-  type: Type;
-  time: number;
-  value: number;
-  name?: string;
-}
-
 export interface Meta<T extends Record<string, unknown>> {
   meta: T;
 }
@@ -56,41 +32,41 @@ export type BlindsMeta = {
   group: string;
 };
 
-export type LightingControl = RoomControl<ControlType.LIGHT>;
-export type BlindsControl = RoomControl<ControlType.BLIND> & Meta<BlindsMeta>;
-export type AmplifierControl = RoomControl<ControlType.AMPLIFIER>;
-export type TemperatureControl = RoomControl<ControlType.TEMPERATURE>;
-export type HumidityControl = RoomControl<ControlType.HUMIDITY>;
-export type CO2Control = RoomControl<ControlType.CO2>;
-
-export type TemperatureSensor = RoomSensor<SensorType.TEMPERATURE>;
-export type HumiditySensor = RoomSensor<SensorType.HUMIDITY>;
-export type CO2Sensor = RoomSensor<SensorType.CO2>;
-export type PresenceSensor = RoomSensor<SensorType.PRESENCE>;
-
-export type ControlTypeMap = {
-  [ControlType.CO2]: CO2Control;
-  [ControlType.TEMPERATURE]: TemperatureControl;
-  [ControlType.HUMIDITY]: HumidityControl;
-  [ControlType.AMPLIFIER]: AmplifierControl;
-  [ControlType.BLIND]: BlindsControl;
-  [ControlType.LIGHT]: LightingControl;
-};
-
-export type SensorTypeMap = {
-  [SensorType.CO2]: CO2Sensor;
-  [SensorType.TEMPERATURE]: TemperatureSensor;
-  [SensorType.HUMIDITY]: HumiditySensor;
-  [SensorType.PRESENCE]: PresenceSensor;
-};
-
-export interface Room {
+export type LightingGroup = {
   id: string;
   name: string;
+  level: number;
+};
+
+export type Blind = {
+  id: string;
+  name: string;
+  level: number;
+  group: string;
+};
+
+export type AirConditioning = {
+  temperatureSetpoint: number;
+  humiditySetpoint: number;
+  actualTemperature: number;
+  actualHumidity: number;
+};
+
+export type Ventilation = {
+  co2Setpoint: number;
+  actualCo2: number;
+};
+
+export type Amplifier = {
+  on: boolean;
+};
+
+export type Room = Pick<
+  DomesticRooms,
+  "airConditioning" | "amplifier" | "blinds" | "id" | "lightingGroups" | "name" | "ventilation"
+> & {
   group: RoomGroup;
-  roomControls: RoomControl[];
-  roomSensors: RoomSensor[];
-}
+};
 
 export interface ShipArea {
   name: string;
@@ -120,8 +96,19 @@ export interface ControlGroup<T> {
   controls: T[];
 }
 
-export type LightGroup = ControlGroup<LightingControl>;
-export type BlindsGroup = ControlGroup<BlindsControl>;
+export type LightGroup = ControlGroup<DomesticLightingGroups>;
+export type BlindsGroup = ControlGroup<DomesticBlinds>;
+
+export type ActualAndSetpoint<T extends string> = `actual${Capitalize<T>}` | `${T}Setpoint`;
+
+export type LogItem<T extends string> = {
+  timestamp: Date;
+} & {
+  [K in ActualAndSetpoint<T>]: number;
+};
+
+export type AirConditioningLog = LogItem<"humidity" | "temperature">;
+export type VentilationLog = LogItem<"co2">;
 
 export const enum Roles {
   User = "user",

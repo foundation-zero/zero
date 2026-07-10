@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Annotated, Callable
+
 from pydantic import Field, model_validator
 
-from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller
+from thrs.classes.control import Control, ControlMode
+from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
     PvtGroupControlMode,
+    PvtGroupControlValues,
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
@@ -15,12 +17,17 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class PvtControlMode(ControlMode):
     aft: PvtGroupControlMode
     fwd: PvtGroupControlMode
     owners: PvtGroupControlMode
+
+
+class PvtControllerState(ThrsValues):
+    pass
 
 
 class PvtParameters(ThrsValues):
@@ -143,7 +150,13 @@ def owners_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParame
 
 
 class PvtControl(
-    Control[PvtSensorValues, PvtControlValues, PvtParameters, PvtControlMode]
+    Control[
+        PvtSensorValues,
+        PvtControlValues,
+        PvtParameters,
+        PvtControlMode,
+        PvtControllerState,
+    ]
 ):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
@@ -154,10 +167,10 @@ class PvtControl(
             deep=True
         )
 
-        self._heat_dump_controller = Controller[Ratio, Celsius](
+        self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.pvt_mix_exchanger.setpoint.value,
-            parameters.maximum_supply_temperature,
-            parameters.heat_dump_tuning,
+            lambda: self._parameters.maximum_supply_temperature,
+            lambda: self._parameters.heat_dump_tuning,
             self._time,
         )
 
@@ -165,15 +178,27 @@ class PvtControl(
 
         self._main_fwd_control = PvtGroupControl(
             main_pvt_group_parameters(parameters),
-            time_fn,
+            initial_control_values=PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_main_fwd,
+                mix=self._current_values.pvt_mix_main_fwd,
+            ),
+            time_fn=time_fn,
         )
         self._main_aft_control = PvtGroupControl(
             aft_pvt_group_parameters(parameters),
-            time_fn,
+            initial_control_values=PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_main_aft,
+                mix=self._current_values.pvt_mix_main_aft,
+            ),
+            time_fn=time_fn,
         )
         self._owners_control = PvtGroupControl(
             owners_pvt_group_parameters(parameters),
-            time_fn,
+            initial_control_values=PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_owners,
+                mix=self._current_values.pvt_mix_owners,
+            ),
+            time_fn=time_fn,
         )
 
     @property
@@ -183,9 +208,9 @@ class PvtControl(
     @property
     def mode(self) -> PvtControlMode:
         return PvtControlMode(
-            fwd=PvtGroupControlMode(mode=self._main_fwd_control.mode.mode),
-            aft=PvtGroupControlMode(mode=self._main_aft_control.mode.mode),
-            owners=PvtGroupControlMode(mode=self._owners_control.mode.mode),
+            fwd=self._main_fwd_control.mode,
+            aft=self._main_aft_control.mode,
+            owners=self._owners_control.mode,
         )
 
     @staticmethod
@@ -200,8 +225,8 @@ class PvtControl(
             owners=self._owners_control.initial_mode,
         )
 
-    def initial(self) -> ControlResult[PvtControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), PvtControllerState())
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
@@ -209,7 +234,7 @@ class PvtControl(
         self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
         self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
 
-    def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
+    def _control_heat_dump(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=self._heat_dump_controller(
                 sensor_values.pvt_temperature_supply.temperature.value
@@ -217,8 +242,23 @@ class PvtControl(
             timestamp=self._time(),
         )
 
+    def _update_group_control_values(
+        self,
+        main_fwd_control_values: PvtGroupControlValues,
+        main_aft_control_values: PvtGroupControlValues,
+        owners_control_values: PvtGroupControlValues,
+    ):
+        self._current_values.pvt_pump_main_fwd = main_fwd_control_values.pump
+        self._current_values.pvt_mix_main_fwd = main_fwd_control_values.mix
+
+        self._current_values.pvt_pump_main_aft = main_aft_control_values.pump
+        self._current_values.pvt_mix_main_aft = main_aft_control_values.mix
+
+        self._current_values.pvt_pump_owners = owners_control_values.pump
+        self._current_values.pvt_mix_owners = owners_control_values.mix
+
     def _control_groups(self, sensor_values: PvtSensorValues):
-        self._main_fwd_control.control(
+        main_fwd_control_values, _ = self._main_fwd_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_main_fwd,
                 temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
@@ -228,7 +268,7 @@ class PvtControl(
                 max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
             )
         )
-        self._main_aft_control.control(
+        main_aft_control_values, _ = self._main_aft_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_main_aft,
                 temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
@@ -238,7 +278,7 @@ class PvtControl(
                 max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
             )
         )
-        self._owners_control.control(
+        owners_control_values, _ = self._owners_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_owners,
                 temperature_supply=sensor_values.pvt_temperature_owners_supply,
@@ -249,30 +289,30 @@ class PvtControl(
             )
         )
 
+        self._update_group_control_values(
+            main_fwd_control_values, main_aft_control_values, owners_control_values
+        )
+
     def control(
         self, sensor_values: PvtSensorValues
-    ) -> ControlResult[PvtControlValues]:
-        self._control_heat_dump_mix(sensor_values)
+    ) -> tuple[PvtControlValues, PvtControllerState]:
+        self._control_heat_dump(sensor_values)
 
         self._control_groups(sensor_values)
 
-        self._current_values.pvt_pump_main_fwd = (
-            self._main_fwd_control.current_values.pump
-        )
-        self._current_values.pvt_pump_main_aft = (
-            self._main_aft_control.current_values.pump
-        )
-        self._current_values.pvt_pump_owners = self._owners_control.current_values.pump
-        self._current_values.pvt_mix_main_fwd = (
-            self._main_fwd_control.current_values.mix
-        )
-        self._current_values.pvt_mix_main_aft = (
-            self._main_aft_control.current_values.mix
-        )
-        self._current_values.pvt_mix_owners = self._owners_control.current_values.mix
-
-        return ControlResult(self._time(), self._current_values)
+        return (self._current_values, PvtControllerState())
 
 
 class PvtAlarms(BaseAlarms):
     pass
+
+
+PVT_MODULE_DESCRIPTION = ModuleDescription(
+    PvtSensorValues,
+    PvtControlValues,
+    PvtParameters,
+    PvtControl,
+    PvtControlMode,
+    PvtControllerState,
+    PvtAlarms,
+)

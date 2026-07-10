@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
-from pytest import fixture
-import pytest
 
+import pytest
+from pytest import fixture
+
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.input_output.modules.pvt import (
     PvtSensorValues,
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import pvt_path
 
 
@@ -19,10 +19,7 @@ from thrs.simulation.models.fmu_paths import pvt_path
         simulator_input_field_setters(
             PvtSimulationInputs,
             ignore=[
-                "pvt_pump_failure_switch_main_fwd",
-                "pvt_pump_failure_switch_main_aft",
-                "pvt_pump_failure_switch_owners",
-                "pvt_module_supply",
+                "pvt_pcm_supply",
             ],  # Switches don't lend themselves to absurdation
         )
     )
@@ -33,14 +30,11 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+def test_pvt_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pvt_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             PvtSensorValues,
             PvtSimulationOutputs,
-        )
-        executor = SimulationExecutor(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),
@@ -49,6 +43,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                await executor.tick(
-                    control.initial(datetime.now()).values,
+                simulation.tick(
+                    control.initial(datetime.now()),
                 )

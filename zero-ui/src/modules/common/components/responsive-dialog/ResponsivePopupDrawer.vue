@@ -7,24 +7,36 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { HTMLAttributes } from "vue";
+import { cn } from "../../lib/utils";
 const open = defineModel<boolean>("open", { required: true });
-defineProps<{ title: string; description: string }>();
+const props = defineProps<{
+  title?: string;
+  description?: string;
+  class?: HTMLAttributes["class"];
+}>();
 </script>
 
 <template>
   <Drawer
     v-model:open="open"
-    class="mx-4"
+    :class="cn('mx-0', props.class)"
   >
     <DrawerTrigger as-child>
       <slot name="trigger" />
     </DrawerTrigger>
-    <DrawerContent class="mx-4">
-      <div class="flex flex-col">
-        <DrawerHeader class="">
-          <div class="mx-auto w-full max-w-sm text-center">
-            <DrawerTitle>{{ title }}</DrawerTitle>
-            <DrawerDescription class="mt-1">{{ description }}</DrawerDescription>
+    <DrawerContent class="mx-1">
+      <div class="flex flex-col overflow-y-auto pb-2">
+        <DrawerHeader class="px-0">
+          <div class="w-full text-center">
+            <slot name="title">
+              <DrawerTitle v-if="title">{{ title }}</DrawerTitle>
+            </slot>
+            <DrawerDescription
+              v-if="description"
+              class="mt-1"
+              >{{ description }}</DrawerDescription
+            >
           </div>
         </DrawerHeader>
 

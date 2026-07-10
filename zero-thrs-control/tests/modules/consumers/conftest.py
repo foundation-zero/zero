@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
+from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.modules.consumers import (
@@ -8,41 +10,37 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-
-
-from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import consumers_path
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 
 
 @fixture
 def parameters():
     return ConsumersParameters(
-        boosting_enabled=True,
-        boosting_flow_ratio_setpoint=0.33,
-        fahrenheit_enabled=True,
-        fahrenheit_flow_ratio_setpoint=0.33,
+        dhw_enabled=True,
+        dhw_flow_ratio_setpoint=0.33,
+        adsorption_enabled=True,
+        adsorption_flow_ratio_setpoint=0.33,
     )
 
 
 @fixture
-def control(parameters, executor):
-    return ConsumersControl(parameters, executor.time)
+def control(parameters, simulation):
+    return ConsumersControl(parameters, simulation.time)
 
 
 @fixture
 def simulation_inputs():
     return ConsumersSimulationInputs(
-        consumers_fahrenheit_supply=Boundary(
+        consumers_adsorption_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
         ),
-        consumers_module_supply=Boundary(
+        consumers_pcm_supply=Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(94)
         ),
-        consumers_boosting_supply=Boundary(
+        consumers_dhw_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
@@ -50,16 +48,13 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        ConsumersSensorValues,
-        ConsumersSimulationOutputs,
-    )
-
-
-@fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(consumers_path) as fmu:
-        yield SimulationExecutor(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        yield Simulation(
+            ConsumersSensorValues,
+            ConsumersSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

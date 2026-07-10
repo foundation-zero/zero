@@ -2,16 +2,41 @@
   "app": {
     "title": "ZERO"
   },
+  "units": {
+    "bar": "bar",
+    "celsius": "°C",
+    "percent": "%",
+    "ppm": "ppm",
+    "liters": "L",
+    "lpm": "L/min",
+    "watts": "W",
+    "joules": "J",
+    "kilowatt": "kW",
+    "deltaT": "ΔT",
+    "Tin": "Tin",
+    "Tout": "Tout",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s",
+    "temperature": "Temp",
+    "flow": "Flow",
+    "level": "Level",
+    "estimatedTime": "Est. time",
+    "degrees": "°",
+    "hertz": "Hz"
+  },
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
-    "domestic": "Domestic Control"
+    "domestic": "Domestic Control",
+    "grafana": "Grafana"
   },
   "labels": {
-    "airconditioning": {
+    "airConditioning": {
       "short": "A/C",
       "long": "Air conditioning"
     },
+    "control": "Control",
     "back": "Back",
     "clear": "Clear",
     "environment": "Environment",
@@ -46,6 +71,7 @@
     "more": "More",
     "save": "Save",
     "off": "Off",
+    "cabins": "Cabins",
     "overview": "Overview",
     "submit": "Submit",
     "status": "Status",
@@ -76,6 +102,10 @@
         "domestic": {
           "title": "Domestic",
           "description": "Cabin comfort, lighting, blinds, climate, and onboard room controls."
+        },
+        "grafana": {
+          "title": "Grafana",
+          "description": "Operational dashboards and metrics visualized in Grafana."
         }
       }
     },
@@ -105,6 +135,11 @@
       "main": {
         "editSailset": "Edit sailset"
       }
+    },
+    "grafana": {
+      "notConfigured": "Grafana is not configured",
+      "configureEnv": "Set VITE_GRAFANA_URL in your environment to enable dashboard embedding.",
+      "backToSplash": "Back to splash"
     }
   },
   "components": {
@@ -121,6 +156,10 @@
       "flow": {
         "label": "Flow",
         "unit": "L/min"
+      },
+      "maximumTemperature": {
+        "label": "Maximum temperature",
+        "unit": "°C"
       },
       "temperature": {
         "label": "Temperature",

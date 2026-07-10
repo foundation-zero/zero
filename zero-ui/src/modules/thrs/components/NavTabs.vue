@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ThrsModules } from "@/modules/thrs/lib/consts.types";
+import RouterLinkWithFallback from "@common/components/RouterLinkWithFallback.vue";
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { useI18n } from "vue-i18n";
 import { RouterLink, useRoute } from "vue-router";
-import RouterLinkWithFallback from "./RouterLinkWithFallback.vue";
 
 defineProps<{ modules: Array<keyof ThrsModules> }>();
 const activeModule = defineModel<string | undefined>("activeModule", { required: true });
@@ -29,19 +29,13 @@ const { t } = useI18n();
           params: { module: key },
         }"
       >
-        <TabsTrigger
-          :value="key"
-          class="font-headers h-16 text-base font-semibold capitalize md:text-xl lg:text-2xl"
-        >
+        <TabsTrigger :value="key">
           {{ key }}
         </TabsTrigger>
       </RouterLinkWithFallback>
 
       <RouterLink :to="{ name: 'thrs/hmi/simulation' }">
-        <TabsTrigger
-          value="simulation"
-          class="font-headers h-16 text-base font-semibold capitalize md:text-xl lg:text-2xl"
-        >
+        <TabsTrigger value="simulation">
           {{ t("thrs.views.simulation.title") }}
         </TabsTrigger>
       </RouterLink>

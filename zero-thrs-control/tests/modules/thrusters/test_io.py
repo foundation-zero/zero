@@ -1,4 +1,13 @@
+import pytest
 from pytest import approx
+
+from tests.modules.conftest import (
+    compare_fmu_to_classes,
+    compare_modelica_names,
+    compare_yard_tags,
+)
+from tests.modules.thrusters.conftest import ThrustersSimulation
+from thrs.control.modules.thrusters import ThrustersControl
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -6,21 +15,17 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from tests.modules.conftest import (
-    compare_fmu_to_classes,
-    compare_modelica_names,
-    compare_yard_tags,
-)
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
+@pytest.mark.io
 def test_thrusters_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "Thrusters",
-        ThrustersSensorValues.zero(),
-        ThrustersControlValues.zero(),
-        ThrustersSimulationInputs.zero(),
-        ThrustersSimulationOutputs.zero(),
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        ThrustersSimulationInputs,
+        ThrustersSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -31,10 +36,10 @@ def test_thrusters_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         thrusters_path,
         [
-            ThrustersSensorValues.zero(),
-            ThrustersControlValues.zero(),
-            ThrustersSimulationInputs.zero(),
-            ThrustersSimulationOutputs.zero(),
+            ThrustersSensorValues,
+            ThrustersControlValues,
+            ThrustersSimulationInputs,
+            ThrustersSimulationOutputs,
         ],
     )
 
@@ -42,27 +47,30 @@ def test_thrusters_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(ThrustersSensorValues, ThrustersControlValues, {"thrusters_pcs"})
 
 
-async def test_set_module_temperature(control, executor):
-    control_values = control.initial().values
+def test_set_module_temperature(
+    control: ThrustersControl, simulation: ThrustersSimulation
+):
+    control_values, _ = control.initial()
 
-    executor._simulation_inputs.thrusters_aft.heat_flow.value = 0
-    executor._simulation_inputs.thrusters_fwd.heat_flow.value = 0
-    executor._simulation_inputs.thrusters_module_supply.temperature.value = 60
+    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0  # type: ignore
+    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0  # type: ignore
+    simulation._simulation_inputs.thrusters_pcm_supply.temperature.value = 60  # type: ignore
 
-    control_values.thrusters_pump_1.dutypoint.value = 1
+    control_values.thrusters_pump1.dutypoint.value = 1
     control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
     control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
     control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
-    control_values.thrusters_pump_1.on.value = True
+    control_values.thrusters_pump1.on.value = True
 
     # allow temp to stabilize
     result = None
     for i in range(500):
-        result = await executor.tick(
+        result = simulation.tick(
             control_values,
         )
     assert result is not None

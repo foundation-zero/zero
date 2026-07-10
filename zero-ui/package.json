@@ -12,6 +12,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "codegen": "graphql-codegen --require dotenv/config --config codegen.ts dotenv_config_path=.env.local",
+    "codegen:schema": "graphql-codegen --require dotenv/config --config codegen.ts --schema-only dotenv_config_path=.env.local",
     "extract-schema-values": "tsx scripts/extract-schema-values.ts",
     "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
     "docs:dev": "vitepress dev docs",
@@ -20,7 +21,6 @@
   },
   "dependencies": {
     "@foundation-zero/graphql-subscriptions-mock": "^1.0.2",
-    "@radix-icons/vue": "^1.0.0",
     "@readme/openapi-parser": "^6.0.0",
     "@remixicon/vue": "^4.9.0",
     "@tailwindcss/vite": "^4.2.2",
@@ -36,7 +36,6 @@
     "graphql-ws": "^6.0.8",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.18.1",
-    "lucide-vue-next": "^1.0.0",
     "mqtt": "^5.15.1",
     "oas": "^32.1.4",
     "pinia": "^3.0.4",

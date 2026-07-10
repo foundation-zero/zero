@@ -15,6 +15,12 @@ export CFLAGS="-include unistd.h"
 poetry run fmpy compile <path-to-fmu-file>
 ```
 
+**Note:** On Linux, when using a newer compiler like GCC 15 or higher you need to set `CFLAGS` to fix and issue with the number of arguments for `select`
+
+```bash
+CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
+```
+
 ## Simulator
 
 Run the simulator with:
@@ -23,7 +29,7 @@ Run the simulator with:
 poetry run python -m thrs.cli run <module>
 ```
 
-Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `boilers`.
+Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 The UI is located in [zero-ui](../zero-ui) at [http://localhost:5173/thrs/hmi](http://localhost:5173/thrs/hmi).
 
@@ -45,7 +51,7 @@ poetry install
 Start the API with:
 
 ```bash
-poetry run fastapi dev src/thrs/graphql/strawberry.py
+poetry run fastapi dev src/thrs/graphql/asgi.py
 ```
 
 ### Exporting the Schema

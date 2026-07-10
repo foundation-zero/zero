@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Generator
+
 from pytest import fixture
 
-from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
+from tests.modules.thrusters.conftest import ThrustersSimulation
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
 )
@@ -20,51 +21,47 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
 @fixture
 def simulation_inputs():
     return ThrustersSimulationInputs(
-        thrusters_aft=Thruster(
+        thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
         ),
-        thrusters_fwd=Thruster(
+        thrusters_thruster_fwd=Thruster(
             heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
-        thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
     )
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        ThrustersSensorValues,
-        ThrustersSimulationOutputs,
-    )
-
-
-@fixture
-def executor(
-    io_mapping, simulation_inputs
-) -> Generator[ThrustersSimulationExecutor, None, None]:
+def simulation(
+    simulation_inputs: ThrustersSimulationInputs,
+) -> Generator[ThrustersSimulation, None, None]:
     with Fmu(thrusters_path) as fmu:
-        yield SimulationExecutor(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        yield Simulation(
+            ThrustersSensorValues,
+            ThrustersSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )
 
 
 @fixture
-def thrusters_control(executor) -> ThrustersControl:
+def thrusters_control(simulation: ThrustersSimulation) -> ThrustersControl:
     return ThrustersControl(
         parameters=ThrustersParameters(),
-        time_fn=executor.time,
+        time_fn=simulation.time,
         state_logger=MachineStateLoggingService(),
     )

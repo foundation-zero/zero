@@ -1,9 +1,30 @@
+import os
+from base64 import b64encode
 from datetime import timedelta
+from tempfile import gettempdir
 from types import TracebackType
-from typing import Any, Callable, Iterable, Self, cast
+from typing import Any, Callable, Iterable, Protocol, Self, cast, runtime_checkable
+
 from fmpy import extract, read_model_description
-from fmpy.model_description import ModelDescription
 from fmpy.fmi2 import FMU2Slave
+from fmpy.model_description import ModelDescription
+
+
+@runtime_checkable
+class FmuLike(Protocol):
+    def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]: ...
+
+    def __enter__(self) -> Self: ...
+
+    def __exit__(
+        self,
+        type_: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool: ...
+
+    @property
+    def solver_time(self) -> float: ...
 
 
 def _var_mapper(
@@ -22,7 +43,18 @@ class Fmu:
         file: str,
     ):
         self._model_description = read_model_description(file)
-        self._temp_unzip_dir = extract(file)
+
+        tmp_dir = gettempdir()
+        self._temp_unzip_dir = os.path.join(
+            tmp_dir, f"fmu_{b64encode(file.encode()).decode()}"
+        )
+
+        if not os.path.exists(self._temp_unzip_dir) or os.path.getmtime(
+            file
+        ) > os.path.getmtime(self._temp_unzip_dir):
+            os.makedirs(self._temp_unzip_dir, exist_ok=True)
+            extract(file, self._temp_unzip_dir)
+
         self._fmu_instance: FMU2Slave | None = None
         self._var_mapper = _var_mapper(self._model_description)
         self._time = 0.0

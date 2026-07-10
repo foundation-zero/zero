@@ -1,18 +1,13 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Annotated, Any, Literal, Self
+from typing import Annotated, Any, Literal, Self, cast
 from warnings import warn
 
 import polars as pl
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    create_model,
-    field_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, create_model, field_validator
 from pydantic.alias_generators import to_pascal
-from pydantic.fields import FieldInfo
+from pydantic.fields import ComputedFieldInfo, FieldInfo
+
 from thrs.input_output.definitions.units import (
     PcsMode,
     unit_for_annotation,
@@ -53,6 +48,10 @@ class ThrsValues(BaseModel):
         }
         return cls(**vals)
 
+    @classmethod
+    def yard_tag(cls, field_name: str) -> str:
+        return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]
+
 
 class Stamped[T](ThrsValues):
     value: T
@@ -61,6 +60,10 @@ class Stamped[T](ThrsValues):
     @staticmethod
     def stamp[V](value: V) -> "Stamped[V]":
         return Stamped(value=value, timestamp=datetime.now())
+
+    @staticmethod
+    def combine[V](*stamped: "Stamped[Any]", value: V) -> "Stamped[V]":
+        return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
 
 
 class StampedDf[T](ThrsValues):
@@ -101,10 +104,22 @@ class ComponentMeta(BaseModel):
     included_in_fmu: bool = True
     component_type: str | None = None
     valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
+    topic: str | None = None
 
 
-def component_meta(*args, **kwargs):
-    return Field(json_schema_extra=ComponentMeta(*args, **kwargs).model_dump())
+def computed_meta(**kwargs):
+    return ComponentMeta(**kwargs).model_dump()
+
+
+def component_meta(**kwargs):
+    return Field(json_schema_extra=computed_meta(**kwargs))
+
+
+def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
+    if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
+        return None
+
+    return field.json_schema_extra.get("topic")  # type: ignore
 
 
 @dataclass
@@ -183,9 +198,15 @@ class SimulationValues(ThrsValues):
             for component_name, component in cls.model_fields.items()
         }
 
+        methods = {
+            method_name: getattr(cls, method_name)
+            for method_name in cls.model_computed_fields
+        }
+
         SelectedInputsModel = create_model(
             cls.__name__,
             __base__=SimulationValues,
+            __validators__=methods,
             **components,  # type: ignore
         )  # type: ignore
 
@@ -193,7 +214,7 @@ class SimulationValues(ThrsValues):
 
 
 class SimulationInputs(SimulationValues):
-    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+    model_config = ConfigDict(extra="ignore", arbitrary_types_allowed=True)
 
     def get_values_at_time(self, time: datetime) -> Self:
         SelectedInputsModel = self.dedataframe()

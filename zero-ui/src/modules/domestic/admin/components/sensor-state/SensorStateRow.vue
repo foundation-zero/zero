@@ -7,7 +7,7 @@ import {
   extractActualTemperature,
   formatInt,
 } from "@common/lib/utils";
-import { DropletsIcon, Fan, ThermometerIcon } from "lucide-vue-next";
+import { RiDropLine, RiThermometerLine, RiWindyLine } from "@remixicon/vue";
 import { computed } from "vue";
 import SensorStateValue from "./StatusIcon.vue";
 
@@ -19,35 +19,45 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
 </script>
 
 <template>
-  <TableRow class="group text-rbase">
-    <TableCell class="px-0">{{ room.name }}</TableCell>
-    <TableCell class="w-12 px-0">
+  <TableRow class="group">
+    <TableCell class="">
+      <RouterLink
+        :to="{
+          name: 'cabin:air-conditioning',
+          query: { room: room.id, returnUrl: 'environment:control' },
+        }"
+        class="w-full font-medium hover:underline"
+      >
+        {{ room.name }}
+      </RouterLink>
+    </TableCell>
+    <TableCell class="w-12 md:w-16">
       <SensorStateValue
         :state="state.temperature"
-        :icon="ThermometerIcon"
+        :icon="RiThermometerLine"
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
         <span>{{ actualTemperature.toFixed(0) }}</span>
-        <sup class="text-rxs top-[-0.3em] font-extralight">&deg;</sup>
+        <sup class="top-[-0.3em] text-xs font-extralight">&deg;</sup>
       </div>
     </TableCell>
-    <TableCell class="w-12 px-0">
+    <TableCell class="w-12 md:w-16">
       <SensorStateValue
         :state="state.humidity"
-        :icon="DropletsIcon"
+        :icon="RiDropLine"
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
         <span>{{ actualHumidity.toFixed(0) }}</span>
-        <span class="text-r2xs ml-[0.25em] font-extralight">&percnt;</span>
+        <span class="ml-[0.25em] text-xs font-extralight">&percnt;</span>
       </div>
     </TableCell>
-    <TableCell class="w-12 px-0">
+    <TableCell class="w-12 md:w-16">
       <SensorStateValue
         :state="state.co2"
         class="group-hover:hidden"
-        :icon="Fan"
+        :icon="RiWindyLine"
       />
       <div class="hidden group-hover:block">
         <span>{{ formatInt(actualCO2) }}</span>

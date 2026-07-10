@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Annotated
 
+from pydantic import computed_field
 
 from thrs.input_output.base import (
     SimulationInputs,
@@ -9,12 +10,13 @@ from thrs.input_output.base import (
     component_meta,
     field_meta,
 )
+from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.units import Ratio
 from thrs.input_output.fmu_mapping import (
+    build_fmu_key_mapping,
     build_outputs_from_fmu,
     extract_non_fmu_values,
 )
-from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.simulation.io_mapping import flatten_model_values
 
 
@@ -49,45 +51,73 @@ class ExcludedSensorValues(ThrsValues):
     excluded_field_component: ExcludedFieldComponent
 
 
+class ModelWithComputed(ThrsValues):
+    flow_sensor: FlowSensor
+
+    @computed_field()
+    @property
+    def computed_component(self) -> FlowSensor:
+        return self.flow_sensor
+
+
 def test_fmu_simple_inputs():
+    mini_model = MiniModel(
+        flow_sensor=FlowSensor(
+            flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
+        )
+    )
+
     assert {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
     } == flatten_model_values(
-        MiniModel(
-            flow_sensor=FlowSensor(
-                flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
-            )
-        ),
-        fmu_only=True,
+        mini_model, build_fmu_key_mapping(MiniModel, fmu_only=True)
+    )
+
+    second_mini_model = SecondMiniModel(
+        second_flow_sensor=FlowSensor(
+            flow=Stamped.stamp(2), temperature=Stamped.stamp(3)
+        )
     )
     assert {
         "second_flow_sensor__flow__l_min": 2,
         "second_flow_sensor__temperature__C": 3,
     } == flatten_model_values(
-        SecondMiniModel(
-            second_flow_sensor=FlowSensor(
-                flow=Stamped.stamp(2), temperature=Stamped.stamp(3)
-            )
-        ),
-        fmu_only=True,
+        second_mini_model, build_fmu_key_mapping(SecondMiniModel, fmu_only=True)
     )
 
 
 def test_fmu_input_ignore_excluded():
     value = Stamped.stamp(1.0)
+    excluded_simulation_inputs = ExcludedSimulationInputs(
+        excluded_component=IncludedFieldComponent(included_field=Stamped.stamp(1.0)),
+        excluded_field_component=ExcludedFieldComponent(
+            excluded_field=value, included_field=value
+        ),
+    )
+
     assert {
         "excluded_field_component__included_field__ratio": 1.0
     } == flatten_model_values(
-        ExcludedSimulationInputs(
-            excluded_component=IncludedFieldComponent(
-                included_field=Stamped.stamp(1.0)
-            ),
-            excluded_field_component=ExcludedFieldComponent(
-                excluded_field=value, included_field=value
-            ),
-        ),
-        fmu_only=True,
+        excluded_simulation_inputs,
+        build_fmu_key_mapping(ExcludedSimulationInputs, fmu_only=True),
+    )
+
+
+def test_fmu_computed_field():
+    model = ModelWithComputed(
+        flow_sensor=FlowSensor(
+            flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
+        )
+    )
+
+    assert {
+        "flow_sensor__flow__l_min": 12.12,
+        "flow_sensor__temperature__C": 17.12,
+        "computed_component__flow__l_min": 12.12,
+        "computed_component__temperature__C": 17.12,
+    } == flatten_model_values(
+        model, build_fmu_key_mapping(ModelWithComputed, fmu_only=True)
     )
 
 
@@ -113,6 +143,7 @@ def test_extract_excluded():
 
 def test_fmu_roundtrip():
     time = datetime.now()
+
     control_values = MiniModel(
         flow_sensor=FlowSensor(
             flow=Stamped(value=12.12, timestamp=time),
@@ -120,6 +151,8 @@ def test_fmu_roundtrip():
         )
     )
 
-    values = flatten_model_values(control_values, fmu_only=True)
+    values = flatten_model_values(
+        control_values, build_fmu_key_mapping(MiniModel, fmu_only=True)
+    )
 
     assert values, values == build_outputs_from_fmu((MiniModel,), values, time)

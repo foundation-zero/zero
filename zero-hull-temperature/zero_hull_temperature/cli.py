@@ -1,7 +1,7 @@
 import asyncio
-from datetime import timedelta
 import json
 import logging
+from datetime import timedelta
 from typing import Literal
 
 from pydantic import BaseModel
@@ -15,14 +15,14 @@ from pydantic_settings import (
 
 from zero_hull_temperature.addresses import PATH, TOPIC
 from zero_hull_temperature.mqtt import Temperatures
-from zero_hull_temperature.settings import ModbusSettings, MqttSettings
-from zero_hull_temperature.stub import Stub
 from zero_hull_temperature.reader import (
     RelaySwitchingTemperatureReader,
     TemperatureReader,
 )
+from zero_hull_temperature.settings import ModbusSettings, MqttSettings
+from zero_hull_temperature.stub import Stub
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
 
 
 class MqttSend(CliMutuallyExclusiveGroup):
@@ -36,17 +36,23 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
 
     async def cli_cmd(self) -> None:
         async with RelaySwitchingTemperatureReader.from_settings(
-            self, self, self.activate_topic, self.activate_json_path, ""
+            self,
+            self,
+            self.activate_topic,
+            self.activate_json_path,
+            "hull-temperature/temperatures",
         ) as reader:
             temperatures = await reader.read_temperatures()
-            print(Temperatures(temperatures=temperatures).model_dump_json(indent=2))
+            for reading in temperatures:
+                print(f"{reading.sensor}: {reading.temperature}")
 
 
 class ReadSkipMqttCmd(ModbusSettings):
     async def cli_cmd(self) -> None:
         async with TemperatureReader.from_settings(self) as reader:
             temperatures = await reader.read_temperatures()
-            print(Temperatures(temperatures=temperatures).model_dump_json(indent=2))
+            for reading in temperatures:
+                print(f"{reading.sensor}: {reading.temperature}")
 
 
 class StubCmd(ModbusSettings, MqttSettings):

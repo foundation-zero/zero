@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
-from pytest import fixture
-import pytest
 
+import pytest
+from pytest import fixture
+
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.input_output.modules.pcm import (
     PcmSensorValues,
     PcmSimulationInputs,
     PcmSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import pcm_path
 
 
@@ -18,12 +18,7 @@ from thrs.simulation.models.fmu_paths import pcm_path
     params=list(
         simulator_input_field_setters(
             PcmSimulationInputs,
-            ignore=[
-                (
-                    "pcm_producers_supply",
-                    "flow",
-                )  # Appears to just work, instead of break
-            ],
+            ignore=[],  # TODO: Figure out correct variables to ignore
         )
     )
 )
@@ -33,14 +28,11 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
+def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pcm_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             PcmSensorValues,
             PcmSimulationOutputs,
-        )
-        executor = SimulationExecutor(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),
@@ -49,6 +41,6 @@ async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(
-                    control.initial(datetime.now()).values,
+                simulation.tick(
+                    control.initial(datetime.now()),
                 )

@@ -11,7 +11,6 @@ import { List, ListHeader, ListItem, ListRoot } from "@common/components/list";
 
 import { groupBlindsByGroup } from "@/modules/domestic/lib/mappers";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { isBlindsControl } from "@common/lib/utils";
 import { useUIStore } from "@common/stores/ui";
 import { computed, ref, toRefs, watch } from "vue";
 
@@ -19,9 +18,7 @@ const { currentRoom } = toRefs(useRoomStore());
 const { breakpoints } = toRefs(useUIStore());
 const selectedGroup = ref<string | undefined>();
 
-const blinds = computed(() =>
-  groupBlindsByGroup(currentRoom.value.roomControls.filter(isBlindsControl)),
-);
+const blinds = computed(() => groupBlindsByGroup(currentRoom.value.blinds));
 
 watch(currentRoom, (next, prev) => {
   if (next.id !== prev.id) {
