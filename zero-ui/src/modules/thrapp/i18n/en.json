@@ -67,7 +67,9 @@
     "labels": {
       "demoMode": "Demo mode",
       "showLegend": "Show legend",
-      "legend": "Legend"
+      "legend": "Legend",
+      "on": "On",
+      "off": "Off"
     },
     "tooltips": {
       "actions": {
@@ -218,6 +220,22 @@
           "drivesTitle": "Drives",
           "adsorptionTitle": "Adsorption",
           "domesticHotWaterTitle": "Fresh water system"
+        }
+      },
+      "thrusters": {
+        "assets": {
+          "aftTitle": "Thruster AFT",
+          "fwdTitle": "Thruster FWD",
+          "labels": {
+            "status": "Status",
+            "internalTemperature": "Internal temp"
+          },
+          "modes": {
+            "off": "Off",
+            "propulsion": "Propulsion",
+            "maneuvering": "Maneuvering",
+            "regeneration": "Regeneration"
+          }
         }
       }
     },
