@@ -41,10 +41,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
-FROM prod-base AS simulation
+FROM prod-base AS control
 USER 1001
 ENTRYPOINT [ "python", "-m", "thrs.cli"]
 
-FROM prod-base AS control
+FROM prod-base AS api
 USER 1001
 CMD ["uvicorn", "thrs.graphql.asgi:app", "--port", "5102", "--host", "0.0.0.0"]

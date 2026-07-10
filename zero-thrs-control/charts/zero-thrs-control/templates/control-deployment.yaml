@@ -1,25 +1,30 @@
 {{- if .Values.control.enabled }}
+{{- $root := . }}
+{{- range $index, $type_name := $root.Values.control.types }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-thrs-control.control" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ print (include "zero-thrs-control.control" $root) "-" $type_name }}
+  namespace: {{ $root.Release.Namespace }}
   labels:
-    {{- include "zero-thrs-control.labels" . | nindent 4 }}
-    app.kubernetes.io/component: control
+    {{- include "zero-thrs-control.labels" $root | nindent 4 }}
+    app.kubernetes.io/part-of: thrs-control
+    app.kubernetes.io/component: {{ print "control-" $type_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: control
+      {{- include "zero-thrs-control.selectorLabels" $root | nindent 6 }}
+      app.kubernetes.io/part-of: thrs-control
+      app.kubernetes.io/component: {{ print "control-" $type_name }}
   template:
     metadata:
       labels:
-        {{- include "zero-thrs-control.labels" . | nindent 8 }}
-        app.kubernetes.io/component: control
+        {{- include "zero-thrs-control.labels" $root | nindent 8 }}
+        app.kubernetes.io/part-of: thrs-control
+        app.kubernetes.io/component: {{ print "control-" $type_name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with $root.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -29,28 +34,26 @@ spec:
           type: RuntimeDefault
       containers:
         - name: thrs-control
+          args: ["{{ $type_name }}"] 
           securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-              readOnlyRootFilesystem: true
-              runAsNonRoot: true
-          image: "{{ .Values.control.image.repository }}:{{ .Values.control.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.control.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 5102
-              protocol: TCP
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          image: "{{ $root.Values.control.image.repository }}:{{ $root.Values.control.image.tag | default $root.Chart.AppVersion }}"
+          imagePullPolicy: {{ $root.Values.control.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.control.resources | nindent 12 }}
-          env:
-            - name: MQTT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mqtt.existingSecret }}
-                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            {{- toYaml $root.Values.control.resources | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-thrs-control.envvars" . }}
+                name: {{ include "zero-thrs-control.envvars" $root }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+{{- end }}
 {{- end }}

@@ -25,12 +25,12 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 
-{{- define "zero-thrs-control.control" -}}
-  {{- printf "%s-control" (include "zero-thrs-control.name" .) -}}
+{{- define "zero-thrs-control.api" -}}
+  {{- printf "%s-api" (include "zero-thrs-control.name" .) -}}
 {{- end -}}
 
-{{- define "zero-thrs-control.simulation" -}}
-  {{- printf "%s-simulation" (include "zero-thrs-control.name" .) -}}
+{{- define "zero-thrs-control.control" -}}
+  {{- printf "%s-control" (include "zero-thrs-control.name" .) -}}
 {{- end -}}
 
 {{- define "zero-thrs-control.envvars" -}}
