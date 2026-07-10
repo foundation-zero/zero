@@ -1,31 +1,28 @@
-{{- if .Values.control.enabled }}
-{{- $root := . }}
-{{- range $index, $type_name := $root.Values.control.types }}
----
+{{- if .Values.simulation.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ print (include "zero-thrs-control.control" $root) "-" $type_name }}
-  namespace: {{ $root.Release.Namespace }}
+  name: {{ print (include "zero-thrs-control.simulation" .) "-" $type_name }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "zero-thrs-control.labels" $root | nindent 4 }}
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
     app.kubernetes.io/part-of: thrs-control
     app.kubernetes.io/component: {{ print "control-" $type_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "zero-thrs-control.selectorLabels" $root | nindent 6 }}
+      {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: thrs-control
       app.kubernetes.io/component: {{ print "control-" $type_name }}
   template:
     metadata:
       labels:
-        {{- include "zero-thrs-control.labels" $root | nindent 8 }}
+        {{- include "zero-thrs-control.labels" . | nindent 8 }}
         app.kubernetes.io/part-of: thrs-control
         app.kubernetes.io/component: {{ print "control-" $type_name }}
     spec:
-      {{- with $root.Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -36,7 +33,7 @@ spec:
       containers:
         - name: thrs-control
           args:
-           - "control"
+           - "simulation"
            - "--mode"
            - "{{ $type_name }}"
           securityContext:
@@ -46,18 +43,17 @@ spec:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag | default $root.Chart.AppVersion }}"
-          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-            {{- toYaml $root.Values.control.resources | nindent 12 }}
+            {{- toYaml .Values.simulation.resources | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-thrs-control.envvars" $root }}
+                name: {{ include "zero-thrs-control.envvars" . }}
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir: {}
-{{- end }}
 {{- end }}

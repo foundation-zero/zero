@@ -1,4 +1,4 @@
-{{- if and .Values.control.enabled .Values.control.ingress.enabled }}
+{{- if and .Values.api.enabled .Values.api.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,8 +12,8 @@ spec:
       name: {{ include "zero-thrs-control.control" . }}
       port:
         name: http
-  ingressClassName: {{ .Values.control.ingress.className }}
+  ingressClassName: {{ .Values.api.ingress.className }}
   tls:
     - hosts:
-        - {{ .Values.control.ingress.hostname }}
+        - {{ .Values.api.ingress.hostname }}
 {{- end }}
