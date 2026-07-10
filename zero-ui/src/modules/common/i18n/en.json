@@ -34,7 +34,7 @@
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
-    "thrapp": "THRAPP",
+    "thrsim": "THRSIM",
     "domestic": "Domestic Control",
     "grafana": "Grafana"
   },
@@ -105,12 +105,12 @@
           "title": "Loads",
           "description": "Live rigging loads, grouped dashboards, and sailing system feedback."
         },
-        "thrs": {
-          "title": "THRS",
+        "thrsim": {
+          "title": "THRSIM",
           "description": "Thermal heat recovery monitoring, controls, simulation, and parameter tuning."
         },
-        "thrapp": {
-          "title": "THRAPP",
+        "thrs": {
+          "title": "THRS",
           "description": "Thermal heat recovery monitoring, controls, mimics and parameter tuning."
         },
         "domestic": {

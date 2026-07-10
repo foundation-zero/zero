@@ -25,7 +25,7 @@ const { t } = useI18n();
         v-for="key in modules"
         :key="key"
         :to="{
-          name: activeModule !== 'simulation' ? currentRoute.name : 'thrs/hmi/controls',
+          name: activeModule !== 'simulation' ? currentRoute.name : 'thrsim/controls',
           params: { module: key },
         }"
       >
@@ -34,7 +34,7 @@ const { t } = useI18n();
         </TabsTrigger>
       </RouterLinkWithFallback>
 
-      <RouterLink :to="{ name: 'thrs/hmi/simulation' }">
+      <RouterLink :to="{ name: 'thrsim/simulation' }">
         <TabsTrigger value="simulation">
           {{ t("thrs.views.simulation.title") }}
         </TabsTrigger>

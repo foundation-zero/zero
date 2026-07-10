@@ -35,7 +35,7 @@ provide("currentModule", currentModuleKey);
     <TopNavToolbar>
       <template #left-content>
         <TopNavAppLogo>
-          {{ t("apps.thrapp") }}
+          {{ t("apps.thrs") }}
         </TopNavAppLogo>
         <MainNav class="md:ml-4" />
       </template>
