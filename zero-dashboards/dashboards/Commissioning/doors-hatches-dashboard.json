@@ -5290,7 +5290,7 @@
             {
               "background": {
                 "color": {
-                  "field": "tech_room_door",
+                  "field": "tech_room_door_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -5349,7 +5349,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Tech. room access door - Open",
+                  "fixed": "Tech. room access door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5363,6 +5363,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 505
               },
@@ -5371,7 +5372,7 @@
             {
               "background": {
                 "color": {
-                  "field": "tech_room_esc_hatch_open",
+                  "field": "tech_room_esc_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -5429,7 +5430,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Tech. room escape hatch - Open",
+                  "fixed": "Tech. room escape hatch - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5443,6 +5444,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 505
               },
@@ -5451,7 +5453,7 @@
             {
               "background": {
                 "color": {
-                  "field": "tech_corr_esc_hatch_open",
+                  "field": "tech_corr_esc_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -5509,7 +5511,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Tech. corridor escape hatch - Open",
+                  "fixed": "Tech. corridor escape hatch - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5523,6 +5525,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 504.8833312988281
               },
@@ -5531,7 +5534,7 @@
             {
               "background": {
                 "color": {
-                  "field": "fwd_corr_door_open",
+                  "field": "fwd_corr_door_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -5590,7 +5593,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "FWD corridor door - Open",
+                  "fixed": "FWD corridor door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5604,6 +5607,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 100,
                 "width": 505
               },
@@ -5612,7 +5616,7 @@
             {
               "background": {
                 "color": {
-                  "field": "aft_corr_door_open",
+                  "field": "aft_corr_door_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -5671,7 +5675,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "AFT corridor door - Open",
+                  "fixed": "AFT corridor door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5685,6 +5689,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 130,
                 "width": 505
               },
@@ -5733,7 +5738,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\twtid_tech_room_access_door__value AS tech_room_door,\r\n\t\t\ttech_room_esc_hatch_ps_open__value AS tech_room_esc_hatch_open,\r\n\t\t\ttech_corridor_esc_hatch_sb_open__value AS tech_corr_esc_hatch_open,\r\n\t\t\twtid_fwd_corridor_door_open__value AS fwd_corr_door_open,\r\n\t\t\twtid_aft_corridor_door_open__value AS aft_corr_door_open\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n\twtid_tech_room_access_door_closed__value AS tech_room_door_closed,\r\n\ttech_room_esc_hatch_ps_closed__value     AS tech_room_esc_hatch_closed,\r\n\ttech_corridor_esc_hatch_sb_closed__value AS tech_corr_esc_hatch_closed,\r\n\twtid_fwd_corridor_door_closed__value     AS fwd_corr_door_closed,\r\n\twtid_aft_corridor_door_closed__value     AS aft_corr_door_closed\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
