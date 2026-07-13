@@ -1339,6 +1339,87 @@
                 "width": 401
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "wtd_pneumatic_support_onoff",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "wtd_pneumatic_support_onoff",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 190,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "WTD pneumatic support - On",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "wtd_pneumatic_support_onoff label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 190,
+                "width": 401
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1767698352074",
@@ -1383,7 +1464,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tdeck_slide_wind_onoff__value AS deck_slide_wind_on,\r\n\t\t\taft_slide_wind_onoff__value AS aft_slide_wind_on,\r\n\t\t\tps_slide_wind_onoff__value AS ps_slide_wind_on,\r\n\t\t\tsb_slide_wind_onoff__value AS sb_slide_wind_on,\r\n\t\t\thull_valves_allgreenclosed__value AS hull_valves_all_closed,\r\n\t\t\thull_valves_redopened__value AS hull_valves_not_all_closed\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\tdeck_slide_wind_onoff__value       AS deck_slide_wind_on,\r\n\taft_slide_wind_onoff__value        AS aft_slide_wind_on,\r\n\tps_slide_wind_onoff__value         AS ps_slide_wind_on,\r\n\tsb_slide_wind_onoff__value         AS sb_slide_wind_on,\r\n\thull_valves_allgreenclosed__value  AS hull_valves_all_closed,\r\n\thull_valves_redopened__value       AS hull_valves_not_all_closed,\r\n\twtd_pneumatic_support_onoff__value AS wtd_pneumatic_support_onoff\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
