@@ -3968,9 +3968,8 @@
               "name": "coldwater_lazaret_flow",
               "placement": {
                 "height": 30,
-                "left": 700,
-                "rotation": 0,
-                "top": 80,
+                "left": 224,
+                "top": 115,
                 "width": 107
               },
               "type": "metric-value"
@@ -4004,9 +4003,9 @@
               "name": "coldwater_lazaret_flow label",
               "placement": {
                 "height": 30,
-                "left": 464,
+                "left": 15,
                 "rotation": 0,
-                "top": 80,
+                "top": 116,
                 "width": 95.96665954589844
               },
               "type": "text"
@@ -4115,8 +4114,7 @@
               "placement": {
                 "height": 30,
                 "left": 700,
-                "rotation": 0,
-                "top": 10,
+                "top": 9,
                 "width": 107
               },
               "type": "metric-value"
@@ -4151,82 +4149,8 @@
               "placement": {
                 "height": 30,
                 "left": 464,
-                "rotation": 0,
-                "top": 10,
+                "top": 9,
                 "width": 122.94999694824219
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "deckhouse_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "coldwater_deckhouse_flow",
-              "placement": {
-                "height": 30,
-                "left": 700,
-                "rotation": 0,
-                "top": 45,
-                "width": 107
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Deckhouse"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "coldwater_deckhouse_flow label",
-              "placement": {
-                "height": 30,
-                "left": 464,
-                "rotation": 0,
-                "top": 45,
-                "width": 123
               },
               "type": "text"
             },
@@ -4667,9 +4591,9 @@
               "name": "coldwater_lazaret_flow_tag",
               "placement": {
                 "height": 30,
-                "left": 587,
+                "left": 111,
                 "rotation": 0,
-                "top": 80,
+                "top": 115,
                 "width": 113
               },
               "type": "text"
@@ -4744,46 +4668,7 @@
               "placement": {
                 "height": 30,
                 "left": 587,
-                "rotation": 0,
-                "top": 11,
-                "width": 113
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "deckhouse_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "coldwater_deckhouse_flow_tag",
-              "placement": {
-                "height": 30,
-                "left": 587,
-                "rotation": 0,
-                "top": 45,
+                "top": 10,
                 "width": 113
               },
               "type": "text"
@@ -5189,7 +5074,7 @@
               "placement": {
                 "height": 30,
                 "left": 807,
-                "top": 10,
+                "top": 9,
                 "width": 15
               },
               "type": "metric-value"
@@ -5225,79 +5110,7 @@
               "placement": {
                 "height": 30,
                 "left": 822,
-                "top": 10,
-                "width": 58
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "fixed": " ",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 43",
-              "placement": {
-                "height": 30,
-                "left": 807,
-                "top": 45,
-                "width": 15
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "unit",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 44",
-              "placement": {
-                "height": 30,
-                "left": 822,
-                "top": 45,
+                "top": 9,
                 "width": 58
               },
               "type": "metric-value"
@@ -5332,8 +5145,8 @@
               "name": "Element 45",
               "placement": {
                 "height": 30,
-                "left": 807,
-                "top": 80,
+                "left": 331,
+                "top": 115,
                 "width": 15
               },
               "type": "metric-value"
@@ -5368,8 +5181,8 @@
               "name": "Element 46",
               "placement": {
                 "height": 30,
-                "left": 822,
-                "top": 80,
+                "left": 346,
+                "top": 115,
                 "width": 58
               },
               "type": "metric-value"
@@ -5733,6 +5546,372 @@
                 "width": 58
               },
               "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "owner_deckhouse_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 57",
+              "placement": {
+                "height": 30,
+                "left": 700,
+                "rotation": 0,
+                "top": 80,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Owner deckh."
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 58",
+              "placement": {
+                "height": 30,
+                "left": 464,
+                "rotation": 0,
+                "top": 80,
+                "width": 123
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "owner_deckhouse_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 59",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 60",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 61",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "main_deckhouse_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 62",
+              "placement": {
+                "height": 30,
+                "left": 700,
+                "rotation": 0,
+                "top": 45,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Main deckh."
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 63",
+              "placement": {
+                "height": 30,
+                "left": 464,
+                "rotation": 0,
+                "top": 45,
+                "width": 123
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "main_deckhouse_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 64",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 65",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 66",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -5776,7 +5955,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lower_saloon_flow__value\r\n\t\t\tEND AS lower_saloon_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_laundry_ps_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deckhouse_flow__value\r\n\t\t\tEND AS deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_water_softner_flow__value\r\n\t\t\tEND AS water_softner_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_flow__value\r\n\t\t\tEND AS main_tech_space_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_fr_45_flow__value\r\n\t\t\tEND AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lower_saloon_flow__value\r\n\t\t\tEND AS lower_saloon_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_laundry_ps_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deckhouse_flow__value\r\n\t\t\tEND AS main_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_owners_deckhouse_flow__value\r\n\t\t\tEND AS owner_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_water_softner_flow__value\r\n\t\t\tEND AS water_softner_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_flow__value\r\n\t\t\tEND AS main_tech_space_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_fr_45_flow__value\r\n\t\t\tEND AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5817,7 +5996,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LOWER_SALOON_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lower_saloon_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS crew_mess_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS galley_2_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS dayhead_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lazaret_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LAUNDRY_PS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS laundry_ps_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deck_fr48_sb_tech_cor_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_WATER_SOFTNER_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS water_softner_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_fr45_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LOWER_SALOON_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lower_saloon_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS crew_mess_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS galley_2_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS dayhead_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lazaret_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_LAUNDRY_PS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS laundry_ps_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_OWNERS_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS owner_deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deck_fr48_sb_tech_cor_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_WATER_SOFTNER_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS water_softner_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_fr45_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B"
         }
       ],
@@ -8399,9 +8578,8 @@
               "name": "coldwater_lazaret_flow",
               "placement": {
                 "height": 30,
-                "left": 700,
-                "rotation": 0,
-                "top": 80,
+                "left": 225,
+                "top": 115,
                 "width": 107
               },
               "type": "metric-value"
@@ -8435,9 +8613,8 @@
               "name": "coldwater_lazaret_flow label",
               "placement": {
                 "height": 30,
-                "left": 464,
-                "rotation": 0,
-                "top": 80,
+                "left": 16,
+                "top": 115,
                 "width": 95.96665954589844
               },
               "type": "text"
@@ -8606,7 +8783,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deckhouse_flow",
+                  "field": "main_deckhouse_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8643,7 +8820,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deckhouse"
+                  "fixed": "Main deckh."
                 },
                 "valign": "middle"
               },
@@ -8952,9 +9129,8 @@
               "name": "coldwater_lazaret_flow_tag",
               "placement": {
                 "height": 30,
-                "left": 587,
-                "rotation": 0,
-                "top": 80,
+                "left": 112,
+                "top": 115,
                 "width": 113
               },
               "type": "text"
@@ -9015,7 +9191,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "deckhouse_flow_tag",
+                  "field": "main_deckhouse_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -9503,8 +9679,8 @@
               "name": "Element 45",
               "placement": {
                 "height": 30,
-                "left": 807,
-                "top": 80,
+                "left": 332,
+                "top": 115,
                 "width": 15
               },
               "type": "metric-value"
@@ -9539,8 +9715,8 @@
               "name": "Element 46",
               "placement": {
                 "height": 30,
-                "left": 822,
-                "top": 80,
+                "left": 347,
+                "top": 115,
                 "width": 58
               },
               "type": "metric-value"
@@ -9688,6 +9864,189 @@
                 "width": 58
               },
               "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "owner_deckhouse_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 47",
+              "placement": {
+                "height": 30,
+                "left": 700,
+                "rotation": 0,
+                "top": 80,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Owner deckh."
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 48",
+              "placement": {
+                "height": 30,
+                "left": 464,
+                "rotation": 0,
+                "top": 80,
+                "width": 123
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "owner_deckhouse_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 53",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 54",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 55",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -9717,6 +10076,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -9731,7 +10091,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_laundry_ps_1_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deckhouse_flow__value\r\n\t\t\tEND AS deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_main_tech_space_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_main_tech_space_flow__value\r\n\t\t\tEND AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_laundry_ps_1_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deckhouse_flow__value\r\n\t\t\tEND AS main_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_owners_deckhouse_flow__value\r\n\t\t\tEND AS owner_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_main_tech_space_fr_45_flow__value\r\n\t\t\tEND AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9772,7 +10132,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS crew_mess_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS galley_2_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS dayhead_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lazaret_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_LAUNDRY_PS_1_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS laundry_ps_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deck_fr48_sb_tech_cor_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS crew_mess_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS galley_2_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS dayhead_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS lazaret_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_LAUNDRY_PS_1_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS laundry_ps_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_OWNERS_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS owner_deckhouse_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS deck_fr48_sb_tech_cor_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS main_tech_space_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B"
         }
       ],
@@ -9817,7 +10177,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 9,
         "x": 0,
         "y": 35
@@ -9990,150 +10350,6 @@
             {
               "background": {
                 "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "flow_sensor_25001037c3",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Guest cabin PS AFT",
-              "placement": {
-                "height": 30,
-                "left": 364,
-                "rotation": 0,
-                "top": 80,
-                "width": 107
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Flow Sensor 25001037c3"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Flow Sensor 25001037c3 label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "top": 80,
-                "width": 251
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "flow_sensor_25001037c4",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Flow Sensor 25001037c4",
-              "placement": {
-                "height": 30,
-                "left": 364,
-                "rotation": 0,
-                "top": 115,
-                "width": 107
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Flow Sensor 25001037c4"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Flow Sensor 25001037c4 label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "top": 115,
-                "width": 251
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
                   "fixed": "transparent"
                 }
               },
@@ -10203,82 +10419,6 @@
                 "left": 266,
                 "rotation": 0,
                 "top": 45,
-                "width": 98
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "flow_sensor_25001037c3_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "flow_sensor_25001037c3_tag",
-              "placement": {
-                "height": 30,
-                "left": 266,
-                "rotation": 0,
-                "top": 80,
-                "width": 98
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "flow_sensor_25001037c4_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "flow_sensor_25001037c4_tag",
-              "placement": {
-                "height": 30,
-                "left": 266,
-                "rotation": 0,
-                "top": 115,
                 "width": 98
               },
               "type": "text"
@@ -10428,150 +10568,6 @@
                 "width": 58
               },
               "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "fixed": " ",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 17",
-              "placement": {
-                "height": 30,
-                "left": 471,
-                "top": 80,
-                "width": 15
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "unit",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 18",
-              "placement": {
-                "height": 30,
-                "left": 486,
-                "top": 80,
-                "width": 58
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "fixed": " ",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 19",
-              "placement": {
-                "height": 30,
-                "left": 471,
-                "top": 115,
-                "width": 15
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "unit",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 20",
-              "placement": {
-                "height": 30,
-                "left": 486,
-                "top": 115,
-                "width": 58
-              },
-              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -10615,7 +10611,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE technical_room_energ_rec_flow__value\r\n\t\t\tEND AS technical_room_energ_rec_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE flow_sensor_25001137_c_1__value\r\n\t\t\tEND AS flow_sensor_25001137c1,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN flow_sensor_25001037_c_3__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE flow_sensor_25001037_c_3__value\r\n\t\t\tEND AS flow_sensor_25001037c3,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN flow_sensor_25001037_c_4__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE flow_sensor_25001037_c_4__value\r\n\t\t\tEND AS flow_sensor_25001037c4\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE technical_room_energ_rec_flow__value\r\n\t\t\tEND AS technical_room_energ_rec_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE flow_sensor_25001137_c_1__value\r\n\t\t\tEND AS flow_sensor_25001137c1\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10656,7 +10652,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('TECHNICAL_ROOM_ENERG_REC_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS technical_room_energ_rec_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001137C1') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS flow_sensor_25001137c1_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C3') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS flow_sensor_25001037c3_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C4') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS flow_sensor_25001037c4_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('TECHNICAL_ROOM_ENERG_REC_FLOW') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS technical_room_energ_rec_flow_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001137C1') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS flow_sensor_25001137c1_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B"
         }
       ],
@@ -10689,7 +10685,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 9,
         "x": 9,
         "y": 35
@@ -11396,10 +11392,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 9,
         "x": 0,
-        "y": 41
+        "y": 39
       },
       "id": 9,
       "options": {
@@ -11776,7 +11772,7 @@
         "h": 3,
         "w": 9,
         "x": 9,
-        "y": 42
+        "y": 41
       },
       "id": 11,
       "options": {
