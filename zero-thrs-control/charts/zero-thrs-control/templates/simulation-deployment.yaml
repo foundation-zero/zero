@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ print (include "zero-thrs-control.simulation" .) "-" $type_name }}
+  name: {{ print (include "zero-thrs-control.simulation" .) "-" .Values.simulation.type }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-thrs-control.labels" . | nindent 4 }}
     app.kubernetes.io/part-of: thrs-control
-    app.kubernetes.io/component: {{ print "control-" $type_name }}
+    app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: thrs-control
-      app.kubernetes.io/component: {{ print "control-" $type_name }}
+      app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
   template:
     metadata:
       labels:
         {{- include "zero-thrs-control.labels" . | nindent 8 }}
         app.kubernetes.io/part-of: thrs-control
-        app.kubernetes.io/component: {{ print "control-" $type_name }}
+        app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -35,7 +35,7 @@ spec:
           args:
            - "simulation"
            - "--mode"
-           - "{{ $type_name }}"
+           - "{{ .Values.simulation.type }}"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -43,8 +43,8 @@ spec:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.control.image.repository }}:{{ .Values.control.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.control.image.pullPolicy }}
           resources:
             {{- toYaml .Values.simulation.resources | nindent 12 }}
           envFrom:
