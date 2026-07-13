@@ -1,11 +1,12 @@
+import asyncio
 import json
 import warnings
 from abc import abstractmethod
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Literal
+from typing import Any, Coroutine, Literal
 
-from sqlmodel import Session, SQLModel
+from sqlmodel import SQLModel
 from transitions import Machine, State
 
 from thrs.classes import database
@@ -65,13 +66,28 @@ class MachineStateLogger:
         self._log_model(issue)
 
     def _log_model(self, model: SQLModel):
+        """Log a model to the database asynchronously."""
+        self._run_async(self._log_model_async(model))
+
+    def _run_async(self, coroutine: Coroutine):
+        """Run a non-blocking coroutine in the current event loop, or create a new loop if none exists."""
         try:
-            with Session(self._db.engine) as session:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            # Fallback for when there is no running event loop, e.g., in a synchronous context
+            asyncio.run(coroutine)
+            return
+
+        # Coroutine will run when the loop is idle, without blocking the current thread
+        loop.create_task(coroutine)
+
+    async def _log_model_async(self, model: SQLModel):
+        try:
+            async with self._db.session_factory() as session:
                 session.add(model)
-                session.commit()
+                await session.commit()
         except Exception as e:
-            print(f"Failed to log model {model}: {e}")
-            # raise e
+            raise e
 
 
 class StateLogger:

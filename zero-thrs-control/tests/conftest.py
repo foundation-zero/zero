@@ -37,6 +37,18 @@ def ensure_default_event_loop():
         asyncio.set_event_loop(None)
 
 
+@pytest.fixture(autouse=True)
+def ensure_event_loop_per_test():
+    """Ensure sync tests also have a current default loop on Python 3.12+."""
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+    yield
+
+
 def _mqtt_is_available(host: str, port: int, timeout_s: float = 0.2) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_s):
