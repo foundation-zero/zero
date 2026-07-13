@@ -87,7 +87,6 @@ class ConsumersControl(
         self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_controllers(self):
-
         self._dhw_flow_controller = PidController[Ratio, LMin](
             self._current_values.consumers_flowcontrol_dhw.setpoint.value,
             0.0,

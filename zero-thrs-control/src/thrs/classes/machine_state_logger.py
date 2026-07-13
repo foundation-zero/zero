@@ -34,7 +34,6 @@ class MachineStateLogger:
     def __init__(self):
         self._db = database.Database(Config())
 
-
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
 

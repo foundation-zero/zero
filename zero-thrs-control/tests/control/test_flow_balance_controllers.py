@@ -38,7 +38,9 @@ def test_no_valves_active(thrusters_control: ThrustersControl):
         thrusters_control._current_control_values.thrusters_flowcontrol_fwd.setpoint.value
         == 0
     )
-    assert thrusters_control._current_control_values.thrusters_pump1.dutypoint.value == 0
+    assert (
+        thrusters_control._current_control_values.thrusters_pump1.dutypoint.value == 0
+    )
 
 
 def test_inactive_valves(thrusters_control: ThrustersControl):

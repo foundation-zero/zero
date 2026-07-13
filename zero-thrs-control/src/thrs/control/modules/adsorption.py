@@ -134,7 +134,6 @@ class AdsorptionControl(
         self._init_controllers()
         self.state_logger.log_parameters_initial_state(parameters)
 
-
     def _init_controllers(self):
         self._hot_mix_controller = PidController[Ratio, Celsius](
             self._current_values.adsorption_mix_hot.setpoint.value,

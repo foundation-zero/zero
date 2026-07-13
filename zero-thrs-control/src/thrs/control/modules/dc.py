@@ -142,7 +142,6 @@ class DcControl(
         self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_controllers(self, parameters: DcParameters):
-
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.dc_mix_exchanger.setpoint.value,
             setpoint=lambda: self._parameters.maximum_supply_temperature,

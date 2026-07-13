@@ -205,7 +205,9 @@ class CombinedModule:
         time_fn: Callable[[], datetime],
         state_machine_logging_service: StateLogger | None = None,
     ) -> CombinedControl:
-        logger_template = state_machine_logging_service or MachineStateLoggingServiceNoop()
+        logger_template = (
+            state_machine_logging_service or MachineStateLoggingServiceNoop()
+        )
         subs = {
             name: module.control(
                 parameters.values[name],

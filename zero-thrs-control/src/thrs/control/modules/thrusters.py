@@ -152,7 +152,6 @@ class ThrustersControl(
         # Log configuration
         self.state_logger.log_parameters_initial_state(parameters)
 
-
     def _init_controllers(self, parameters):
         if not hasattr(self, "_state_machine") or self._state_machine is None:
             raise ValueError(

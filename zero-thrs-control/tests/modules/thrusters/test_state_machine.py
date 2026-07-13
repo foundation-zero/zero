@@ -10,7 +10,8 @@ def test_state_machine(control):
     control.to_recovery(sensor_values)
     assert control.state == "recovery"
     assert (
-        control._current_control_values.thrusters_switch_recovery.setpoint.value == Valve.OPEN
+        control._current_control_values.thrusters_switch_recovery.setpoint.value
+        == Valve.OPEN
     )
     assert control._current_control_values.thrusters_pump1.on.value
 
@@ -18,7 +19,8 @@ def test_state_machine(control):
     assert control.state == "cooling"
     assert control._current_control_values.thrusters_pump1.on.value
     assert (
-        control._current_control_values.thrusters_switch_recovery.setpoint.value == Valve.CLOSED
+        control._current_control_values.thrusters_switch_recovery.setpoint.value
+        == Valve.CLOSED
     )
 
 

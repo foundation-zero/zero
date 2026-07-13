@@ -181,7 +181,6 @@ class PvtControl(
     def _init_controllers(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
     ):
-
         self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.pvt_mix_exchanger.setpoint.value,
             lambda: self._parameters.maximum_supply_temperature,
