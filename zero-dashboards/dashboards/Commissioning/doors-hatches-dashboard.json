@@ -3517,7 +3517,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_fwd_sb_open",
+                  "field": "laz_hatch_fwd_sb_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3551,6 +3551,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
                 "width": 25
               },
@@ -3575,7 +3576,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Fwd SB (nr. 37) - Open",
+                  "fixed": "Lazaratte access hatch Fwd SB (nr. 37) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3589,6 +3590,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 377
               },
@@ -3597,7 +3599,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_fwd_ps_open",
+                  "field": "laz_hatch_fwd_ps_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3630,6 +3632,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 40,
                 "width": 25
               },
@@ -3654,7 +3657,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Fwd PS (nr. 38) - Open",
+                  "fixed": "Lazaratte access hatch Fwd PS (nr. 38) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3668,6 +3671,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 377
               },
@@ -3676,7 +3680,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_mid_sb_open",
+                  "field": "laz_hatch_mid_sb_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3709,6 +3713,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 70,
                 "width": 25
               },
@@ -3733,7 +3738,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Mid SB (nr. 39) - Open",
+                  "fixed": "Lazaratte access hatch Mid SB (nr. 39) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3747,6 +3752,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 377
               },
@@ -3755,7 +3761,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_mid_ps_open",
+                  "field": "laz_hatch_mid_ps_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3789,6 +3795,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 100,
                 "width": 25
               },
@@ -3813,7 +3820,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Mid PS (nr. 40) - Open",
+                  "fixed": "Lazaratte access hatch Mid PS (nr. 40) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3827,6 +3834,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 100,
                 "width": 377
               },
@@ -3835,7 +3843,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_aft_sb_open",
+                  "field": "laz_hatch_aft_sb_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3869,6 +3877,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 130,
                 "width": 25
               },
@@ -3893,7 +3902,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Aft SB (nr. 41) - Open",
+                  "fixed": "Lazaratte access hatch Aft SB (nr. 41) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3907,6 +3916,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 130,
                 "width": 377
               },
@@ -3915,7 +3925,7 @@
             {
               "background": {
                 "color": {
-                  "field": "laz_hatch_aft_ps_open",
+                  "field": "laz_hatch_aft_ps_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3949,6 +3959,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 160,
                 "width": 25
               },
@@ -3973,11 +3984,12 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Lazaratte access hatch Aft PS (nr. 42) - Open",
+                  "fixed": "Lazaratte access hatch Aft PS (nr. 42) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -3987,6 +3999,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 160,
                 "width": 377
               },
@@ -3995,7 +4008,7 @@
             {
               "background": {
                 "color": {
-                  "field": "foreship_stor_hatch_open",
+                  "field": "foreship_stor_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4029,6 +4042,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 190,
                 "width": 25
               },
@@ -4053,7 +4067,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Foreship storage access hatch (nr. 9) - Open",
+                  "fixed": "Foreship storage access hatch (nr. 9) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4067,7 +4081,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "top": 190,
+                "rotation": 0,
+                "top": 189,
                 "width": 377
               },
               "type": "text"
@@ -4075,7 +4090,7 @@
             {
               "background": {
                 "color": {
-                  "field": "crane_hatch_open",
+                  "field": "crane_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4108,6 +4123,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 220,
                 "width": 25
               },
@@ -4132,7 +4148,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Crane hatch (nr. 7D) - Open",
+                  "fixed": "Crane hatch (nr. 7D) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4146,6 +4162,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 220,
                 "width": 377
               },
@@ -4154,7 +4171,7 @@
             {
               "background": {
                 "color": {
-                  "field": "forepeak_hatch_open",
+                  "field": "forepeak_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4187,6 +4204,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 250,
                 "width": 25
               },
@@ -4211,7 +4229,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Forepeak access hatch (nr. 3) - Open",
+                  "fixed": "Forepeak access hatch (nr. 3) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4225,7 +4243,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "top": 250,
+                "rotation": 0,
+                "top": 249,
                 "width": 377
               },
               "type": "text"
@@ -4233,7 +4252,7 @@
             {
               "background": {
                 "color": {
-                  "field": "sail_stor_hatch_open",
+                  "field": "sail_stor_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4266,6 +4285,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 280,
                 "width": 25
               },
@@ -4290,7 +4310,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Sail storage hatch (nr. 2) - Open",
+                  "fixed": "Sail storage hatch (nr. 2) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4304,6 +4324,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 280,
                 "width": 377
               },
@@ -4707,7 +4728,7 @@
             {
               "background": {
                 "color": {
-                  "field": "anchor_hatch2_open",
+                  "field": "anchor_hatch2_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4740,6 +4761,7 @@
               "placement": {
                 "height": 25,
                 "left": 525,
+                "rotation": 0,
                 "top": 100,
                 "width": 25
               },
@@ -4764,7 +4786,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Anchor hatch 2 - Open",
+                  "fixed": "Anchor hatch 2 - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4778,6 +4800,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
+                "rotation": 0,
                 "top": 100,
                 "width": 365.04025436792733
               },
@@ -4786,7 +4809,7 @@
             {
               "background": {
                 "color": {
-                  "field": "anchor_hatch1_open",
+                  "field": "anchor_hatch1_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4820,6 +4843,7 @@
               "placement": {
                 "height": 25,
                 "left": 525,
+                "rotation": 0,
                 "top": 70,
                 "width": 25
               },
@@ -4844,7 +4868,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Anchor hatch 1 - Open",
+                  "fixed": "Anchor hatch 1 - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4858,6 +4882,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
+                "rotation": 0,
                 "top": 70,
                 "width": 365.04025436792733
               },
@@ -4866,7 +4891,7 @@
             {
               "background": {
                 "color": {
-                  "field": "dinghy_stor_open",
+                  "field": "dinghy_stor_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4925,7 +4950,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Dinghy storage access (nr. 7A) - Open",
+                  "fixed": "Dinghy storage access (nr. 7A) - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4940,6 +4965,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
+                "rotation": 0,
                 "top": 40,
                 "width": 365.04025436792733
               },
@@ -5143,7 +5169,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_open__value AS laz_hatch_fwd_sb_open,\r\n\t\t\tlaza_access_hatch_ps_fwd_open__value AS laz_hatch_fwd_ps_open,\r\n\t\t\tlaza_access_hatch_sb_mid_open__value AS laz_hatch_mid_sb_open,\r\n\t\t\tlaza_access_hatch_ps_mid_open__value AS laz_hatch_mid_ps_open,\r\n\t\t\tlaza_access_hatch_sb_aft_open__value AS laz_hatch_aft_sb_open,\r\n\t\t\tlaza_access_hatch_ps_aft_open__value AS laz_hatch_aft_ps_open,\r\n\t\t\tforeship_stor_area_acc_hatch_open__value AS foreship_stor_hatch_open,\r\n\t\t\tcrane_hatch_aft_open__value AS crane_hatch_open,\r\n\t\t\tforepeak_acc_hatch_open__value AS forepeak_hatch_open,\r\n\t\t\tsail_stor_hatch_open__value AS sail_stor_hatch_open,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_open__value AS dinghy_stor_open,\r\n\t\t\thatch_anchor_sensor_1_open__value AS anchor_hatch1_open,\r\n\t\t\thatch_anchor_sensor_2_open__value AS anchor_hatch2_open,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_closed__value AS laz_hatch_fwd_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_fwd_closed__value AS laz_hatch_fwd_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_mid_closed__value AS laz_hatch_mid_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_mid_closed__value AS laz_hatch_mid_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_aft_closed__value AS laz_hatch_aft_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_aft_closed__value AS laz_hatch_aft_ps_closed,\r\n\t\t\tforeship_stor_area_acc_hatch_closed__value AS foreship_stor_hatch_closed,\r\n\t\t\tcrane_hatch_aft_closed__value AS crane_hatch_closed,\r\n\t\t\tforepeak_acc_hatch_closed__value AS forepeak_hatch_closed,\r\n\t\t\tsail_stor_hatch_closed__value AS sail_stor_hatch_closed,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_closed__value AS dinghy_stor_closed,\r\n\t\t\thatch_anchor_sensor_1_closed__value AS anchor_hatch1_closed,\r\n\t\t\thatch_anchor_sensor_2_closed__value AS anchor_hatch2_closed,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5187,7 +5213,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_OPEN') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch1_open_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_OPEN') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch2_open_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch1_open_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch2_open_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
           "refId": "B",
           "sql": {
             "columns": [
