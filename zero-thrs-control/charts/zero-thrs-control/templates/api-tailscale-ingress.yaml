@@ -2,14 +2,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "zero-thrs-control.control" . }}
+  name: {{ include "zero-thrs-control.api" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-thrs-control.labels" . | nindent 4 }}
 spec:
   defaultBackend:
     service:
-      name: {{ include "zero-thrs-control.control" . }}
+      name: {{ include "zero-thrs-control.api" . }}
       port:
         name: http
   ingressClassName: {{ .Values.api.ingress.className }}

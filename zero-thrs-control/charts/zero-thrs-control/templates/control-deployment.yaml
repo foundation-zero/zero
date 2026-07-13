@@ -46,8 +46,8 @@ spec:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag | default $root.Chart.AppVersion }}"
-          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+          image: "{{ $root.Values.control.image.repository }}:{{ $root.Values.control.image.tag | default $root.Chart.AppVersion }}"
+          imagePullPolicy: {{ $root.Values.control.image.pullPolicy }}
           resources:
             {{- toYaml $root.Values.control.resources | nindent 12 }}
           envFrom:

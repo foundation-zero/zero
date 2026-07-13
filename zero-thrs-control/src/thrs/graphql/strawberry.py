@@ -61,6 +61,7 @@ from thrs.orchestration.comms import (
     SimulationApiChannels,
 )
 from thrs.orchestration.config import Config
+from thrs.orchestration.log import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -242,6 +243,8 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 def create_app(settings: Config):
+    setup_logging()
+
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
