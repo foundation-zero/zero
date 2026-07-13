@@ -2993,7 +2993,7 @@
             {
               "background": {
                 "color": {
-                  "field": "main_deckh_hatch_ps_open",
+                  "field": "main_deckh_hatch_ps_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3052,7 +3052,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Main deckhouse ventilation hatch PS - Open",
+                  "fixed": "Main deckhouse ventilation hatch PS - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3066,6 +3066,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 505
               },
@@ -3074,7 +3075,7 @@
             {
               "background": {
                 "color": {
-                  "field": "main_deckh_hatch_sb_open",
+                  "field": "main_deckh_hatch_sb_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3132,7 +3133,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Main deckhouse ventilation hatch SB - Open",
+                  "fixed": "Main deckhouse ventilation hatch SB - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3146,6 +3147,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 505
               },
@@ -3154,7 +3156,7 @@
             {
               "background": {
                 "color": {
-                  "field": "aft_deckh_hatch_open",
+                  "field": "aft_deckh_hatch_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -3212,7 +3214,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "AFT deckhouse ventilation hatch - Open",
+                  "fixed": "AFT deckhouse ventilation hatch - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -3226,6 +3228,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 504.8833312988281
               },
@@ -3436,7 +3439,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_opened__value AS main_deckh_hatch_ps_open,\r\n\t\t\tmain_deckh_vent_hatch_sb_opened__value AS main_deckh_hatch_sb_open,\r\n\t\t\taft_deckh_vent_hatch_open__value AS aft_deckh_hatch_open,\r\n\t\t\tdeck_slide_wind_remavail__value AS owner_deckh_wind_remavail,\r\n\t\t\tdeck_slide_wind_drive_runn__value AS owner_deckh_wind_running\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_closed__value AS main_deckh_hatch_ps_closed,\r\n\t\t\tmain_deckh_vent_hatch_sb_closed__value AS main_deckh_hatch_sb_closed,\r\n\t\t\taft_deckh_vent_hatch_closed__value AS aft_deckh_hatch_closed,\r\n\t\t\tdeck_slide_wind_remavail__value AS owner_deckh_wind_remavail,\r\n\t\t\tdeck_slide_wind_drive_runn__value AS owner_deckh_wind_running\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
