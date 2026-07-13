@@ -2265,7 +2265,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 15,
         "x": 9,
         "y": 3
@@ -6761,7 +6761,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (topic)\r\n  topic,\r\n  alarm__value                  AS alarm,\r\n  close__value                  AS close,\r\n  closed__value                 AS closed,\r\n  hmi_cmd_close__value          AS hmi_cmd_close,\r\n  hmi_cmd_open__value           AS hmi_cmd_open,\r\n  hmi_control_available__value  AS hmi_control_available,\r\n  open__value                   AS open,\r\n  opened__value                 AS opened,\r\n  should_be_open__value         AS should_be_open\r\nFROM marpower__210000_bilge_fifi\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \r\n  topic, \r\n  timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (topic)\r\n  topic,\r\n  alarm__value                  AS alarm,\r\n  close__value                  AS close,\r\n  closed__value                 AS closed,\r\n  hmi_cmd_close__value          AS hmi_cmd_close,\r\n  hmi_cmd_open__value           AS hmi_cmd_open,\r\n  hmi_control_available__value  AS hmi_control_available,\r\n  open__value                   AS open,\r\n  opened__value                 AS opened,\r\n  should_be_open__value         AS should_be_open,\r\n  multi_state_alarm__value      AS multi_state_alarm,\r\n  power_detected__value         AS power_detected\r\nFROM marpower__210000_bilge_fifi\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic timestamp DESC",
           "refId": "A",
           "sql": {
             "columns": [
