@@ -6,6 +6,7 @@ from typing import Any, Callable, Coroutine
 
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
+from pydantic import ValidationError
 
 from loads.registry import AlarmDefinition, MessagingModule, VariableDefinition
 from loads.sensors import LoadsModel
@@ -69,18 +70,24 @@ class Messaging:
                 if message.payload == b"":
                     continue
 
-                if receiver := self._match_receiver(message):
-                    await receiver.handle(self._parse_message(message, receiver.cls))
+                if (receiver := self._match_receiver(message)) and (message := self._parse_message(message, receiver.cls)):
+                    await receiver.handle(message)
 
         return _run(self)
 
     def _match_receiver(self, message: Message) -> MessageReceiver | None:
         return self._receivers.get(message.topic.value, None)
 
-    def _parse_message[T: LoadsModel](self, message: Message, model: type[T]) -> T:
+    def _parse_message[T: LoadsModel](self, message: Message, model: type[T]) -> T | None:
         if not isinstance(message.payload, str | bytes):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
-        return model.parse_message_payload(message.payload)
+        try:
+            model.parse_message_payload(message.payload)
+        except ValidationError as e:
+            logger.error(
+                f"Failed to parse message payload for topic {message.topic.value}: {e}"
+            )
+            return None
 
     def get_variable_value(self, variable_id: str) -> float | None:
         if variable := self._variable_definitions.get(variable_id):
