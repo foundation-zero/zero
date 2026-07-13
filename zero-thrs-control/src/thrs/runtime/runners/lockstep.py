@@ -1,6 +1,6 @@
 from thrs.input_output.base import CombinedValues, SimulationInputs, SimulationValues
 from thrs.orchestration.module import Module
-from thrs.orchestration.simulation import SimulationModule
+from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.runners.base import Runner
 
 
@@ -14,7 +14,7 @@ class LockstepRunner[
     def __init__(
         self,
         control_modules: list[Module],
-        simulation_module: SimulationModule[S, CombinedValues, I, O],
+        simulation_module: SimulationUnit[S, CombinedValues, I, O],
     ) -> None:
         self.control_modules = control_modules
         self.simulation_module = simulation_module
@@ -25,7 +25,7 @@ class LockstepRunner[
             }
         )
 
-    async def run(self) -> None:
+    async def tick(self) -> None:
         """Run simulation and control in lockstep for a tick.
         Retrieve parameters and automation modes from the control channels, and simulation inputs from the simulation channels.
         Send control values to the simulation channels, and sensor values to the control channels.

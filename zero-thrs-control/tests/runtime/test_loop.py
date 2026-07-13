@@ -14,7 +14,7 @@ def make_runner(block_after_first_call: bool = False):
     release = asyncio.Event()
     calls = Mock()
 
-    async def run() -> None:
+    async def tick() -> None:
         calls()
         started.set()
 
@@ -22,7 +22,7 @@ def make_runner(block_after_first_call: bool = False):
             await release.wait()
 
     runner = MagicMock()
-    runner.run = AsyncMock(side_effect=run)
+    runner.tick = AsyncMock(side_effect=tick)
     runner.calls = calls
     runner.started = started
     runner.release = release
@@ -57,7 +57,7 @@ async def test_loop_steps_runner_for_requested_ticks():
         await asyncio.wait_for(runner.started.wait(), timeout=1)
 
         assert runner.calls.call_count == 2
-        assert runner.run.await_count == 2
+        assert runner.tick.await_count == 2
         assert hook_calls[:2] == ["available", "stepping"]
     finally:
         loop_task.cancel()
@@ -79,7 +79,7 @@ async def test_loop_play_runs_until_pause():
 
         await asyncio.wait_for(runner.started.wait(), timeout=1)
         assert runner.calls.call_count == 1
-        assert runner.run.await_count == 1
+        assert runner.tick.await_count == 1
         assert hook_calls == ["available", "running"]
 
         await loop.pause()

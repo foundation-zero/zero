@@ -13,7 +13,7 @@ from thrs.input_output.base import (
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.comms import ControlChannels, SimulationChannels
 from thrs.orchestration.module import Module, ModuleDescription
-from thrs.orchestration.simulation import Simulation, SimulationModule
+from thrs.orchestration.simulation import Simulation, SimulationUnit
 from thrs.simulation.io_mapping import flatten_model_values
 
 
@@ -63,7 +63,7 @@ class SimulationTestRunner[
             "test", control, alarms, cast(ControlChannels, None)
         )
         self._control_module._control.switch_mode(AutomationMode(mode="automatic"))
-        self._simulation_module = SimulationModule(
+        self._simulation_module = SimulationUnit(
             simulation, cast(SimulationChannels, None)
         )
 

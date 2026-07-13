@@ -98,7 +98,7 @@ class SimulationDescription:
     simulation_inputs: SimulationInputs
 
 
-class SimulationModule[
+class SimulationUnit[
     S: ThrsValues | CombinedValues,
     C: ThrsValues | CombinedValues,
     I: SimulationInputs,

@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, Mock, call
 from thrs.control.switching import AutomationMode
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.module import Module
-from thrs.orchestration.simulation import SimulationModule
+from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
@@ -57,11 +57,11 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     module = Module("module", control, alarms, control_channels)
     module._control.switch_mode(AutomationMode(mode="automatic"))
 
-    simulation_module = SimulationModule(simulation, simulation_channels)
+    simulation_module = SimulationUnit(simulation, simulation_channels)
     runner = LockstepRunner([module], simulation_module)
 
     for _ in range(3):
-        await runner.run()
+        await runner.tick()
 
     assert control_channels.send_control_values.await_count == 3
     assert simulation_channels.send_sensor_values.await_count == 3
@@ -175,7 +175,7 @@ async def test_control_runner_ticks_and_uses_channels():
     runner = ControlRunner([module])
 
     for _ in range(2):
-        await runner.run()
+        await runner.tick()
 
     assert channels.get_sensor_values.call_count == 2
     assert channels.send_computed_values.await_count == 2
@@ -227,12 +227,12 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
 
-    simulation_module = SimulationModule(simulation, channels)
+    simulation_module = SimulationUnit(simulation, channels)
 
     runner = SimulationRunner(simulation_module)
 
     for _ in range(4):
-        await runner.run()
+        await runner.tick()
 
     assert channels.get_control_values.call_count == 4
     assert channels.wait_for_control_values.await_count == 0

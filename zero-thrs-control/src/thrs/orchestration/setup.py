@@ -12,7 +12,7 @@ from thrs.orchestration.module import Module, ModuleDescription
 from thrs.orchestration.simulation import (
     Simulation,
     SimulationDescription,
-    SimulationModule,
+    SimulationUnit,
 )
 
 
@@ -21,7 +21,7 @@ def setup_simulation_module(
     config: Config,
     control_modules: dict[str, ModuleDescription],
     simulation_description: SimulationDescription,
-) -> SimulationModule:
+) -> SimulationUnit:
     sensor_values_cls = {
         module: desc.sensor_values_cls for module, desc in control_modules.items()
     }
@@ -35,7 +35,7 @@ def setup_simulation_module(
         timedelta(seconds=1),
     )
 
-    return SimulationModule(
+    return SimulationUnit(
         simulation,
         SimulationChannels(
             connector,

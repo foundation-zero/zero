@@ -12,8 +12,8 @@ class ControlRunner[S: ThrsValues](Runner):
     ):
         self._modules = control_modules
 
-    async def run(self) -> None:
-        """Run control in a loop for a ticks."""
+    async def tick(self) -> None:
+        """Run control for a tick."""
         for module in self._modules:
             sensor_values = await module.sync_control_channels_state()
 
