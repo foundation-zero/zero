@@ -1,9 +1,13 @@
 from datetime import datetime
 from typing import Callable
 
-from transitions import Machine, State
+from transitions import State
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
@@ -85,10 +89,29 @@ class ConvertersControl(
         parameters: ConvertersParameters,
         time_fn: Callable[[], datetime],
         initial_control_values: ConvertersControlValues,
+        state_logger: StateLogger | None = None,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
         self.current_values = initial_control_values
+
+        self._init_state_machine_states()
+        self._init_state_machine_transitions()
+        self._state_machine = self.state_logger.create_logged_state_machine(
+            self,
+            transitions=self._transitions,
+            states=self._states,
+            initial="idle",
+        )
+        self._init_controllers()
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(self):
+        if not hasattr(self, "_state_machine") or self._state_machine is None:
+            raise ValueError(
+                "State machine must be initialized before creating control methods"
+            )
 
         self._pump_controller = PidController[Ratio, LMin](
             initial=self.current_values.pump.dutypoint.value,
@@ -104,6 +127,7 @@ class ConvertersControl(
             time_fn=self._time,
         )
 
+    def _init_state_machine_states(self):
         self._states = [
             State(
                 name="idle",
@@ -124,6 +148,7 @@ class ConvertersControl(
             ),
         ]
 
+    def _init_state_machine_transitions(self):
         self._transitions = [
             {
                 "trigger": "_check_converters_active",
@@ -141,17 +166,11 @@ class ConvertersControl(
             },
         ]
 
-        self._state_machine = Machine(
-            model=self,
-            states=self._states,
-            transitions=self._transitions,
-            initial="idle",
-        )
-
     @property
     def parameters(self) -> ConvertersParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: ConvertersParameters):
         self._parameters = parameters
 
@@ -185,6 +204,7 @@ class ConvertersControl(
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: ConvertersSensorValues
     ) -> tuple[ConvertersControlValues, ConvertersControllerState]:

@@ -1,6 +1,7 @@
 import warnings
 from typing import cast
 
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import ControlChannels
 from thrs.orchestration.module import CombinedAlarms, CombinedControl
@@ -59,13 +60,16 @@ class ControlRunner[
 
         return control_values
 
+    @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: CombinedValues) -> None:
         alarms = self._alarms.check(
             sensor_values, control_values, self._control.parameters
         )
 
         if alarms:
-            warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
+            warnings.warn(
+                f"Alarms detected: {alarms}"
+            )  # These will be caught by the StateLogger.log_alarms
 
     async def _send_control_updates(
         self,

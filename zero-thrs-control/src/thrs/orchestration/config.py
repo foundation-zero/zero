@@ -28,6 +28,3 @@ class Config(BaseSettings):
     @property
     def pg_url_sync(self) -> str:
         return f"postgresql+psycopg2://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
-
-
-settings = Config()  # type: ignore

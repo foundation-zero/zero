@@ -2,6 +2,10 @@ from datetime import datetime
 from typing import Callable, Mapping, cast
 
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
@@ -196,10 +200,18 @@ class CombinedModule:
         return self._modules[module].parameters_cls
 
     def control(
-        self, parameters: CombinedValues, time_fn: Callable[[], datetime]
+        self,
+        parameters: CombinedValues,
+        time_fn: Callable[[], datetime],
+        state_machine_logging_service: StateLogger | None = None,
     ) -> CombinedControl:
+        logger_template = state_machine_logging_service or MachineStateLoggingServiceNoop()
         subs = {
-            name: module.control(parameters.values[name], time_fn)
+            name: module.control(
+                parameters.values[name],
+                time_fn,
+                type(logger_template)(),
+            )
             for name, module in self._modules.items()
             if name in parameters.values
         }

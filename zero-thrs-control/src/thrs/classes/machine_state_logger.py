@@ -1,13 +1,15 @@
+import json
+import warnings
 from abc import abstractmethod
 from enum import Enum
 from functools import partial, wraps
-import json
-from typing import TYPE_CHECKING, Any, Literal
-import warnings
+from typing import Any, Literal
 
-from sqlmodel import SQLModel, Session
+from sqlmodel import Session, SQLModel
 from transitions import Machine, State
+
 from thrs.classes import database
+from thrs.classes.control import Control
 from thrs.db.models.machine_state import (
     MachineStateEvent,
     MachineStateIssue,
@@ -16,13 +18,9 @@ from thrs.db.models.machine_state import (
 )
 from thrs.input_output.alarms import Severity
 from thrs.input_output.base import ThrsValues
+from thrs.orchestration.config import Config
 from thrs.utils.list import ensure_list
 from thrs.utils.model import get_model_from_to_diff
-
-from thrs.classes.control import Control
-
-if TYPE_CHECKING:
-    from thrs.control.modules.thrusters import ThrustersParameters
 
 
 class MachineStateValuesType(Enum):
@@ -30,8 +28,12 @@ class MachineStateValuesType(Enum):
     CONTROL = "control"
 
 
-class _MachineStateLogger:
+class MachineStateLogger:
     """Provide direct log methods for the state machine, saving to the database."""
+
+    def __init__(self):
+        self._db = database.Database(Config())
+
 
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
@@ -65,7 +67,7 @@ class _MachineStateLogger:
 
     def _log_model(self, model: SQLModel):
         try:
-            with Session(database.db.engine) as session:
+            with Session(self._db.engine) as session:
                 session.add(model)
                 session.commit()
         except Exception as e:
@@ -84,7 +86,7 @@ class StateLogger:
     ) -> Machine: ...
 
     @property
-    def machinestate_logger(self) -> _MachineStateLogger: ...
+    def machinestate_logger(self) -> MachineStateLogger: ...
 
     def log_issue(self, message: str, severity: Severity): ...
     def log_event(self, event: MachineStateEvent): ...
@@ -102,7 +104,7 @@ class StateLogger:
 
     @staticmethod
     def log_parameters(func):
-        def wrapper(self: "Control", parameters: "ThrustersParameters"):
+        def wrapper(self: "Control", parameters: "ThrsValues"):
             if hasattr(self, "state_logger") and self.state_logger:
                 self.state_logger.log_parameters_on_change(
                     values_from=self._parameters,
@@ -129,16 +131,19 @@ class StateLogger:
     @staticmethod
     def log_alarms(func):
         @wraps(func)
-        async def wrapper(self: "Control", *args, **kwargs):
+        def wrapper(self: "Control", *args, **kwargs):
+            result = None
             if hasattr(self, "state_logger") and self.state_logger:
                 with warnings.catch_warnings(record=True) as w:
                     warnings.simplefilter("always")
-                    result = await func(self, *args, **kwargs)
+                    result = func(self, *args, **kwargs)
                     for warning in w:
                         if isinstance(warning.message, Warning):
                             self.state_logger.log_issue(
                                 message=str(warning.message), severity=Severity.ALARM
                             )
+            else:
+                result = func(self, *args, **kwargs)
             return result
 
         return wrapper
@@ -167,10 +172,7 @@ class MachineStateLoggingServiceNoop(StateLogger):
 class MachineStateLoggingService(StateLogger):
     """Service to be inherited by a state machine using class. Providing logging capabilities for state transitions (and the triggered condition(s)), changing THRS values, custom events and issues."""
 
-    state: str  # Set by transitions logic
     _initialized: bool = False
-    last_trigger_name = "Unknown"
-    last_evaluated_conditions = []
 
     def create_logged_state_machine(
         self,
@@ -247,7 +249,7 @@ class MachineStateLoggingService(StateLogger):
                 transition["conditions"] = wrapped
 
     @property
-    def machinestate_logger(self) -> _MachineStateLogger:
+    def machinestate_logger(self) -> MachineStateLogger:
         self._ensure_init()
         return self._machinestate_logger
 
@@ -257,14 +259,19 @@ class MachineStateLoggingService(StateLogger):
             return
         self._initialized = True
 
-        self._machinestate_logger: _MachineStateLogger = _MachineStateLogger()
+        self._machinestate_logger: MachineStateLogger = MachineStateLogger()
+        self.last_state: str = "Unknown"
+        self.last_trigger_name: str | None = "Unknown"
+        self.last_evaluated_conditions: list[str] = []
 
     def _before_log(self, control: "Control", sensor_values):
         """Called before the transition is made, to track the last state."""
+        self._ensure_init()
         self.last_state = control.state
 
     def _after_log(self, control: "Control", sensor_values):
         """Called after the transition is made, to log the transition and reset the tracked conditions."""
+        self._ensure_init()
         condition_name: str = (
             ", ".join(self.last_evaluated_conditions)
             if self.last_evaluated_conditions
@@ -277,7 +284,7 @@ class MachineStateLoggingService(StateLogger):
             state_from=self.last_state,
             state_to=control.state,
         )
-        self._machinestate_logger.log_transition(transition_change)
+        self.machinestate_logger.log_transition(transition_change)
         self.last_evaluated_conditions = []
 
     def log_warning(self, message: str):

@@ -4,6 +4,10 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
@@ -159,13 +163,24 @@ class PvtControl(
     ]
 ):
     def __init__(
-        self, parameters: PvtParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: PvtParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger | None = None,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
+
+        self._init_controllers(parameters, time_fn)
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(
+        self, parameters: PvtParameters, time_fn: Callable[[], datetime]
+    ):
 
         self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.pvt_mix_exchanger.setpoint.value,
@@ -183,6 +198,7 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_main_fwd,
             ),
             time_fn=time_fn,
+            state_logger=self.state_logger,
         )
         self._main_aft_control = PvtGroupControl(
             aft_pvt_group_parameters(parameters),
@@ -191,6 +207,7 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_main_aft,
             ),
             time_fn=time_fn,
+            state_logger=self.state_logger,
         )
         self._owners_control = PvtGroupControl(
             owners_pvt_group_parameters(parameters),
@@ -199,6 +216,7 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_owners,
             ),
             time_fn=time_fn,
+            state_logger=self.state_logger,
         )
 
     @property
@@ -228,6 +246,7 @@ class PvtControl(
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
         return (_INITIAL_CONTROL_VALUES(self._time()), PvtControllerState())
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
         self._main_fwd_control.update_parameters(main_pvt_group_parameters(parameters))
@@ -293,6 +312,7 @@ class PvtControl(
             main_fwd_control_values, main_aft_control_values, owners_control_values
         )
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: PvtSensorValues
     ) -> tuple[PvtControlValues, PvtControllerState]:

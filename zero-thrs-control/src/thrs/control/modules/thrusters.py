@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable, Literal, NoReturn
 
 from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
     StateLogger,
 )
 from thrs.control.controllers import FlowBalanceController, PidController
@@ -118,26 +119,24 @@ class ThrustersControl(
         ThrustersControllerState,
     ]
 ):
-    state: str  # Set by transitions logic
-    _states: list[State]
-    _transitions: list[dict]
-
-    last_state: str = "Unknown"
-    last_evaluated_conditions = []
-    last_trigger_name: str | None = None
-
     _state_machine: Machine
-    state_logger: "StateLogger"
+    _transitions: list[dict]
+    _states: list[State]
     _parameters: "ThrustersParameters"
+
+    # Log state machine attributes
+    state_logger: "StateLogger"
+    state: str  # Value set by Machine transitions logic
 
     def __init__(
         self,
         parameters: ThrustersParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
+        state_logger: StateLogger | None = None,
     ) -> None:
         self._parameters = parameters
         self._time: Callable[[], datetime] = time_fn
+        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
         self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
@@ -145,15 +144,14 @@ class ThrustersControl(
         # State machine setup
         self._init_state_machine_states()
         self._init_state_machine_transitions()
-        self._state_machine = state_logger.create_logged_state_machine(
+        self._state_machine = self.state_logger.create_logged_state_machine(
             self, transitions=self._transitions, states=self._states, initial="idle"
         )
         self._init_controllers(parameters)
 
         # Log configuration
-        state_logger.log_parameters_initial_state(parameters)
+        self.state_logger.log_parameters_initial_state(parameters)
 
-        self.state_logger = state_logger
 
     def _init_controllers(self, parameters):
         if not hasattr(self, "_state_machine") or self._state_machine is None:
@@ -177,7 +175,7 @@ class ThrustersControl(
             self._time,
         )
         self._pump_controller = PidController[Ratio, LMin](
-            self._current_control_values.thrusters_pump_1.dutypoint.value,
+            self._current_control_values.thrusters_pump1.dutypoint.value,
             0,  # Gets overridden by flow balance controller
             lambda: self._parameters.pump_tuning,
             self._time,

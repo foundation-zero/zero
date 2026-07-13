@@ -1,6 +1,10 @@
 from datetime import datetime
 from typing import Callable
 
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingService,
+    MachineStateLoggingServiceNoop,
+)
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
     ControlChannels,
@@ -40,6 +44,7 @@ def setup_control(
     config: Config,
     mode: Mode,
     time_fn: Callable[[], datetime],
+    machine_state_logging_service_enabled: bool = True,
 ) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
     control_channels = ControlChannels(connector, config, mode.control_module)
 
@@ -48,6 +53,16 @@ def setup_control(
         for module in mode.control_module.modules
     }
 
-    control = mode.control_module.control(CombinedValues(parameters), time_fn)
+    machine_state_logging_service = (
+        MachineStateLoggingService()
+        if machine_state_logging_service_enabled
+        else MachineStateLoggingServiceNoop()
+    )
+
+    control = mode.control_module.control(
+        CombinedValues(parameters),
+        time_fn,
+        machine_state_logging_service,
+    )
 
     return control, control_channels, mode.control_module.alarms()
