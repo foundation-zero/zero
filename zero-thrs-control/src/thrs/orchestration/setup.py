@@ -63,6 +63,7 @@ def setup_control_modules(
         control = module.control(parameters, time_fn)
 
         # This line should not be here since it exposes that we are dealing with a switching module
+        # We need to refactor the switching control functionality to be more local/abstractable
         module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
 
         channel = ControlChannels(connector, config, module_name, module)

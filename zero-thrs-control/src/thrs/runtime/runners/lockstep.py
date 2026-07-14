@@ -1,4 +1,9 @@
-from thrs.input_output.base import CombinedValues, SimulationInputs, SimulationValues
+from thrs.input_output.base import (
+    CombinedValues,
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+)
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.runners.base import Runner
@@ -25,6 +30,22 @@ class LockstepRunner[
             }
         )
 
+    async def _module_tick(
+        self, module: Module, combined_sensor_values: S
+    ) -> ThrsValues | None:
+        sensor_values = combined_sensor_values.values.get(module.name)
+
+        if sensor_values is None:
+            return None
+
+        control_values, controller_state = module.execute_control_tick(sensor_values)
+
+        await module.send_control_updates(
+            sensor_values, control_values, controller_state
+        )
+
+        return control_values
+
     async def tick(self) -> None:
         """Run simulation and control in lockstep for a tick.
         Retrieve parameters and automation modes from the control channels, and simulation inputs from the simulation channels.
@@ -42,20 +63,14 @@ class LockstepRunner[
 
         await self.simulation_module.send_simulation_updates(sim_result)
 
-        control_values_map = {}
-        for module in self.control_modules:
-            sensor_values = sim_result.sensor_values.values.get(module.name)
-
-            if sensor_values is None:
-                continue
-
-            control_values, controller_state = module.execute_control_tick(
-                sensor_values
+        control_values_map = {
+            module.name: control_values
+            for module in self.control_modules
+            if (
+                control_values := await self._module_tick(
+                    module, sim_result.sensor_values
+                )
             )
+        }
 
-            await module.send_control_updates(
-                sensor_values, control_values, controller_state
-            )
-
-            control_values_map[module.name] = control_values
         self._control_values = CombinedValues(values=control_values_map)

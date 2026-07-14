@@ -102,7 +102,6 @@ class Module[
     async def send_control_updates(
         self, sensor_values: S, control_values: C, controller_state: CS
     ) -> None:
-        """Send control values, controller state, parameters, control modes, and manual controls to the control channels."""
         await self._channels.send_computed_values(sensor_values)
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
