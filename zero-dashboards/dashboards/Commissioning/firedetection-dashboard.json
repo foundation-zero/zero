@@ -662,7 +662,22 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/test/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-greens"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -678,6 +693,11 @@
           "background": {
             "color": {
               "fixed": "transparent"
+            },
+            "image": {
+              "field": "",
+              "fixed": "",
+              "mode": "fixed"
             }
           },
           "border": {
@@ -693,11 +713,11 @@
             {
               "background": {
                 "color": {
-                  "field": "fire_detection",
-                  "fixed": "#D9D9D9"
+                  "field": "common_alarm",
+                  "fixed": "dark-red"
                 },
                 "image": {
-                  "field": "fresh_water_mak1_alarm",
+                  "field": "",
                   "mode": "fixed"
                 }
               },
@@ -727,7 +747,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 10,
+                "top": 11,
                 "width": 25
               },
               "type": "ellipse"
@@ -774,11 +794,11 @@
             {
               "background": {
                 "color": {
-                  "field": "door_power_supply_fail",
-                  "fixed": "#D9D9D9"
+                  "field": "faults",
+                  "fixed": "dark-red"
                 },
                 "image": {
-                  "field": "fresh_water_mak2_alarm",
+                  "field": "",
                   "mode": "fixed"
                 }
               },
@@ -855,12 +875,12 @@
             {
               "background": {
                 "color": {
-                  "field": "fire_detection",
-                  "fixed": "#D9D9D9"
+                  "field": "disablements",
+                  "fixed": "dark-red"
                 },
                 "image": {
-                  "field": "fresh_water_mak1_alarm",
-                  "mode": "fixed"
+                  "field": "",
+                  "mode": "field"
                 }
               },
               "border": {
@@ -888,6 +908,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 70,
                 "width": 25
               },
@@ -934,12 +955,12 @@
             {
               "background": {
                 "color": {
-                  "field": "aux_sys_emergency_supply_fail",
-                  "fixed": "#D9D9D9"
+                  "field": "tests",
+                  "fixed": "dark-green"
                 },
                 "image": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
+                  "field": "",
+                  "mode": "field"
                 }
               },
               "border": {
@@ -1016,12 +1037,12 @@
             {
               "background": {
                 "color": {
-                  "field": "aux_sys_emergency_supply_fail",
-                  "fixed": "#D9D9D9"
+                  "field": "testbit",
+                  "fixed": "dark-green"
                 },
                 "image": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
+                  "field": "",
+                  "mode": "field"
                 }
               },
               "border": {
@@ -1176,6 +1197,10 @@
               "background": {
                 "color": {
                   "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "fixed"
                 }
               },
               "border": {
@@ -1190,7 +1215,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "",
+                  "field": "command",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -1229,7 +1254,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "",
+                  "field": "parameter1",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -1244,6 +1269,7 @@
               "placement": {
                 "height": 30,
                 "left": 629,
+                "rotation": 0,
                 "top": 41,
                 "width": 150
               },
