@@ -417,49 +417,6 @@
             {
               "background": {
                 "color": {
-                  "field": "mts_inlet_flap_released",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_released",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
                   "fixed": "transparent"
                 }
               },
@@ -476,287 +433,7 @@
                 "size": 16,
                 "text": {
                   "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS inlet flap - Released",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_released label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 209
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "mts_inlet_flap_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_reset",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS inlet flap - Reset",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_reset label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 40,
-                "width": 209
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "mts_exhaust_flap_released",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_released",
-              "placement": {
-                "height": 25,
-                "left": 389,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS exhaust flap - Released",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_released label",
-              "placement": {
-                "height": 26,
-                "left": 424,
-                "top": 10,
-                "width": 238
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "mts_exhaust_flap_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset",
-              "placement": {
-                "height": 25,
-                "left": 389,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS exhaust flap - Reset",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset label",
-              "placement": {
-                "height": 26,
-                "left": 424,
-                "top": 40,
-                "width": 238
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "Drain valve - Position overboard",
+                  "fixed": "Drain valve 1 - Position overboard",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -769,9 +446,10 @@
               "name": "drain_valve_pos_overboard label",
               "placement": {
                 "height": 26,
-                "left": 424,
-                "top": 70,
-                "width": 265
+                "left": 50,
+                "rotation": 0,
+                "top": 10,
+                "width": 275
               },
               "type": "text"
             },
@@ -811,8 +489,9 @@
               "name": "drain_valve_pos_overboard",
               "placement": {
                 "height": 25,
-                "left": 389,
-                "top": 70,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -835,7 +514,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "mts_inlet_flap_released_tag",
+                  "field": "drain_valve1_pos_overboard_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -846,10 +525,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_released_tag",
+              "name": "drain_valve_pos_overboard_tag",
               "placement": {
                 "height": 26,
-                "left": 259,
+                "left": 325,
                 "rotation": 0,
                 "top": 10,
                 "width": 102
@@ -872,11 +551,11 @@
                 "color": {
                   "fixed": "rgb(204, 204, 220)"
                 },
-                "size": 12,
+                "size": 16,
                 "text": {
-                  "field": "mts_inlet_flap_reset_tag",
-                  "fixed": " ",
-                  "mode": "field"
+                  "field": "fresh_water_circ_pump_running",
+                  "fixed": "Drain valve 2 - Position overboard",
+                  "mode": "fixed"
                 },
                 "valign": "middle"
               },
@@ -885,15 +564,58 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_reset_tag",
+              "name": "Element 16",
               "placement": {
                 "height": 26,
-                "left": 259,
+                "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 102
+                "width": 275
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "drain_valve_pos_overboard",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "fresh_water_circ_pump_running",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_circ_pump_running",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 17",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
             },
             {
               "background": {
@@ -913,7 +635,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "mts_exhaust_flap_released_tag",
+                  "field": "drain_valve2_pos_overboard_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -924,87 +646,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_exhaust_flap_released_tag",
+              "name": "Element 18",
               "placement": {
                 "height": 26,
-                "left": 689,
-                "top": 9,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "mts_exhaust_flap_reset_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset_tag",
-              "placement": {
-                "height": 26,
-                "left": 689,
-                "top": 39,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "drain_valve_pos_overboard_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "drain_valve_pos_overboard_tag",
-              "placement": {
-                "height": 26,
-                "left": 689,
-                "top": 69,
+                "left": 325,
+                "rotation": 0,
+                "top": 40,
                 "width": 102
               },
               "type": "text"
@@ -1052,7 +699,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tmts_inlet_fire_flap_released__value as mts_inlet_flap_released,\r\n\t\t\tmts_inlet_fire_flap_fully_reset__value as mts_inlet_flap_reset,\r\n\t\t\tmts_exhaust_fire_flap_released__value as mts_exhaust_flap_released,\r\n\t\t\tmts_exhaust_fire_flap_fully_reset__value as mts_exhaust_flap_reset,\r\n\t\t\tdrain_vlv_y_02_pos_overboard__value as drain_valve_pos_overboard\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1081,6 +728,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1094,9 +742,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y01_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve1_pos_overboard_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve2_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1603,6 +1250,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1616,7 +1264,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr68_y03_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y03_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y04_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y04_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y05_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts;",
           "refId": "B",
@@ -1773,7 +1420,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_released__value AS mts_inlet_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_fully_reset__value AS mts_inlet_flap_reset,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_released__value AS mts_exhaust_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_fully_reset__value AS mts_exhaust_flap_reset,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
+              "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tchlorine_unit_alarm__value                 AS fresh_water_chlorine_unit_alarm,\r\n\tdrain_vlv_y_01_pos_overboard__value        AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value        AS drain_valve2_pos_overboard,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2716,6 +2363,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -2729,7 +2377,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b03_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b03_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b07_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b07_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b08_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b08_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b09_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b09_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b04_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b04_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b05_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b05_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b06_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b06_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
           "refId": "B",
@@ -3582,6 +3229,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3595,7 +3243,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_temp') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity1') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity2') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
           "refId": "B",
@@ -3706,7 +3353,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 24
           },
           "id": 15,
           "options": {
@@ -3859,7 +3506,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 32
           },
           "id": 17,
           "options": {
@@ -4023,7 +3670,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 40
           },
           "id": 16,
           "options": {
@@ -4174,7 +3821,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 48
           },
           "id": 19,
           "options": {
@@ -4325,7 +3972,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 56
           },
           "id": 18,
           "options": {
