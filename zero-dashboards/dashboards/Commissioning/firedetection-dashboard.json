@@ -940,7 +940,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1115,7 +1115,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1238,7 +1238,7 @@
         ]
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 30
@@ -1278,7 +1278,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1401,7 +1401,7 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 31
@@ -1441,7 +1441,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1489,7 +1489,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 39
       },
       "id": 20,
       "panels": [],
@@ -1577,10 +1577,10 @@
         ]
       },
       "gridPos": {
-        "h": 16,
+        "h": 15,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 40
       },
       "id": 19,
       "options": {
@@ -1617,7 +1617,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (\r\n    meta.room_or_area LIKE '%Storage%' \r\n    OR meta.room_or_area LIKE '%Office%' \r\n    OR meta.room_or_area LIKE '%Galley%' \r\n    OR meta.room_or_area LIKE '%Laundry%'\r\n  )\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND (\r\n    meta.room_or_area LIKE '%Storage%' \r\n    OR meta.room_or_area LIKE '%Office%' \r\n    OR meta.room_or_area LIKE '%Galley%' \r\n    OR meta.room_or_area LIKE '%Laundry%'\r\n  )\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1740,10 +1740,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 11,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 40
       },
       "id": 17,
       "options": {
@@ -1780,7 +1780,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1828,7 +1828,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 55
       },
       "id": 23,
       "panels": [],
@@ -1916,10 +1916,10 @@
         ]
       },
       "gridPos": {
-        "h": 15,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 56
       },
       "id": 13,
       "options": {
@@ -1956,7 +1956,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Battery%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Battery%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2079,10 +2079,10 @@
         ]
       },
       "gridPos": {
-        "h": 17,
+        "h": 16,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 56
       },
       "id": 24,
       "options": {
@@ -2119,7 +2119,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND (\r\n    meta.room_or_area LIKE '%Fore%' \r\n    OR meta.room_or_area LIKE '%Lazarette%' \r\n    OR meta.room_or_area LIKE '%Bilge%' \r\n    OR meta.room_or_area LIKE '%Pod%'\r\n  )\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND (\r\n    meta.room_or_area LIKE '%Fore%' \r\n    OR meta.room_or_area LIKE '%Lazarette%' \r\n    OR meta.room_or_area LIKE '%Bilge%' \r\n    OR meta.room_or_area LIKE '%Pod%'\r\n  )\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2245,7 +2245,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 73
+        "y": 70
       },
       "id": 22,
       "options": {
@@ -2282,7 +2282,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Technical%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Technical%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2330,7 +2330,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 83
+        "y": 80
       },
       "id": 6,
       "panels": [],
@@ -2421,7 +2421,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 84
+        "y": 81
       },
       "id": 14,
       "options": {
@@ -2458,7 +2458,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Hatch'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Hatch'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2584,7 +2584,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 84
+        "y": 81
       },
       "id": 12,
       "options": {
@@ -2621,7 +2621,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Storage'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Storage'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
