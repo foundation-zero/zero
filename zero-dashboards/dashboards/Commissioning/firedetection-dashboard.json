@@ -613,7 +613,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                 AS timestamp,\r\n\tfire_doors_release__value AS fire_doors_release\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                AS timestamp,\r\n\tfire_doors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
