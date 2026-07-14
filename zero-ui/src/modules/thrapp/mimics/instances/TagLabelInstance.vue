@@ -9,7 +9,7 @@ defineProps<MimicComponentInstanceProps>();
   <Label
     :x="x"
     :y="y"
-    :width="30"
+    :width="40"
     :height="20"
   >
     {{ tagId }}
