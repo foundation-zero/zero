@@ -89,8 +89,8 @@ export type SensorFieldDefinitions = SensorFields<{
     heatExchanger: SensorComponentType.HeatExchanger;
   };
   [MimicComponentType.HotWaterCircuit]: {
-    flowIn: SensorComponentType.CalculatedFlow;
-    flowOut: SensorComponentType.Flow;
+    flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+    flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     tIn: SensorComponentType.Temperature;
     tOut: SensorComponentType.Temperature;
   };

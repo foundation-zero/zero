@@ -11,13 +11,13 @@ export default toInstance<MimicComponentType.HotWaterCircuit>({
   parameters: {},
   source: undefined,
   sensors: {
-    flowIn: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
-    flowOut: getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow"),
-    tIn: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
-    tOut: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
+    flowOut: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
+    tOut: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
+    flowIn: getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow"),
+    tIn: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
   },
   tooltip: tooltip({
     title: "Fresh Water",
-    technicalName: "domestic-hot-water",
+    technicalName: "Fresh-water",
   }),
 });
