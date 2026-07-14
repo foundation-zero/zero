@@ -189,7 +189,7 @@
                 "size": 16,
                 "text": {
                   "field": "fresh_water_mak1_alarm",
-                  "fixed": "Fire detect fault",
+                  "fixed": "Fire detection",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -293,85 +293,6 @@
             {
               "background": {
                 "color": {
-                  "field": "aux_sys_service_supply_fail",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aux_sys_service_supply_fail",
-              "placement": {
-                "height": 25,
-                "left": 470,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "fixed": "Aux. system service supply failure",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aux_sys_service_supply_fail label",
-              "placement": {
-                "height": 26,
-                "left": 505,
-                "top": 10,
-                "width": 300
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
                   "field": "aux_sys_emergency_supply_fail",
                   "fixed": "#D9D9D9"
                 },
@@ -405,7 +326,8 @@
               "placement": {
                 "height": 25,
                 "left": 470,
-                "top": 40,
+                "rotation": 0,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -443,7 +365,8 @@
               "placement": {
                 "height": 26,
                 "left": 505,
-                "top": 40,
+                "rotation": 0,
+                "top": 10,
                 "width": 300
               },
               "type": "text"
@@ -491,7 +414,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdetect_fault__value as detect_fault,\r\n\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
+          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS fire_door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -690,7 +613,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
+          "rawSql": "SELECT\r\n  timestamp                 AS timestamp,\r\n\tfire_doors_release__value AS fire_doors_release\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -732,7 +655,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "continuous-greens"
+                "mode": "continuous-reds"
               },
               "custom": {
                 "axisPlacement": "auto",
@@ -770,17 +693,10 @@
               },
               {
                 "matcher": {
-                  "id": "byRegexp",
-                  "options": "/.* (fault|failure)/"
+                  "id": "byName",
+                  "options": ""
                 },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "mode": "continuous-reds"
-                    }
-                  }
-                ]
+                "properties": []
               }
             ]
           },
@@ -831,7 +747,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, detect_fault__value AS detect_fault,\r\n\t\t\t\t\t\t\t\t\tdoor_powersupplyfail__value AS door_power_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_servicesupplyfail__value AS aux_sys_service_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\t\t\t\t\t\t\t\t\tdoors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT\r\n  timestamp                                        AS time,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\tfire_doors_release__value                        AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -925,12 +841,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1100,12 +1016,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1275,12 +1191,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1438,12 +1354,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1614,12 +1530,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1777,12 +1693,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1953,12 +1869,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2116,12 +2032,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2279,12 +2195,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2455,12 +2371,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2618,12 +2534,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
