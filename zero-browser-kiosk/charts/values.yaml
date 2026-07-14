@@ -1,22 +1,13 @@
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: europe-west1-docker.pkg.dev/common-449414/common/zero-browser-kiosk
-  # This sets the pull policy for images.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
-# This is to override the chart name.
 nameOverride: ""
 fullnameOverride: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
 podSecurityContext: {}
@@ -34,14 +25,13 @@ resources:
     memory: 512Mi
     cpu: "500m"
 
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   # Verify both key processes are actively running
   exec:
     command:
       - /bin/sh
       - -c
-      - pgrep cage && pgrep chromium
+      - pgrep cage && pgrep chromium && pgrep wayvnc
   initialDelaySeconds: 15 # Give Chromium and Cage 15s to fully initialize
   periodSeconds: 10
   failureThreshold: 3
@@ -53,10 +43,8 @@ readinessProbe:
   initialDelaySeconds: 15
   periodSeconds: 5
 
-# Additional volumes on the output Deployment definition.
 volumes: []
 
-# Additional volumeMounts on the output Deployment definition.
 volumeMounts: []
 
 tolerations: []
