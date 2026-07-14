@@ -5068,7 +5068,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "anchor_hatch1_open_tag",
+                  "field": "anchor_hatch1_closed_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5079,7 +5079,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "anchor_hatch1_open_tag",
+              "name": "anchor_hatch1_closed_tag",
               "placement": {
                 "height": 26,
                 "left": 925,
@@ -5107,7 +5107,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "anchor_hatch2_open_tag",
+                  "field": "anchor_hatch2_closed_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5118,7 +5118,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "anchor_hatch2_open_tag",
+              "name": "anchor_hatch2_closed_tag",
               "placement": {
                 "height": 26,
                 "left": 925,
@@ -5215,7 +5215,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch1_open_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch2_open_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch1_closed_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_CLOSED') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch2_closed_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
           "refId": "B",
           "sql": {
             "columns": [
