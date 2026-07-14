@@ -49,5 +49,6 @@ const state = getComponentState();
         <ValueListSeparator />
       </ValueList>
     </HeatPump>
+    <slot />
   </MimicTooltipTrigger>
 </template>

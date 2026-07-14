@@ -22,5 +22,6 @@ const state = getComponentState();
       v-bind="props"
       :state="state"
     />
+    <slot />
   </MimicTooltipTrigger>
 </template>

@@ -58,5 +58,6 @@ const state = getComponentState();
         <ValueListSeparator />
       </ValueList>
     </CircuitBox>
+    <slot />
   </MimicTooltipTrigger>
 </template>

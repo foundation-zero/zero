@@ -59,5 +59,6 @@ const state = getComponentState();
         <ValueListFlowItem :value="flow?.flow?.value" />
       </ValueList>
     </CircuitBox>
+    <slot />
   </MimicTooltipTrigger>
 </template>

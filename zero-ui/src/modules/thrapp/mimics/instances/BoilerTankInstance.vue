@@ -67,5 +67,6 @@ const fillTime = computed(() => controller.value?.timeToFill.value);
         />
       </ValueList>
     </BoilerTank>
+    <slot />
   </MimicTooltipTrigger>
 </template>

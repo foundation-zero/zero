@@ -66,5 +66,6 @@ const exchangerState = computed(() => {
         :orientation="custom.sideB"
       />
     </HeatExchanger>
+    <slot />
   </MimicTooltipTrigger>
 </template>

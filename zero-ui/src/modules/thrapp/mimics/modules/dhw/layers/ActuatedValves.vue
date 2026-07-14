@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components/index.ts";
+import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
+import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { FlowControlValveInstance, SwitchValveInstance } from "../../../instances/index.ts";
 import { DHW_MIMIC_DATA } from "../data/index.ts";
 
@@ -15,105 +17,209 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-11']"
-    />
+    >
+      <TagLabelInstance
+        x="360"
+        y="192"
+        tag-id="1067-11"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="417"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-12']"
-    />
+    >
+      <TagLabelInstance
+        x="416"
+        y="192"
+        tag-id="1067-12"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="472"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-14']"
-    />
+    >
+      <TagLabelInstance
+        x="470"
+        y="192"
+        tag-id="1067-14"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="525"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-13']"
-    />
+    >
+      <TagLabelInstance
+        x="524"
+        y="192"
+        tag-id="1067-13"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="715"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-07']"
-    />
+    >
+      <TagLabelInstance
+        x="713"
+        y="192"
+        tag-id="1067-07"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="769"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-08']"
-    />
+    >
+      <TagLabelInstance
+        x="767"
+        y="192"
+        tag-id="1067-08"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="824"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-10']"
-    />
+    >
+      <TagLabelInstance
+        x="822"
+        y="192"
+        tag-id="1067-10"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="877"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-09']"
-    />
+    >
+      <TagLabelInstance
+        x="875"
+        y="192"
+        tag-id="1067-09"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="1053"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-03']"
-    />
+    >
+      <TagLabelInstance
+        x="1051"
+        y="192"
+        tag-id="1067-03"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="1107"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-04']"
-    />
+    >
+      <TagLabelInstance
+        x="1105"
+        y="192"
+        tag-id="1067-04"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="1161"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-06']"
-    />
+    >
+      <TagLabelInstance
+        x="1160"
+        y="192"
+        tag-id="1067-06"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="1219"
       y="156.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-05']"
-    />
+    >
+      <TagLabelInstance
+        x="1217"
+        y="192"
+        tag-id="1067-05"
+      />
+    </SwitchValveInstance>
 
     <SwitchValveInstance
       x="179.5"
       y="586.2099609375"
       :orientation="ComponentOrientation.Right"
       v-bind="switchValves['1067-17']"
-    />
+    >
+      <TagLabelInstance
+        x="216"
+        y="598"
+        tag-id="1067-17"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="211"
       y="554"
       :orientation="ComponentOrientation.Up"
       v-bind="switchValves['1067-16']"
-    />
+    >
+      <TagLabelInstance
+        x="249"
+        y="563"
+        tag-id="1067-16"
+      />
+    </SwitchValveInstance>
     <SwitchValveInstance
       x="145"
       y="554"
       :orientation="ComponentOrientation.Up"
       v-bind="switchValves['1067-18']"
-    />
+    >
+      <TagLabelInstance
+        x="145"
+        y="542"
+        tag-id="1067-18"
+      />
+    </SwitchValveInstance>
 
     <FlowControlValveInstance
       x="1046"
       y="473.2099609375"
       v-bind="flowControlValves['1064-08']"
       :orientation="ComponentOrientation.Up"
-    />
+    >
+      <FlowControlLabelInstance
+        x="1043"
+        y="442"
+        tag-id="1064-08"
+        :valve="flowControlValves['1064-08'].source"
+      />
+    </FlowControlValveInstance>
 
     <FlowControlValveInstance
       x="1046"
       y="635"
       v-bind="flowControlValves['1064-03']"
       :orientation="ComponentOrientation.Up"
-    />
+    >
+      <FlowControlLabelInstance
+        x="1045"
+        y="604"
+        tag-id="1064-03"
+        :valve="flowControlValves['1064-03'].source"
+      />
+    </FlowControlValveInstance>
   </g>
 </template>

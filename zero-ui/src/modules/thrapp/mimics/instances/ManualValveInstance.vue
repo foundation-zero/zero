@@ -18,5 +18,6 @@ const props = defineProps<
     :data="props"
   >
     <ManualValve v-bind="props" />
+    <slot />
   </MimicTooltipTrigger>
 </template>

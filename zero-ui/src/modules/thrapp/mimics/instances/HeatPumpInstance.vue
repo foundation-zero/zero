@@ -60,5 +60,6 @@ const mode = computed(() => {
         <ValueListSeparator />
       </ValueList>
     </HeatPump>
+    <slot />
   </MimicTooltipTrigger>
 </template>
