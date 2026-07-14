@@ -441,6 +441,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -454,7 +455,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('treat_gen_warning_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_general_warning_alarm_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('sewage_treatment_plant_general_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_general_alarm_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
@@ -593,7 +593,7 @@
                 "size": 16,
                 "text": {
                   "field": "sea_water_cool_pmp1_remote",
-                  "fixed": " ",
+                  "fixed": "Grey water FWD pump - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1685,6 +1685,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1698,7 +1699,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('pump_fwd_grey_wat_remavail') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS fwd_pump_grey_remavail_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('pump_fwd_grey_wat_running') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS fwd_pump_grey_running_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_grey_wat_remavail') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS trans_pump_grey_remavail_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_grey_wat_running') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS trans_pump_grey_running_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_blck_wat_remavail') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS trans_pump_black_remavail_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_blck_wat_running') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS trans_pump_black_running_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('sewage_treatment_plant_on') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_on_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('treat_release') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_release_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('treat_dryrunnprot') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_dry_run_protection_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
@@ -2204,6 +2204,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -2217,7 +2218,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('pump_fwd_grey_wat_startstop') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_fwd_pump_startstop_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_grey_wat_startstop') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_transfer_pump_startstop_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('trans_pump_blck_wat_startstop') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS black_wat_transfer_pump_startstop_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
@@ -3051,6 +3051,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3064,7 +3065,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('grey_water_tank_aft_sb_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_aft_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('grey_water_tank_fwd_sb_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_fwd_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('black_grey_water_tank_aft_ps_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS black_wat_aft_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('treat_holding_tank_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_holding_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('treat_sludge_tank_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS treatment_sludge_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('sludge_tank_ps_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS sludge_tank_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
@@ -3178,20 +3178,20 @@
               },
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\ttreat_gen_warning_alarm__value AS treat_gen_warning_alarm,\r\n\t\t\tsewage_treatment_plant_general_alarm__value AS treat_gen_alarm\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
@@ -3310,20 +3310,20 @@
               },
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\tpump_fwd_grey_wat_remavail__value AS fwd_pump_grey_wat_remavail,\r\n\t\t\tpump_fwd_grey_wat_running__value AS fwd_pump_grey_wat_running,\r\n\t\t\ttrans_pump_grey_wat_remavail__value AS trans_pump_grey_wat_remavail,\r\n\t\t\ttrans_pump_grey_wat_running__value AS trans_pump_grey_wat_running,\r\n\t\t\ttrans_pump_blck_wat_remavail__value AS trans_pump_black_wat_remavail,\r\n\t\t\ttrans_pump_blck_wat_running__value AS trans_pump_black_wat_running,\r\n\t\t\tsewage_treatment_plant_on__value AS treatment_on,\r\n\t\t\ttreat_release__value AS treatment_release,\r\n\t\t\ttreat_dryrunnprot__value AS treatment_dry_run_protect\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
@@ -3450,20 +3450,20 @@
               },
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\tpump_fwd_grey_wat_startstop__value AS fwr_pump_grey_wat_start,\r\n\t\t\ttrans_pump_grey_wat_startstop__value AS trans_pump_grey_wat_start,\r\n\t\t\ttrans_pump_blck_wat_startstop__value AS trans_pump_black_wat_start\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
@@ -3602,20 +3602,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\tgrey_water_tank_aft_sb_level__value as grey_wat_aft_tank,\r\n\t\t\tgrey_water_tank_fwd_sb_level__value as grey_wat_fwd_tank,\r\n\t\t\tblack_grey_water_tank_aft_ps_level__value as black_wat_aft_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
@@ -3754,20 +3754,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\ttreat_holding_tank_level__value as treatment_holding_tank,\r\n\t\t\ttreat_sludge_tank_level__value as treatment_sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
@@ -3906,20 +3906,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "SELECT timestamp as time,\r\n\t\t\tsludge_tank_ps_level__value as sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
