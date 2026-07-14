@@ -2166,42 +2166,16 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "topic"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 272
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "topic"
-            },
-            "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "auto"
-                }
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Name"
             },
             "properties": [
               {
                 "id": "custom.width",
                 "value": 318
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
               }
             ]
           }
@@ -2248,7 +2222,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (topic) topic,\r\n\t\t\t\t\t\t\t\t\talarm__value AS Alarm,\r\n\t\t\t\t\t\t\t\t\tclose__value AS Close,\r\n\t\t\t\t\t\t\t\t\tclosed__value AS Closed,\r\n\t\t\t\t\t\t\t\t\thmi_cmd_close__value AS HmiCmdClose,\r\n\t\t\t\t\t\t\t\t\thmi_cmd_open__value AS HmiCmdOpen,\r\n\t\t\t\t\t\t\t\t\thmi_control_available__value AS HmiControlAvailable,\r\n\t\t\t\t\t\t\t\t\topen__value AS Open,\r\n\t\t\t\t\t\t\t\t\topened__value AS Opened,\r\n\t\t\t\t\t\t\t\t\tshould_be_open__value AS ShouldBeOpen\r\nFROM marpower__380000_seawater_cooling\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic, timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (topic) topic,\r\n\talarm__value                 AS alarm,\r\n\tclose__value                 AS close,\r\n\tclosed__value                AS closed,\r\n\thmi_cmd_close__value         AS hmi_cmd_close,\r\n\thmi_cmd_open__value          AS hmi_cmd_open,\r\n\thmi_control_available__value AS hmi_control_available,\r\n\topen__value                  AS open,\r\n\topened__value                AS opened,\r\n\tshould_be_open__value        AS should_be_open,\r\n\tpower_detected__value        AS power_detected,\r\n\tmulti_state_alarm__value     AS multi_state_alarm\r\nFROM marpower__380000_seawater_cooling\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic, timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2281,11 +2255,17 @@
               "alarm": "Alarm",
               "close": "Close",
               "closed": "Closed",
+              "hmi_cmd_close": "HMI close",
+              "hmi_cmd_open": "HMI open",
+              "hmi_control_available": "HMI ctrl avail.",
               "hmicmdclose": "HMI close",
               "hmicmdopen": "HMI open",
               "hmicontrolavailable": "HMI cntrl avail.",
+              "multi_state_alarm": "Multi state alarm",
               "open": "Open",
               "opened": "Opened",
+              "power_detected": "Power detected",
+              "should_be_open": "Should be open",
               "shouldbeopen": "Should be open",
               "topic": "Name"
             }
