@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.dhw import DhwControlMode, DhwControllerState, DhwParameters
+from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode

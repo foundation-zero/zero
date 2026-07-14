@@ -1,53 +1,75 @@
-from datetime import datetime
-from typing import Callable
+from collections.abc import Callable
+from datetime import datetime, timedelta
 
-from thrs.input_output.base import CombinedValues
+from thrs.control.switching import SwitchingControlMode
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
     SimulationChannels,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import CombinedAlarms, CombinedControl
-from thrs.orchestration.simulation import Simulation
-from thrs.runtime.descriptions.simulation import Mode
+from thrs.orchestration.module import Module, ModuleDescription
+from thrs.orchestration.simulation import (
+    Simulation,
+    SimulationDescription,
+    SimulationUnit,
+)
 
 
-def setup_simulation(
+def setup_simulation_module(
     connector: MqttConnector,
     config: Config,
-    mode: Mode,
-) -> tuple[Simulation, SimulationChannels]:
-    simulation = mode.setup_simulation()
-    if simulation is None:
-        raise ValueError("simulation must be defined for simulation mode")
+    control_modules: dict[str, ModuleDescription],
+    simulation_description: SimulationDescription,
+) -> SimulationUnit:
+    sensor_values_cls = {
+        module: desc.sensor_values_cls for module, desc in control_modules.items()
+    }
 
-    return (
+    simulation = Simulation(
+        sensor_values_cls,
+        simulation_description.simulation_outputs_cls,
+        simulation_description.fmu,
+        simulation_description.simulation_inputs,
+        datetime.now(),
+        timedelta(seconds=1),
+    )
+
+    return SimulationUnit(
         simulation,
         SimulationChannels(
             connector,
             config,
-            mode.control_module.sensor_values_clss,
-            mode.control_module.control_values_clss,
-            simulation.inputs_cls,
-            simulation.outputs_cls,
+            sensor_values_cls,
+            {
+                module: desc.control_values_cls
+                for module, desc in control_modules.items()
+            },
+            type(simulation_description.simulation_inputs),
+            simulation_description.simulation_outputs_cls,
         ),
     )
 
 
-def setup_control(
+def setup_control_modules(
     connector: MqttConnector,
     config: Config,
-    mode: Mode,
+    control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
-) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
-    control_channels = ControlChannels(connector, config, mode.control_module)
+) -> list[Module]:
+    result = []
+    for module_name, module in control_modules.items():
+        parameters = module.parameters_cls()
+        control = module.control(parameters, time_fn)
 
-    parameters = {
-        module: mode.control_module.parameters_for_module(module)()
-        for module in mode.control_module.modules
-    }
+        # This line should not be here since it exposes that we are dealing with a switching module
+        # We need to refactor the switching control functionality to be more local/abstractable
+        module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
 
-    control = mode.control_module.control(CombinedValues(parameters), time_fn)
+        channel = ControlChannels(connector, config, module_name, module)
 
-    return control, control_channels, mode.control_module.alarms()
+        alarms = module.alarms()
+
+        result.append(Module(module_name, control, alarms, channel))
+
+    return result

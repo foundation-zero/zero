@@ -28,7 +28,7 @@ class SwitchingControl[
         SensorValues,
         ControlValues,
         ControlParameters,
-        ControlMode,
+        SwitchingControlMode[ControlMode],
         ControllerState,
     ]
 ):

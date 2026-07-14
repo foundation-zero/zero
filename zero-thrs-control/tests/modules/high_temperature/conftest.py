@@ -4,15 +4,13 @@ from pytest import fixture
 
 from thrs.control.modules.consumers import (
     CONSUMERS_MODULE_DESCRIPTION,
-    ConsumersParameters,
 )
-from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION, PcmParameters
-from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION, PvtParameters
+from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
-    ThrustersParameters,
 )
-from thrs.input_output.base import CombinedValues, Stamped
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
@@ -28,7 +26,7 @@ from thrs.input_output.modules.high_temperature import (
 from thrs.input_output.modules.pcm import PcmSensorValues
 from thrs.input_output.modules.pvt import PvtSensorValues
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
-from thrs.orchestration.module import CombinedModule
+from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -68,30 +66,13 @@ def simulation_inputs():
 
 
 @fixture
-def module():
-    return CombinedModule(
-        {
-            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-            "pvt": PVT_MODULE_DESCRIPTION,
-            "pcm": PCM_MODULE_DESCRIPTION,
-            "consumers": CONSUMERS_MODULE_DESCRIPTION,
-        },
-    )
-
-
-@fixture
-def control(module, simulation):
-    return module.control(
-        CombinedValues(
-            {
-                "thrusters": ThrustersParameters(),
-                "pvt": PvtParameters(),
-                "pcm": PcmParameters(),
-                "consumers": ConsumersParameters(),
-            }
-        ),
-        simulation.time,
-    )
+def modules() -> dict[str, ModuleDescription]:
+    return {
+        "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+        "pvt": PVT_MODULE_DESCRIPTION,
+        "pcm": PCM_MODULE_DESCRIPTION,
+        "consumers": CONSUMERS_MODULE_DESCRIPTION,
+    }
 
 
 @fixture

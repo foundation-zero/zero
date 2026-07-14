@@ -8,7 +8,6 @@ from aiomqtt import Client as MqttClient
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
-    CombinedValues,
     SimulationInputs,
     SimulationValues,
     ThrsValues,
@@ -23,7 +22,7 @@ from thrs.orchestration.comms import (
     SimulationChannels,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import CombinedModule, ModuleDescription
+from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.messages import SimulationStatusMessage
 
 pytestmark = pytest.mark.mqtt
@@ -94,9 +93,9 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
         connector = MqttConnector(mqtt_client)
 
-        combined_module = CombinedModule(modules={"thrusters": demo_module})
-
-        control_channels = ControlChannels(connector, settings, combined_module)
+        control_channels = ControlChannels(
+            connector, settings, "thrusters", demo_module
+        )
 
         api_channels = ControlApiChannels(connector, settings, "thrusters", demo_module)
 
@@ -115,21 +114,11 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 automatic_mode=DemoMode(mode="automatic")
             )
 
-            await control_channels.send_control_values(
-                CombinedValues(values={"thrusters": expected_control_values})
-            )
-            await control_channels.send_manual_control(
-                CombinedValues(values={"thrusters": expected_manual_values})
-            )
-            await control_channels.send_parameters(
-                CombinedValues(values={"thrusters": expected_parameters})
-            )
-            await control_channels.send_controller_state(
-                CombinedValues(values={"thrusters": expected_state})
-            )
-            await control_channels.send_control_modes(
-                CombinedValues(values={"thrusters": expected_mode})
-            )
+            await control_channels.send_control_values(expected_control_values)
+            await control_channels.send_manual_control(expected_manual_values)
+            await control_channels.send_parameters(expected_parameters)
+            await control_channels.send_controller_state(expected_state)
+            await control_channels.send_control_modes(expected_mode)
             await asyncio.sleep(0.1)
 
             await _wait_until(
@@ -148,12 +137,12 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
 async def test_control_api_channels_to_control_channels_roundtrip_shared_channels(
     settings: Config, demo_module: ModuleDescription
 ):
-    combined_module = CombinedModule(modules={"thrusters": demo_module})
-
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
         connector = MqttConnector(mqtt_client)
 
-        control_channels = ControlChannels(connector, settings, combined_module)
+        control_channels = ControlChannels(
+            connector, settings, "thrusters", demo_module
+        )
 
         api_channels = ControlApiChannels(connector, settings, "thrusters", demo_module)
 
@@ -174,9 +163,7 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
                 lambda: (
                     control_channels.get_manual_controls() is not None
                     and control_channels.get_parameters() is not None
-                    and (automation_mode := control_channels.get_automation_modes())
-                    is not None
-                    and "thrusters" in automation_mode.values
+                    and control_channels.get_automation_modes() is not None
                 )
             )
 
@@ -188,9 +175,9 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
             assert parameters is not None
             assert automation_modes is not None
 
-            assert manual_values.values["thrusters"] == expected_manual_values
-            assert parameters.values["thrusters"] == expected_parameters
-            assert automation_modes.values["thrusters"] == expected_mode
+            assert manual_values == expected_manual_values
+            assert parameters == expected_parameters
+            assert automation_modes == expected_mode
         finally:
             connector_task.cancel()
 
