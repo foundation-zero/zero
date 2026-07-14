@@ -1,0 +1,62 @@
+name: "Zero Browser Kiosk: Push Docker image"
+on:
+  pull_request:
+    paths:
+      - zero-browser-kiosk/**
+      - .github/workflows/ci_zero_browser_kiosk.yaml
+  release:
+    types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-browser-kiosk/**
+      - .github/workflows/ci_zero_browser_kiosk.yaml
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-browser-kiosk"
+
+jobs:
+  docker-push:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v4
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            export GIT_REF="${{ github.event.release.tag_name }}"
+            export VERSION=${GIT_REF#v}
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            export GIT_REF=${{github.ref_name}}
+            export VERSION=${GIT_REF#v}
+          else
+            VERSION=$(git rev-parse --short=7 HEAD)
+          fi
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: zero-browser-kiosk
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.IMAGE }}:${{ steps.image_tag.outputs.image_tag }}

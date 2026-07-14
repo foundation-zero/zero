@@ -1,0 +1,56 @@
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-browser-kiosk
+  pullPolicy: Always
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  privileged: true # Gives Cage permission to claim GPU/Display and /dev/input
+  readOnlyRootFilesystem: true
+
+resources:
+  limits:
+    memory: 2Gi
+    cpu: "2"
+  requests:
+    memory: 512Mi
+    cpu: "500m"
+
+livenessProbe:
+  # Verify both key processes are actively running
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - pgrep cage && pgrep chromium && pgrep wayvnc
+  initialDelaySeconds: 15 # Give Chromium and Cage 15s to fully initialize
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  # Confirm VNC is listening (which indicates Wayland has fully initialized)
+  tcpSocket:
+    port: 5900
+  initialDelaySeconds: 15
+  periodSeconds: 5
+
+volumes: []
+
+volumeMounts: []
+
+tolerations: []
+
+nodeAffinity:
+  hostname: node
+
+env:
+  KIOSK_URL: http://ui-local.zero.svc.cluster.local
