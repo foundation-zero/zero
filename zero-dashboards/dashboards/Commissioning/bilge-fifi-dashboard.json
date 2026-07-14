@@ -2016,11 +2016,11 @@
             {
               "background": {
                 "color": {
-                  "fixed": "dark-green"
+                  "field": "water_separator_ppm_alarm"
                 },
                 "image": {
-                  "field": "water_separator_ppm_alarm",
-                  "mode": "field"
+                  "field": "",
+                  "mode": "fixed"
                 }
               },
               "border": {
