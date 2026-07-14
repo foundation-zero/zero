@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "charts.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "charts.selectorLabels" . | nindent 6 }}
@@ -27,19 +27,12 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "charts.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-      # # Ensures the pod hooks into the physical node's loops
-      # hostNetwork: true
-
-      # # IMPORTANT: Targets only nodes that actually have a physical monitor attached
-      # # nodeSelector:
-      # #   hardware: physical-display
-      # dnsPolicy: ClusterFirstWithHostNet
+      priorityClassName: kiosk-critical
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.env }}
@@ -71,16 +64,48 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          - name: dshm
+            mountPath: /dev/shm
+          - name: dri
+            mountPath: /dev/dri
+          - name: input
+            mountPath: /dev/input
+          - name: udev
+            mountPath: /run/udev
+            readOnly: true
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
+      # Prevents Chromium render process crashes by scaling up shared memory
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 512Mi
+      # Prevents Chromium render process crashes by scaling up shared memory
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 512Mi
+      # Mounts the graphics card / display render nodes
+      - name: dri
+        hostPath:
+          path: /dev/dri
+          type: Directory
+      # Mounts the USB input devices (keyboards, touchscreens, mice)
+      - name: input
+        hostPath:
+          path: /dev/input
+          type: Directory
+      # Mounts hardware device mapping details
+      - name: udev
+        hostPath:
+          path: /run/udev
+          type: DirectoryOrCreate
+      {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       affinity:

@@ -1,11 +1,8 @@
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
-
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: europe-west1-docker.pkg.dev/common-449414/common/zero-browser-kiosk
   # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -27,12 +24,7 @@ podSecurityContext: {}
 
 securityContext:
   privileged: true # Gives Cage permission to claim GPU/Display and /dev/input
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  readOnlyRootFilesystem: true
 
 resources:
   limits:
@@ -43,44 +35,29 @@ resources:
     cpu: "500m"
 
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-livenessProbe: {}
-readinessProbe: {}
+livenessProbe:
+  # Verify both key processes are actively running
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - pgrep cage && pgrep chromium
+  initialDelaySeconds: 15 # Give Chromium and Cage 15s to fully initialize
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  # Confirm VNC is listening (which indicates Wayland has fully initialized)
+  tcpSocket:
+    port: 5900
+  initialDelaySeconds: 15
+  periodSeconds: 5
 
 # Additional volumes on the output Deployment definition.
-volumes:
-  # Prevents Chromium render process crashes by scaling up shared memory
-  - name: dshm
-    emptyDir:
-      medium: Memory
-      sizeLimit: 512Mi
-  # Mounts the graphics card / display render nodes
-  - name: dri
-    hostPath:
-      path: /dev/dri
-      type: Directory
-  # Mounts the USB input devices (keyboards, touchscreens, mice)
-  - name: input
-    hostPath:
-      path: /dev/input
-      type: Directory
-  # Mounts hardware device mapping details
-  - name: udev
-    hostPath:
-      path: /run/udev
-      type: DirectoryOrCreate
+volumes: []
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-  - name: dshm
-    mountPath: /dev/shm
-  - name: dri
-    mountPath: /dev/dri
-  - name: input
-    mountPath: /dev/input
-  - name: udev
-    mountPath: /run/udev
-    readOnly: true
-nodeSelector: {}
+volumeMounts: []
 
 tolerations: []
 
