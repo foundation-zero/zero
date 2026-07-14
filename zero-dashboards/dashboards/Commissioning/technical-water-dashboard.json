@@ -105,7 +105,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 0,
         "y": 3
       },
@@ -321,6 +321,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -334,7 +335,6 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
           "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('chlorine_unit_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) as chlorine_unit_alarm_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
@@ -386,8 +386,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
-        "x": 4,
+        "w": 8,
+        "x": 6,
         "y": 3
       },
       "id": 2,
@@ -793,8 +793,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 8,
-        "x": 16,
+        "w": 10,
+        "x": 14,
         "y": 3
       },
       "id": 3,
@@ -2334,7 +2334,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS timestamp,\r\nadiabatic_cool_b_03_flow__value AS adiabatic_cool_b03,\r\nadiabatic_cool_b_07_flow__value AS adiabatic_cool_b07,\r\nadiabatic_cool_b_08_flow__value AS adiabatic_cool_b08,\r\nadiabatic_cool_b_09_flow__value AS adiabatic_cool_b09,\r\nreel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\nreel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\nreel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3200,7 +3200,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS timestamp,\r\n\t\t\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp,\r\n\t\t\tsalinity_1__value AS salinity1,\r\n\t\t\tsalinity_2__value AS salinity2,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2,\r\n\ttank_1_level__value              AS tank1_level,\r\n\ttank_2_level__value              AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3244,7 +3244,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_temp') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity1') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity2') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b01_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b02_temp' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity1' THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity2' THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3353,7 +3353,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 18
           },
           "id": 15,
           "options": {
@@ -3390,7 +3390,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, adiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tadiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3506,7 +3506,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 26
           },
           "id": 17,
           "options": {
@@ -3543,7 +3543,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, reel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\treel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3670,7 +3670,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 34
           },
           "id": 16,
           "options": {
@@ -3707,7 +3707,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, charcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\t\t\t\t\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3821,7 +3821,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 42
           },
           "id": 19,
           "options": {
@@ -3858,7 +3858,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, salinity_1__value AS salinity1,\r\n\t\t\t\t\t\t\t\t\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3972,7 +3972,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 56
+            "y": 50
           },
           "id": 18,
           "options": {
@@ -4009,7 +4009,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, tank_1_level__value AS tank1_level,\r\n\t\t\t\t\t\t\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
