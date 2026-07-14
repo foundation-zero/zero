@@ -5043,9 +5043,10 @@
               "name": "crew_platform_closed label",
               "placement": {
                 "height": 26,
-                "left": 555,
+                "left": 560,
+                "rotation": 0,
                 "top": 10,
-                "width": 369.7807792430624
+                "width": 369.7833251953125
               },
               "type": "text"
             },
