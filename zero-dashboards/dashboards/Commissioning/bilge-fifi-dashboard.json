@@ -2110,8 +2110,9 @@
                   "field": "water_separator_ppm_alarm_tag",
                   "fixed": " ",
                   "mode": "field"
-                },
+                }
                 "valign": "middle"
+              },
               "connections": [],
               "constraint": {
                 "horizontal": "left",
