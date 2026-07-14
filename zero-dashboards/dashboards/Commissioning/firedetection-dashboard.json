@@ -131,7 +131,7 @@
             {
               "background": {
                 "color": {
-                  "field": "detect_fault",
+                  "field": "fire_detection",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -160,7 +160,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "detect_fault",
+              "name": "fire_detection",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -199,7 +199,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "detect_fault label",
+              "name": "fire_detection label",
               "placement": {
                 "height": 26,
                 "left": 50,
@@ -414,7 +414,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS fire_door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -693,7 +693,7 @@
             {
               "background": {
                 "color": {
-                  "field": "detect_fault",
+                  "field": "fire_detection",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -855,7 +855,7 @@
             {
               "background": {
                 "color": {
-                  "field": "detect_fault",
+                  "field": "fire_detection",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -1458,7 +1458,6 @@
                 "renameByName": {
                   "aux_sys_emergency_supply_fail": "Aux. sys. emergency supply failure",
                   "aux_sys_service_supply_fail": "Aux. sys. service supply failure",
-                  "detect_fault": "Fire detect fault",
                   "door_galley_keel_open": "Fire door galley/keel open",
                   "door_power_supply_fail": "Fire door power supply failure",
                   "doors_release": "Release fire doors"
