@@ -117,6 +117,10 @@
           "background": {
             "color": {
               "fixed": "transparent"
+            },
+            "image": {
+              "field": "water_separator_ppm_alarm",
+              "mode": "fixed"
             }
           },
           "border": {
@@ -2012,11 +2016,11 @@
             {
               "background": {
                 "color": {
-                  "fixed": "#D9D9D9"
+                  "fixed": "dark-green"
                 },
                 "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
+                  "field": "water_separator_ppm_alarm",
+                  "mode": "field"
                 }
               },
               "border": {
@@ -2030,8 +2034,8 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
+                  "field": "water_separator_ppm_alarm",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
