@@ -110,6 +110,8 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "incomingFlow": "Incoming flow",
+        "outgoingFlow": "Outgoing flow",
         "quantity": "Quantity",
         "circuit": "Circuit",
         "heatflow": "Heatflow",

@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrs/types";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField } from "../providers";
+import SensorValue from "../providers/SensorValue.vue";
+import { FieldRenderer } from "../renderers";
 
-const props = defineProps<
-  MimicComponentInstanceProps & { flow: ModuleField<SensorComponentType.Flow> }
->();
-
-const { getSensorValue } = getMimicDataProvider();
-const flow = getSensorValue(props.flow);
-
-const { t } = useI18n();
+defineProps<MimicComponentInstanceProps & { flow: ModuleField<SensorComponentType.Flow> }>();
 </script>
 
 <template>
@@ -23,11 +16,12 @@ const { t } = useI18n();
   >
     {{ tagId }}
     <template #value>
-      <AnimatedNumber
-        :to="flow?.flow?.value"
-        :fraction-digits="0"
-      />
-      {{ t("units.lpm") }}
+      <SensorValue
+        :source="flow"
+        field="flow"
+      >
+        <FieldRenderer.FlowRate />
+      </SensorValue>
     </template>
   </Label>
 </template>

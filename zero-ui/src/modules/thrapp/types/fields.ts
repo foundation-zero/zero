@@ -154,7 +154,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
     controller: ControllerStateComponentType.PIDController;
   };
   [MimicComponentType.TemperatureSensor]: {
-    controller: ControllerStateComponentType.PIDController;
+    controller?: ControllerStateComponentType.PIDController;
   };
   [MimicComponentType.FlowSensor]: {
     controller: ControllerStateComponentType.PIDController;
@@ -264,12 +264,18 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.HotWaterCircuit]: undefined;
 }>;
 
+export type Defined<P, T extends P | undefined> = T extends P ? T : P;
+
 export type ExtractModuleFields<
   Fields extends Record<
     string,
     SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
   >,
-> = { [K in keyof Fields]: ModuleField<Fields[K]> };
+> = {
+  [K in keyof Fields]: Fields[K] extends undefined
+    ? ModuleField<Fields[K]> | undefined
+    : ModuleField<Fields[K]>;
+};
 
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &

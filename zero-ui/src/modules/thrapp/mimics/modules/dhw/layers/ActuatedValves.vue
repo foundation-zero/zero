@@ -197,28 +197,28 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
     <FlowControlValveInstance
       x="1046"
       y="473.2099609375"
-      v-bind="flowControlValves['1064-08']"
+      v-bind="flowControlValves['1064-03']"
       :orientation="ComponentOrientation.Up"
     >
       <FlowControlLabelInstance
         x="1043"
         y="442"
-        tag-id="1064-08"
-        :valve="flowControlValves['1064-08'].source"
+        tag-id="1064-03"
+        :valve="flowControlValves['1064-03'].source"
       />
     </FlowControlValveInstance>
 
     <FlowControlValveInstance
       x="1046"
       y="635"
-      v-bind="flowControlValves['1064-03']"
+      v-bind="flowControlValves['1064-08']"
       :orientation="ComponentOrientation.Up"
     >
       <FlowControlLabelInstance
         x="1045"
         y="604"
-        tag-id="1064-03"
-        :valve="flowControlValves['1064-03'].source"
+        tag-id="1064-08"
+        :valve="flowControlValves['1064-08'].source"
       />
     </FlowControlValveInstance>
   </g>

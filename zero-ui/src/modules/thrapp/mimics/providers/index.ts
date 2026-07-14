@@ -67,6 +67,18 @@ export type ModuleField<
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
 > = [type: Type, module: Module, field: string];
 
+export const isField = <
+  Type extends
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType,
+>(
+  field?: ModuleField<Type | undefined>,
+): field is ModuleField<Type> => {
+  return field?.[0] !== undefined;
+};
+
 export interface MimicDataProvider {
   getSensorValue: <Type extends SensorComponentType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,

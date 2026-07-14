@@ -13,29 +13,29 @@ const flowSensors = DHW_MIMIC_DATA[MimicComponentType.FlowSensor];
     <FlowSensorInstance
       x="1100"
       y="457.2099609375"
-      tag-id="1057-24"
-      v-bind="flowSensors['1057-24']"
-      :orientation="ComponentOrientation.Down"
-    >
-      <FlowLabelInstance
-        x="1090"
-        y="420"
-        tag-id="1057-24"
-        :flow="flowSensors['1057-24'].source"
-      />
-    </FlowSensorInstance>
-    <FlowSensorInstance
-      x="1101"
-      y="616.2099609375"
       tag-id="1057-17"
       v-bind="flowSensors['1057-17']"
       :orientation="ComponentOrientation.Down"
     >
       <FlowLabelInstance
         x="1090"
-        y="579"
+        y="420"
         tag-id="1057-17"
         :flow="flowSensors['1057-17'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="1101"
+      y="616.2099609375"
+      tag-id="1057-24"
+      v-bind="flowSensors['1057-24']"
+      :orientation="ComponentOrientation.Down"
+    >
+      <FlowLabelInstance
+        x="1090"
+        y="579"
+        tag-id="1057-24"
+        :flow="flowSensors['1057-24'].source"
       />
     </FlowSensorInstance>
     <FlowSensorInstance

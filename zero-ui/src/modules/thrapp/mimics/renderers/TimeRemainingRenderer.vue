@@ -3,9 +3,7 @@ import { formatInt } from "@/modules/common/lib/utils.ts";
 import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
-const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: formatInt,
-});
+const props = defineProps<FieldRendererProps<number>>();
 
 const { units } = useTranslations();
 const seconds = (value: number) => formatInt(value % 60);

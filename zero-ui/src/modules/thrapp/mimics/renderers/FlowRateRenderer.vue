@@ -4,7 +4,7 @@ import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: formatNumber(1),
+  format: formatNumber.default,
 });
 
 const { units } = useTranslations();
@@ -14,6 +14,7 @@ const { units } = useTranslations();
   <FieldRenderer.Number
     v-bind="props"
     :unit="units('lpm')"
+    class="gap-1"
   >
   </FieldRenderer.Number>
 </template>

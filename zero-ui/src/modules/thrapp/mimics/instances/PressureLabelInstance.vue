@@ -1,21 +1,15 @@
 <script setup lang="ts">
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrs/types";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField, SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 
-const props = defineProps<
+defineProps<
   MimicComponentInstanceProps & {
     pressure: ModuleField<SensorComponentType.Pressure>;
   }
 >();
-
-const { getSensorValue } = getMimicDataProvider();
-const pressure = getSensorValue(props.pressure);
-
-const { t } = useI18n();
 </script>
 
 <template>
@@ -25,11 +19,12 @@ const { t } = useI18n();
   >
     {{ tagId }}
     <template #value>
-      <AnimatedNumber
-        :to="pressure?.pressure?.value"
-        :fraction-digits="0"
-      />
-      {{ t("units.bar") }}
+      <SensorValue
+        :source="pressure"
+        field="pressure"
+      >
+        <FieldRenderer.Pressure />
+      </SensorValue>
     </template>
   </Label>
 </template>

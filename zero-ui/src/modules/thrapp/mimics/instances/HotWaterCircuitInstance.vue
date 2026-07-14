@@ -23,11 +23,7 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
-const flowIn = getSensorValue(props.sensors.flowIn);
-const tIn = getSensorValue(props.sensors.tIn);
-const flowOut = getSensorValue(props.sensors.flowOut);
-const tOut = getSensorValue(props.sensors.tOut);
+const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
 
 const t = tScoped("labels");
@@ -49,16 +45,15 @@ const t = tScoped("labels");
           <RiArrowDownLine class="text-muted-foreground size-3" />
           {{ t("from") }}
         </ValueListHeader>
-        <ValueListFlowItem :value="flowIn?.flow.value" />
-        <ValueListTemperatureItem :temperature="tIn?.temperature.value" />
+        <ValueListFlowItem :source="sensors.flowIn" />
+        <ValueListTemperatureItem :source="sensors.tIn" />
         <ValueListSeparator />
         <ValueListHeader>
           <RiArrowLeftLine class="text-muted-foreground size-3" />
           {{ t("to") }}
         </ValueListHeader>
-        <ValueListFlowItem :value="flowOut?.flow.value" />
-        <ValueListTemperatureItem :temperature="tOut?.temperature.value" />
-
+        <ValueListFlowItem :source="sensors.flowOut" />
+        <ValueListTemperatureItem :source="sensors.tOut" />
         <ValueListSeparator />
       </ValueList>
     </CircuitBox>

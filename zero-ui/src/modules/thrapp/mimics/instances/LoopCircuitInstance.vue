@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -9,7 +8,7 @@ import {
   ValueList,
   ValueListDeltaTItem,
   ValueListFlowItem,
-  ValueListItem,
+  ValueListTemperatureItem,
 } from "../components/value-list";
 import { getMimicDataProvider } from "../providers";
 
@@ -23,12 +22,8 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
+const { getComponentState } = getMimicDataProvider();
 
-const deltaT = getSensorValue(props.sensors.deltaT);
-const tIn = getSensorValue(props.sensors.incoming);
-const tOut = getSensorValue(props.sensors.outgoing);
-const flow = getSensorValue(props.sensors.flow);
 const state = getComponentState();
 </script>
 
@@ -43,20 +38,20 @@ const state = getComponentState();
     >
       <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
       <ValueList>
-        <ValueListDeltaTItem :value="deltaT?.deltaT?.value" />
-        <ValueListItem>
-          <span class="text-muted-foreground text-2xs">{{ t("units.Tin") }}</span>
-          <span class="text-muted-foreground text-xs">
-            <AnimatedNumber :to="tIn?.temperature?.value" />{{ t("units.celsius") }}
-          </span>
-        </ValueListItem>
-        <ValueListItem>
-          <span class="text-muted-foreground text-2xs">{{ t("units.Tout") }}</span>
-          <span class="text-muted-foreground text-xs">
-            <AnimatedNumber :to="tOut?.temperature?.value" />{{ t("units.celsius") }}
-          </span>
-        </ValueListItem>
-        <ValueListFlowItem :value="flow?.flow?.value" />
+        <ValueListDeltaTItem :source="sensors.deltaT" />
+        <ValueListTemperatureItem
+          class="text-xs"
+          :source="sensors.incoming"
+        >
+          {{ t("units.Tin") }}
+        </ValueListTemperatureItem>
+        <ValueListTemperatureItem
+          class="text-xs"
+          :source="sensors.outgoing"
+        >
+          {{ t("units.Tout") }}
+        </ValueListTemperatureItem>
+        <ValueListFlowItem :source="sensors.flow" />
       </ValueList>
     </CircuitBox>
     <slot />

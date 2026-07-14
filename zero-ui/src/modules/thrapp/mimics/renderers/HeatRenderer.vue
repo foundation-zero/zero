@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { formatInt } from "@/modules/common/lib/utils.ts";
+import { formatNumber } from "@/modules/common/lib/utils";
 import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: formatInt,
+  format: (value: number) => formatNumber.default(value / 1000),
 });
 
 const { units } = useTranslations();
@@ -14,6 +14,6 @@ const { units } = useTranslations();
   <FieldRenderer.Number
     v-bind="props"
     class="gap-1"
-    :unit="units('watts')"
+    :unit="units('kilowatt')"
   />
 </template>

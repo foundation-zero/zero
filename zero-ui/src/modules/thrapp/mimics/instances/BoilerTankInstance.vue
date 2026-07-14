@@ -25,8 +25,7 @@ const props = defineProps<
 const { getSensorValue, getComponentState, getControllerState } = getMimicDataProvider();
 
 const level = getSensorValue(props.sensors.level);
-const fillLevel = computed(() => (level.value?.level.value ?? 0) / 2.75);
-const temperature = getSensorValue(props.sensors.temperature);
+const fillLevel = computed(() => (level.value?.level.value ?? 0) / 275);
 
 const state = getComponentState();
 
@@ -59,8 +58,11 @@ const fillTime = computed(() => controller.value?.timeToFill.value);
         :state="state"
       />
       <ValueList class="gap-0">
-        <ValueListTemperatureItem :temperature="temperature?.temperature.value" />
-        <ValueListFillLevelItem :value="fillLevel" />
+        <ValueListTemperatureItem :source="sensors.temperature" />
+        <ValueListFillLevelItem
+          :source="sensors.level"
+          :max-level="275"
+        />
         <ValueListTimeItem
           v-if="mode === BoilerTankState.Filling"
           :value="fillTime"

@@ -3,16 +3,13 @@ import { SensorComponentType } from "@/modules/thrs/types";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
 import { ValueList, ValueListDeltaTItem, ValueListHeatPowerItem } from "../components/value-list";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField } from "../providers";
 
-const props = defineProps<
+defineProps<
   MimicComponentInstanceProps & {
     heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
   }
 >();
-
-const { getSensorValue } = getMimicDataProvider();
-const heatExchanger = getSensorValue(props.heatExchanger);
 </script>
 
 <template>
@@ -27,11 +24,11 @@ const heatExchanger = getSensorValue(props.heatExchanger);
       <ValueList>
         <ValueListDeltaTItem
           class="text-sm"
-          :value="heatExchanger?.deltaT?.value"
+          :source="heatExchanger"
         />
         <ValueListHeatPowerItem
           class="text-sm"
-          :value="heatExchanger?.heat?.value"
+          :source="heatExchanger"
         />
       </ValueList>
     </template>
