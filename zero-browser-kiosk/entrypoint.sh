@@ -11,6 +11,23 @@ chmod 700 "$XDG_RUNTIME_DIR"
 
 URL="${KIOSK_URL:-https://sy-zero.com/}"
 
+
+start_vnc() {
+    # Wait until the Cage compositor creates the Wayland display socket
+    echo "Waiting for Wayland socket..."
+    while [ ! -S "$XDG_RUNTIME_DIR/wayland-0" ]; do
+        sleep 0.5
+    done
+
+    echo "Wayland socket detected. Starting VNC Server on port 5900..."
+    # Bind wayvnc to all interfaces (0.0.0.0) so it's accessible externally
+    export WAYLAND_DISPLAY=wayland-0
+    exec wayvnc 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
+}
+
+# Run the VNC monitor loop in the background so we can start cage
+start_vnc &
+
 echo "Initializing Wayland Kiosk Server..."
 echo "Target URL: $URL"
 

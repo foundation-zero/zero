@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-dri \
     mesa-vulkan-drivers \
     udev \
+    wayvnc \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy and set execution permissions for the startup script
