@@ -4469,7 +4469,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Weather tight sliding door - Closes",
+                  "fixed": "Weather tight sliding door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4483,6 +4483,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
+                "rotation": 0,
                 "top": 220,
                 "width": 365.04025436792733
               },
