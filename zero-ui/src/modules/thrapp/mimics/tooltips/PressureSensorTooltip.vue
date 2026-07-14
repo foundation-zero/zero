@@ -1,21 +1,25 @@
 <script setup lang="ts">
-import { TooltipList } from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
+import { TooltipList } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import PressureSensorInstance from "../instances/PressureSensorInstance.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 
+import { useTranslations } from ".";
 import {
   TooltipListHeader,
   TooltipListItem,
   TooltipListItemAction,
   TooltipListItemTitle,
   TooltipListItemValue,
-} from "../../components/tooltip-list/index.ts";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+} from "../../components/tooltip-list";
+import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 import FlowController from "./partials/FlowController.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.PressureSensor>>();
@@ -26,7 +30,9 @@ const { items, labels } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <PressureSensorInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <PressureSensorInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

@@ -1,18 +1,22 @@
 <script setup lang="ts">
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
   TooltipListItem,
   TooltipListItemAction,
   TooltipListItemTitle,
-} from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+} from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import LoopCircuitInstance from "../instances/LoopCircuitInstance.vue";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 import Circuit from "./partials/Circuit.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 
@@ -24,10 +28,12 @@ const { labels, items, actions } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <LoopCircuitInstance
-        v-bind="props"
-        force-height
-      />
+      <NoopTooltipProvider>
+        <LoopCircuitInstance
+          v-bind="props"
+          force-height
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
@@ -6,14 +12,12 @@ import {
   TooltipListItemAction,
   TooltipListItemTitle,
   TooltipListItemValue,
-} from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+} from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import TemperatureSensorInstance from "../instances/TemperatureSensorInstance.vue";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import TemperatureController from "./partials/TemperatureController.vue";
 
@@ -25,7 +29,9 @@ const { items, labels, sources } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <TemperatureSensorInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <TemperatureSensorInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { TooltipList } from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
+import { TooltipList } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import HotWaterCircuitInstance from "../instances/HotWaterCircuitInstance.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 
@@ -12,11 +16,13 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HotWaterCir
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <HotWaterCircuitInstance
-        v-bind="props"
-        height="243"
-        force-height
-      />
+      <NoopTooltipProvider>
+        <HotWaterCircuitInstance
+          v-bind="props"
+          height="243"
+          force-height
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

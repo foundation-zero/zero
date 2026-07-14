@@ -4,20 +4,24 @@ import {
   TooltipListItemTitle,
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
   TooltipListItemAction,
-} from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
-import { FieldEditor } from "../editors/index.ts";
+} from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
+import { FieldEditor } from "../editors";
 import FlowControlValveInstance from "../instances/FlowControlValveInstance.vue";
+import { ControlValue } from "../providers";
 import ControlValueForm from "../providers/ControlValueForm.vue";
-import { ControlValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+import { FieldRenderer } from "../renderers";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
@@ -32,7 +36,9 @@ const { labels, items, sources } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <FlowControlValveInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <FlowControlValveInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

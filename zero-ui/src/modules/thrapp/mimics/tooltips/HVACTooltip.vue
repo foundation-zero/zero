@@ -6,7 +6,11 @@ import {
   TooltipListItemTitle,
   TooltipListItemValue,
 } from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
 import HVACInstance from "../instances/HVACInstance.vue";
@@ -25,10 +29,12 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <HVACInstance
-        v-bind="props"
-        force-height
-      />
+      <NoopTooltipProvider>
+        <HVACInstance
+          v-bind="props"
+          force-height
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

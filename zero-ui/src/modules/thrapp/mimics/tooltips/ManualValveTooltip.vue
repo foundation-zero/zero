@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { TooltipList } from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { ManualValveType } from "../components/manual-valve/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
+import { TooltipList } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { ManualValveType } from "../components/manual-valve";
+import { YardTag } from "../components/yard-tag";
 import ManualValveInstance from "../instances/ManualValveInstance.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 
@@ -13,10 +17,12 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.ManualValve
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <ManualValveInstance
-        v-bind="props"
-        :type="ManualValveType.Switch"
-      />
+      <NoopTooltipProvider>
+        <ManualValveInstance
+          v-bind="props"
+          :type="ManualValveType.Switch"
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

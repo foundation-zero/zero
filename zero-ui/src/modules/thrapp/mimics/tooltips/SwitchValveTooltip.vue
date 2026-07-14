@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useTranslations } from ".";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
@@ -10,11 +14,11 @@ import {
   TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
-import { YardTag } from "../components/yard-tag/index.ts";
-import { FieldEditor } from "../editors/index.ts";
+import { YardTag } from "../components/yard-tag";
+import { FieldEditor } from "../editors";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
-import { ControlValue, ControlValueForm } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
+import { ControlValue, ControlValueForm } from "../providers";
+import { FieldRenderer } from "../renderers";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
@@ -30,7 +34,9 @@ const { labels, items, sources } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <SwitchValveInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <SwitchValveInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

@@ -2,7 +2,11 @@
 import { BoilerTankState } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { useTranslations } from ".";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
@@ -39,7 +43,9 @@ const currentLevelPercentage = computed(
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <BoilerTankInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <BoilerTankInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
