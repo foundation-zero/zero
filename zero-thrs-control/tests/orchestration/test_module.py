@@ -6,7 +6,7 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.orchestration.module import Module
 
 
-async def test_module_sends_control_when_sensor_values_are_none():
+async def test_module_returns_control_when_sensor_values_are_none():
     mock_control = mock.Mock(Control)
     mock_control.initial.return_value = (mock.sentinel.control_values, None)
 
@@ -28,7 +28,7 @@ async def test_module_sends_control_when_sensor_values_are_none():
     assert mock_alarms.check.call_count == 0
 
 
-async def test_module_sends_initial_control_when_manual():
+async def test_module_returns_initial_control_when_manual():
     mock_control = mock.Mock(Control)
     mock_control.initial.return_value = (mock.sentinel.control_values, None)
 
@@ -52,7 +52,7 @@ async def test_module_sends_initial_control_when_manual():
     ]
 
 
-async def test_module_sends_control_when_automatic():
+async def test_module_returns_control_when_automatic():
     mock_control = mock.Mock(Control)
     mock_control.initial.return_value = (mock.sentinel.initial_control_values, None)
     mock_control.control.return_value = (mock.sentinel.control_values, None)

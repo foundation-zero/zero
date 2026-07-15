@@ -80,7 +80,7 @@ class Module[
 
         return self._channels.get_sensor_values()
 
-    def execute_control_tick(self, sensor_values: S) -> tuple[C, CS]:
+    def execute_control(self, sensor_values: S) -> tuple[C, CS]:
         """Execute a control tick, send control values and evaluate alarms."""
 
         control_values, controller_state = self._control.control(sensor_values)
@@ -115,7 +115,7 @@ class Module[
         if sensor_values is None:
             control_values, controller_state = self._control.initial()
         else:
-            control_values, controller_state = self.execute_control_tick(sensor_values)
+            control_values, controller_state = self.execute_control(sensor_values)
 
         await self.send_control_updates(sensor_values, control_values, controller_state)
 
