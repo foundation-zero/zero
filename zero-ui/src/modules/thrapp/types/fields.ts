@@ -157,7 +157,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
     controller?: ControllerStateComponentType.PIDController;
   };
   [MimicComponentType.FlowSensor]: {
-    controller: ControllerStateComponentType.PIDController;
+    controller?: ControllerStateComponentType.PIDController;
   };
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
@@ -309,6 +309,6 @@ export type ExtractCustomFields<Type extends MimicComponentType> = {
 
 export type ExtractSourceFields<Type extends MimicComponentType> = {
   source: SourceFieldDefinitions[Type] extends undefined
-    ? undefined
+    ? ModuleField<"custom"> | undefined
     : ModuleField<SourceFieldDefinitions[Type]>;
 };

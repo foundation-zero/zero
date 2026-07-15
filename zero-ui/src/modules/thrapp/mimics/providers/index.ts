@@ -29,6 +29,11 @@ export { default as ParameterValue } from "./ParameterValue.vue";
 export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
+export const getCustomField = <Module extends keyof ThrsDefinitions>(
+  module: Module,
+  field: string,
+): ModuleField<"custom", Module> => ["custom", module, field];
+
 export const getField = <
   Type extends
     | SensorComponentType
@@ -63,7 +68,14 @@ export type ModuleField<
     | SensorComponentType
     | ParametersType
     | ControllerStateComponentType
-    | undefined,
+    | undefined
+    | "custom" =
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType
+    | undefined
+    | "custom",
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
 > = [type: Type, module: Module, field: string];
 
@@ -72,11 +84,42 @@ export const isField = <
     | ControlComponentType
     | SensorComponentType
     | ParametersType
-    | ControllerStateComponentType,
+    | ControllerStateComponentType
+    | "custom",
 >(
   field?: ModuleField<Type | undefined>,
 ): field is ModuleField<Type> => {
   return field?.[0] !== undefined;
+};
+
+export const isCustomField = <Module extends keyof ThrsDefinitions>(
+  field?: ModuleField,
+): field is ModuleField<"custom", Module> => {
+  return isField(field) && field[0] === "custom";
+};
+
+export const isSensorField = <Module extends keyof ThrsDefinitions>(
+  field?: ModuleField,
+): field is ModuleField<SensorComponentType, Module> => {
+  return isField(field) && field[0].startsWith("sensor:");
+};
+
+export const isControlField = <Module extends keyof ThrsDefinitions>(
+  field?: ModuleField,
+): field is ModuleField<ControlComponentType, Module> => {
+  return isField(field) && field[0].startsWith("control:");
+};
+
+export const isParameterField = <Module extends keyof ThrsDefinitions>(
+  field?: ModuleField,
+): field is ModuleField<ParametersType, Module> => {
+  return isField(field) && field[0].startsWith("parameter:");
+};
+
+export const isControllerStateField = <Module extends keyof ThrsDefinitions>(
+  field?: ModuleField,
+): field is ModuleField<ControllerStateComponentType, Module> => {
+  return isField(field) && field[0].startsWith("controller:");
 };
 
 export interface MimicDataProvider {
@@ -150,6 +193,20 @@ export const injectFieldValueSource = <
 export const getFieldValue = <T>(
   fallback: Ref<T | undefined> = ref(undefined),
 ): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValue", fallback);
+
+export const getDefinition = (field: ModuleField) => {
+  if (isSensorField(field)) {
+    return getSensorDefinition(field[1], field[2]);
+  } else if (isControlField(field)) {
+    return getControlDefinition(field[1], field[2]);
+  } else if (isParameterField(field)) {
+    return getParameterDefinition(field[1], field[2]);
+  } else if (isControllerStateField(field)) {
+    return getControllerStateDefinition(field[1], field[2]);
+  } else if (isCustomField(field)) {
+    return undefined;
+  }
+};
 
 export const getSensorDefinition = <K extends keyof ThrsDefinitions>(module: K, field: string) => {
   const definitions: SensorDefinitions = DEFINITIONS[module].sensorValues;

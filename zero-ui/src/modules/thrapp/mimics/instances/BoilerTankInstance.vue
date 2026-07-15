@@ -25,7 +25,7 @@ const props = defineProps<
 const { getSensorValue, getComponentState, getControllerState } = getMimicDataProvider();
 
 const level = getSensorValue(props.sensors.level);
-const fillLevel = computed(() => (level.value?.level.value ?? 0) / 275);
+const fillLevel = computed(() => (level.value?.level.value ?? 0) / 2.75);
 
 const state = getComponentState();
 

@@ -3,7 +3,6 @@ import { cn } from "@/modules/common/lib/utils";
 import {
   ControlComponentType,
   ControllerStateComponentType,
-  PARAMETERS_TYPES,
   ParametersType,
   SensorComponentType,
 } from "@/modules/thrs/types";
@@ -11,12 +10,11 @@ import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { getTooltipContext } from "../../components/tooltip";
 import {
-  getControlDefinition,
-  getSensorDefinition,
+  getDefinition,
   injectFieldValueSource,
+  isParameterField,
   ModuleField,
 } from "../../mimics/providers";
-import { TOOLTIPS } from "../tooltips";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -31,31 +29,20 @@ const source = computed(() => props.source ?? injectFieldValueSource());
 
 const definition = computed(() => {
   if (!source.value) return null;
-  const [, moduleId, componentId] = source.value;
-  return getSensorDefinition(moduleId, componentId) ?? getControlDefinition(moduleId, componentId);
+
+  return getDefinition(source.value);
 });
 
-const sourceName = computed(() =>
-  definition.value?.yardTag.length ? definition.value.yardTag : source.value?.[2],
-);
+const sourceName = computed(() => {
+  if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
 
-const { setTooltip, findTooltipContext } = getTooltipContext();
+  return definition.value.yardTag ?? source.value?.[2];
+});
+
+const { findTooltipContext } = getTooltipContext();
 
 const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
-
-const isParameter = computed(() => {
-  if (!source.value) return false;
-  const [type] = source.value;
-  return PARAMETERS_TYPES.includes(type as ParametersType);
-});
-
-const openLink = () => {
-  if (!tooltipContext.value) return;
-
-  const [type, tooltip] = tooltipContext.value;
-
-  setTooltip(tooltip, TOOLTIPS[type]);
-};
+const isParameter = computed(() => isParameterField(source.value));
 </script>
 
 <template>
@@ -64,19 +51,22 @@ const openLink = () => {
       cn('text-disabled-foreground overflow-hidden text-sm font-medium text-ellipsis', props.class)
     "
   >
-    <span
+    <RouterLink
       v-if="tooltipContext"
       class="cursor-pointer underline"
-      @click="openLink"
+      :to="{
+        query: { tooltip: source?.join('.') },
+      }"
     >
       <slot>
         {{ snakeCase(sourceName) }}
       </slot>
-    </span>
+    </RouterLink>
 
     <RouterLink
       v-else-if="isParameter"
       class="text-brand-dull cursor-pointer underline"
+      target="_blank"
       :to="{
         name: 'thrs/control',
         params: {

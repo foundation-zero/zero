@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { createTooltipContext, provideTooltipContext } from ".";
 import { MimicComponentFieldsMap } from "../../mimics/modules";
 
@@ -11,6 +12,7 @@ const props = defineProps<{
 const tooltipContext = createTooltipContext(props.source);
 provideTooltipContext(tooltipContext);
 
+const router = useRouter();
 const { component, dialog, data, clear, closeDialog } = tooltipContext;
 
 const isOpen = computed({
@@ -20,6 +22,7 @@ const isOpen = computed({
   set(value: boolean) {
     if (!value) {
       clear();
+      router.push({ query: { tooltip: undefined } });
     }
   },
 });

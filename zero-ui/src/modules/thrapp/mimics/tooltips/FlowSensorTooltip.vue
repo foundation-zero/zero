@@ -16,7 +16,7 @@ import {
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import { FlowSensorInstance } from "../instances";
-import { SensorValue } from "../providers";
+import { isField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
@@ -78,7 +78,7 @@ const { items, labels, sources } = useTranslations();
       </SensorValue>
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="isField(controllerState.controller)">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>

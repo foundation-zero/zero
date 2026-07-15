@@ -11,9 +11,11 @@ import {
 } from "@/modules/thrs/types/index.ts";
 import { isEqual } from "lodash";
 import { createContext } from "reka-ui";
-import { type Component, markRaw, ref, type Ref } from "vue";
+import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
+import { useRoute } from "vue-router";
 import { MimicComponentFieldsMap } from "../../mimics/modules/index.ts";
 import { ModuleField } from "../../mimics/providers/index.ts";
+import { TOOLTIPS } from "../../mimics/tooltips";
 import { MimicComponentType } from "../../types";
 import { ExtractComponentFields } from "../../types/fields";
 
@@ -106,6 +108,29 @@ export const createTooltipContext = (
   const closeDialog = () => {
     dialog.value = null;
   };
+
+  const { query } = toRefs(useRoute());
+
+  watch(
+    query,
+    (next, prev) => {
+      if (!next.tooltip) {
+        clear();
+      } else if (next.tooltip !== prev?.tooltip) {
+        const field = String(next.tooltip).split(".") as ModuleField<
+          ControlComponentType | SensorComponentType | ControllerStateComponentType
+        >;
+        const tooltipContext = findTooltipContext(field);
+
+        if (!tooltipContext) return;
+
+        const [type, tooltip] = tooltipContext;
+
+        setTooltip(tooltip, TOOLTIPS[type]);
+      }
+    },
+    { immediate: true },
+  );
 
   return {
     data,

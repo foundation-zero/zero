@@ -1,7 +1,7 @@
 import { SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
+import { getCustomField, getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HotWaterCircuit>({
@@ -9,7 +9,7 @@ export default toInstance<MimicComponentType.HotWaterCircuit>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: undefined,
+  source: getCustomField("dhw", "Fresh-water"),
   sensors: {
     flowOut: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
     tOut: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
