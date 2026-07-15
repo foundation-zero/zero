@@ -18,9 +18,18 @@ URL="${KIOSK_URL:-https://sy-zero.com/}"
 
 CAGE_PID=""
 VNC_PID=""
+HOTPLUG_PID=""
 
 cleanup() {
+    set +e
     echo "Received termination signal. Shutting down kiosk..."
+
+    # 1. Stop the udev hotplug monitor (Stops the filesystem watch)
+    if [ -n "$HOTPLUG_PID" ]; then
+        echo "Stopping udev hotplug monitor (PID $HOTPLUG_PID)..."
+        # Kill the entire process group of the watcher to stop both inotifywait and the loop
+        kill -TERM -"$HOTPLUG_PID" 2>/dev/null
+    fi
 
     # Terminate VNC Server
     if [ -n "$VNC_PID" ]; then
@@ -37,11 +46,23 @@ cleanup() {
     # Wait briefly for them to die
     wait "$CAGE_PID" 2>/dev/null
     wait "$VNC_PID" 2>/dev/null
+    wait "$HOTPLUG_PID" 2>/dev/null
+
     echo "Kiosk cleanup complete. Exiting cleanly."
     exit 0
 }
 
 trap cleanup SIGTERM SIGINT
+
+watch_hotplug() {
+    echo "Starting hotplug event monitor..."
+    # Watch the /dev/input directory for new event files (created when a USB is plugged in)
+    while inotifywait -e create -e delete /dev/input; do
+        echo "USB Input change detected. Triggering container restart"
+        
+        cleanup
+    done
+}
 
 start_vnc() {
     # Wait until the Cage compositor creates the Wayland display socket
@@ -53,43 +74,58 @@ start_vnc() {
     echo "Wayland socket detected. Starting VNC Server on port 5900..."
     # Bind wayvnc to all interfaces (0.0.0.0) so it's accessible externally
     export WAYLAND_DISPLAY=wayland-0
-    exec wayvnc 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1 &
-    VNC_PID=$!
+    exec wayvnc 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
-# Run the VNC monitor loop in the background so we can start cage
+
+start_cage_chromium() {
+    echo "Initializing Wayland Kiosk Server..."
+    echo "Target URL: $URL"
+
+    # Make sure it does not try to call home
+    export GOOGLE_API_KEY="no"
+    export GOOGLE_DEFAULT_CLIENT_ID="no"
+    export GOOGLE_DEFAULT_CLIENT_SECRET="no"
+    export DBUS_SESSION_BUS_ADDRESS="/dev/null"
+
+
+    CHROME_FLAGS="--ozone-platform=wayland \
+                --kiosk \
+                --no-sandbox \
+                --no-first-run \
+                --no-default-browser-check \
+                --check-for-update-interval=31536000 \
+                --disable-session-crashed-bubble \
+                --noerrdialogs \
+                --disable-infobars \
+                --disable-dev-shm-usage \
+                --autoplay-policy=no-user-gesture-required \
+                --ignore-gpu-blocklist \
+                --enable-zero-copy \
+                --enable-gpu-rasterization \
+                --use-gl=angle \
+                --use-angle=gles \
+                --disable-component-extensions-with-background-pages \
+                --metrics-recording-only \
+                --disable-default-apps \
+                --disable-backgrounding-occluded-windows \
+                --disable-renderer-backgrounding \
+                --disable-background-timer-throttling \
+                --disable-features=Dbus,GCM,Translate,TranslateUI,OptimizationHints \
+                --disable-background-networking \
+                --disable-sync \
+                --gcm-registration-url=http://127.0.0.1:1"
+
+    exec cage -- chromium $CHROME_FLAGS "$URL"
+}
+
 start_vnc &
-
-echo "Initializing Wayland Kiosk Server..."
-echo "Target URL: $URL"
-
-# Make sure it does not try to call home
-export GOOGLE_API_KEY="no"
-export GOOGLE_DEFAULT_CLIENT_ID="no"
-export GOOGLE_DEFAULT_CLIENT_SECRET="no"
-export DBUS_SESSION_BUS_ADDRESS="/dev/null"
-
-
-CHROME_FLAGS="--ozone-platform=wayland \
-              --kiosk \
-              --no-sandbox \
-              --no-first-run \
-              --noerrdialogs \
-              --disable-infobars \
-              --disable-dev-shm-usage \
-              --autoplay-policy=no-user-gesture-required \
-              --ignore-gpu-blocklist \
-              --enable-zero-copy \
-              --enable-gpu-rasterization \
-              --use-gl=angle \
-              --use-angle=gles \
-              --disable-features=Dbus,GCM,Translate,OptimizationHints \
-              --disable-background-networking \
-              --disable-sync \
-              --gcm-registration-url=http://127.0.0.1:1"
-
-exec cage -- chromium $CHROME_FLAGS "$URL" &
+VNC_PID=$!
+start_cage_chromium &
 CAGE_PID=$!
+watch_hotplug &
+HOTPLUG_PID=$!
+
 
 # Wait on the Cage process (this keeps the script running)
 wait "$CAGE_PID"
