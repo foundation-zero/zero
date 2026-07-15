@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { useSimulationStore } from "@/modules/thrs/stores/simulation";
+import { useAutomationStore } from "@/modules/thrs/stores/automation";
 import { RiLock2Line } from "@remixicon/vue";
 import { useCountdown } from "@vueuse/core";
 import { inject, Ref, ref } from "vue";
@@ -23,7 +23,7 @@ const COOLDOWN_SECONDS = 5;
 const MATCH_PASSWORD = "zerosecurity";
 const password = ref("");
 
-const { setAutomatedControl } = useSimulationStore();
+const { setAutomatedControl } = useAutomationStore();
 const currentDefinition = inject<Ref<string>>("currentModule")!;
 
 const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
