@@ -16,45 +16,36 @@ defineProps<ExtractSensorFields<MimicComponentType.HeatExchanger>>();
 </script>
 
 <template>
-  <SensorValue
-    :source="sensors.incoming"
-    field="temperature"
-  >
+  <SensorValue :source="sensors.incoming">
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("incomingTemperature") }}
         <FieldRenderer.Source />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature />
+        <FieldRenderer.Auto />
       </TooltipListItemValue>
     </TooltipListItem>
   </SensorValue>
-  <SensorValue
-    :source="sensors.outgoing"
-    field="temperature"
-  >
+  <SensorValue :source="sensors.outgoing">
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("outgoingTemperature") }}
         <FieldRenderer.Source />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature />
+        <FieldRenderer.Auto />
       </TooltipListItemValue>
     </TooltipListItem>
   </SensorValue>
-  <SensorValue
-    :source="sensors.flow"
-    field="flow"
-  >
+  <SensorValue :source="sensors.flow">
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("flow") }}
         <FieldRenderer.Source />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate />
+        <FieldRenderer.Auto />
       </TooltipListItemValue>
     </TooltipListItem>
   </SensorValue>

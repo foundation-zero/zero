@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -13,7 +13,10 @@ export default toInstance<MimicComponentType.BoilerTank>({
   controllerState: {
     controller,
   },
-  parameters,
+  parameters: {
+    ...parameters,
+    disabled: getField(ParametersType.Disabled, "dhw", "tank3Disabled"),
+  },
   source: getCustomField("dhw", "tank3"),
   sensors: {
     boostingSupply,

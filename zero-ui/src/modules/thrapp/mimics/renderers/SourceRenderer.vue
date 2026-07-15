@@ -26,6 +26,7 @@ const definition = computed(() => {
 });
 
 const sourceName = computed(() => {
+  if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
   if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
 
   return definition.value.yardTag ?? source.value?.[2];

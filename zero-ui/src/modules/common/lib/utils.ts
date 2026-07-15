@@ -19,7 +19,7 @@ import {
   StampedChart,
   TimeSeriesData,
 } from "@common/types";
-import { ArgumentsType, useIntervalFn } from "@vueuse/core";
+import { ArgumentsType, useIntervalFn, useTimeoutFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
@@ -28,6 +28,7 @@ import {
   ComputedRef,
   isRef,
   MaybeRef,
+  onMounted,
   ref,
   Ref,
   unref,
@@ -547,3 +548,8 @@ export const useFixed = (value: Ref<number | undefined | null>, digits: number) 
   });
 
 export const refValue = unref;
+
+export const useAutoFocus = <T extends HTMLElement>(
+  ref: Ref<{ $el: T } | null>,
+  enabled: MaybeRef<boolean> = true,
+) => onMounted(() => unref(enabled) && useTimeoutFn(() => ref.value?.$el?.focus(), 100));

@@ -54,20 +54,17 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
             <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.Heat />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>
-      <SensorValue
-        :source="source"
-        field="deltaT"
-      >
+      <SensorValue :source="source">
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("deltaTemperature") }}
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.DeltaT />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>

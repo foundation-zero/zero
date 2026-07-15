@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import {
-  TooltipListItem,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "@/modules/thrapp/components/tooltip-list";
 import { SensorComponentType } from "@/modules/thrs/types";
+import * as Partials from ".";
 import { useTranslations } from "..";
 import { ModuleField, SensorValue } from "../../providers";
 import { FieldRenderer } from "../../renderers";
-
 const { items } = useTranslations();
 
 defineProps<{ valve: ModuleField<SensorComponentType.Valve> }>();
@@ -19,17 +14,14 @@ defineProps<{ valve: ModuleField<SensorComponentType.Valve> }>();
     :source="valve"
     field="positionRel"
   >
-    <TooltipListItem>
-      <TooltipListItemTitle>{{ items("relativePosition") }}</TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.Percentage />
-      </TooltipListItemValue>
-    </TooltipListItem>
-    <TooltipListItem>
-      <TooltipListItemTitle>{{ items("absolutePosition") }}</TooltipListItemTitle>
-      <TooltipListItemValue>
+    <Partials.ListItem no-source>
+      {{ items("relativePosition") }}
+    </Partials.ListItem>
+    <Partials.ListItem no-source>
+      {{ items("absolutePosition") }}
+      <template #value>
         <FieldRenderer.PositionAbsolute />
-      </TooltipListItemValue>
-    </TooltipListItem>
+      </template>
+    </Partials.ListItem>
   </SensorValue>
 </template>

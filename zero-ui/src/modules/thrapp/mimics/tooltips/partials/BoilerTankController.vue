@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { ControllerStateComponentType } from "@/modules/thrs/types";
+import _1053 from "../../modules/dhw/data/boiler-tanks/_1053";
+import _1054 from "../../modules/dhw/data/boiler-tanks/_1054";
+import _1055 from "../../modules/dhw/data/boiler-tanks/_1055";
 import { ControllerStateValue, ModuleField } from "../../providers";
 import { FieldRenderer } from "../../renderers/index.ts";
 import { useTranslations } from "../index.ts";
@@ -32,8 +35,8 @@ defineProps<{
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("tank1") }}
-        <FieldRenderer.Source external>1053</FieldRenderer.Source>
-        <FieldRenderer.Source url>{{ sources("tank1") }}</FieldRenderer.Source>
+        <FieldRenderer.Source :source="_1053.source" />
+        <FieldRenderer.Source :source="_1053.parameters.disabled" />
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>
@@ -46,8 +49,8 @@ defineProps<{
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("tank2") }}
-        <FieldRenderer.Source external>1054</FieldRenderer.Source>
-        <FieldRenderer.Source url>{{ sources("tank2") }}</FieldRenderer.Source>
+        <FieldRenderer.Source :source="_1054.source" />
+        <FieldRenderer.Source :source="_1054.parameters.disabled" />
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>
@@ -60,8 +63,8 @@ defineProps<{
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("tank3") }}
-        <FieldRenderer.Source external>1055</FieldRenderer.Source>
-        <FieldRenderer.Source url>{{ sources("tank3") }}</FieldRenderer.Source>
+        <FieldRenderer.Source :source="_1055.source" />
+        <FieldRenderer.Source :source="_1055.parameters.disabled" />
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>

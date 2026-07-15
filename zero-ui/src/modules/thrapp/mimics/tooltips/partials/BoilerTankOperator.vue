@@ -1,78 +1,37 @@
 <script setup lang="ts">
-import {
-  TooltipListItem,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "@/modules/thrapp/components/tooltip-list";
 import { ExtractSensorFields } from "@/modules/thrapp/types/fields.ts";
 import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
 import { useTranslations } from "..";
 import { SensorValue } from "../../providers";
-import { FieldRenderer } from "../../renderers";
 
+import * as Partials from "./";
 const { items } = useTranslations();
 
 defineProps<ExtractSensorFields<MimicComponentType.BoilerTank>>();
 </script>
 
 <template>
-  <SensorValue
-    :source="sensors.boostReturnValve"
-    field="positionRel"
-  >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("boostReturnValve") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.ValveState />
-      </TooltipListItemValue>
-    </TooltipListItem>
+  <SensorValue :source="sensors.boostReturnValve">
+    <Partials.ListItem size="sm">
+      {{ items("boostReturnValve") }}
+    </Partials.ListItem>
   </SensorValue>
 
-  <SensorValue
-    :source="sensors.boostSupplyValve"
-    field="positionRel"
-  >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("boostSupplyValve") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.ValveState />
-      </TooltipListItemValue>
-    </TooltipListItem>
+  <SensorValue :source="sensors.boostSupplyValve">
+    <Partials.ListItem size="sm">
+      {{ items("boostSupplyValve") }}
+    </Partials.ListItem>
   </SensorValue>
 
-  <SensorValue
-    :source="sensors.supplyValve"
-    field="positionRel"
-  >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("supplyValve") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.ValveState />
-      </TooltipListItemValue>
-    </TooltipListItem>
+  <SensorValue :source="sensors.supplyValve">
+    <Partials.ListItem size="sm">
+      {{ items("supplyValve") }}
+    </Partials.ListItem>
   </SensorValue>
 
-  <SensorValue
-    :source="sensors.dischargeValve"
-    field="positionRel"
-  >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("dischargeValve") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.ValveState />
-      </TooltipListItemValue>
-    </TooltipListItem>
+  <SensorValue :source="sensors.dischargeValve">
+    <Partials.ListItem size="sm">
+      {{ items("dischargeValve") }}
+    </Partials.ListItem>
   </SensorValue>
 </template>

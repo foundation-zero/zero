@@ -9,12 +9,7 @@
 >
 import { Unstamp } from "@/modules/common/types";
 import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrs/types";
-import {
-  DEFAULT_CONTROL_FIELD_VALUE_FIELD,
-  ModuleField,
-  provideFieldValueField,
-  provideFieldValueSource,
-} from ".";
+import { ModuleField, provideFieldValueSource } from ".";
 import { provideControlValue } from "./forms.control";
 
 const props = defineProps<{
@@ -22,10 +17,8 @@ const props = defineProps<{
   field?: Key;
 }>();
 
-const value = provideControlValue<Control, Key>(props.source, props.field);
-const field = props.field ?? DEFAULT_CONTROL_FIELD_VALUE_FIELD[props.source[0]];
+const value = provideControlValue<Control>(props.source, props.field);
 provideFieldValueSource(props.source);
-provideFieldValueField(field as string | undefined);
 </script>
 
 <template>

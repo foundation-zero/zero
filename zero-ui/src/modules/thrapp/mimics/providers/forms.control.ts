@@ -3,7 +3,13 @@ import { Unstamp } from "@/modules/common/types";
 import { ControlComponentType, ControlDefinitionMap, ControlValues } from "@/modules/thrs/types";
 import { isEmpty } from "lodash";
 import { computed, ref, Ref } from "vue";
-import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValueField } from ".";
+import {
+  DEFAULT_CONTROL_FIELD_VALUE_FIELD,
+  getMimicDataProvider,
+  ModuleField,
+  provideFieldValue,
+  provideFieldValueField,
+} from ".";
 import { useAutomaticMode } from "../../state";
 import { injectValueForm, provideValueForm, ValueFormContext } from "./forms";
 
@@ -108,12 +114,9 @@ export const provideControlValueForm = <Control extends ControlComponentType>(
   provideValueForm(value);
 };
 
-export const provideControlValue = <
-  Control extends ControlComponentType,
-  Key extends keyof ControlDefinitionMap[Control],
->(
+export const provideControlValue = <Control extends ControlComponentType>(
   source: ModuleField<Control>,
-  field?: Key,
+  field: keyof ControlDefinitionMap[Control] = DEFAULT_CONTROL_FIELD_VALUE_FIELD[source[0]],
 ) => {
   const value = getControlValue(source, field);
   provideFieldValueField(field as string | undefined);

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatInt } from "@/modules/common/lib/utils";
 import {
   TooltipListItem,
   TooltipListItemTitle,
@@ -68,7 +69,7 @@ defineProps<{
         </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Percentage />
+        <FieldRenderer.Percentage :format="formatInt" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControllerStateValue>

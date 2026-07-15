@@ -8,19 +8,14 @@ import {
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import { FlowSensorInstance } from "../instances";
 import { isField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import FlowController from "./partials/FlowController.vue";
-
+import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowSensor>>();
 
 const { items, labels, sources } = useTranslations();
@@ -36,7 +31,7 @@ const { items, labels, sources } = useTranslations();
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <TooltipList>
@@ -45,36 +40,23 @@ const { items, labels, sources } = useTranslations();
         :source="source"
         field="flow"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("flow") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.FlowRate />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("flow") }}
+        </Partials.ListItem>
       </SensorValue>
-      <!-- // TODO: what's this? -->
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("quantity") }}
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+      <Partials.ListItem>
+        {{ items("quantity") }}
+        <template #value>
           <FieldRenderer.QuantityLiters :value="10" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+        </template>
+      </Partials.ListItem>
       <SensorValue
         :source="source"
         field="temperature"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("temperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("temperature") }}
+        </Partials.ListItem>
       </SensorValue>
     </TooltipList>
 
@@ -83,7 +65,7 @@ const { items, labels, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <FlowController
+      <Partials.FlowController
         :controller="controllerState.controller"
         :measurement="source"
         :setpoint="parameters.flow"
@@ -94,7 +76,7 @@ const { items, labels, sources } = useTranslations();
         <template #measurement>
           <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
         </template>
-      </FlowController>
+      </Partials.FlowController>
     </TooltipList>
   </MimicTooltip>
 </template>

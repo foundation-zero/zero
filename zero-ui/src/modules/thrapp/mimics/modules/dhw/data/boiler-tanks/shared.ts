@@ -24,7 +24,7 @@ export type BoilerTankParameters = ExtractModuleFields<
   ParameterFieldDefinitions[MimicComponentType.BoilerTank]
 >;
 
-export const parameters: BoilerTankParameters = {
+export const parameters = {
   minimumLevel: getField(ParametersType.Level, "dhw", "minimumTankLevel"),
   maximumLevel: getField(ParametersType.Level, "dhw", "maximumTankLevel"),
   minimumTemperature: getField(ParametersType.Temperature, "dhw", "minimumTankTemperature"),

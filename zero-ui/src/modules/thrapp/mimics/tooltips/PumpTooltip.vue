@@ -8,23 +8,19 @@ import {
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import { FieldEditor } from "../editors";
 import PumpInstance from "../instances/PumpInstance.vue";
 import { ControlValue, ControlValueForm, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
+import * as Partials from "./partials";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
 import TemperatureController from "./partials/TemperatureController.vue";
-
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pump>>();
 
 const { labels, actions, items, sources } = useTranslations();
@@ -51,35 +47,23 @@ const { labels, actions, items, sources } = useTranslations();
           :source="controls.pump"
           field="dutypoint"
         >
-          <TooltipListItem>
-            <TooltipListItemTitle>
-              {{ items("relativeDutyPoint") }}
-              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-            </TooltipListItemTitle>
-            <FieldEditor.Auto>
-              <TooltipListItemValue>
-                <FieldRenderer.Auto />
-              </TooltipListItemValue>
-            </FieldEditor.Auto>
-          </TooltipListItem>
+          <Partials.EditableListItem>
+            {{ items("relativeDutyPoint") }}
+            <template #sourceName>
+              {{ sources("this") }}
+            </template>
+          </Partials.EditableListItem>
         </ControlValue>
         <ControlValue
           :source="controls.pump"
           field="on"
         >
-          <TooltipListItem>
-            <TooltipListItemTitle>
-              {{ items("onOff") }}
-              <FieldRenderer.Source>
-                {{ sources("this") }}
-              </FieldRenderer.Source>
-            </TooltipListItemTitle>
-            <FieldEditor.Auto>
-              <TooltipListItemValue>
-                <FieldRenderer.OnOff />
-              </TooltipListItemValue>
-            </FieldEditor.Auto>
-          </TooltipListItem>
+          <Partials.EditableListItem>
+            {{ items("onOff") }}
+            <template #sourceName>
+              {{ sources("this") }}
+            </template>
+          </Partials.EditableListItem>
         </ControlValue>
         <SubmitControlForm />
       </ControlValueForm>
@@ -91,78 +75,53 @@ const { labels, actions, items, sources } = useTranslations();
         :source="sensors.pressure"
         field="pressure"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("pressure") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Pressure />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("pressure") }}
+        </Partials.ListItem>
       </SensorValue>
       <SensorValue
         :source="source"
         field="flow"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("flow") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.FlowRate />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("flow") }}
+        </Partials.ListItem>
       </SensorValue>
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("energyConsumption") }}
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+
+      <Partials.ListItem>
+        {{ items("energyConsumption") }}
+        <template #value>
           <FieldRenderer.Energy :value="600" />
-        </TooltipListItemValue>
-      </TooltipListItem>
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("powerInput") }}
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+        </template>
+      </Partials.ListItem>
+      <Partials.ListItem>
+        {{ items("powerInput") }}
+        <template #value>
           <FieldRenderer.Power :value="200" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+        </template>
+      </Partials.ListItem>
       <SensorValue
         :source="source"
         field="speed"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("speed") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Frequency />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("speed") }}
+        </Partials.ListItem>
       </SensorValue>
       <SensorValue
         :source="source"
         field="opTime"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("operationTime") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.TimeRemaining />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("operationTime") }}
+        </Partials.ListItem>
       </SensorValue>
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("totalRunningHours") }}
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+      <Partials.ListItem>
+        {{ items("totalRunningHours") }}
+        <template #value>
           <FieldRenderer.TimeRemaining :value="25 * 60 + 31" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+        </template>
+      </Partials.ListItem>
     </TooltipList>
 
     <TooltipList>

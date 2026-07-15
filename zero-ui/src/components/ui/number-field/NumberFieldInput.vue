@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { cn } from "@common/lib/utils";
-import { useTimeoutFn } from "@vueuse/core";
+import { cn, useAutoFocus } from "@common/lib/utils";
 import { NumberFieldInput } from "reka-ui";
-import { onMounted, useTemplateRef, type HTMLAttributes } from "vue";
+import { useTemplateRef, type HTMLAttributes } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   autofocus?: boolean;
 }>();
 
-const input = useTemplateRef<InstanceType<typeof NumberFieldInput>>("input");
-
-onMounted(() => {
-  if (props.autofocus) {
-    useTimeoutFn(() => {
-      input.value?.$el.focus();
-    }, 100);
-  }
-});
+useAutoFocus<HTMLInputElement>(useTemplateRef("input"), props.autofocus);
 </script>
 
 <template>
