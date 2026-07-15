@@ -1,6 +1,7 @@
 import { ParameterDefinitionMap, ParametersType } from "@/modules/thrs/types";
 import { useDebounceFn } from "@vueuse/core";
 import { computed, ref, Ref } from "vue";
+import { useRoute } from "vue-router";
 import { getMimicDataProvider, ModuleField, provideFieldValue } from ".";
 import { useAutomaticMode } from "../../state";
 import { provideValueForm, ValueFormContext } from "./forms";
@@ -17,9 +18,9 @@ export const createParameterFormContext = <Parameter extends ParametersType>(
   source: ModuleField<Parameter>,
 ): ParameterValueFormContext<Parameter> => {
   const { getParameter, setParameter } = getMimicDataProvider();
-
+  const { query } = useRoute();
   const parameter = getParameter(source);
-
+  const hasFocus = query.parameter === source[2];
   const automaticMode = useAutomaticMode();
   const dirtyValue = ref<ParameterDefinitionMap[Parameter] | undefined>();
   const isDirty = computed(() => dirtyValue.value !== undefined);
@@ -72,6 +73,7 @@ export const createParameterFormContext = <Parameter extends ParametersType>(
     isPending,
     value,
     isEditable,
+    hasFocus,
     submit,
     undo,
     update,

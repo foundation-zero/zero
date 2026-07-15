@@ -5,6 +5,7 @@ export interface ValueFormContext {
   error: Ref<string | undefined>;
   isPending: Ref<boolean>;
   isEditable: Ref<boolean>;
+  hasFocus?: boolean;
   submit(): void;
   undo(): void;
 }

@@ -4,6 +4,7 @@ import { ManualModeToggleDialog } from "@/modules/thrapp/components/manual-mode-
 import { getTooltipContext } from "@/modules/thrapp/components/tooltip";
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { useAutomaticMode } from "@/modules/thrapp/state";
+import { RiCpuLine, RiSteering2Line } from "@remixicon/vue";
 import { useTranslations } from "..";
 
 const { t, items, actions } = useTranslations();
@@ -20,24 +21,26 @@ const enableAutomaticControl = async () => {
 <template>
   <TooltipListItem class="mt-3">
     <template v-if="automaticMode">
-      <TooltipListItemTitle class="text-muted-foreground text-xs">
+      <TooltipListItemTitle class="text-muted-foreground">
         {{ items("automatedControl") }}
       </TooltipListItemTitle>
       <Button
         size="sm"
         @click="setDialog(ManualModeToggleDialog)"
       >
+        <RiSteering2Line />
         {{ actions("controlManually") }}
       </Button>
     </template>
     <template v-else>
-      <TooltipListItemTitle class="text-warning text-xs">
+      <TooltipListItemTitle class="text-warning">
         {{ t("thrapp.dialogs.manualMode.warning") }}
       </TooltipListItemTitle>
       <Button
         size="sm"
         @click="enableAutomaticControl"
       >
+        <RiCpuLine />
         {{ actions("controlAutomatically") }}
       </Button>
     </template>

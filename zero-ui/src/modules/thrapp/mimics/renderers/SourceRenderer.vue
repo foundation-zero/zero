@@ -3,6 +3,7 @@ import { cn } from "@/modules/common/lib/utils";
 import {
   ControlComponentType,
   ControllerStateComponentType,
+  PARAMETERS_TYPES,
   ParametersType,
   SensorComponentType,
 } from "@/modules/thrs/types";
@@ -42,11 +43,16 @@ const { setTooltip, findTooltipContext } = getTooltipContext();
 
 const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
 
-const openLink = () => {
-  const result = tooltipContext.value;
-  if (!result) return;
+const isParameter = computed(() => {
+  if (!source.value) return false;
+  const [type] = source.value;
+  return PARAMETERS_TYPES.includes(type as ParametersType);
+});
 
-  const [type, tooltip] = result;
+const openLink = () => {
+  if (!tooltipContext.value) return;
+
+  const [type, tooltip] = tooltipContext.value;
 
   setTooltip(tooltip, TOOLTIPS[type]);
 };
@@ -55,21 +61,39 @@ const openLink = () => {
 <template>
   <span
     :class="
-      cn(
-        'text-disabled-foreground overflow-hidden text-sm font-medium text-ellipsis',
-        {
-          'text-brand-dull': url,
-          'cursor-pointer underline': !!tooltipContext && !$slots['default'],
-        },
-        props.class,
-      )
+      cn('text-disabled-foreground overflow-hidden text-sm font-medium text-ellipsis', props.class)
     "
-    @click="openLink"
   >
-    <slot>
-      <template v-if="sourceName">
+    <span
+      v-if="tooltipContext"
+      class="cursor-pointer underline"
+      @click="openLink"
+    >
+      <slot>
         {{ snakeCase(sourceName) }}
-      </template>
+      </slot>
+    </span>
+
+    <RouterLink
+      v-else-if="isParameter"
+      class="text-brand-dull cursor-pointer underline"
+      :to="{
+        name: 'thrs/control',
+        params: {
+          module: source?.[1],
+        },
+        query: { parameter: source?.[2] },
+      }"
+    >
+      <slot>
+        {{ snakeCase(sourceName) }}
+      </slot>
+    </RouterLink>
+
+    <slot v-else-if="sourceName">
+      {{ snakeCase(sourceName) }}
     </slot>
+
+    <slot v-else />
   </span>
 </template>

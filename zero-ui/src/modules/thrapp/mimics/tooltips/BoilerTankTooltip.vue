@@ -175,7 +175,7 @@ const currentLevelPercentage = computed(
         <TooltipListItem size="sm">
           <TooltipListItemTitle>
             {{ items("minLevel") }}
-            <FieldRenderer.Source url>{{ sources("minLevel") }}</FieldRenderer.Source>
+            <FieldRenderer.Source>{{ sources("minLevel") }}</FieldRenderer.Source>
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.Level />
@@ -187,7 +187,7 @@ const currentLevelPercentage = computed(
         <TooltipListItem size="sm">
           <TooltipListItemTitle>
             {{ items("maxLevel") }}
-            <FieldRenderer.Source url>{{ sources("maxLevel") }}</FieldRenderer.Source>
+            <FieldRenderer.Source>{{ sources("maxLevel") }}</FieldRenderer.Source>
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.Level />
