@@ -109,3 +109,13 @@ class Module[
         if self._control.mode is not None:
             await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_manual_control(self._control.manual_controls)
+
+    async def tick(self, sensor_values: S | None) -> C:
+        if sensor_values is None:
+            return None
+
+        control_values, controller_state = self.execute_control_tick(sensor_values)
+
+        await self.send_control_updates(sensor_values, control_values, controller_state)
+
+        return control_values

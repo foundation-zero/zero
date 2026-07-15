@@ -17,11 +17,4 @@ class ControlRunner[S: ThrsValues](Runner):
         for module in self._modules:
             sensor_values = await module.sync_control_channels_state()
 
-            if sensor_values is None:
-                continue
-            control_values, controller_state = module.execute_control_tick(
-                sensor_values
-            )
-            await module.send_control_updates(
-                sensor_values, control_values, controller_state
-            )
+            await module.tick(sensor_values)
