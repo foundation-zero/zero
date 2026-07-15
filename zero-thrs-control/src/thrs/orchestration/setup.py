@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Callable
 
+from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
     MachineStateLoggingServiceNoop,
@@ -47,6 +48,7 @@ def setup_control(
     machine_state_logging_service_enabled: bool = True,
 ) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
     control_channels = ControlChannels(connector, config, mode.control_module)
+    pg_database = PostgresDatabase(config)
 
     parameters = {
         module: mode.control_module.parameters_for_module(module)()
@@ -54,7 +56,7 @@ def setup_control(
     }
 
     machine_state_logging_service = (
-        MachineStateLoggingService()
+        MachineStateLoggingService(pg_database)
         if machine_state_logging_service_enabled
         else MachineStateLoggingServiceNoop()
     )

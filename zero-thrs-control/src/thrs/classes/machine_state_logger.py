@@ -9,8 +9,8 @@ from typing import Any, Coroutine, Literal
 from sqlmodel import SQLModel
 from transitions import Machine, State
 
-from thrs.classes import database
 from thrs.classes.control import Control
+from thrs.classes.database import PostgresDatabase
 from thrs.db.models.machine_state import (
     MachineStateEvent,
     MachineStateIssue,
@@ -19,7 +19,6 @@ from thrs.db.models.machine_state import (
 )
 from thrs.input_output.alarms import Severity
 from thrs.input_output.base import ThrsValues
-from thrs.orchestration.config import Config
 from thrs.utils.list import ensure_list
 from thrs.utils.model import get_model_from_to_diff
 
@@ -32,8 +31,8 @@ class MachineStateValuesType(Enum):
 class MachineStateLogger:
     """Provide direct log methods for the state machine, saving to the database."""
 
-    def __init__(self):
-        self._db = database.Database(Config())
+    def __init__(self, postgres_db: PostgresDatabase):
+        self.postgres_db: PostgresDatabase = postgres_db
 
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
@@ -83,7 +82,7 @@ class MachineStateLogger:
 
     async def _log_model_async(self, model: SQLModel):
         try:
-            async with self._db.session_factory() as session:
+            async with self.postgres_db.session_factory() as session:
                 session.add(model)
                 await session.commit()
         except Exception as e:
@@ -102,6 +101,10 @@ class StateLogger:
 
     @property
     def machinestate_logger(self) -> MachineStateLogger: ...
+
+    # TODO: Delete when rebased to main
+    @abstractmethod
+    def clone_for_module(self) -> "StateLogger": ...
 
     def log_issue(self, message: str, severity: Severity): ...
     def log_event(self, event: MachineStateEvent): ...
@@ -183,11 +186,23 @@ class MachineStateLoggingServiceNoop(StateLogger):
             initial=initial,
         )
 
+    def clone_for_module(self) -> "StateLogger":
+        return self
+
 
 class MachineStateLoggingService(StateLogger):
     """Service to be inherited by a state machine using class. Providing logging capabilities for state transitions (and the triggered condition(s)), changing THRS values, custom events and issues."""
 
     _initialized: bool = False
+
+    def __init__(self, postgres_db: PostgresDatabase):
+        self._machinestate_logger: MachineStateLogger = MachineStateLogger(postgres_db)
+        self.last_state: str = "Unknown"
+        self.last_trigger_name: str | None = "Unknown"
+        self.last_evaluated_conditions: list[str] = []
+
+    def clone_for_module(self) -> "StateLogger":
+        return MachineStateLoggingService(self.machinestate_logger.postgres_db)
 
     def create_logged_state_machine(
         self,
@@ -265,28 +280,14 @@ class MachineStateLoggingService(StateLogger):
 
     @property
     def machinestate_logger(self) -> MachineStateLogger:
-        self._ensure_init()
         return self._machinestate_logger
-
-    def _ensure_init(self):
-        """Ensures that the logger is initialized. __init__ is not used to avoid issues with multiple inheritance and to allow for lazy initialization."""
-        if self._initialized:
-            return
-        self._initialized = True
-
-        self._machinestate_logger: MachineStateLogger = MachineStateLogger()
-        self.last_state: str = "Unknown"
-        self.last_trigger_name: str | None = "Unknown"
-        self.last_evaluated_conditions: list[str] = []
 
     def _before_log(self, control: "Control", sensor_values):
         """Called before the transition is made, to track the last state."""
-        self._ensure_init()
         self.last_state = control.state
 
     def _after_log(self, control: "Control", sensor_values):
         """Called after the transition is made, to log the transition and reset the tracked conditions."""
-        self._ensure_init()
         condition_name: str = (
             ", ".join(self.last_evaluated_conditions)
             if self.last_evaluated_conditions

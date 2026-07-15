@@ -212,7 +212,7 @@ class CombinedModule:
             name: module.control(
                 parameters.values[name],
                 time_fn,
-                type(logger_template)(),
+                logger_template.clone_for_module(),  # TODO Use clone for now, will ben removed after rebase main
             )
             for name, module in self._modules.items()
             if name in parameters.values

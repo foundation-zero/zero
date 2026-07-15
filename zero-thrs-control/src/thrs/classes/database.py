@@ -13,7 +13,7 @@ from thrs.orchestration.config import Config
 logger = logging.getLogger(__name__)
 
 
-class Database:
+class PostgresDatabase:
     engine: AsyncEngine
     session_factory: async_sessionmaker[AsyncSession]
 

@@ -1,9 +1,12 @@
 import asyncio
 import os
 import socket
+from contextlib import asynccontextmanager
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
+from thrs.classes.database import PostgresDatabase
 from thrs.orchestration.config import Config
 
 
@@ -47,6 +50,21 @@ def ensure_event_loop_per_test():
         asyncio.set_event_loop(loop)
 
     yield
+
+
+@pytest.fixture
+def postgres_db() -> PostgresDatabase:
+    session = Mock()
+    session.add = Mock()
+    session.commit = AsyncMock()
+
+    @asynccontextmanager
+    async def session_factory():
+        yield session
+
+    postgres_db = Mock(spec=PostgresDatabase)
+    postgres_db.session_factory = session_factory
+    return postgres_db
 
 
 def _mqtt_is_available(host: str, port: int, timeout_s: float = 0.2) -> bool:

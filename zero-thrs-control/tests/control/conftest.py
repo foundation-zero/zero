@@ -59,9 +59,11 @@ def simulation(
 
 
 @fixture
-def thrusters_control(simulation: ThrustersSimulation) -> ThrustersControl:
+def thrusters_control(
+    simulation: ThrustersSimulation, postgres_db
+) -> ThrustersControl:
     return ThrustersControl(
         parameters=ThrustersParameters(),
         time_fn=simulation.time,
-        state_logger=MachineStateLoggingService(),
+        state_logger=MachineStateLoggingService(postgres_db),
     )

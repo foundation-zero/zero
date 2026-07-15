@@ -52,9 +52,11 @@ def simulation_inputs():
 
 
 @fixture
-def control(simulation):
+def control(simulation, postgres_db):
     return ThrustersControl(
-        ThrustersParameters(), simulation.time, MachineStateLoggingService()
+        ThrustersParameters(),
+        simulation.time,
+        MachineStateLoggingService(postgres_db),
     )
 
 
