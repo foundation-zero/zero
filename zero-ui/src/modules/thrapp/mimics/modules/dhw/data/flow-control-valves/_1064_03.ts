@@ -8,12 +8,11 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { actuator, tooltip } from "./shared";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowControlValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
-    pump: actuator,
   },
   controllerState: {
     controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwDcFlowController"),
@@ -24,7 +23,7 @@ export default toInstance<MimicComponentType.FlowControlValve>({
   },
   source: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
   sensors: {
-    measurement: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
+    measurement: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureDrivesReturn"),
   },
   tooltip: tooltip({
     yardTag: "1064-03",

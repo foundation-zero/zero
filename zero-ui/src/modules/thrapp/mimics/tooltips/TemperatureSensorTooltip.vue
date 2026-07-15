@@ -63,16 +63,13 @@ const { items, labels, sources } = useTranslations();
       </TooltipListHeader>
       <TemperatureController
         :controller="controllerState.controller"
-        :measurement="sensors.measurement"
+        :measurement="source"
         :setpoint="parameters.temperature"
       >
         <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
+          <FieldRenderer.Source :source="custom.actuator" />
         </template>
-        <template
-          v-if="sensors.measurement === source"
-          #measurement
-        >
+        <template #measurement>
           <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
         </template>
       </TemperatureController>

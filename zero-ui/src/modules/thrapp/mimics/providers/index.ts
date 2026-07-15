@@ -88,38 +88,71 @@ export const isField = <
     | "custom",
 >(
   field?: ModuleField<Type | undefined>,
+  type?: Type,
 ): field is ModuleField<Type> => {
-  return field?.[0] !== undefined;
+  return field?.[0] !== undefined && (type === undefined || field[0] === type);
 };
 
-export const isCustomField = <Module extends keyof ThrsDefinitions>(
+export const isCustomField = <Type extends "custom" = "custom">(
   field?: ModuleField,
-): field is ModuleField<"custom", Module> => {
-  return isField(field) && field[0] === "custom";
+): field is ModuleField<Type> => {
+  return isField(field, "custom");
 };
 
-export const isSensorField = <Module extends keyof ThrsDefinitions>(
+export const isSensorField = <Type extends SensorComponentType = SensorComponentType>(
   field?: ModuleField,
-): field is ModuleField<SensorComponentType, Module> => {
-  return isField(field) && field[0].startsWith("sensor:");
+  type?: Type,
+): field is ModuleField<Type> => {
+  return isField(field, type) && field[0].startsWith("sensor:");
 };
 
-export const isControlField = <Module extends keyof ThrsDefinitions>(
+export const isControlField = <Type extends ControlComponentType = ControlComponentType>(
   field?: ModuleField,
-): field is ModuleField<ControlComponentType, Module> => {
-  return isField(field) && field[0].startsWith("control:");
+  type?: Type,
+): field is ModuleField<Type> => {
+  return isField(field, type) && field[0].startsWith("control:");
 };
 
-export const isParameterField = <Module extends keyof ThrsDefinitions>(
+export const isParameterField = <Type extends ParametersType = ParametersType>(
   field?: ModuleField,
-): field is ModuleField<ParametersType, Module> => {
-  return isField(field) && field[0].startsWith("parameter:");
+  type?: Type,
+): field is ModuleField<Type> => {
+  return isField(field, type) && field[0].startsWith("parameter:");
 };
 
-export const isControllerStateField = <Module extends keyof ThrsDefinitions>(
+export const isControllerStateField = <
+  Type extends ControllerStateComponentType = ControllerStateComponentType,
+>(
   field?: ModuleField,
-): field is ModuleField<ControllerStateComponentType, Module> => {
-  return isField(field) && field[0].startsWith("controller:");
+  type?: Type,
+): field is ModuleField<Type> => {
+  return isField(field, type) && field[0].startsWith("controller:");
+};
+
+export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
+  [Type in SensorComponentType]: keyof SensorDefinitionMap[Type];
+} = {
+  [SensorComponentType.Temperature]: "temperature",
+  [SensorComponentType.Pressure]: "pressure",
+  [SensorComponentType.Flow]: "flow",
+  [SensorComponentType.Pump]: "flow",
+  [SensorComponentType.Valve]: "positionRel",
+  [SensorComponentType.Thruster]: "active",
+  [SensorComponentType.Pcs]: "mode",
+  [SensorComponentType.Pcm]: "charged",
+  [SensorComponentType.Level]: "level",
+  [SensorComponentType.DeltaT]: "deltaT",
+  [SensorComponentType.HeatExchanger]: "deltaT",
+  [SensorComponentType.CalculatedFlow]: "flow",
+};
+
+export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
+  [Type in ControlComponentType]: keyof ControlDefinitionMap[Type];
+} = {
+  [ControlComponentType.Pump]: "dutypoint",
+  [ControlComponentType.Valve]: "setpoint",
+  [ControlComponentType.Pcm]: "on",
+  [ControlComponentType.Heatpump]: "on",
 };
 
 export interface MimicDataProvider {

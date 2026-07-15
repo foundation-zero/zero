@@ -40,7 +40,7 @@ export type PressureSensorParameters = ExtractModuleFields<
   ParameterFieldDefinitions[MimicComponentType.PressureSensor]
 >;
 export type PressureSensorControllerState = ExtractModuleFields<
-  ControllerStateFieldDefinitions[MimicComponentType.TemperatureSensor]
+  ControllerStateFieldDefinitions[MimicComponentType.PressureSensor]
 >;
 
 export const controls: PressureSensorControls = {

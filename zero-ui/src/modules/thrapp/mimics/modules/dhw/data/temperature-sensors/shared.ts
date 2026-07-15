@@ -4,7 +4,6 @@ import {
   ControlComponentType,
   ControllerStateComponentType,
   ParametersType,
-  SensorComponentType,
 } from "@/modules/thrs/types";
 
 import {
@@ -44,10 +43,6 @@ export type TemperatureSensorControllerState = ExtractModuleFields<
   ControllerStateFieldDefinitions[MimicComponentType.TemperatureSensor]
 >;
 
-export const controls: TemperatureSensorControls = {
-  pump: actuator,
-};
-
 export const controllerState: TemperatureSensorControllerState = {
   controller,
 };
@@ -55,9 +50,3 @@ export const controllerState: TemperatureSensorControllerState = {
 export const parameters: TemperatureSensorParameters = {
   temperature: setpoint,
 };
-
-export const measurement = getField(
-  SensorComponentType.Temperature,
-  "dhw",
-  "dhwTemperatureBoostingSupply",
-);

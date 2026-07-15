@@ -83,11 +83,13 @@ const { labels, items, sources } = useTranslations();
       <FlowController
         :controller="controllerState.controller"
         :measurement="sensors.measurement"
-        :actuator="controls.pump"
         :setpoint="parameters.flow"
       >
         <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
+          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+        </template>
+        <template #measurement>
+          <FieldRenderer.Source :source="sensors.measurement" />
         </template>
       </FlowController>
     </TooltipList>

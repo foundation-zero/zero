@@ -15,7 +15,7 @@ import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValue
 
 const props = defineProps<{
   source: ModuleField<ControllerState>;
-  field?: Key;
+  field: Key;
 }>();
 
 const { getControllerState } = getMimicDataProvider();

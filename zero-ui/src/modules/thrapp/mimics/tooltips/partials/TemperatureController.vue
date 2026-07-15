@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { formatNumber } from "@/modules/common/lib/utils.ts";
 import {
   TooltipListItem,
   TooltipListItemTitle,
@@ -11,15 +10,15 @@ import {
   SensorComponentType,
 } from "@/modules/thrs/types";
 import { snakeCase } from "lodash";
-import { ControllerStateValue, ModuleField } from "../../providers/index.ts";
-import { FieldRenderer } from "../../renderers/index.ts";
-import { useTranslations } from "../index.ts";
+import { useTranslations } from "..";
+import { ControllerStateValue, isSensorField, ModuleField, SensorValue } from "../../providers";
+import { FieldRenderer } from "../../renderers";
 
 const { items, sources } = useTranslations();
 
 defineProps<{
   controller: ModuleField<ControllerStateComponentType.PIDController>;
-  measurement: ModuleField<SensorComponentType.Temperature>;
+  measurement: ModuleField<SensorComponentType.Temperature | SensorComponentType.Flow>;
   setpoint: ModuleField<ParametersType.Temperature>;
 }>();
 </script>
@@ -72,28 +71,27 @@ defineProps<{
         </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature :format="formatNumber(1)" />
+        <FieldRenderer.Temperature
+          v-if="isSensorField(measurement, SensorComponentType.Temperature)"
+        />
+        <FieldRenderer.FlowRate v-else-if="isSensorField(measurement, SensorComponentType.Flow)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControllerStateValue>
 
-  <ControllerStateValue
-    :source="controller"
-    field="measurement"
-  >
-    <!-- TODO: "This component" means that measurement sensor is currently selected sensor? -->
+  <SensorValue :source="measurement">
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("measurement") }}
         <slot name="measurement">
-          <FieldRenderer.Source :source="measurement" />
+          <FieldRenderer.Source />
         </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature :format="formatNumber(1)" />
+        <FieldRenderer.Auto />
       </TooltipListItemValue>
     </TooltipListItem>
-  </ControllerStateValue>
+  </SensorValue>
 
   <ControllerStateValue
     :source="controller"
@@ -105,7 +103,7 @@ defineProps<{
         <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature :format="formatNumber(1)" />
+        <FieldRenderer.FlowRate />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControllerStateValue>

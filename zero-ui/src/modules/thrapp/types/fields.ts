@@ -74,9 +74,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.PressureSensor]: {
     flow: SensorComponentType.Flow;
   };
-  [MimicComponentType.TemperatureSensor]: {
-    measurement: SensorComponentType.Temperature;
-  };
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: {
     temperature: SensorComponentType.Temperature;
   };
@@ -106,7 +104,7 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
-    measurement: SensorComponentType.Flow;
+    measurement: SensorComponentType.Temperature;
   };
 }>;
 
@@ -119,9 +117,7 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.PressureSensor]: {
     pump: ControlComponentType.Pump;
   };
-  [MimicComponentType.TemperatureSensor]: {
-    pump: ControlComponentType.Pump;
-  };
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: {
     pump: ControlComponentType.Pump;
   };
@@ -136,7 +132,6 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
-    pump: ControlComponentType.Pump;
     valve: ControlComponentType.Valve;
   };
 }>;
@@ -233,7 +228,9 @@ export type CustomFieldDefinitions = CustomFields<{
     height?: number | string;
   };
   [MimicComponentType.PressureSensor]: EmptyObject;
-  [MimicComponentType.TemperatureSensor]: EmptyObject;
+  [MimicComponentType.TemperatureSensor]: {
+    actuator?: ModuleField<ControlComponentType.Valve | ControlComponentType.Pump>;
+  };
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;

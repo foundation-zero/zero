@@ -3,12 +3,6 @@ export { default as MimicTooltipProvider } from "./MimicTooltipProvider.vue";
 export { default as MimicTooltipTrigger } from "./MimicTooltipTrigger.vue";
 export { default as NoopTooltipProvider } from "./NoopTooltipProvider.vue";
 
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types/index.ts";
 import { isEqual } from "lodash";
 import { createContext } from "reka-ui";
 import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
@@ -42,9 +36,7 @@ export type TooltipContext = {
   setDialog(component: Component): void;
   closeDialog(): void;
   findTooltipContext: (
-    source: ModuleField<
-      SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
-    >,
+    source: ModuleField,
   ) => [MimicComponentType, TooltipComponentContext] | undefined;
   getData: <Type extends MimicComponentType>() => TooltipComponentContext<Type> | null;
   clear(): void;
@@ -71,9 +63,7 @@ export const createTooltipContext = (
   };
 
   const findTooltipContext = (
-    source: ModuleField<
-      SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
-    >,
+    source: ModuleField,
   ): [MimicComponentType, TooltipComponentContext] | undefined => {
     const typesData = Object.entries(sourceData) as [
       MimicComponentType,
@@ -117,9 +107,7 @@ export const createTooltipContext = (
       if (!next.tooltip) {
         clear();
       } else if (next.tooltip !== prev?.tooltip) {
-        const field = String(next.tooltip).split(".") as ModuleField<
-          ControlComponentType | SensorComponentType | ControllerStateComponentType
-        >;
+        const field = String(next.tooltip).split(".") as ModuleField;
         const tooltipContext = findTooltipContext(field);
 
         if (!tooltipContext) return;

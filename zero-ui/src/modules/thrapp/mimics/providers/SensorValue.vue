@@ -11,7 +11,14 @@ import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
 import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrs/types";
 import { computed } from "vue";
-import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValueSource } from ".";
+import {
+  DEFAULT_SENSOR_FIELD_VALUE_FIELD,
+  getMimicDataProvider,
+  ModuleField,
+  provideFieldValue,
+  provideFieldValueField,
+  provideFieldValueSource,
+} from ".";
 
 const props = defineProps<{
   source: ModuleField<Sensor>;
@@ -20,12 +27,14 @@ const props = defineProps<{
 
 const { getSensorValue } = getMimicDataProvider();
 
+const field = props.field ?? DEFAULT_SENSOR_FIELD_VALUE_FIELD[props.source[0]];
 const sensor = getSensorValue(props.source);
 const value = computed(() =>
-  props.field ? (unstamp(sensor.value?.[props.field]) as Value | undefined) : undefined,
+  field ? (unstamp(sensor.value?.[field as Key]) as Value | undefined) : undefined,
 );
 provideFieldValue(value);
 provideFieldValueSource(props.source);
+provideFieldValueField(field as string | undefined);
 </script>
 
 <template>

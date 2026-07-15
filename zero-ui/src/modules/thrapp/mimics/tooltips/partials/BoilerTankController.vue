@@ -13,7 +13,10 @@ defineProps<{
 </script>
 
 <template>
-  <ControllerStateValue :source="controller">
+  <ControllerStateValue
+    :source="controller"
+    field="tank1State"
+  >
     <TooltipListItem>
       <TooltipListItemTitle>
         <slot>{{ items("tankController") }}</slot>

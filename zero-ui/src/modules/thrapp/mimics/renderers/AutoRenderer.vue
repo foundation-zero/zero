@@ -10,6 +10,7 @@ const editor = computed(() => {
   if (!field) return null;
 
   switch (field) {
+    case "temperature":
     case "temperatureSetpoint":
       return FieldRenderer.Temperature;
     case "on":
@@ -21,9 +22,12 @@ const editor = computed(() => {
     case "setpoint":
       return FieldRenderer.ValveState;
     case "positionRel":
+    case "dutypoint":
       return FieldRenderer.Percentage;
     case "heat":
       return FieldRenderer.Heat;
+    case "level":
+      return FieldRenderer.Level;
   }
 
   return null;

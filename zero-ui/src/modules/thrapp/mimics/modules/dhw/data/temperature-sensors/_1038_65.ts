@@ -1,16 +1,18 @@
+import { getField } from "@/modules/thrapp/mimics/providers";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
-import { controllerState, controls, measurement, parameters, tooltip } from "./shared";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { controllerState, parameters, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
-  controls,
+  controls: {},
   controllerState,
   custom: {},
   parameters,
-  source: measurement,
+  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   sensors: {
-    measurement,
+    actuator: getField(SensorComponentType.Valve, "dhw", "dhwSwitchHighTemperature"),
   },
   tooltip: tooltip({
     yardTag: "1038-65",
