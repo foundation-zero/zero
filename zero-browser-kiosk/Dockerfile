@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     udev \
     procps\
     wayvnc \
-    inotify-tools \
     && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh
