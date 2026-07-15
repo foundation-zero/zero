@@ -118,7 +118,7 @@
             {
               "background": {
                 "color": {
-                  "field": "propulsion",
+                  "field": "Propulsion",
                   "fixed": "text"
                 }
               },
@@ -136,7 +136,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "propulsion",
+                  "field": "Propulsion",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -151,6 +151,7 @@
               "placement": {
                 "height": 30,
                 "left": 547,
+                "rotation": 0,
                 "top": 318,
                 "width": 80
               },
@@ -159,7 +160,7 @@
             {
               "background": {
                 "color": {
-                  "field": "domestic",
+                  "field": "Domestic",
                   "fixed": "text"
                 },
                 "size": "cover"
@@ -177,7 +178,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "domestic",
+                  "field": "Domestic",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -193,6 +194,7 @@
               "placement": {
                 "height": 30,
                 "left": 547,
+                "rotation": 0,
                 "top": 136,
                 "width": 80
               },
@@ -201,7 +203,7 @@
             {
               "background": {
                 "color": {
-                  "field": "technical",
+                  "field": "Technical",
                   "fixed": "text"
                 }
               },
@@ -218,7 +220,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "technical",
+                  "field": "Technical",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -233,6 +235,7 @@
               "placement": {
                 "height": 30,
                 "left": 547,
+                "rotation": 0,
                 "top": 222,
                 "width": 80
               },
@@ -241,7 +244,7 @@
             {
               "background": {
                 "color": {
-                  "field": "hvac",
+                  "field": "HVAC",
                   "fixed": "text"
                 },
                 "image": {
@@ -261,7 +264,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hvac",
+                  "field": "HVAC",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -594,10 +597,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  -- Producers\r\n  MAX(CASE WHEN group_name = 'Solar' THEN power_value END) AS solar,\r\n  MAX(CASE WHEN group_name = 'Shore' THEN power_value END) AS shore,\r\n  MAX(CASE WHEN group_name = 'Hydrogeneration' THEN power_value END) AS hydro,\r\n\r\n  -- Consumers\r\n  MAX(CASE WHEN group_name = 'Domestic' THEN power_value END) AS domestic,\r\n  MAX(CASE WHEN group_name = 'Technical' THEN power_value END) AS technical,\r\n  MAX(CASE WHEN group_name = 'HVAC' THEN power_value END) AS hvac,\r\n  MAX(CASE WHEN group_name = 'Propulsion' THEN power_value END) AS propulsion,\r\n  \r\n  -- Batteries\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value >= 0 THEN power_value ELSE 0 END) AS charging,\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value < 0 THEN -power_value ELSE 0 END) AS discharging,\r\n  \t-- For testing the value is artificially increased\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) * 100000 + 130000000 AS soc,\r\n  \t-- For testing an artificial soc% is created\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) + 55 AS soc_perc\r\nFROM  (\r\n\tSELECT\r\n    time,\r\n    group_name,\r\n    group_power AS power_value\r\n\tFROM energy.electrical_flow\r\n\r\n\tUNION ALL\r\n\r\n\tSELECT\r\n    MAX(time) AS time,\r\n    group_name,\r\n    SUM(stored_energy) AS power_value\r\n\tFROM energy.electrical_soc\r\n\tGROUP BY group_name\r\n)",
-          "refId": "electrical_flow",
+          "rawSql": "SELECT\r\n  meta.\"group\",\r\n  SUM(power_tag.\"power\") AS total_power\r\nFROM (\r\n  SELECT DISTINCT ON (topic)\r\n    topic,\r\n    total_active_power__value AS \"power\"\r\n  FROM public.marpower__power_tag\r\n  WHERE $__timeFilter(timestamp)\r\n) AS power_tag\r\nJOIN public.energy_metadata meta ON power_tag.topic = meta.topic\r\nGROUP BY meta.\"group\"\r\n",
+          "refId": "Consumer_power_tags",
           "sql": {
             "columns": [
               {
@@ -620,6 +637,11 @@
       "title": "Electrical flow",
       "transformations": [
         {
+          "id": "transpose",
+          "options": {}
+        },
+        {
+          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
@@ -993,7 +1015,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
@@ -1008,5 +1030,5 @@
   "timezone": "browser",
   "title": "Electrical energy",
   "uid": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda",
-  "version": 2
+  "version": 1
 }
