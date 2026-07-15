@@ -100,9 +100,10 @@ class Module[
             warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
 
     async def send_control_updates(
-        self, sensor_values: S, control_values: C, controller_state: CS
+        self, sensor_values: S | None, control_values: C, controller_state: CS
     ) -> None:
-        await self._channels.send_computed_values(sensor_values)
+        if sensor_values is not None:
+            await self._channels.send_computed_values(sensor_values)
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
         await self._channels.send_parameters(self._control.parameters)
@@ -112,9 +113,9 @@ class Module[
 
     async def tick(self, sensor_values: S | None) -> C:
         if sensor_values is None:
-            return None
-
-        control_values, controller_state = self.execute_control_tick(sensor_values)
+            control_values, controller_state = self._control.initial()
+        else:
+            control_values, controller_state = self.execute_control_tick(sensor_values)
 
         await self.send_control_updates(sensor_values, control_values, controller_state)
 
