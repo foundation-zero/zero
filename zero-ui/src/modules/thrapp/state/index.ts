@@ -1,11 +1,11 @@
 import { DEFINITIONS } from "@/modules/thrs/lib/consts";
-import { useSimulationStore } from "@/modules/thrs/stores/simulation";
+import { useAutomationStore } from "@/modules/thrs/stores/automation";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export const useAutomaticMode = () => {
   const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
-  const { control } = toRefs(useSimulationStore());
-  const { setAutomatedControl } = useSimulationStore();
+  const { control } = toRefs(useAutomationStore());
+  const { setAutomatedControl } = useAutomationStore();
 
   return computed({
     get() {

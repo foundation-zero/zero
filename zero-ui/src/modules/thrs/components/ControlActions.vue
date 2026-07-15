@@ -8,8 +8,8 @@ import { useAutomaticMode } from "@/modules/thrapp/state";
 import {
   ControlStatus,
   PvtAutomaticMode,
-  useSimulationStore,
-} from "@/modules/thrs/stores/simulation";
+  useAutomationStore,
+} from "@/modules/thrs/stores/automation";
 import { RiLock2Fill } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
@@ -22,7 +22,7 @@ const props = defineProps<{
 const t = tScoped("thrs.components.controlActions");
 const { te } = useI18n();
 
-const { control, isProcessing } = toRefs(useSimulationStore());
+const { control, isProcessing } = toRefs(useAutomationStore());
 
 const isAutomatic = useAutomaticMode();
 
