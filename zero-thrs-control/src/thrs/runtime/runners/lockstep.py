@@ -47,7 +47,7 @@ class LockstepRunner[
             for module in self.control_modules
             if (
                 control_values := await module.tick(
-                    sim_result.sensor_values.values[module.name]
+                    sim_result.sensor_values.values.get(module.name)
                 )
             )
         }
