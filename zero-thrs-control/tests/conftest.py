@@ -2,6 +2,7 @@ import asyncio
 import os
 import socket
 from contextlib import asynccontextmanager
+from typing import AsyncIterator
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -53,14 +54,18 @@ def ensure_event_loop_per_test():
 
 
 @pytest.fixture
-def postgres_db() -> PostgresDatabase:
+def mock_session() -> Mock:
     session = Mock()
     session.add = Mock()
     session.commit = AsyncMock()
+    return session
 
+
+@pytest.fixture
+def postgres_db(mock_session: Mock) -> Mock:
     @asynccontextmanager
-    async def session_factory():
-        yield session
+    async def session_factory() -> AsyncIterator[Mock]:
+        yield mock_session
 
     postgres_db = Mock(spec=PostgresDatabase)
     postgres_db.session_factory = session_factory
