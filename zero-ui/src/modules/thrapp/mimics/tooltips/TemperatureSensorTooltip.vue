@@ -13,7 +13,7 @@ import {
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import TemperatureSensorInstance from "../instances/TemperatureSensorInstance.vue";
-import { isField, SensorValue } from "../providers";
+import { SensorValue } from "../providers";
 import * as Partials from "./partials";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.TemperatureSensor>>();
@@ -46,17 +46,14 @@ const { items, labels } = useTranslations();
       </SensorValue>
     </TooltipList>
 
-    <TooltipList v-if="custom.controller && isField(controllerState.controller)">
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <Partials.PIDController
-        :type="custom.controller.type"
-        :controller="controllerState.controller"
-        :measurement="source"
-        :actuator="custom.actuator"
-        :setpoint="custom.controller.setpoint"
+        v-if="custom.controller"
+        v-bind="custom.controller"
       />
     </TooltipList>
   </MimicTooltip>

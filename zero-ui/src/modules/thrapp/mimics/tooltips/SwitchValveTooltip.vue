@@ -60,22 +60,21 @@ const { labels, items, sources } = useTranslations();
       <Partials.ValvePosition :valve="source" />
     </TooltipList>
 
-    <TooltipList v-if="custom.tank">
+    <TooltipList v-if="custom.tankController">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <template v-if="custom.tank">
-        <Partials.BoilerTankController
-          :controller="custom.tank.controllerState.controller"
-          :tank-state-field="custom.tank.custom.tankStateField"
-          :disabled-parameter="custom.tank.parameters.disabled"
-          :source="custom.tank.source"
-        >
-          {{ items("tankSelector") }}
-        </Partials.BoilerTankController>
-        <Partials.BoilerTankOperator :sensors="custom.tank.sensors" />
-      </template>
+      <Partials.BoilerTankController
+        v-bind="custom.tankController"
+        :controller="custom.tankController.controllerState.controller"
+        :tank-state-field="custom.tankController.custom.tankStateField"
+        :disabled-parameter="custom.tankController.parameters.disabled"
+        :source="custom.tankController.source"
+      >
+        {{ items("tankSelector") }}
+      </Partials.BoilerTankController>
+      <Partials.BoilerTankOperator :sensors="custom.tankController.sensors" />
     </TooltipList>
   </MimicTooltip>
 </template>

@@ -1,8 +1,4 @@
-import {
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
@@ -10,19 +6,13 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HVAC>({
   controls: {},
-  controllerState: {
-    controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwDcFlowController"),
-  },
+  controllerState: {},
   custom: {},
-  parameters: {
-    temperature: getField(ParametersType.Temperature, "dhw", "htBoostingTemperatureSetpoint"),
-    flow: getField(ParametersType.FlowControl, "dhw", "dcFlowcontrolMinimumSetpoint"),
-  },
+  parameters: {},
   source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHvacExchanger"),
   sensors: {
     incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureAdsorptionReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureHvacExchangerReturn"),
-    flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
   },
   tooltip: tooltip({
     title: "HVAC",

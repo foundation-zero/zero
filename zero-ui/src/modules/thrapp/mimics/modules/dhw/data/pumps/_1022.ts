@@ -1,29 +1,17 @@
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { pumpFlowController, pumpTemperatureController } from "../controllers";
 
 export default toInstance<MimicComponentType.Pump>({
-  custom: {},
-  source: getField(SensorComponentType.Pump, "dhw", "dhwPump"),
-  controllerState: {
-    flowController: getField(
-      ControllerStateComponentType.PIDController,
-      "dhw",
-      "dhwPumpFlowController",
-    ),
-    temperatureController: getField(
-      ControllerStateComponentType.PIDController,
-      "dhw",
-      "dhwPumpTemperatureController",
-    ),
+  custom: {
+    temperatureController: pumpTemperatureController,
+    flowController: pumpFlowController,
   },
+  controllerState: {},
+  source: getField(SensorComponentType.Pump, "dhw", "dhwPump"),
   controls: {
     pump: getField(ControlComponentType.Pump, "dhw", "dhwPump"),
   },
@@ -33,12 +21,6 @@ export default toInstance<MimicComponentType.Pump>({
   },
   sensors: {
     pressure: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),
-    flowMeasurement: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
-    temperatureMeasurement: getField(
-      SensorComponentType.Temperature,
-      "dhw",
-      "dhwTemperatureBoostingReturn",
-    ),
   },
   tooltip: {
     title: "Pump",

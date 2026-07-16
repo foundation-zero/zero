@@ -110,6 +110,7 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "outputMinimum": "Output minimum",
         "tankState": "Tank state",
         "incomingFlow": "Incoming flow",
         "outgoingFlow": "Outgoing flow",

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -85,14 +84,9 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
       />
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>{{ labels("controls") }}</TooltipListHeader>
-      <Partials.PIDController
-        :type="SensorComponentType.Flow"
-        :controller="controllerState.controller"
-        :setpoint="parameters.flow"
-        :measurement="sensors.measurement"
-      />
+      <Partials.PIDController v-bind="custom.controller" />
     </TooltipList>
   </MimicTooltip>
 </template>

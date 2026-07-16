@@ -9,7 +9,6 @@ import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import PressureSensorInstance from "../instances/PressureSensorInstance.vue";
 
-import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import { TooltipListHeader, TooltipListItemAction } from "../../components/tooltip-list";
 import { SensorValue } from "../providers";
@@ -44,18 +43,12 @@ const { items, labels } = useTranslations();
       </SensorValue>
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Partials.PIDController
-        :type="SensorComponentType.Flow"
-        :controller="controllerState.controller"
-        :actuator="controls.pump"
-        :measurement="sensors.flow"
-        :setpoint="parameters.flow"
-      />
+      <Partials.PIDController v-bind="custom.controller" />
     </TooltipList>
   </MimicTooltip>
 </template>

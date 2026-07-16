@@ -1,36 +1,22 @@
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { drivesFlowController } from "../controllers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowControlValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "dhw", "dhwFlowcontrolDrives"),
   },
-  controllerState: {
-    controller: getField(
-      ControllerStateComponentType.PIDController,
-      "dhw",
-      "dhwDrivesFlowController",
-    ),
-  },
+  controllerState: {},
   custom: {
-    controllerName: "drives_flow_controller",
+    controller: drivesFlowController,
   },
-  parameters: {
-    flow: getField(ParametersType.FlowControl, "dhw", "drivesFlowcontrolMinimumSetpoint"),
-  },
+  parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDrives"),
-  sensors: {
-    measurement: getField(SensorComponentType.Temperature, "dhw", "drivesTemperatureRecovery"),
-  },
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1064-08",
     technicalName: "dhw-flowcontrol-drives",

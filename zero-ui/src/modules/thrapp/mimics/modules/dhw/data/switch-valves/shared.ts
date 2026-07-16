@@ -20,19 +20,19 @@ export const controller = getField(
 type SwitchValveCustom = CustomFieldDefinitions[MimicComponentType.SwitchValve];
 
 export const tank1: SwitchValveCustom = {
-  get tank() {
+  get tankController() {
     return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1053"];
   },
 };
 
 export const tank2: SwitchValveCustom = {
-  get tank() {
+  get tankController() {
     return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1054"];
   },
 };
 
 export const tank3: SwitchValveCustom = {
-  get tank() {
+  get tankController() {
     return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1055"];
   },
 };

@@ -9,7 +9,6 @@
   "
 >
 import {
-  ControlComponentType,
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
@@ -17,14 +16,14 @@ import {
 import { computed } from "vue";
 import * as Partials from ".";
 import { useTranslations } from "..";
-import { ControllerStateValue, ModuleField } from "../../providers";
+import { ControllerStateValue, ModuleField, ParameterValue } from "../../providers";
 import { FieldRenderer } from "../../renderers";
 const { items, sources } = useTranslations();
 
 const props = defineProps<{
   type: Type;
   controller: ModuleField<ControllerStateComponentType.PIDController>;
-  actuator?: ModuleField<ControlComponentType>;
+  actuator?: ModuleField;
   measurement?: ModuleField<Type>;
   setpoint?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<Parameter>;
@@ -124,4 +123,16 @@ const fieldRenderer = computed(() => {
       </template>
     </Partials.ListItem>
   </ControllerStateValue>
+
+  <ParameterValue
+    v-if="outputMinimum"
+    :source="outputMinimum"
+  >
+    <Partials.ListItem
+      size="sm"
+      :renderer="FieldRenderer.Percentage"
+    >
+      {{ items("outputMinimum") }}
+    </Partials.ListItem>
+  </ParameterValue>
 </template>
