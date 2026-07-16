@@ -669,20 +669,25 @@ async def test_query_simulation_inputs_actual(
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
 
     await mqtt_client2.publish(
-        "test_simulation_topic/simulation-inputs", None, qos=1, retain=True
+        f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs",
+        None,
+        qos=1,
+        retain=True,
     )
-    await mqtt_client2.publish("test_simulation_topic/status", None, qos=1, retain=True)
+    await mqtt_client2.publish(
+        f"{settings.mqtt_simulator_topic_prefix}/status", None, qos=1, retain=True
+    )
 
     run_task = create_task(await msg.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(
-            "test_simulation_topic/simulation-inputs",
+            f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs",
             ThrustersSimulationInputs.zero().model_dump_json(),
         )
         await sleep(0.1)
         await mqtt_client2.publish(
-            "test_simulation_topic/status",
+            f"{settings.mqtt_simulator_topic_prefix}/status",
             SimulationStatusMessage(
                 mode="thrusters",
                 status="available",

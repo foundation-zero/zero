@@ -104,7 +104,7 @@ class SimulationTestRunner[
             )
 
         self._control_values, self._controller_state = (
-            self._control_module.execute_control_tick(result.sensor_values)
+            self._control_module.execute_control(result.sensor_values)
         )
 
         return result.sensor_values, self._control_values, self._controller_state

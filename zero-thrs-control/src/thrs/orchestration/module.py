@@ -80,7 +80,7 @@ class Module[
 
         return self._channels.get_sensor_values()
 
-    def execute_control_tick(self, sensor_values: S) -> tuple[C, CS]:
+    def execute_control(self, sensor_values: S) -> tuple[C, CS]:
         """Execute a control tick, send control values and evaluate alarms."""
 
         control_values, controller_state = self._control.control(sensor_values)
@@ -100,12 +100,23 @@ class Module[
             warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
 
     async def send_control_updates(
-        self, sensor_values: S, control_values: C, controller_state: CS
+        self, sensor_values: S | None, control_values: C, controller_state: CS
     ) -> None:
-        await self._channels.send_computed_values(sensor_values)
+        if sensor_values is not None:
+            await self._channels.send_computed_values(sensor_values)
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
         await self._channels.send_parameters(self._control.parameters)
         if self._control.mode is not None:
             await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_manual_control(self._control.manual_controls)
+
+    async def tick(self, sensor_values: S | None) -> C:
+        if sensor_values is None:
+            control_values, controller_state = self._control.initial()
+        else:
+            control_values, controller_state = self.execute_control(sensor_values)
+
+        await self.send_control_updates(sensor_values, control_values, controller_state)
+
+        return control_values
