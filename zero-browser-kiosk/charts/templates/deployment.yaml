@@ -75,7 +75,6 @@ spec:
             mountPath: /dev/input
           - name: udev
             mountPath: /run/udev
-            readOnly: true
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
