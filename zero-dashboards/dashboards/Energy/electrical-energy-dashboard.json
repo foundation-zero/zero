@@ -613,7 +613,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"group\",\r\n  SUM(power_tag.\"power\") AS total_power\r\nFROM (\r\n  SELECT DISTINCT ON (topic)\r\n    topic,\r\n    total_active_power__value AS \"power\"\r\n  FROM public.marpower__power_tag\r\n  WHERE $__timeFilter(timestamp)\r\n) AS power_tag\r\nJOIN public.energy_metadata meta ON power_tag.topic = meta.topic\r\nGROUP BY meta.\"group\"\r\n",
+          "rawSql": "SELECT\r\n  meta.\"group\",\r\n  SUM(power_tag.\"power\") AS total_power\r\nFROM (\r\n  SELECT DISTINCT ON (topic)\r\n    topic,\r\n    total_active_power__value AS \"power\"\r\n  FROM public.marpower__power_tag\r\n  WHERE $__timeFilter(timestamp)\r\n) AS power_tag\r\nJOIN public.energy_metadata meta ON power_tag.topic = meta.topic\r\nGROUP BY meta.\"group\"",
           "refId": "Consumer_power_tags",
           "sql": {
             "columns": [
@@ -632,6 +632,30 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  meta.\"group\",\r\n  SUM(\"24vdc\".\"power\") AS total_power\r\nFROM (\r\n  WITH\r\n  current_data AS (\r\n    SELECT DISTINCT ON (topic)\r\n      topic,\r\n      regexp_match(topic, '/24e(\\d)_')[1] AS system_nr,\r\n      output_current__value AS \"current\"\r\n    FROM public.marpower__450000_24vdc_system\r\n    --WHERE $__timeFilter(timestamp)\r\n    WHERE timestamp > '2026-06-29 00:00:00' AND timestamp < '2026-06-30 00:00:00'\r\n  )--,\r\n  -- voltage3_data AS (\r\n  --   SELECT SELECT db_gmdss_14_e_3_voltage__value\r\n  --   FROM public.marpower__450000_dc_distribution_general\r\n  --   WHERE timestamp > '2026-06-29 00:00:00' AND timestamp < '2026-06-30 00:00:00'\r\n  --   --WHERE $__timeFilter(timestamp)\r\n  --   ORDER BY timestamp DESC\r\n  --   LIMIT 1\r\n  -- ),\r\n  -- voltage1_2_data AS (\r\n    -- SELECT DISTINCT ON (topic)\r\n    --   topic,\r\n    --   voltage__value AS voltage\r\n    -- FROM public.marpower__450000_24vdc_system__conv\r\n    -- WHERE (topic = 'marpower/450000-24vdc-system/conv/db-g-elv-serv' OR topic = 'marpower/450000-24vdc-system/conv/db-g-elv-em')\r\n    --   AND timestamp > '2026-06-29 00:00:00'::TIMESTAMP AND timestamp < '2026-06-30 00:00:00'::TIMESTAMP\r\n    -- ORDER BY topic, timestamp DESC\r\n  -- )\r\n    \r\n  SELECT\r\n    topic,\r\n    CASE system_nr\r\n      WHEN 1 THEN \"current\" * 1  -- general service\r\n      WHEN 2 THEN \"current\" * 2  -- emergency\r\n      ELSE \"current\" * 3         -- GMDSS\r\n    END AS \"power\"\r\n  FROM current_data\r\n) AS \"24vdc\"\r\nJOIN public.energy_metadata meta ON \"24vdc\".topic = meta.topic\r\nGROUP BY meta.\"group\"\r\n",
+          "refId": "Consumer_24v"
         }
       ],
       "title": "Electrical flow",
@@ -641,24 +665,21 @@
           "options": {}
         },
         {
-          "disabled": true,
-          "id": "organize",
+          "id": "joinByLabels",
           "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "charging": "Charging",
-              "discharging": "Discharging",
-              "domestic": "Domestic",
-              "hvac": "HVAC",
-              "hydro": "Hydrogeneration",
-              "propulsion": "Propulsion",
-              "shore": "Shore",
-              "soc": "State of Charge",
-              "soc_perc": "",
-              "solar": "Solar",
-              "technical": "Technical"
+            "value": "group"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Total_technical",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Technical"
+              ],
+              "reducer": "sum"
             }
           }
         }
