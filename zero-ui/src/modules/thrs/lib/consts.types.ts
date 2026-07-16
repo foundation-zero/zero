@@ -70,5 +70,5 @@ export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];
 
 export type THRS = {
   modules: ThrsModules;
-  simulation: ThrsSimulation;
+  simulation: ThrsSimulation | null;
 };

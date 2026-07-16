@@ -39,7 +39,7 @@ const props = defineProps<{ type: ThrsSimulationType }>();
 const definition = computed(() => SIMULATION.inputs[props.type] as SimulationDefinitions);
 
 const simulationInputsData = computed(
-  () => data.value?.simulation.inputs as unknown as ExtractAllValues<SimulationDefinitions>,
+  () => data.value?.simulation?.inputs as unknown as ExtractAllValues<SimulationDefinitions>,
 );
 </script>
 <template>
