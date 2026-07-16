@@ -23,7 +23,7 @@ const { t } = useI18n();
     <ValueListItem :class="props.class">
       <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
       <span class="text-foreground font-medium">
-        <FieldRenderer.Temperature :value="value" />
+        <FieldRenderer.Auto :value="value" />
       </span>
     </ValueListItem>
   </SensorValue>

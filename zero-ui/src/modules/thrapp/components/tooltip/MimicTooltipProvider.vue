@@ -22,7 +22,7 @@ const isOpen = computed({
   set(value: boolean) {
     if (!value) {
       clear();
-      router.push({ query: { tooltip: undefined } });
+      router.push({ query: { ...router.currentRoute.value.query, tooltip: undefined } });
     }
   },
 });

@@ -14,7 +14,7 @@ const { disabled } = getTooltipContext();
 const setTooltip = () => {
   if (!disabled && props.data.source) {
     router.push({
-      query: { tooltip: props.data.source?.join(".") },
+      query: { ...router.currentRoute.value.query, tooltip: props.data.source?.join(".") },
     });
   }
 };

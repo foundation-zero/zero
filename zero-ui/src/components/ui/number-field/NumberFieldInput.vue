@@ -14,7 +14,6 @@ useAutoFocus<HTMLInputElement>(useTemplateRef("input"), props.autofocus);
 <template>
   <NumberFieldInput
     ref="input"
-    autofocus
     data-slot="input"
     :class="
       cn(

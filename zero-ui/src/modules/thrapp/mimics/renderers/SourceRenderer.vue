@@ -47,7 +47,7 @@ const isParameter = computed(() => isParameterField(source.value));
       v-if="tooltipContext && !noLink"
       class="cursor-pointer underline"
       :to="{
-        query: { tooltip: source?.join('.') },
+        query: { ...$route.query, tooltip: source?.join('.') },
       }"
     >
       <slot>
@@ -59,12 +59,13 @@ const isParameter = computed(() => isParameterField(source.value));
       v-else-if="isParameter"
       class="text-brand-dull cursor-pointer underline"
       target="_blank"
+      rel="noopener noreferrer"
       :to="{
         name: 'thrs/control',
         params: {
           module: source?.[1],
         },
-        query: { parameter: source?.[2] },
+        query: { ...$route.query, parameter: source?.[2] },
       }"
     >
       <slot>

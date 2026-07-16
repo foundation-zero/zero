@@ -107,7 +107,10 @@ export const createTooltipContext = (
       if (!next.tooltip) {
         clear();
       } else if (next.tooltip !== prev?.tooltip) {
-        const field = String(next.tooltip).split(".") as ModuleField;
+        const parts = String(next.tooltip).split(".");
+        if (parts.length !== 3) return;
+
+        const field = parts as ModuleField;
         const tooltipContext = findTooltipContext(field);
 
         if (!tooltipContext) return;
