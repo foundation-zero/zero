@@ -1,16 +1,18 @@
 set dotenv-load := true
 set dotenv-required := true
 
-fmu_files := "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu \
-src/thrs/simulation/models/Adsorption_ModuleV1.fmu \
-src/thrs/simulation/models/Consumer_ModuleV10.fmu \
-src/thrs/simulation/models/DC_ModuleV1_1.fmu \
-src/thrs/simulation/models/DHW_ModuleV1_1.fmu \
-src/thrs/simulation/models/Drives_ModuleV1_1.fmu \
-src/thrs/simulation/models/HT_SystemV15_1.fmu \
-src/thrs/simulation/models/PCM_ModuleV9_2.fmu \
-src/thrs/simulation/models/PVT_ModuleV16.fmu \
-src/thrs/simulation/models/Thruster_Module_V19.fmu"
+fmu_files := (
+    "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu " +
+    "src/thrs/simulation/models/Adsorption_ModuleV1.fmu " +
+    "src/thrs/simulation/models/Consumer_ModuleV10.fmu " +
+    "src/thrs/simulation/models/DC_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/DHW_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/Drives_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/HT_SystemV15_1.fmu " +
+    "src/thrs/simulation/models/PCM_ModuleV9_2.fmu " +
+    "src/thrs/simulation/models/PVT_ModuleV16.fmu " +
+    "src/thrs/simulation/models/Thruster_Module_V19.fmu"
+)
 
 default: run
 
