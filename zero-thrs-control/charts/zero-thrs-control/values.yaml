@@ -12,6 +12,8 @@ mqtt:
   controllerTopicSuffix: set
   simulatorTopicSuffix: set
 
+livenessPath: /tmp/liveness
+
 api:
   enabled: true
   image:

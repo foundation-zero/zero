@@ -10,6 +10,7 @@ from thrs.orchestration.log import setup_logging
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
+from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
@@ -24,6 +25,8 @@ class ControlCmd(BaseSettings):
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
 
+        liveness_check = Liveness(settings.liveness_path)
+
         control_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
@@ -34,7 +37,7 @@ class ControlCmd(BaseSettings):
                 control_mode.control_modules,
                 datetime.now,
             )
-            runner = ControlRunner(control_modules)
+            runner = ControlRunner(control_modules, liveness_check)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
@@ -47,6 +50,8 @@ class SimulationCmd(BaseSettings):
 
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
+
+        liveness_check = Liveness(settings.liveness_path)
 
         simulation_mode = lookup_mode(self.mode)
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
@@ -62,7 +67,7 @@ class SimulationCmd(BaseSettings):
                 simulation_mode.simulation_description,
             )
 
-            runner = SimulationRunner(simulation_module)
+            runner = SimulationRunner(simulation_module, liveness_check)
             runtime = Runtime(runner, connector, simulation_module.tick_duration)
 
             await runtime.loop.play(1)

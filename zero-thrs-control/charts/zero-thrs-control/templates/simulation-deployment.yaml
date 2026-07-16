@@ -10,6 +10,8 @@ metadata:
     app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
@@ -53,6 +55,8 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
+          livenessProbe:
+            {{- include "zero-thrs-control.livenessProbe" .Values.livenessPath | nindent 12 }}
       volumes:
         - name: tmp-volume
           emptyDir: {}

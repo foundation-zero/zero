@@ -67,3 +67,14 @@ Selector labels
 app.kubernetes.io/name: {{ include "zero-thrs-control.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+
+{{- define "zero-thrs-control.livenessProbe" -}}
+exec:
+  command:
+  - /bin/bash
+  - -c
+  - "test \"$(( `date +%s` - `stat -L --format %Y {{ . }}` ))\" -lt 10"
+initialDelaySeconds: 30
+periodSeconds: 5
+{{- end }}

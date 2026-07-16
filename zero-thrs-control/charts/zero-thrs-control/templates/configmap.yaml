@@ -14,3 +14,4 @@ data:
   MQTT_CONTROLLER_TOPIC_SUFFIX: {{ .Values.mqtt.controllerTopicSuffix }}
   MQTT_SIMULATOR_TOPIC_SUFFIX: {{ .Values.mqtt.simulatorTopicSuffix }}
   MQTT_USERNAME: {{ .Values.mqtt.username }}
+  LIVENESS_PATH: {{ .Values.livenessPath }}
