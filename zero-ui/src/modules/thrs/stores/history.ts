@@ -71,6 +71,7 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
     extract(moduleName, module.sensorValues);
   });
 
+  if (source.simulation == null) return newHistory;
   extract("simulation", toTypelessRecord(source.simulation.outputs));
   extract("simulation", toTypelessRecord(source.simulation.inputs));
 

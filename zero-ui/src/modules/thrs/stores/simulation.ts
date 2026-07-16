@@ -38,7 +38,7 @@ export const useSimulationStore = defineStore("simulation", () => {
   // TODO: make set automated control module dependent
   const isProcessing = ref(false);
   const { data } = toRefs(useThrsHistory());
-  const activeSimulation = computed(() => data.value?.simulation.inputs?.__typename);
+  const activeSimulation = computed(() => data.value?.simulation?.inputs?.__typename);
   const activeSimulationType = computed(() =>
     SIMULATION_TYPES.find((type) => activeSimulation.value?.toLocaleLowerCase().startsWith(type)),
   );
