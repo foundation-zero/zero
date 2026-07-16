@@ -28,6 +28,6 @@ class Config(BaseSettings):
         ):
             raise ValueError(
                 "Postgres configuration is incomplete "
-                f"({self.pg_host.__qualname__}/{self.pg_port.__qualname__}/{self.pg_user.__qualname__}/{self.pg_password.__qualname__}/{self.pg_db.__qualname__})"
+                "(PG_HOST/PG_PORT/PG_USER/PG_PASSWORD/PG_DB)"
             )
         return f"postgresql+asyncpg://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
