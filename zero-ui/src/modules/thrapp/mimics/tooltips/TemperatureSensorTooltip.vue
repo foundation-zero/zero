@@ -8,22 +8,17 @@ import {
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import TemperatureSensorInstance from "../instances/TemperatureSensorInstance.vue";
 import { isField, SensorValue } from "../providers";
-import { FieldRenderer } from "../renderers";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import TemperatureController from "./partials/TemperatureController.vue";
+import * as Partials from "./partials";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.TemperatureSensor>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
@@ -36,7 +31,7 @@ const { items, labels, sources } = useTranslations();
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <TooltipList>
@@ -45,34 +40,24 @@ const { items, labels, sources } = useTranslations();
         :source="source"
         field="temperature"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("temperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("temperature") }}
+        </Partials.ListItem>
       </SensorValue>
     </TooltipList>
 
-    <TooltipList v-if="isField(controllerState.controller)">
+    <TooltipList v-if="custom.controller && isField(controllerState.controller)">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <TemperatureController
+      <Partials.PIDController
+        :type="custom.controller.type"
         :controller="controllerState.controller"
         :measurement="source"
-        :setpoint="parameters.temperature"
-      >
-        <template #actuator>
-          <FieldRenderer.Source :source="custom.actuator" />
-        </template>
-        <template #measurement>
-          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-        </template>
-      </TemperatureController>
+        :actuator="custom.actuator"
+        :setpoint="custom.controller.setpoint"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -17,10 +18,8 @@ import { ControlValue, ControlValueForm, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import ComponentInfo from "./partials/ComponentInfo.vue";
-import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
-import TemperatureController from "./partials/TemperatureController.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pump>>();
 
 const { labels, actions, items, sources } = useTranslations();
@@ -90,13 +89,13 @@ const { labels, actions, items, sources } = useTranslations();
 
       <Partials.ListItem>
         {{ items("energyConsumption") }}
-        <template #value>
+        <template #renderer>
           <FieldRenderer.Energy :value="600" />
         </template>
       </Partials.ListItem>
       <Partials.ListItem>
         {{ items("powerInput") }}
-        <template #value>
+        <template #renderer>
           <FieldRenderer.Power :value="200" />
         </template>
       </Partials.ListItem>
@@ -118,7 +117,7 @@ const { labels, actions, items, sources } = useTranslations();
       </SensorValue>
       <Partials.ListItem>
         {{ items("totalRunningHours") }}
-        <template #value>
+        <template #renderer>
           <FieldRenderer.TimeRemaining :value="25 * 60 + 31" />
         </template>
       </Partials.ListItem>
@@ -129,20 +128,22 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ actions("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <FlowController
+      <Partials.PIDController
+        :type="SensorComponentType.Flow"
         :controller="controllerState.flowController"
         :measurement="sensors.flowMeasurement"
         :setpoint="parameters.flow"
       >
         {{ sources("pumpFlowController") }}
-      </FlowController>
-      <TemperatureController
+      </Partials.PIDController>
+      <Partials.PIDController
+        :type="SensorComponentType.Temperature"
         :controller="controllerState.temperatureController"
         :measurement="sensors.temperatureMeasurement"
         :setpoint="parameters.temperature"
       >
         {{ sources("pumpTemperatureController") }}
-      </TemperatureController>
+      </Partials.PIDController>
     </TooltipList>
   </MimicTooltip>
 </template>

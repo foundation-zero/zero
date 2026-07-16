@@ -3,13 +3,13 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { SensorComponentType } from "@/modules/thrs/types";
-import { controllerState, parameters, tooltip } from "./shared";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
   controls: {},
-  controllerState,
+  controllerState: {},
   custom: {},
-  parameters,
+  parameters: {},
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   sensors: {
     actuator: getField(SensorComponentType.Valve, "dhw", "dhwSwitchHighTemperature"),

@@ -5,6 +5,7 @@ import {
   SensorComponentType,
 } from "@/modules/thrs/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
+import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
 
@@ -187,9 +188,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.PressureSensor]: {
     flow: ParametersType.Flow;
   };
-  [MimicComponentType.TemperatureSensor]: {
-    temperature: ParametersType.Temperature;
-  };
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: {
     flow: ParametersType.FlowControl | ParametersType.Flow;
   };
@@ -207,6 +206,20 @@ export type ParameterFieldDefinitions = ParameterFields<{
     flow: ParametersType.FlowControl;
   };
 }>;
+
+export type TemperatureSensorController<
+  Type extends SensorComponentType.Temperature | SensorComponentType.Flow =
+    | SensorComponentType.Temperature
+    | SensorComponentType.Flow,
+  Parameter extends ParametersType = Type extends SensorComponentType.Temperature
+    ? ParametersType.Temperature
+    : ParametersType.Flow | ParametersType.FlowControl,
+> = {
+  controller: ModuleField<ControllerStateComponentType.PIDController>;
+  type: Type;
+  setpoint?: ModuleField<Parameter>;
+  outputMinimum?: ModuleField<Parameter>;
+};
 
 export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.BoilerTank]: {
@@ -231,17 +244,14 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: {
     actuator?: ModuleField<ControlComponentType.Valve | ControlComponentType.Pump>;
+    controller?: TemperatureSensorController;
   };
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: {
-    tank?: {
-      operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
-      operatorName?: string;
-      controller?: ModuleField<ControllerStateComponentType.DhwTanksController>;
-    };
+    tank?: TooltipComponentContext<MimicComponentType.BoilerTank>;
   };
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;

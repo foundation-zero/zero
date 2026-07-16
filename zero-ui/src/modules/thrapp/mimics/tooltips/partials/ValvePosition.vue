@@ -17,11 +17,11 @@ defineProps<{ valve: ModuleField<SensorComponentType.Valve> }>();
     <Partials.ListItem no-source>
       {{ items("relativePosition") }}
     </Partials.ListItem>
-    <Partials.ListItem no-source>
+    <Partials.ListItem
+      no-source
+      :renderer="FieldRenderer.PositionAbsolute"
+    >
       {{ items("absolutePosition") }}
-      <template #value>
-        <FieldRenderer.PositionAbsolute />
-      </template>
     </Partials.ListItem>
   </SensorValue>
 </template>

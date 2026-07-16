@@ -117,8 +117,11 @@ export const provideControlValueForm = <Control extends ControlComponentType>(
 export const provideControlValue = <Control extends ControlComponentType>(
   source: ModuleField<Control>,
   field: keyof ControlDefinitionMap[Control] = DEFAULT_CONTROL_FIELD_VALUE_FIELD[source[0]],
+  form: ControlValueFormContext<Control> | undefined = injectValueForm<
+    ControlValueFormContext<Control>
+  >(),
 ) => {
-  const value = getControlValue(source, field);
+  const value = getControlValue(source, field, form);
   provideFieldValueField(field as string | undefined);
   provideFieldValue(value);
   return value;
@@ -131,8 +134,8 @@ const getControlValue = <
 >(
   source: ModuleField<Control>,
   field?: Key,
+  form?: ControlValueFormContext<Control>,
 ): Ref<Value | undefined> => {
-  const form = injectValueForm<ControlValueFormContext<Control>>();
   const automaticMode = useAutomaticMode();
 
   if (!form || automaticMode.value) {

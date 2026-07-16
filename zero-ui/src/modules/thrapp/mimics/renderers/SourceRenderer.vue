@@ -12,9 +12,8 @@ import {
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
-  url?: boolean;
-  external?: boolean;
   source?: ModuleField;
+  noLink?: boolean;
 }>();
 
 const source = computed(() => props.source ?? injectFieldValueSource());
@@ -45,14 +44,14 @@ const isParameter = computed(() => isParameterField(source.value));
     "
   >
     <RouterLink
-      v-if="tooltipContext"
+      v-if="tooltipContext && !noLink"
       class="cursor-pointer underline"
       :to="{
         query: { tooltip: source?.join('.') },
       }"
     >
       <slot>
-        {{ snakeCase(sourceName) }}
+        {{ sourceName }}
       </slot>
     </RouterLink>
 

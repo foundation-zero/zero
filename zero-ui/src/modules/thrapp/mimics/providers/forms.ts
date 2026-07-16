@@ -12,7 +12,7 @@ export interface ValueFormContext {
 
 export const provideValueForm = (form: ValueFormContext) => provide("ValueForm", form);
 export const injectValueForm = <Ctx extends ValueFormContext = ValueFormContext>() =>
-  inject<Ctx>("ValueForm");
+  inject<Ctx | undefined>("ValueForm", undefined);
 export const provideHideEditorIfNotEditable = (value: boolean) =>
   provide("HideEditorIfNotEditable", value);
 export const injectHideEditorIfNotEditable = () => inject<boolean>("HideEditorIfNotEditable", true);

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
+import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField } from "../providers";
 
-const field = injectFieldValueField<ControlValueFields | SensorValueFields>();
+const field = injectFieldValueField<ControlValueFields | SensorValueFields | ControllerFields>();
 
 const editor = computed(() => {
   if (!field) return null;
@@ -34,6 +34,12 @@ const editor = computed(() => {
       return FieldRenderer.TimeRemaining;
     case "pressure":
       return FieldRenderer.Pressure;
+    case "timeToFill":
+      return FieldRenderer.TimeRemaining;
+    case "tank1State":
+    case "tank2State":
+    case "tank3State":
+      return FieldRenderer.BoilerTankMode;
   }
 
   return null;

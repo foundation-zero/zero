@@ -3,13 +3,13 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { parameters, tooltip } from "./shared";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
   controls: {},
   controllerState: {},
   custom: {},
-  parameters,
+  parameters: {},
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
   sensors: {},
   tooltip: tooltip({

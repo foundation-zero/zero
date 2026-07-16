@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -18,7 +19,7 @@ import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowSensor>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
@@ -46,7 +47,7 @@ const { items, labels, sources } = useTranslations();
       </SensorValue>
       <Partials.ListItem>
         {{ items("quantity") }}
-        <template #value>
+        <template #renderer>
           <FieldRenderer.QuantityLiters :value="10" />
         </template>
       </Partials.ListItem>
@@ -65,18 +66,13 @@ const { items, labels, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Partials.FlowController
+      <Partials.PIDController
+        :type="SensorComponentType.Flow"
         :controller="controllerState.controller"
+        :actuator="controls.pump"
         :measurement="source"
         :setpoint="parameters.flow"
-      >
-        <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
-        </template>
-        <template #measurement>
-          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-        </template>
-      </Partials.FlowController>
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

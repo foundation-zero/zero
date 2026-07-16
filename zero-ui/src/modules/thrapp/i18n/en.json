@@ -110,6 +110,7 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "tankState": "Tank state",
         "incomingFlow": "Incoming flow",
         "outgoingFlow": "Outgoing flow",
         "quantity": "Quantity",
@@ -164,6 +165,11 @@
       }
     },
     "mimics": {
+      "boilerTankController": {
+        "modes": {
+          "ALWAYS": "Always active"
+        }
+      },
       "boilerTank": {
         "modes": {
           "IN_USE": "In use",

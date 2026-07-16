@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -14,7 +15,6 @@ import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import FlowControlValveInstance from "../instances/FlowControlValveInstance.vue";
 import ControlValueForm from "../providers/ControlValueForm.vue";
-import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowControlValve>>();
 
@@ -58,18 +58,12 @@ const { labels, items, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Partials.FlowController
+      <Partials.PIDController
+        :type="SensorComponentType.Flow"
         :controller="controllerState.controller"
         :measurement="sensors.measurement"
         :setpoint="parameters.flow"
-      >
-        <template #actuator>
-          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-        </template>
-        <template #measurement>
-          <FieldRenderer.Source :source="sensors.measurement" />
-        </template>
-      </Partials.FlowController>
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

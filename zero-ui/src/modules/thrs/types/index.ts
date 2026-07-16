@@ -73,6 +73,8 @@ export type ControllerStateFields = {
   [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
 };
 
+export type ControllerFields = keyof DhwTankController | keyof PIDController;
+
 export type SensorValueFields =
   | keyof PumpSensor
   | keyof TemperatureSensor

@@ -49,7 +49,7 @@ const { labels, actions, items, sources } = useTranslations();
           {{ labels("mode") }}
           <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
         </TooltipListHeader>
-        <Partials.ListItem>
+        <Partials.ListItem no-source>
           {{ items("exchanger") }}
           <template #value>
             <FieldRenderer.HeatExchangerMode />
@@ -72,18 +72,12 @@ const { labels, actions, items, sources } = useTranslations();
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <SensorValue
-        :source="source"
-        field="deltaT"
-      >
-        <Partials.ListItem>
-          {{ items("deltaTemperature") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
-        </Partials.ListItem>
-      </SensorValue>
-      <Circuit :sensors="sensors" />
+      <Circuit
+        :incoming="sensors.incoming"
+        :outgoing="sensors.outgoing"
+        :delta-t="source"
+        :flow="sensors.flow"
+      />
     </TooltipList>
 
     <TooltipList>
@@ -91,18 +85,12 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <SensorValue
-        :source="custom.exchangeCircuit.deltaT"
-        field="deltaT"
-      >
-        <Partials.ListItem>
-          {{ items("deltaTemperature") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
-        </Partials.ListItem>
-      </SensorValue>
-      <Circuit :sensors="custom.exchangeCircuit" />
+      <Circuit
+        :incoming="custom.exchangeCircuit.incoming"
+        :outgoing="custom.exchangeCircuit.outgoing"
+        :delta-t="custom.exchangeCircuit.deltaT"
+        :flow="custom.exchangeCircuit.flow"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

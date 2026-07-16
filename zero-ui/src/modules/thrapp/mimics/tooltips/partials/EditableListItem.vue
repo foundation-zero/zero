@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
+import { type Component } from "vue";
 import { FieldEditor } from "../../editors";
 import { FieldRenderer } from "../../renderers";
 
-defineProps<{
-  size?: "sm" | "default";
-}>();
+withDefaults(
+  defineProps<{
+    size?: "sm" | "default";
+    renderer?: Component;
+    editor?: Component;
+  }>(),
+  { size: "default", renderer: FieldRenderer.Auto, editor: FieldEditor.Auto },
+);
 </script>
 
 <template>
@@ -20,11 +26,11 @@ defineProps<{
     </TooltipListItemTitle>
 
     <slot name="editor">
-      <FieldEditor.Auto>
-        <slot name="value">
-          <FieldRenderer.Auto />
+      <component :is="editor">
+        <slot name="renderer">
+          <component :is="renderer" />
         </slot>
-      </FieldEditor.Auto>
+      </component>
     </slot>
   </TooltipListItem>
 </template>

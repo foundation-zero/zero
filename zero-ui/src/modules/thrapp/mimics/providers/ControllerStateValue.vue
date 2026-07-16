@@ -11,11 +11,17 @@ import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
 import { ControllerStateComponentType, ControllerStateDefinitionMap } from "@/modules/thrs/types";
 import { computed } from "vue";
-import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValueSource } from ".";
+import {
+  getMimicDataProvider,
+  ModuleField,
+  provideFieldValue,
+  provideFieldValueField,
+  provideFieldValueSource,
+} from ".";
 
 const props = defineProps<{
   source: ModuleField<ControllerState>;
-  field: Key;
+  field?: Key;
 }>();
 
 const { getControllerState } = getMimicDataProvider();
@@ -26,6 +32,7 @@ const value = computed(() =>
 );
 provideFieldValue(value);
 provideFieldValueSource(props.source);
+provideFieldValueField(props.field as string | undefined);
 </script>
 
 <template>

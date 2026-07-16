@@ -1,28 +1,18 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
 } from "../../components/tooltip";
-import {
-  TooltipList,
-  TooltipListHeader,
-  TooltipListItem,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "../../components/tooltip-list";
+import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import { FieldEditor } from "../editors";
 import HeatPumpInstance from "../instances/HeatPumpInstance.vue";
 import { ControlValue, ControlValueForm, SensorValue } from "../providers";
-import { FieldRenderer } from "../renderers";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import FlowController from "./partials/FlowController.vue";
-import ManualControl from "./partials/ManualControl.vue";
+import * as Partials from "./partials";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
-
 const { items, labels, sources } = useTranslations();
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>();
@@ -41,8 +31,8 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
-      <ManualControl />
+      <Partials.ComponentInfo :tooltip="tooltip" />
+      <Partials.ManualControl />
     </TooltipList>
 
     <TooltipList>
@@ -52,34 +42,23 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
           :source="controls.heatpump"
           field="on"
         >
-          <TooltipListItem>
-            <TooltipListItemTitle>
-              {{ items("onOff") }}
-              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-            </TooltipListItemTitle>
-
-            <FieldEditor.Auto>
-              <TooltipListItemValue>
-                <FieldRenderer.Auto />
-              </TooltipListItemValue>
-            </FieldEditor.Auto>
-          </TooltipListItem>
+          <Partials.EditableListItem>
+            {{ items("onOff") }}
+            <template #sourceName>
+              {{ sources("this") }}
+            </template>
+          </Partials.EditableListItem>
         </ControlValue>
         <ControlValue
           :source="controls.heatpump"
           field="temperatureSetpoint"
         >
-          <TooltipListItem>
-            <TooltipListItemTitle>
-              {{ items("temperature") }}
-              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-            </TooltipListItemTitle>
-            <FieldEditor.Auto>
-              <TooltipListItemValue>
-                <FieldRenderer.Auto />
-              </TooltipListItemValue>
-            </FieldEditor.Auto>
-          </TooltipListItem>
+          <Partials.EditableListItem>
+            {{ items("temperature") }}
+            <template #sourceName>
+              {{ sources("this") }}
+            </template>
+          </Partials.EditableListItem>
         </ControlValue>
 
         <SubmitControlForm />
@@ -92,60 +71,24 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
         :source="source"
         field="heat"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("heatExchange") }}
-            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Auto />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("heatExchange") }}
+          <template #sourceName>
+            {{ sources("calculated") }}
+          </template>
+        </Partials.ListItem>
       </SensorValue>
-      <SensorValue
-        :source="source"
-        field="deltaT"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("deltaTemperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Auto />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
-      <SensorValue
-        :source="sensors.incoming"
-        field="temperature"
-      >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("incomingTemperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Auto />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
-      <SensorValue
-        :source="sensors.outgoing"
-        field="temperature"
-      >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("outgoingTemperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Auto />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
+      <Partials.Circuit
+        :delta-t="source"
+        :incoming="sensors.incoming"
+        :outgoing="sensors.outgoing"
+      />
     </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>{{ labels("controls") }}</TooltipListHeader>
-      <FlowController
+      <Partials.PIDController
+        :type="SensorComponentType.Flow"
         :controller="controllerState.controller"
         :setpoint="parameters.flow"
         :measurement="sensors.measurement"

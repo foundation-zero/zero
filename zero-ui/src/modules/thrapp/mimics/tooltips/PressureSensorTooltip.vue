@@ -8,20 +8,12 @@ import { TooltipList } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import PressureSensorInstance from "../instances/PressureSensorInstance.vue";
-import ComponentInfo from "./partials/ComponentInfo.vue";
 
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from ".";
-import {
-  TooltipListHeader,
-  TooltipListItem,
-  TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "../../components/tooltip-list";
+import { TooltipListHeader, TooltipListItemAction } from "../../components/tooltip-list";
 import { SensorValue } from "../providers";
-import { FieldRenderer } from "../renderers";
-import FlowController from "./partials/FlowController.vue";
-
+import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.PressureSensor>>();
 
 const { items, labels } = useTranslations();
@@ -37,7 +29,7 @@ const { items, labels } = useTranslations();
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <TooltipList>
@@ -46,14 +38,9 @@ const { items, labels } = useTranslations();
         :source="source"
         field="pressure"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("pressure") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Pressure />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("pressure") }}
+        </Partials.ListItem>
       </SensorValue>
     </TooltipList>
 
@@ -62,15 +49,13 @@ const { items, labels } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <FlowController
+      <Partials.PIDController
+        :type="SensorComponentType.Flow"
         :controller="controllerState.controller"
+        :actuator="controls.pump"
         :measurement="sensors.flow"
         :setpoint="parameters.flow"
-      >
-        <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
-        </template>
-      </FlowController>
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

@@ -8,24 +8,18 @@ import {
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import { FieldEditor } from "../editors";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
-import { ControlValue, ControlValueForm } from "../providers";
+import { ControlValueForm } from "../providers";
 import { FieldRenderer } from "../renderers";
-import BoilerTankController from "./partials/BoilerTankController.vue";
-import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
+import * as Partials from "./partials";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import ManualControl from "./partials/ManualControl.vue";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
-import ValvePosition from "./partials/ValvePosition.vue";
-
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
 const { labels, items, sources } = useTranslations();
@@ -48,29 +42,22 @@ const { labels, items, sources } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
       <ControlValueForm :source="controls.valve">
-        <ControlValue
-          :source="controls.valve"
-          field="setpoint"
+        <Partials.EditableListItem
+          :renderer="FieldRenderer.ValveState"
+          :editor="FieldEditor.OpenClosed"
         >
-          <TooltipListItem>
-            <TooltipListItemTitle>
-              {{ items("setpoint") }}
-              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-            </TooltipListItemTitle>
-            <FieldEditor.OpenClosed>
-              <TooltipListItemValue>
-                <FieldRenderer.ValveState />
-              </TooltipListItemValue>
-            </FieldEditor.OpenClosed>
-          </TooltipListItem>
-        </ControlValue>
+          {{ items("setpoint") }}
+          <template #sourceName>
+            {{ sources("this") }}
+          </template>
+        </Partials.EditableListItem>
         <SubmitControlForm />
       </ControlValueForm>
     </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <ValvePosition :valve="source" />
+      <Partials.ValvePosition :valve="source" />
     </TooltipList>
 
     <TooltipList v-if="custom.tank">
@@ -78,19 +65,16 @@ const { labels, items, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <BoilerTankController
-        v-if="custom.tank?.controller"
-        :controller="custom.tank.controller"
-      >
-        {{ items("tankSelector") }}
-      </BoilerTankController>
-      <template v-if="custom.tank?.operator">
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ custom.tank.operatorName }}
-          </TooltipListItemTitle>
-        </TooltipListItem>
-        <BoilerTankOperator :sensors="custom.tank.operator" />
+      <template v-if="custom.tank">
+        <Partials.BoilerTankController
+          :controller="custom.tank.controllerState.controller"
+          :tank-state-field="custom.tank.custom.tankStateField"
+          :disabled-parameter="custom.tank.parameters.disabled"
+          :source="custom.tank.source"
+        >
+          {{ items("tankSelector") }}
+        </Partials.BoilerTankController>
+        <Partials.BoilerTankOperator :sensors="custom.tank.sensors" />
       </template>
     </TooltipList>
   </MimicTooltip>

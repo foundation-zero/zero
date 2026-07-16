@@ -4,12 +4,21 @@ import {
   TooltipListItemTitle,
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
+import { type Component } from "vue";
 import { FieldRenderer } from "../../renderers";
 
-defineProps<{
-  size?: "sm" | "default";
-  noSource?: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    size?: "sm" | "default";
+    noSource?: boolean;
+    renderer?: Component;
+  }>(),
+  {
+    size: "default",
+    noSource: false,
+    renderer: FieldRenderer.Auto,
+  },
+);
 </script>
 
 <template>
@@ -25,10 +34,12 @@ defineProps<{
         </FieldRenderer.Source>
       </slot>
     </TooltipListItemTitle>
-    <TooltipListItemValue>
-      <slot name="value">
-        <FieldRenderer.Auto />
-      </slot>
-    </TooltipListItemValue>
+    <slot name="value">
+      <TooltipListItemValue>
+        <slot name="renderer">
+          <component :is="renderer" />
+        </slot>
+      </TooltipListItemValue>
+    </slot>
   </TooltipListItem>
 </template>
