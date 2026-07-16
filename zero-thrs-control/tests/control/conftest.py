@@ -59,9 +59,7 @@ def simulation(
 
 
 @fixture
-def thrusters_control(
-    simulation: ThrustersSimulation, postgres_db
-) -> ThrustersControl:
+def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> ThrustersControl:
     return ThrustersControl(
         parameters=ThrustersParameters(),
         time_fn=simulation.time,

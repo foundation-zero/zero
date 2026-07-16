@@ -76,15 +76,22 @@ def setup_control(
     return control, control_channels, mode.control_module.alarms()
 
 
-
-def setup_lockstep(mode: Mode, settings: Config, mqtt_client: MqttClient) -> Runtime:
-
+def setup_lockstep(
+    mode: Mode,
+    settings: Config,
+    mqtt_client: MqttClient,
+    machine_state_logging_service_enabled: bool = True,
+) -> Runtime:
     connector = MqttConnector(mqtt_client)
 
     simulation, simulation_channels = setup_simulation(connector, settings, mode)
 
     control, control_channels, alarms = setup_control(
-        connector, settings, mode, simulation.time
+        connector,
+        settings,
+        mode,
+        simulation.time,
+        machine_state_logging_service_enabled,
     )
 
     runner = LockstepRunner(
@@ -108,4 +115,3 @@ def setup_lockstep(mode: Mode, settings: Config, mqtt_client: MqttClient) -> Run
         simulation.tick_duration,
         directive_handling,
     )
-

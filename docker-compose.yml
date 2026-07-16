@@ -35,6 +35,7 @@ services:
       - data
       - domestic
       - loads
+      - thrs
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "postgres"]
       interval: 30s
@@ -339,8 +340,15 @@ services:
       MQTT_CONTROL_TOPIC_SUFFIX: Command
       MQTT_CONTROLLER_TOPIC_SUFFIX: set
       MQTT_SIMULATOR_TOPIC_SUFFIX: set
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
     depends_on:
       vernemq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   thrs-simulation-thrusters: &thrs_simulation
@@ -356,6 +364,8 @@ services:
       <<: *thrs_env
     depends_on:
       vernemq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     command: ["lockstep", "--mode=thrusters"]
 

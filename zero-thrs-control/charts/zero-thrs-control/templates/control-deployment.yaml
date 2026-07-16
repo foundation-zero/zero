@@ -50,6 +50,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.existingSecret }}
+                  key: {{ .Values.postgresql.existingSecretPasswordKey }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-thrs-control.envvars" . }}

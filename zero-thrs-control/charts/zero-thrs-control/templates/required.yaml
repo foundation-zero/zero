@@ -5,6 +5,9 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := list -}}
 {{- $messages := append $messages (include "zero-thrs-control.validateValues.mqttHost" .) -}}
 {{- $messages := append $messages (include "zero-thrs-control.validateValues.mqttPort" .) -}}
+{{- $messages := append $messages (include "zero-thrs-control.validateValues.postgresqlHost" .) -}}
+{{- $messages := append $messages (include "zero-thrs-control.validateValues.postgresqlDb" .) -}}
+{{- $messages := append $messages (include "zero-thrs-control.validateValues.postgresqlExistingSecret" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -24,5 +27,26 @@ Compile all warnings into a single message, and call fail.
 {{- define "zero-thrs-control.validateValues.mqttPort" -}}
 {{- if not .Values.mqtt.port  -}}
     zero-thrs-control: mqtt.port is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a host for Postgres */}}
+{{- define "zero-thrs-control.validateValues.postgresqlHost" -}}
+{{- if not .Values.postgresql.host  -}}
+    zero-thrs-control: postgresql.host is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a database name for Postgres */}}
+{{- define "zero-thrs-control.validateValues.postgresqlDb" -}}
+{{- if not .Values.postgresql.db  -}}
+    zero-thrs-control: postgresql.db is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide an existing secret for the Postgres password */}}
+{{- define "zero-thrs-control.validateValues.postgresqlExistingSecret" -}}
+{{- if not .Values.postgresql.existingSecret  -}}
+    zero-thrs-control: postgresql.existingSecret is a required value
 {{- end -}}
 {{- end -}}

@@ -12,3 +12,7 @@ data:
   MQTT_SIMULATION_TOPIC_PREFIX: {{ .Values.mqtt.simulationTopicPrefix }}
   MQTT_CONTROL_TOPIC_SUFFIX: Command
   MQTT_USERNAME: {{ .Values.mqtt.username }}
+  PG_HOST: {{ .Values.postgresql.host }}
+  PG_PORT: {{ .Values.postgresql.port | quote }}
+  PG_USER: {{ .Values.postgresql.user }}
+  PG_DB: {{ .Values.postgresql.db }}
