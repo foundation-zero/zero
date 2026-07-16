@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from sqlalchemy import DateTime
+from sqlalchemy import Enum as SAEnum
 from sqlmodel import Field, SQLModel
 
 from thrs.input_output.alarms import Severity
@@ -13,9 +15,14 @@ class MachineStateIssue(MachineStateModelBase, table=True):
     __tablename__ = "machinestate_issue"  # type: ignore
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
-    severity_level: Severity
+    severity_level: Severity = Field(
+        sa_type=SAEnum(Severity, native_enum=False, length=None)
+    )
     issue_details: str | None
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
 
 
 class MachineStateEvent(MachineStateModelBase, table=True):
@@ -24,7 +31,10 @@ class MachineStateEvent(MachineStateModelBase, table=True):
     control_name: str
     event_name: str
     event_details: str | None
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
 
 
 class MachineStateTransition(MachineStateModelBase, table=True):
@@ -35,7 +45,10 @@ class MachineStateTransition(MachineStateModelBase, table=True):
     condition_name: str
     state_from: str
     state_to: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )
 
 
 class MachineStateParametersUpdate(MachineStateModelBase, table=True):
@@ -46,4 +59,7 @@ class MachineStateParametersUpdate(MachineStateModelBase, table=True):
     parameters_from: str | None
     parameters_to: str
     parameters_diff: str | None
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=DateTime(timezone=True),
+    )

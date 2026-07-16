@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Callable
 
+from aiomqtt import Client as MqttClient
+
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
@@ -9,6 +11,7 @@ from thrs.classes.machine_state_logger import (
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
     ControlChannels,
+    DirectivesChannels,
     MqttConnector,
     SimulationChannels,
 )
@@ -16,6 +19,9 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.module import CombinedAlarms, CombinedControl
 from thrs.orchestration.simulation import Simulation
 from thrs.runtime.descriptions.simulation import Mode
+from thrs.runtime.directives import DirectiveHandling
+from thrs.runtime.runners.lockstep import LockstepRunner
+from thrs.runtime.runtime import Runtime
 
 
 def setup_simulation(
@@ -68,3 +74,38 @@ def setup_control(
     )
 
     return control, control_channels, mode.control_module.alarms()
+
+
+
+def setup_lockstep(mode: Mode, settings: Config, mqtt_client: MqttClient) -> Runtime:
+
+    connector = MqttConnector(mqtt_client)
+
+    simulation, simulation_channels = setup_simulation(connector, settings, mode)
+
+    control, control_channels, alarms = setup_control(
+        connector, settings, mode, simulation.time
+    )
+
+    runner = LockstepRunner(
+        control=control,
+        control_channels=control_channels,
+        alarms=alarms,
+        simulation=simulation,
+        simulation_channels=simulation_channels,
+    )
+
+    directives_channels = DirectivesChannels(connector, settings)
+
+    directive_handling = DirectiveHandling(
+        directives_channels,
+        mode,
+        simulation.time,
+    )
+    return Runtime(
+        runner,
+        connector,
+        simulation.tick_duration,
+        directive_handling,
+    )
+

@@ -23,19 +23,15 @@ class PostgresDatabase:
             True if logging.getLogger().getEffectiveLevel() <= logging.DEBUG else False
         )
         self._settings = settings
-        self.init_engine(use_local_database=True, engine_echo=engine_echo)
+        self.init_engine(engine_echo=engine_echo)
 
-    def init_engine(self, use_local_database: bool = False, engine_echo: bool = False):
+    def init_engine(self, engine_echo: bool = False):
         logger.debug("Initializing database engine...")
-        if use_local_database:
-            self.engine = create_async_engine(
-                "sqlite+aiosqlite:///database.db", echo=engine_echo
-            ).execution_options(schema_translate_map={"thrs": None})
-        else:
-            self.engine = create_async_engine(
-                self._settings.pg_url,
-                poolclass=NullPool,
-            )
+
+        self.engine = create_async_engine(
+            self._settings.pg_url,
+            poolclass=NullPool,
+        )
 
         self.session_factory = async_sessionmaker(
             bind=self.engine,
