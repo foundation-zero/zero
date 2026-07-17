@@ -1,5 +1,6 @@
 set dotenv-load := true
 set dotenv-required := true
+set dotenv-override := true
 
 default: run
 
