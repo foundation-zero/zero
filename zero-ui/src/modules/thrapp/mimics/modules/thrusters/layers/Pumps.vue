@@ -12,13 +12,13 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
     <PumpInstance
       x="696"
       y="513"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Left"
       v-bind="pumps['1194']"
     />
     <PumpInstance
       x="696"
       y="604"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Left"
       v-bind="pumps['1195']"
     />
   </g>

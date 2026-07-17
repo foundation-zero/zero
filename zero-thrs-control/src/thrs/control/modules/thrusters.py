@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Literal, NoReturn
+from typing import Annotated, Literal, NoReturn
 
 from pydantic import model_validator
 from transitions import Machine, State
@@ -8,11 +8,13 @@ from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
+from thrs.control.modules.dhw import _zero_pid
 from thrs.db.models.machine_state import (
     MachineStateEvent,
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
 from thrs.input_output.modules.thrusters import (
@@ -35,7 +37,34 @@ class ThrustersControlMode(ControlMode):
 
 
 class ThrustersControllerState(ThrsValues):
-    pass
+    heat_dump_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    warmup_mix_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    pump_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    aft_recovery_temperature_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    fwd_recovery_temperature_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    aft_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    fwd_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
 
 
 class ThrustersParameters(ThrsValues):
@@ -105,6 +134,18 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # n
         thrusters_switch_fwd=Valve(
             setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
         ),
+    )
+
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState:  # noqa: N802
+    return ThrustersControllerState(
+        heat_dump_controller=_zero_pid(timestamp),
+        warmup_mix_controller=_zero_pid(timestamp),
+        pump_controller=_zero_pid(timestamp),
+        aft_recovery_temperature_controller=_zero_pid(timestamp),
+        fwd_recovery_temperature_controller=_zero_pid(timestamp),
+        aft_flow_controller=_zero_pid(timestamp),
+        fwd_flow_controller=_zero_pid(timestamp),
     )
 
 
@@ -341,7 +382,10 @@ class ThrustersControl(
         return ThrustersControlMode(mode=mode)
 
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), ThrustersControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            _INITIAL_CONTROLLER_STATE(self._time()),
+        )
 
     @StateLogger.log_warnings
     def control(
@@ -359,7 +403,18 @@ class ThrustersControl(
 
         # Basic controls
         self._control_flow_balance(sensor_values)
-        return (self._current_control_values, ThrustersControllerState())
+
+        controller_state = ThrustersControllerState(
+            heat_dump_controller=self._heat_dump_controller.values(),
+            warmup_mix_controller=self._warmup_mix_controller.values(),
+            pump_controller=self._pump_controller.values(),
+            aft_recovery_temperature_controller=self._aft_recovery_temperature_controller.values(),
+            fwd_recovery_temperature_controller=self._fwd_recovery_temperature_controller.values(),
+            aft_flow_controller=self._aft_flow_controller.values(),
+            fwd_flow_controller=self._fwd_flow_controller.values(),
+        )
+
+        return (self._current_control_values, controller_state)
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (

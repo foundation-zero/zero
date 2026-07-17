@@ -2603,7 +2603,13 @@ type ThrustersControlValuesType {
 }
 
 type ThrustersControllerStateType {
-  Empty: Void
+  heatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  warmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  aftRecoveryTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  fwdRecoveryTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  aftFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  fwdFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type ThrustersParametersType {

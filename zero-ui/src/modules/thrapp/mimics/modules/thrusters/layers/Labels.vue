@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrs/types";
+import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
@@ -10,122 +11,93 @@ import { getField } from "../../../providers";
 <template>
   <g>
     <TagLabelInstance
-      x="314"
-      y="129"
-      tag-id="1038-01"
-    />
-    <TagLabelInstance
-      x="314"
-      y="339"
-      tag-id="1038-02"
-    />
-    <TagLabelInstance
-      x="827"
-      y="413"
-      tag-id="1038-28"
-    />
-    <TagLabelInstance
-      x="611"
-      y="238"
-      tag-id="1038-30"
-    />
-
-    <TagLabelInstance
-      x="333"
-      y="431"
-      tag-id="1057-22"
-    />
-    <TagLabelInstance
-      x="334"
-      y="216"
-      tag-id="1218-02"
-    />
-    <TagLabelInstance
-      x="816"
-      y="316"
-      tag-id="1218-01"
-    />
-
-    <TagLabelInstance
-      x="453"
-      y="415"
-      tag-id="1097-01"
-    />
-    <TagLabelInstance
-      x="927"
-      y="154"
-      tag-id="1097-02"
-    />
-
-    <TagLabelInstance
-      x="403"
-      y="146"
+      x="416"
+      y="179"
       tag-id="1091-01"
     />
     <TagLabelInstance
-      x="402"
-      y="392"
+      x="416"
+      y="484"
       tag-id="1091-02"
     />
     <TagLabelInstance
-      x="560"
-      y="271"
+      x="575"
+      y="332"
       tag-id="1066-03"
     />
     <TagLabelInstance
-      x="214"
-      y="159"
-      tag-id="1215"
-    />
-    <TagLabelInstance
-      x="748"
-      y="199"
+      x="763"
+      y="273"
       tag-id="1214-01"
     />
     <TagLabelInstance
-      x="683"
-      y="283"
+      x="700"
+      y="333"
       tag-id="1216"
     />
+
     <TagLabelInstance
+      x="1025.775"
+      y="185"
+      tag-id="1084-01"
+    />
+    <TagLabelInstance
+      x="1025.775"
+      y="136"
+      tag-id="1087-08"
+    />
+
+    <FlowControlLabelInstance
+      x="218"
+      y="163"
+      tag-id="1215"
+      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersFlowcontrolAft')"
+    />
+    <FlowControlLabelInstance
       x="214"
       y="418"
       tag-id="1064-02"
+      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersFlowcontrolFwd')"
     />
     <TagLabelInstance
       x="590.649"
       y="147.576"
-      tag-id="1212-1"
+      tag-id="1212-01"
     />
     <TagLabelInstance
       x="718.677"
       y="147.576"
-      tag-id="1212-2"
+      tag-id="1212-02"
     />
     <TagLabelInstance
       x="614.055"
-      y="416.724"
-      tag-id="1212-3"
+      y="510.724"
+      tag-id="1212-03"
     />
     <TagLabelInstance
       x="743.07"
-      y="416.724"
-      tag-id="1212-4"
+      y="510.724"
+      tag-id="1212-04"
     />
     <TagLabelInstance
       x="613.068"
-      y="489.72"
-      tag-id="1212-5"
+      y="610.72"
+      tag-id="1212-05"
     />
     <TagLabelInstance
       x="740.25"
-      y="489.72"
-      tag-id="1212-6"
+      y="610.72"
+      tag-id="1212-06"
     />
     <TagLabelInstance
-      x="541.722"
-      y="416.724"
-      tag-id="1213-1"
+      x="214.722"
+      y="290"
+      tag-id="1212-07"
+    />
+    <TagLabelInstance
+      x="214.722"
+      y="560.724"
+      tag-id="1087-03"
     />
 
     <TagLabelInstance
@@ -140,48 +112,48 @@ import { getField } from "../../../providers";
     />
 
     <FlowLabelInstance
-      x="333"
-      y="431"
-      tag-id="1057-22"
-      :flow="getField(SensorComponentType.Flow, 'thrusters', 'thrustersFlowFwd')"
-    />
-    <FlowLabelInstance
-      x="816"
-      y="316"
+      x="836"
+      y="386"
       tag-id="1218-01"
       :flow="getField(SensorComponentType.Flow, 'thrusters', 'thrustersFlowRecovery')"
     />
     <FlowLabelInstance
-      x="334"
-      y="216"
+      x="280"
+      y="243"
       tag-id="1218-02"
       :flow="getField(SensorComponentType.Flow, 'thrusters', 'thrustersFlowAft')"
+    />
+    <FlowLabelInstance
+      x="280"
+      y="513"
+      tag-id="1057-22"
+      :flow="getField(SensorComponentType.Flow, 'thrusters', 'thrustersFlowFwd')"
     />
 
     <PressureLabelInstance
       x="453"
-      y="415"
+      y="515"
       tag-id="1097-01"
       :pressure="getField(SensorComponentType.Pressure, 'thrusters', 'thrustersPressureDischarge')"
     />
     <PressureLabelInstance
-      x="927"
-      y="154"
+      x="934"
+      y="193"
       tag-id="1097-02"
       :pressure="getField(SensorComponentType.Pressure, 'thrusters', 'thrustersPressureSystem')"
     />
 
     <TemperatureLabelInstance
-      x="314"
-      y="129"
+      x="280"
+      y="138"
       tag-id="1038-01"
       :temperature="
         getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureAft')
       "
     />
     <TemperatureLabelInstance
-      x="314"
-      y="339"
+      x="280"
+      y="398"
       tag-id="1038-02"
       :temperature="
         getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureFwd')
@@ -189,15 +161,15 @@ import { getField } from "../../../providers";
     />
     <TemperatureLabelInstance
       x="827"
-      y="413"
+      y="515"
       tag-id="1038-28"
       :temperature="
         getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureSupply')
       "
     />
     <TemperatureLabelInstance
-      x="611"
-      y="238"
+      x="631"
+      y="293"
       tag-id="1038-30"
       :temperature="
         getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureRecoveryMix')

@@ -11,73 +11,73 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
 <template>
   <g>
     <ManualValveInstance
-      x="214.179"
-      y="241.626"
-      :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1212-07']"
-    />
-    <ManualValveInstance
       x="610"
       y="152"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
-      v-bind="manualValves['1212-1']"
+      v-bind="manualValves['1212-01']"
     />
     <ManualValveInstance
       x="732"
       y="152"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
-      v-bind="manualValves['1212-2']"
+      v-bind="manualValves['1212-02']"
     />
     <ManualValveInstance
       x="615.042"
-      y="422.4"
+      y="522"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1212-3']"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1212-03']"
     />
     <ManualValveInstance
       x="744.057"
-      y="421.608"
+      y="522"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1212-4']"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1212-04']"
     />
     <ManualValveInstance
       x="615.042"
-      y="496.188"
+      y="613"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1212-5']"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1212-05']"
     />
     <ManualValveInstance
       x="742.224"
-      y="497.046"
+      y="613"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1212-6']"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1212-06']"
     />
     <ManualValveInstance
-      x="214.179"
-      y="459.756"
+      x="214"
+      y="299"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1213-1']"
-    />
-    <ManualValveInstance
-      x="1025.775"
-      y="153.252"
-      :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['1087-01']"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1212-07']"
     />
     <ManualValveInstance
       x="1025.775"
-      y="113.52"
+      y="190.5"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1084-01']"
+    />
+    <ManualValveInstance
+      x="214"
+      y="567"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1087-03']"
+    />
+    <ManualValveInstance
+      x="1025.775"
+      y="140.5"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-08']"
     />
   </g>

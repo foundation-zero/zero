@@ -1,104 +1,27 @@
-import { toFieldsMap, toInstance } from "../../..";
+import { toFieldsMap } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-
-const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Manual valve",
-  itemName: "Manual valve",
-  yardTag,
-  technicalName,
-});
+import _1084_01 from "./_1084_01";
+import _1087_03 from "./_1087_03";
+import _1087_08 from "./_1087_08";
+import _1212_01 from "./_1212_01";
+import _1212_02 from "./_1212_02";
+import _1212_03 from "./_1212_03";
+import _1212_04 from "./_1212_04";
+import _1212_05 from "./_1212_05";
+import _1212_06 from "./_1212_06";
+import _1212_07 from "./_1212_07";
 
 export const THRUSTERS_MANUAL_VALVE_DATA = toFieldsMap({
   [MimicComponentType.ManualValve]: {
-    "1212-1": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-1", "thrusters-manual-valve-1212-1"),
-    }),
-    "1212-2": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-2", "thrusters-manual-valve-1212-2"),
-    }),
-    "1212-3": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-3", "thrusters-manual-valve-1212-3"),
-    }),
-    "1212-4": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-4", "thrusters-manual-valve-1212-4"),
-    }),
-    "1212-5": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-5", "thrusters-manual-valve-1212-5"),
-    }),
-    "1212-6": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-6", "thrusters-manual-valve-1212-6"),
-    }),
-    "1087-01": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1087-01", "thrusters-manual-valve-1087-01"),
-    }),
-    "1087-08": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1087-08", "thrusters-manual-valve-1087-08"),
-    }),
-    "1212-07": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1212-07", "thrusters-manual-valve-1212-07"),
-    }),
-    "1213-1": toInstance<MimicComponentType.ManualValve>({
-      controls: {},
-      controllerState: {},
-      custom: {},
-      parameters: {},
-      sensors: {},
-      source: undefined,
-      tooltip: tooltip("1213-1", "thrusters-manual-valve-1213-1"),
-    }),
+    "1084-01": _1084_01,
+    "1087-08": _1087_08,
+    "1212-01": _1212_01,
+    "1212-02": _1212_02,
+    "1212-03": _1212_03,
+    "1212-04": _1212_04,
+    "1212-05": _1212_05,
+    "1212-06": _1212_06,
+    "1212-07": _1212_07,
+    "1087-03": _1087_03,
   },
 });

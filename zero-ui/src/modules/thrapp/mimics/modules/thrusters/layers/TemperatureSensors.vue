@@ -11,28 +11,28 @@ const temperatureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.TemperatureSe
   <g>
     <TemperatureSensorInstance
       x="286.512"
-      y="145.926"
+      y="181"
       tag-id="1038-01"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-01']"
     />
     <TemperatureSensorInstance
       x="286.512"
-      y="354.354"
+      y="438"
       tag-id="1038-02"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-02']"
     />
     <TemperatureSensorInstance
       x="837.963"
-      y="449.196"
+      y="555"
       tag-id="1038-28"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-28']"
     />
     <TemperatureSensorInstance
-      x="622.797"
-      y="270.006"
+      x="635"
+      y="333"
       tag-id="1038-30"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-30']"

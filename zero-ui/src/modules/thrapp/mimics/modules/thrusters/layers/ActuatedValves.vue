@@ -1,59 +1,60 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { SensorComponentType } from "@/modules/thrs/types";
 import { ComponentOrientation } from "../../../components";
 import { MixValveInstance, SwitchValveInstance } from "../../../instances";
-import { getField } from "../../../providers";
+import FlowControlValveInstance from "../../../instances/FlowControlValveInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const switchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.SwitchValve];
+const flowControlValves = THRUSTERS_MIMIC_DATA[MimicComponentType.FlowControlValve];
+const mixValves = THRUSTERS_MIMIC_DATA[MimicComponentType.MixValve];
 </script>
 
 <template>
   <g>
-    <SwitchValveInstance
-      x="407"
-      y="156"
-      :orientation="ComponentOrientation.Right"
-      v-bind="switchValves['1091-01']"
+    <MixValveInstance
+      x="414"
+      y="193"
+      :orientation="ComponentOrientation.Up"
+      v-bind="mixValves['1091-01']"
+    />
+    <MixValveInstance
+      x="414"
+      y="449.5"
+      :orientation="ComponentOrientation.Down"
+      v-bind="mixValves['1091-02']"
     />
     <SwitchValveInstance
-      x="407"
-      y="364"
-      :orientation="ComponentOrientation.Right"
-      v-bind="switchValves['1091-02']"
-    />
-    <SwitchValveInstance
-      x="565"
-      y="280"
-      :orientation="ComponentOrientation.Right"
+      x="575"
+      y="346"
+      :orientation="ComponentOrientation.Up"
       v-bind="switchValves['1066-03']"
     />
 
-    <MixValveInstance
+    <FlowControlValveInstance
       x="214"
-      y="418"
+      y="193"
       :orientation="ComponentOrientation.Up"
-      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersFlowcontrolFwd')"
+      v-bind="flowControlValves['1215']"
     />
-    <MixValveInstance
+    <FlowControlValveInstance
       x="214"
-      y="159"
+      y="449"
       :orientation="ComponentOrientation.Up"
-      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersFlowcontrolAft')"
+      v-bind="flowControlValves['1064-02']"
     />
 
     <MixValveInstance
-      x="748"
-      y="199"
-      :orientation="ComponentOrientation.Right"
-      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersMixExchanger')"
+      x="759.5"
+      y="242"
+      :orientation="ComponentOrientation.Down"
+      v-bind="mixValves['1214-01']"
     />
     <MixValveInstance
-      x="683"
-      y="283"
-      :orientation="ComponentOrientation.Right"
-      :valve="getField(SensorComponentType.Valve, 'thrusters', 'thrustersMixRecovery')"
+      x="693.5"
+      y="346"
+      :orientation="ComponentOrientation.Up"
+      v-bind="mixValves['1074']"
     />
   </g>
 </template>

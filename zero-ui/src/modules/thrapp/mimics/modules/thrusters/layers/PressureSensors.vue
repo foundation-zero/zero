@@ -11,13 +11,13 @@ const pressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureSensor];
   <g>
     <PressureSensorInstance
       x="465.441"
-      y="449.196"
+      y="555"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureSensors['1097-01']"
     />
     <PressureSensorInstance
       x="938.637"
-      y="185.658"
+      y="229"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureSensors['1097-02']"
     />

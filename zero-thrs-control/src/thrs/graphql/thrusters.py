@@ -1,6 +1,7 @@
 import strawberry
 
 from thrs.control.modules.thrusters import (
+    ThrustersControllerState,
     ThrustersControlMode,
     ThrustersParameters,
 )
@@ -22,15 +23,13 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
 )
 
-ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
+ThrustersSensorValuesType = pydantic_to_strawberry_type(
+    ThrustersSensorValues, include_computed=True
+)
 ThrustersControlValuesType = pydantic_to_strawberry_type(ThrustersControlValues)
 ThrustersParametersType = pydantic_to_strawberry_type(ThrustersParameters)
 ThrustersControlModeType = pydantic_to_strawberry_type(ThrustersControlMode)
-
-
-@strawberry.type()
-class ThrustersControllerStateType:
-    _empty: None = None
+ThrustersControllerStateType = pydantic_to_strawberry_type(ThrustersControllerState)
 
 
 ThrustersModule = ControlModule[
@@ -60,7 +59,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
-        controller_state=ThrustersControllerStateType(),
+        controller_state=optional_pydantic_to_graphql(
+            ThrustersControllerStateType, module.controller_state
+        ),
     )
 
 
