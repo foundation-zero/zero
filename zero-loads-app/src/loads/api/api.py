@@ -17,6 +17,8 @@ from .model import (
     get_alarms as model_get_alarms,
 )
 from .model import (
+    get_load_case,
+    get_load_cases,
     get_sails,
     set_loads_reference_values,
 )
@@ -24,6 +26,8 @@ from .types import (
     AlarmType,
     AwaRange,
     AwsRange,
+    CaseInput,
+    LoadCase,
     LoadsContext,
     ReferenceValueInput,
     SailType,
@@ -43,6 +47,21 @@ class Query:
         if variables is None:
             variables = [strawberry.ID(var_id) for var_id in VARIABLES.keys()]
         return [Variable(id=var_id) for var_id in variables]
+
+    @strawberry.field
+    async def load_cases(
+        self,
+        info: strawberry.Info[LoadsContext],
+    ) -> list[LoadCase]:
+        async with info.context.sessionmanager.session() as session:
+            return await get_load_cases(session)
+
+    @strawberry.field
+    async def load_case(
+        self, info: strawberry.Info[LoadsContext], case: CaseInput
+    ) -> LoadCase | None:
+        async with info.context.sessionmanager.session() as session:
+            return await get_load_case(case, session)
 
     @strawberry.field
     async def sails(

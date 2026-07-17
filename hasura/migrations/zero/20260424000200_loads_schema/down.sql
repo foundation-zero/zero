@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS loads.load_case_mappings CASCADE;
 DROP TABLE IF EXISTS loads.reference_values CASCADE;
 DROP TABLE IF EXISTS loads.load_cases CASCADE;
 DROP TABLE IF EXISTS loads.aws_ranges CASCADE;

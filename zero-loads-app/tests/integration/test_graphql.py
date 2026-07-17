@@ -19,6 +19,12 @@ def override_messaging():
     return mock
 
 
+@pytest.fixture(autouse=True)
+async def seed_graphql_scenarios(scenario_factory):
+    await scenario_factory.seed_graphql_reference_defaults()
+    await scenario_factory.seed_mutation_target_cases()
+
+
 @pytest.mark.asyncio
 async def test_graphql(async_client: AsyncClient, override_dependency):
     with override_dependency(get_messaging, override_messaging):

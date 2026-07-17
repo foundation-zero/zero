@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import uvicorn
 from generator import DataGenerator
@@ -108,6 +109,28 @@ class SensorsStubCmd(GeneratorSettings):
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
 
 
+class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        extra="allow",
+    )
+
+    input: Path = Path("src/sailpack")
+    output: Path = Path("../hasura/seeds/zero/loads_reference_values.sql")
+
+    async def cli_cmd(self) -> None:
+        from sailpack.export_seed import export_seed_sql
+
+        logger.info("Exporting sailpack seed SQL...")
+        load_case_count, reference_count = export_seed_sql(self.input, self.output)
+        logger.info(
+            f"Generated {self.output} with {load_case_count} load cases and "
+            f"{reference_count} reference values."
+        )
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -124,6 +147,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     fiber_optic_sensors_stub: CliSubCommand[FiberOpticSensorsStubCmd]
     sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
     sensors_stub: CliSubCommand[SensorsStubCmd]
+    export_seed: CliSubCommand[ExportSeedCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import inspect, select
+from sqlalchemy import inspect, select, text
 
 from loads.api.schema import Base, ReferenceValues
 from loads.config import Settings
@@ -8,6 +8,11 @@ from loads.registry import VARIABLES
 LEGACY_VARIABLE_ID_ALIASES = {  # TODO: remove these aliases once the database is updated to use the new variable_ids
     "storm-jib-tack-load": "mast-storm-jib-load",
 }
+
+
+@pytest.fixture(autouse=True)
+async def seed_api_db_scenarios(scenario_factory):
+    await scenario_factory.seed_graphql_reference_defaults()
 
 
 @pytest.mark.asyncio
@@ -65,3 +70,29 @@ async def test_reference_values_variable_ids_in_registry(sessionmanager):
         assert not missing_variables, (
             f"The following variable_keys from reference_values are not in VARIABLES registry: {missing_variables}"
         )
+
+
+@pytest.mark.asyncio
+async def test_reference_values_include_fixture_sentinel(
+    sessionmanager, scenario_factory
+):
+    sentinel_target = 777.77
+    await scenario_factory.seed_sentinel_reference(target=sentinel_target)
+
+    async with sessionmanager.session() as session:
+        result = await session.execute(
+            text(
+                """
+                SELECT reference_values.target::float8
+                FROM loads.reference_values reference_values
+                JOIN loads.load_case_mappings load_case_mappings ON load_case_mappings.load_case_id = reference_values.load_case_id
+                JOIN loads.aws_ranges aws_ranges ON aws_ranges.id = load_case_mappings.aws_range_id
+                WHERE reference_values.variable_key = 'main-sheet-load'
+                  AND load_case_mappings.awa_range_id = 'reaching'
+                  AND aws_ranges.aws_range = '[30,40)'::numrange
+                LIMIT 1
+                """
+            )
+        )
+
+        assert result.scalar_one_or_none() == sentinel_target
