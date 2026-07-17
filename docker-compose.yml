@@ -37,7 +37,7 @@ services:
       - loads
       - thrs
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "postgres"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 30s
       timeout: 60s
       retries: 5

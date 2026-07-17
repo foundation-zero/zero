@@ -8,6 +8,8 @@ mqtt:
   devicesTopicPrefix: thrs
   controllerTopicPrefix: thrs
   simulationTopicPrefix: thrs
+  controllerTopicSuffix: set
+  simulatorTopicSuffix: set
 
 # Required: Postgres database
 postgresql:
