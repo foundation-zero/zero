@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -414,7 +425,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -449,7 +460,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -613,7 +635,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                AS timestamp,\r\n\tfire_doors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                AS timestamp,\r\n\tfire_doors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -647,7 +669,19 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1318,7 +1352,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                      AS timestamp,\r\n\tfire_panel_alarms__value       AS common_alarm,\r\n\tfire_panel_faults__value       AS faults,\r\n\tfire_panel_disablements__value AS disablements,\r\n\tfire_panel_tests__value        AS tests,\r\n\tfire_panel_testbit__value      AS testbit,\r\n\tfire_panel_command__value      AS command,\r\n\tfire_panel_parameter_1__value  AS parameter1\r\nFROM marpower__450000_firedetection_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                      AS timestamp,\r\n\tfire_panel_alarms__value       AS common_alarm,\r\n\tfire_panel_faults__value       AS faults,\r\n\tfire_panel_disablements__value AS disablements,\r\n\tfire_panel_tests__value        AS tests,\r\n\tfire_panel_testbit__value      AS testbit,\r\n\tfire_panel_command__value      AS command,\r\n\tfire_panel_parameter_1__value  AS parameter1\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
