@@ -8,7 +8,7 @@ from thrs.runtime.liveness import Liveness
 def test_liveness_no_error():
     liveness = Liveness("/tmp/does_not_exist")
 
-    with assert_does_not_raise:
+    with assert_does_not_raise():
         liveness.signal()
 
 
