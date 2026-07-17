@@ -106,7 +106,6 @@ class MachineStateLogger:
             await session.commit()
 
 
-
 class StateLogger:
     @abstractmethod
     def create_logged_state_machine(
