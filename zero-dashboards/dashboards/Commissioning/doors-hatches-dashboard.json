@@ -72,17 +72,24 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "transparent",
                 "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
               }
             ]
           }
@@ -226,6 +233,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 40,
                 "width": 25
               },
@@ -777,7 +785,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                              AS time,\r\n\tdeck_slide_wind_drive_fail__value      AS deck_slide_wind_drive_fail,\r\n\tw_tight_hatch_rm_35_commonalarm__value AS wt_hatch_rm35_alarm,\r\n\tw_tight_hatch_rm_36_commonalarm__value AS wt_hatch_rm36_alarm,\r\n\twtsd_mainbackuppwrfail__value          AS wtsd_pwr_fail,\r\n\tsos_lock_supply_14_e_11_fail__value    AS sos_lock_supply_fail1,\r\n\tsos_lock_supply_14_e_12_fail__value    AS sos_lock_supply_fail2,\r\n\tsos_lock_supply_14_e_13_fail__value    AS sos_lock_supply_fail3,\r\n\thaz_consumers_emergstopactive__value   AS em_stop_haz_cons_active\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                              AS time,\r\n\tdeck_slide_wind_drive_fail__value      AS deck_slide_wind_drive_fail,\r\n\tw_tight_hatch_rm_35_commonalarm__value AS wt_hatch_rm35_alarm,\r\n\tw_tight_hatch_rm_36_commonalarm__value AS wt_hatch_rm36_alarm,\r\n\twtsd_mainbackuppwrfail__value          AS wtsd_pwr_fail,\r\n\tsos_lock_supply_14_e_11_fail__value    AS sos_lock_supply_fail1,\r\n\tsos_lock_supply_14_e_12_fail__value    AS sos_lock_supply_fail2,\r\n\tsos_lock_supply_14_e_13_fail__value    AS sos_lock_supply_fail3,\r\n\thaz_consumers_emergstopactive__value   AS em_stop_haz_cons_active\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -811,7 +819,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1437,7 +1456,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\tdeck_slide_wind_onoff__value       AS deck_slide_wind_on,\r\n\taft_slide_wind_onoff__value        AS aft_slide_wind_on,\r\n\tps_slide_wind_onoff__value         AS ps_slide_wind_on,\r\n\tsb_slide_wind_onoff__value         AS sb_slide_wind_on,\r\n\thull_valves_allgreenclosed__value  AS hull_valves_all_closed,\r\n\thull_valves_redopened__value       AS hull_valves_not_all_closed,\r\n\twtd_pneumatic_support_onoff__value AS wtd_pneumatic_support_onoff\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\tdeck_slide_wind_onoff__value       AS deck_slide_wind_on,\r\n\taft_slide_wind_onoff__value        AS aft_slide_wind_on,\r\n\tps_slide_wind_onoff__value         AS ps_slide_wind_on,\r\n\tsb_slide_wind_onoff__value         AS sb_slide_wind_on,\r\n\thull_valves_allgreenclosed__value  AS hull_valves_all_closed,\r\n\thull_valves_redopened__value       AS hull_valves_not_all_closed,\r\n\twtd_pneumatic_support_onoff__value AS wtd_pneumatic_support_onoff\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1805,7 +1824,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_perc__value AS main_deckh_hatch_ps_perc,\r\n\t\t\tmain_deckh_vent_hatch_sb_perc__value AS main_deckh_hatch_sb_perc,\r\n\t\t\taft_deckh_vent_hatch_perc__value AS aft_deckh_hatch_perc\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_perc__value AS main_deckh_hatch_ps_perc,\r\n\t\t\tmain_deckh_vent_hatch_sb_perc__value AS main_deckh_hatch_sb_perc,\r\n\t\t\taft_deckh_vent_hatch_perc__value AS aft_deckh_hatch_perc\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1840,7 +1859,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2865,7 +2895,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                 AS time,\r\n\tw_tight_door_rm_19_sealinflated__value    AS rm19_wtd_seal_infl,\r\n\tw_tight_door_rm_19_door_closed__value     AS rm19_wtd_closed,\r\n\tw_tight_door_rm_19_pos_prog_switch__value AS rm19_wtd_pos_prog_switch,\r\n\tw_tight_hatch_rm_35_sealinflated__value   AS rm35_wth_seal_infl,\r\n\tw_tight_hatch_rm_35_doorclosed__value     AS rm35_wth_closed,\r\n\tw_tight_hatch_rm_35_posprogswitch__value  AS rm35_wth_pos_prog_switch,\r\n\tw_tight_hatch_rm_36_sealinflated__value   AS rm36_wth_seal_infl,\r\n\tw_tight_hatch_rm_36_doorclosed__value     AS rm36_wth_closed,\r\n\tw_tight_hatch_rm_36_posprogswitch__value  AS rm36_wth_pos_prog_switch,\r\n\t--fire_door_gall_keel_closed__value         AS fire_door_galley_keel_closed,\r\n\tfire_slide_door_gall_crew_closed__value   AS fire_door_galley_closed,\r\n\tcrew_escape_hatch_closed__value           AS crew_esc_hatch_closed\r\nFROM public.marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                 AS time,\r\n\tw_tight_door_rm_19_sealinflated__value    AS rm19_wtd_seal_infl,\r\n\tw_tight_door_rm_19_door_closed__value     AS rm19_wtd_closed,\r\n\tw_tight_door_rm_19_pos_prog_switch__value AS rm19_wtd_pos_prog_switch,\r\n\tw_tight_hatch_rm_35_sealinflated__value   AS rm35_wth_seal_infl,\r\n\tw_tight_hatch_rm_35_doorclosed__value     AS rm35_wth_closed,\r\n\tw_tight_hatch_rm_35_posprogswitch__value  AS rm35_wth_pos_prog_switch,\r\n\tw_tight_hatch_rm_36_sealinflated__value   AS rm36_wth_seal_infl,\r\n\tw_tight_hatch_rm_36_doorclosed__value     AS rm36_wth_closed,\r\n\tw_tight_hatch_rm_36_posprogswitch__value  AS rm36_wth_pos_prog_switch,\r\n\t--fire_door_gall_keel_closed__value         AS fire_door_galley_keel_closed,\r\n\tfire_slide_door_gall_crew_closed__value   AS fire_door_galley_closed,\r\n\tcrew_escape_hatch_closed__value           AS crew_esc_hatch_closed\r\nFROM public.marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2900,7 +2930,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3378,7 +3419,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_closed__value AS main_deckh_hatch_ps_closed,\r\n\t\t\tmain_deckh_vent_hatch_sb_closed__value AS main_deckh_hatch_sb_closed,\r\n\t\t\taft_deckh_vent_hatch_closed__value AS aft_deckh_hatch_closed,\r\n\t\t\tdeck_slide_wind_remavail__value AS owner_deckh_wind_remavail,\r\n\t\t\tdeck_slide_wind_drive_runn__value AS owner_deckh_wind_running\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_closed__value AS main_deckh_hatch_ps_closed,\r\n\t\t\tmain_deckh_vent_hatch_sb_closed__value AS main_deckh_hatch_sb_closed,\r\n\t\t\taft_deckh_vent_hatch_closed__value AS aft_deckh_hatch_closed,\r\n\t\t\tdeck_slide_wind_remavail__value AS owner_deckh_wind_remavail,\r\n\t\t\tdeck_slide_wind_drive_runn__value AS owner_deckh_wind_running\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3413,7 +3454,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -5072,7 +5124,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_closed__value AS laz_hatch_fwd_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_fwd_closed__value AS laz_hatch_fwd_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_mid_closed__value AS laz_hatch_mid_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_mid_closed__value AS laz_hatch_mid_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_aft_closed__value AS laz_hatch_aft_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_aft_closed__value AS laz_hatch_aft_ps_closed,\r\n\t\t\tforeship_stor_area_acc_hatch_closed__value AS foreship_stor_hatch_closed,\r\n\t\t\tcrane_hatch_aft_closed__value AS crane_hatch_closed,\r\n\t\t\tforepeak_acc_hatch_closed__value AS forepeak_hatch_closed,\r\n\t\t\tsail_stor_hatch_closed__value AS sail_stor_hatch_closed,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_closed__value AS dinghy_stor_closed,\r\n\t\t\thatch_anchor_sensor_1_closed__value AS anchor_hatch1_closed,\r\n\t\t\thatch_anchor_sensor_2_closed__value AS anchor_hatch2_closed,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_closed__value AS laz_hatch_fwd_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_fwd_closed__value AS laz_hatch_fwd_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_mid_closed__value AS laz_hatch_mid_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_mid_closed__value AS laz_hatch_mid_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_aft_closed__value AS laz_hatch_aft_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_aft_closed__value AS laz_hatch_aft_ps_closed,\r\n\t\t\tforeship_stor_area_acc_hatch_closed__value AS foreship_stor_hatch_closed,\r\n\t\t\tcrane_hatch_aft_closed__value AS crane_hatch_closed,\r\n\t\t\tforepeak_acc_hatch_closed__value AS forepeak_hatch_closed,\r\n\t\t\tsail_stor_hatch_closed__value AS sail_stor_hatch_closed,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_closed__value AS dinghy_stor_closed,\r\n\t\t\thatch_anchor_sensor_1_closed__value AS anchor_hatch1_closed,\r\n\t\t\thatch_anchor_sensor_2_closed__value AS anchor_hatch2_closed,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5151,7 +5203,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -5631,7 +5694,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n\twtid_tech_room_access_door_closed__value AS tech_room_door_closed,\r\n\ttech_room_esc_hatch_ps_closed__value     AS tech_room_esc_hatch_closed,\r\n\ttech_corridor_esc_hatch_sb_closed__value AS tech_corr_esc_hatch_closed,\r\n\twtid_fwd_corridor_door_closed__value     AS fwd_corr_door_closed,\r\n\twtid_aft_corridor_door_closed__value     AS aft_corr_door_closed\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n\twtid_tech_room_access_door_closed__value AS tech_room_door_closed,\r\n\ttech_room_esc_hatch_ps_closed__value     AS tech_room_esc_hatch_closed,\r\n\ttech_corridor_esc_hatch_sb_closed__value AS tech_corr_esc_hatch_closed,\r\n\twtid_fwd_corridor_door_closed__value     AS fwd_corr_door_closed,\r\n\twtid_aft_corridor_door_closed__value     AS aft_corr_door_closed\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
