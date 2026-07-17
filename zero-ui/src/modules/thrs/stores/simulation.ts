@@ -40,7 +40,11 @@ export const useSimulationStore = defineStore("simulation", () => {
   const { data } = toRefs(useThrsHistory());
   const activeSimulation = computed(() => data.value?.simulation?.inputs?.__typename);
   const activeSimulationType = computed(() =>
-    SIMULATION_TYPES.find((type) => activeSimulation.value?.toLocaleLowerCase().startsWith(type)),
+    SIMULATION_TYPES.find((type) =>
+      `${activeSimulation.value?.charAt(0)?.toLowerCase()}${activeSimulation.value?.slice(1)}`.startsWith(
+        type,
+      ),
+    ),
   );
 
   const statusQuery = useQuery<SimulationStatus>({
