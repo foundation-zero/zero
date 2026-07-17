@@ -10,12 +10,12 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
+  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
   sensors: {
     actuator: getField(SensorComponentType.Valve, "dhw", "dhwSwitchHighTemperature"),
   },
   tooltip: tooltip({
     yardTag: "1038-65",
-    technicalName: "dhw-temperature-boosting-supply",
+    technicalName: "dhw-temperature-boosting-return",
   }),
 });

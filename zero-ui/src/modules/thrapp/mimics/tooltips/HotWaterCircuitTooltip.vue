@@ -51,6 +51,9 @@ const { items, labels, sources } = useTranslations();
       >
         <Partials.ListItem size="sm">
           {{ items("incomingFlow") }}
+          <template #sourceName>
+            {{ sources("calculated") }}
+          </template>
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
@@ -67,9 +70,6 @@ const { items, labels, sources } = useTranslations();
       >
         <Partials.ListItem size="sm">
           {{ items("outgoingFlow") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
         </Partials.ListItem>
       </SensorValue>
     </TooltipList>

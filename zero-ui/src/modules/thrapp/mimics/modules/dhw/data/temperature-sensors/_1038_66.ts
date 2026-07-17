@@ -11,10 +11,10 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   controllerState: {},
   custom: { controller: pumpTemperatureController },
   parameters: {},
-  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
+  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   sensors: {},
   tooltip: tooltip({
     yardTag: "1038-66",
-    technicalName: "dhw-temperature-boosting-return",
+    technicalName: "dhw-temperature-boosting-supply",
   }),
 });
