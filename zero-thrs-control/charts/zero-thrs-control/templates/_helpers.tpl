@@ -25,6 +25,10 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 
+{{- define "zero-thrs-control.api" -}}
+  {{- printf "%s-api" (include "zero-thrs-control.name" .) -}}
+{{- end -}}
+
 {{- define "zero-thrs-control.control" -}}
   {{- printf "%s-control" (include "zero-thrs-control.name" .) -}}
 {{- end -}}
@@ -62,4 +66,15 @@ Selector labels
 {{- define "zero-thrs-control.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "zero-thrs-control.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+
+{{- define "zero-thrs-control.livenessProbe" -}}
+exec:
+  command:
+  - /bin/bash
+  - -c
+  - "test \"$(( `date +%s` - `stat -L --format %Y {{ . }}` ))\" -lt 10"
+initialDelaySeconds: 30
+periodSeconds: 5
 {{- end }}

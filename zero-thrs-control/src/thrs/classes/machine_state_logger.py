@@ -35,6 +35,7 @@ class MachineStateLogger:
     def __init__(self, postgres_db: PostgresDatabase):
         self.postgres_db: PostgresDatabase = postgres_db
         self._pending_tasks: set[asyncio.Task[None]] = set()
+        self.console_logger = logging.getLogger(__name__)
 
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
@@ -68,6 +69,9 @@ class MachineStateLogger:
 
     def _log_model(self, model: SQLModel):
         """Log a model to the database asynchronously."""
+        self.console_logger.debug(
+            f"Logging model {model.__class__.__qualname__} to database asynchronously."
+        )
         self._run_async(self._log_model_async(model))
 
     def _run_async(self, coroutine: Coroutine):
@@ -220,6 +224,7 @@ class MachineStateLoggingService(StateLogger):
         self.last_state: str = "Unknown"
         self.last_trigger_name: str | None = "Unknown"
         self.last_evaluated_conditions: list[str] = []
+        self.console_logger = logging.getLogger(__name__)
 
     def clone_for_module(self) -> "StateLogger":
         clone = MachineStateLoggingService(self.machinestate_logger.postgres_db)
@@ -229,7 +234,6 @@ class MachineStateLoggingService(StateLogger):
     async def shutdown(self) -> None:
         """Wait for in-flight logging tasks, then dispose the database engine."""
         await self._machinestate_logger.wait_for_pending_tasks()
-        await self._machinestate_logger.postgres_db.close()
 
     def create_logged_state_machine(
         self,
@@ -256,6 +260,9 @@ class MachineStateLoggingService(StateLogger):
         machine.before_state_change = partial(self._before_log, control)
         machine.after_state_change = partial(self._after_log, control)
 
+        self.console_logger.debug(
+            f"Created logged state machine for control {control.__class__.__name__} with states"
+        )
         return machine
 
     def setup_transition_tracking(

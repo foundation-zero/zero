@@ -85,7 +85,7 @@ jobs:
     needs: test
     strategy:
       matrix:
-        target: [control, simulation]
+        target: [control, api]
     permissions:
       contents: "read"
       id-token: "write"

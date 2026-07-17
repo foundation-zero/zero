@@ -12,7 +12,7 @@ from thrs.control.switching import (
 def test_switching_control():
     manual_control_values = SimpleInOut.zero()
     manual_control_values.go_with_the.flow.value = 42.0
-    manual_control = ManualControl(manual_control_values, datetime.now)
+    manual_control = ManualControl(manual_control_values)
     automated_control = SimpleControl(SimpleParameters.zero(), datetime.now)
     switching_control = SwitchingControl(manual_control, automated_control)
 

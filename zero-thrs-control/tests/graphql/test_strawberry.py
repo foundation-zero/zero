@@ -9,8 +9,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.dhw import DhwParameters
-from thrs.control.modules.pcm import PcmParameters
+from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import (
@@ -185,7 +185,7 @@ async def pcm_messaging_mock():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
-    mock.control_mode = SwitchingControlMode(automatic_mode=None)
+    mock.control_mode = SwitchingControlMode(automatic_mode=PcmControlMode(mode="idle"))
 
     async def wait(condition, *_args, timeout):
         return None
@@ -219,7 +219,10 @@ async def dhw_messaging_mock():
     mock.sensor_values = DhwSensorValues.zero()
     mock.control_values = DhwControlValues.zero()
     mock.parameters = DhwParameters()
-    mock.control_mode = SwitchingControlMode(automatic_mode=None)
+    mock.controller_state = DhwControllerState.zero()
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=DhwControlMode(boosting_mode="idle", filling_mode="idle")
+    )
 
     async def wait(condition, *_args, timeout):
         return None
@@ -347,12 +350,172 @@ async def test_query_parameters(app, test_client):
     }
 
 
+async def test_query_controller_state(app, test_client):
+    response = test_client.post(
+        "/graphql",
+        json={
+            "query": """{
+                modules {
+                    consumers {
+                        controllerState {
+                            Empty
+                        }
+                    }
+                    dhw {
+                        controllerState {
+                            dhwTanksController {
+                                tank1State { value }
+                                tank2State { value }
+                                tank3State { value }
+                                timeToFill { value }
+                            }
+                            dhwPumpFlowController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            dhwPumpTemperatureController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            dhwDrivesFlowController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            dhwDcFlowController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                        }
+                    }
+                    thrusters {
+                        controllerState {
+                            Empty
+                        }
+                    }
+                    pvt {
+                        controllerState {
+                            Empty
+                        }
+                    }
+                    pcm {
+                        controllerState {
+                            Empty
+                        }
+                    }
+                }
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "modules": {
+                "consumers": {
+                    "controllerState": {"Empty": None},
+                },
+                "dhw": {
+                    "controllerState": {
+                        "dhwDcFlowController": {
+                            "components": {"value": [0.0, 0.0, 0.0]},
+                            "enabled": {"value": False},
+                            "error": {"value": None},
+                            "measurement": {"value": None},
+                            "output": {"value": None},
+                            "setpoint": {"value": 0.0},
+                            "tuning": {"value": [0.0, 0.0, 0.0]},
+                        },
+                        "dhwDrivesFlowController": {
+                            "components": {"value": [0.0, 0.0, 0.0]},
+                            "enabled": {"value": False},
+                            "error": {"value": None},
+                            "measurement": {"value": None},
+                            "output": {"value": None},
+                            "setpoint": {"value": 0.0},
+                            "tuning": {"value": [0.0, 0.0, 0.0]},
+                        },
+                        "dhwPumpFlowController": {
+                            "components": {"value": [0.0, 0.0, 0.0]},
+                            "enabled": {"value": False},
+                            "error": {"value": None},
+                            "measurement": {"value": None},
+                            "output": {"value": None},
+                            "setpoint": {"value": 0.0},
+                            "tuning": {"value": [0.0, 0.0, 0.0]},
+                        },
+                        "dhwPumpTemperatureController": {
+                            "components": {"value": [0.0, 0.0, 0.0]},
+                            "enabled": {"value": False},
+                            "error": {"value": None},
+                            "measurement": {"value": None},
+                            "output": {"value": None},
+                            "setpoint": {"value": 0.0},
+                            "tuning": {"value": [0.0, 0.0, 0.0]},
+                        },
+                        "dhwTanksController": {
+                            "tank1State": {"value": "IN_USE"},
+                            "tank2State": {"value": "IN_USE"},
+                            "tank3State": {"value": "IN_USE"},
+                            "timeToFill": {"value": None},
+                        },
+                    },
+                },
+                "thrusters": {
+                    "controllerState": {"Empty": None},
+                },
+                "pvt": {
+                    "controllerState": {"Empty": None},
+                },
+                "pcm": {
+                    "controllerState": {"Empty": None},
+                },
+            }
+        }
+    }
+
+
 async def test_query_control_mode(app, test_client):
     response = test_client.post(
         "/graphql",
         json={
             "query": """{
                 modules {
+                    consumers {
+                        controlMode {
+                            automatic
+                            automaticMode {
+                                Empty
+                            }
+                        }
+                    }
+                    dhw {
+                        controlMode {
+                            automatic
+                            automaticMode {
+                                boostingMode
+                                fillingMode
+                            }
+                        }
+                    }
                     thrusters {
                         controlMode {
                             automatic
@@ -392,6 +555,21 @@ async def test_query_control_mode(app, test_client):
     assert response.json() == {
         "data": {
             "modules": {
+                "consumers": {
+                    "controlMode": {
+                        "automatic": False,
+                        "automaticMode": None,
+                    },
+                },
+                "dhw": {
+                    "controlMode": {
+                        "automatic": True,
+                        "automaticMode": {
+                            "boostingMode": "idle",
+                            "fillingMode": "idle",
+                        },
+                    },
+                },
                 "thrusters": {
                     "controlMode": {
                         "automatic": True,
@@ -410,8 +588,8 @@ async def test_query_control_mode(app, test_client):
                 },
                 "pcm": {
                     "controlMode": {
-                        "automatic": False,
-                        "automaticMode": None,
+                        "automatic": True,
+                        "automaticMode": {"mode": "idle"},
                     },
                 },
             }
@@ -491,20 +669,25 @@ async def test_query_simulation_inputs_actual(
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
 
     await mqtt_client2.publish(
-        "test_simulation_topic/simulation-inputs", None, qos=1, retain=True
+        f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs",
+        None,
+        qos=1,
+        retain=True,
     )
-    await mqtt_client2.publish("test_simulation_topic/status", None, qos=1, retain=True)
+    await mqtt_client2.publish(
+        f"{settings.mqtt_simulator_topic_prefix}/status", None, qos=1, retain=True
+    )
 
     run_task = create_task(await msg.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(
-            "test_simulation_topic/simulation-inputs",
+            f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs",
             ThrustersSimulationInputs.zero().model_dump_json(),
         )
         await sleep(0.1)
         await mqtt_client2.publish(
-            "test_simulation_topic/status",
+            f"{settings.mqtt_simulator_topic_prefix}/status",
             SimulationStatusMessage(
                 mode="thrusters",
                 status="available",

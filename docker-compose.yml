@@ -322,11 +322,11 @@ services:
         condition: service_healthy
 
   # ---- THRS ----
-  thrs-control:
+  thrs-api:
     build:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
-      target: control
+      target: api
     profiles:
       - thrs
     ports:
@@ -351,13 +351,12 @@ services:
       postgres:
         condition: service_healthy
 
-  thrs-simulation-thrusters: &thrs_simulation
-    image: zero-thrs-simulation:local
+  thrs-control-thrusters: &thrs_control
     pull_policy: never
     build:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
-      target: simulation
+      target: control
     profiles:
       - thrs
     environment:
@@ -369,28 +368,28 @@ services:
         condition: service_healthy
     command: ["lockstep", "--mode=thrusters"]
 
-  thrs-simulation-high-temperature:
-    <<: *thrs_simulation
+  thrs-control-high-temperature:
+    <<: *thrs_control
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=high_temperature"]
 
-  thrs-simulation-pvt:
-    <<: *thrs_simulation
+  thrs-control-pvt:
+    <<: *thrs_control
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=pvt"]
 
-  thrs-simulation-pcm:
-    <<: *thrs_simulation
+  thrs-control-pcm:
+    <<: *thrs_control
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=pcm"]
 
-  thrs-simulation-consumers:
-    <<: *thrs_simulation
+  thrs-control-consumers:
+    <<: *thrs_control
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=consumers"]
 
-  thrs-simulation-dhw:
-    <<: *thrs_simulation
+  thrs-control-dhw:
+    <<: *thrs_control
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=dhw"]
 

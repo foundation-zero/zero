@@ -1,9 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from typing import (
-    Callable,
-    Literal,
-)
+from typing import Literal
 
 from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
@@ -13,9 +9,7 @@ from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
-from thrs.input_output.base import (
-    Stamped,
-)
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
     FlowBoundary,
@@ -27,49 +21,26 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.adsorption import (
-    AdsorptionSensorValues,
-    AdsorptionSimulationOutputs,
-)
+from thrs.input_output.modules.adsorption import AdsorptionSimulationOutputs
 from thrs.input_output.modules.consumers import (
-    ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.dc import (
-    DcSensorValues,
-    DcSimulationOutputs,
-)
-from thrs.input_output.modules.dhw import (
-    DhwSensorValues,
-    DhwSimulationInputs,
-    DhwSimulationOutputs,
-)
-from thrs.input_output.modules.drives import (
-    DrivesSensorValues,
-    DrivesSimulationOutputs,
-)
+from thrs.input_output.modules.dc import DcSimulationOutputs
+from thrs.input_output.modules.dhw import DhwSimulationInputs, DhwSimulationOutputs
+from thrs.input_output.modules.drives import DrivesSimulationOutputs
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-from thrs.input_output.modules.pcm import (
-    PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
-)
-from thrs.input_output.modules.pvt import (
-    PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
-)
+from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
+from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
 from thrs.input_output.modules.thrusters import (
-    ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from thrs.orchestration.module import CombinedModule
-from thrs.orchestration.simulation import Simulation
+from thrs.orchestration.module import ModuleDescription
+from thrs.orchestration.simulation import SimulationDescription
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
     adsorption_path,
@@ -190,10 +161,13 @@ SIMULATION_INPUTS = {
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(30)),
     ),
+    "adsorption": None,  # TODO Fill in  # type: ignore
+    "drives": None,  # TODO Fill in  # type: ignore
+    "dc": None,  # TODO Fill in  # type: ignore
 }
 
 
-type ModeNames = Literal[
+type ModeName = Literal[
     "thrusters",
     "pvt",
     "pcm",
@@ -209,163 +183,114 @@ type ModeNames = Literal[
 
 @dataclass
 class Mode:
-    name: ModeNames
-    control_module: CombinedModule
-    setup_simulation: Callable[[], Simulation | None]
+    name: ModeName
+    control_modules: dict[str, ModuleDescription]
+    simulation_description: SimulationDescription | None
 
 
-def lookup_mode(mode_name: ModeNames) -> Mode:
+def lookup_mode(mode_name: ModeName) -> Mode:
     return next((m for m in MODES if m.name == mode_name))
 
 
 MODES: list[Mode] = [
     Mode(
         name="thrusters",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-            },
-        ),
-        setup_simulation=lambda: Simulation(
-            {"thrusters": ThrustersSensorValues},
+        control_modules={"thrusters": THRUSTERS_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             ThrustersSimulationOutputs,
             Fmu(thrusters_path),
             SIMULATION_INPUTS["thrusters"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="pvt",
-        control_module=CombinedModule(
-            {"pvt": PVT_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"pvt": PvtSensorValues},
+        control_modules={"pvt": PVT_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             PvtSimulationOutputs,
             Fmu(pvt_path),
             SIMULATION_INPUTS["pvt"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="pcm",
-        control_module=CombinedModule(
-            {"pcm": PCM_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"pcm": PcmSensorValues},
+        control_modules={"pcm": PCM_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             PcmSimulationOutputs,
             Fmu(pcm_path),
             SIMULATION_INPUTS["pcm"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="consumers",
-        control_module=CombinedModule(
-            {"consumers": CONSUMERS_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"consumers": ConsumersSensorValues},
+        control_modules={"consumers": CONSUMERS_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             ConsumersSimulationOutputs,
             Fmu(consumers_path),
             SIMULATION_INPUTS["consumers"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="adsorption",
-        control_module=CombinedModule(
-            {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"adsorption": AdsorptionSensorValues},
+        control_modules={"adsorption": ADSORPTION_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             AdsorptionSimulationOutputs,
             Fmu(adsorption_path),
             SIMULATION_INPUTS["adsorption"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="drives",
-        control_module=CombinedModule(
-            {"drives": DRIVES_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"drives": DrivesSensorValues},
+        control_modules={"drives": DRIVES_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             DrivesSimulationOutputs,
             Fmu(drives_path),
             SIMULATION_INPUTS["drives"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="dc",
-        control_module=CombinedModule(
-            {"dc": DC_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"dc": DcSensorValues},
+        control_modules={"dc": DC_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             DcSimulationOutputs,
             Fmu(dc_path),
             SIMULATION_INPUTS["dc"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="dhw",
-        control_module=CombinedModule(
-            {"dhw": DHW_MODULE_DESCRIPTION},
-        ),
-        setup_simulation=lambda: Simulation(
-            {"dhw": DhwSensorValues},
+        control_modules={"dhw": DHW_MODULE_DESCRIPTION},
+        simulation_description=SimulationDescription(
             DhwSimulationOutputs,
             Fmu(dhw_path),
             SIMULATION_INPUTS["dhw"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="high_temperature",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-                "pvt": PVT_MODULE_DESCRIPTION,
-                "pcm": PCM_MODULE_DESCRIPTION,
-                "consumers": CONSUMERS_MODULE_DESCRIPTION,
-            },
-        ),
-        setup_simulation=lambda: Simulation(
-            {"high_temperature": HighTemperatureSimulationInputs},
+        control_modules={
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+        },
+        simulation_description=SimulationDescription(
             HighTemperatureSimulationOutputs,
             Fmu(high_temperature_path),
             SIMULATION_INPUTS["high_temperature"],
-            datetime.now(),
-            timedelta(seconds=1),
         ),
     ),
     Mode(
         name="boat",
-        control_module=CombinedModule(
-            {
-                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-                "pvt": PVT_MODULE_DESCRIPTION,
-                "pcm": PCM_MODULE_DESCRIPTION,
-                "consumers": CONSUMERS_MODULE_DESCRIPTION,
-                "adsorption": ADSORPTION_MODULE_DESCRIPTION,
-                "drives": DRIVES_MODULE_DESCRIPTION,
-                "dc": DC_MODULE_DESCRIPTION,
-                "dhw": DHW_MODULE_DESCRIPTION,
-            }
-        ),
-        setup_simulation=lambda: None,
+        control_modules={
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+            "adsorption": ADSORPTION_MODULE_DESCRIPTION,
+            "drives": DRIVES_MODULE_DESCRIPTION,
+            "dc": DC_MODULE_DESCRIPTION,
+            "dhw": DHW_MODULE_DESCRIPTION,
+        },
+        simulation_description=None,
     ),
 ]

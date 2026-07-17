@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "properties": {
+    "env": {
+      "type": "object",
+      "properties": {
+        "KIOSK_URL": {
+          "description": "The URL to display on this kiosk browser",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "title": "Values",
+  "type": "object"
+}

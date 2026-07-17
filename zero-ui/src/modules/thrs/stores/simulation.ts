@@ -2,7 +2,6 @@ import { PromiseFn } from "@/modules/domestic/types";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrs/graphql";
 import { context } from "@/modules/thrs/graphql/client";
 
-import { Nullable } from "@/modules/loads/types";
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
@@ -20,102 +19,11 @@ export type SimulationStatus = {
   };
 };
 
-export type ThrustersAutomaticMode = { mode: string };
-export type PcmAutomaticMode = { mode: string };
-export type PvtAutomaticMode = {
-  aft: { mode: string };
-  fwd: { mode: string };
-  owners: { mode: string };
-};
-export type DhwAutomaticMode = { boostingMode: string; fillingMode: string };
-export type ConsumersAutomaticMode = Record<string, never>;
-
-export type AutomaticMode =
-  | ThrustersAutomaticMode
-  | PcmAutomaticMode
-  | PvtAutomaticMode
-  | DhwAutomaticMode
-  | ConsumersAutomaticMode;
-
-export type ControlMode<T extends AutomaticMode = AutomaticMode> = {
-  automatic: boolean;
-  automaticMode: Nullable<T>;
-};
-
-export type ControlModes = {
-  thrusters: ThrustersAutomaticMode;
-  pcm: PcmAutomaticMode;
-  pvt: PvtAutomaticMode;
-  dhw: DhwAutomaticMode;
-  consumers: ConsumersAutomaticMode;
-};
-
-export type ControlStatus = {
-  modules: {
-    [K in keyof ControlModes]: {
-      controlMode: ControlMode<ControlModes[K]>;
-    };
-  };
-};
-
 export const STATUS_QUERY = gql`
   query SimulationStatus {
     simulation {
       status
       time
-    }
-  }
-`;
-
-export const CONTROL_QUERY = gql`
-  query ControlStatus {
-    modules {
-      thrusters {
-        controlMode {
-          automatic
-          automaticMode {
-            mode
-          }
-        }
-      }
-      pvt {
-        controlMode {
-          automatic
-          automaticMode {
-            aft {
-              mode
-            }
-            fwd {
-              mode
-            }
-            owners {
-              mode
-            }
-          }
-        }
-      }
-      pcm {
-        controlMode {
-          automatic
-          automaticMode {
-            mode
-          }
-        }
-      }
-      consumers {
-        controlMode {
-          automatic
-        }
-      }
-      dhw {
-        controlMode {
-          automatic
-          automaticMode {
-            boostingMode
-            fillingMode
-          }
-        }
-      }
     }
   }
 `;
@@ -128,11 +36,9 @@ export const useSimulationStore = defineStore("simulation", () => {
   const play = mutationWithValue("simulationPlay", "playbackRate", "Float");
   const step = mutationWithValue("simulationStep", "seconds", "Float!");
   // TODO: make set automated control module dependent
-  const setAutomatedControl = (module: string) =>
-    mutationWithValue(`${module}SetAutomationMode`, "automatic", "Boolean!");
   const isProcessing = ref(false);
   const { data } = toRefs(useThrsHistory());
-  const activeSimulation = computed(() => data.value?.simulation.inputs?.__typename);
+  const activeSimulation = computed(() => data.value?.simulation?.inputs?.__typename);
   const activeSimulationType = computed(() =>
     SIMULATION_TYPES.find((type) => activeSimulation.value?.toLocaleLowerCase().startsWith(type)),
   );
@@ -142,20 +48,10 @@ export const useSimulationStore = defineStore("simulation", () => {
     context,
   });
 
-  const controlQuery = useQuery<ControlStatus>({
-    query: CONTROL_QUERY,
-    context,
-  });
-
   // Use network-only policy to always get the latest status
   const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
-  const updateControl = () => controlQuery.executeQuery({ requestPolicy: "network-only" });
 
   useIntervalFn(updateStatus, 5000, {
-    immediate: true,
-  });
-
-  useIntervalFn(updateControl, 5000, {
     immediate: true,
   });
 
@@ -173,7 +69,7 @@ export const useSimulationStore = defineStore("simulation", () => {
       if (isProcessing.value) return;
 
       isProcessing.value = true;
-      let result: Maybe<OperationResult>;
+      let result: Maybe<OperationResult> = undefined;
 
       try {
         result = await client.mutation(query, value === undefined ? {} : { value }, context);
@@ -192,10 +88,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     pause: mutationFn(pause, updateStatus),
     play: mutationFn<number>(play, updateStatus),
     step: mutationFn<number>(step, updateStatus),
-    setAutomatedControl: (module: string) =>
-      mutationFn<boolean>(setAutomatedControl(module), updateControl),
     status: statusQuery.data,
-    control: controlQuery.data,
     isAvailable,
     isRunning,
     isProcessing,

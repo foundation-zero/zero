@@ -4,7 +4,8 @@ import { Client, fetchExchange, OperationResult, TypedDocumentNode } from "@urql
 import { describe, expect, test } from "vitest";
 import { mutationWithoutValue, mutationWithValue } from "../graphql";
 import { DEFINITIONS, QUERY_ALL, THRS } from "../lib/consts";
-import { CONTROL_QUERY, ControlStatus, SimulationStatus, STATUS_QUERY } from "../stores/simulation";
+import { CONTROL_QUERY, ControlStatus } from "../stores/automation";
+import { SimulationStatus, STATUS_QUERY } from "../stores/simulation";
 import { ParameterDefinitions } from "../types";
 
 const client = new Client({

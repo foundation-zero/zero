@@ -1,30 +1,30 @@
 {{- if .Values.simulation.enabled }}
-{{- $root := . }}
-{{- range $index, $type_name := $root.Values.simulation.types }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ print (include "zero-thrs-control.simulation" $root) "-" $type_name }}
-  namespace: {{ $root.Release.Namespace }}
+  name: {{ print (include "zero-thrs-control.simulation" .) "-" .Values.simulation.type }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "zero-thrs-control.labels" $root | nindent 4 }}
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
     app.kubernetes.io/part-of: thrs-control
-    app.kubernetes.io/component: {{ print "simulation-" $type_name }}
+    app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      {{- include "zero-thrs-control.selectorLabels" $root | nindent 6 }}
+      {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: thrs-control
-      app.kubernetes.io/component: {{ print "simulation-" $type_name }}
+      app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
   template:
     metadata:
       labels:
-        {{- include "zero-thrs-control.labels" $root | nindent 8 }}
+        {{- include "zero-thrs-control.labels" . | nindent 8 }}
         app.kubernetes.io/part-of: thrs-control
-        app.kubernetes.io/component: {{ print "simulation-" $type_name }}
+        app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
     spec:
-      {{- with $root.Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -34,7 +34,10 @@ spec:
           type: RuntimeDefault
       containers:
         - name: thrs-control
-          args: ["{{ $type_name }}"] 
+          args:
+           - "simulation"
+           - "--mode"
+           - "{{ .Values.simulation.type }}"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -42,18 +45,19 @@ spec:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          image: "{{ $root.Values.simulation.image.repository }}:{{ $root.Values.simulation.image.tag | default $root.Chart.AppVersion }}"
-          imagePullPolicy: {{ $root.Values.simulation.image.pullPolicy }}
+          image: "{{ .Values.control.image.repository }}:{{ .Values.control.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.control.image.pullPolicy }}
           resources:
-            {{- toYaml $root.Values.simulation.resources | nindent 12 }}
+            {{- toYaml .Values.simulation.resources | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-thrs-control.envvars" $root }}
+                name: {{ include "zero-thrs-control.envvars" . }}
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
+          livenessProbe:
+            {{- include "zero-thrs-control.livenessProbe" .Values.livenessPath | nindent 12 }}
       volumes:
         - name: tmp-volume
           emptyDir: {}
-{{- end }}
 {{- end }}

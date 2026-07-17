@@ -64,7 +64,7 @@ class Loop:
                     while self._commands.empty():
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
-                            tg.create_task(runner.run(1))
+                            tg.create_task(runner.tick())
 
                 case Step(seconds):
                     await hooks.stepping(self)
@@ -72,7 +72,8 @@ class Loop:
                         seconds / self._tick_duration.total_seconds()
                     )
                     ticks = max(1, ticks_for_seconds)
-                    await runner.run(ticks)
+                    for _ in range(ticks):
+                        await runner.tick()
                 case Pause():
                     # Do nothing (pause until next command)
                     pass

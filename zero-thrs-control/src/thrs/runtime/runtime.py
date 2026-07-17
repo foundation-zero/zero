@@ -48,3 +48,7 @@ class Runtime:
     @property
     def loop(self) -> Loop:
         return self._loop
+
+    @property
+    def runner(self) -> Runner:
+        return self._runner

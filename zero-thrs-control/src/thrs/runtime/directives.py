@@ -62,7 +62,7 @@ class DirectiveHandling:
         msg = SimulationStatusMessage(
             mode=self._mode.name,
             status=status,
-            control_modules=self._mode.control_module.modules,
+            control_modules=list(self._mode.control_modules),
             simulation_time=self._time_fn(),
         )
         await self._channels.send_simulation_status(msg)

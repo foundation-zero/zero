@@ -21,6 +21,8 @@ class Config(BaseSettings):
     mqtt_simulator_topic_suffix: str
     mqtt_control_topic_suffix: str
 
+    liveness_path: str | None = None
+
     @property
     def pg_url(self) -> str:
         if not all(

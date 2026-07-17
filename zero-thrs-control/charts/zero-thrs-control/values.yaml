@@ -1,17 +1,19 @@
 # Required: MQTT host
 mqtt:
-  host:
+  host: localhost
   port: 1883
   username: thrs
   existingSecret:
   existingSecretPasswordKey: password
   devicesTopicPrefix: thrs
-  controllerTopicPrefix: thrs
-  simulationTopicPrefix: thrs
+  controllerTopicPrefix: thrs/controller
+  simulatorTopicPrefix: thrs/simulator
+  controlTopicSuffix: Command
   controllerTopicSuffix: set
   simulatorTopicSuffix: set
 
-# Required: Postgres database
+livenessPath: /tmp/liveness
+
 postgresql:
   host:
   port: 5432
@@ -19,12 +21,11 @@ postgresql:
   db:
   existingSecret:
   existingSecretPasswordKey: password
-  
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
-control:
+
+api:
   enabled: true
   image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
+    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
@@ -38,16 +39,21 @@ control:
     hostname: ""
     className: tailscale
 
-simulation:
+control:
   enabled: false
   image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-simulation
+    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
   resources: {}
-  types: ["thrusters", "pvt", "pcm", "consumers", "dhw", "high_temperature"]
+  types: ["boat"]
+
+simulation:
+  enabled: false
+  resources: {}
+  type: "boat"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []

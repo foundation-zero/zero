@@ -28,7 +28,7 @@ class SwitchingControl[
         SensorValues,
         ControlValues,
         ControlParameters,
-        ControlMode,
+        SwitchingControlMode[ControlMode],
         ControllerState,
     ]
 ):
@@ -46,6 +46,14 @@ class SwitchingControl[
         self._manual_control = manual
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
+
+    @property
+    def automatic_control(self):
+        return self._automatic_control
+
+    @property
+    def manual_control(self):
+        return self._manual_control
 
     def initial(
         self,

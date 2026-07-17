@@ -1,126 +1,86 @@
-from datetime import datetime
-from typing import Callable
-
-from aiomqtt import Client as MqttClient
+from collections.abc import Callable
+from datetime import datetime, timedelta
 
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
-    MachineStateLoggingServiceNoop,
-    StateLogger,
 )
-from thrs.input_output.base import CombinedValues
+from thrs.control.switching import SwitchingControlMode
 from thrs.orchestration.comms import (
     ControlChannels,
-    DirectivesChannels,
     MqttConnector,
     SimulationChannels,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.module import CombinedAlarms, CombinedControl
-from thrs.orchestration.simulation import Simulation
-from thrs.runtime.descriptions.simulation import Mode
-from thrs.runtime.directives import DirectiveHandling
-from thrs.runtime.runners.lockstep import LockstepRunner
-from thrs.runtime.runtime import Runtime
+from thrs.orchestration.module import Module, ModuleDescription
+from thrs.orchestration.simulation import (
+    Simulation,
+    SimulationDescription,
+    SimulationUnit,
+)
 
 
-def setup_simulation(
+def setup_simulation_module(
     connector: MqttConnector,
     config: Config,
-    mode: Mode,
-) -> tuple[Simulation, SimulationChannels]:
-    simulation = mode.setup_simulation()
-    if simulation is None:
-        raise ValueError("simulation must be defined for simulation mode")
+    control_modules: dict[str, ModuleDescription],
+    simulation_description: SimulationDescription,
+) -> SimulationUnit:
+    sensor_values_cls = {
+        module: desc.sensor_values_cls for module, desc in control_modules.items()
+    }
 
-    return (
+    simulation = Simulation(
+        sensor_values_cls,
+        simulation_description.simulation_outputs_cls,
+        simulation_description.fmu,
+        simulation_description.simulation_inputs,
+        datetime.now(),
+        timedelta(seconds=1),
+    )
+
+    return SimulationUnit(
         simulation,
         SimulationChannels(
             connector,
             config,
-            mode.control_module.sensor_values_clss,
-            mode.control_module.control_values_clss,
-            simulation.inputs_cls,
-            simulation.outputs_cls,
+            sensor_values_cls,
+            {
+                module: desc.control_values_cls
+                for module, desc in control_modules.items()
+            },
+            type(simulation_description.simulation_inputs),
+            simulation_description.simulation_outputs_cls,
         ),
     )
 
 
-def setup_control(
+def setup_control_modules(
     connector: MqttConnector,
     config: Config,
-    mode: Mode,
+    control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
     machine_state_logging_service_enabled: bool = True,
-) -> tuple[CombinedControl, ControlChannels, CombinedAlarms, StateLogger]:
-    control_channels = ControlChannels(connector, config, mode.control_module)
+) -> list[Module]:
+    result = []
     pg_database = PostgresDatabase(config)
+    machine_state_logging_service: MachineStateLoggingService | None = None
 
-    parameters = {
-        module: mode.control_module.parameters_for_module(module)()
-        for module in mode.control_module.modules
-    }
+    for module_name, module in control_modules.items():
+        if machine_state_logging_service_enabled:
+            machine_state_logging_service = MachineStateLoggingService(pg_database)
 
-    machine_state_logging_service = (
-        MachineStateLoggingService(pg_database)
-        if machine_state_logging_service_enabled
-        else MachineStateLoggingServiceNoop()
-    )
+        parameters = module.parameters_cls()
+        control = module.control(parameters, time_fn, machine_state_logging_service)
 
-    control = mode.control_module.control(
-        CombinedValues(parameters),
-        time_fn,
-        machine_state_logging_service,
-    )
+        # This line should not be here since it exposes that we are dealing with a switching module
+        # We need to refactor the switching control functionality to be more local/abstractable
+        module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
 
-    return (
-        control,
-        control_channels,
-        mode.control_module.alarms(),
-        machine_state_logging_service,
-    )
+        channel = ControlChannels(connector, config, module_name, module)
 
+        alarms = module.alarms()
 
-def setup_lockstep(
-    mode: Mode,
-    settings: Config,
-    mqtt_client: MqttClient,
-    machine_state_logging_service_enabled: bool = True,
-) -> tuple[Runtime, StateLogger]:
-    connector = MqttConnector(mqtt_client)
+        result.append(Module(module_name, control, alarms, channel))
 
-    simulation, simulation_channels = setup_simulation(connector, settings, mode)
-
-    control, control_channels, alarms, state_logger = setup_control(
-        connector,
-        settings,
-        mode,
-        simulation.time,
-        machine_state_logging_service_enabled,
-    )
-
-    runner = LockstepRunner(
-        control=control,
-        control_channels=control_channels,
-        alarms=alarms,
-        simulation=simulation,
-        simulation_channels=simulation_channels,
-    )
-
-    directives_channels = DirectivesChannels(connector, settings)
-
-    directive_handling = DirectiveHandling(
-        directives_channels,
-        mode,
-        simulation.time,
-    )
-    return (
-        Runtime(
-            runner,
-            connector,
-            simulation.tick_duration,
-            directive_handling,
-        ),
-        state_logger,
-    )
+    return result
