@@ -33,13 +33,18 @@ class ControlCmd(BaseSettings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            runner_args = setup_control(connector, settings, control_mode, datetime.now)
-            runner = ControlRunner(*runner_args)
+            control, control_channels, alarms, state_logger = setup_control(
+                connector, settings, control_mode, datetime.now
+            )
+            runner = ControlRunner(control, control_channels, alarms)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
             logger.info("Running control")
-            await runtime.start()
+            try:
+                await runtime.start()
+            finally:
+                await state_logger.shutdown()
 
 
 class SimulationCmd(BaseSettings):
@@ -73,10 +78,13 @@ class LockstepCmd(BaseSettings):
         async with (
             MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
         ):
-            runtime = setup_lockstep(mode, settings, mqtt_client)
+            runtime, state_logger = setup_lockstep(mode, settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")
-            await runtime.start()
+            try:
+                await runtime.start()
+            finally:
+                await state_logger.shutdown()
 
 
 class ThrsCli(BaseSettings, cli_kebab_case=True):

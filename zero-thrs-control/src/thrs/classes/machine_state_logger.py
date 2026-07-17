@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import warnings
 from abc import abstractmethod
 from enum import Enum
@@ -33,6 +34,7 @@ class MachineStateLogger:
 
     def __init__(self, postgres_db: PostgresDatabase):
         self.postgres_db: PostgresDatabase = postgres_db
+        self._pending_tasks: set[asyncio.Task[None]] = set()
 
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
@@ -78,15 +80,31 @@ class MachineStateLogger:
             return
 
         # Coroutine will run when the loop is idle, without blocking the current thread
-        loop.create_task(coroutine)
+        task: asyncio.Task[None] = loop.create_task(coroutine)
+        self._pending_tasks.add(task)
+        task.add_done_callback(self._on_task_done)
+
+    def _on_task_done(self, task: asyncio.Task[None]) -> None:
+        """Crash the application if a logging task failed, instead of continuing silently."""
+        self._pending_tasks.discard(task)
+        if task.cancelled():
+            return
+        exception: BaseException | None = task.exception()
+        if exception is not None:
+            task.get_loop().stop()
+            raise exception
+
+    async def wait_for_pending_tasks(self, timeout: float | None = 10.0) -> None:
+        """Wait until all in-flight logging tasks have finished. Call on app shutdown."""
+        if not self._pending_tasks:
+            return
+        await asyncio.wait(self._pending_tasks, timeout=timeout)
 
     async def _log_model_async(self, model: SQLModel):
-        try:
-            async with self.postgres_db.session_factory() as session:
-                session.add(model)
-                await session.commit()
-        except Exception as e:
-            raise e
+        async with self.postgres_db.session_factory() as session:
+            session.add(model)
+            await session.commit()
+
 
 
 class StateLogger:
@@ -108,6 +126,9 @@ class StateLogger:
 
     def log_issue(self, message: str, severity: Severity): ...
     def log_event(self, event: MachineStateEvent): ...
+
+    async def shutdown(self) -> None:
+        """Drain pending logging tasks and release resources. Should be called on app shutdown."""
 
     @abstractmethod
     def log_parameters_on_change(
@@ -202,7 +223,14 @@ class MachineStateLoggingService(StateLogger):
         self.last_evaluated_conditions: list[str] = []
 
     def clone_for_module(self) -> "StateLogger":
-        return MachineStateLoggingService(self.machinestate_logger.postgres_db)
+        clone = MachineStateLoggingService(self.machinestate_logger.postgres_db)
+        clone._machinestate_logger = self._machinestate_logger
+        return clone
+
+    async def shutdown(self) -> None:
+        """Wait for in-flight logging tasks, then dispose the database engine."""
+        await self._machinestate_logger.wait_for_pending_tasks()
+        await self._machinestate_logger.postgres_db.close()
 
     def create_logged_state_machine(
         self,

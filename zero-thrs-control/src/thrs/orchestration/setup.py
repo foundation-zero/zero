@@ -7,6 +7,7 @@ from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
     MachineStateLoggingServiceNoop,
+    StateLogger,
 )
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
@@ -52,7 +53,7 @@ def setup_control(
     mode: Mode,
     time_fn: Callable[[], datetime],
     machine_state_logging_service_enabled: bool = True,
-) -> tuple[CombinedControl, ControlChannels, CombinedAlarms]:
+) -> tuple[CombinedControl, ControlChannels, CombinedAlarms, StateLogger]:
     control_channels = ControlChannels(connector, config, mode.control_module)
     pg_database = PostgresDatabase(config)
 
@@ -73,7 +74,12 @@ def setup_control(
         machine_state_logging_service,
     )
 
-    return control, control_channels, mode.control_module.alarms()
+    return (
+        control,
+        control_channels,
+        mode.control_module.alarms(),
+        machine_state_logging_service,
+    )
 
 
 def setup_lockstep(
@@ -81,12 +87,12 @@ def setup_lockstep(
     settings: Config,
     mqtt_client: MqttClient,
     machine_state_logging_service_enabled: bool = True,
-) -> Runtime:
+) -> tuple[Runtime, StateLogger]:
     connector = MqttConnector(mqtt_client)
 
     simulation, simulation_channels = setup_simulation(connector, settings, mode)
 
-    control, control_channels, alarms = setup_control(
+    control, control_channels, alarms, state_logger = setup_control(
         connector,
         settings,
         mode,
@@ -109,9 +115,12 @@ def setup_lockstep(
         mode,
         simulation.time,
     )
-    return Runtime(
-        runner,
-        connector,
-        simulation.tick_duration,
-        directive_handling,
+    return (
+        Runtime(
+            runner,
+            connector,
+            simulation.tick_duration,
+            directive_handling,
+        ),
+        state_logger,
     )

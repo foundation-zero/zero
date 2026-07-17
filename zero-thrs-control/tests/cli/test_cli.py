@@ -49,7 +49,7 @@ async def test_simulation_run_start_stop(
 
     controls_client = controls_client
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -138,7 +138,7 @@ async def test_simulation_run_playback_rate(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -255,7 +255,7 @@ async def test_simulation_run_step(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -358,7 +358,7 @@ async def test_simulation_controls_automated_control(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -470,7 +470,7 @@ async def test_simulation_controls_set_parameters(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -554,7 +554,7 @@ async def test_simulation_controls_set_simulation_inputs(
         f"{settings.mqtt_simulator_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -637,7 +637,7 @@ async def test_simulation_controls_simulation_output(
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
     )
 
-    runtime = setup_lockstep(
+    runtime, _state_logger = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
