@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -292,7 +303,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tchlorine_unit_alarm__value as chlorine_unit_alarm\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -336,7 +347,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('chlorine_unit_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) as chlorine_unit_alarm_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = 'chlorine_unit_alarm' THEN '(' || yard_tag || ')' ELSE NULL END) AS chlorine_unit_alarm_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -371,7 +382,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -696,7 +718,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -740,7 +762,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y01_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve1_pos_overboard_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve2_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y01_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve1_pos_overboard_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve2_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -774,7 +796,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -1218,7 +1251,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tvalve_cold_air_fr_68_y_03_openclose__value as valve_cold_air_cool_water_y03,\r\n\t\t\tvalve_cold_air_fr_32_y_04_openclose__value as valve_cold_air_cool_water_y04,\r\n\t\t\tvalve_cold_air_fr_32_y_05_openclose__value as valve_cold_air_cool_water_y05\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1262,7 +1295,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr68_y03_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y03_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y04_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y04_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y05_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr68_y03_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr32_y04_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr32_y05_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y05_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2331,7 +2364,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2375,7 +2408,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b03_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b03_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b07_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b07_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b08_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b08_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b09_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b09_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b04_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b04_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b05_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b05_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b06_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b06_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b03_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b07_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b07_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b08_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b08_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b09_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b09_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b04_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b05_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b05_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b06_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b06_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3241,7 +3274,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b01_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b02_temp' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity1' THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity2' THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b01_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b02_temp' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity1' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity2' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
