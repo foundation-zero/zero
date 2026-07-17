@@ -385,7 +385,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\ttank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n\t\t\ttank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nfrom marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  tank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n  tank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -414,6 +414,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -427,9 +428,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('tank_1_fr_45_ps_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS fresh_water_tank_1_level_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('tank_2_fr_45_sb_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS fresh_water_tank_2_level_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/250000-fresh-water';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_1_fr_45_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_2_fr_45_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -922,7 +922,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\thotwater_11_level__value AS tank11_level,\r\n\t\t\thotwater_13_level__value AS tank13_level,\r\n\t\t\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                AS time,\r\n\thotwater_11_level__value AS tank11_level,\r\n\thotwater_13_level__value AS tank13_level,\r\n\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -966,7 +966,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER11_LEVEL') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS tank11_level_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER13_LEVEL') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS tank13_level_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HOTWATER15_LEVEL') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS tank15_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-tankage'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'hotwater11_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'hotwater13_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'hotwater15_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-tankage'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1225,7 +1225,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\ttank_level__value AS tank_level\r\nfrom marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp         AS time,\r\n  tank_level__value AS tank_level\r\nFROM public.marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1254,6 +1254,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1267,9 +1268,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('tank_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS tank_level_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/210000-bilge-fifi-general';",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = 'tank_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1528,7 +1528,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tsludge_tank_ps_level__value AS sludge_tank\r\nfrom marpower__340000_sewage\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n\tsludge_tank_ps_level__value AS sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1557,6 +1557,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1570,9 +1571,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('sludge_tank_ps_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS sludge_tank_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = 'sludge_tank_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS sludge_tank_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2032,7 +2032,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tgrey_water_tank_aft_sb_level__value AS grey_wat_aft_tank,\r\n\t\t\tgrey_water_tank_fwd_sb_level__value AS grey_wat_fwd_tank,\r\n\t\t\tblack_grey_water_tank_aft_ps_level__value AS black_wat_aft_tank\r\nfrom marpower__340000_sewage\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                                 AS time,\r\n\tgrey_water_tank_aft_sb_level__value       AS grey_wat_aft_tank,\r\n\tgrey_water_tank_fwd_sb_level__value       AS grey_wat_fwd_tank,\r\n\tblack_grey_water_tank_aft_ps_level__value AS black_wat_aft_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2061,6 +2061,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -2074,9 +2075,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('grey_water_tank_aft_sb_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_aft_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('grey_water_tank_fwd_sb_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS grey_wat_fwd_tank_tag,\r\n\t\t\tmax(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('black_grey_water_tank_aft_ps_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS black_wat_aft_tank_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/340000-sewage';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'grey_water_tank_aft_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'grey_water_tank_fwd_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'black_grey_water_tank_aft_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2461,7 +2461,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2505,7 +2505,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS tank1_level_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2764,7 +2764,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tsludge_tank_level__value AS tank_level\r\nfrom marpower__300000_dirty_oil\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                AS time,\r\n\tsludge_tank_level__value AS tank_level\r\nFROM marpower__300000_dirty_oil\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2793,6 +2793,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -2806,9 +2807,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('sludge_tank_level') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) AS tank_level_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/300000-dirty-oil';",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = 'sludge_tank_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/300000-dirty-oil'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2939,20 +2939,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "select timestamp as time,\r\n\t\t\tTANK_1_FR_45_PS_LEVEL__value as tank1_level,\r\n\t\t\tTANK_2_FR_45_SB_LEVEL__value as tank2_level\r\nfrom marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
               "refId": "A",
@@ -3395,20 +3395,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "select timestamp as time,\r\n\t\t\tGREY_WATER_TANK_AFT_SB_LEVEL__value as grey_wat_aft_tank,\r\n\t\t\tGREY_WATER_TANK_FWD_SB_LEVEL__value as grey_wat_fwd_tank,\r\n\t\t\tBLACK_GREY_WATER_TANK_AFT_PS_LEVEL__value as black_wat_aft_tank\r\nfrom marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
               "refId": "A",
@@ -3547,20 +3547,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "select timestamp as time,\r\n\t\t\tTANK_LEVEL__value as bilge_tank\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
               "refId": "A",
@@ -3698,20 +3698,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "select timestamp as time,\r\n\t\t\tSLUDGE_TANK_PS_LEVEL__value as sludge_tank\r\nfrom marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
               "refId": "A",
@@ -3848,20 +3848,20 @@
               "dataset": "dev",
               "editorMode": "code",
               "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
               "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
               "rawQuery": true,
               "rawSql": "select timestamp as time,\r\n\t\t\tSLUDGE_TANK_LEVEL__value as sludge_tank\r\nfrom marpower__300000_dirty_oil\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
               "refId": "A",
