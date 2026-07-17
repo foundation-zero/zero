@@ -13,3 +13,5 @@ class Config(BaseSettings):
     mqtt_simulator_topic_prefix: str
     mqtt_simulator_topic_suffix: str
     mqtt_control_topic_suffix: str
+
+    liveness_path: str | None = None

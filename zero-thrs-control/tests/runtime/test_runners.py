@@ -147,6 +147,8 @@ async def test_control_runner_ticks_and_uses_channels():
     parameters = {}
     sensor_values = {"something": True}
 
+    mock_liveness = Mock()
+
     control = Mock()
     control.initial.return_value = (control_values, controller_state)
     control.control.return_value = (control_values, controller_state)
@@ -172,10 +174,12 @@ async def test_control_runner_ticks_and_uses_channels():
     module = Module("module", control, alarms, channels)
     module._control.switch_mode(AutomationMode(mode="automatic"))
 
-    runner = ControlRunner([module])
+    runner = ControlRunner([module], mock_liveness)
 
     for _ in range(2):
         await runner.tick()
+
+    assert mock_liveness.signal.call_count == 2
 
     assert channels.get_sensor_values.call_count == 2
     assert channels.send_computed_values.await_count == 2
@@ -212,6 +216,8 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     sensor_values = {}
     simulation_outputs = SimpleNamespace()
 
+    mock_liveness = Mock()
+
     simulation = Mock()
     simulation.tick.return_value = SimpleNamespace(
         sensor_values=sensor_values,
@@ -229,10 +235,12 @@ async def test_simulation_runner_ticks_and_uses_inputs():
 
     simulation_module = SimulationUnit(simulation, channels)
 
-    runner = SimulationRunner(simulation_module)
+    runner = SimulationRunner(simulation_module, mock_liveness)
 
     for _ in range(4):
         await runner.tick()
+
+    assert mock_liveness.signal.call_count == 4
 
     assert channels.get_control_values.call_count == 4
     assert channels.wait_for_control_values.await_count == 0
