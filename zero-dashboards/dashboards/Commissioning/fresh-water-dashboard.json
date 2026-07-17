@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -530,7 +541,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmak_1_alarm__value AS fresh_water_mak1_alarm,\r\n\t\t\tmak_2_alarm__value AS fresh_water_mak2_alarm,\r\n\t\t\tchlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmak_1_alarm__value AS fresh_water_mak1_alarm,\r\n\t\t\tmak_2_alarm__value AS fresh_water_mak2_alarm,\r\n\t\t\tchlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -589,7 +600,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -792,7 +814,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -870,7 +892,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1073,7 +1106,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1355,7 +1388,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unit"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": " "
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -3619,7 +3665,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_guest_cabin_sb_flow__value\r\n\t\t\tEND AS guest_cabin_sb_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_guest_cabin_ps_fwd_flow__value\r\n\t\t\tEND AS guest_cabin_ps_fwd_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_guest_cabin_ps_aft_flow__value\r\n\t\t\tEND AS guest_cabin_ps_aft_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_master_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_master_cabin_sb_flow__value\r\n\t\t\tEND AS master_cabin_sb_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_master_cabin_ps_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_master_cabin_ps_flow__value\r\n\t\t\tEND AS master_cabin_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_guest_bathr_ps_fwd_flow__value\r\n\t\t\tEND AS guest_bathroom_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_captains_cabin_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_captains_cabin_flow__value\r\n\t\t\tEND AS captains_cabin_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_cabin_sb_aft_flow__value\r\n\t\t\tEND AS crew_cabin_sb_aft_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_cabin_sb_mid_flow__value\r\n\t\t\tEND AS crew_cabin_sb_mid_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_cabin_ps_mid_flow__value\r\n\t\t\tEND AS crew_cabin_ps_mid_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_cabin_sb_fwd_flow__value\r\n\t\t\tEND AS crew_cabin_sb_fwd_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_cabin_ps_fwd_flow__value\r\n\t\t\tEND AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n  CASE\r\n      WHEN $use_volume THEN 'L'\r\n      ELSE 'L/min'\r\n  END AS unit,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_guest_cabin_sb_flow__value\r\n\tEND AS guest_cabin_sb_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_guest_cabin_ps_fwd_flow__value\r\n\tEND AS guest_cabin_ps_fwd_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_guest_cabin_ps_aft_flow__value\r\n\tEND AS guest_cabin_ps_aft_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_master_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_master_cabin_sb_flow__value\r\n\tEND AS master_cabin_sb_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_master_cabin_ps_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_master_cabin_ps_flow__value\r\n\tEND AS master_cabin_ps_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_guest_bathr_ps_fwd_flow__value\r\n\tEND AS guest_bathroom_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_captains_cabin_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_captains_cabin_flow__value\r\n\tEND AS captains_cabin_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_cabin_sb_aft_flow__value\r\n\tEND AS crew_cabin_sb_aft_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_cabin_sb_mid_flow__value\r\n\tEND AS crew_cabin_sb_mid_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_cabin_ps_mid_flow__value\r\n\tEND AS crew_cabin_ps_mid_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_cabin_sb_fwd_flow__value\r\n\tEND AS crew_cabin_sb_fwd_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_cabin_ps_fwd_flow__value\r\n\tEND AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3690,7 +3736,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unit"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": " "
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -5955,7 +6014,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lower_saloon_flow__value\r\n\t\t\tEND AS lower_saloon_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_laundry_ps_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deckhouse_flow__value\r\n\t\t\tEND AS main_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_owners_deckhouse_flow__value\r\n\t\t\tEND AS owner_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_water_softner_flow__value\r\n\t\t\tEND AS water_softner_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_flow__value\r\n\t\t\tEND AS main_tech_space_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE coldwater_main_tech_space_fr_45_flow__value\r\n\t\t\tEND AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n  CASE\r\n      WHEN $use_volume THEN 'L'\r\n      ELSE 'L/min'\r\n  END AS unit,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_lower_saloon_flow__value\r\n\tEND AS lower_saloon_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_crew_mess_flow__value\r\n\tEND AS crew_mess_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_galley_2_flow__value\r\n\tEND AS galley_2_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_dayhead_flow__value\r\n\tEND AS dayhead_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_lazaret_flow__value\r\n\tEND AS lazaret_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_laundry_ps_flow__value\r\n\tEND AS laundry_ps_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_deckhouse_flow__value\r\n\tEND AS main_deckhouse_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_owners_deckhouse_flow__value\r\n\tEND AS owner_deckhouse_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_deck_fr_48_sb_tech_cor_flow__value\r\n\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_water_softner_flow__value\r\n\tEND AS water_softner_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_main_tech_space_flow__value\r\n\tEND AS main_tech_space_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\tELSE coldwater_main_tech_space_fr_45_flow__value\r\n\tEND AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6039,7 +6098,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unit"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": " "
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -8303,7 +8375,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_guest_cabin_sb_flow__value\r\n\t\t\tEND AS guest_cabin_sb_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_guest_cabin_ps_fwd_flow__value\r\n\t\t\tEND AS guest_cabin_ps_fwd_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_guest_cabin_ps_aft_flow__value\r\n\t\t\tEND AS guest_cabin_ps_aft_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_master_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_master_cabin_sb_flow__value\r\n\t\t\tEND AS master_cabin_sb_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_master_cabin_ps_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_master_cabin_ps_flow__value\r\n\t\t\tEND AS master_cabin_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_guest_bathr_ps_fwd_flow__value\r\n\t\t\tEND AS guest_bathroom_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_captains_cabin_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_captains_cabin_flow__value\r\n\t\t\tEND AS captains_cabin_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_cabin_sb_aft_flow__value\r\n\t\t\tEND AS crew_cabin_sb_aft_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_cabin_sb_mid_flow__value\r\n\t\t\tEND AS crew_cabin_sb_mid_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_cabin_ps_mid_flow__value\r\n\t\t\tEND AS crew_cabin_ps_mid_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_cabin_sb_fwd_flow__value\r\n\t\t\tEND AS crew_cabin_sb_fwd_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_cabin_ps_fwd_flow__value\r\n\t\t\tEND AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE\r\n      WHEN $use_volume THEN 'L'\r\n      ELSE 'L/min'\r\n  END AS unit,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_guest_cabin_sb_flow__value\r\n\tEND AS guest_cabin_sb_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_guest_cabin_ps_fwd_flow__value\r\n\tEND AS guest_cabin_ps_fwd_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_guest_cabin_ps_aft_flow__value\r\n\tEND AS guest_cabin_ps_aft_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_master_cabin_sb_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_master_cabin_sb_flow__value\r\n\tEND AS master_cabin_sb_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_master_cabin_ps_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_master_cabin_ps_flow__value\r\n\tEND AS master_cabin_ps_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_guest_bathr_ps_fwd_flow__value\r\n\tEND AS guest_bathroom_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_captains_cabin_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_captains_cabin_flow__value\r\n\tEND AS captains_cabin_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_cabin_sb_aft_flow__value\r\n\tEND AS crew_cabin_sb_aft_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_cabin_sb_mid_flow__value\r\n\tEND AS crew_cabin_sb_mid_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_cabin_ps_mid_flow__value\r\n\tEND AS crew_cabin_ps_mid_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_cabin_sb_fwd_flow__value\r\n\tEND AS crew_cabin_sb_fwd_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_cabin_ps_fwd_flow__value\r\n\tEND AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8374,7 +8446,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unit"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": " "
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -10091,7 +10176,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_crew_mess_flow__value\r\n\t\t\tEND AS crew_mess_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_galley_2_flow__value\r\n\t\t\tEND AS galley_2_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_dayhead_flow__value\r\n\t\t\tEND AS dayhead_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_lazaret_flow__value\r\n\t\t\tEND AS lazaret_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_laundry_ps_1_flow__value\r\n\t\t\tEND AS laundry_ps_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deckhouse_flow__value\r\n\t\t\tEND AS main_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_owners_deckhouse_flow__value\r\n\t\t\tEND AS owner_deckhouse_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_deck_fr_48_sb_tech_cor_flow__value\r\n\t\t\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN hotwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE hotwater_main_tech_space_fr_45_flow__value\r\n\t\t\tEND AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n  CASE\r\n      WHEN $use_volume THEN 'L'\r\n      ELSE 'L/min'\r\n  END AS unit,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_crew_mess_flow__value\r\n\tEND AS crew_mess_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_galley_2_flow__value\r\n\tEND AS galley_2_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_dayhead_flow__value\r\n\tEND AS dayhead_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_lazaret_flow__value\r\n\tEND AS lazaret_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_laundry_ps_1_flow__value\r\n\tEND AS laundry_ps_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_deckhouse_flow__value\r\n\tEND AS main_deckhouse_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_owners_deckhouse_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_owners_deckhouse_flow__value\r\n\tEND AS owner_deckhouse_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_deck_fr_48_sb_tech_cor_flow__value\r\n\tEND AS deck_fr_48_sb_tech_cor_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN hotwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0\r\n\t\t\tELSE hotwater_main_tech_space_fr_45_flow__value\r\n\tEND AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10164,6 +10249,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -10174,7 +10260,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unit"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": " "
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -10184,7 +10283,7 @@
       },
       "id": 8,
       "options": {
-        "inlineEditing": false,
+        "inlineEditing": true,
         "panZoom": false,
         "root": {
           "background": {
@@ -10611,7 +10710,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN 'L'\r\n\t\t\t\t\tELSE 'L/min'\r\n\t\t\tEND AS unit,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE technical_room_energ_rec_flow__value\r\n\t\t\tEND AS technical_room_energ_rec_flow,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0\r\n\t\t\t\t\tELSE flow_sensor_25001137_c_1__value\r\n\t\t\tEND AS flow_sensor_25001137c1\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n  CASE\r\n      WHEN $use_volume THEN 'L'\r\n      ELSE 'L/min'\r\n  END AS unit,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0\r\n\t\t\tELSE technical_room_energ_rec_flow__value\r\n\tEND AS technical_room_energ_rec_flow,\r\n\tCASE\r\n\t\t\tWHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0\r\n\t\t\tELSE flow_sensor_25001137_c_1__value\r\n\tEND AS flow_sensor_25001137c1\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10671,6 +10770,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -11298,7 +11398,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tenergy_rec_system_temp_4__value AS energy_rec_temp4,\r\n\t\t\tenergy_rec_system_temp_5__value AS energy_rec_temp5,\r\n\t\t\tenergy_rec_system_temp_6__value AS energy_rec_temp6,\r\n\t\t\tenergy_rec_system_temp_7__value AS energy_rec_temp7,\r\n\t\t\tenergy_rec_system_temp_8__value AS energy_rec_temp8\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tenergy_rec_system_temp_4__value AS energy_rec_temp4,\r\n\tenergy_rec_system_temp_5__value AS energy_rec_temp5,\r\n\tenergy_rec_system_temp_6__value AS energy_rec_temp6,\r\n\tenergy_rec_system_temp_7__value AS energy_rec_temp7,\r\n\tenergy_rec_system_temp_8__value AS energy_rec_temp8\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -11378,6 +11478,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -11675,7 +11776,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\ttank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n\t\t\ttank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\ttank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n\ttank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -11755,6 +11856,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -11943,7 +12045,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tfr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tfr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -12022,8 +12124,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-singel",
-          "value": "ffjo2lr661bswd"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -12119,12 +12221,12 @@
     ]
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "now-3d",
+    "to": "now-2d"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Fresh water",
   "uid": "commissioning-fresh-water",
-  "version": 1
+  "version": 3
 }
