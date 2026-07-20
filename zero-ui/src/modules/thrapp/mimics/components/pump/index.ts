@@ -34,7 +34,7 @@ export const PUMP_STATE_COLORS: Record<PumpState | MimicComponentState, PumpStat
   [PumpState.Inactive]: {
     body: "var(--background)",
     ring: "var(--attention)",
-    blade: "var(--destructive-dull)",
+    blade: "#4A4E56",
   },
   [MimicComponentState.Alarm]: {
     body: "var(--destructive-dull)",

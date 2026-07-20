@@ -3,19 +3,18 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { controllerState, controls, measurement, parameters, tooltip } from "./shared";
+import { pumpTemperatureController } from "../controllers";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
-  controls,
-  controllerState,
-  custom: {},
-  parameters,
-  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
-  sensors: {
-    measurement,
-  },
+  controls: {},
+  controllerState: {},
+  custom: { controller: pumpTemperatureController },
+  parameters: {},
+  source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1038-66",
-    technicalName: "dhw-temperature-boosting-return",
+    technicalName: "dhw-temperature-boosting-supply",
   }),
 });

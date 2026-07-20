@@ -35,8 +35,8 @@ const borderColor = computed(() => {
 <template>
   <svg v-bind="createSizeAndViewbox(width, height, forceHeight)">
     <foreignObject
-      width="100%"
-      height="100%"
+      :width="width"
+      :height="height"
     >
       <div :class="cn('flex w-full gap-0.5', props.class)">
         <div

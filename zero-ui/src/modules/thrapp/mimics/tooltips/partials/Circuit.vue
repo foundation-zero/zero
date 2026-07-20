@@ -1,61 +1,61 @@
 <script setup lang="ts">
-import {
-  TooltipListItem,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "@/modules/thrapp/components/tooltip-list";
-import { MimicComponentType } from "@/modules/thrapp/types";
-import { ExtractSensorFields } from "@/modules/thrapp/types/fields";
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useTranslations } from "..";
-import { SensorValue } from "../../providers";
-import { FieldRenderer } from "../../renderers";
+import { isField, isSensorField, ModuleField, SensorValue } from "../../providers";
+import * as Partials from "./";
 
-const { items } = useTranslations();
+const { items, sources } = useTranslations();
 
-defineProps<ExtractSensorFields<MimicComponentType.HeatExchanger>>();
+defineProps<{
+  deltaT?: ModuleField<SensorComponentType.DeltaT | SensorComponentType.HeatExchanger>;
+  incoming: ModuleField<SensorComponentType.Temperature>;
+  outgoing: ModuleField<SensorComponentType.Temperature>;
+  flow?: ModuleField<SensorComponentType.Flow>;
+}>();
 </script>
 
 <template>
   <SensorValue
-    :source="sensors.incoming"
-    field="temperature"
+    v-if="isField(deltaT)"
+    :source="deltaT"
+    field="deltaT"
   >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("incomingTemperature") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.Temperature />
-      </TooltipListItemValue>
-    </TooltipListItem>
+    <Partials.ListItem>
+      {{ items("deltaTemperature") }}
+      <template #sourceName>
+        {{ sources("calculated") }}
+      </template>
+    </Partials.ListItem>
   </SensorValue>
   <SensorValue
-    :source="sensors.outgoing"
+    :source="incoming"
     field="temperature"
   >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("outgoingTemperature") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.Temperature />
-      </TooltipListItemValue>
-    </TooltipListItem>
+    <Partials.ListItem size="sm">
+      {{ items("incomingTemperature") }}
+    </Partials.ListItem>
   </SensorValue>
   <SensorValue
-    :source="sensors.flow"
+    :source="outgoing"
+    field="temperature"
+  >
+    <Partials.ListItem size="sm">
+      {{ items("outgoingTemperature") }}
+    </Partials.ListItem>
+  </SensorValue>
+  <SensorValue
+    v-if="isField(flow)"
+    :source="flow"
     field="flow"
   >
-    <TooltipListItem size="sm">
-      <TooltipListItemTitle>
-        {{ items("flow") }}
-        <FieldRenderer.Source />
-      </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.FlowRate />
-      </TooltipListItemValue>
-    </TooltipListItem>
+    <Partials.ListItem>
+      {{ items("flow") }}
+      <template
+        v-if="isSensorField(flow, SensorComponentType.CalculatedFlow)"
+        #sourceName
+      >
+        {{ sources("calculated") }}
+      </template>
+    </Partials.ListItem>
   </SensorValue>
 </template>

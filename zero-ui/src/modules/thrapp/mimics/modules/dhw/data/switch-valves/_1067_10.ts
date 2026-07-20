@@ -10,7 +10,7 @@ export default toInstance<MimicComponentType.SwitchValve>({
     valve: getField(ControlComponentType.Valve, "dhw", "dhwSwitchTank2BoostingSupply"),
   },
   controllerState: {},
-  custom: { tank: tank2 },
+  custom: tank2,
   parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank2BoostingSupply"),
   sensors: {},

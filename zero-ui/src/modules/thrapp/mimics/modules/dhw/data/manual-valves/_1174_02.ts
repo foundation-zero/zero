@@ -1,5 +1,6 @@
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
+import { getCustomField } from "../../../../providers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ManualValve>({
@@ -8,7 +9,7 @@ export default toInstance<MimicComponentType.ManualValve>({
   custom: {},
   parameters: {},
   sensors: {},
-  source: undefined,
+  source: getCustomField("dhw", "dhw-manual-valve-1174-02"),
   tooltip: tooltip({
     yardTag: "1174-02",
     technicalName: "dhw-manual-valve-1174-02",

@@ -1,6 +1,7 @@
 import { MimicComponentBaseProps } from "../components";
 
 export { default as CheckValveInstance } from "./CheckValveInstance.vue";
+export { default as DutypointLabelInstance } from "./DutypointLabelInstance.vue";
 export { default as FlowControlValveInstance } from "./FlowControlValveInstance.vue";
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as HeatExchangerInstance } from "./HeatExchangerInstance.vue";

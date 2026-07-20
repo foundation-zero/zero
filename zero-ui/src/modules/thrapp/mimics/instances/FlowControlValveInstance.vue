@@ -28,5 +28,6 @@ const state = getComponentState();
       <TwoWayValve :flow="valve?.positionRel.value ?? 0" />
       <MixValve />
     </ActuatedValve>
+    <slot />
   </MimicTooltipTrigger>
 </template>

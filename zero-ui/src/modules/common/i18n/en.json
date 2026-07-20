@@ -91,7 +91,9 @@
       "midship": "Midship",
       "hallways": "Hallways",
       "upperdeck": "Upper Deck"
-    }
+    },
+    "to": "To",
+    "from": "From"
   },
   "views": {
     "splash": {

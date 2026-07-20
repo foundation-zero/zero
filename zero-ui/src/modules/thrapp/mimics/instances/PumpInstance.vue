@@ -31,5 +31,6 @@ const pumpState = computed(() => {
       :pump-state="pumpState"
       :state="state"
     />
+    <slot />
   </MimicTooltipTrigger>
 </template>

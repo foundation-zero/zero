@@ -89,19 +89,27 @@ const color = computed(() => {
       </mask>
     </defs>
     <foreignObject
-      width="100%"
-      height="100%"
+      :width="width"
+      :height="height"
     >
       <div
-        :class="cn('h-37 w-51 rounded-md border transition-all', props.class)"
-        :style="{ borderColor: color, borderWidth: `${strokeWidth}px` }"
+        :class="cn('rounded-md border transition-all', props.class)"
+        :style="{
+          borderColor: color,
+          borderWidth: `${strokeWidth}px`,
+          width: `${width}px`,
+          height: `${height}px`,
+        }"
       />
     </foreignObject>
     <foreignObject
-      width="100%"
-      height="100%"
+      :width="width"
+      :height="height"
     >
-      <div :class="cn('h-37 w-51 pr-2 pb-1 pl-3', props.class)">
+      <div
+        :class="cn('pr-2 pb-1 pl-3', props.class)"
+        :style="{ width: `${width}px`, height: `${height}px` }"
+      >
         <slot />
       </div>
     </foreignObject>

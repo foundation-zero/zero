@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { formatInt } from "@/modules/common/lib/utils.ts";
+import { formatNumber } from "@/modules/common/lib/utils";
 import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: (value: number) => formatInt(value * 360),
+  format: (value: number) => formatNumber.default(value * 360),
 });
 
 const { units } = useTranslations();

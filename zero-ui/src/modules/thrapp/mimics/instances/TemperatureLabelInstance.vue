@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrs/types";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField } from "../providers";
+import SensorValue from "../providers/SensorValue.vue";
+import { FieldRenderer } from "../renderers";
 
-const props = defineProps<
+defineProps<
   MimicComponentInstanceProps & { temperature: ModuleField<SensorComponentType.Temperature> }
 >();
-
-const { getSensorValue } = getMimicDataProvider();
-const temperature = getSensorValue(props.temperature);
-
-const { t } = useI18n();
 </script>
 
 <template>
@@ -23,11 +18,12 @@ const { t } = useI18n();
   >
     {{ tagId }}
     <template #value>
-      <AnimatedNumber
-        :to="temperature?.temperature?.value"
-        :fraction-digits="0"
-      />
-      <span>{{ t("units.celsius") }}</span>
+      <SensorValue
+        :source="temperature"
+        field="temperature"
+      >
+        <FieldRenderer.Temperature />
+      </SensorValue>
     </template>
   </Label>
 </template>

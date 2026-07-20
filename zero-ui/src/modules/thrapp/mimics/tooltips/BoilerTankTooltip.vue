@@ -2,7 +2,11 @@
 import { BoilerTankState } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { useTranslations } from ".";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
@@ -19,11 +23,9 @@ import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
 import { ControllerStateValue, getMimicDataProvider, ParameterValue } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers/index.ts";
+import * as Partials from "./partials";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import ManualControl from "./partials/ManualControl.vue";
-
 const props = defineProps<TooltipComponentContext<MimicComponentType.BoilerTank>>();
 const { sensors, parameters, custom, tooltip } = props;
 
@@ -39,13 +41,15 @@ const currentLevelPercentage = computed(
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <BoilerTankInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <BoilerTankInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
-      <ManualControl />
+      <Partials.ComponentInfo :tooltip="tooltip" />
+      <Partials.ManualControl />
     </TooltipList>
 
     <TooltipList>
@@ -54,13 +58,15 @@ const currentLevelPercentage = computed(
         :source="controllerState.controller"
         :field="custom.tankStateField"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("state") }}
-            <FieldRenderer.Source external>{{ sources("tankState") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <FieldRenderer.BoilerTankMode />
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("state") }}
+          <template #sourceName>
+            {{ sources("tankState") }}
+          </template>
+          <template #value>
+            <FieldRenderer.BoilerTankMode />
+          </template>
+        </Partials.ListItem>
       </ControllerStateValue>
     </TooltipList>
 
@@ -75,54 +81,36 @@ const currentLevelPercentage = computed(
         :source="sensors.temperature"
         field="temperature"
       >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("currentTemperature") }}
-            <FieldRenderer.Source />
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem size="sm">
+          {{ items("currentTemperature") }}
+        </Partials.ListItem>
       </SensorValue>
 
       <SensorValue
         :source="sensors.boostingSupply"
         field="temperature"
       >
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("incomingTemperature") }}
-            <FieldRenderer.Source />
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem size="sm">
+          {{ items("incomingTemperature") }}
+        </Partials.ListItem>
       </SensorValue>
 
       <ParameterValue :source="parameters.minimumTemperature">
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("minTemperature") }}
-            <FieldRenderer.Source url>{{ sources("minTemperature") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem
+          size="sm"
+          :renderer="FieldRenderer.Temperature"
+        >
+          {{ items("minTemperature") }}
+        </Partials.ListItem>
       </ParameterValue>
 
       <ParameterValue :source="parameters.maximumTemperature">
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("maxTemperature") }}
-            <FieldRenderer.Source url>{{ sources("maxTemperature") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem
+          size="sm"
+          :renderer="FieldRenderer.Temperature"
+        >
+          {{ items("maxTemperature") }}
+        </Partials.ListItem>
       </ParameterValue>
 
       <TooltipListItem>
@@ -144,49 +132,37 @@ const currentLevelPercentage = computed(
           <TooltipListItemValue>Not empty</TooltipListItemValue>
         </TooltipListItem>
 
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("fill") }}
-            <FieldRenderer.Source />
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Level />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem size="sm">
+          {{ items("fill") }}
+        </Partials.ListItem>
       </SensorValue>
 
-      <TooltipListItem size="sm">
-        <TooltipListItemTitle>
-          {{ items("capacity") }}
-          <FieldRenderer.Source>{{ sources("capacity") }}</FieldRenderer.Source>
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+      <Partials.ListItem size="sm">
+        {{ items("capacity") }}
+        <template #sourceName>
+          {{ sources("capacity") }}
+        </template>
+        <template #renderer>
           <FieldRenderer.Level :value="DHW_TANK_CAPACITY" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+        </template>
+      </Partials.ListItem>
 
       <ParameterValue :source="parameters.minimumLevel">
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("minLevel") }}
-            <FieldRenderer.Source url>{{ sources("minLevel") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Level />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem
+          size="sm"
+          :renderer="FieldRenderer.Level"
+        >
+          {{ items("minLevel") }}
+        </Partials.ListItem>
       </ParameterValue>
 
       <ParameterValue :source="parameters.maximumLevel">
-        <TooltipListItem size="sm">
-          <TooltipListItemTitle>
-            {{ items("maxLevel") }}
-            <FieldRenderer.Source url>{{ sources("maxLevel") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Level />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem
+          size="sm"
+          :renderer="FieldRenderer.Level"
+        >
+          {{ items("maxLevel") }}
+        </Partials.ListItem>
       </ParameterValue>
 
       <ControllerStateValue
@@ -195,21 +171,15 @@ const currentLevelPercentage = computed(
       >
         <template #default="{ value }">
           <ControllerStateValue
+            v-if="value === BoilerTankState.Filling"
             :source="controllerState.controller"
             field="timeToFill"
           >
-            <TooltipListItem v-if="value === BoilerTankState.Filling">
-              <TooltipListItemTitle>{{ items("estimatedFillingTime") }}</TooltipListItemTitle>
-              <TooltipListItemValue>
-                <FieldRenderer.TimeRemaining />
-              </TooltipListItemValue>
-            </TooltipListItem>
+            <Partials.ListItem size="sm">
+              {{ items("estimatedFillingTime") }}
+            </Partials.ListItem>
           </ControllerStateValue>
         </template>
-        <!-- <TooltipListItem>
-        <TooltipListItemTitle>{{ items("estimatedTimeToHeat") }}</TooltipListItemTitle>
-        <TooltipListItemTimeRemaining :value="0" />
-      </TooltipListItem> -->
       </ControllerStateValue>
     </TooltipList>
 
@@ -218,7 +188,11 @@ const currentLevelPercentage = computed(
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <BoilerTankController :controller="controllerState.controller" />
+      <BoilerTankController
+        :controller="controllerState.controller"
+        :disabled-parameter="parameters.disabled"
+        :tank-state-field="custom.tankStateField"
+      />
       <BoilerTankOperator :sensors="sensors" />
     </TooltipList>
   </MimicTooltip>

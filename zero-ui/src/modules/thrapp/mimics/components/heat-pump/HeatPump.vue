@@ -27,22 +27,20 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
     // Seperate foreignObject is needed to prevent the border from pushing the content inwards when
     state changes
     <foreignObject
-      width="100%"
-      height="100%"
+      :width="width"
+      :height="height"
     >
       <div
-        :class="cn('bg-background w-full transition-all', props.class)"
+        :class="cn('bg-background h-full w-full transition-all', props.class)"
         :style="{
-          height: `${height}px`,
-          width: `${width}px`,
           'border-color': stateColor,
           'border-width': `${strokeWidth}px`,
         }"
       />
     </foreignObject>
     <foreignObject
-      width="100%"
-      height="100%"
+      :width="width"
+      :height="height"
     >
       <div :class="cn('h-full w-full p-2 pb-1', props.class)">
         <slot />

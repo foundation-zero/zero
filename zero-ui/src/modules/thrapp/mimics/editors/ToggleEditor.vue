@@ -40,6 +40,7 @@ const enabled = computed({
         <slot />
         <Switch
           v-model="enabled"
+          :autofocus="form?.hasFocus"
           :disabled="form?.isPending.value || !form?.isEditable.value"
         />
       </template>

@@ -17,7 +17,7 @@ const props = defineProps<{
   field?: Key;
 }>();
 
-const value = provideControlValue<Control, Key>(props.source, props.field);
+const value = provideControlValue<Control>(props.source, props.field);
 provideFieldValueSource(props.source);
 </script>
 

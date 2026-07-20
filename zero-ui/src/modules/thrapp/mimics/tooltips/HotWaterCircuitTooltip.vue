@@ -1,27 +1,77 @@
 <script setup lang="ts">
-import { TooltipList } from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
+import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import HotWaterCircuitInstance from "../instances/HotWaterCircuitInstance.vue";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-
+import { SensorValue } from "../providers";
+import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.HotWaterCircuit>>();
+
+const { items, labels, sources } = useTranslations();
 </script>
 
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <HotWaterCircuitInstance
-        v-bind="props"
-        height="243"
-        force-height
-      />
+      <NoopTooltipProvider>
+        <HotWaterCircuitInstance
+          v-bind="props"
+          height="243"
+          force-height
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
+    </TooltipList>
+
+    <TooltipList>
+      <TooltipListHeader>
+        {{ labels("exchangeCircuit") }}
+      </TooltipListHeader>
+      <SensorValue
+        :source="sensors.tIn"
+        field="temperature"
+      >
+        <Partials.ListItem size="sm">
+          {{ items("incomingTemperature") }}
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        :source="sensors.flowIn"
+        field="flow"
+      >
+        <Partials.ListItem size="sm">
+          {{ items("incomingFlow") }}
+          <template #sourceName>
+            {{ sources("calculated") }}
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        :source="sensors.tOut"
+        field="temperature"
+      >
+        <Partials.ListItem size="sm">
+          {{ items("outgoingTemperature") }}
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        :source="sensors.flowOut"
+        field="flow"
+      >
+        <Partials.ListItem size="sm">
+          {{ items("outgoingFlow") }}
+        </Partials.ListItem>
+      </SensorValue>
     </TooltipList>
   </MimicTooltip>
 </template>

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
+import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField } from "../providers";
 
-const field = injectFieldValueField<ControlValueFields | SensorValueFields>();
+const field = injectFieldValueField<ControlValueFields | SensorValueFields | ControllerFields>();
 
 const editor = computed(() => {
   if (!field) return null;
 
   switch (field) {
+    case "temperature":
     case "temperatureSetpoint":
       return FieldRenderer.Temperature;
     case "on":
@@ -21,9 +22,24 @@ const editor = computed(() => {
     case "setpoint":
       return FieldRenderer.ValveState;
     case "positionRel":
+    case "dutypoint":
       return FieldRenderer.Percentage;
     case "heat":
       return FieldRenderer.Heat;
+    case "level":
+      return FieldRenderer.Level;
+    case "speed":
+      return FieldRenderer.Frequency;
+    case "opTime":
+      return FieldRenderer.TimeRemaining;
+    case "pressure":
+      return FieldRenderer.Pressure;
+    case "timeToFill":
+      return FieldRenderer.TimeRemaining;
+    case "tank1State":
+    case "tank2State":
+    case "tank3State":
+      return FieldRenderer.BoilerTankMode;
   }
 
   return null;

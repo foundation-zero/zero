@@ -5,6 +5,7 @@ import {
   SensorComponentType,
 } from "@/modules/thrs/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
+import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
 
@@ -63,23 +64,15 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.Pump]: {
     pressure: SensorComponentType.Pressure;
-    flowMeasurement: SensorComponentType.Flow;
-    temperatureMeasurement: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatExchanger]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
     flow: SensorComponentType.Flow;
   };
-  [MimicComponentType.PressureSensor]: {
-    flow: SensorComponentType.Flow;
-  };
-  [MimicComponentType.TemperatureSensor]: {
-    measurement: SensorComponentType.Temperature;
-  };
-  [MimicComponentType.FlowSensor]: {
-    temperature: SensorComponentType.Temperature;
-  };
+  [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
+  [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: {
     incoming: SensorComponentType.Temperature;
@@ -89,25 +82,21 @@ export type SensorFieldDefinitions = SensorFields<{
     heatExchanger: SensorComponentType.HeatExchanger;
   };
   [MimicComponentType.HotWaterCircuit]: {
-    flowIn: SensorComponentType.CalculatedFlow;
-    flowOut: SensorComponentType.Flow;
+    flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+    flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     tIn: SensorComponentType.Temperature;
     tOut: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatPump]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
-    measurement: SensorComponentType.Flow;
   };
   [MimicComponentType.HVAC]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
-    flow: SensorComponentType.Flow;
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
-  [MimicComponentType.FlowControlValve]: {
-    measurement: SensorComponentType.Flow;
-  };
+  [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
@@ -116,15 +105,9 @@ export type ControlFieldDefinitions = ControlFields<{
     pump: ControlComponentType.Pump;
   };
   [MimicComponentType.HeatExchanger]: EmptyObject;
-  [MimicComponentType.PressureSensor]: {
-    pump: ControlComponentType.Pump;
-  };
-  [MimicComponentType.TemperatureSensor]: {
-    pump: ControlComponentType.Pump;
-  };
-  [MimicComponentType.FlowSensor]: {
-    pump: ControlComponentType.Pump;
-  };
+  [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
+  [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     heatpump: ControlComponentType.Heatpump;
@@ -136,7 +119,6 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
-    pump: ControlComponentType.Pump;
     valve: ControlComponentType.Valve;
   };
 }>;
@@ -145,33 +127,18 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.BoilerTank]: {
     controller: ControllerStateComponentType.DhwTanksController;
   };
-  [MimicComponentType.Pump]: {
-    flowController: ControllerStateComponentType.PIDController;
-    temperatureController: ControllerStateComponentType.PIDController;
-  };
+  [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
-  [MimicComponentType.PressureSensor]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
-  [MimicComponentType.TemperatureSensor]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
-  [MimicComponentType.FlowSensor]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
+  [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
+  [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.HeatPump]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
-  [MimicComponentType.HVAC]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
+  [MimicComponentType.HeatPump]: EmptyObject;
+  [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.HotWaterCircuit]: EmptyObject;
-  [MimicComponentType.FlowControlValve]: {
-    controller: ControllerStateComponentType.PIDController;
-  };
+  [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -180,43 +147,48 @@ export type ParameterFieldDefinitions = ParameterFields<{
     maximumLevel: ParametersType.Level;
     minimumTemperature: ParametersType.Temperature;
     maximumTemperature: ParametersType.Temperature;
+    disabled: ParametersType.Disabled;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.HotWaterCircuit]: EmptyObject;
-  [MimicComponentType.Pump]: {
-    temperature: ParametersType.Temperature;
-    flow: ParametersType.Flow;
-  };
+  [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
-  [MimicComponentType.PressureSensor]: {
-    flow: ParametersType.Flow;
-  };
-  [MimicComponentType.TemperatureSensor]: {
-    temperature: ParametersType.Temperature;
-  };
-  [MimicComponentType.FlowSensor]: {
-    flow: ParametersType.FlowControl | ParametersType.Flow;
-  };
+  [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.TemperatureSensor]: EmptyObject;
+  [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.HeatPump]: {
-    temperature: ParametersType.Temperature;
-    flow: ParametersType.Flow;
-  };
-  [MimicComponentType.HVAC]: {
-    temperature: ParametersType.Temperature;
-    flow: ParametersType.FlowControl;
-  };
+  [MimicComponentType.HeatPump]: EmptyObject;
+  [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
-  [MimicComponentType.FlowControlValve]: {
-    flow: ParametersType.FlowControl;
-  };
+  [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
+
+export type PIDController<
+  Type extends SensorComponentType.Temperature | SensorComponentType.Flow =
+    | SensorComponentType.Temperature
+    | SensorComponentType.Flow,
+  Parameter extends ParametersType = Type extends SensorComponentType.Temperature
+    ? ParametersType.Temperature
+    : ParametersType.Flow | ParametersType.FlowControl,
+> = {
+  type: Type;
+  controller: ModuleField<ControllerStateComponentType.PIDController>;
+  measurement?: ModuleField<Type>;
+  actuator?: ModuleField;
+  setpoint?: ModuleField<Parameter>;
+  outputMinimum?: ModuleField<ParametersType>;
+};
+
+export type BoilerTankController = TooltipComponentContext<MimicComponentType.BoilerTank>;
 
 export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.BoilerTank]: {
     tankStateField: BoilerTankStateField;
   };
-  [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.Pump]: {
+    flowController: PIDController<SensorComponentType.Flow>;
+    temperatureController: PIDController<SensorComponentType.Flow>;
+  };
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
@@ -232,20 +204,26 @@ export type CustomFieldDefinitions = CustomFields<{
     width?: number | string;
     height?: number | string;
   };
-  [MimicComponentType.PressureSensor]: EmptyObject;
-  [MimicComponentType.TemperatureSensor]: EmptyObject;
-  [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.PressureSensor]: {
+    controller?: PIDController;
+  };
+  [MimicComponentType.TemperatureSensor]: {
+    controller?: PIDController;
+  };
+  [MimicComponentType.FlowSensor]: {
+    controller?: PIDController;
+  };
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.HeatPump]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    controller?: PIDController;
+  };
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: {
-    tank?: {
-      operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
-      operatorName?: string;
-      controller?: ModuleField<ControllerStateComponentType.DhwTanksController>;
-    };
+    tankController?: BoilerTankController;
   };
-  [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.FlowControlValve]: {
+    controller?: PIDController;
+  };
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
@@ -264,12 +242,18 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.HotWaterCircuit]: undefined;
 }>;
 
+export type Defined<P, T extends P | undefined> = T extends P ? T : P;
+
 export type ExtractModuleFields<
   Fields extends Record<
     string,
     SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
   >,
-> = { [K in keyof Fields]: ModuleField<Fields[K]> };
+> = {
+  [K in keyof Fields]: Fields[K] extends undefined
+    ? ModuleField<Fields[K]> | undefined
+    : ModuleField<Fields[K]>;
+};
 
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &
@@ -303,6 +287,6 @@ export type ExtractCustomFields<Type extends MimicComponentType> = {
 
 export type ExtractSourceFields<Type extends MimicComponentType> = {
   source: SourceFieldDefinitions[Type] extends undefined
-    ? undefined
+    ? ModuleField<"custom"> | undefined
     : ModuleField<SourceFieldDefinitions[Type]>;
 };

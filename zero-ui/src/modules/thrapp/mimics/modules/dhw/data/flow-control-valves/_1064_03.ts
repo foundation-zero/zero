@@ -1,31 +1,22 @@
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { actuator, tooltip } from "./shared";
+import { dcFlowController } from "../controllers";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowControlValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
-    pump: actuator,
   },
-  controllerState: {
-    controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwDcFlowController"),
+  controllerState: {},
+  custom: {
+    controller: dcFlowController,
   },
-  custom: {},
-  parameters: {
-    flow: getField(ParametersType.FlowControl, "dhw", "dcFlowcontrolMinimumSetpoint"),
-  },
+  parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
-  sensors: {
-    measurement: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
-  },
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1064-03",
     technicalName: "dhw-flowcontrol-dc",

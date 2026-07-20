@@ -1,36 +1,37 @@
 <script setup lang="ts">
 import { useTranslations } from ".";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import { FlowSensorInstance } from "../instances";
 import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import FlowController from "./partials/FlowController.vue";
-
+import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowSensor>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <FlowSensorInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <FlowSensorInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <TooltipList>
@@ -39,56 +40,32 @@ const { items, labels, sources } = useTranslations();
         :source="source"
         field="flow"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("flow") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.FlowRate />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("flow") }}
+        </Partials.ListItem>
       </SensorValue>
-      <!-- // TODO: what's this? -->
-      <TooltipListItem>
-        <TooltipListItemTitle>
-          {{ items("quantity") }}
-        </TooltipListItemTitle>
-        <TooltipListItemValue>
+      <Partials.ListItem>
+        {{ items("quantity") }}
+        <template #renderer>
           <FieldRenderer.QuantityLiters :value="10" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+        </template>
+      </Partials.ListItem>
       <SensorValue
         :source="source"
         field="temperature"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("temperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("temperature") }}
+        </Partials.ListItem>
       </SensorValue>
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <FlowController
-        :controller="controllerState.controller"
-        :measurement="source"
-        :setpoint="parameters.flow"
-      >
-        <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
-        </template>
-        <template #measurement>
-          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-        </template>
-      </FlowController>
+      <Partials.PIDController v-bind="custom.controller" />
     </TooltipList>
   </MimicTooltip>
 </template>

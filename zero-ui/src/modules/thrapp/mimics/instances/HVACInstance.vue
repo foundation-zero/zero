@@ -22,9 +22,8 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
+const { getComponentState } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.source);
 const state = getComponentState();
 </script>
 
@@ -44,10 +43,11 @@ const state = getComponentState();
       </HeatPumpTitle>
       <ValueList class="gap-0">
         <ValueListSeparator />
-        <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />
-        <ValueListDeltaTItem :value="heatExchanger?.deltaT.value" />
+        <ValueListHeatPowerItem :source="source" />
+        <ValueListDeltaTItem :source="source" />
         <ValueListSeparator />
       </ValueList>
     </HeatPump>
+    <slot />
   </MimicTooltipTrigger>
 </template>

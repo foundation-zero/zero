@@ -4,7 +4,7 @@ import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: formatNumber(1),
+  format: formatNumber.default,
 });
 
 const { units } = useTranslations();

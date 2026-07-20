@@ -1,36 +1,37 @@
 <script setup lang="ts">
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-  TooltipListItemValue,
-} from "../../components/tooltip-list/index.ts";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
+} from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { YardTag } from "../components/yard-tag";
 import TemperatureSensorInstance from "../instances/TemperatureSensorInstance.vue";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
-import ComponentInfo from "./partials/ComponentInfo.vue";
-import TemperatureController from "./partials/TemperatureController.vue";
+import { SensorValue } from "../providers";
+import * as Partials from "./partials";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.TemperatureSensor>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <TemperatureSensorInstance v-bind="props" />
+      <NoopTooltipProvider>
+        <TemperatureSensorInstance v-bind="props" />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <TooltipList>
@@ -39,37 +40,21 @@ const { items, labels, sources } = useTranslations();
         :source="source"
         field="temperature"
       >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("temperature") }}
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("temperature") }}
+        </Partials.ListItem>
       </SensorValue>
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <TemperatureController
-        :controller="controllerState.controller"
-        :measurement="sensors.measurement"
-        :setpoint="parameters.temperature"
-      >
-        <template #actuator>
-          <FieldRenderer.Source :source="controls.pump" />
-        </template>
-        <template
-          v-if="sensors.measurement === source"
-          #measurement
-        >
-          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
-        </template>
-      </TemperatureController>
+      <Partials.PIDController
+        v-if="custom.controller"
+        v-bind="custom.controller"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

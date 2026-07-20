@@ -73,6 +73,8 @@ export type ControllerStateFields = {
   [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
 };
 
+export type ControllerFields = keyof DhwTankController | keyof PIDController;
+
 export type SensorValueFields =
   | keyof PumpSensor
   | keyof TemperatureSensor
@@ -201,11 +203,18 @@ export type ControlForm<Type extends Record<string, Stamped<unknown>>> = {
 };
 
 export const enum ControlComponentType {
-  Pump = "pump",
-  Valve = "valve",
-  Pcm = "pcm",
-  Heatpump = "heatpump",
+  Pump = "control:pump",
+  Valve = "control:valve",
+  Pcm = "control:pcm",
+  Heatpump = "control:heatpump",
 }
+
+export const CONTROL_COMPONENT_TYPES = [
+  ControlComponentType.Pump,
+  ControlComponentType.Valve,
+  ControlComponentType.Pcm,
+  ControlComponentType.Heatpump,
+];
 
 export const enum ValveType {
   Mix = "mix",
@@ -249,7 +258,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 >;
 
 export const enum ControllerStateComponentType {
-  DhwTanksController = "dhwTanksController",
+  DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
 }
 
@@ -277,19 +286,34 @@ export type ExtractControllerState<T extends ControllerStateDefinitions> = Extra
 >;
 
 export const enum SensorComponentType {
-  Temperature = "temperature",
-  Pressure = "pressure",
-  Flow = "flow",
-  Pump = "pump",
-  Valve = "valve",
-  Thruster = "thruster",
-  Pcs = "pcs",
-  Pcm = "pcm",
-  Level = "level",
-  DeltaT = "deltaT",
-  HeatExchanger = "heatExchanger",
-  CalculatedFlow = "calculatedFlow",
+  Temperature = "sensor:temperature",
+  Pressure = "sensor:pressure",
+  Flow = "sensor:flow",
+  Pump = "sensor:pump",
+  Valve = "sensor:valve",
+  Thruster = "sensor:thruster",
+  Pcs = "sensor:pcs",
+  Pcm = "sensor:pcm",
+  Level = "sensor:level",
+  DeltaT = "sensor:deltaT",
+  HeatExchanger = "sensor:heatExchanger",
+  CalculatedFlow = "sensor:calculatedFlow",
 }
+
+export const SENSOR_COMPONENT_TYPES = [
+  SensorComponentType.Temperature,
+  SensorComponentType.Pressure,
+  SensorComponentType.Flow,
+  SensorComponentType.Pump,
+  SensorComponentType.Valve,
+  SensorComponentType.Thruster,
+  SensorComponentType.Pcs,
+  SensorComponentType.Pcm,
+  SensorComponentType.Level,
+  SensorComponentType.DeltaT,
+  SensorComponentType.HeatExchanger,
+  SensorComponentType.CalculatedFlow,
+];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
@@ -379,17 +403,30 @@ export type PickKeys<T extends Record<string, unknown>, Type> = keyof {
 export type PID = [proportional: number, integral: number, derivative: number];
 
 export const enum ParametersType {
-  Temperature = "temperature",
-  Flow = "flow",
-  FlowControl = "flowcontrol",
-  Tuning = "tuning",
-  Enabled = "enabled",
-  Ratio = "ratio",
-  Dutypoint = "dutypoint",
-  dT = "dT",
-  Level = "level",
-  Disabled = "disabled",
+  Temperature = "parameter:temperature",
+  Flow = "parameter:flow",
+  FlowControl = "parameter:flowcontrol",
+  Tuning = "parameter:tuning",
+  Enabled = "parameter:enabled",
+  Ratio = "parameter:ratio",
+  Dutypoint = "parameter:dutypoint",
+  dT = "parameter:dT",
+  Level = "parameter:level",
+  Disabled = "parameter:disabled",
 }
+
+export const PARAMETERS_TYPES = [
+  ParametersType.Temperature,
+  ParametersType.Flow,
+  ParametersType.FlowControl,
+  ParametersType.Tuning,
+  ParametersType.Enabled,
+  ParametersType.Ratio,
+  ParametersType.Dutypoint,
+  ParametersType.dT,
+  ParametersType.Level,
+  ParametersType.Disabled,
+];
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
 

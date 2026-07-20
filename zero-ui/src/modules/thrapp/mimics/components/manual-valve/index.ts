@@ -20,6 +20,6 @@ export const MANUAL_VALVE_WIDTH = 36;
 export const MANUAL_VALVE_HEIGHT = 36;
 export const MANUAL_VALVE_PORT_FILL = "var(--background)";
 export const MANUAL_VALVE_BORDER_COLOR = "var(--brand-muted)";
-export const MANUAL_VALVE_PIVOT_BORDER_COLOR = "var(--inverse-border-subtle)";
+export const MANUAL_VALVE_PIVOT_BORDER_COLOR = "var(--brand-muted)";
 export const MANUAL_VALVE_MARK_COLOR = "var(--foreground)";
 export const MANUAL_VALVE_BASE_ORIENTATION = ComponentOrientation.Up;

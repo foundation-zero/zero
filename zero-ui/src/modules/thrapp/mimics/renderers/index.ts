@@ -1,6 +1,7 @@
 import { NumberFormatter } from "@/modules/common/lib/utils.ts";
 import { HTMLAttributes } from "vue";
 import Auto from "./AutoRenderer.vue";
+import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
 import DeltaT from "./DeltaTRenderer.vue";
 import EnabledDisabled from "./EnabledDisabledRenderer.vue";
@@ -34,6 +35,7 @@ export const FieldRenderer = {
   Temperature,
   HeatPumpMode,
   BoilerTankMode,
+  BoilerTankControllerMode,
   ValveState,
   Percentage,
   FlowRate,

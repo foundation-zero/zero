@@ -3,17 +3,16 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { controllerState, controls, measurement, parameters, tooltip } from "./shared";
+import { dcFlowController } from "../controllers";
+import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
-  controls,
-  controllerState,
-  custom: {},
-  parameters,
+  controls: {},
+  controllerState: {},
+  custom: { controller: dcFlowController },
+  parameters: {},
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureDcReturn"),
-  sensors: {
-    measurement,
-  },
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1038-26",
     technicalName: "dhw-temperature-dc-return",

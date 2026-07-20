@@ -17,28 +17,22 @@ export const controller = getField(
   "dhwTanksController",
 );
 
-type SwitchValveCustom = CustomFieldDefinitions[MimicComponentType.SwitchValve]["tank"];
+type SwitchValveCustom = CustomFieldDefinitions[MimicComponentType.SwitchValve];
 
 export const tank1: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1053"].sensors;
+  get tankController() {
+    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1053"];
   },
-  operatorName: "Tank 1 operator",
 };
 
 export const tank2: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1054"].sensors;
+  get tankController() {
+    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1054"];
   },
-  operatorName: "Tank 2 operator",
 };
 
 export const tank3: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1055"].sensors;
+  get tankController() {
+    return DHW_TANK_DATA[MimicComponentType.BoilerTank]["1055"];
   },
-  operatorName: "Tank 3 operator",
 };

@@ -1,26 +1,31 @@
 <script setup lang="ts">
-import { cn } from "@common/lib/utils";
+import { cn, useAutoFocus } from "@common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import {
   SwitchRoot,
-  type SwitchRootEmits,
-  type SwitchRootProps,
   SwitchThumb,
   useForwardPropsEmits,
+  type SwitchRootEmits,
+  type SwitchRootProps,
 } from "reka-ui";
-import type { HTMLAttributes } from "vue";
+import { useTemplateRef, type HTMLAttributes } from "vue";
 
-const props = defineProps<SwitchRootProps & { class?: HTMLAttributes["class"] }>();
+const props = defineProps<
+  SwitchRootProps & { class?: HTMLAttributes["class"]; autofocus?: boolean }
+>();
 
 const emits = defineEmits<SwitchRootEmits>();
 
 const delegatedProps = reactiveOmit(props, "class");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+
+useAutoFocus<HTMLButtonElement>(useTemplateRef("switch"), props.autofocus);
 </script>
 
 <template>
   <SwitchRoot
+    ref="switch"
     data-slot="switch"
     v-bind="forwarded"
     :class="

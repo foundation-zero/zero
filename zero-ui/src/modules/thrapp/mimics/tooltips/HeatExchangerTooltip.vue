@@ -1,22 +1,23 @@
 <script setup lang="ts">
+import { useTranslations } from ".";
+import {
+  MimicTooltip,
+  NoopTooltipProvider,
+  TooltipComponentContext,
+} from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
-  TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemTitle,
-} from "../../components/tooltip-list/index.ts";
-import TooltipListItemValue from "../../components/tooltip-list/TooltipListItemValue.vue";
-import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { ComponentOrientation } from "../components/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
-import { HeatExchangerInstance } from "../instances/index.ts";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+} from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { ComponentOrientation } from "../components";
+import { YardTag } from "../components/yard-tag";
+import { HeatExchangerInstance } from "../instances";
+import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
+import * as Partials from "./partials";
 import Circuit from "./partials/Circuit.vue";
-import ComponentInfo from "./partials/ComponentInfo.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HeatExchanger>>();
 
@@ -26,15 +27,17 @@ const { labels, actions, items, sources } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <HeatExchangerInstance
-        v-bind="props"
-        :orientation="ComponentOrientation.Down"
-      />
+      <NoopTooltipProvider>
+        <HeatExchangerInstance
+          v-bind="props"
+          :orientation="ComponentOrientation.Down"
+        />
+      </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
-      <ComponentInfo :tooltip="tooltip" />
+      <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
     <SensorValue
@@ -46,26 +49,22 @@ const { labels, actions, items, sources } = useTranslations();
           {{ labels("mode") }}
           <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
         </TooltipListHeader>
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("exchanger") }}
-          </TooltipListItemTitle>
-          <FieldRenderer.HeatExchangerMode />
-        </TooltipListItem>
+        <Partials.ListItem no-source>
+          {{ items("exchanger") }}
+          <template #value>
+            <FieldRenderer.HeatExchangerMode />
+          </template>
+        </Partials.ListItem>
       </TooltipList>
 
       <TooltipList>
         <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
-
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("heatExchange") }}
-            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Heat />
-          </TooltipListItemValue>
-        </TooltipListItem>
+        <Partials.ListItem>
+          {{ items("heatExchange") }}
+          <template #sourceName>
+            {{ sources("calculated") }}
+          </template>
+        </Partials.ListItem>
       </TooltipList>
     </SensorValue>
 
@@ -73,21 +72,12 @@ const { labels, actions, items, sources } = useTranslations();
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <SensorValue
-        :source="source"
-        field="deltaT"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("deltaTemperature") }}
-            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.DeltaT />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
-      <Circuit :sensors="sensors" />
+      <Circuit
+        :incoming="sensors.incoming"
+        :outgoing="sensors.outgoing"
+        :delta-t="source"
+        :flow="sensors.flow"
+      />
     </TooltipList>
 
     <TooltipList>
@@ -95,21 +85,12 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <SensorValue
-        :source="custom.exchangeCircuit.deltaT"
-        field="deltaT"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("deltaTemperature") }}
-            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.DeltaT />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </SensorValue>
-      <Circuit :sensors="custom.exchangeCircuit" />
+      <Circuit
+        :incoming="custom.exchangeCircuit.incoming"
+        :outgoing="custom.exchangeCircuit.outgoing"
+        :delta-t="custom.exchangeCircuit.deltaT"
+        :flow="custom.exchangeCircuit.flow"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

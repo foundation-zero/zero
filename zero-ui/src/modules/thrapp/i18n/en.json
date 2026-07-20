@@ -56,7 +56,7 @@
     },
     "dialogs": {
       "manualMode": {
-        "warning": "Attention: system in manual mode",
+        "warning": "Attention: Module in manual mode",
         "title": "Switch to manual mode",
         "description": "Enter password to unlock",
         "confirm": "OK",
@@ -73,8 +73,8 @@
       "actions": {
         "viewCircuitMimic": "View circuit mimic",
         "viewControls": "View controls",
-        "controlManually": "Control manually",
-        "controlAutomatically": "Switch to auto mode",
+        "controlManually": "Switch to manual mode",
+        "controlAutomatically": "Switch to auto control",
         "confirm": "Confirm"
       },
       "labels": {
@@ -110,6 +110,10 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "outputMinimum": "Output minimum",
+        "tankState": "Tank state",
+        "incomingFlow": "Incoming flow",
+        "outgoingFlow": "Outgoing flow",
         "quantity": "Quantity",
         "circuit": "Circuit",
         "heatflow": "Heatflow",
@@ -162,6 +166,11 @@
       }
     },
     "mimics": {
+      "boilerTankController": {
+        "modes": {
+          "ALWAYS": "Always active"
+        }
+      },
       "boilerTank": {
         "modes": {
           "IN_USE": "In use",

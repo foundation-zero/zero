@@ -35,7 +35,10 @@ const form = injectValueForm();
       >
         <NumberFieldContent>
           <NumberFieldDecrement class="text-brand" />
-          <NumberFieldInput class="bg-muted h-9 rounded-xs" />
+          <NumberFieldInput
+            :autofocus="form?.hasFocus"
+            class="bg-muted h-9 rounded-xs"
+          />
           <NumberFieldIncrement class="text-brand" />
           <NumberFieldPrefix v-if="form?.isPending.value">
             <FieldEditor.PendingIndicator />

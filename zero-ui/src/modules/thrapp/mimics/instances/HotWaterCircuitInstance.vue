@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/vue";
+import { tScoped } from "@/modules/common/lib/utils";
+import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -22,12 +23,10 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
-const flowIn = getSensorValue(props.sensors.flowIn);
-const tIn = getSensorValue(props.sensors.tIn);
-const flowOut = getSensorValue(props.sensors.flowOut);
-const tOut = getSensorValue(props.sensors.tOut);
+const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
+
+const t = tScoped("labels");
 </script>
 
 <template>
@@ -43,20 +42,21 @@ const state = getComponentState();
       <ValueList>
         <ValueListSeparator />
         <ValueListHeader>
-          <RiArrowUpLine class="text-muted-foreground size-3" />
-          In
+          <RiArrowDownLine class="text-muted-foreground size-3" />
+          {{ t("from") }}
         </ValueListHeader>
-        <ValueListFlowItem :value="flowIn?.flow.value" />
-        <ValueListTemperatureItem :temperature="tIn?.temperature.value" />
+        <ValueListFlowItem :source="sensors.flowIn" />
+        <ValueListTemperatureItem :source="sensors.tIn" />
         <ValueListSeparator />
         <ValueListHeader>
-          <RiArrowDownLine class="text-muted-foreground size-3" />
-          Out
+          <RiArrowLeftLine class="text-muted-foreground size-3" />
+          {{ t("to") }}
         </ValueListHeader>
-        <ValueListFlowItem :value="flowOut?.flow.value" />
-        <ValueListTemperatureItem :temperature="tOut?.temperature.value" />
+        <ValueListFlowItem :source="sensors.flowOut" />
+        <ValueListTemperatureItem :source="sensors.tOut" />
         <ValueListSeparator />
       </ValueList>
     </CircuitBox>
+    <slot />
   </MimicTooltipTrigger>
 </template>

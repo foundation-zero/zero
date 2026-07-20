@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "../../../../types";
 import { ComponentOrientation } from "../../../components";
-import { PumpInstance } from "../../../instances";
+import { DutypointLabelInstance, PumpInstance } from "../../../instances";
 import { DHW_MIMIC_DATA } from "../data";
 
 const pumps = DHW_MIMIC_DATA[MimicComponentType.Pump];
@@ -13,5 +13,12 @@ const pumps = DHW_MIMIC_DATA[MimicComponentType.Pump];
     y="316"
     v-bind="pumps['1022']"
     :orientation="ComponentOrientation.Down"
-  />
+  >
+    <DutypointLabelInstance
+      x="220"
+      y="329"
+      tag-id="1022"
+      :pump="pumps['1022'].source"
+    />
+  </PumpInstance>
 </template>
