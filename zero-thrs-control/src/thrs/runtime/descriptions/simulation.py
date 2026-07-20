@@ -177,7 +177,7 @@ type ModeName = Literal[
     "dc",
     "high_temperature",
     "dhw",
-    "boat",
+    "thrs",
 ]
 
 
@@ -280,7 +280,7 @@ MODES: list[Mode] = [
         ),
     ),
     Mode(
-        name="boat",
+        name="thrs",
         control_modules={
             "thrusters": THRUSTERS_MODULE_DESCRIPTION,
             "pvt": PVT_MODULE_DESCRIPTION,

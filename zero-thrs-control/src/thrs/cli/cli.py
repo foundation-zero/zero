@@ -30,7 +30,7 @@ class ControlCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
 
     async def cli_cmd(self) -> None:
-        logger.debug("Starting control command")
+        logger.debug(f"Starting control command: {self.mode}")
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
@@ -64,7 +64,7 @@ class SimulationCmd(BaseSettings):
     mode: ModeName
 
     async def cli_cmd(self) -> None:
-        logger.debug("Starting simulation command")
+        logger.debug(f"Starting simulation command: {self.mode}")
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
@@ -97,13 +97,13 @@ class LockstepCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
-        logger.debug("Starting lockstep command")
+        logger.debug(f"Starting lockstep command: {self.mode}")
         mode = lookup_mode(self.mode)
 
         connector = MqttConnector(mqtt_client)
 
         if mode.simulation_description is None:
-            raise ValueError("simulation must be defined for lockstep mode")
+            raise ValueError(f"Simulation must be defined for lockstep mode. Chosen mode '{self.mode}' has no simulation description.")
 
         simulation_module = setup_simulation_module(
             connector,
