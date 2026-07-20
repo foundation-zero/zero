@@ -2,6 +2,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PressureSensorInstance } from "../../../instances";
+import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const pressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureSensor];
@@ -14,12 +15,25 @@ const pressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureSensor];
       y="555"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureSensors['1097-01']"
-    />
+    >
+      <PressureLabelInstance
+        x="453"
+        y="515"
+        tag-id="1097-01"
+        :pressure="pressureSensors['1097-01'].source"
+      />
+    </PressureSensorInstance>
     <PressureSensorInstance
       x="938.637"
       y="229"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureSensors['1097-02']"
-    />
+      ><PressureLabelInstance
+        x="934"
+        y="193"
+        tag-id="1097-02"
+        :pressure="pressureSensors['1097-02'].source"
+      />
+    </PressureSensorInstance>
   </g>
 </template>

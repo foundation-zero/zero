@@ -3,6 +3,7 @@ import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { ManualValveType } from "../../../components/manual-valve";
 import { ManualValveInstance } from "../../../instances";
+import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
@@ -16,69 +17,129 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-01']"
-    />
+    >
+      <TagLabelInstance
+        x="590.649"
+        y="147.576"
+        tag-id="1212-01"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="732"
       y="152"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-02']"
-    />
+    >
+      <TagLabelInstance
+        x="718.677"
+        y="147.576"
+        tag-id="1212-02"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="615.042"
       y="522"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-03']"
-    />
+    >
+      <TagLabelInstance
+        x="614.055"
+        y="510.724"
+        tag-id="1212-03"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="744.057"
       y="522"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-04']"
-    />
+    >
+      <TagLabelInstance
+        x="743.07"
+        y="510.724"
+        tag-id="1212-04"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="615.042"
       y="613"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-05']"
-    />
+    >
+      <TagLabelInstance
+        x="613.068"
+        y="610.72"
+        tag-id="1212-05"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="742.224"
       y="613"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-06']"
-    />
+    >
+      <TagLabelInstance
+        x="740.25"
+        y="610.72"
+        tag-id="1212-06"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="214"
       y="299"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-07']"
-    />
+    >
+      <TagLabelInstance
+        x="214.722"
+        y="290"
+        tag-id="1212-07"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="1025.775"
       y="190.5"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1084-01']"
-    />
+    >
+      <TagLabelInstance
+        x="1025.775"
+        y="185"
+        tag-id="1084-01"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="214"
       y="567"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-03']"
-    />
+    >
+      <TagLabelInstance
+        x="214.722"
+        y="560.724"
+        tag-id="1087-03"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
       x="1025.775"
       y="140.5"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-08']"
-    />
+    >
+      <TagLabelInstance
+        x="1025.775"
+        y="136"
+        tag-id="1087-08"
+      />
+    </ManualValveInstance>
   </g>
 </template>
