@@ -16,6 +16,8 @@ export const enum MimicComponentType {
   FlowSensor = "FlowSensor",
   ManualValve = "ManualValve",
   MixValve = "MixValve",
+  CheckValve = "CheckValve",
+  ThreeWaySwitchValve = "ThreeWaySwitchValve",
   LevelSensor = "LevelSensor",
 }
 
