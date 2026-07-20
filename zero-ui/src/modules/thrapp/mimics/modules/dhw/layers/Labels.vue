@@ -19,10 +19,5 @@ import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
       y="19"
       tag-id="1098-03"
     />
-    <TagLabelInstance
-      x="236"
-      y="432"
-      tag-id="1095-14"
-    />
   </g>
 </template>
