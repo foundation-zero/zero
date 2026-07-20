@@ -332,6 +332,7 @@ services:
     ports:
       - "5102:5102"
     environment: &thrs_env
+      MACHINE_STATE_LOGGING: ${MACHINE_STATE_LOGGING:-true}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       MQTT_DEVICES_TOPIC_PREFIX: devices_topic

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime
+from sqlalchemy import Column, DateTime
 from sqlalchemy import Enum as SAEnum
 from sqlmodel import Field, SQLModel
 
@@ -16,12 +16,14 @@ class MachineStateIssue(MachineStateModelBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     severity_level: Severity = Field(
-        sa_type=SAEnum(Severity, native_enum=False, length=None)
+        sa_column=Column(
+            SAEnum(Severity, native_enum=False, length=None), nullable=False
+        )
     )
     issue_details: str | None
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_type=DateTime(timezone=True),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
 
@@ -33,7 +35,7 @@ class MachineStateEvent(MachineStateModelBase, table=True):
     event_details: str | None
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_type=DateTime(timezone=True),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
 
@@ -47,7 +49,7 @@ class MachineStateTransition(MachineStateModelBase, table=True):
     state_to: str
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_type=DateTime(timezone=True),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
 
@@ -61,5 +63,5 @@ class MachineStateParametersUpdate(MachineStateModelBase, table=True):
     parameters_diff: str | None
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_type=DateTime(timezone=True),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )

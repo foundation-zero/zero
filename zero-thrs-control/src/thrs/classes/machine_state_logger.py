@@ -5,12 +5,11 @@ import warnings
 from abc import abstractmethod
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Coroutine, Literal
+from typing import Any, Coroutine, Literal, Protocol
 
 from sqlmodel import SQLModel
 from transitions import Machine, State
 
-from thrs.classes.control import Control
 from thrs.classes.database import PostgresDatabase
 from thrs.db.models.machine_state import (
     MachineStateEvent,
@@ -22,6 +21,18 @@ from thrs.input_output.alarms import Severity
 from thrs.input_output.base import ThrsValues
 from thrs.utils.list import ensure_list
 from thrs.utils.model import get_model_from_to_diff
+
+
+class LoggableControl(Protocol):
+    """Ensue to receive a control with at least the following attributes,
+    to be used in the state machine logging service.
+
+    Structurally matches Control without importing it,
+    keeping the dependency graph acyclic (since Control imports StateLogger)."""
+
+    state_logger: "StateLogger"
+    _parameters: Any
+    state: str
 
 
 class MachineStateValuesType(Enum):
@@ -114,14 +125,11 @@ class StateLogger:
     @abstractmethod
     def create_logged_state_machine(
         self,
-        control: "Control",
+        control: LoggableControl,
         transitions: list[dict],
         states: list[State],
         initial: str,
     ) -> Machine: ...
-
-    @property
-    def machinestate_logger(self) -> MachineStateLogger: ...
 
     # TODO: Delete when rebased to main
     @abstractmethod
@@ -146,7 +154,7 @@ class StateLogger:
 
     @staticmethod
     def log_parameters(func):
-        def wrapper(self: "Control", parameters: "ThrsValues"):
+        def wrapper(self: Any, parameters: ThrsValues):
             if hasattr(self, "state_logger") and self.state_logger:
                 self.state_logger.log_parameters_on_change(
                     values_from=self._parameters,
@@ -160,7 +168,7 @@ class StateLogger:
     @staticmethod
     def log_warnings(func):
         @wraps(func)
-        def wrapper(self: "Control", *args, **kwargs):
+        def wrapper(self: Any, *args, **kwargs):
             try:
                 return func(self, *args, **kwargs)
             except Warning as e:
@@ -173,7 +181,7 @@ class StateLogger:
     @staticmethod
     def log_alarms(func):
         @wraps(func)
-        def wrapper(self: "Control", *args, **kwargs):
+        def wrapper(self: Any, *args, **kwargs):
             result = None
             if hasattr(self, "state_logger") and self.state_logger:
                 with warnings.catch_warnings(record=True) as w:
@@ -196,7 +204,7 @@ class MachineStateLoggingServiceNoop(StateLogger):
 
     def create_logged_state_machine(
         self,
-        control: "Control",
+        control: LoggableControl,
         transitions: list[dict],
         states: list[State],
         initial: str,
@@ -237,7 +245,7 @@ class MachineStateLoggingService(StateLogger):
 
     def create_logged_state_machine(
         self,
-        control: "Control",
+        control: LoggableControl,
         transitions: list[dict],
         states: list[State],
         initial: str,
@@ -266,7 +274,7 @@ class MachineStateLoggingService(StateLogger):
         return machine
 
     def setup_transition_tracking(
-        self, transitions: list[dict[str, Any]], control: "Control"
+        self, transitions: list[dict[str, Any]], control: LoggableControl
     ):
         """Wraps the trigger methods of the transitions to track the last triggered transition."""
         for t in transitions:
@@ -283,7 +291,7 @@ class MachineStateLoggingService(StateLogger):
             setattr(control, trigger_name, wrapper())
 
     def setup_condition_tracking(
-        self, transitions: list[dict[str, Any]], control: "Control"
+        self, transitions: list[dict[str, Any]], control: LoggableControl
     ):
         """Wraps the condition methods to track the last created conditions."""
 
@@ -316,11 +324,11 @@ class MachineStateLoggingService(StateLogger):
     def machinestate_logger(self) -> MachineStateLogger:
         return self._machinestate_logger
 
-    def _before_log(self, control: "Control", sensor_values):
+    def _before_log(self, control: LoggableControl, sensor_values):
         """Called before the transition is made, to track the last state."""
         self.last_state = control.state
 
-    def _after_log(self, control: "Control", sensor_values):
+    def _after_log(self, control: LoggableControl, sensor_values):
         """Called after the transition is made, to log the transition and reset the tracked conditions."""
         condition_name: str = (
             ", ".join(self.last_evaluated_conditions)

@@ -7,6 +7,8 @@ from transitions import State
 from thrs.classes.machine_state_logger import (
     MachineStateLogger,
     MachineStateLoggingService,
+    MachineStateLoggingServiceNoop,
+    StateLogger,
 )
 from thrs.input_output.base import ThrsValues
 
@@ -21,13 +23,34 @@ class AnotherDummyThrsValues(ThrsValues):
 
 
 class DummyControl:
-    state: str
+    state: str = "unknown"
 
     def __init__(self) -> None:
         self.condition_dummy_trigger_result: bool = True
+        self._parameters: DummyThrsValues = DummyThrsValues()
+        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
     def condition_dummy_trigger(self, sensor_values: object) -> bool:
         return self.condition_dummy_trigger_result
+
+    def initial(self) -> tuple[DummyThrsValues, DummyThrsValues]:
+        return (DummyThrsValues(), DummyThrsValues())
+
+    def control(
+        self, sensor_values: DummyThrsValues
+    ) -> tuple[DummyThrsValues, DummyThrsValues]:
+        return (DummyThrsValues(), DummyThrsValues())
+
+    @property
+    def parameters(self) -> DummyThrsValues:
+        return self._parameters
+
+    @property
+    def mode(self) -> DummyThrsValues | None:
+        return None
+
+    def update_parameters(self, parameters: DummyThrsValues) -> None:
+        self._parameters = parameters
 
 
 def make_transitions() -> list[dict]:

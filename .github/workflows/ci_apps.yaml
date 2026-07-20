@@ -64,7 +64,7 @@ jobs:
         working-directory: zero-thrs-control
 
       - name: Run services
-        run: docker compose --profile loads --profile thrs up --quiet-pull --wait
+        run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait
 
       - name: Waiting for services to be ready
         run: sleep 30s

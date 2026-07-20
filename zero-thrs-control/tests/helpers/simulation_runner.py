@@ -83,7 +83,7 @@ class SimulationTestRunner[
     ) -> "SimulationTestRunner[S2, C2, I2, O2, P2, M2, CS2]":
         return SimulationTestRunner(
             simulation,
-            module.control(initial_control_parameters, simulation.time),
+            module.control(initial_control_parameters, simulation.time, None),
             module.alarms(),
         )
 

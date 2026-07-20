@@ -63,11 +63,13 @@ def setup_control_modules(
     machine_state_logging_service_enabled: bool = True,
 ) -> list[Module]:
     result = []
-    pg_database = PostgresDatabase(config)
+    pg_database: PostgresDatabase | None = (
+        PostgresDatabase(config) if machine_state_logging_service_enabled else None
+    )
     machine_state_logging_service: MachineStateLoggingService | None = None
 
     for module_name, module in control_modules.items():
-        if machine_state_logging_service_enabled:
+        if pg_database is not None:
             machine_state_logging_service = MachineStateLoggingService(pg_database)
 
         parameters = module.parameters_cls()

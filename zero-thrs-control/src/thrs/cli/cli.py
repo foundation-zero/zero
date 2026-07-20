@@ -2,7 +2,13 @@ import logging
 from datetime import datetime, timedelta
 
 from aiomqtt import Client as MqttClient
-from pydantic_settings import BaseSettings, CliApp, CliSubCommand, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    CliApp,
+    CliImplicitFlag,
+    CliSubCommand,
+    SettingsConfigDict,
+)
 
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
@@ -21,6 +27,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 class ControlCmd(BaseSettings):
     mode: ModeName
+    machine_state_logging: CliImplicitFlag[bool] = True
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command")
@@ -38,6 +45,7 @@ class ControlCmd(BaseSettings):
                 settings,
                 control_mode.control_modules,
                 datetime.now,
+                machine_state_logging_service_enabled=self.machine_state_logging,
             )
             runner = ControlRunner(control_modules, liveness_check)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
@@ -86,6 +94,7 @@ class SimulationCmd(BaseSettings):
 
 class LockstepCmd(BaseSettings):
     mode: ModeName
+    machine_state_logging: CliImplicitFlag[bool] = True
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command")
@@ -108,6 +117,7 @@ class LockstepCmd(BaseSettings):
             settings,
             mode.control_modules,
             time_fn=simulation_module.time,
+            machine_state_logging_service_enabled=self.machine_state_logging,
         )
 
         runner = LockstepRunner(control_modules, simulation_module)

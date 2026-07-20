@@ -2,6 +2,10 @@ from datetime import datetime
 from typing import Callable
 
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
@@ -75,6 +79,7 @@ class SimpleControl(
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (SimpleInOut.zero(), SimpleControllerState())

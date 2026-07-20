@@ -33,7 +33,7 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: "Callable[[P, Callable[[], datetime]], Control[S, C, P, M, CS]]",
+        control: "Callable[[P, Callable[[], datetime], StateLogger | None], Control[S, C, P, M, CS]]",
         control_mode_cls: type[M],
         controller_state_cls: type[CS],
         alarms: "Callable[[], BaseAlarms[S, C, P]]",
