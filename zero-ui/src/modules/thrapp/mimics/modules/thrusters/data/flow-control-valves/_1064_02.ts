@@ -13,7 +13,6 @@ import { tooltip } from "./shared";
 export default toInstance<MimicComponentType.FlowControlValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "thrusters", "thrustersFlowcontrolAft"),
-    pump: getField(ControlComponentType.Pump, "thrusters", "thrustersPump1"),
   },
   controllerState: {
     controller: getField(
@@ -22,11 +21,9 @@ export default toInstance<MimicComponentType.FlowControlValve>({
       "aftFlowController",
     ),
   },
-  custom: {
-    controllerName: "aft_flow_controller",
-  },
+  custom: {},
   parameters: {
-    flow: getField(ParametersType.FlowControl, "thrusters", "aftFlowcontrolMinimumSetpoint"),
+    flow: getField(ParametersType.Tuning, "thrusters", "aftFlowBalanceTuning"),
   },
   source: getField(SensorComponentType.Valve, "thrusters", "thrustersFlowcontrolAft"),
   sensors: {

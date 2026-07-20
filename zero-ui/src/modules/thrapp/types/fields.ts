@@ -222,7 +222,7 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.Pump]: {
     flowController: PIDController<SensorComponentType.Flow>;
-    temperatureController: PIDController<SensorComponentType.Flow>;
+    temperatureController?: PIDController<SensorComponentType.Flow>;
   };
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {

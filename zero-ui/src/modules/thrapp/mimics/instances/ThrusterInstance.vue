@@ -3,12 +3,7 @@ import { SensorComponentType, ThrusterMode } from "@/modules/thrs/types";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
-import {
-  ValueList,
-  ValueListItem,
-  ValueListSeparator,
-  ValueListTemperatureItem,
-} from "../components/value-list";
+import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import { getMimicDataProvider, ModuleField } from "../providers";
 
@@ -78,11 +73,6 @@ const modeLabelMap: Record<string, string> = {
           thruster?.active?.value ? t("thrapp.labels.on") : t("thrapp.labels.off")
         }}</strong>
       </ValueListItem>
-      <ValueListTemperatureItem
-        :label="t('thrapp.mimics.thrusters.assets.labels.internalTemperature')"
-        :value="temperature?.temperature?.value"
-      />
-      <ValueListSeparator />
     </ValueList>
   </HeatPump>
 </template>
