@@ -2,6 +2,7 @@
 import ActuatedValves from "./layers/ActuatedValves.vue";
 import Assets from "./layers/Assets.vue";
 import Bypasses from "./layers/Bypasses.vue";
+import CheckValves from "./layers/CheckValves.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
 import FlowSensors from "./layers/FlowSensors.vue";
@@ -9,6 +10,7 @@ import HeatExchangers from "./layers/HeatExchangers.vue";
 import Labels from "./layers/Labels.vue";
 import ManualValves from "./layers/ManualValves.vue";
 import Pipes from "./layers/Pipes.vue";
+import PressureGauges from "./layers/PressureGauges.vue";
 import PressureSensors from "./layers/PressureSensors.vue";
 import Pumps from "./layers/Pumps.vue";
 import TemperatureSensors from "./layers/TemperatureSensors.vue";
@@ -24,10 +26,12 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <Bypasses />
     <Pipes />
     <HeatExchangers />
+    <CheckValves />
     <ActuatedValves />
     <ManualValves />
     <Pumps />
     <PressureSensors />
+    <PressureGauges />
     <FlowSensors />
     <TemperatureSensors />
     <Labels />

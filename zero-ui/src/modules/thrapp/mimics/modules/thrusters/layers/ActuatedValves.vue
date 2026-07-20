@@ -5,40 +5,42 @@ import { MixValveInstance, SwitchValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowControlValveInstance from "../../../instances/FlowControlValveInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import ThreeWaySwitchValveInstance from "../../../instances/ThreeWaySwitchValveInstance.vue";
 import ThreeWayValveLabelInstance from "../../../instances/ThreeWayValveLabelInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const switchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.SwitchValve];
 const flowControlValves = THRUSTERS_MIMIC_DATA[MimicComponentType.FlowControlValve];
 const mixValves = THRUSTERS_MIMIC_DATA[MimicComponentType.MixValve];
+const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwitchValve];
 </script>
 
 <template>
   <g>
-    <MixValveInstance
+    <ThreeWaySwitchValveInstance
       x="414"
       y="193"
       :orientation="ComponentOrientation.Up"
-      v-bind="mixValves['1091-01']"
+      v-bind="threeWaySwitchValves['1091-01']"
     >
       <TagLabelInstance
         x="416"
         y="179"
         tag-id="1091-01"
       />
-    </MixValveInstance>
-    <MixValveInstance
+    </ThreeWaySwitchValveInstance>
+    <ThreeWaySwitchValveInstance
       x="414"
       y="449.5"
       :orientation="ComponentOrientation.Down"
-      v-bind="mixValves['1091-02']"
+      v-bind="threeWaySwitchValves['1091-02']"
     >
       <TagLabelInstance
         x="416"
         y="484"
         tag-id="1091-02"
       />
-    </MixValveInstance>
+    </ThreeWaySwitchValveInstance>
     <SwitchValveInstance
       x="575"
       y="346"

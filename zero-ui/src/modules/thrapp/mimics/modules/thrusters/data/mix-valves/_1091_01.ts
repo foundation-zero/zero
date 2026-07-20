@@ -4,7 +4,7 @@ import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
-export default toInstance<MimicComponentType.MixValve>({
+export default toInstance<MimicComponentType.ThreeWaySwitchValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "thrusters", "thrustersSwitchAft"),
   },
