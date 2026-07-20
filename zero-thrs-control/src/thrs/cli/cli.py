@@ -103,7 +103,9 @@ class LockstepCmd(BaseSettings):
         connector = MqttConnector(mqtt_client)
 
         if mode.simulation_description is None:
-            raise ValueError(f"Simulation must be defined for lockstep mode. Chosen mode '{self.mode}' has no simulation description.")
+            raise ValueError(
+                f"Simulation must be defined for lockstep mode. Chosen mode '{self.mode}' has no simulation description."
+            )
 
         simulation_module = setup_simulation_module(
             connector,
