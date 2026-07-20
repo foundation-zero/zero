@@ -8,6 +8,6 @@ export const LEVEL_SENSOR_WIDTH = 32;
 export const LEVEL_SENSOR_HEIGHT = 32;
 export const LEVEL_SENSOR_BASE_ORIENTATION = ComponentOrientation.Down;
 
-export const LEVEL_SENSOR_BODY_FILL = "var(--background-muted)";
+export const LEVEL_SENSOR_BODY_FILL = "var(--muted)";
 export const LEVEL_SENSOR_STROKE_COLOR = "var(--attention)";
 export const LEVEL_SENSOR_MARK_COLOR = "var(--foreground)";

@@ -7,6 +7,6 @@ export const PRESSURE_GAUGE_WIDTH = 32;
 export const PRESSURE_GAUGE_HEIGHT = 32;
 export const PRESSURE_GAUGE_BASE_ORIENTATION = ComponentOrientation.Down;
 
-export const PRESSURE_GAUGE_BODY_FILL = "var(--background-muted)";
+export const PRESSURE_GAUGE_BODY_FILL = "var(--muted)";
 export const PRESSURE_GAUGE_STROKE_COLOR = "var(--brand-muted)";
 export const PRESSURE_GAUGE_MARK_COLOR = "var(--foreground)";

@@ -8,6 +8,6 @@ export const FLOW_SENSOR_WIDTH = 40;
 export const FLOW_SENSOR_HEIGHT = 40;
 export const FLOW_SENSOR_BASE_ORIENTATION = ComponentOrientation.Down;
 
-export const FLOW_SENSOR_BODY_FILL = "var(--background-muted)";
+export const FLOW_SENSOR_BODY_FILL = "var(--muted)";
 export const FLOW_SENSOR_STROKE_COLOR = "var(--attention)";
 export const FLOW_SENSOR_MARK_COLOR = "var(--foreground)";

@@ -20,8 +20,8 @@ The component is stateless and directional:
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
+| Prop          | Type                   | Default                     | Description                                |
+| ------------- | ---------------------- | --------------------------- | ------------------------------------------ |
 | `orientation` | `ComponentOrientation` | `ComponentOrientation.Down` | Required direction for this gauge instance |
 
 ## Orientation Examples
@@ -55,8 +55,8 @@ The component is stateless and directional:
 
 ## Semantic Token Mapping
 
-| Role | Token |
-|---|---|
-| Gauge body fill | `--background-muted` |
+| Role                            | Token           |
+| ------------------------------- | --------------- |
+| Gauge body fill                 | `--muted`       |
 | Body frame stroke + stem stroke | `--brand-muted` |
-| Pointer + tip fill | `--foreground` |
+| Pointer + tip fill              | `--foreground`  |

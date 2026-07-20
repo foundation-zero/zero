@@ -8,6 +8,6 @@ export const CHECK_VALVE_WIDTH = 32;
 export const CHECK_VALVE_HEIGHT = 32;
 export const CHECK_VALVE_BASE_ORIENTATION = ComponentOrientation.Right;
 
-export const CHECK_VALVE_BODY_FILL = "var(--background-muted)";
+export const CHECK_VALVE_BODY_FILL = "var(--muted)";
 export const CHECK_VALVE_STROKE_COLOR = "var(--brand-muted)";
 export const CHECK_VALVE_MARK_COLOR = "var(--foreground)";
