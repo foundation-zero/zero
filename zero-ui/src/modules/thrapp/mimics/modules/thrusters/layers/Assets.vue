@@ -29,15 +29,5 @@ import { getField } from "../../../providers";
         getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureFwd')
       "
     />
-
-    <rect
-      x="1018"
-      y="68"
-      width="171.928"
-      height="180.927"
-      rx="12"
-      class="stroke-background-muted fill-transparent"
-      stroke-dasharray="4 4"
-    />
   </g>
 </template>
