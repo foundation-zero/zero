@@ -94,6 +94,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.HVAC]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
+    flow: SensorComponentType.Flow;
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
