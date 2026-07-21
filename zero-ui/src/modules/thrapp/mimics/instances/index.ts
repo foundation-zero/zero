@@ -17,6 +17,7 @@ export { default as PumpInstance } from "./PumpInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";
 export { default as ThreeWaySwitchValveInstance } from "./ThreeWaySwitchValveInstance.vue";
+export { default as ThreeWayValveLabelInstance } from "./ThreeWayValveLabelInstance.vue";
 
 export type TitleProps = {
   title: string;
