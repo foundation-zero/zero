@@ -9,6 +9,7 @@ from ..base import ReaderBase
 
 _DATA_TYPES = {
     "Float": "REAL",
+    "Double": "REAL",
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
     "Uint16": "INTEGER",
@@ -17,6 +18,10 @@ _DATA_TYPES = {
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
+    "Int64": "BIGINT",
+    "UInt32": "BIGINT",
+    "DateTime": "TIMESTAMP",
+    "UInt16": "INTEGER",
 }
 
 
@@ -50,6 +55,17 @@ class MarpowerReader(ReaderBase):
             .filter(pl.col("system") != "SPARE")
             .filter(pl.col("tag") != "SPARE")
         )
+        missing_target_types = (
+            filter_df.select(pl.col("target_type"))
+            .unique()
+            .filter(~pl.col("target_type").is_in(list(_DATA_TYPES.keys())))
+            .to_series()
+            .to_list()
+        )
+        if missing_target_types:
+            raise ValueError(
+                f"Missing target types in _DATA_TYPES mapping: {missing_target_types}"
+            )
         typed_df = filter_df.with_columns(
             pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
         ).with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
