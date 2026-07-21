@@ -43,19 +43,16 @@ CREATE TABLE loads.aws_ranges (
 );
 
 CREATE TABLE loads.load_cases (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    awa_range_id TEXT NOT NULL REFERENCES loads.awa_ranges(id) ON DELETE RESTRICT,
-    aws_range_id INTEGER NOT NULL REFERENCES loads.aws_ranges(id) ON DELETE RESTRICT,
-    sail_set_id INTEGER,
-    -- Future extensions:
-    -- sea_state_id INTEGER REFERENCES loads.sea_states(id),
-    -- propulsion_mode_id INTEGER REFERENCES loads.propulsion_modes(id),
-    UNIQUE(awa_range_id, aws_range_id, sail_set_id)
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    awa NUMERIC NOT NULL,
+    aws NUMERIC NOT NULL,
+    sail_set_id INTEGER
 );
 
 CREATE TABLE loads.reference_values (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    load_case_id UUID NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
+    load_case_id TEXT NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
     variable_key TEXT NOT NULL,
     alarm_low NUMERIC,
     warning_low NUMERIC,
@@ -69,4 +66,13 @@ CREATE TABLE loads.reference_values (
         (warning_high IS NULL OR target IS NULL OR target <= warning_high) AND
         (warning_high IS NULL OR alarm_high IS NULL OR warning_high <= alarm_high)
     )
+);
+
+CREATE TABLE loads.load_case_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    load_case_id TEXT NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
+    awa_range_id TEXT NOT NULL REFERENCES loads.awa_ranges(id) ON DELETE RESTRICT,
+    aws_range_id INT NOT NULL REFERENCES loads.aws_ranges(id) ON DELETE RESTRICT,
+    sail_set_id INT NOT NULL,
+    UNIQUE(awa_range_id, aws_range_id, sail_set_id)
 );

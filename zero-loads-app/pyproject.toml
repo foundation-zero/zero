@@ -63,6 +63,8 @@ httpx = "^0.28.1"
 pytest-timeout = "^2.3.1"
 pytest-mock = "^3.14.0"
 asgi-lifespan = ">=2.1.0,<3.0.0"
+pytest-postgresql = "^8.1.0"
+factory-boy = "^3.3.3"
 
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"

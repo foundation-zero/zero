@@ -1,4 +1,5 @@
 import logging
+from collections import defaultdict
 from typing import Literal, Sequence
 
 from sqlalchemy import Column, Subquery, cast, literal, or_, select, text
@@ -14,8 +15,10 @@ from loads.registry.registry import Applicability
 from .schema import (
     AwaRanges,
     AwsRanges,
+    LoadCaseMappings,
     LoadCases,
     ReferenceValues,
+    SailSets,
     SailSetsCombined,
 )
 from .schema import (
@@ -26,6 +29,7 @@ from .types import (
     AwaRange,
     AwsRange,
     CaseInput,
+    LoadCase,
     ReferenceValue,
     ReferenceValueInput,
     SailType,
@@ -42,26 +46,12 @@ async def get_loads_reference_values(
     session: AsyncSession,
 ) -> list[ReferenceValue]:
     """Return all reference values that match the current sails and conditions."""
-    query = (
-        select(ReferenceValues)
-        .where(ReferenceValues.variable_key.in_(variable_keys))
-        .where(
-            ReferenceValues.load_case.has(
-                LoadCases.awa_range.has(AwaRanges.id == case.awa_range.value)
-            )
-        )
-        .where(
-            ReferenceValues.load_case.has(
-                LoadCases.aws_range.has(
-                    AwsRanges.aws_range == text(f"'{case.aws_range.value}'::numrange")
-                )
-            )
-        )
-        .where(
-            ReferenceValues.load_case.has(
-                LoadCases.sail_set_id == create_sail_set_subq(case.sailset)
-            )
-        )
+
+    mapping_lookup = create_load_case_mapping_subq(case)
+
+    query = select(ReferenceValues).where(
+        ReferenceValues.variable_key.in_(variable_keys),
+        ReferenceValues.load_case_id == mapping_lookup.scalar_subquery(),
     )
 
     result = await session.execute(query)
@@ -82,6 +72,113 @@ async def get_loads_reference_values(
     else:
         logger.info(f"No reference values found for case: {case}")
         return []
+
+
+async def get_load_case(
+    case: CaseInput,
+    session: AsyncSession,
+) -> LoadCase | None:
+    """Return the load case that matches the current sails and conditions."""
+
+    mapping_lookup = create_load_case_mapping_subq(case)
+
+    query = select(LoadCases).where(LoadCases.id == mapping_lookup.scalar_subquery())
+
+    result = await session.execute(query)
+    load_case = result.scalar_one_or_none()
+
+    if load_case is None:
+        return None
+
+    return LoadCase(
+        id=ID(str(load_case.id)),
+        name=load_case.name,  # type: ignore
+        awa=load_case.awa,  # type: ignore
+        aws=load_case.aws,  # type: ignore
+    )
+
+
+async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
+    """Return all load cases."""
+
+    result = await session.execute(select(LoadCases))
+    load_cases = result.scalars().all()
+
+    return [
+        LoadCase(
+            id=ID(str(load_case.id)),
+            name=load_case.name,  # type: ignore
+            awa=load_case.awa,  # type: ignore
+            aws=load_case.aws,  # type: ignore
+        )
+        for load_case in load_cases
+    ]
+
+
+async def get_reference_values_by_case_ids(
+    load_case_ids: Sequence[str], session: AsyncSession
+) -> dict[str, list[ReferenceValue]]:
+    """Return all reference values grouped by load-case id."""
+
+    if not load_case_ids:
+        return {}
+
+    load_case_id_col = cast(ReferenceValues.load_case_id, TEXT)
+    query = select(load_case_id_col.label("load_case_id"), ReferenceValues).where(
+        load_case_id_col.in_([str(load_case_id) for load_case_id in load_case_ids])
+    )
+
+    result = await session.execute(query)
+    grouped: dict[str, list[ReferenceValue]] = defaultdict(list)
+
+    for load_case_id, ref_value in result.all():
+        grouped[str(load_case_id)].append(
+            ReferenceValue(
+                id=ref_value.variable_key,  # type: ignore
+                alarm_low=ref_value.alarm_low,  # type: ignore
+                warning_low=ref_value.warning_low,  # type: ignore
+                target=ref_value.target,  # type: ignore
+                warning_high=ref_value.warning_high,  # type: ignore
+                alarm_high=ref_value.alarm_high,  # type: ignore
+            )
+        )
+
+    return grouped
+
+
+async def get_sails_by_case_ids(
+    load_case_ids: Sequence[str], session: AsyncSession
+) -> dict[str, list[SailType]]:
+    """Return all sails grouped by load-case id."""
+
+    if not load_case_ids:
+        return {}
+
+    load_case_id_col = cast(LoadCases.id, TEXT)
+    query = (
+        select(load_case_id_col.label("load_case_id"), SailsTable)
+        .join(SailSets, SailSets.sail_set_id == LoadCases.sail_set_id)
+        .join(SailsTable, SailsTable.id == SailSets.sail_id)
+        .where(
+            load_case_id_col.in_([str(load_case_id) for load_case_id in load_case_ids])
+        )
+    )
+
+    result = await session.execute(query)
+    grouped: dict[str, list[SailType]] = defaultdict(list)
+
+    for load_case_id, sail in result.all():
+        grouped[str(load_case_id)].append(
+            SailType(
+                id=sail.id,  # type: ignore
+                abbreviation=sail.abbreviation,  # type: ignore
+                position_id=sail.position_id,  # type: ignore
+                name=sail.name,  # type: ignore
+                variant_name=sail.variant_name,  # type: ignore
+            )
+        )
+
+    return grouped
 
 
 async def set_loads_reference_values(
@@ -222,6 +319,20 @@ def create_sail_set_subq(sailset: Sequence[str]) -> ScalarSelect[int]:
     )
 
 
+def create_load_case_mapping_subq(case: CaseInput):
+    """Create query for a load-case mapping matching current ranges and sail set."""
+    return (
+        select(LoadCaseMappings.load_case_id)
+        .join(AwsRanges, AwsRanges.id == LoadCaseMappings.aws_range_id)
+        .where(
+            LoadCaseMappings.awa_range_id == case.awa_range.value,
+            AwsRanges.aws_range == text(f"'{case.aws_range.value}'::numrange"),
+            LoadCaseMappings.sail_set_id == create_sail_set_subq(case.sailset),
+        )
+        .limit(1)
+    )
+
+
 def sails_exact(
     sails_column: Column[Sequence[str]], sails: Sequence[str]
 ) -> ColumnElement[bool]:
@@ -234,10 +345,11 @@ def create_load_case_subq(
 ) -> Subquery:
     return (
         select(LoadCases.id)
-        .where(LoadCases.sail_set_id == create_sail_set_subq(sailset))
-        .join(AwaRanges, LoadCases.awa_range_id == AwaRanges.id)
-        .join(AwsRanges, LoadCases.aws_range_id == AwsRanges.id)
+        .join(LoadCaseMappings, LoadCaseMappings.load_case_id == LoadCases.id)
+        .join(AwaRanges, AwaRanges.id == LoadCaseMappings.awa_range_id)
+        .join(AwsRanges, AwsRanges.id == LoadCaseMappings.aws_range_id)
         .where(
+            LoadCaseMappings.sail_set_id == create_sail_set_subq(sailset),
             AwaRanges.id.in_([awa_range.value for awa_range in awa_ranges]),
             or_(
                 *[
