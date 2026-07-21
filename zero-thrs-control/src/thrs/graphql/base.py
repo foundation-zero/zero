@@ -213,6 +213,7 @@ class ThrsContext(BaseContext):
     consumers_messaging: ConsumersMessaging
     dhw_messaging: DhwMessaging
     simulation_messaging: SimulationMessaging
+    adsorption_messaging: AdsorptionMessaging
 
 
 type FieldMutation[T] = """Callable[

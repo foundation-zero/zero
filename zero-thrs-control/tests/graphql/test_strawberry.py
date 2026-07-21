@@ -8,6 +8,7 @@ from aiomqtt import Client as MqttClient
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
@@ -27,6 +28,7 @@ from thrs.graphql.messaging import (
     SimulationMessaging,
 )
 from thrs.graphql.strawberry import (
+    adsorption_messaging,
     consumers_messaging,
     dhw_messaging,
     messaging,
@@ -36,6 +38,10 @@ from thrs.graphql.strawberry import (
     thrusters_messaging,
 )
 from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.modules.adsorption import (
+    AdsorptionControlValues,
+    AdsorptionSensorValues,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -120,6 +126,7 @@ def test_client(app: FastAPI):
 def app(
     app: FastAPI,
     thrusters_messaging_mock: Mock,
+    adsorption_messaging_mock: Mock,
     messaging_mock: Mock,
     pvt_messaging_mock: Mock,
     pcm_messaging_mock: Mock,
@@ -129,6 +136,7 @@ def app(
 ):
     app.dependency_overrides[messaging] = lambda: messaging_mock
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_messaging_mock
+    app.dependency_overrides[adsorption_messaging] = lambda: adsorption_messaging_mock
     app.dependency_overrides[pvt_messaging] = lambda: pvt_messaging_mock
     app.dependency_overrides[pcm_messaging] = lambda: pcm_messaging_mock
     app.dependency_overrides[consumers_messaging] = lambda: consumers_messaging_mock
@@ -145,6 +153,25 @@ async def thrusters_messaging_mock():
     mock.parameters = ThrustersParameters()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=ThrustersControlMode(mode="idle")
+    )
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
+    return mock
+
+
+@pytest.fixture
+async def adsorption_messaging_mock():
+    mock = Mock(ControlMessaging)
+    mock.sensor_values = AdsorptionSensorValues.zero()
+    mock.control_values = AdsorptionControlValues.zero()
+    mock.parameters = AdsorptionParameters()
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=AdsorptionControlMode(mode="idle")
     )
 
     async def wait(condition, *_args, timeout):

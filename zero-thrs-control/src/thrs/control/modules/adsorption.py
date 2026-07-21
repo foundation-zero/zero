@@ -10,12 +10,11 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import AdsorptionChiller, Valve
 from thrs.input_output.definitions.units import (
-    ADSORPTION_CHILLER_MODE_OFF,
-    ADSORPTION_CHILLER_MODE_ON,
-    FREE_COOLING_MODE_AUTO,
-    TANK_CONTROL_MODE_BOTH,
+    AdsorptionChillerMode,
     Celsius,
+    FreeCoolingMode,
     Ratio,
+    TankControlMode,
     Tuning,
 )
 from thrs.input_output.modules.adsorption import (
@@ -69,11 +68,9 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
         ),
         adsorption_chiller=AdsorptionChiller(
             enable=Stamped(value=False, timestamp=timestamp),
-            mode=Stamped(value=ADSORPTION_CHILLER_MODE_OFF, timestamp=timestamp),
+            mode=Stamped(value=AdsorptionChillerMode.OFF, timestamp=timestamp),
             cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
-            free_cooling_mode=Stamped(
-                value=FREE_COOLING_MODE_AUTO, timestamp=timestamp
-            ),
+            free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=timestamp),
             available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
@@ -81,9 +78,7 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
             hot_minimum=Stamped(value=53.0, timestamp=timestamp),
             cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
             hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            tank_control_mode=Stamped(
-                value=TANK_CONTROL_MODE_BOTH, timestamp=timestamp
-            ),
+            tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=timestamp),
         ),
     )
 
@@ -279,13 +274,13 @@ class AdsorptionControl(
         )
 
         self._current_values.adsorption_chiller.mode = Stamped(
-            value=ADSORPTION_CHILLER_MODE_ON, timestamp=self._time()
+            value=AdsorptionChillerMode.ON, timestamp=self._time()
         )
 
         self._current_values.adsorption_chiller.free_cooling_mode = Stamped(
-            value=FREE_COOLING_MODE_AUTO
+            value=FreeCoolingMode.AUTO
             if self._parameters.free_cooling_enabled
-            else 0,
+            else FreeCoolingMode.OFF,
             timestamp=self._time(),
         )
 
