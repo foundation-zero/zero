@@ -156,19 +156,21 @@ class PcsMode(Enum):
     REGENERATION = "regeneration"
 
 
-ADSORPTION_CHILLER_MODE_OFF = 0
-ADSORPTION_CHILLER_MODE_ON = 1
-ADSORPTION_CHILLER_MODE_VALVE_RUN = 2
-ADSORPTION_CHILLER_MODE_ACTIVATION = 3
-AdsorptionChillerMode: TypeAlias = Literal[0, 1, 2, 3]
+class AdsorptionChillerMode(Enum):
+    OFF = 0
+    ON = 1
+    VALVE_RUN = 2
+    ACTIVATION = 3
 
-FREE_COOLING_MODE_OFF = 0
-FREE_COOLING_MODE_ON = 1
-FREE_COOLING_MODE_AUTO = 2
-FreeCoolingMode: TypeAlias = Literal[0, 1, 2]
 
-TANK_CONTROL_MODE_NONE = 0
-TANK_CONTROL_MODE_BOTH = 1
-TANK_CONTROL_MODE_COLD = 2
-TANK_CONTROL_MODE_HOT = 3
-TankControlMode: TypeAlias = Literal[0, 1, 2, 3]
+class FreeCoolingMode(Enum):
+    OFF = 0
+    ON = 1
+    AUTO = 2
+
+
+class TankControlMode(Enum):
+    NONE = 0
+    BOTH = 1
+    COLD = 2
+    HOT = 3

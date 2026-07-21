@@ -1,6 +1,7 @@
 import operator
 from abc import ABC, abstractmethod
 from datetime import datetime
+from enum import Enum
 from functools import reduce
 from typing import Any, cast
 
@@ -18,6 +19,13 @@ from thrs.input_output.fmu_mapping import (
 from thrs.orchestration.module import ModuleClassMap
 
 
+def get_value(model, component: str, field: str) -> Any:
+    val = getattr(getattr(model, component), field).value
+    if isinstance(val, Enum):
+        return val.value
+    return val
+
+
 def flatten_model_values(
     model: ThrsValues | CombinedValues, fmu_key_mapping: dict[tuple[str, str], str]
 ) -> dict[str, float]:
@@ -28,7 +36,7 @@ def flatten_model_values(
             {},
         )
     return {
-        fmu_key: getattr(getattr(model, component), field).value
+        fmu_key: get_value(model, component, field)
         for (component, field), fmu_key in fmu_key_mapping.items()
     }
 

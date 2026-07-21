@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
+import thrs.graphql.adsorption as adsorption
 import thrs.graphql.consumers as consumers
 import thrs.graphql.dhw as dhw
 import thrs.graphql.pcm as pcm
@@ -29,7 +30,9 @@ from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
+from thrs.graphql.adsorption import AdsorptionModule
 from thrs.graphql.base import (
+    AdsorptionMessaging,
     ConsumersMessaging,
     DhwMessaging,
     FieldMutation,
@@ -87,6 +90,10 @@ class ControlModules:
     @strawberry.field
     def dhw(self, info: strawberry.Info[ThrsContext]) -> DhwModule:
         return dhw.resolve_module(info.context.dhw_messaging)
+
+    @strawberry.field
+    def adsorption(self, info: strawberry.Info[ThrsContext]) -> AdsorptionModule:
+        return adsorption.resolve_module(info.context.adsorption_messaging)
 
 
 @strawberry.type
@@ -213,6 +220,10 @@ def dhw_messaging(request: Request) -> DhwMessaging:
     return request.app.state.dhw_messaging
 
 
+def adsorption_messaging(request: Request) -> AdsorptionMessaging:
+    return request.app.state.adsorption_messaging
+
+
 def simulation_messaging(request: Request) -> SimulationMessaging:
     return request.app.state.simulation_messaging
 
@@ -224,6 +235,7 @@ async def get_context(
     pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
     consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
     dhw_messaging: Annotated[DhwMessaging, Depends(dhw_messaging)],
+    adsorption_messaging: Annotated[AdsorptionMessaging, Depends(adsorption_messaging)],
     simulation_messaging: Annotated[SimulationMessaging, Depends(simulation_messaging)],
 ):
     return ThrsContext(
@@ -233,6 +245,7 @@ async def get_context(
         pcm_messaging=pcm_messaging,
         consumers_messaging=consumers_messaging,
         dhw_messaging=dhw_messaging,
+        adsorption_messaging=adsorption_messaging,
         simulation_messaging=simulation_messaging,
     )
 
