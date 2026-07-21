@@ -1,4 +1,3 @@
-import json
 from unittest.mock import Mock
 
 import pytest
@@ -25,7 +24,7 @@ def test_log_parameters_initial_state(
     assert model.data_container_name == "DummyThrsValues"
     assert model.parameters_from is None
     assert model.parameters_diff is None
-    assert json.loads(model.parameters_to) == json.loads(initial.model_dump_json())
+    assert model.parameters_to == initial.model_dump(mode="json")
 
 
 def test_log_parameters_on_change_logs_diff(
@@ -39,13 +38,10 @@ def test_log_parameters_on_change_logs_diff(
     model = added_model(mock_session)
     assert isinstance(model, MachineStateParametersUpdate)
     assert model.data_container_name == "DummyThrsValues"
-    assert json.loads(model.parameters_from or "") == json.loads(
-        values_from.model_dump_json()
-    )
-    assert json.loads(model.parameters_to) == json.loads(values_to.model_dump_json())
+    assert model.parameters_from == values_from.model_dump(mode="json")
+    assert model.parameters_to == values_to.model_dump(mode="json")
     assert model.parameters_diff is not None
-    diff: dict = json.loads(model.parameters_diff)
-    assert set(diff.keys()) == {"flow"}
+    assert set(model.parameters_diff.keys()) == {"flow"}
 
 
 def test_log_parameters_on_change_skips_equal_values(

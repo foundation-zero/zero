@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import warnings
 from abc import abstractmethod
@@ -17,7 +16,7 @@ from thrs.db.models.machine_state import (
     MachineStateParametersUpdate,
     MachineStateTransition,
 )
-from thrs.input_output.alarms import Severity
+from thrs.input_output.alarms import Alarm, Severity
 from thrs.input_output.base import ThrsValues
 from thrs.utils.list import ensure_list
 from thrs.utils.model import get_model_from_to_diff
@@ -136,6 +135,7 @@ class StateLogger:
     def clone_for_module(self) -> "StateLogger": ...
 
     def log_issue(self, message: str, severity: Severity): ...
+    def log_alarm(self, alarm: Alarm) -> None: ...
     def log_event(self, event: MachineStateEvent): ...
 
     async def shutdown(self) -> None:
@@ -356,7 +356,7 @@ class MachineStateLoggingService(StateLogger):
                 control_name=self.__class__.__name__,
                 data_container_name=type(initial_state).__name__,
                 parameters_from=None,
-                parameters_to=initial_state.model_dump_json(),
+                parameters_to=initial_state.model_dump(mode="json"),
                 parameters_diff=None,
             )
         )
@@ -372,8 +372,8 @@ class MachineStateLoggingService(StateLogger):
                 f"From and To values must be of the same type for comparison, got From: {type(values_from)} and To: {type(values_to)}"
             )
 
-        model_to: dict[str, Any] = values_from.model_dump()
-        model_from: dict[str, Any] = values_to.model_dump()
+        model_to: dict[str, Any] = values_to.model_dump()
+        model_from: dict[str, Any] = values_from.model_dump()
 
         if model_to != model_from:
             model_diff: dict[str, dict[Literal["from", "to"], Any]] = (
@@ -384,9 +384,9 @@ class MachineStateLoggingService(StateLogger):
                 MachineStateParametersUpdate(
                     control_name=self.__class__.__name__,
                     data_container_name=type(values_from).__name__,
-                    parameters_from=values_from.model_dump_json(),
-                    parameters_to=values_to.model_dump_json(),
-                    parameters_diff=json.dumps(model_diff),
+                    parameters_from=values_from.model_dump(mode="json"),
+                    parameters_to=values_to.model_dump(mode="json"),
+                    parameters_diff=model_diff,
                 )
             )
 

@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
+from typing import Any
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy import Enum as SAEnum
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 from thrs.input_output.alarms import Severity
@@ -58,9 +60,13 @@ class MachineStateParametersUpdate(MachineStateModelBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     data_container_name: str
-    parameters_from: str | None
-    parameters_to: str
-    parameters_diff: str | None
+    parameters_from: dict[str, Any] | None = Field(
+        default=None, sa_column=Column(JSONB, nullable=True)
+    )
+    parameters_to: dict[str, Any] = Field(sa_column=Column(JSONB, nullable=False))
+    parameters_diff: dict[str, Any] | None = Field(
+        default=None, sa_column=Column(JSONB, nullable=True)
+    )
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
         sa_column=Column(DateTime(timezone=True), nullable=False),

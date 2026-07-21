@@ -50,7 +50,7 @@ def test_log_parameters_saves_to_database(
         control_name="TestControl",
         data_container_name="DummyParameters",
         parameters_from=None,
-        parameters_to="{}",
+        parameters_to={},
         parameters_diff=None,
     )
 
