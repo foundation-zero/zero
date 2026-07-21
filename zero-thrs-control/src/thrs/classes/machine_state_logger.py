@@ -129,10 +129,6 @@ class StateLogger:
         initial: str,
     ) -> Machine: ...
 
-    # TODO: Delete when rebased to main
-    @abstractmethod
-    def clone_for_module(self) -> "StateLogger": ...
-
     def log_issue(self, message: str, severity: Severity): ...
     def log_alarm(self, alarm: Alarm) -> None: ...
     def log_event(self, event: MachineStateEvent): ...
@@ -218,9 +214,6 @@ class MachineStateLoggingServiceNoop(StateLogger):
             initial=initial,
         )
 
-    def clone_for_module(self) -> "StateLogger":
-        return self
-
 
 class MachineStateLoggingService(StateLogger):
     """Service to be inherited by a state machine using class. Providing logging capabilities for state transitions (and the triggered condition(s)), changing THRS values, custom events and issues."""
@@ -233,11 +226,6 @@ class MachineStateLoggingService(StateLogger):
         self.last_trigger_name: str | None = "Unknown"
         self.last_evaluated_conditions: list[str] = []
         self.console_logger = logging.getLogger(__name__)
-
-    def clone_for_module(self) -> "StateLogger":
-        clone = MachineStateLoggingService(self.machinestate_logger.postgres_db)
-        clone._machinestate_logger = self._machinestate_logger
-        return clone
 
     async def shutdown(self) -> None:
         """Wait for in-flight logging tasks, then dispose the database engine."""
