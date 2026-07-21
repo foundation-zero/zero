@@ -63,6 +63,7 @@ class Module[
         self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
         self._alarms = alarms
         self._channels = channels
+        self._active_alarms: dict[str, "Alarm"] = {}
 
     @property
     def control_state_logger(self) -> StateLogger:

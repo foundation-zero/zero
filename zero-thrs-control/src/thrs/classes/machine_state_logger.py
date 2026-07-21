@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from abc import abstractmethod
+from dataclasses import replace
 from enum import Enum
 from functools import partial, wraps
 from typing import Any, Coroutine, Literal, Protocol
@@ -175,11 +176,17 @@ class StateLogger:
 
     @staticmethod
     def log_alarms(func):
-        """Logs each Alarm returned by the wrapped function as its own issue row,
-        preserving the alarm's own code and severity.
+        """Logs alarm changes, each as its own issue row with the alarm's own code
+        and severity.
 
-        Applied to Module methods, which expose the control's logger as
-        `control_state_logger`."""
+        The wrapped function runs every control tick and returns every alarm that
+        is currently active. An alarm is logged only when it differs from what was
+        last seen for that code: newly raised, cleared and re-raised, or still active but
+        reporting a changed message (a new measured value). An unchanged alarm is skipped.
+
+        An alarm that was active and is no longer raised gets one row logged with the same code,
+        but with the severity RESOLVED, carrying the message it last reported.
+        """
 
         @wraps(func)
         def wrapper(self: Any, *args, **kwargs) -> list[Alarm]:
@@ -188,11 +195,46 @@ class StateLogger:
                 self, "control_state_logger", None
             )
             if state_logger:
-                for alarm in alarms:
-                    state_logger.log_alarm(alarm)
+                previously_active: dict[str, Alarm] = getattr(
+                    self, "_active_alarms", {}
+                )
+                currently_active: dict[str, Alarm] = {a.code: a for a in alarms}
+
+                StateLogger._log_new_or_changed_alarms(
+                    state_logger, previously_active, currently_active
+                )
+                StateLogger._log_resolved_alarms(
+                    state_logger, previously_active, currently_active
+                )
+
+                self._active_alarms = currently_active
             return alarms
 
         return wrapper
+
+    @staticmethod
+    def _log_new_or_changed_alarms(
+        state_logger: "StateLogger",
+        previously_active: dict[str, Alarm],
+        currently_active: dict[str, Alarm],
+    ) -> None:
+        """Log alarms that were not active before, or that are still active but
+        now report a different message."""
+        for code, alarm in currently_active.items():
+            if previously_active.get(code) != alarm:
+                state_logger.log_alarm(alarm)
+
+    @staticmethod
+    def _log_resolved_alarms(
+        state_logger: "StateLogger",
+        previously_active: dict[str, Alarm],
+        currently_active: dict[str, Alarm],
+    ) -> None:
+        """Log a RESOLVED row for alarms that were active and are no longer
+        raised, carrying the message they last reported."""
+        for code, alarm in previously_active.items():
+            if code not in currently_active:
+                state_logger.log_alarm(replace(alarm, severity=Severity.RESOLVED))
 
 
 class MachineStateLoggingServiceNoop(StateLogger):

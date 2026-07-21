@@ -9,6 +9,7 @@ from typing import Callable
 class Severity(Enum):
     WARNING = "warning"
     ALARM = "alarm"
+    RESOLVED = "resolved"  # Severity written when a previously active alarm is no longer raised.
 
 
 @dataclass
