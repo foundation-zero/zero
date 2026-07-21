@@ -26,6 +26,6 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   },
   tooltip: tooltip({
     yardTag: "1004",
-    technicalName: "Adsorption-HotWater-Exchanger",
+    technicalName: "adsorption-hot-water-exchanger",
   }),
 });

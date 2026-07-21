@@ -24,7 +24,7 @@ export default toInstance<MimicComponentType.Pump>({
   },
   tooltip: {
     title: "Pump",
-    itemName: "Circulation pump Hot freshwater",
+    itemName: "Circulation pump hot freshwater",
     technicalName: "dhw-pump",
     yardTag: "1022",
   },

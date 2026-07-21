@@ -8,7 +8,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
   controllerState: {},
   custom: {
-    circuitName: "High Temperature",
+    circuitName: "High temperature",
   },
   parameters: {},
   source: getCustomField("dhw", "high-temperature"),
@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
   },
   tooltip: tooltip({
-    title: "High Temperature",
+    title: "High temperature",
     technicalName: "high-temperature",
   }),
 });

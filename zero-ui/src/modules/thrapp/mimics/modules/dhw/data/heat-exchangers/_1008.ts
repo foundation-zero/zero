@@ -26,6 +26,6 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   },
   tooltip: tooltip({
     yardTag: "1008",
-    technicalName: "dhwDcExchanger",
+    technicalName: "dhw-dc-exchanger",
   }),
 });
