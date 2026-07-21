@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import warnings
 from abc import abstractmethod
 from enum import Enum
 from functools import partial, wraps
@@ -23,7 +22,7 @@ from thrs.utils.model import get_model_from_to_diff
 
 
 class LoggableControl(Protocol):
-    """Ensue to receive a control with at least the following attributes,
+    """Ensure to receive a control with at least the following attributes,
     to be used in the state machine logging service.
 
     Structurally matches Control without importing it,
@@ -180,21 +179,22 @@ class StateLogger:
 
     @staticmethod
     def log_alarms(func):
+        """Logs each Alarm returned by the wrapped function as its own issue row,
+        preserving the alarm's own code and severity.
+
+        Applied to Module methods, which expose the control's logger as
+        `control_state_logger`."""
+
         @wraps(func)
-        def wrapper(self: Any, *args, **kwargs):
-            result = None
-            if hasattr(self, "state_logger") and self.state_logger:
-                with warnings.catch_warnings(record=True) as w:
-                    warnings.simplefilter("always")
-                    result = func(self, *args, **kwargs)
-                    for warning in w:
-                        if isinstance(warning.message, Warning):
-                            self.state_logger.log_issue(
-                                message=str(warning.message), severity=Severity.ALARM
-                            )
-            else:
-                result = func(self, *args, **kwargs)
-            return result
+        def wrapper(self: Any, *args, **kwargs) -> list[Alarm]:
+            alarms: list[Alarm] = func(self, *args, **kwargs)
+            state_logger: StateLogger | None = getattr(
+                self, "control_state_logger", None
+            )
+            if state_logger:
+                for alarm in alarms:
+                    state_logger.log_alarm(alarm)
+            return alarms
 
         return wrapper
 
@@ -397,6 +397,13 @@ class MachineStateLoggingService(StateLogger):
                 severity_level=severity,
                 issue_details=message,
             )
+        )
+
+    def log_alarm(self, alarm: Alarm) -> None:
+        self.machinestate_logger.log_alarm(
+            alarm_name=alarm.code,
+            severity=alarm.severity,
+            message=alarm.message,
         )
 
     def log_event(self, event: MachineStateEvent):
