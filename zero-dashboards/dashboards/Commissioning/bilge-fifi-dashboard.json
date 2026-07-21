@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -104,7 +115,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 9,
         "x": 0,
         "y": 3
@@ -117,6 +128,10 @@
           "background": {
             "color": {
               "fixed": "transparent"
+            },
+            "image": {
+              "field": "water_separator_ppm_alarm",
+              "mode": "fixed"
             }
           },
           "border": {
@@ -1660,6 +1675,7 @@
               "placement": {
                 "height": 26,
                 "left": 471,
+                "rotation": 0,
                 "top": 220,
                 "width": 105
               },
@@ -2007,6 +2023,125 @@
                 "width": 98
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "water_separator_ppm_alarm"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "water_separator_ppm_alarm",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "water_separator_ppm_alarm",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 250,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Water separator PPM",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "water_separator_ppm_alarm label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 250,
+                "width": 184
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "water_separator_ppm_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                }
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "water_separator_ppm_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 243,
+                "rotation": 0,
+                "top": 250,
+                "width": 105
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1767698352074",
@@ -2051,7 +2186,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp,\r\n  level_sub_pump_1_alarm__value AS sub_pump1_alarm,\r\n  level_sub_pump_2_alarm__value AS sub_pump2_alarm,\r\n  level_sub_pump_3_alarm__value AS sub_pump3_alarm,\r\n  batt_comp_5_alarm__value AS batt_comp_5_alarm,\r\n  batt_comp_6_alarm__value AS batt_comp_6_alarm,\r\n  frame_13_alarm__value AS frame13_alarm,\r\n  frame_15_alarm__value AS frame15_alarm,\r\n  frame_30_alarm__value AS frame30_alarm,\r\n  frame_38_alarm__value AS frame38_alarm,\r\n  frame_38_ps_alarm__value AS frame38ps_alarm,\r\n  frame_38_sb_alarm__value AS frame38sb_alarm,\r\n  frame_46_alarm__value AS frame46_alarm,\r\n  frame_47_sb_alarm__value AS frame47sb_alarm,\r\n  frame_48_alarm__value AS frame48_alarm,\r\n  frame_53_alarm__value AS frame53_alarm,\r\n  frame_68_alarm__value AS frame68_alarm\r\nFROM marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  level_sub_pump_1_alarm__value    AS sub_pump1_alarm,\r\n  level_sub_pump_2_alarm__value    AS sub_pump2_alarm,\r\n  level_sub_pump_3_alarm__value    AS sub_pump3_alarm,\r\n  batt_comp_5_alarm__value         AS batt_comp_5_alarm,\r\n  batt_comp_6_alarm__value         AS batt_comp_6_alarm,\r\n  frame_13_alarm__value            AS frame13_alarm,\r\n  frame_15_alarm__value            AS frame15_alarm,\r\n  frame_30_alarm__value            AS frame30_alarm,\r\n  frame_38_alarm__value            AS frame38_alarm,\r\n  frame_38_ps_alarm__value         AS frame38ps_alarm,\r\n  frame_38_sb_alarm__value         AS frame38sb_alarm,\r\n  frame_46_alarm__value            AS frame46_alarm,\r\n  frame_47_sb_alarm__value         AS frame47sb_alarm,\r\n  frame_48_alarm__value            AS frame48_alarm,\r\n  frame_53_alarm__value            AS frame53_alarm,\r\n  frame_68_alarm__value            AS frame68_alarm,\r\n  water_separator_ppm_alarm__value AS water_separator_ppm_alarm\r\nFROM marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2095,7 +2230,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP_1_ALARM') then '(' || yard_tag || ')' else null end) AS sub_pump1_alarm_tag, max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP_2_ALARM') then '(' || yard_tag || ')' else null end) AS sub_pump2_alarm_tag, max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP_3_ALARM') then '(' || yard_tag || ')' else null end) AS sub_pump3_alarm_tag, max(case when mqtt_json_path = lower('BATT_COMP_5_ALARM') then '(' || yard_tag || ')' else null end) AS batt_comp_5_alarm_tag, max(case when mqtt_json_path = lower('BATT_COMP_6_ALARM') then '(' || yard_tag || ')' else null end) AS batt_comp_6_alarm_tag, max(case when mqtt_json_path = lower('FRAME_13_ALARM') then '(' || yard_tag || ')' else null end) AS frame13_alarm_tag, max(case when mqtt_json_path = lower('FRAME_15_ALARM') then '(' || yard_tag || ')' else null end) AS frame15_alarm_tag, max(case when mqtt_json_path = lower('FRAME_30_ALARM') then '(' || yard_tag || ')' else null end) AS frame30_alarm_tag, max(case when mqtt_json_path = lower('FRAME_38_ALARM') then '(' || yard_tag || ')' else null end) AS frame38_alarm_tag, max(case when mqtt_json_path = lower('FRAME_38_PS_ALARM') then '(' || yard_tag || ')' else null end) AS frame38ps_alarm_tag, max(case when mqtt_json_path = lower('FRAME_38_SB_ALARM') then '(' || yard_tag || ')' else null end) AS frame38sb_alarm_tag, max(case when mqtt_json_path = lower('FRAME_46_ALARM') then '(' || yard_tag || ')' else null end) AS frame46_alarm_tag, max(case when mqtt_json_path = lower('FRAME_47_SB_ALARM') then '(' || yard_tag || ')' else null end) AS frame47sb_alarm_tag, max(case when mqtt_json_path = lower('FRAME_48_ALARM') then '(' || yard_tag || ')' else null end) AS frame48_alarm_tag, max(case when mqtt_json_path = lower('FRAME_53_ALARM') then '(' || yard_tag || ')' else null end) AS frame53_alarm_tag, max(case when mqtt_json_path = lower('FRAME_68_ALARM') then '(' || yardTag || ')' else null end) AS frame68_alarmTag FROM marpower__io_metadata WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' LIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_3_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump3_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_5_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_5_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_6_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_6_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_13_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame13_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_15_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame15_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_30_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame30_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_PS_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38ps_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_46_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame46_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_47_SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame47sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_48_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame48_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_53_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame53_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_68_ALARM')         THEN '(' || yard_tag  || ')' ELSE NULL END) AS frame68_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BILGE_WATER_SEPARATOR_PPM_ALARM') THEN '(' || yard_tag  || ')' ELSE NULL END) AS water_separator_ppm_alarm_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2130,7 +2265,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -2145,7 +2291,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 15,
         "x": 9,
         "y": 3
@@ -4004,7 +4150,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tsubmers_pump_1_remavail__value as submers_pump1_remavail,\r\n\t\t\tsubmers_pump_1_running__value as submers_pump1_running,\r\n\t\t\tsubmers_pump_2_remavail__value as submers_pump2_remavail,\r\n\t\t\tsubmers_pump_2_running__value as submers_pump2_running,\r\n\t\t\tsubmers_pump_3_remavail__value as submers_pump3_remavail,\r\n\t\t\tsubmers_pump_3_running__value as submers_pump3_running,\r\n\t\t\tbckup_gen_serv_pump_remavail__value as bckup_gen_serv_pump_remavail,\r\n\t\t\tgen_serv_pump_1_remavail__value as gen_serv_pump1_remavail,\r\n\t\t\tgen_serv_pump_2_remavail__value as gen_serv_pump2_remavail,\r\n\t\t\tgen_serv_pump_2_field_start__value as gen_serv_pump2_field_start,\r\n\t\t\tgen_serv_pump_2_field_stop__value as gen_serv_pump2_field_stop,\r\n\t\t\tstrip_pump_remavail__value as strip_pump_remavail,\r\n\t\t\tstrip_pump_running__value as strip_pump_running,\r\n\t\t\tchain_lock_pump_remavail__value as chain_lock_pump_remavail,\r\n\t\t\tchain_lock_pump_running__value as chain_lock_pump_running\r\nfrom marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "select timestamp as time,\r\n\t\t\tsubmers_pump_1_remavail__value as submers_pump1_remavail,\r\n\t\t\tsubmers_pump_1_running__value as submers_pump1_running,\r\n\t\t\tsubmers_pump_2_remavail__value as submers_pump2_remavail,\r\n\t\t\tsubmers_pump_2_running__value as submers_pump2_running,\r\n\t\t\tsubmers_pump_3_remavail__value as submers_pump3_remavail,\r\n\t\t\tsubmers_pump_3_running__value as submers_pump3_running,\r\n\t\t\tbckup_gen_serv_pump_remavail__value as bckup_gen_serv_pump_remavail,\r\n\t\t\tgen_serv_pump_1_remavail__value as gen_serv_pump1_remavail,\r\n\t\t\tgen_serv_pump_2_remavail__value as gen_serv_pump2_remavail,\r\n\t\t\tgen_serv_pump_2_field_start__value as gen_serv_pump2_field_start,\r\n\t\t\tgen_serv_pump_2_field_stop__value as gen_serv_pump2_field_stop,\r\n\t\t\tstrip_pump_remavail__value as strip_pump_remavail,\r\n\t\t\tstrip_pump_running__value as strip_pump_running,\r\n\t\t\tchain_lock_pump_remavail__value as chain_lock_pump_remavail,\r\n\t\t\tchain_lock_pump_running__value as chain_lock_pump_running\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4082,7 +4228,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -4100,7 +4257,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -4998,7 +5155,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tsubmers_pump_1_startstop__value as submers_pump1_startstop,\r\n\t\t\tsubmers_pump_2_startstop__value as submers_pump2_startstop,\r\n\t\t\tsubmers_pump_3_startstop__value as submers_pump3_startstop,\r\n\t\t\tstrip_pump_startstop__value as strip_pump_startstop,\r\n\t\t\tchain_lock_pump_startstop__value as chain_lock_pump_startstop,\r\n\t\t\tseparator_start__value as separator_start,\r\n\t\t\tgen_serv_pump_1_fdbck_fault__value as gen_serv_pump1_fdbck_fault\r\nfrom marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "select timestamp as time,\r\n\t\t\tsubmers_pump_1_startstop__value as submers_pump1_startstop,\r\n\t\t\tsubmers_pump_2_startstop__value as submers_pump2_startstop,\r\n\t\t\tsubmers_pump_3_startstop__value as submers_pump3_startstop,\r\n\t\t\tstrip_pump_startstop__value as strip_pump_startstop,\r\n\t\t\tchain_lock_pump_startstop__value as chain_lock_pump_startstop,\r\n\t\t\tseparator_start__value as separator_start,\r\n\t\t\tgen_serv_pump_1_fdbck_fault__value as gen_serv_pump1_fdbck_fault\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5121,7 +5278,7 @@
         "h": 7,
         "w": 17,
         "x": 7,
-        "y": 11
+        "y": 12
       },
       "id": 4,
       "options": {
@@ -6315,7 +6472,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as time,\r\n\t\t\tpress_sensor_fwd_ps_battery__value as press_sensor_fwd_ps_battery,\r\n\t\t\tpress_sensor_fwd_sb_battery__value as press_sensor_fwd_sb_battery,\r\n\t\t\tpress_sensor_aft_ps_battery__value as press_sensor_aft_ps_battery,\r\n\t\t\tpress_sensor_aft_sb_battery__value as press_sensor_aft_sb_battery,\r\n\t\t\tchain_lock_presssensor__value as chain_lock_presssensor,\r\n\t\t\tpressure_sensor_210010691__value as pressure_sensor_210010691,\r\n\t\t\tpressure_sensor_210010692__value as pressure_sensor_210010692,\r\n\t\t\tpressure_sensor_210010693__value as pressure_sensor_210010693,\r\n\t\t\ttank_level__value as tank_level,\r\n\t\t\tforepeak_tempsensor__value as forepeak_tempsensor\r\nfrom marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "select timestamp as time,\r\n\t\t\tpress_sensor_fwd_ps_battery__value as press_sensor_fwd_ps_battery,\r\n\t\t\tpress_sensor_fwd_sb_battery__value as press_sensor_fwd_sb_battery,\r\n\t\t\tpress_sensor_aft_ps_battery__value as press_sensor_aft_ps_battery,\r\n\t\t\tpress_sensor_aft_sb_battery__value as press_sensor_aft_sb_battery,\r\n\t\t\tchain_lock_presssensor__value as chain_lock_presssensor,\r\n\t\t\tpressure_sensor_210010691__value as pressure_sensor_210010691,\r\n\t\t\tpressure_sensor_210010692__value as pressure_sensor_210010692,\r\n\t\t\tpressure_sensor_210010693__value as pressure_sensor_210010693,\r\n\t\t\ttank_level__value as tank_level,\r\n\t\t\tforepeak_tempsensor__value as forepeak_tempsensor\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6389,7 +6546,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "id": 6,
       "panels": [],
@@ -6599,7 +6756,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 20
       },
       "id": 7,
       "options": {
@@ -6641,7 +6798,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (topic)\r\n  topic,\r\n  alarm__value                  AS alarm,\r\n  close__value                  AS close,\r\n  closed__value                 AS closed,\r\n  hmi_cmd_close__value          AS hmi_cmd_close,\r\n  hmi_cmd_open__value           AS hmi_cmd_open,\r\n  hmi_control_available__value  AS hmi_control_available,\r\n  open__value                   AS open,\r\n  opened__value                 AS opened,\r\n  should_be_open__value         AS should_be_open\r\nFROM marpower__210000_bilge_fifi\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \r\n  topic, \r\n  timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (topic)\r\n  topic,\r\n  alarm__value                  AS alarm,\r\n  close__value                  AS close,\r\n  closed__value                 AS closed,\r\n  hmi_cmd_close__value          AS hmi_cmd_close,\r\n  hmi_cmd_open__value           AS hmi_cmd_open,\r\n  hmi_control_available__value  AS hmi_control_available,\r\n  open__value                   AS open,\r\n  opened__value                 AS opened,\r\n  should_be_open__value         AS should_be_open,\r\n  multi_state_alarm__value      AS multi_state_alarm,\r\n  power_detected__value         AS power_detected\r\nFROM marpower__210000_bilge_fifi\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic, timestamp DESC",
           "refId": "A",
           "sql": {
             "columns": [

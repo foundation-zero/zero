@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -105,7 +116,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 6,
         "x": 0,
         "y": 3
       },
@@ -292,7 +303,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tchlorine_unit_alarm__value as chlorine_unit_alarm\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -321,6 +332,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -334,9 +346,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('chlorine_unit_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) as chlorine_unit_alarm_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = 'chlorine_unit_alarm' THEN '(' || yard_tag || ')' ELSE NULL END) AS chlorine_unit_alarm_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -371,7 +382,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -386,8 +408,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
-        "x": 4,
+        "w": 8,
+        "x": 6,
         "y": 3
       },
       "id": 2,
@@ -417,11 +439,49 @@
             {
               "background": {
                 "color": {
-                  "field": "mts_inlet_flap_released",
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_circ_pump_running",
+                  "fixed": "Drain valve 1 - Position overboard",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "drain_valve1_pos_overboard label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 10,
+                "width": 275
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "drain_valve1_pos_overboard",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
-                  "field": "fresh_water_circ_pump_running",
                   "mode": "fixed"
                 }
               },
@@ -436,7 +496,7 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_circ_pump_running",
+                  "field": "drain_valve1_pos_overboard",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -447,7 +507,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_released",
+              "name": "drain_valve1_pos_overboard",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -473,10 +533,48 @@
                 "color": {
                   "fixed": "rgb(204, 204, 220)"
                 },
+                "size": 12,
+                "text": {
+                  "field": "drain_valve1_pos_overboard_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "drain_valve1_pos_overboard_tag",
+              "placement": {
+                "height": 26,
+                "left": 325,
+                "rotation": 0,
+                "top": 10,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
                 "size": 16,
                 "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": "Drain valve 2 - Position overboard",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -486,24 +584,23 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_released label",
+              "name": "drain_valve2_pos_overboard label",
               "placement": {
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 10,
-                "width": 209
+                "top": 40,
+                "width": 275
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "mts_inlet_flap_reset",
+                  "field": "drain_valve2_pos_overboard",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
-                  "field": "fresh_water_circ_pump_running",
                   "mode": "fixed"
                 }
               },
@@ -518,17 +615,18 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_circ_pump_running",
+                  "field": "drain_valve2_pos_overboard",
                   "mode": "fixed"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_reset",
+              "name": "drain_valve2_pos_overboard",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -554,11 +652,11 @@
                 "color": {
                   "fixed": "rgb(204, 204, 220)"
                 },
-                "size": 16,
+                "size": 12,
                 "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS inlet flap - Reset",
-                  "mode": "fixed"
+                  "field": "drain_valve2_pos_overboard_tag",
+                  "fixed": " ",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -567,450 +665,18 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "mts_inlet_flap_reset label",
+              "name": "drain_valve2_pos_overboard_tag",
               "placement": {
                 "height": 26,
-                "left": 50,
+                "left": 325,
                 "rotation": 0,
                 "top": 40,
-                "width": 209
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "mts_exhaust_flap_released",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_released",
-              "placement": {
-                "height": 25,
-                "left": 389,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS exhaust flap - Released",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_released label",
-              "placement": {
-                "height": 26,
-                "left": 424,
-                "top": 10,
-                "width": 238
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "mts_exhaust_flap_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset",
-              "placement": {
-                "height": 25,
-                "left": 389,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "MTS exhaust flap - Reset",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset label",
-              "placement": {
-                "height": 26,
-                "left": 424,
-                "top": 40,
-                "width": 238
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "fixed": "Drain valve - Position overboard",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "drain_valve_pos_overboard label",
-              "placement": {
-                "height": 26,
-                "left": 424,
-                "top": 70,
-                "width": 265
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "drain_valve_pos_overboard",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_circ_pump_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "drain_valve_pos_overboard",
-              "placement": {
-                "height": 25,
-                "left": 389,
-                "top": 70,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "mts_inlet_flap_released_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_released_tag",
-              "placement": {
-                "height": 26,
-                "left": 259,
-                "rotation": 0,
-                "top": 10,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "mts_inlet_flap_reset_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_inlet_flap_reset_tag",
-              "placement": {
-                "height": 26,
-                "left": 259,
-                "rotation": 0,
-                "top": 40,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "mts_exhaust_flap_released_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_released_tag",
-              "placement": {
-                "height": 26,
-                "left": 689,
-                "top": 9,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "mts_exhaust_flap_reset_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "mts_exhaust_flap_reset_tag",
-              "placement": {
-                "height": 26,
-                "left": 689,
-                "top": 39,
-                "width": 102
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "drain_valve_pos_overboard_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "drain_valve_pos_overboard_tag",
-              "placement": {
-                "height": 26,
-                "left": 689,
-                "top": 69,
                 "width": 102
               },
               "type": "text"
             }
           ],
-          "name": "Element 1767698352074",
+          "name": "drain_valve2_pos_overboard label",
           "placement": {
             "height": 100,
             "left": 0,
@@ -1052,7 +718,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tmts_inlet_fire_flap_released__value as mts_inlet_flap_released,\r\n\t\t\tmts_inlet_fire_flap_fully_reset__value as mts_inlet_flap_reset,\r\n\t\t\tmts_exhaust_fire_flap_released__value as mts_exhaust_flap_released,\r\n\t\t\tmts_exhaust_fire_flap_fully_reset__value as mts_exhaust_flap_reset,\r\n\t\t\tdrain_vlv_y_02_pos_overboard__value as drain_valve_pos_overboard\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1081,6 +747,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1094,9 +761,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y01_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve1_pos_overboard_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve2_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1130,7 +796,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
@@ -1146,8 +823,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 8,
-        "x": 16,
+        "w": 10,
+        "x": 14,
         "y": 3
       },
       "id": 3,
@@ -1574,7 +1251,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tvalve_cold_air_fr_68_y_03_openclose__value as valve_cold_air_cool_water_y03,\r\n\t\t\tvalve_cold_air_fr_32_y_04_openclose__value as valve_cold_air_cool_water_y04,\r\n\t\t\tvalve_cold_air_fr_32_y_05_openclose__value as valve_cold_air_cool_water_y05\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1603,6 +1280,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1616,9 +1294,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr68_y03_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y03_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y04_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y04_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y05_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr68_y03_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr32_y04_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'valve_cold_air_fr32_y05_openclose' THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y05_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1773,7 +1450,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_released__value AS mts_inlet_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_fully_reset__value AS mts_inlet_flap_reset,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_released__value AS mts_exhaust_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_fully_reset__value AS mts_exhaust_flap_reset,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
+              "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tchlorine_unit_alarm__value                 AS fresh_water_chlorine_unit_alarm,\r\n\tdrain_vlv_y_01_pos_overboard__value        AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value        AS drain_valve2_pos_overboard,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2687,7 +2364,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS timestamp,\r\nadiabatic_cool_b_03_flow__value AS adiabatic_cool_b03,\r\nadiabatic_cool_b_07_flow__value AS adiabatic_cool_b07,\r\nadiabatic_cool_b_08_flow__value AS adiabatic_cool_b08,\r\nadiabatic_cool_b_09_flow__value AS adiabatic_cool_b09,\r\nreel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\nreel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\nreel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2716,6 +2393,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -2729,9 +2407,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b03_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b03_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b07_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b07_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b08_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b08_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b09_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b09_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b04_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b04_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b05_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b05_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b06_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b06_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b03_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b07_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b07_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b08_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b08_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'adiabatic_cool_b09_flow' THEN '(' || yard_tag || ')' ELSE NULL END)     AS adiabatic_cool_b09_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b04_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b05_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b05_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'reel_for_deckwash_b06_flow' THEN '(' || yard_tag || ')' ELSE NULL END)  AS deckwash_reel_b06_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3553,7 +3230,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS timestamp,\r\n\t\t\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp,\r\n\t\t\tsalinity_1__value AS salinity1,\r\n\t\t\tsalinity_2__value AS salinity2,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2,\r\n\ttank_1_level__value              AS tank1_level,\r\n\ttank_2_level__value              AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3582,6 +3259,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3595,9 +3273,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_temp') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity1') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity2') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b01_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b02_temp' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity1' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity2' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3706,7 +3383,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 18
           },
           "id": 15,
           "options": {
@@ -3743,7 +3420,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, adiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tadiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3859,7 +3536,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 26
           },
           "id": 17,
           "options": {
@@ -3896,7 +3573,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, reel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\treel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4023,7 +3700,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 34
           },
           "id": 16,
           "options": {
@@ -4060,7 +3737,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, charcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\t\t\t\t\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4174,7 +3851,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 42
           },
           "id": 19,
           "options": {
@@ -4211,7 +3888,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, salinity_1__value AS salinity1,\r\n\t\t\t\t\t\t\t\t\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4325,7 +4002,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 50
           },
           "id": 18,
           "options": {
@@ -4362,7 +4039,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, tank_1_level__value AS tank1_level,\r\n\t\t\t\t\t\t\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [

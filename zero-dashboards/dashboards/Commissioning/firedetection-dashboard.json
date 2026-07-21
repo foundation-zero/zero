@@ -85,7 +85,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -103,8 +114,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 14,
+        "h": 3,
+        "w": 15,
         "x": 0,
         "y": 3
       },
@@ -131,7 +142,7 @@
             {
               "background": {
                 "color": {
-                  "field": "detect_fault",
+                  "field": "fire_detection",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -160,7 +171,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "detect_fault",
+              "name": "fire_detection",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -189,7 +200,7 @@
                 "size": 16,
                 "text": {
                   "field": "fresh_water_mak1_alarm",
-                  "fixed": "Fire detect fault",
+                  "fixed": "Fire detection",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -199,7 +210,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "detect_fault label",
+              "name": "fire_detection label",
               "placement": {
                 "height": 26,
                 "left": 50,
@@ -293,85 +304,6 @@
             {
               "background": {
                 "color": {
-                  "field": "aux_sys_service_supply_fail",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aux_sys_service_supply_fail",
-              "placement": {
-                "height": 25,
-                "left": 470,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
-                  "fixed": "Aux. system service supply failure",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aux_sys_service_supply_fail label",
-              "placement": {
-                "height": 26,
-                "left": 505,
-                "top": 10,
-                "width": 300
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
                   "field": "aux_sys_emergency_supply_fail",
                   "fixed": "#D9D9D9"
                 },
@@ -405,7 +337,8 @@
               "placement": {
                 "height": 25,
                 "left": 470,
-                "top": 40,
+                "rotation": 0,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -443,7 +376,8 @@
               "placement": {
                 "height": 26,
                 "left": 505,
-                "top": 40,
+                "rotation": 0,
+                "top": 10,
                 "width": 300
               },
               "type": "text"
@@ -491,7 +425,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdetect_fault__value as detect_fault,\r\n\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
+          "rawSql": "SELECT\r\n  timestamp                                        AS timestamp,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -526,7 +460,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -540,9 +485,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 10,
-        "x": 14,
+        "h": 3,
+        "w": 9,
+        "x": 15,
         "y": 3
       },
       "id": 2,
@@ -690,7 +635,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
+          "rawSql": "SELECT\r\n  timestamp                AS timestamp,\r\n\tfire_doors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -715,12 +660,729 @@
       "type": "canvas"
     },
     {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-reds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "noValue": "-",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": 0
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/test/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-greens"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 26,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            },
+            "image": {
+              "field": "",
+              "fixed": "",
+              "mode": "fixed"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "field": "common_alarm",
+                  "fixed": "dark-red"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_mak1_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "common_alarm",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 11,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_mak1_alarm",
+                  "fixed": "Common alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "common_alarm label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 10,
+                "width": 199
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "faults",
+                  "fixed": "dark-red"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_mak2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "faults",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_mak2_alarm",
+                  "fixed": "Faults",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "faults label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 40,
+                "width": 199
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "disablements",
+                  "fixed": "dark-red"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "field"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_mak1_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "disablements",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 70,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_mak1_alarm",
+                  "fixed": "Disablements",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "disablements label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "top": 70,
+                "width": 199
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "tests",
+                  "fixed": "dark-green"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "field"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "tests",
+              "placement": {
+                "height": 25,
+                "left": 300,
+                "rotation": 0,
+                "top": 10,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "fixed": "Tests",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "tests label",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 10,
+                "width": 115.3846154
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "testbit",
+                  "fixed": "dark-green"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "field"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "testbit",
+              "placement": {
+                "height": 25,
+                "left": 300,
+                "rotation": 0,
+                "top": 39,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "fixed": "Test bit",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "testbit label",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 39,
+                "width": 115.3846154
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "fixed": "Command",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "command label",
+              "placement": {
+                "height": 26,
+                "left": 500,
+                "rotation": 0,
+                "top": 10,
+                "width": 158
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm",
+                  "fixed": "Parameter1",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "parameter1 label",
+              "placement": {
+                "height": 26,
+                "left": 500,
+                "rotation": 0,
+                "top": 45,
+                "width": 158
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "command",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 13",
+              "placement": {
+                "height": 30,
+                "left": 629,
+                "rotation": 0,
+                "top": 6,
+                "width": 150
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "parameter1",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 14",
+              "placement": {
+                "height": 30,
+                "left": 629,
+                "rotation": 0,
+                "top": 41,
+                "width": 150
+              },
+              "type": "metric-value"
+            }
+          ],
+          "name": "Element 1767698352074",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                      AS timestamp,\r\n\tfire_panel_alarms__value       AS common_alarm,\r\n\tfire_panel_faults__value       AS faults,\r\n\tfire_panel_disablements__value AS disablements,\r\n\tfire_panel_tests__value        AS tests,\r\n\tfire_panel_testbit__value      AS testbit,\r\n\tfire_panel_command__value      AS command,\r\n\tfire_panel_parameter_1__value  AS parameter1\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Fire panel",
+      "type": "canvas"
+    },
+    {
       "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 10
       },
       "id": 8,
       "panels": [
@@ -732,7 +1394,7 @@
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "continuous-greens"
+                "mode": "continuous-reds"
               },
               "custom": {
                 "axisPlacement": "auto",
@@ -770,17 +1432,10 @@
               },
               {
                 "matcher": {
-                  "id": "byRegexp",
-                  "options": "/.* (fault|failure)/"
+                  "id": "byName",
+                  "options": ""
                 },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "mode": "continuous-reds"
-                    }
-                  }
-                ]
+                "properties": []
               }
             ]
           },
@@ -788,7 +1443,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 8
+            "y": 11
           },
           "id": 9,
           "options": {
@@ -831,7 +1486,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp, detect_fault__value AS detect_fault,\r\n\t\t\t\t\t\t\t\t\tdoor_powersupplyfail__value AS door_power_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_servicesupplyfail__value AS aux_sys_service_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\t\t\t\t\t\t\t\t\tdoors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT\r\n  timestamp                                        AS time,\r\n\tfire_detect_muster__value                        AS fire_detection,\r\n\tfire_door_powersupplyfail__value                 AS door_power_supply_fail,\r\n\tfire_auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\tfire_doors_release__value                        AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -863,7 +1518,6 @@
                 "renameByName": {
                   "aux_sys_emergency_supply_fail": "Aux. sys. emergency supply failure",
                   "aux_sys_service_supply_fail": "Aux. sys. service supply failure",
-                  "detect_fault": "Fire detect fault",
                   "door_galley_keel_open": "Fire door galley/keel open",
                   "door_power_supply_fail": "Fire door power supply failure",
                   "doors_release": "Release fire doors"
@@ -884,7 +1538,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 11
       },
       "id": 15,
       "panels": [],
@@ -925,12 +1579,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -987,7 +1641,7 @@
         "h": 22,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 12
       },
       "id": 7,
       "options": {
@@ -1024,7 +1678,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1100,12 +1754,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1162,7 +1816,7 @@
         "h": 21,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 12
       },
       "id": 16,
       "options": {
@@ -1199,7 +1853,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1275,12 +1929,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1322,10 +1976,10 @@
         ]
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 30
+        "y": 33
       },
       "id": 18,
       "options": {
@@ -1362,7 +2016,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1438,12 +2092,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1485,10 +2139,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 34
       },
       "id": 21,
       "options": {
@@ -1525,7 +2179,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1573,7 +2227,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 42
       },
       "id": 20,
       "panels": [],
@@ -1614,12 +2268,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1661,10 +2315,10 @@
         ]
       },
       "gridPos": {
-        "h": 16,
+        "h": 15,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 43
       },
       "id": 19,
       "options": {
@@ -1701,7 +2355,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (\r\n    meta.room_or_area LIKE '%Storage%' \r\n    OR meta.room_or_area LIKE '%Office%' \r\n    OR meta.room_or_area LIKE '%Galley%' \r\n    OR meta.room_or_area LIKE '%Laundry%'\r\n  )\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND (\r\n    meta.room_or_area LIKE '%Storage%' \r\n    OR meta.room_or_area LIKE '%Office%' \r\n    OR meta.room_or_area LIKE '%Galley%' \r\n    OR meta.room_or_area LIKE '%Laundry%'\r\n  )\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1777,12 +2431,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1824,10 +2478,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 11,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 43
       },
       "id": 17,
       "options": {
@@ -1864,7 +2518,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1912,7 +2566,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 58
       },
       "id": 23,
       "panels": [],
@@ -1953,12 +2607,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2000,10 +2654,10 @@
         ]
       },
       "gridPos": {
-        "h": 15,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 59
       },
       "id": 13,
       "options": {
@@ -2040,7 +2694,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Battery%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Battery%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2116,12 +2770,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2163,10 +2817,10 @@
         ]
       },
       "gridPos": {
-        "h": 17,
+        "h": 16,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 59
       },
       "id": 24,
       "options": {
@@ -2203,7 +2857,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND (\r\n    meta.room_or_area LIKE '%Fore%' \r\n    OR meta.room_or_area LIKE '%Lazarette%' \r\n    OR meta.room_or_area LIKE '%Bilge%' \r\n    OR meta.room_or_area LIKE '%Pod%'\r\n  )\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND (\r\n    meta.room_or_area LIKE '%Fore%' \r\n    OR meta.room_or_area LIKE '%Lazarette%' \r\n    OR meta.room_or_area LIKE '%Bilge%' \r\n    OR meta.room_or_area LIKE '%Pod%'\r\n  )\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2279,12 +2933,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2366,7 +3020,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Technical%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Technical'\r\n  AND meta.room_or_area LIKE '%Technical%'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2455,12 +3109,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2542,7 +3196,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Hatch'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Hatch'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2618,12 +3272,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "\u274c"
+                  "text": "❌"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "\u2705"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2705,7 +3359,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Storage'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (meta.description)\r\n  meta.description,\r\n  fire.disabled__value     AS disabled,\r\n  fire.fault__value        AS fault,\r\n  fire.prealarm__value     AS prealarm,\r\n  fire.alarm__value        AS alarm,\r\n  fire.test__value         AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE $__timeFilter(timestamp)\r\n  AND meta.section = 'Storage'\r\nORDER BY \r\n  meta.description, \r\n  fire.timestamp DESC;",
           "refId": "A",
           "sql": {
             "columns": [
