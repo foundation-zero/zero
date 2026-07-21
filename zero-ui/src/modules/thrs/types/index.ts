@@ -400,6 +400,9 @@ export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
+export type DeltaTSensorDefinition = SensorDefinition<SensorComponentType.DeltaT>;
+export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
+export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
 export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
 
