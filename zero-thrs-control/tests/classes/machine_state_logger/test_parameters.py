@@ -42,6 +42,7 @@ def test_log_parameters_on_change_logs_diff(
     assert model.parameters_to == values_to.model_dump(mode="json")
     assert model.parameters_diff is not None
     assert set(model.parameters_diff.keys()) == {"flow"}
+    assert model.parameters_diff["flow"] == {"from": 1.0, "to": 2.0}
 
 
 def test_log_parameters_on_change_skips_equal_values(

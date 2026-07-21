@@ -372,12 +372,12 @@ class MachineStateLoggingService(StateLogger):
                 f"From and To values must be of the same type for comparison, got From: {type(values_from)} and To: {type(values_to)}"
             )
 
-        model_to: dict[str, Any] = values_to.model_dump()
         model_from: dict[str, Any] = values_from.model_dump()
+        model_to: dict[str, Any] = values_to.model_dump()
 
-        if model_to != model_from:
+        if model_from != model_to:
             model_diff: dict[str, dict[Literal["from", "to"], Any]] = (
-                get_model_from_to_diff(model_to, model_from)
+                get_model_from_to_diff(model_from, model_to)
             )
 
             self.machinestate_logger.log_parameters(
