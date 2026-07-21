@@ -18,6 +18,9 @@ run_lockstep module='dhw':
 [parallel]
 run module='dhw': run_api (run_lockstep module)
 
+[parallel]
+run_split module='dhw': run_api (run_control module) (run_simulation module)
+
 check: lint type_check test
 
 lint:
