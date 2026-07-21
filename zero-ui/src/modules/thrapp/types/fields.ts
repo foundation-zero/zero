@@ -74,6 +74,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: {
     incoming: SensorComponentType.Temperature;
@@ -111,6 +112,7 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     heatpump: ControlComponentType.Heatpump;
@@ -136,6 +138,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
@@ -161,6 +164,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
@@ -219,6 +223,7 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.FlowSensor]: {
     controller?: PIDController;
   };
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     controller?: PIDController;
@@ -239,6 +244,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.PressureGauge]: undefined;
   [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
   [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
+  [MimicComponentType.LevelSensor]: SensorComponentType.Level;
   [MimicComponentType.ManualValve]: undefined;
   [MimicComponentType.HeatPump]: SensorComponentType.HeatExchanger;
   [MimicComponentType.HVAC]: SensorComponentType.HeatExchanger;

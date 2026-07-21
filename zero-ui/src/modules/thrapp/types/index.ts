@@ -15,6 +15,7 @@ export const enum MimicComponentType {
   TemperatureSensor = "TemperatureSensor",
   FlowSensor = "FlowSensor",
   ManualValve = "ManualValve",
+  LevelSensor = "LevelSensor",
 }
 
 export type BoilerTankStateField = keyof Omit<DhwTankController, "timeToFill">;

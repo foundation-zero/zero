@@ -21,6 +21,7 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
     () => import("./PressureGaugeTooltip.vue"),
   ),
   [MimicComponentType.FlowSensor]: defineAsyncComponent(() => import("./FlowSensorTooltip.vue")),
+  [MimicComponentType.LevelSensor]: defineAsyncComponent(() => import("./LevelSensorTooltip.vue")),
   [MimicComponentType.TemperatureSensor]: defineAsyncComponent(
     () => import("./TemperatureSensorTooltip.vue"),
   ),
