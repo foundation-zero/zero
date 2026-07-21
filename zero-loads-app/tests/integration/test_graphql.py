@@ -27,7 +27,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-checkstay-ps-load"]) {
+                    variables(variables: ["main-sheet-load"]) {
                         id
                         reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -60,24 +60,24 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             "data": {
                 "variables": [
                     {
-                        "id": "main-checkstay-ps-load",
+                        "id": "main-sheet-load",
                         "reference": {
                             "alarmLow": None,
                             "warningLow": None,
-                            "target": 1.3,
-                            "warningHigh": 12.42,
-                            "alarmHigh": 13.8,
+                            "target": 9.6,
+                            "warningHigh": 13.5,
+                            "alarmHigh": 15.0,
                         },
                         "actual": {
-                            "id": "main-checkstay-ps-load",
+                            "id": "main-sheet-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-checkstay-ps-load",
-                            "name": "Checkstay PT",
+                            "id": "main-sheet-load",
+                            "name": "Sheet",
                             "unit": "tonne",
                             "scaleMin": 0.0,
-                            "scaleMax": 15.0,
+                            "scaleMax": 17.0,
                             "scaleMinLabel": None,
                             "scaleMaxLabel": None,
                         },
@@ -348,7 +348,7 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         json={
             "query": """
             query {
-                variables(variables: ["main-checkstay-ps-load"]) {
+                variables(variables: ["main-sheet-load"]) {
                     id
                     a: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
@@ -375,20 +375,20 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-checkstay-ps-load",
+                    "id": "main-sheet-load",
                     "a": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 1.3,
-                        "warningHigh": 12.42,
-                        "alarmHigh": 13.8,
+                        "target": 9.6,
+                        "warningHigh": 13.5,
+                        "alarmHigh": 15.0,
                     },
                     "b": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 1.3,
-                        "warningHigh": 12.42,
-                        "alarmHigh": 13.8,
+                        "target": 9.6,
+                        "warningHigh": 13.5,
+                        "alarmHigh": 15.0,
                     },
                 },
             ]

@@ -13,8 +13,7 @@ SELECT
 FROM (VALUES
     -- MAIN MAST
     ('main-runner-load', NULL, 26.4),
-    ('main-checkstay-ps-load', NULL, 13.8),
-    ('main-checkstay-sb-load', NULL, 13.8),
+    ('main-checkstay-load', NULL, 13.8),
     ('main-checkstay-deflector-load', NULL, 6.9),
     ('main-headstay-combined-load', NULL, NULL),
     ('fiber-optic-main-v1-ps', NULL, 77.5),
@@ -31,8 +30,7 @@ FROM (VALUES
 
     -- MIZZEN MAST
     ('mizzen-runner-load', NULL, 11.5),
-    ('mizzen-checkstay-ps-load', NULL, 2.45),
-    ('mizzen-checkstay-sb-load', NULL, 2.45),
+    ('mizzen-checkstay-load', NULL, 2.45),
     ('mizzen-checkstay-deflector-load', NULL, 0.75),
     ('fiber-optic-mizzen-v1-ps', NULL, 43.1),
     ('fiber-optic-mizzen-v1-sb', NULL, 43.1),
@@ -49,15 +47,12 @@ FROM (VALUES
 
     -- BLADE
     -- TODO: RT adjuster, cunningham
-    ('blade-sheet-feeder-ps-load', NULL, 18.0),
-    ('blade-tweaker-ps-load', NULL, 13.8),
-    ('blade-sheet-feeder-sb-load', NULL, 18.0),
-    ('blade-tweaker-sb-load', NULL, 13.8),
+    ('blade-sheet-feeder-load', NULL, 18.0),
+    ('blade-tweaker-load', NULL, 13.8),
 
     -- STAYSAIL
     -- RT adjuster
-    ('staysail-sheet-feeder-ps-load', NULL, 15.0),
-    ('staysail-sheet-feeder-sb-load', NULL, 15.0),
+    ('staysail-sheet-feeder-load', NULL, 15.0),
 
     -- CODE ZERO
     ('code-zero-tack-load', NULL, 30.0),
@@ -86,8 +81,7 @@ SELECT
     NULL,
     v.alarm_high
 FROM (VALUES
-    ('primary-winch-ps-load', 12.0),
-    ('primary-winch-sb-load', 12.0)
+    ('primary-winch-load', 12.0)
 ) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
@@ -109,8 +103,7 @@ SELECT
     NULL,
     v.alarm_high
 FROM (VALUES
-    ('aft-winch-ps-load', 9.0),
-    ('aft-winch-sb-load', 9.0)
+    ('aft-winch-load', 9.0)
 ) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
@@ -127,8 +120,7 @@ SELECT
     NULL,
     v.alarm_high
 FROM (VALUES
-    ('primary-winch-ps-load', 13.3),
-    ('primary-winch-sb-load', 13.3)
+    ('primary-winch-load', 13.3)
 ) AS v(variable_key, alarm_high)
 CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
@@ -159,8 +151,7 @@ SELECT
 FROM (VALUES
     -- MAIN MAST
     ('main-runner-load', 17.3),
-    ('main-checkstay-ps-load', 1.3),
-    ('main-checkstay-sb-load', 1.3),
+    ('main-checkstay-load', 1.3),
     ('main-checkstay-deflector-load', 0.2),
     ('main-headstay-combined-load', 44.2),
     ('fiber-optic-main-v1-ps', 64.6),
@@ -179,8 +170,7 @@ FROM (VALUES
 
     -- MIZZEN MAST
     ('mizzen-runner-load', 0.2),
-    ('mizzen-checkstay-ps-load', 0.3),
-    ('mizzen-checkstay-sb-load', 0.3),
+    ('mizzen-checkstay-load', 0.3),
     ('mizzen-checkstay-deflector-load', 0.1),
     ('fiber-optic-mizzen-v1-ps', 35.9),
     ('fiber-optic-mizzen-v1-sb', 35.9),
@@ -198,10 +188,8 @@ FROM (VALUES
 
     -- BLADE
     -- TODO: RT adjuster, cunningham
-    ('blade-sheet-feeder-ps-load', 9.8),
-    ('blade-tweaker-ps-load', 4.4),
-    ('blade-sheet-feeder-sb-load', 9.8),
-    ('blade-tweaker-sb-load', 4.4)
+    ('blade-sheet-feeder-load', 9.8),
+    ('blade-tweaker-load', 4.4)
 ) AS v(variable_key, target)
 CROSS JOIN loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id

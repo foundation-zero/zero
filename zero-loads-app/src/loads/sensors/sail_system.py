@@ -104,7 +104,13 @@ class PrimaryWinchPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Primary PT", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Primary PT",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="port",
+            variable_key="primary-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -116,7 +122,13 @@ class PrimaryWinchSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Primary SB", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Primary SB",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="starboard",
+            variable_key="primary-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -128,7 +140,13 @@ class AftWinchPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=9),
-        VariableMeta(display_name="Aft Winch PT", scale_min=0, scale_max=9),
+        VariableMeta(
+            display_name="Aft Winch PT",
+            scale_min=0,
+            scale_max=9,
+            applies_to_tack="port",
+            variable_key="aft-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -140,7 +158,13 @@ class AftWinchSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=9),
-        VariableMeta(display_name="Aft Winch SB", scale_min=0, scale_max=9),
+        VariableMeta(
+            display_name="Aft Winch SB",
+            scale_min=0,
+            scale_max=9,
+            applies_to_tack="starboard",
+            variable_key="aft-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -196,7 +220,13 @@ class BladeSheetFeederPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=20),
-        VariableMeta(display_name="Sheet PT", scale_min=0, scale_max=20),
+        VariableMeta(
+            display_name="Sheet PT",
+            scale_min=0,
+            scale_max=20,
+            applies_to_tack="port",
+            variable_key="blade-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -208,7 +238,13 @@ class BladeSheetFeederSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=20),
-        VariableMeta(display_name="Sheet SB", scale_min=0, scale_max=20),
+        VariableMeta(
+            display_name="Sheet SB",
+            scale_min=0,
+            scale_max=20,
+            applies_to_tack="starboard",
+            variable_key="blade-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -220,7 +256,13 @@ class BladeTweakerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Tweaker PT", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Tweaker PT",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="port",
+            variable_key="blade-tweaker-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -231,6 +273,8 @@ class BladeTweakerPs(LoadsModel, ABC):
             display_name="Tweaker PT",
             scale_min_label="out",
             scale_max_label="in",
+            applies_to_tack="port",
+            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -242,7 +286,13 @@ class BladeTweakerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Tweaker SB", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Tweaker SB",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="starboard",
+            variable_key="blade-tweaker-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -253,6 +303,8 @@ class BladeTweakerSb(LoadsModel, ABC):
             display_name="Tweaker SB",
             scale_min_label="out",
             scale_max_label="in",
+            applies_to_tack="starboard",
+            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -539,7 +591,12 @@ class MainCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadPs/i_Load", ge=0, le=15),
         VariableMeta(
-            name="ps-load", display_name="Checkstay PT", scale_min=0, scale_max=15
+            name="ps-load",
+            display_name="Checkstay PT",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="port",
+            variable_key="main-checkstay-load",
         ),
     ]
     load_sb_failure: Annotated[
@@ -575,7 +632,12 @@ class MainCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadSb/i_Load", ge=0, le=15),
         VariableMeta(
-            name="sb-load", display_name="Checkstay SB", scale_min=0, scale_max=15
+            name="sb-load",
+            display_name="Checkstay SB",
+            scale_min=0,
+            scale_max=15,
+            applies_to_tack="starboard",
+            variable_key="main-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -838,7 +900,12 @@ class MizzenCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadPs/i_Load", ge=0, le=2.7),
         VariableMeta(
-            name="ps-load", display_name="Checkstay PT", scale_min=0, scale_max=2.7
+            name="ps-load",
+            display_name="Checkstay PT",
+            scale_min=0,
+            scale_max=2.7,
+            applies_to_tack="port",
+            variable_key="mizzen-checkstay-load",
         ),
     ]
     load_sb_failure: Annotated[
@@ -874,7 +941,12 @@ class MizzenCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadSb/i_Load", ge=0, le=2.7),
         VariableMeta(
-            name="sb-load", display_name="Checkstay SB", scale_min=0, scale_max=2.7
+            name="sb-load",
+            display_name="Checkstay SB",
+            scale_min=0,
+            scale_max=2.7,
+            applies_to_tack="starboard",
+            variable_key="mizzen-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -1071,7 +1143,13 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=16.5),
-        VariableMeta(display_name="Sheet PT", scale_min=0, scale_max=16.5),
+        VariableMeta(
+            display_name="Sheet PT",
+            scale_min=0,
+            scale_max=16.5,
+            applies_to_tack="port",
+            variable_key="staysail-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -1083,7 +1161,13 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=16.5),
-        VariableMeta(display_name="Sheet SB", scale_min=0, scale_max=16.5),
+        VariableMeta(
+            display_name="Sheet SB",
+            scale_min=0,
+            scale_max=16.5,
+            applies_to_tack="starboard",
+            variable_key="staysail-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm

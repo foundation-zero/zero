@@ -51,7 +51,7 @@ STB Main Runner ,main-runner-sb-load,Main runner (remap?),CABLE DATA,CABLE_RUNNE
 PT Main Checkstay ,main-checkstay-ps-load,Main checkstay,CABLE DATA,CABLE_CHECKSTAY,Load (N),,Main Mast,Checkstay PS
 STB Main Checkstay ,main-checkstay-sb-load,Main checkstay,CABLE DATA,CABLE_CHECKSTAY,Load (N),,Main Mast,Checkstay SB
 Main Deflector ,main-checkstay-deflector-load,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),,Main Mast,Deflector
-Main Deflector ,main-checkstay-deflector-relative-position,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),,Main Mast,Deflector
+Main Deflector ,main-checkstay-deflector-relative-position,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Trimming value (N or m),,Main Mast,Deflector
 PT Main V1  ,fiber-optic-main-v1-ps,Main V1 - Port,CABLE DATA,CABLE_V1P,Load (N),,Main Mast,V1 PT
 Main Vang,main-vang-relative-position,Main vang (remap),CABLE DATA,CABLE_VANG,Trimming value (N or m),,Main sail,Vang
 Main Halyard ,main-halyard-load,-,CABLE DATA,CABLE_MAINHEAD_V,Load (N),,Main sail,Halyard
@@ -106,7 +106,7 @@ STB Mizzen Runner  ,mizzen-runner-sb-load,Mizzen runner (remap?),CABLE DATA,CABL
 PT Mizzen Checkstay ,mizzen-checkstay-ps-load,Mizzen checkstay,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),,Mizzen mast,Checkstay PS
 STB Mizzen Checkstay ,mizzen-checkstay-sb-load,Mizzen checkstay,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),,Mizzen mast,Checkstay SB
 Mizzen Deflector ,mizzen-checkstay-deflector-load,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),,Mizzen mast,Deflector
-Mizzen Deflector ,mizzen-checkstay-deflector-relative-position,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),,Mizzen mast,Deflector
+Mizzen Deflector ,mizzen-checkstay-deflector-relative-position,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Trimming value (N or m),,Mizzen mast,Deflector
 PT Mizzen V1 ,fiber-optic-mizzen-v1-ps,Mizzen V1,CABLE DATA,CABLE_M_V1P,Load (N),,Mizzen mast,V1 PS
 Mizzen Vang,mizzen-vang-load,Mizzen vang,CABLE DATA,CABLE_MIZZEN_VANG,Load (N),,Mizzen Sail,Vang
 Mizzen Vang ,mizzen-vang-relative-position,Mizzen vang (remap),CABLE DATA,CABLE_MIZZEN_VANG,Trimming value (N or m),,Mizzen Sail,Vang
