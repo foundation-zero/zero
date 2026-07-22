@@ -55,6 +55,10 @@ export type HeatpumpControl = {
   on: Stamped<boolean>;
 };
 
+export type AdsorptionChillerControl = {
+  enable: Stamped<boolean>;
+};
+
 export type ControlValueFields =
   | keyof PumpControl
   | keyof ValveControl
@@ -164,6 +168,12 @@ export type LevelSensor = {
 export type ThrusterSensor = Toggle;
 export type PcsSensor = ModeSelector<string>;
 
+export type AdsorptionChillerSensor = {
+  operating: Stamped<boolean>;
+  noError: Stamped<boolean>;
+  freeCooling: Stamped<boolean>;
+};
+
 export type SensorType =
   | PumpSensor
   | TemperatureSensor
@@ -173,9 +183,15 @@ export type SensorType =
   | ThrusterSensor
   | PcsSensor
   | LevelSensor
-  | DeltaTSensor;
+  | DeltaTSensor
+  | AdsorptionChillerSensor;
 
-export type ControlType = PumpControl | ValveControl | PcmControl | HeatpumpControl;
+export type ControlType =
+  | PumpControl
+  | ValveControl
+  | PcmControl
+  | HeatpumpControl
+  | AdsorptionChillerControl;
 
 export type ControllerStateType = DhwTankController | PIDController;
 export type Sensors = Record<string, SensorType>;
@@ -207,6 +223,7 @@ export const enum ControlComponentType {
   Valve = "control:valve",
   Pcm = "control:pcm",
   Heatpump = "control:heatpump",
+  AdsorptionChiller = "control:adsorptionChiller",
 }
 
 export const CONTROL_COMPONENT_TYPES = [
@@ -236,9 +253,15 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
 
 export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
 export type HeatpumpControlDefinition = ControlDefinition<ControlComponentType.Heatpump>;
+export type AdsorptionChillerControlDefinition =
+  ControlDefinition<ControlComponentType.AdsorptionChiller>;
 
 export type ControlDefinitions = SchemaDefinitions<
-  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition | HeatpumpControlDefinition
+  | PumpControlDefinition
+  | ValveControlDefinition
+  | PcmControlDefinition
+  | HeatpumpControlDefinition
+  | AdsorptionChillerControlDefinition
 >;
 
 export type ControlDefinitionMap = {
@@ -246,6 +269,7 @@ export type ControlDefinitionMap = {
   [ControlComponentType.Valve]: ValveControl;
   [ControlComponentType.Pcm]: PcmControl;
   [ControlComponentType.Heatpump]: HeatpumpControl;
+  [ControlComponentType.AdsorptionChiller]: AdsorptionChillerControl;
 };
 
 export type ControlValues<T extends ControlComponentType> = {
@@ -298,6 +322,7 @@ export const enum SensorComponentType {
   DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   CalculatedFlow = "sensor:calculatedFlow",
+  AdsorptionChiller = "sensor:adsorptionChiller",
 }
 
 export const SENSOR_COMPONENT_TYPES = [
@@ -366,6 +391,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
+  [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
 };
 
 export type ExtractValues<

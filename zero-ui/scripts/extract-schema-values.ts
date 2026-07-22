@@ -87,6 +87,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorHeatPumpType: "HeatExchanger",
   SensorHeatExchangerType: "HeatExchanger",
   SensorHvacExchangerType: "HeatExchanger",
+  SensorAdsorptionChillerType: "AdsorptionChiller",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -105,6 +106,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
   ControlPumpType: "Pump",
   ControlValveType: "Valve",
   ControlHeatPumpType: "Heatpump",
+  ControlAdsorptionChillerType: "AdsorptionChiller",
 };
 
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
@@ -188,7 +190,10 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("flow")) return "Flow";
   if (lowerFieldName.includes("enabled")) return "Enabled";
   if (lowerFieldName.includes("ratio")) return "Ratio";
+  if (lowerFieldName.includes("coolingsetpoint")) return "Temperature";
   if (lowerFieldName.includes("dutypoint")) return "Dutypoint";
+  if (lowerFieldName.includes("hot")) return "Temperature";
+  if (lowerFieldName.includes("cold")) return "Temperature";
   if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
   if (lowerFieldName.includes("disabled")) return "Disabled";

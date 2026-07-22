@@ -118,6 +118,16 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const flow = useRandomizedNumber(0, 10);
     return computed(() => ({ flow: stamp(flow) }));
   },
+  [SensorComponentType.AdsorptionChiller]: () => {
+    const operating = useRandomizedBoolean();
+    const noError = useRandomizedBoolean();
+    const freeCooling = useRandomizedBoolean();
+    return computed(() => ({
+      operating: stamp(operating),
+      noError: stamp(noError),
+      freeCooling: stamp(freeCooling),
+    }));
+  },
 };
 
 export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
@@ -145,6 +155,12 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
     const setpoint = useRandomizedNumber(0, 100);
     return computed(() => ({
       setpoint: stamp(setpoint),
+    }));
+  },
+  [ControlComponentType.AdsorptionChiller]: () => {
+    const enable = useRandomizedBoolean();
+    return computed(() => ({
+      enable: stamp(enable),
     }));
   },
 };

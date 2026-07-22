@@ -59,6 +59,9 @@ import {
   ThrsSimulationType,
 } from "./consts.types";
 import {
+  ADSORPTION_CONTROL_QUERY,
+  ADSORPTION_PARAMETERS_QUERY,
+  ADSORPTION_SENSOR_QUERY,
   CONSUMERS_CONTROL_QUERY,
   CONSUMERS_CONTROLLER_STATE_QUERY,
   CONSUMERS_PARAMETERS_QUERY,
@@ -353,6 +356,20 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${PVT_PARAMETERS_QUERY}
+        }
+        controllerState {
+          Empty
+        }
+      }
+      adsorption {
+        sensorValues {
+          ${ADSORPTION_SENSOR_QUERY}
+        }
+        controlValues {
+          ${ADSORPTION_CONTROL_QUERY}
+        }
+        parameters {
+          ${ADSORPTION_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
