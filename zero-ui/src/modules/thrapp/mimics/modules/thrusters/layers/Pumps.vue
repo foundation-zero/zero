@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { PumpInstance } from "../../../instances";
-import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import { DutypointLabelInstance, PumpInstance } from "../../../instances";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
@@ -16,10 +15,11 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1194']"
     >
-      <TagLabelInstance
-        x="696"
-        y="489"
+      <DutypointLabelInstance
+        x="706"
+        y="480"
         tag-id="1194"
+        :pump="pumps['1194'].source"
       />
     </PumpInstance>
     <PumpInstance
@@ -28,10 +28,11 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1195']"
     >
-      <TagLabelInstance
-        x="696"
-        y="581"
+      <DutypointLabelInstance
+        x="706"
+        y="570"
         tag-id="1195"
+        :pump="pumps['1195'].source"
       />
     </PumpInstance>
   </g>
