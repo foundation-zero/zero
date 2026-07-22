@@ -15,13 +15,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
-import thrs.graphql.adsorption as adsorption
-import thrs.graphql.consumers as consumers
-import thrs.graphql.dhw as dhw
-import thrs.graphql.pcm as pcm
-import thrs.graphql.pvt as pvt
-import thrs.graphql.simulation as simulation
-import thrs.graphql.thrusters as thrusters
 from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
 from thrs.control.modules.dc import DC_MODULE_DESCRIPTION
@@ -30,33 +23,40 @@ from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
-from thrs.graphql.adsorption import AdsorptionModule
+from thrs.graphql import (
+    adsorption,
+    consumers,
+    dc,
+    dhw,
+    drives,
+    pcm,
+    pvt,
+    simulation,
+    thrusters,
+)
 from thrs.graphql.base import (
     AdsorptionMessaging,
     ConsumersMessaging,
+    DcMessaging,
     DhwMessaging,
+    DrivesMessaging,
     FieldMutation,
     PcmMessaging,
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
 )
-from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
-from thrs.graphql.dhw import DhwModule, DhwMutations
 from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
     SimulationMessaging,
 )
-from thrs.graphql.pcm import PcmModule, PcmMutations
-from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.simulation import (
     SimulationInputsType,
     SimulationMutations,
     SimulationOutputsType,
 )
-from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
 from thrs.orchestration.comms import (
     ControlApiChannels,
     DirectivesApiChannels,
@@ -72,28 +72,42 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class ControlModules:
     @strawberry.field
-    def thrusters(self, info: strawberry.Info[ThrsContext]) -> ThrustersModule:
+    def thrusters(
+        self, info: strawberry.Info[ThrsContext]
+    ) -> thrusters.ThrustersModule:
         return thrusters.resolve_module(info.context.thrusters_messaging)
 
     @strawberry.field
-    def pvt(self, info: strawberry.Info[ThrsContext]) -> PvtModule:
+    def pvt(self, info: strawberry.Info[ThrsContext]) -> pvt.PvtModule:
         return pvt.resolve_module(info.context.pvt_messaging)
 
     @strawberry.field
-    def pcm(self, info: strawberry.Info[ThrsContext]) -> PcmModule:
+    def pcm(self, info: strawberry.Info[ThrsContext]) -> pcm.PcmModule:
         return pcm.resolve_module(info.context.pcm_messaging)
 
     @strawberry.field
-    def consumers(self, info: strawberry.Info[ThrsContext]) -> ConsumersModule:
+    def adsorption(
+        self, info: strawberry.Info[ThrsContext]
+    ) -> adsorption.AdsorptionModule:
+        return adsorption.resolve_module(info.context.adsorption_messaging)
+
+    @strawberry.field
+    def consumers(
+        self, info: strawberry.Info[ThrsContext]
+    ) -> consumers.ConsumersModule:
         return consumers.resolve_module(info.context.consumers_messaging)
 
     @strawberry.field
-    def dhw(self, info: strawberry.Info[ThrsContext]) -> DhwModule:
+    def dc(self, info: strawberry.Info[ThrsContext]) -> dc.DcModule:
+        return dc.resolve_module(info.context.dc_messaging)
+
+    @strawberry.field
+    def dhw(self, info: strawberry.Info[ThrsContext]) -> dhw.DhwModule:
         return dhw.resolve_module(info.context.dhw_messaging)
 
     @strawberry.field
-    def adsorption(self, info: strawberry.Info[ThrsContext]) -> AdsorptionModule:
-        return adsorption.resolve_module(info.context.adsorption_messaging)
+    def drives(self, info: strawberry.Info[ThrsContext]) -> drives.DrivesModule:
+        return drives.resolve_module(info.context.drives_messaging)
 
 
 @strawberry.type
@@ -148,11 +162,14 @@ def generate_mutation_for_field[T](
 
 @strawberry.type
 class Mutation(
-    ThrustersMutations,
-    PvtMutations,
-    PcmMutations,
-    ConsumersMutations,
-    DhwMutations,
+    thrusters.ThrustersMutations,
+    pvt.PvtMutations,
+    pcm.PcmMutations,
+    adsorption.AdsorptionMutations,
+    consumers.ConsumersMutations,
+    dc.DcMutations,
+    dhw.DhwMutations,
+    drives.DrivesMutations,
     SimulationMutations,
 ):
     @strawberry.mutation
@@ -212,16 +229,24 @@ def pcm_messaging(request: Request) -> PcmMessaging:
     return request.app.state.pcm_messaging
 
 
+def adsorption_messaging(request: Request) -> AdsorptionMessaging:
+    return request.app.state.adsorption_messaging
+
+
 def consumers_messaging(request: Request) -> ConsumersMessaging:
     return request.app.state.consumers_messaging
+
+
+def dc_messaging(request: Request) -> DcMessaging:
+    return request.app.state.dc_messaging
 
 
 def dhw_messaging(request: Request) -> DhwMessaging:
     return request.app.state.dhw_messaging
 
 
-def adsorption_messaging(request: Request) -> AdsorptionMessaging:
-    return request.app.state.adsorption_messaging
+def drives_messaging(request: Request) -> DrivesMessaging:
+    return request.app.state.drives_messaging
 
 
 def simulation_messaging(request: Request) -> SimulationMessaging:
@@ -233,9 +258,11 @@ async def get_context(
     thrusters_messaging: Annotated[ThrustersMessaging, Depends(thrusters_messaging)],
     pvt_messaging: Annotated[PvtMessaging, Depends(pvt_messaging)],
     pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
-    consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
-    dhw_messaging: Annotated[DhwMessaging, Depends(dhw_messaging)],
     adsorption_messaging: Annotated[AdsorptionMessaging, Depends(adsorption_messaging)],
+    consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
+    dc_messaging: Annotated[DcMessaging, Depends(dc_messaging)],
+    dhw_messaging: Annotated[DhwMessaging, Depends(dhw_messaging)],
+    drives_messaging: Annotated[DrivesMessaging, Depends(drives_messaging)],
     simulation_messaging: Annotated[SimulationMessaging, Depends(simulation_messaging)],
 ):
     return ThrsContext(
@@ -243,9 +270,11 @@ async def get_context(
         thrusters_messaging=thrusters_messaging,
         pvt_messaging=pvt_messaging,
         pcm_messaging=pcm_messaging,
-        consumers_messaging=consumers_messaging,
-        dhw_messaging=dhw_messaging,
         adsorption_messaging=adsorption_messaging,
+        consumers_messaging=consumers_messaging,
+        dc_messaging=dc_messaging,
+        dhw_messaging=dhw_messaging,
+        drives_messaging=drives_messaging,
         simulation_messaging=simulation_messaging,
     )
 

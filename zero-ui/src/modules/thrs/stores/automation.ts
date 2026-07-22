@@ -18,15 +18,26 @@ export type PvtAutomaticMode = {
   fwd: { mode: string };
   owners: { mode: string };
 };
-export type DhwAutomaticMode = { boostingMode: string; fillingMode: string };
+export type AdsorptionAutomaticMode = { mode: string };
 export type ConsumersAutomaticMode = Record<string, never>;
+export type ConvertersAutomaticMode = { mode: string };
+export type DcAutomaticMode = {
+  brightloopsAft: ConvertersAutomaticMode;
+  brightloopsFwd: ConvertersAutomaticMode;
+  ugrids: ConvertersAutomaticMode;
+};
+export type DhwAutomaticMode = { boostingMode: string; fillingMode: string };
+export type DrivesAutomaticMode = { mode: string };
 
 export type AutomaticMode =
   | ThrustersAutomaticMode
   | PcmAutomaticMode
   | PvtAutomaticMode
+  | AdsorptionAutomaticMode
+  | ConsumersAutomaticMode
+  | DcAutomaticMode
   | DhwAutomaticMode
-  | ConsumersAutomaticMode;
+  | DrivesAutomaticMode;
 
 export type ControlMode<T extends AutomaticMode = AutomaticMode> = {
   automatic: boolean;
@@ -37,8 +48,11 @@ export type ControlModes = {
   thrusters: ThrustersAutomaticMode;
   pcm: PcmAutomaticMode;
   pvt: PvtAutomaticMode;
-  dhw: DhwAutomaticMode;
+  adsorption: AdsorptionAutomaticMode;
   consumers: ConsumersAutomaticMode;
+  dc: DcAutomaticMode;
+  dhw: DhwAutomaticMode;
+  drives: DrivesAutomaticMode;
 };
 
 export type ControlStatus = {
@@ -84,9 +98,33 @@ export const CONTROL_QUERY = gql`
           }
         }
       }
+      adsorption {
+        controlMode {
+          automatic
+          automaticMode {
+            mode
+          }
+        }
+      }
       consumers {
         controlMode {
           automatic
+        }
+      }
+      dc {
+        controlMode {
+          automatic
+          automaticMode {
+            brightloopsAft {
+              mode
+            }
+            brightloopsFwd {
+              mode
+            }
+            ugrids {
+              mode
+            }
+          }
         }
       }
       dhw {
@@ -95,6 +133,14 @@ export const CONTROL_QUERY = gql`
           automaticMode {
             boostingMode
             fillingMode
+          }
+        }
+      }
+      drives {
+        controlMode {
+          automatic
+          automaticMode {
+            mode
           }
         }
       }

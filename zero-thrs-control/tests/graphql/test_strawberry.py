@@ -10,7 +10,10 @@ from fastapi.testclient import TestClient
 
 from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
 from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.converters import ConvertersControlMode
+from thrs.control.modules.dc import DcControlMode, DcParameters
 from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
+from thrs.control.modules.drives import DrivesControlMode, DrivesParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
@@ -30,7 +33,9 @@ from thrs.graphql.messaging import (
 from thrs.graphql.strawberry import (
     adsorption_messaging,
     consumers_messaging,
+    dc_messaging,
     dhw_messaging,
+    drives_messaging,
     messaging,
     pcm_messaging,
     pvt_messaging,
@@ -46,7 +51,9 @@ from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
 from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
+from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -126,21 +133,25 @@ def test_client(app: FastAPI):
 def app(
     app: FastAPI,
     thrusters_messaging_mock: Mock,
-    adsorption_messaging_mock: Mock,
     messaging_mock: Mock,
     pvt_messaging_mock: Mock,
     pcm_messaging_mock: Mock,
+    adsorption_messaging_mock: Mock,
     consumers_messaging_mock: Mock,
+    dc_messaging_mock: Mock,
     dhw_messaging_mock: Mock,
+    drives_messaging_mock: Mock,
     simulation_messaging_mock: Mock,
 ):
     app.dependency_overrides[messaging] = lambda: messaging_mock
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_messaging_mock
-    app.dependency_overrides[adsorption_messaging] = lambda: adsorption_messaging_mock
     app.dependency_overrides[pvt_messaging] = lambda: pvt_messaging_mock
     app.dependency_overrides[pcm_messaging] = lambda: pcm_messaging_mock
+    app.dependency_overrides[adsorption_messaging] = lambda: adsorption_messaging_mock
     app.dependency_overrides[consumers_messaging] = lambda: consumers_messaging_mock
+    app.dependency_overrides[dc_messaging] = lambda: dc_messaging_mock
     app.dependency_overrides[dhw_messaging] = lambda: dhw_messaging_mock
+    app.dependency_overrides[drives_messaging] = lambda: drives_messaging_mock
     app.dependency_overrides[simulation_messaging] = lambda: simulation_messaging_mock
     return app
 
@@ -153,25 +164,6 @@ async def thrusters_messaging_mock():
     mock.parameters = ThrustersParameters()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=ThrustersControlMode(mode="idle")
-    )
-
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
-    return mock
-
-
-@pytest.fixture
-async def adsorption_messaging_mock():
-    mock = Mock(ControlMessaging)
-    mock.sensor_values = AdsorptionSensorValues.zero()
-    mock.control_values = AdsorptionControlValues.zero()
-    mock.parameters = AdsorptionParameters()
-    mock.control_mode = SwitchingControlMode(
-        automatic_mode=AdsorptionControlMode(mode="idle")
     )
 
     async def wait(condition, *_args, timeout):
@@ -224,12 +216,54 @@ async def pcm_messaging_mock():
 
 
 @pytest.fixture
+async def adsorption_messaging_mock():
+    mock = Mock(ControlMessaging)
+    mock.sensor_values = AdsorptionSensorValues.zero()
+    mock.control_values = AdsorptionControlValues.zero()
+    mock.parameters = AdsorptionParameters()
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=AdsorptionControlMode(mode="idle")
+    )
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
+    return mock
+
+
+@pytest.fixture
 async def consumers_messaging_mock():
     mock = Mock(ControlMessaging)
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
     mock.control_mode = SwitchingControlMode(automatic_mode=None)
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
+    return mock
+
+
+@pytest.fixture
+async def dc_messaging_mock():
+    mock = Mock(ControlMessaging)
+    mock.sensor_values = DcSensorValues.zero()
+    mock.control_values = DcControlValues.zero()
+    mock.parameters = DcParameters()
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=DcControlMode(
+            brightloops_aft=ConvertersControlMode(mode="idle"),
+            brightloops_fwd=ConvertersControlMode(mode="idle"),
+            ugrids=ConvertersControlMode(mode="idle"),
+        )
+    )
 
     async def wait(condition, *_args, timeout):
         return None
@@ -249,6 +283,25 @@ async def dhw_messaging_mock():
     mock.controller_state = DhwControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=DhwControlMode(boosting_mode="idle", filling_mode="idle")
+    )
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_manual_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
+    return mock
+
+
+@pytest.fixture
+async def drives_messaging_mock():
+    mock = Mock(ControlMessaging)
+    mock.sensor_values = DrivesSensorValues.zero()
+    mock.control_values = DrivesControlValues.zero()
+    mock.parameters = DrivesParameters()
+    mock.control_mode = SwitchingControlMode(
+        automatic_mode=DrivesControlMode(mode="idle")
     )
 
     async def wait(condition, *_args, timeout):

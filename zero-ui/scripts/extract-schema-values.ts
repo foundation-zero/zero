@@ -88,6 +88,10 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorHeatExchangerType: "HeatExchanger",
   SensorHvacExchangerType: "HeatExchanger",
   SensorAdsorptionChillerType: "AdsorptionChiller",
+  SensorBrightloopType: "Brightloop",
+  SensorUgridType: "Ugrid",
+  SensorPropulsionDriveType: "PropulsionDrive",
+  SensorShorePowerConverterType: "ShorePowerConverter",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {

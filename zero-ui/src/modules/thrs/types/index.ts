@@ -166,6 +166,11 @@ export type LevelSensor = {
 };
 
 export type ThrusterSensor = Toggle;
+export type BrightloopSensor = Toggle;
+export type UgridSensor = Toggle;
+export type PropulsionDriveSensor = Toggle;
+export type ShorePowerConverterSensor = Toggle;
+
 export type PcsSensor = ModeSelector<string>;
 
 export type AdsorptionChillerSensor = {
@@ -184,7 +189,11 @@ export type SensorType =
   | PcsSensor
   | LevelSensor
   | DeltaTSensor
-  | AdsorptionChillerSensor;
+  | AdsorptionChillerSensor
+  | BrightloopSensor
+  | UgridSensor
+  | PropulsionDriveSensor
+  | ShorePowerConverterSensor;
 
 export type ControlType =
   | PumpControl
@@ -323,6 +332,10 @@ export const enum SensorComponentType {
   HeatExchanger = "sensor:heatExchanger",
   CalculatedFlow = "sensor:calculatedFlow",
   AdsorptionChiller = "sensor:adsorptionChiller",
+  Brightloop = "sensor:brightloop",
+  Ugrid = "sensor:ugrid",
+  PropulsionDrive = "sensor:propulsionDrive",
+  ShorePowerConverter = "sensor:shorePowerConverter",
 }
 
 export const SENSOR_COMPONENT_TYPES = [
@@ -338,6 +351,10 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
   SensorComponentType.CalculatedFlow,
+  SensorComponentType.Brightloop,
+  SensorComponentType.Ugrid,
+  SensorComponentType.PropulsionDrive,
+  SensorComponentType.ShorePowerConverter,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -392,6 +409,10 @@ export type SensorDefinitionMap = {
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
   [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
+  [SensorComponentType.Brightloop]: BrightloopSensor;
+  [SensorComponentType.Ugrid]: UgridSensor;
+  [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
+  [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
 };
 
 export type ExtractValues<

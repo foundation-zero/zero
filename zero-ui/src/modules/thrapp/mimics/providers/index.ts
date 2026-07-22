@@ -145,6 +145,10 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.HeatExchanger]: "deltaT",
   [SensorComponentType.CalculatedFlow]: "flow",
   [SensorComponentType.AdsorptionChiller]: "operating",
+  [SensorComponentType.Brightloop]: "active",
+  [SensorComponentType.Ugrid]: "active",
+  [SensorComponentType.PropulsionDrive]: "active",
+  [SensorComponentType.ShorePowerConverter]: "active",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
