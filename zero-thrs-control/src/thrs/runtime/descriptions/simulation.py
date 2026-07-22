@@ -220,7 +220,8 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
         ),
         drives_dhw_supply=Boundary(
-            temperature=Stamped.stamp(50), flow=Stamped.stamp(35) # TODO: Validate if initials are correct
+            temperature=Stamped.stamp(50),
+            flow=Stamped.stamp(35),  # TODO: Validate if initials are correct
         ),
     ),
     "dc": DcSimulationInputs(
@@ -248,7 +249,8 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
         ),
         dc_dhw_supply=Boundary(
-            temperature=Stamped.stamp(60), flow=Stamped.stamp(60) # TODO: Validate if initials are correct
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),  # TODO: Validate if initials are correct
         ),
     ),
     "thrs": ThrsSimulationInputs(
