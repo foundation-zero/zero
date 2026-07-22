@@ -929,27 +929,27 @@ type DhwSensorValuesType {
   freshwaterHotwaterTemperature: SensorTemperatureSensorType!
     @jsonSchemaDirective(yardTag: "25001038-1", componentType: null, valveType: null)
   drivesDelta: SensorTemperatureDeltaType!
-    @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcDelta: SensorTemperatureDeltaType!
-    @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   consumersDelta: SensorTemperatureDeltaType!
-    @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   adsorptionDelta: SensorTemperatureDeltaType!
-    @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwFreshwaterFlowSupply: SensorCalculatedFlowType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwHvacExchanger: SensorHvacExchangerType!
-    @jsonSchemaDirective(yardTag: "41001001", componentType: "hvac_exchanger", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwHeatpump: SensorHeatPumpType!
-    @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwAdsorptionExchanger: SensorHeatExchangerType!
-    @jsonSchemaDirective(yardTag: "50001004", componentType: "heat_exchanger", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwConsumersExchanger: SensorHeatExchangerType!
-    @jsonSchemaDirective(yardTag: "50001007", componentType: "heat_exchanger", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwDcExchanger: SensorHeatExchangerType!
-    @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_exchanger", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwDrivesExchanger: SensorHeatExchangerType!
-    @jsonSchemaDirective(yardTag: "50001009", componentType: "heat_exchanger", valveType: null)
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule {

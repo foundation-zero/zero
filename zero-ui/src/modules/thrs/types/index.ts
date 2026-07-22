@@ -387,7 +387,7 @@ export type ModuleDefinition<
 
 export type SensorDefinition<T extends SensorComponentType = SensorComponentType> =
   SchemaDefinition<T> & {
-    yardTag: string;
+    yardTag?: string;
   };
 
 export type TemperatureSensorDefinition = SensorDefinition<SensorComponentType.Temperature>;
