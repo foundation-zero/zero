@@ -13,6 +13,7 @@ export default toInstance<MimicComponentType.HVAC>({
   sensors: {
     incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureAdsorptionReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureHvacExchangerReturn"),
+    flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
   },
   tooltip: tooltip({
     title: "HVAC",

@@ -20,8 +20,8 @@ The component is stateless and directional:
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
+| Prop          | Type                   | Default                     | Description                                 |
+| ------------- | ---------------------- | --------------------------- | ------------------------------------------- |
 | `orientation` | `ComponentOrientation` | `ComponentOrientation.Down` | Required direction for this sensor instance |
 
 ## Orientation Examples
@@ -55,9 +55,9 @@ The component is stateless and directional:
 
 ## Semantic Token Mapping
 
-| Role | Token |
-|---|---|
-| Sensor body fill | `--background-muted` |
-| Sensor frame stroke | `--attention` |
-| Diagonal slash + stem stroke | `--attention` |
-| Glyph marks (`t`, `l`) fill | `--foreground` |
+| Role                         | Token          |
+| ---------------------------- | -------------- |
+| Sensor body fill             | `--muted`      |
+| Sensor frame stroke          | `--attention`  |
+| Diagonal slash + stem stroke | `--attention`  |
+| Glyph marks (`t`, `l`) fill  | `--foreground` |

@@ -71,8 +71,10 @@ export type SensorFieldDefinitions = SensorFields<{
     flow: SensorComponentType.Flow;
   };
   [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: {
     incoming: SensorComponentType.Temperature;
@@ -94,6 +96,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.HVAC]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
+    flow: SensorComponentType.Flow;
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
@@ -106,8 +109,10 @@ export type ControlFieldDefinitions = ControlFields<{
   };
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     heatpump: ControlComponentType.Heatpump;
@@ -130,8 +135,10 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
@@ -154,8 +161,10 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
+  [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
@@ -207,12 +216,14 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;
   };
+  [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: {
     controller?: PIDController;
   };
   [MimicComponentType.FlowSensor]: {
     controller?: PIDController;
   };
+  [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     controller?: PIDController;
@@ -230,8 +241,10 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.Pump]: SensorComponentType.Pump;
   [MimicComponentType.HeatExchanger]: SensorComponentType.HeatExchanger;
   [MimicComponentType.PressureSensor]: SensorComponentType.Pressure;
+  [MimicComponentType.PressureGauge]: undefined;
   [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
   [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
+  [MimicComponentType.LevelSensor]: SensorComponentType.Level;
   [MimicComponentType.ManualValve]: undefined;
   [MimicComponentType.HeatPump]: SensorComponentType.HeatExchanger;
   [MimicComponentType.HVAC]: SensorComponentType.HeatExchanger;

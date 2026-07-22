@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getMimicComponentContext, MimicComponentState } from "../index.ts";
-import { ACTUATED_VALVE_MARKER_COLOR } from "./index.ts";
+import { ACTUATED_VALVE_MARKER_COLOR, ACTUATED_VALVE_MARKER_TEXT_COLOR } from "./index.ts";
 
 const { stateColor, state } = getMimicComponentContext();
 </script>
@@ -24,10 +24,10 @@ const { stateColor, state } = getMimicComponentContext();
   />
   <path
     d="M14.0852 13.6006L20.7996 6.59489L21.3653 7.16057L14.6508 14.1663L14.0852 13.6006Z"
-    :fill="ACTUATED_VALVE_MARKER_COLOR"
+    :fill="ACTUATED_VALVE_MARKER_TEXT_COLOR"
   />
   <path
     d="M22.5685 5.45466L21.9378 8.1948L19.8284 6.08542L22.5685 5.45466Z"
-    :fill="ACTUATED_VALVE_MARKER_COLOR"
+    :fill="ACTUATED_VALVE_MARKER_TEXT_COLOR"
   />
 </template>

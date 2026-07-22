@@ -18,7 +18,7 @@ export default toInstance<MimicComponentType.HeatPump>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   },
   tooltip: tooltip({
-    title: "Heat Pump",
+    title: "Heat pump",
     yardTag: "1035",
     technicalName: "dhw-heatpump",
   }),

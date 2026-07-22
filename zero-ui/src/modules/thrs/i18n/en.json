@@ -1,7 +1,7 @@
 {
   "thrs": {
     "simulationTypes": {
-      "highTemperature": "High Temperature",
+      "highTemperature": "High temperature",
       "thrusters": "Thrusters",
       "pcm": "PCM",
       "pvt": "PVT",

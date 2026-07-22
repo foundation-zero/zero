@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDcExchanger"),
   },
   tooltip: tooltip({
-    title: "DC Converters",
+    title: "DC converters",
     technicalName: "brightloop",
   }),
 });

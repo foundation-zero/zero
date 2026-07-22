@@ -146,6 +146,7 @@
         "maxLevel": "Maximum level",
         "filling": "Filling",
         "levelSensor": "Level sensor",
+        "level": "Level",
         "fill": "Fill",
         "capacity": "Capacity",
         "estimatedFillingTime": "Est. filling time",
@@ -156,8 +157,8 @@
         "tank3": "Tank 3",
         "boostReturnValve": "Boost return valve",
         "boostSupplyValve": "Boost supply valve",
-        "supplyValve": "Supply valve",
-        "dischargeValve": "Discharge valve",
+        "supplyValve": "Inlet valve",
+        "dischargeValve": "Outlet valve",
         "automatedControl": "Automated control",
         "exchanger": "Exchanger",
         "heatExchange": "Heat exchange",
@@ -214,7 +215,7 @@
           "brightloopTitle": "Brightloop",
           "drivesTitle": "Drives",
           "adsorptionTitle": "Adsorption",
-          "domesticHotWaterTitle": "Fresh Water System"
+          "domesticHotWaterTitle": "Fresh water system"
         }
       }
     },
