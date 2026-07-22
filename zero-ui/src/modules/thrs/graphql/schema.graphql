@@ -1,11 +1,101 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
 input AdsorptionChillerInputType {
-  freeCooling: Boolean!
+  enable: Boolean!
+  mode: AdsorptionChillerMode!
+  coolingSetpoint: Float!
+  freeCoolingMode: FreeCoolingMode!
+  availableSeawaterTemperature: Float!
+  availableHotTemperature: Float!
+  availableColdTemperature: Float!
+  coldMinimum: Float!
+  hotMinimum: Float!
+  coldHysteresis: Float!
+  hotHysteresis: Float!
+  tankControlMode: TankControlMode!
+}
+
+enum AdsorptionChillerMode {
+  OFF
+  ON
+  VALVE_RUN
+  ACTIVATION
+}
+
+type AdsorptionChillerModeStampedType {
+  value: AdsorptionChillerMode!
+  timestamp: DateTime!
 }
 
 type AdsorptionChillerSimulationType {
   freeCooling: BoolStampedType!
+}
+
+type AdsorptionControlModeType {
+  mode: String!
+}
+
+type AdsorptionControlValuesType {
+  adsorptionFlowcontrolWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
+  adsorptionMixHot: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-02", componentType: "valve", valveType: "mix")
+  adsorptionMixWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-01", componentType: "valve", valveType: "mix")
+  adsorptionSwitchDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001187-01", componentType: "valve", valveType: "switch")
+  adsorptionChiller: ControlAdsorptionChillerType! @jsonSchemaDirective(yardTag: "50001034", componentType: "adsorption_chiller", valveType: null)
+}
+
+type AdsorptionControllerStateType {
+  Empty: Void
+}
+
+type AdsorptionParametersType {
+  chillerEnabled: Boolean!
+  wasteCoolingTemperatureSetpoint: Float!
+  wasteRecoveryTemperatureSetpoint: Float!
+  hotSupplyTemperatureSetpoint: Float!
+  adsorptionCoolingSetpoint: Float!
+  adsorptionHotMinimum: Float!
+  adsorptionHotTrigger: Float!
+  adsorptionColdMinimum: Float!
+  adsorptionColdTrigger: Float!
+  hotMixTuning: [Float!]!
+  recoveryTuning: [Float!]!
+  wasteCoolingTuning: [Float!]!
+  freeCoolingEnabled: Boolean!
+}
+
+type AdsorptionSensorValuesType {
+  adsorptionFlowcontrolWaste: SensorValveType! @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
+  adsorptionMixHot: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-02", componentType: "valve", valveType: "mix")
+  adsorptionMixWaste: SensorValveType! @jsonSchemaDirective(yardTag: "50001047-01", componentType: "valve", valveType: "mix")
+  adsorptionSwitchDhw: SensorValveType! @jsonSchemaDirective(yardTag: "50001187-01", componentType: "valve", valveType: "switch")
+  adsorptionChiller: SensorAdsorptionChillerType! @jsonSchemaDirective(yardTag: "50001034", componentType: "adsorption_chiller", valveType: null)
+  adsorptionFlowHt: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-09", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowHot: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-02", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowWaste: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001059", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-10", componentType: "flow_sensor", valveType: null)
+  adsorptionTemperatureHtReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-41", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHtSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-50", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHotReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-36", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHotSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-37", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureWasteReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-38", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureWasteSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-39", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-56", componentType: "temperature_sensor", valveType: null)
+  adsorptionAvailableHotTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+  adsorptionAvailableColdTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+  adsorptionAvailableSeawaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+}
+
+type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule {
+  sensorValues: AdsorptionSensorValuesType
+  controlValues: AdsorptionControlValuesType
+  parameters: AdsorptionParametersType
+  controlMode: AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeSwitchingControlModeType
+  controllerState: AdsorptionControllerStateType
+}
+
+type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeSwitchingControlModeType {
+  automaticMode: AdsorptionControlModeType
+  automatic: Boolean!
 }
 
 type AdsorptionSimulationInputsType {
@@ -107,6 +197,21 @@ type ConsumersSimulationOutputsType {
   consumersPcmReturn: BoundarySimulationType!
 }
 
+type ControlAdsorptionChillerType {
+  enable: BoolStampedType!
+  mode: AdsorptionChillerModeStampedType!
+  coolingSetpoint: FloatStampedType!
+  freeCoolingMode: FreeCoolingModeStampedType!
+  availableSeawaterTemperature: FloatStampedType!
+  availableHotTemperature: FloatStampedType!
+  availableColdTemperature: FloatStampedType!
+  coldMinimum: FloatStampedType!
+  hotMinimum: FloatStampedType!
+  coldHysteresis: FloatStampedType!
+  hotHysteresis: FloatStampedType!
+  tankControlMode: TankControlModeStampedType!
+}
+
 type ControlHeatPumpType {
   on: BoolStampedType!
   temperatureSetpoint: FloatStampedType!
@@ -118,6 +223,7 @@ type ControlModules {
   pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule!
   consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule!
   dhw: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule!
+  adsorption: AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule!
 }
 
 type ControlPcmType {
@@ -384,6 +490,17 @@ input FlowBoundaryInputType {
 
 type FlowBoundarySimulationType {
   flow: FloatStampedType!
+}
+
+enum FreeCoolingMode {
+  OFF
+  ON
+  AUTO
+}
+
+type FreeCoolingModeStampedType {
+  value: FreeCoolingMode!
+  timestamp: DateTime!
 }
 
 input HeatPumpInputType {
@@ -939,6 +1056,21 @@ type Query {
   simulation: SimulationState
 }
 
+type SensorAdsorptionChillerType {
+  operating: BoolStampedType!
+  noError: BoolStampedType!
+  freeCooling: BoolStampedType!
+  temperatureHotIn: FloatStampedType!
+  temperatureHotOut: FloatStampedType!
+  temperatureWasteIn: FloatStampedType!
+  temperatureWasteOut: FloatStampedType!
+  temperatureColdIn: FloatStampedType!
+  temperatureColdOut: FloatStampedType!
+  pumpSpeedHot: FloatStampedType!
+  pumpSpeedCold: FloatStampedType!
+  pumpSpeedWaste: FloatStampedType!
+}
+
 type SensorCalculatedFlowType {
   flow: FloatStampedType!
 }
@@ -1010,6 +1142,18 @@ type SimulationState {
   status: String!
   inputs: SimulationInputsType
   outputs: SimulationOutputsType
+}
+
+enum TankControlMode {
+  NONE
+  BOTH
+  COLD
+  HOT
+}
+
+type TankControlModeStampedType {
+  value: TankControlMode!
+  timestamp: DateTime!
 }
 
 enum TankState {

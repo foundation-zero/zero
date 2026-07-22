@@ -19,13 +19,155 @@ export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T
 export const toControllerStateDefinition = <T extends ControllerStateDefinitions>(input: T): T =>
   input;
 
-export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({});
+export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({
+  adsorptionFlowcontrolWaste: {
+    yardTag: "50001062-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  adsorptionMixHot: {
+    yardTag: "50001046-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  adsorptionMixWaste: {
+    yardTag: "50001047-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  adsorptionSwitchDhw: {
+    yardTag: "50001187-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  adsorptionChiller: {
+    yardTag: "50001034",
+    componentType: ControlComponentType.AdsorptionChiller,
+  },
+});
 
 export const ADSORPTION_CONTROLLER_STATE = toControllerStateDefinition({});
 
-export const ADSORPTION_PARAMETER_DEFINITION = toParameterDefinition({});
+export const ADSORPTION_PARAMETER_DEFINITION = toParameterDefinition({
+  chillerEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  wasteCoolingTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  wasteRecoveryTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  hotSupplyTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  adsorptionCoolingSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  adsorptionHotMinimum: {
+    componentType: ParametersType.Temperature,
+  },
+  adsorptionHotTrigger: {
+    componentType: ParametersType.Temperature,
+  },
+  adsorptionColdMinimum: {
+    componentType: ParametersType.Temperature,
+  },
+  adsorptionColdTrigger: {
+    componentType: ParametersType.Temperature,
+  },
+  hotMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  recoveryTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  wasteCoolingTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  freeCoolingEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+});
 
-export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({});
+export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
+  adsorptionFlowcontrolWaste: {
+    yardTag: "50001062-03",
+    componentType: SensorComponentType.Valve,
+  },
+  adsorptionMixHot: {
+    yardTag: "50001046-02",
+    componentType: SensorComponentType.Valve,
+  },
+  adsorptionMixWaste: {
+    yardTag: "50001047-01",
+    componentType: SensorComponentType.Valve,
+  },
+  adsorptionSwitchDhw: {
+    yardTag: "50001187-01",
+    componentType: SensorComponentType.Valve,
+  },
+  adsorptionChiller: {
+    yardTag: "50001034",
+    componentType: SensorComponentType.AdsorptionChiller,
+  },
+  adsorptionFlowHt: {
+    yardTag: "50001058-09",
+    componentType: SensorComponentType.Flow,
+  },
+  adsorptionFlowHot: {
+    yardTag: "50001058-02",
+    componentType: SensorComponentType.Flow,
+  },
+  adsorptionFlowWaste: {
+    yardTag: "50001059",
+    componentType: SensorComponentType.Flow,
+  },
+  adsorptionFlowDhw: {
+    yardTag: "50001058-10",
+    componentType: SensorComponentType.Flow,
+  },
+  adsorptionTemperatureHtReturn: {
+    yardTag: "50001038-41",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureHtSupply: {
+    yardTag: "50001038-50",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureHotReturn: {
+    yardTag: "50001038-36",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureHotSupply: {
+    yardTag: "50001038-37",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureWasteReturn: {
+    yardTag: "50001038-38",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureWasteSupply: {
+    yardTag: "50001038-39",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureDhwReturn: {
+    yardTag: "50001038-56",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionAvailableHotTemperature: {
+    yardTag: "",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionAvailableColdTemperature: {
+    yardTag: "",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionAvailableSeawaterTemperature: {
+    yardTag: "",
+    componentType: SensorComponentType.Temperature,
+  },
+});
 
 export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
   adsorptionCoolingSupply: {

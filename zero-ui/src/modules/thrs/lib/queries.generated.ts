@@ -1,5 +1,19 @@
 export const ADSORPTION_CONTROL_QUERY = `
-
+  adsorptionFlowcontrolWaste {
+    setpoint { value timestamp }
+  }
+  adsorptionMixHot {
+    setpoint { value timestamp }
+  }
+  adsorptionMixWaste {
+    setpoint { value timestamp }
+  }
+  adsorptionSwitchDhw {
+    setpoint { value timestamp }
+  }
+  adsorptionChiller {
+    enable { value timestamp }
+  }
 `;
 
 export const ADSORPTION_CONTROLLER_STATE_QUERY = `
@@ -7,11 +21,85 @@ export const ADSORPTION_CONTROLLER_STATE_QUERY = `
 `;
 
 export const ADSORPTION_PARAMETERS_QUERY = `
-
+  chillerEnabled
+  wasteCoolingTemperatureSetpoint
+  wasteRecoveryTemperatureSetpoint
+  hotSupplyTemperatureSetpoint
+  adsorptionCoolingSetpoint
+  adsorptionHotMinimum
+  adsorptionHotTrigger
+  adsorptionColdMinimum
+  adsorptionColdTrigger
+  hotMixTuning
+  recoveryTuning
+  wasteCoolingTuning
+  freeCoolingEnabled
 `;
 
 export const ADSORPTION_SENSOR_QUERY = `
-
+  adsorptionFlowcontrolWaste {
+    positionRel { value timestamp }
+  }
+  adsorptionMixHot {
+    positionRel { value timestamp }
+  }
+  adsorptionMixWaste {
+    positionRel { value timestamp }
+  }
+  adsorptionSwitchDhw {
+    positionRel { value timestamp }
+  }
+  adsorptionChiller {
+    operating { value timestamp }
+    noError { value timestamp }
+    freeCooling { value timestamp }
+  }
+  adsorptionFlowHt {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  adsorptionFlowHot {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  adsorptionFlowWaste {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  adsorptionFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHtReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHtSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHotReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHotSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableHotTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableColdTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableSeawaterTemperature {
+    temperature { value timestamp }
+  }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `

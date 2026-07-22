@@ -11,16 +11,28 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 class AdsorptionSensorValues(ThrsValues):
     adsorption_flowcontrol_waste: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001062-03", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001062-03", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     adsorption_mix_hot: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001046-02", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001046-02", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_mix_waste: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001047-01", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_switch_dhw: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001187-01", component_type="valve", valve_type="switch"
+        ),
     ]
     adsorption_chiller: Annotated[
         sensor.AdsorptionChiller,
@@ -92,16 +104,28 @@ class AdsorptionSensorValues(ThrsValues):
 
 class AdsorptionControlValues(ThrsValues):
     adsorption_flowcontrol_waste: Annotated[
-        control.Valve, component_meta(yard_tag="50001062-03", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001062-03", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     adsorption_mix_hot: Annotated[
-        control.Valve, component_meta(yard_tag="50001046-02", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001046-02", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_mix_waste: Annotated[
-        control.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001047-01", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_switch_dhw: Annotated[
-        control.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001187-01", component_type="valve", valve_type="switch"
+        ),
     ]
     adsorption_chiller: Annotated[
         control.AdsorptionChiller,

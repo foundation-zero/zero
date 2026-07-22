@@ -33,6 +33,7 @@ const COMPONENTS: Record<ControlComponentType, Component | null> = {
   [ControlComponentType.Valve]: ValveControl,
   [ControlComponentType.Pcm]: ValveControl,
   [ControlComponentType.Heatpump]: null,
+  [ControlComponentType.AdsorptionChiller]: null,
 };
 </script>
 <template>

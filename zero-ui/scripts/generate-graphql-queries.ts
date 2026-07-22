@@ -83,6 +83,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Valve: ["setpoint"],
     Pcm: ["on"],
     Heatpump: ["temperatureSetpoint", "on"],
+    AdsorptionChiller: ["enable"],
   },
 
   // Control component fields
@@ -117,6 +118,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],
+    AdsorptionChiller: ["operating", "noError", "freeCooling"],
   },
 
   // Simulation component fields

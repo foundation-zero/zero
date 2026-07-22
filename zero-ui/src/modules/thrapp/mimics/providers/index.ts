@@ -144,6 +144,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.DeltaT]: "deltaT",
   [SensorComponentType.HeatExchanger]: "deltaT",
   [SensorComponentType.CalculatedFlow]: "flow",
+  [SensorComponentType.AdsorptionChiller]: "operating",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
@@ -153,6 +154,7 @@ export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
   [ControlComponentType.Valve]: "setpoint",
   [ControlComponentType.Pcm]: "on",
   [ControlComponentType.Heatpump]: "on",
+  [ControlComponentType.AdsorptionChiller]: "enable",
 };
 
 export interface MimicDataProvider {
