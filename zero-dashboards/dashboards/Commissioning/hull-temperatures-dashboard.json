@@ -121,7 +121,7 @@
               "fixed": "transparent"
             },
             "image": {
-              "fixed": "../extra/zero_outline.png"
+              "fixed": "../extra/boat_outline.png"
             },
             "size": "original"
           },
@@ -169,9 +169,8 @@
               "name": "temp_46",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "rotation": 0,
-                "top": 60,
+                "left": 475,
+                "top": 35,
                 "width": 80
               },
               "type": "metric-value"
@@ -207,9 +206,8 @@
               "name": "temp_46 label",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "rotation": 0,
-                "top": 38,
+                "left": 465,
+                "top": 13,
                 "width": 100
               },
               "type": "text"
@@ -247,9 +245,8 @@
               "name": "temp_45",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "rotation": 0,
-                "top": 358,
+                "left": 473,
+                "top": 346,
                 "width": 80
               },
               "type": "metric-value"
@@ -284,9 +281,8 @@
               "name": "temp_45 label",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "rotation": 0,
-                "top": 382,
+                "left": 463,
+                "top": 370,
                 "width": 100
               },
               "type": "text"
@@ -324,9 +320,8 @@
               "name": "temp_44",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "rotation": 0,
-                "top": 110,
+                "left": 475,
+                "top": 85,
                 "width": 80
               },
               "type": "metric-value"
@@ -362,9 +357,8 @@
               "name": "temp_44 label",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "rotation": 0,
-                "top": 134,
+                "left": 465,
+                "top": 109,
                 "width": 100
               },
               "type": "text"
@@ -402,9 +396,8 @@
               "name": "temp_42",
               "placement": {
                 "height": 25,
-                "left": 694,
-                "rotation": 0,
-                "top": 94,
+                "left": 869,
+                "top": 72,
                 "width": 80
               },
               "type": "metric-value"
@@ -439,9 +432,8 @@
               "name": "temp_42 label",
               "placement": {
                 "height": 23,
-                "left": 685,
-                "rotation": 0,
-                "top": 119,
+                "left": 860,
+                "top": 97,
                 "width": 100
               },
               "type": "text"
@@ -480,8 +472,8 @@
               "name": "temp_41",
               "placement": {
                 "height": 25,
-                "left": 695,
-                "top": 364,
+                "left": 870,
+                "top": 351,
                 "width": 80
               },
               "type": "metric-value"
@@ -516,8 +508,8 @@
               "name": "temp_41 label",
               "placement": {
                 "height": 23,
-                "left": 685,
-                "top": 389,
+                "left": 860,
+                "top": 376,
                 "width": 100
               },
               "type": "text"
@@ -555,9 +547,8 @@
               "name": "temp_40",
               "placement": {
                 "height": 25,
-                "left": 1055,
-                "rotation": 0,
-                "top": 73,
+                "left": 1243,
+                "top": 63,
                 "width": 80
               },
               "type": "metric-value"
@@ -592,9 +583,8 @@
               "name": "temp_40 label",
               "placement": {
                 "height": 23,
-                "left": 1045,
-                "rotation": 0,
-                "top": 50,
+                "left": 1233,
+                "top": 40,
                 "width": 100
               },
               "type": "text"
@@ -632,9 +622,8 @@
               "name": "temp_39",
               "placement": {
                 "height": 25,
-                "left": 1055,
-                "rotation": 0,
-                "top": 345,
+                "left": 1253,
+                "top": 320,
                 "width": 80
               },
               "type": "metric-value"
@@ -669,9 +658,8 @@
               "name": "temp_39 label",
               "placement": {
                 "height": 23,
-                "left": 1045,
-                "rotation": 0,
-                "top": 370,
+                "left": 1243,
+                "top": 345,
                 "width": 100
               },
               "type": "text"
@@ -709,9 +697,8 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1297,
-                "rotation": 0,
-                "top": 206,
+                "left": 1471,
+                "top": 190,
                 "width": 80
               },
               "type": "metric-value"
@@ -747,9 +734,8 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1287,
-                "rotation": 0,
-                "top": 230,
+                "left": 1461,
+                "top": 214,
                 "width": 100
               },
               "type": "text"
@@ -825,9 +811,8 @@
               "name": "Element 18",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "rotation": 0,
-                "top": 307,
+                "left": 473,
+                "top": 295,
                 "width": 80
               },
               "type": "metric-value"
@@ -862,9 +847,8 @@
               "name": "Element 19",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "rotation": 0,
-                "top": 284,
+                "left": 463,
+                "top": 272,
                 "width": 100
               },
               "type": "text"
@@ -902,9 +886,8 @@
               "name": "Element 20",
               "placement": {
                 "height": 25,
-                "left": 694,
-                "rotation": 0,
-                "top": 50,
+                "left": 869,
+                "top": 28,
                 "width": 80
               },
               "type": "metric-value"
@@ -939,9 +922,8 @@
               "name": "Element 21",
               "placement": {
                 "height": 23,
-                "left": 684,
-                "rotation": 0,
-                "top": 28,
+                "left": 859,
+                "top": 6,
                 "width": 100
               },
               "type": "text"
@@ -976,8 +958,8 @@
               "name": "Element 22",
               "placement": {
                 "height": 23,
-                "left": 685,
-                "top": 297,
+                "left": 860,
+                "top": 284,
                 "width": 100
               },
               "type": "text"
@@ -1016,8 +998,8 @@
               "name": "Element 23",
               "placement": {
                 "height": 25,
-                "left": 695,
-                "top": 320,
+                "left": 870,
+                "top": 307,
                 "width": 80
               },
               "type": "metric-value"
@@ -1055,8 +1037,8 @@
               "name": "Element 24",
               "placement": {
                 "height": 25,
-                "left": 1055,
-                "top": 124,
+                "left": 1243,
+                "top": 114,
                 "width": 80
               },
               "type": "metric-value"
@@ -1091,8 +1073,8 @@
               "name": "Element 25",
               "placement": {
                 "height": 23,
-                "left": 1045,
-                "top": 149,
+                "left": 1233,
+                "top": 139,
                 "width": 100
               },
               "type": "text"
@@ -1130,9 +1112,8 @@
               "name": "Element 26",
               "placement": {
                 "height": 25,
-                "left": 1055,
-                "rotation": 0,
-                "top": 293,
+                "left": 1253,
+                "top": 268,
                 "width": 80
               },
               "type": "metric-value"
@@ -1167,9 +1148,8 @@
               "name": "Element 27",
               "placement": {
                 "height": 23,
-                "left": 1045,
-                "rotation": 0,
-                "top": 270,
+                "left": 1243,
+                "top": 245,
                 "width": 100
               },
               "type": "text"
@@ -1208,8 +1188,7 @@
               "placement": {
                 "height": 25,
                 "left": 196,
-                "rotation": 0,
-                "top": 147,
+                "top": 127,
                 "width": 80
               },
               "type": "metric-value"
@@ -1245,8 +1224,7 @@
               "placement": {
                 "height": 23,
                 "left": 186,
-                "rotation": 0,
-                "top": 172,
+                "top": 152,
                 "width": 100
               },
               "type": "text"
@@ -1285,8 +1263,7 @@
               "placement": {
                 "height": 25,
                 "left": 196,
-                "rotation": 0,
-                "top": 268,
+                "top": 256,
                 "width": 80
               },
               "type": "metric-value"
@@ -1322,8 +1299,7 @@
               "placement": {
                 "height": 23,
                 "left": 186,
-                "rotation": 0,
-                "top": 245,
+                "top": 233,
                 "width": 100
               },
               "type": "text"
@@ -1361,8 +1337,8 @@
               "name": "Element 38",
               "placement": {
                 "height": 25,
-                "left": 415,
-                "top": 206,
+                "left": 515,
+                "top": 191,
                 "width": 80
               },
               "type": "metric-value"
@@ -1397,8 +1373,8 @@
               "name": "Element 39",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "top": 230,
+                "left": 475,
+                "top": 215,
                 "width": 120
               },
               "type": "text"
@@ -1436,8 +1412,8 @@
               "name": "Element 40",
               "placement": {
                 "height": 25,
-                "left": 685,
-                "top": 206,
+                "left": 732,
+                "top": 191,
                 "width": 80
               },
               "type": "metric-value"
@@ -1472,9 +1448,8 @@
               "name": "Element 41",
               "placement": {
                 "height": 23,
-                "left": 644,
-                "rotation": 0,
-                "top": 230,
+                "left": 691,
+                "top": 215,
                 "width": 120
               },
               "type": "text"
@@ -1512,9 +1487,9 @@
               "name": "Element 42",
               "placement": {
                 "height": 25,
-                "left": 1005,
+                "left": 1204,
                 "rotation": 0,
-                "top": 206,
+                "top": 190,
                 "width": 80
               },
               "type": "metric-value"
@@ -1549,9 +1524,8 @@
               "name": "Element 43",
               "placement": {
                 "height": 23,
-                "left": 965,
-                "rotation": 0,
-                "top": 230,
+                "left": 1164,
+                "top": 214,
                 "width": 120
               },
               "type": "text"
@@ -1589,8 +1563,8 @@
               "name": "Element 44",
               "placement": {
                 "height": 25,
-                "left": 505,
-                "top": 206,
+                "left": 605,
+                "top": 191,
                 "width": 80
               },
               "type": "metric-value"
@@ -1625,8 +1599,8 @@
               "name": "Element 45",
               "placement": {
                 "height": 23,
-                "left": 505,
-                "top": 230,
+                "left": 605,
+                "top": 215,
                 "width": 120
               },
               "type": "text"
@@ -1664,9 +1638,8 @@
               "name": "Element 46",
               "placement": {
                 "height": 25,
-                "left": 772,
-                "rotation": 0,
-                "top": 206,
+                "left": 819,
+                "top": 191,
                 "width": 80
               },
               "type": "metric-value"
@@ -1702,9 +1675,8 @@
               "name": "Element 47",
               "placement": {
                 "height": 23,
-                "left": 774,
-                "rotation": 0,
-                "top": 230,
+                "left": 821,
+                "top": 215,
                 "width": 120
               },
               "type": "text"
@@ -1742,9 +1714,8 @@
               "name": "Element 48",
               "placement": {
                 "height": 25,
-                "left": 1095,
-                "rotation": 0,
-                "top": 206,
+                "left": 1294,
+                "top": 190,
                 "width": 80
               },
               "type": "metric-value"
@@ -1779,9 +1750,8 @@
               "name": "Element 49",
               "placement": {
                 "height": 23,
-                "left": 1095,
-                "rotation": 0,
-                "top": 230,
+                "left": 1294,
+                "top": 214,
                 "width": 100
               },
               "type": "text"
@@ -1831,6 +1801,7 @@
         }
       ],
       "title": "",
+      "transparent": true,
       "type": "canvas"
     },
     {
@@ -1938,12 +1909,26 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-35\" AS temp_35,\r\n    \"temperatures__94455001-34\" AS temp_34,\r\n    \"temperatures__94455001-32\" AS temp_32,\r\n    \"temperatures__94455001-33\" AS temp_33,\r\n    \"temperatures__94455001-28\" AS temp_28,\r\n    \"temperatures__94455001-29\" AS temp_29,\r\n    \"temperatures__94455001-24\" AS temp_24,\r\n    \"temperatures__94455001-25\" AS temp_25,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-36\" END AS temp_36,\r\n    \"temperatures__94455001-37\" AS temp_37,\r\n    \"temperatures__94455001-22\" AS temp_22,\r\n    \"temperatures__94455001-23\" AS temp_23,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-18\" END AS temp_18,\r\n    \"temperatures__94455001-19\" AS temp_19,\r\n    \"temperatures__94455001-14\" AS temp_14,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-15\" END AS temp_15,\r\n    \"temperatures__94455001-8\" AS temp_8,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-9\" END AS temp_9,\r\n    \"temperatures__94455001-10\" AS temp_10,\r\n    \"temperatures__94455001-11\" AS temp_11,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-1\" END AS temp_1\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-35\" AS temp_35,\r\n    \"temperatures__94455001-37\" AS temp_37,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-36\" END AS temp_36,\r\n    \"temperatures__94455001-34\" AS temp_34,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-1\" END AS temp_1,\r\n    \r\n-- OUTER temperatures\r\n    \"temperatures__94455001-32\" AS temp_out_32,\r\n    \"temperatures__94455001-28\" AS temp_out_28,\r\n    \"temperatures__94455001-24\" AS temp_out_24,\r\n    \"temperatures__94455001-22\" AS temp_out_22,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-19\" END AS temp_out_19,\r\n    \"temperatures__94455001-14\" AS temp_out_14,\r\n    \"temperatures__94455001-10\" AS temp_out_10,\r\n    \"temperatures__94455001-8\"  AS temp_out_8,\r\n\r\n-- INNER temperatures\r\n    \"temperatures__94455001-33\" AS temp_in_33,\r\n    \"temperatures__94455001-29\" AS temp_in_29,\r\n    \"temperatures__94455001-25\" AS temp_in_25,\r\n    \"temperatures__94455001-23\" AS temp_in_23,\r\n    \"temperatures__94455001-18\" AS temp_in_18,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-15\" END AS temp_in_15,\r\n    \"temperatures__94455001-11\" AS temp_in_11,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-9\" END AS temp_in_9\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A"
         }
       ],
       "title": "",
       "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "temp_in_(.*)",
+            "renamePattern": "94455001-$1 (IN)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "temp_out_(.*)",
+            "renamePattern": "94455001-$1 (OUT)"
+          }
+        },
         {
           "id": "renameByRegex",
           "options": {
@@ -2013,7 +1998,7 @@
               "fixed": "transparent"
             },
             "image": {
-              "fixed": "../extra/zero_outline.png"
+              "fixed": "../extra/boat_outline.png"
             },
             "size": "original"
           },
@@ -3506,7 +3491,7 @@
               "fixed": "transparent"
             },
             "image": {
-              "fixed": "../extra/zero_outline.png"
+              "fixed": "../extra/boat_outline.png"
             },
             "size": "original"
           },
