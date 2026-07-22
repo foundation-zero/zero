@@ -3534,9 +3534,9 @@
               "name": "temp_46",
               "placement": {
                 "height": 25,
-                "left": 250,
+                "left": 200,
                 "rotation": 0,
-                "top": 73,
+                "top": 70,
                 "width": 80
               },
               "type": "metric-value"
@@ -3571,9 +3571,9 @@
               "name": "temp_46 label",
               "placement": {
                 "height": 23,
-                "left": 240,
+                "left": 190,
                 "rotation": 0,
-                "top": 51,
+                "top": 48,
                 "width": 100
               },
               "type": "text"
@@ -3611,9 +3611,8 @@
               "name": "temp_45",
               "placement": {
                 "height": 25,
-                "left": 250,
-                "rotation": 0,
-                "top": 341,
+                "left": 200,
+                "top": 312,
                 "width": 80
               },
               "type": "metric-value"
@@ -3648,9 +3647,8 @@
               "name": "temp_45 label",
               "placement": {
                 "height": 23,
-                "left": 240,
-                "rotation": 0,
-                "top": 366,
+                "left": 190,
+                "top": 337,
                 "width": 100
               },
               "type": "text"
@@ -3688,9 +3686,9 @@
               "name": "temp_44",
               "placement": {
                 "height": 25,
-                "left": 497,
+                "left": 487,
                 "rotation": 0,
-                "top": 51,
+                "top": 35,
                 "width": 80
               },
               "type": "metric-value"
@@ -3725,9 +3723,9 @@
               "name": "temp_44 label",
               "placement": {
                 "height": 23,
-                "left": 487,
+                "left": 477,
                 "rotation": 0,
-                "top": 28,
+                "top": 12,
                 "width": 100
               },
               "type": "text"
@@ -3765,9 +3763,9 @@
               "name": "temp_43",
               "placement": {
                 "height": 25,
-                "left": 497,
+                "left": 487,
                 "rotation": 0,
-                "top": 364,
+                "top": 345,
                 "width": 80
               },
               "type": "metric-value"
@@ -3802,9 +3800,9 @@
               "name": "temp_43 label",
               "placement": {
                 "height": 23,
-                "left": 487,
+                "left": 477,
                 "rotation": 0,
-                "top": 389,
+                "top": 370,
                 "width": 100
               },
               "type": "text"
@@ -3842,9 +3840,8 @@
               "name": "temp_42",
               "placement": {
                 "height": 25,
-                "left": 817,
-                "rotation": 0,
-                "top": 51,
+                "left": 878,
+                "top": 26,
                 "width": 80
               },
               "type": "metric-value"
@@ -3879,9 +3876,8 @@
               "name": "temp_42 label",
               "placement": {
                 "height": 23,
-                "left": 807,
-                "rotation": 0,
-                "top": 28,
+                "left": 868,
+                "top": 3,
                 "width": 100
               },
               "type": "text"
@@ -3920,9 +3916,8 @@
               "name": "temp_41",
               "placement": {
                 "height": 25,
-                "left": 817,
-                "rotation": 0,
-                "top": 364,
+                "left": 878,
+                "top": 354,
                 "width": 80
               },
               "type": "metric-value"
@@ -3957,9 +3952,8 @@
               "name": "temp_41 label",
               "placement": {
                 "height": 23,
-                "left": 807,
-                "rotation": 0,
-                "top": 389,
+                "left": 868,
+                "top": 379,
                 "width": 100
               },
               "type": "text"
@@ -3997,9 +3991,8 @@
               "name": "temp_40",
               "placement": {
                 "height": 25,
-                "left": 1066,
-                "rotation": 0,
-                "top": 74,
+                "left": 1253,
+                "top": 64,
                 "width": 80
               },
               "type": "metric-value"
@@ -4034,9 +4027,8 @@
               "name": "temp_40 label",
               "placement": {
                 "height": 23,
-                "left": 1056,
-                "rotation": 0,
-                "top": 50,
+                "left": 1243,
+                "top": 40,
                 "width": 100
               },
               "type": "text"
@@ -4074,9 +4066,8 @@
               "name": "temp_39",
               "placement": {
                 "height": 25,
-                "left": 1066,
-                "rotation": 0,
-                "top": 341,
+                "left": 1253,
+                "top": 318,
                 "width": 80
               },
               "type": "metric-value"
@@ -4111,9 +4102,8 @@
               "name": "temp_39 label",
               "placement": {
                 "height": 23,
-                "left": 1056,
-                "rotation": 0,
-                "top": 366,
+                "left": 1243,
+                "top": 343,
                 "width": 100
               },
               "type": "text"
@@ -4151,8 +4141,9 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1294,
-                "top": 208,
+                "left": 1428,
+                "rotation": 0,
+                "top": 190,
                 "width": 80
               },
               "type": "metric-value"
@@ -4187,8 +4178,9 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1284,
-                "top": 233,
+                "left": 1418,
+                "rotation": 0,
+                "top": 215,
                 "width": 100
               },
               "type": "text"
@@ -4225,9 +4217,8 @@
               "placement": {
                 "height": 36,
                 "left": 10,
-                "rotation": 0,
                 "top": 15,
-                "width": 300
+                "width": 180
               },
               "type": "text"
             }
@@ -4276,6 +4267,7 @@
         }
       ],
       "title": "",
+      "transparent": true,
       "type": "canvas"
     },
     {
