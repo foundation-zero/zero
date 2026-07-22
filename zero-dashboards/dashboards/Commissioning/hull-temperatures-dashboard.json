@@ -547,8 +547,8 @@
               "name": "temp_40",
               "placement": {
                 "height": 25,
-                "left": 1243,
-                "top": 63,
+                "left": 1253,
+                "top": 64,
                 "width": 80
               },
               "type": "metric-value"
@@ -583,8 +583,8 @@
               "name": "temp_40 label",
               "placement": {
                 "height": 23,
-                "left": 1233,
-                "top": 40,
+                "left": 1243,
+                "top": 41,
                 "width": 100
               },
               "type": "text"
@@ -1037,8 +1037,8 @@
               "name": "Element 24",
               "placement": {
                 "height": 25,
-                "left": 1243,
-                "top": 114,
+                "left": 1253,
+                "top": 115,
                 "width": 80
               },
               "type": "metric-value"
@@ -1073,8 +1073,8 @@
               "name": "Element 25",
               "placement": {
                 "height": 23,
-                "left": 1233,
-                "top": 139,
+                "left": 1243,
+                "top": 140,
                 "width": 100
               },
               "type": "text"
@@ -2045,9 +2045,8 @@
               "name": "temp_46",
               "placement": {
                 "height": 25,
-                "left": 425,
-                "rotation": 0,
-                "top": 58,
+                "left": 482,
+                "top": 34,
                 "width": 80
               },
               "type": "metric-value"
@@ -2082,9 +2081,8 @@
               "name": "temp_46 label",
               "placement": {
                 "height": 23,
-                "left": 415,
-                "rotation": 0,
-                "top": 35,
+                "left": 472,
+                "top": 11,
                 "width": 100
               },
               "type": "text"
@@ -2122,9 +2120,8 @@
               "name": "temp_45",
               "placement": {
                 "height": 25,
-                "left": 425,
-                "rotation": 0,
-                "top": 358,
+                "left": 482,
+                "top": 347,
                 "width": 80
               },
               "type": "metric-value"
@@ -2159,9 +2156,8 @@
               "name": "temp_45 label",
               "placement": {
                 "height": 23,
-                "left": 415,
-                "rotation": 0,
-                "top": 383,
+                "left": 472,
+                "top": 372,
                 "width": 100
               },
               "type": "text"
@@ -2199,8 +2195,8 @@
               "name": "temp_44",
               "placement": {
                 "height": 25,
-                "left": 425,
-                "top": 108,
+                "left": 482,
+                "top": 84,
                 "width": 80
               },
               "type": "metric-value"
@@ -2235,8 +2231,8 @@
               "name": "temp_44 label",
               "placement": {
                 "height": 23,
-                "left": 415,
-                "top": 133,
+                "left": 472,
+                "top": 109,
                 "width": 100
               },
               "type": "text"
@@ -2274,8 +2270,8 @@
               "name": "temp_42",
               "placement": {
                 "height": 25,
-                "left": 712,
-                "top": 97,
+                "left": 871,
+                "top": 73,
                 "width": 80
               },
               "type": "metric-value"
@@ -2310,8 +2306,8 @@
               "name": "temp_42 label",
               "placement": {
                 "height": 23,
-                "left": 702,
-                "top": 122,
+                "left": 861,
+                "top": 98,
                 "width": 100
               },
               "type": "text"
@@ -2350,8 +2346,8 @@
               "name": "temp_41",
               "placement": {
                 "height": 25,
-                "left": 712,
-                "top": 322,
+                "left": 871,
+                "top": 308,
                 "width": 80
               },
               "type": "metric-value"
@@ -2386,8 +2382,8 @@
               "name": "temp_41 label",
               "placement": {
                 "height": 23,
-                "left": 702,
-                "top": 299,
+                "left": 861,
+                "top": 285,
                 "width": 100
               },
               "type": "text"
@@ -2425,8 +2421,7 @@
               "name": "temp_40",
               "placement": {
                 "height": 25,
-                "left": 1036,
-                "rotation": 0,
+                "left": 1260,
                 "top": 71,
                 "width": 80
               },
@@ -2462,8 +2457,7 @@
               "name": "temp_40 label",
               "placement": {
                 "height": 23,
-                "left": 1026,
-                "rotation": 0,
+                "left": 1250,
                 "top": 47,
                 "width": 100
               },
@@ -2502,9 +2496,8 @@
               "name": "temp_39",
               "placement": {
                 "height": 25,
-                "left": 1036,
-                "rotation": 0,
-                "top": 346,
+                "left": 1260,
+                "top": 315,
                 "width": 80
               },
               "type": "metric-value"
@@ -2539,9 +2532,8 @@
               "name": "temp_39 label",
               "placement": {
                 "height": 23,
-                "left": 1026,
-                "rotation": 0,
-                "top": 372,
+                "left": 1250,
+                "top": 341,
                 "width": 100
               },
               "type": "text"
@@ -2579,8 +2571,8 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1297,
-                "top": 109,
+                "left": 1464,
+                "top": 106,
                 "width": 80
               },
               "type": "metric-value"
@@ -2616,8 +2608,8 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1287,
-                "top": 86,
+                "left": 1454,
+                "top": 83,
                 "width": 100
               },
               "type": "text"
@@ -2693,8 +2685,8 @@
               "name": "Element 18",
               "placement": {
                 "height": 25,
-                "left": 425,
-                "top": 307,
+                "left": 482,
+                "top": 296,
                 "width": 80
               },
               "type": "metric-value"
@@ -2729,8 +2721,8 @@
               "name": "Element 19",
               "placement": {
                 "height": 23,
-                "left": 415,
-                "top": 282,
+                "left": 472,
+                "top": 271,
                 "width": 100
               },
               "type": "text"
@@ -2768,8 +2760,8 @@
               "name": "Element 20",
               "placement": {
                 "height": 25,
-                "left": 712,
-                "top": 50,
+                "left": 871,
+                "top": 26,
                 "width": 80
               },
               "type": "metric-value"
@@ -2804,8 +2796,8 @@
               "name": "Element 21",
               "placement": {
                 "height": 23,
-                "left": 702,
-                "top": 27,
+                "left": 861,
+                "top": 3,
                 "width": 100
               },
               "type": "text"
@@ -2840,9 +2832,8 @@
               "name": "Element 22",
               "placement": {
                 "height": 23,
-                "left": 702,
-                "rotation": 0,
-                "top": 389,
+                "left": 861,
+                "top": 375,
                 "width": 100
               },
               "type": "text"
@@ -2880,9 +2871,8 @@
               "name": "Element 23",
               "placement": {
                 "height": 25,
-                "left": 712,
-                "rotation": 0,
-                "top": 364,
+                "left": 871,
+                "top": 350,
                 "width": 80
               },
               "type": "metric-value"
@@ -2920,7 +2910,7 @@
               "name": "Element 24",
               "placement": {
                 "height": 25,
-                "left": 1036,
+                "left": 1260,
                 "top": 121,
                 "width": 80
               },
@@ -2956,7 +2946,7 @@
               "name": "Element 25",
               "placement": {
                 "height": 23,
-                "left": 1026,
+                "left": 1250,
                 "top": 146,
                 "width": 100
               },
@@ -2995,8 +2985,8 @@
               "name": "Element 26",
               "placement": {
                 "height": 25,
-                "left": 1036,
-                "top": 294,
+                "left": 1260,
+                "top": 263,
                 "width": 80
               },
               "type": "metric-value"
@@ -3031,8 +3021,8 @@
               "name": "Element 27",
               "placement": {
                 "height": 23,
-                "left": 1026,
-                "top": 270,
+                "left": 1250,
+                "top": 239,
                 "width": 100
               },
               "type": "text"
@@ -3070,8 +3060,8 @@
               "name": "Element 28",
               "placement": {
                 "height": 25,
-                "left": 1297,
-                "top": 158,
+                "left": 1464,
+                "top": 155,
                 "width": 80
               },
               "type": "metric-value"
@@ -3106,8 +3096,8 @@
               "name": "Element 29",
               "placement": {
                 "height": 23,
-                "left": 1287,
-                "top": 183,
+                "left": 1454,
+                "top": 180,
                 "width": 100
               },
               "type": "text"
@@ -3145,9 +3135,8 @@
               "name": "Element 30",
               "placement": {
                 "height": 25,
-                "left": 1297,
-                "rotation": 0,
-                "top": 308,
+                "left": 1464,
+                "top": 275,
                 "width": 80
               },
               "type": "metric-value"
@@ -3182,9 +3171,8 @@
               "name": "Element 31",
               "placement": {
                 "height": 23,
-                "left": 1287,
-                "rotation": 0,
-                "top": 335,
+                "left": 1454,
+                "top": 302,
                 "width": 100
               },
               "type": "text"
@@ -3222,8 +3210,8 @@
               "name": "Element 32",
               "placement": {
                 "height": 25,
-                "left": 1297,
-                "top": 258,
+                "left": 1464,
+                "top": 225,
                 "width": 80
               },
               "type": "metric-value"
@@ -3258,8 +3246,8 @@
               "name": "Element 33",
               "placement": {
                 "height": 23,
-                "left": 1287,
-                "top": 235,
+                "left": 1454,
+                "top": 202,
                 "width": 100
               },
               "type": "text"
@@ -3309,6 +3297,7 @@
         }
       ],
       "title": "",
+      "transparent": true,
       "type": "canvas"
     },
     {
@@ -3416,7 +3405,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-30\" AS temp_30,\r\n    \"temperatures__94455001-31\" AS temp_31,\r\n    \"temperatures__94455001-26\" AS temp_26,\r\n    \"temperatures__94455001-27\" AS temp_27,\r\n    \"temperatures__94455001-20\" AS temp_20,\r\n    \"temperatures__94455001-21\" AS temp_21,\r\n    \"temperatures__94455001-16\" AS temp_16,\r\n    \"temperatures__94455001-17\" AS temp_17,\r\n    \"temperatures__94455001-12\" AS temp_12,\r\n    \"temperatures__94455001-13\" AS temp_13,\r\n    \"temperatures__94455001-6\" AS temp_6,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-7\" END AS temp_7,\r\n    \"temperatures__94455001-4\" AS temp_4,\r\n    \"temperatures__94455001-5\" AS temp_5,\r\n    \"temperatures__94455001-2\" AS temp_2,\r\n    \"temperatures__94455001-3\" AS temp_3\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-30\" AS temp_out_30,\r\n    \"temperatures__94455001-26\" AS temp_out_26,\r\n    \"temperatures__94455001-20\" AS temp_out_20,\r\n    \"temperatures__94455001-16\" AS temp_out_16,\r\n    \"temperatures__94455001-12\" AS temp_out_12,\r\n    \"temperatures__94455001-6\"  AS temp_out_6,\r\n    \"temperatures__94455001-4\"  AS temp_out_4,\r\n    \"temperatures__94455001-2\"  AS temp_out_2,\r\n    \"temperatures__94455001-31\" AS temp_in_31,\r\n    \"temperatures__94455001-27\" AS temp_in_27,\r\n    \"temperatures__94455001-21\" AS temp_in_21,\r\n    \"temperatures__94455001-17\" AS temp_in_17,\r\n    \"temperatures__94455001-13\" AS temp_in_13,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-7\" END AS temp_in_7,\r\n    \"temperatures__94455001-5\"  AS temp_in_5,\r\n    \"temperatures__94455001-3\"  AS temp_in_3\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A"
         }
       ],
@@ -3425,8 +3414,15 @@
         {
           "id": "renameByRegex",
           "options": {
-            "regex": "temp_(.*)",
-            "renamePattern": "94455001-$1"
+            "regex": "temp_in_(.*)",
+            "renamePattern": "94455001-$1 (IN)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "temp_out_(.*)",
+            "renamePattern": "94455001-$1 (OUT)"
           }
         }
       ],
