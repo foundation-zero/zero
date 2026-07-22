@@ -19,7 +19,7 @@ expected_io_columns = [
 ]
 
 
-def test_marpower_amcs_io_excel(marpower_io_result):
+def test_marpower_amcs_io_excel():
     marpower_io_result = read_io_list(
         [(Path(__file__).parent / "../../io_lists/io-list ~ help ~ totals.xlsx")],
         "marpower",
