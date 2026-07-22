@@ -1138,18 +1138,23 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   drivesDelta: {
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dcDelta: {
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   consumersDelta: {
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   adsorptionDelta: {
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dhwFreshwaterFlowSupply: {
+    yardTag: "",
     componentType: SensorComponentType.CalculatedFlow,
   },
   dhwHvacExchanger: {

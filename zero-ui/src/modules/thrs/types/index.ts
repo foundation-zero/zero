@@ -167,7 +167,7 @@ export type LevelSensor = {
   level: Stamped<number>;
 };
 
-export type LevelSwitch = {
+export type LevelSwitchSensor = {
   empty: Stamped<boolean>;
 };
 
@@ -335,7 +335,7 @@ export const enum SensorComponentType {
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
   Level = "sensor:level",
-  LevelSwitch = "sensor:levelswitch",
+  LevelSwitch = "sensor:levelSwitch",
   DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   CalculatedFlow = "sensor:calculatedFlow",
@@ -356,6 +356,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Pcs,
   SensorComponentType.Pcm,
   SensorComponentType.Level,
+  SensorComponentType.LevelSwitch,
   SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
   SensorComponentType.CalculatedFlow,
@@ -416,7 +417,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
-  [SensorComponentType.LevelSwitch]: LevelSwitch;
+  [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
