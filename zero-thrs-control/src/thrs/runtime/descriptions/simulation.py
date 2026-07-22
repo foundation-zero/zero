@@ -32,9 +32,12 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.dc import DcSimulationOutputs
+from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
 from thrs.input_output.modules.dhw import DhwSimulationInputs, DhwSimulationOutputs
-from thrs.input_output.modules.drives import DrivesSimulationOutputs
+from thrs.input_output.modules.drives import (
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
+)
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
@@ -195,8 +198,59 @@ SIMULATION_INPUTS = {
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(30)),
     ),
-    "drives": None,  # TODO Fill in  # type: ignore
-    "dc": None,  # TODO Fill in  # type: ignore
+    "drives": DrivesSimulationInputs(
+        drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft1=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_aft2=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd1=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd2=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_shorepower=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_seawater_supply=Boundary(
+            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+        ),
+        drives_dhw_supply=Boundary(
+            temperature=Stamped.stamp(50), flow=Stamped.stamp(35) # TODO: Validate if initials are correct
+        ),
+    ),
+    "dc": DcSimulationInputs(
+        dc_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_seawater_supply=Boundary(
+            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+        ),
+        dc_dhw_supply=Boundary(
+            temperature=Stamped.stamp(60), flow=Stamped.stamp(60) # TODO: Validate if initials are correct
+        ),
+    ),
     "thrs": ThrsSimulationInputs(
         thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)

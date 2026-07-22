@@ -67,6 +67,8 @@ export const SIMULATION_TYPES = [
   "consumers",
   "dc",
   "dhw",
+  "adsorption",
+  "dc",
   "drives",
 ] as const;
 export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];

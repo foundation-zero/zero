@@ -6,7 +6,10 @@
       "pcm": "PCM",
       "pvt": "PVT",
       "consumers": "Consumers",
-      "dhw": "DHW"
+      "dhw": "DHW",
+      "adsorption": "Adsorption",
+      "dc": "DC",
+      "drives": "Drives"
     },
     "title": "HMI",
     "views": {
