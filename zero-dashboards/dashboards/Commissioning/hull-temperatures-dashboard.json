@@ -4141,7 +4141,7 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1428,
+                "left": 1466,
                 "rotation": 0,
                 "top": 190,
                 "width": 80
@@ -4178,7 +4178,7 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1418,
+                "left": 1456,
                 "rotation": 0,
                 "top": 215,
                 "width": 100
