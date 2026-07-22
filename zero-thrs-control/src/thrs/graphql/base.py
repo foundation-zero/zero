@@ -210,10 +210,12 @@ class ThrsContext(BaseContext):
     thrusters_messaging: ThrustersMessaging
     pvt_messaging: PvtMessaging
     pcm_messaging: PcmMessaging
-    consumers_messaging: ConsumersMessaging
-    dhw_messaging: DhwMessaging
-    simulation_messaging: SimulationMessaging
     adsorption_messaging: AdsorptionMessaging
+    consumers_messaging: ConsumersMessaging
+    dc_messaging: DcMessaging
+    dhw_messaging: DhwMessaging
+    drives_messaging: DrivesMessaging
+    simulation_messaging: SimulationMessaging
 
 
 type FieldMutation[T] = """Callable[

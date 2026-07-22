@@ -128,6 +128,22 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
       freeCooling: stamp(freeCooling),
     }));
   },
+  [SensorComponentType.Brightloop]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.Ugrid]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.PropulsionDrive]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.ShorePowerConverter]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
 };
 
 export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {

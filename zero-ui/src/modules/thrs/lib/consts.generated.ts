@@ -12,12 +12,11 @@ import {
   ValveType,
 } from "@/modules/thrs/types";
 
-export const toControlDefinition = <T extends ControlDefinitions>(input: T): T => input;
-export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => input;
-export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
-export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
-export const toControllerStateDefinition = <T extends ControllerStateDefinitions>(input: T): T =>
-  input;
+const toControlDefinition = <T extends ControlDefinitions>(input: T): T => input;
+const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => input;
+const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
+const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
+const toControllerStateDefinition = <T extends ControllerStateDefinitions>(input: T): T => input;
 
 export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({
   adsorptionFlowcontrolWaste: {
@@ -94,18 +93,22 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   adsorptionFlowcontrolWaste: {
     yardTag: "50001062-03",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
   },
   adsorptionMixHot: {
     yardTag: "50001046-02",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   adsorptionMixWaste: {
     yardTag: "50001047-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   adsorptionSwitchDhw: {
     yardTag: "50001187-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
   },
   adsorptionChiller: {
     yardTag: "50001034",
@@ -342,13 +345,376 @@ export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
 });
 
-export const DC_CONTROL_DEFINITION = toControlDefinition({});
+export const DC_CONTROL_DEFINITION = toControlDefinition({
+  dcPumpAft: {
+    yardTag: "50001020",
+    componentType: ControlComponentType.Pump,
+  },
+  dcPumpFwd: {
+    yardTag: "50001025",
+    componentType: ControlComponentType.Pump,
+  },
+  dcPumpUgrid: {
+    yardTag: "50001023",
+    componentType: ControlComponentType.Pump,
+  },
+  dcMixAft: {
+    yardTag: "50001043-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixFwd: {
+    yardTag: "50001042-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixUgrid: {
+    yardTag: "50001045-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixRecovery: {
+    yardTag: "50001046-04",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixExchanger: {
+    yardTag: "50001046-05",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcSwitchAft4: {
+    yardTag: "50001068-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft3: {
+    yardTag: "50001068-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft2: {
+    yardTag: "50001068-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft1: {
+    yardTag: "50001068-04",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchFwd2: {
+    yardTag: "50001068-05",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchFwd1: {
+    yardTag: "50001068-06",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchUgrid2: {
+    yardTag: "50001069-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchUgrid1: {
+    yardTag: "50001069-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
 
 export const DC_CONTROLLER_STATE = toControllerStateDefinition({});
 
-export const DC_PARAMETER_DEFINITION = toParameterDefinition({});
+export const DC_PARAMETER_DEFINITION = toParameterDefinition({
+  maximumSupplyTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  recoveryTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  brightloopFlowSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  ugridFlowSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  brightloopReturnTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  ugridReturnTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  heatDumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  recoveryMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  brightloopsFwdMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  brightloopsAftMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  ugridsMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  brightloopsFwdPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  brightloopsAftPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  ugridsPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
 
-export const DC_SENSOR_DEFINITION = toSensorDefinition({});
+export const DC_SENSOR_DEFINITION = toSensorDefinition({
+  dcPumpAft: {
+    yardTag: "50001020",
+    componentType: SensorComponentType.Pump,
+  },
+  dcPumpUgrid: {
+    yardTag: "50001023",
+    componentType: SensorComponentType.Pump,
+  },
+  dcPumpFwd: {
+    yardTag: "50001025",
+    componentType: SensorComponentType.Pump,
+  },
+  dcTemperatureAft4Return: {
+    yardTag: "50001038-05",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureAft3Return: {
+    yardTag: "50001038-06",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureAft2Return: {
+    yardTag: "50001038-07",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureAft1Return: {
+    yardTag: "50001038-08",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureUgrid2Return: {
+    yardTag: "50001038-09",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureUgrid1Return: {
+    yardTag: "50001038-10",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureFwd2Return: {
+    yardTag: "50001038-12",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureFwd1Return: {
+    yardTag: "50001038-13",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureAftSupply: {
+    yardTag: "50001038-15",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureRecoveryMix: {
+    yardTag: "50001038-17",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureSupply: {
+    yardTag: "50001038-18",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureFwdReturn: {
+    yardTag: "50001038-19",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureAftReturn: {
+    yardTag: "50001038-20",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureRecovery: {
+    yardTag: "50001038-52",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureRecoveryReturn: {
+    yardTag: "50001038-58",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureFwdSupply: {
+    yardTag: "50001038-69",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureUgridSupply: {
+    yardTag: "50001038-70",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcTemperatureUgridReturn: {
+    yardTag: "50001038-71",
+    componentType: SensorComponentType.Temperature,
+  },
+  dcMixFwd: {
+    yardTag: "50001042-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixAft: {
+    yardTag: "50001043-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixUgrid: {
+    yardTag: "50001045-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixRecovery: {
+    yardTag: "50001046-04",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcMixExchanger: {
+    yardTag: "50001046-05",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  dcFlowAft4: {
+    yardTag: "50001057-04",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowAft3: {
+    yardTag: "50001057-05",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowAft2: {
+    yardTag: "50001057-06",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowAft1: {
+    yardTag: "50001057-07",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowUgrid2: {
+    yardTag: "50001057-08",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowUgrid1: {
+    yardTag: "50001057-09",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowFwd2: {
+    yardTag: "50001057-11",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowFwd1: {
+    yardTag: "50001057-12",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowAftReturn: {
+    yardTag: "50001057-25",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowFwdReturn: {
+    yardTag: "50001057-26",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowRecovery: {
+    yardTag: "50001058-04",
+    componentType: SensorComponentType.Flow,
+  },
+  dcFlowUgridReturn: {
+    yardTag: "50001058-06",
+    componentType: SensorComponentType.Flow,
+  },
+  dcSwitchAft4: {
+    yardTag: "50001068-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft3: {
+    yardTag: "50001068-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft2: {
+    yardTag: "50001068-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchAft1: {
+    yardTag: "50001068-04",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchFwd2: {
+    yardTag: "50001068-05",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchFwd1: {
+    yardTag: "50001068-06",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchUgrid2: {
+    yardTag: "50001069-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcSwitchUgrid1: {
+    yardTag: "50001069-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  dcPressureAft: {
+    yardTag: "50001097-07",
+    componentType: SensorComponentType.Pressure,
+  },
+  dcPressureUgrid: {
+    yardTag: "50001097-08",
+    componentType: SensorComponentType.Pressure,
+  },
+  dcPressureFwd: {
+    yardTag: "50001097-09",
+    componentType: SensorComponentType.Pressure,
+  },
+  dcBrightloopAft1: {
+    yardTag: "45002076",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopAft2: {
+    yardTag: "45002075",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopAft3: {
+    yardTag: "45002074",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopAft4: {
+    yardTag: "45002073",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopFwd1: {
+    yardTag: "45002078",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopFwd2: {
+    yardTag: "45002077",
+    componentType: SensorComponentType.Brightloop,
+  },
+  dcUgrid1: {
+    yardTag: "45002082",
+    componentType: SensorComponentType.Ugrid,
+  },
+  dcUgrid2: {
+    yardTag: "45002081",
+    componentType: SensorComponentType.Ugrid,
+  },
+});
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
   dcSeawaterSupply: {
@@ -856,13 +1222,254 @@ export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
 });
 
-export const DRIVES_CONTROL_DEFINITION = toControlDefinition({});
+export const DRIVES_CONTROL_DEFINITION = toControlDefinition({
+  drivesPump1: {
+    yardTag: "50001028",
+    componentType: ControlComponentType.Pump,
+  },
+  drivesPump2: {
+    yardTag: "50001029",
+    componentType: ControlComponentType.Pump,
+  },
+  drivesMixExchanger: {
+    yardTag: "50001046-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  drivesMixRecovery: {
+    yardTag: "50001046-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  drivesFlowcontrolPropdriveAft: {
+    yardTag: "50001065-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  drivesFlowcontrolPropdriveFwd: {
+    yardTag: "50001065-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  drivesSwitchShorepowerSupply: {
+    yardTag: "50001069-04",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchShorepowerReturn: {
+    yardTag: "50001069-05",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveAft1: {
+    yardTag: "50001069-06",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveAft2: {
+    yardTag: "50001069-09",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveFwd1: {
+    yardTag: "50001069-07",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveFwd2: {
+    yardTag: "50001069-08",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
 
 export const DRIVES_CONTROLLER_STATE = toControllerStateDefinition({});
 
-export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({});
+export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({
+  shorepowerMaximumSupplyTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  propulsionMaximumSupplyTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  recoveryTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  shorepowerFlowSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  propulsionDrivesFlowSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  pumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  recoveryMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  heatDumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  aftFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  fwdFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
 
-export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({});
+export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
+  drivesPump1: {
+    yardTag: "50001028",
+    componentType: SensorComponentType.Pump,
+  },
+  drivesPump2: {
+    yardTag: "50001029",
+    componentType: SensorComponentType.Pump,
+  },
+  drivesTemperatureShorepowerReturn: {
+    yardTag: "50001038-11",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperatureSupply: {
+    yardTag: "50001038-14",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperatureRecovery: {
+    yardTag: "50001038-16",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperatureRecoveryMix: {
+    yardTag: "50001038-57",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperatureRecoveryReturn: {
+    yardTag: "50001038-59",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdriveAft1Return: {
+    yardTag: "50001038-32",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdriveFwd1Return: {
+    yardTag: "50001038-61",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdrivesFwdSupply: {
+    yardTag: "50001038-62",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdrivesAftSupply: {
+    yardTag: "50001038-63",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdriveAft2Return: {
+    yardTag: "50001038-64",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesTemperaturePropdriveFwd2Return: {
+    yardTag: "50001038-72",
+    componentType: SensorComponentType.Temperature,
+  },
+  drivesMixExchanger: {
+    yardTag: "50001046-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  drivesMixRecovery: {
+    yardTag: "50001046-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  drivesFlowShorepower: {
+    yardTag: "50001057-10",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowPropdriveAft1: {
+    yardTag: "50001057-13",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowPropdriveFwd2: {
+    yardTag: "50001057-14",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowPropdriveFwd1: {
+    yardTag: "50001057-15",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowPropdriveAft2: {
+    yardTag: "50001057-16",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowRecovery: {
+    yardTag: "50001058-03",
+    componentType: SensorComponentType.Flow,
+  },
+  drivesFlowcontrolPropdriveAft: {
+    yardTag: "50001065-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  drivesFlowcontrolPropdriveFwd: {
+    yardTag: "50001065-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  drivesSwitchShorepowerSupply: {
+    yardTag: "50001069-04",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchShorepowerReturn: {
+    yardTag: "50001069-05",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveAft1: {
+    yardTag: "50001069-06",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveAft2: {
+    yardTag: "50001069-09",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveFwd1: {
+    yardTag: "50001069-07",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesSwitchPropdriveFwd2: {
+    yardTag: "50001069-08",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  drivesPressure: {
+    yardTag: "50001097-10",
+    componentType: SensorComponentType.Pressure,
+  },
+  drivesPropdriveAft1: {
+    yardTag: "45002079",
+    componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesPropdriveAft2: {
+    yardTag: "45002079",
+    componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesPropdriveFwd1: {
+    yardTag: "45002080",
+    componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesPropdriveFwd2: {
+    yardTag: "45002080",
+    componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesShorepower: {
+    yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerConverter,
+  },
+});
 
 export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
   drivesOilCoolerAft: {

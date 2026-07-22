@@ -12,89 +12,14 @@ import {
   ThrusterMode,
 } from "@/modules/thrs/types";
 import { gql } from "@urql/vue";
-import {
-  ADSORPTION_SIMULATION_INPUTS,
-  ADSORPTION_SIMULATION_OUTPUTS,
-  CONSUMERS_CONTROL_DEFINITION,
-  CONSUMERS_CONTROLLER_STATE,
-  CONSUMERS_PARAMETER_DEFINITION,
-  CONSUMERS_SENSOR_DEFINITION,
-  CONSUMERS_SIMULATION_INPUTS,
-  CONSUMERS_SIMULATION_OUTPUTS,
-  DC_SIMULATION_INPUTS,
-  DC_SIMULATION_OUTPUTS,
-  DHW_CONTROL_DEFINITION,
-  DHW_CONTROLLER_STATE,
-  DHW_PARAMETER_DEFINITION,
-  DHW_SENSOR_DEFINITION,
-  DHW_SIMULATION_INPUTS,
-  DHW_SIMULATION_OUTPUTS,
-  DRIVES_SIMULATION_INPUTS,
-  DRIVES_SIMULATION_OUTPUTS,
-  HIGH_TEMPERATURE_SIMULATION_INPUTS,
-  HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
-  PCM_CONTROL_DEFINITION,
-  PCM_CONTROLLER_STATE,
-  PCM_PARAMETER_DEFINITION,
-  PCM_SENSOR_DEFINITION,
-  PCM_SIMULATION_INPUTS,
-  PCM_SIMULATION_OUTPUTS,
-  PVT_CONTROL_DEFINITION,
-  PVT_CONTROLLER_STATE,
-  PVT_PARAMETER_DEFINITION,
-  PVT_SENSOR_DEFINITION,
-  PVT_SIMULATION_INPUTS,
-  PVT_SIMULATION_OUTPUTS,
-  THRUSTERS_CONTROL_DEFINITION,
-  THRUSTERS_CONTROLLER_STATE,
-  THRUSTERS_PARAMETER_DEFINITION,
-  THRUSTERS_SENSOR_DEFINITION,
-  THRUSTERS_SIMULATION_INPUTS,
-  THRUSTERS_SIMULATION_OUTPUTS,
-} from "./consts.generated";
+import * as Definitions from "./consts.generated";
 import {
   SimulationInputsType,
   SimulationOutputsType,
   ThrsQueries,
   ThrsSimulationType,
 } from "./consts.types";
-import {
-  ADSORPTION_CONTROL_QUERY,
-  ADSORPTION_PARAMETERS_QUERY,
-  ADSORPTION_SENSOR_QUERY,
-  CONSUMERS_CONTROL_QUERY,
-  CONSUMERS_CONTROLLER_STATE_QUERY,
-  CONSUMERS_PARAMETERS_QUERY,
-  CONSUMERS_SENSOR_QUERY,
-  CONSUMERS_SIMULATION_INPUTS_QUERY,
-  CONSUMERS_SIMULATION_OUTPUTS_QUERY,
-  DHW_CONTROL_QUERY,
-  DHW_CONTROLLER_STATE_QUERY,
-  DHW_PARAMETERS_QUERY,
-  DHW_SENSOR_QUERY,
-  DHW_SIMULATION_INPUTS_QUERY,
-  DHW_SIMULATION_OUTPUTS_QUERY,
-  HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
-  HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
-  PCM_CONTROL_QUERY,
-  PCM_CONTROLLER_STATE_QUERY,
-  PCM_PARAMETERS_QUERY,
-  PCM_SENSOR_QUERY,
-  PCM_SIMULATION_INPUTS_QUERY,
-  PCM_SIMULATION_OUTPUTS_QUERY,
-  PVT_CONTROL_QUERY,
-  PVT_CONTROLLER_STATE_QUERY,
-  PVT_PARAMETERS_QUERY,
-  PVT_SENSOR_QUERY,
-  PVT_SIMULATION_INPUTS_QUERY,
-  PVT_SIMULATION_OUTPUTS_QUERY,
-  THRUSTERS_CONTROL_QUERY,
-  THRUSTERS_CONTROLLER_STATE_QUERY,
-  THRUSTERS_PARAMETERS_QUERY,
-  THRUSTERS_SENSOR_QUERY,
-  THRUSTERS_SIMULATION_INPUTS_QUERY,
-  THRUSTERS_SIMULATION_OUTPUTS_QUERY,
-} from "./queries.generated";
+import * as Queries from "./queries.generated";
 
 export * from "./consts.types";
 
@@ -130,34 +55,52 @@ export const toSimulation = <
 
 export const DEFINITIONS = toDefinitions({
   thrusters: {
-    sensorValues: THRUSTERS_SENSOR_DEFINITION,
-    controlValues: THRUSTERS_CONTROL_DEFINITION,
-    parameters: THRUSTERS_PARAMETER_DEFINITION,
-    controllerState: THRUSTERS_CONTROLLER_STATE,
+    sensorValues: Definitions.THRUSTERS_SENSOR_DEFINITION,
+    controlValues: Definitions.THRUSTERS_CONTROL_DEFINITION,
+    parameters: Definitions.THRUSTERS_PARAMETER_DEFINITION,
+    controllerState: Definitions.THRUSTERS_CONTROLLER_STATE,
   },
   pcm: {
-    sensorValues: PCM_SENSOR_DEFINITION,
-    controlValues: PCM_CONTROL_DEFINITION,
-    parameters: PCM_PARAMETER_DEFINITION,
-    controllerState: PCM_CONTROLLER_STATE,
+    sensorValues: Definitions.PCM_SENSOR_DEFINITION,
+    controlValues: Definitions.PCM_CONTROL_DEFINITION,
+    parameters: Definitions.PCM_PARAMETER_DEFINITION,
+    controllerState: Definitions.PCM_CONTROLLER_STATE,
   },
   pvt: {
-    sensorValues: PVT_SENSOR_DEFINITION,
-    controlValues: PVT_CONTROL_DEFINITION,
-    parameters: PVT_PARAMETER_DEFINITION,
-    controllerState: PVT_CONTROLLER_STATE,
+    sensorValues: Definitions.PVT_SENSOR_DEFINITION,
+    controlValues: Definitions.PVT_CONTROL_DEFINITION,
+    parameters: Definitions.PVT_PARAMETER_DEFINITION,
+    controllerState: Definitions.PVT_CONTROLLER_STATE,
+  },
+  adsorption: {
+    sensorValues: Definitions.ADSORPTION_SENSOR_DEFINITION,
+    controlValues: Definitions.ADSORPTION_CONTROL_DEFINITION,
+    parameters: Definitions.ADSORPTION_PARAMETER_DEFINITION,
+    controllerState: Definitions.ADSORPTION_CONTROLLER_STATE,
   },
   consumers: {
-    sensorValues: CONSUMERS_SENSOR_DEFINITION,
-    controlValues: CONSUMERS_CONTROL_DEFINITION,
-    parameters: CONSUMERS_PARAMETER_DEFINITION,
-    controllerState: CONSUMERS_CONTROLLER_STATE,
+    sensorValues: Definitions.CONSUMERS_SENSOR_DEFINITION,
+    controlValues: Definitions.CONSUMERS_CONTROL_DEFINITION,
+    parameters: Definitions.CONSUMERS_PARAMETER_DEFINITION,
+    controllerState: Definitions.CONSUMERS_CONTROLLER_STATE,
+  },
+  dc: {
+    sensorValues: Definitions.DC_SENSOR_DEFINITION,
+    controlValues: Definitions.DC_CONTROL_DEFINITION,
+    parameters: Definitions.DC_PARAMETER_DEFINITION,
+    controllerState: Definitions.DC_CONTROLLER_STATE,
   },
   dhw: {
-    sensorValues: DHW_SENSOR_DEFINITION,
-    controlValues: DHW_CONTROL_DEFINITION,
-    parameters: DHW_PARAMETER_DEFINITION,
-    controllerState: DHW_CONTROLLER_STATE,
+    sensorValues: Definitions.DHW_SENSOR_DEFINITION,
+    controlValues: Definitions.DHW_CONTROL_DEFINITION,
+    parameters: Definitions.DHW_PARAMETER_DEFINITION,
+    controllerState: Definitions.DHW_CONTROLLER_STATE,
+  },
+  drives: {
+    sensorValues: Definitions.DRIVES_SENSOR_DEFINITION,
+    controlValues: Definitions.DRIVES_CONTROL_DEFINITION,
+    parameters: Definitions.DRIVES_PARAMETER_DEFINITION,
+    controllerState: Definitions.DRIVES_CONTROLLER_STATE,
   },
 });
 
@@ -165,26 +108,26 @@ export type ThrsDefinitions = typeof DEFINITIONS;
 
 export const SIMULATION = toSimulation(
   {
-    highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS,
-    thrusters: THRUSTERS_SIMULATION_INPUTS,
-    pcm: PCM_SIMULATION_INPUTS,
-    pvt: PVT_SIMULATION_INPUTS,
-    adsorption: ADSORPTION_SIMULATION_INPUTS,
-    consumers: CONSUMERS_SIMULATION_INPUTS,
-    dc: DC_SIMULATION_INPUTS,
-    dhw: DHW_SIMULATION_INPUTS,
-    drives: DRIVES_SIMULATION_INPUTS,
+    highTemperature: Definitions.HIGH_TEMPERATURE_SIMULATION_INPUTS,
+    thrusters: Definitions.THRUSTERS_SIMULATION_INPUTS,
+    pcm: Definitions.PCM_SIMULATION_INPUTS,
+    pvt: Definitions.PVT_SIMULATION_INPUTS,
+    adsorption: Definitions.ADSORPTION_SIMULATION_INPUTS,
+    consumers: Definitions.CONSUMERS_SIMULATION_INPUTS,
+    dc: Definitions.DC_SIMULATION_INPUTS,
+    dhw: Definitions.DHW_SIMULATION_INPUTS,
+    drives: Definitions.DRIVES_SIMULATION_INPUTS,
   },
   {
-    highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
-    thrusters: THRUSTERS_SIMULATION_OUTPUTS,
-    pcm: PCM_SIMULATION_OUTPUTS,
-    pvt: PVT_SIMULATION_OUTPUTS,
-    adsorption: ADSORPTION_SIMULATION_OUTPUTS,
-    consumers: CONSUMERS_SIMULATION_OUTPUTS,
-    dc: DC_SIMULATION_OUTPUTS,
-    dhw: DHW_SIMULATION_OUTPUTS,
-    drives: DRIVES_SIMULATION_OUTPUTS,
+    highTemperature: Definitions.HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
+    thrusters: Definitions.THRUSTERS_SIMULATION_OUTPUTS,
+    pcm: Definitions.PCM_SIMULATION_OUTPUTS,
+    pvt: Definitions.PVT_SIMULATION_OUTPUTS,
+    adsorption: Definitions.ADSORPTION_SIMULATION_OUTPUTS,
+    consumers: Definitions.CONSUMERS_SIMULATION_OUTPUTS,
+    dc: Definitions.DC_SIMULATION_OUTPUTS,
+    dhw: Definitions.DHW_SIMULATION_OUTPUTS,
+    drives: Definitions.DRIVES_SIMULATION_OUTPUTS,
   },
 );
 
@@ -245,53 +188,77 @@ export const toQueries = <
 
 export const QUERIES = toQueries({
   thrusters: {
-    controlValues: THRUSTERS_CONTROL_QUERY,
-    parameters: THRUSTERS_PARAMETERS_QUERY,
-    sensorValues: THRUSTERS_SENSOR_QUERY,
-    controllerState: THRUSTERS_CONTROLLER_STATE_QUERY,
+    controlValues: Queries.THRUSTERS_CONTROL_QUERY,
+    parameters: Queries.THRUSTERS_PARAMETERS_QUERY,
+    sensorValues: Queries.THRUSTERS_SENSOR_QUERY,
+    controllerState: Queries.THRUSTERS_CONTROLLER_STATE_QUERY,
   },
   pcm: {
-    controlValues: PCM_CONTROL_QUERY,
-    parameters: PCM_PARAMETERS_QUERY,
-    sensorValues: PCM_SENSOR_QUERY,
-    controllerState: PCM_CONTROLLER_STATE_QUERY,
+    controlValues: Queries.PCM_CONTROL_QUERY,
+    parameters: Queries.PCM_PARAMETERS_QUERY,
+    sensorValues: Queries.PCM_SENSOR_QUERY,
+    controllerState: Queries.PCM_CONTROLLER_STATE_QUERY,
   },
   pvt: {
-    controlValues: PVT_CONTROL_QUERY,
-    parameters: PVT_PARAMETERS_QUERY,
-    sensorValues: PVT_SENSOR_QUERY,
-    controllerState: PVT_CONTROLLER_STATE_QUERY,
+    controlValues: Queries.PVT_CONTROL_QUERY,
+    parameters: Queries.PVT_PARAMETERS_QUERY,
+    sensorValues: Queries.PVT_SENSOR_QUERY,
+    controllerState: Queries.PVT_CONTROLLER_STATE_QUERY,
+  },
+  adsorption: {
+    controlValues: Queries.ADSORPTION_CONTROL_QUERY,
+    parameters: Queries.ADSORPTION_PARAMETERS_QUERY,
+    sensorValues: Queries.ADSORPTION_SENSOR_QUERY,
+    controllerState: Queries.ADSORPTION_CONTROLLER_STATE_QUERY,
   },
   consumers: {
-    controlValues: CONSUMERS_CONTROL_QUERY,
-    parameters: CONSUMERS_PARAMETERS_QUERY,
-    sensorValues: CONSUMERS_SENSOR_QUERY,
-    controllerState: CONSUMERS_CONTROLLER_STATE_QUERY,
+    controlValues: Queries.CONSUMERS_CONTROL_QUERY,
+    parameters: Queries.CONSUMERS_PARAMETERS_QUERY,
+    sensorValues: Queries.CONSUMERS_SENSOR_QUERY,
+    controllerState: Queries.CONSUMERS_CONTROLLER_STATE_QUERY,
+  },
+  dc: {
+    controlValues: Queries.DC_CONTROL_QUERY,
+    parameters: Queries.DC_PARAMETERS_QUERY,
+    sensorValues: Queries.DC_SENSOR_QUERY,
+    controllerState: Queries.DC_CONTROLLER_STATE_QUERY,
   },
   dhw: {
-    controlValues: DHW_CONTROL_QUERY,
-    parameters: DHW_PARAMETERS_QUERY,
-    sensorValues: DHW_SENSOR_QUERY,
-    controllerState: DHW_CONTROLLER_STATE_QUERY,
+    controlValues: Queries.DHW_CONTROL_QUERY,
+    parameters: Queries.DHW_PARAMETERS_QUERY,
+    sensorValues: Queries.DHW_SENSOR_QUERY,
+    controllerState: Queries.DHW_CONTROLLER_STATE_QUERY,
+  },
+  drives: {
+    controlValues: Queries.DRIVES_CONTROL_QUERY,
+    parameters: Queries.DRIVES_PARAMETERS_QUERY,
+    sensorValues: Queries.DRIVES_SENSOR_QUERY,
+    controllerState: Queries.DRIVES_CONTROLLER_STATE_QUERY,
   },
 });
 
 export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
-  highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
-  thrusters: THRUSTERS_SIMULATION_INPUTS_QUERY,
-  pcm: PCM_SIMULATION_INPUTS_QUERY,
-  pvt: PVT_SIMULATION_INPUTS_QUERY,
-  consumers: CONSUMERS_SIMULATION_INPUTS_QUERY,
-  dhw: DHW_SIMULATION_INPUTS_QUERY,
+  highTemperature: Queries.HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
+  thrusters: Queries.THRUSTERS_SIMULATION_INPUTS_QUERY,
+  pcm: Queries.PCM_SIMULATION_INPUTS_QUERY,
+  pvt: Queries.PVT_SIMULATION_INPUTS_QUERY,
+  adsorption: Queries.ADSORPTION_SIMULATION_INPUTS_QUERY,
+  consumers: Queries.CONSUMERS_SIMULATION_INPUTS_QUERY,
+  dc: Queries.DC_SIMULATION_INPUTS_QUERY,
+  dhw: Queries.DHW_SIMULATION_INPUTS_QUERY,
+  drives: Queries.DRIVES_SIMULATION_INPUTS_QUERY,
 };
 
 export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
-  highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
-  thrusters: THRUSTERS_SIMULATION_OUTPUTS_QUERY,
-  pcm: PCM_SIMULATION_OUTPUTS_QUERY,
-  pvt: PVT_SIMULATION_OUTPUTS_QUERY,
-  consumers: CONSUMERS_SIMULATION_OUTPUTS_QUERY,
-  dhw: DHW_SIMULATION_OUTPUTS_QUERY,
+  highTemperature: Queries.HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
+  thrusters: Queries.THRUSTERS_SIMULATION_OUTPUTS_QUERY,
+  pcm: Queries.PCM_SIMULATION_OUTPUTS_QUERY,
+  pvt: Queries.PVT_SIMULATION_OUTPUTS_QUERY,
+  adsorption: Queries.ADSORPTION_SIMULATION_OUTPUTS_QUERY,
+  consumers: Queries.CONSUMERS_SIMULATION_OUTPUTS_QUERY,
+  dc: Queries.DC_SIMULATION_OUTPUTS_QUERY,
+  dhw: Queries.DHW_SIMULATION_OUTPUTS_QUERY,
+  drives: Queries.DRIVES_SIMULATION_OUTPUTS_QUERY,
 };
 
 const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>
@@ -321,13 +288,13 @@ export const QUERY_ALL = gql`
     modules {
       thrusters {
         sensorValues {
-          ${THRUSTERS_SENSOR_QUERY}
+          ${Queries.THRUSTERS_SENSOR_QUERY}
         }
         controlValues {
-          ${THRUSTERS_CONTROL_QUERY}
+          ${Queries.THRUSTERS_CONTROL_QUERY}
         }
         parameters {
-          ${THRUSTERS_PARAMETERS_QUERY}
+          ${Queries.THRUSTERS_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
@@ -335,13 +302,13 @@ export const QUERY_ALL = gql`
       }
       pcm {
         sensorValues {
-          ${PCM_SENSOR_QUERY}
+          ${Queries.PCM_SENSOR_QUERY}
         }
         controlValues {
-          ${PCM_CONTROL_QUERY}
+          ${Queries.PCM_CONTROL_QUERY}
         }
         parameters {
-          ${PCM_PARAMETERS_QUERY}
+          ${Queries.PCM_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
@@ -349,13 +316,13 @@ export const QUERY_ALL = gql`
       }
       pvt {
         sensorValues {
-          ${PVT_SENSOR_QUERY}
+          ${Queries.PVT_SENSOR_QUERY}
         }
         controlValues {
-          ${PVT_CONTROL_QUERY}
+          ${Queries.PVT_CONTROL_QUERY}
         }
         parameters {
-          ${PVT_PARAMETERS_QUERY}
+          ${Queries.PVT_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
@@ -363,13 +330,13 @@ export const QUERY_ALL = gql`
       }
       adsorption {
         sensorValues {
-          ${ADSORPTION_SENSOR_QUERY}
+          ${Queries.ADSORPTION_SENSOR_QUERY}
         }
         controlValues {
-          ${ADSORPTION_CONTROL_QUERY}
+          ${Queries.ADSORPTION_CONTROL_QUERY}
         }
         parameters {
-          ${ADSORPTION_PARAMETERS_QUERY}
+          ${Queries.ADSORPTION_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
@@ -377,13 +344,27 @@ export const QUERY_ALL = gql`
       }
       consumers {
         sensorValues {
-          ${CONSUMERS_SENSOR_QUERY}
+          ${Queries.CONSUMERS_SENSOR_QUERY}
         }
         controlValues {
-          ${CONSUMERS_CONTROL_QUERY}
+          ${Queries.CONSUMERS_CONTROL_QUERY}
         }
         parameters {
-          ${CONSUMERS_PARAMETERS_QUERY}
+          ${Queries.CONSUMERS_PARAMETERS_QUERY}
+        }
+        controllerState {
+          Empty
+        }
+      }
+      dc {
+        sensorValues {
+          ${Queries.DC_SENSOR_QUERY}
+        }
+        controlValues {
+          ${Queries.DC_CONTROL_QUERY}
+        }
+        parameters {
+          ${Queries.DC_PARAMETERS_QUERY}
         }
         controllerState {
           Empty
@@ -391,16 +372,30 @@ export const QUERY_ALL = gql`
       }
       dhw {
         sensorValues {
-          ${DHW_SENSOR_QUERY}
+          ${Queries.DHW_SENSOR_QUERY}
         }
         controlValues {
-          ${DHW_CONTROL_QUERY}
+          ${Queries.DHW_CONTROL_QUERY}
         }
         parameters {
-          ${DHW_PARAMETERS_QUERY}
+          ${Queries.DHW_PARAMETERS_QUERY}
         }
         controllerState {
-          ${DHW_CONTROLLER_STATE_QUERY}
+          ${Queries.DHW_CONTROLLER_STATE_QUERY}
+        }
+      }
+      drives {
+        sensorValues {
+          ${Queries.DRIVES_SENSOR_QUERY}
+        }
+        controlValues {
+          ${Queries.DRIVES_CONTROL_QUERY}
+        }
+        parameters {
+          ${Queries.DRIVES_PARAMETERS_QUERY}
+        }
+        controllerState {
+          Empty
         }
       }
     }

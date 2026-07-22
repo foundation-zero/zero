@@ -63,8 +63,11 @@ export const SIMULATION_TYPES = [
   "thrusters",
   "pcm",
   "pvt",
+  "adsorption",
   "consumers",
+  "dc",
   "dhw",
+  "drives",
 ] as const;
 export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];
 

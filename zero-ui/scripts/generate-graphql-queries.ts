@@ -119,6 +119,10 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     HeatExchanger: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],
     AdsorptionChiller: ["operating", "noError", "freeCooling"],
+    Brightloop: ["active"],
+    Ugrid: ["active"],
+    PropulsionDrive: ["active"],
+    ShorePowerConverter: ["active"],
   },
 
   // Simulation component fields

@@ -248,7 +248,57 @@ export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const DC_CONTROL_QUERY = `
-
+  dcPumpAft {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  dcPumpFwd {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  dcPumpUgrid {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  dcMixAft {
+    setpoint { value timestamp }
+  }
+  dcMixFwd {
+    setpoint { value timestamp }
+  }
+  dcMixUgrid {
+    setpoint { value timestamp }
+  }
+  dcMixRecovery {
+    setpoint { value timestamp }
+  }
+  dcMixExchanger {
+    setpoint { value timestamp }
+  }
+  dcSwitchAft4 {
+    setpoint { value timestamp }
+  }
+  dcSwitchAft3 {
+    setpoint { value timestamp }
+  }
+  dcSwitchAft2 {
+    setpoint { value timestamp }
+  }
+  dcSwitchAft1 {
+    setpoint { value timestamp }
+  }
+  dcSwitchFwd2 {
+    setpoint { value timestamp }
+  }
+  dcSwitchFwd1 {
+    setpoint { value timestamp }
+  }
+  dcSwitchUgrid2 {
+    setpoint { value timestamp }
+  }
+  dcSwitchUgrid1 {
+    setpoint { value timestamp }
+  }
 `;
 
 export const DC_CONTROLLER_STATE_QUERY = `
@@ -256,11 +306,212 @@ export const DC_CONTROLLER_STATE_QUERY = `
 `;
 
 export const DC_PARAMETERS_QUERY = `
-
+  maximumSupplyTemperature
+  recoveryTemperature
+  brightloopFlowSetpoint
+  ugridFlowSetpoint
+  brightloopReturnTemperature
+  ugridReturnTemperature
+  heatDumpTuning
+  recoveryMixTuning
+  brightloopsFwdMixTuning
+  brightloopsAftMixTuning
+  ugridsMixTuning
+  brightloopsFwdPumpTuning
+  brightloopsAftPumpTuning
+  ugridsPumpTuning
 `;
 
 export const DC_SENSOR_QUERY = `
-
+  dcPumpAft {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  dcPumpUgrid {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  dcPumpFwd {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  dcTemperatureAft4Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureAft3Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureAft2Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureAft1Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgrid2Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgrid1Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwd2Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwd1Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureAftSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecoveryMix {
+    temperature { value timestamp }
+  }
+  dcTemperatureSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwdReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureAftReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwdSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgridSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgridReturn {
+    temperature { value timestamp }
+  }
+  dcMixFwd {
+    positionRel { value timestamp }
+  }
+  dcMixAft {
+    positionRel { value timestamp }
+  }
+  dcMixUgrid {
+    positionRel { value timestamp }
+  }
+  dcMixRecovery {
+    positionRel { value timestamp }
+  }
+  dcMixExchanger {
+    positionRel { value timestamp }
+  }
+  dcFlowAft4 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowAft3 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowAft2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowAft1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowUgrid2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowUgrid1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowFwd2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowFwd1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowAftReturn {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowFwdReturn {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcFlowUgridReturn {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  dcSwitchAft4 {
+    positionRel { value timestamp }
+  }
+  dcSwitchAft3 {
+    positionRel { value timestamp }
+  }
+  dcSwitchAft2 {
+    positionRel { value timestamp }
+  }
+  dcSwitchAft1 {
+    positionRel { value timestamp }
+  }
+  dcSwitchFwd2 {
+    positionRel { value timestamp }
+  }
+  dcSwitchFwd1 {
+    positionRel { value timestamp }
+  }
+  dcSwitchUgrid2 {
+    positionRel { value timestamp }
+  }
+  dcSwitchUgrid1 {
+    positionRel { value timestamp }
+  }
+  dcPressureAft {
+    pressure { value timestamp }
+  }
+  dcPressureUgrid {
+    pressure { value timestamp }
+  }
+  dcPressureFwd {
+    pressure { value timestamp }
+  }
+  dcBrightloopAft1 {
+    active { value timestamp }
+  }
+  dcBrightloopAft2 {
+    active { value timestamp }
+  }
+  dcBrightloopAft3 {
+    active { value timestamp }
+  }
+  dcBrightloopAft4 {
+    active { value timestamp }
+  }
+  dcBrightloopFwd1 {
+    active { value timestamp }
+  }
+  dcBrightloopFwd2 {
+    active { value timestamp }
+  }
+  dcUgrid1 {
+    active { value timestamp }
+  }
+  dcUgrid2 {
+    active { value timestamp }
+  }
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
@@ -671,7 +922,44 @@ export const DHW_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const DRIVES_CONTROL_QUERY = `
-
+  drivesPump1 {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  drivesPump2 {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  drivesMixExchanger {
+    setpoint { value timestamp }
+  }
+  drivesMixRecovery {
+    setpoint { value timestamp }
+  }
+  drivesFlowcontrolPropdriveAft {
+    setpoint { value timestamp }
+  }
+  drivesFlowcontrolPropdriveFwd {
+    setpoint { value timestamp }
+  }
+  drivesSwitchShorepowerSupply {
+    setpoint { value timestamp }
+  }
+  drivesSwitchShorepowerReturn {
+    setpoint { value timestamp }
+  }
+  drivesSwitchPropdriveAft1 {
+    setpoint { value timestamp }
+  }
+  drivesSwitchPropdriveAft2 {
+    setpoint { value timestamp }
+  }
+  drivesSwitchPropdriveFwd1 {
+    setpoint { value timestamp }
+  }
+  drivesSwitchPropdriveFwd2 {
+    setpoint { value timestamp }
+  }
 `;
 
 export const DRIVES_CONTROLLER_STATE_QUERY = `
@@ -679,11 +967,134 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
 `;
 
 export const DRIVES_PARAMETERS_QUERY = `
-
+  shorepowerMaximumSupplyTemperature
+  propulsionMaximumSupplyTemperature
+  recoveryTemperature
+  shorepowerFlowSetpoint
+  propulsionDrivesFlowSetpoint
+  pumpTuning
+  recoveryMixTuning
+  heatDumpTuning
+  aftFlowBalanceTuning
+  fwdFlowBalanceTuning
 `;
 
 export const DRIVES_SENSOR_QUERY = `
-
+  drivesPump1 {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  drivesPump2 {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  drivesTemperatureShorepowerReturn {
+    temperature { value timestamp }
+  }
+  drivesTemperatureSupply {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecoveryMix {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveAft1Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveFwd1Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdrivesFwdSupply {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdrivesAftSupply {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveAft2Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveFwd2Return {
+    temperature { value timestamp }
+  }
+  drivesMixExchanger {
+    positionRel { value timestamp }
+  }
+  drivesMixRecovery {
+    positionRel { value timestamp }
+  }
+  drivesFlowShorepower {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowPropdriveAft1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowPropdriveFwd2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowPropdriveFwd1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowPropdriveAft2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  drivesFlowcontrolPropdriveAft {
+    positionRel { value timestamp }
+  }
+  drivesFlowcontrolPropdriveFwd {
+    positionRel { value timestamp }
+  }
+  drivesSwitchShorepowerSupply {
+    positionRel { value timestamp }
+  }
+  drivesSwitchShorepowerReturn {
+    positionRel { value timestamp }
+  }
+  drivesSwitchPropdriveAft1 {
+    positionRel { value timestamp }
+  }
+  drivesSwitchPropdriveAft2 {
+    positionRel { value timestamp }
+  }
+  drivesSwitchPropdriveFwd1 {
+    positionRel { value timestamp }
+  }
+  drivesSwitchPropdriveFwd2 {
+    positionRel { value timestamp }
+  }
+  drivesPressure {
+    pressure { value timestamp }
+  }
+  drivesPropdriveAft1 {
+    active { value timestamp }
+  }
+  drivesPropdriveAft2 {
+    active { value timestamp }
+  }
+  drivesPropdriveFwd1 {
+    active { value timestamp }
+  }
+  drivesPropdriveFwd2 {
+    active { value timestamp }
+  }
+  drivesShorepower {
+    active { value timestamp }
+  }
 `;
 
 export const DRIVES_SIMULATION_INPUTS_QUERY = `
