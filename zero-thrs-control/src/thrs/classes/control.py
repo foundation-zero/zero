@@ -16,8 +16,6 @@ class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerSt
     @property
     def parameters(self) -> Parameters: ...
 
-    _parameters: "Parameters"
-
     @property
     def mode(self) -> ControlMode | None: ...
 

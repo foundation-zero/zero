@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.adsorption import AdsorptionControl, AdsorptionParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -47,7 +48,9 @@ def simulation_inputs():
 
 @fixture
 def control(simulation):
-    return AdsorptionControl(AdsorptionParameters(), simulation.time)
+    return AdsorptionControl(
+        AdsorptionParameters(), simulation.time, MachineStateLoggingServiceNoop()
+    )
 
 
 @fixture

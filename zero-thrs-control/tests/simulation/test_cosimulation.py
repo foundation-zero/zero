@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dhw import DhwControl, DhwParameters
 from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.base import (
@@ -147,8 +148,12 @@ def test_cosimulation_input_routing():
 
     control_values = CombinedValues(
         values={
-            "drives": DrivesControl(DrivesParameters(), datetime.now).initial()[0],
-            "dhw": DhwControl(DhwParameters(), datetime.now).initial()[0],
+            "drives": DrivesControl(
+                DrivesParameters(), datetime.now, MachineStateLoggingServiceNoop()
+            ).initial()[0],
+            "dhw": DhwControl(
+                DhwParameters(), datetime.now, MachineStateLoggingServiceNoop()
+            ).initial()[0],
         }
     )
 

@@ -2,6 +2,7 @@ from typing import Callable, cast
 
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.switching import AutomationMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
@@ -83,7 +84,11 @@ class SimulationTestRunner[
     ) -> "SimulationTestRunner[S2, C2, I2, O2, P2, M2, CS2]":
         return SimulationTestRunner(
             simulation,
-            module.control(initial_control_parameters, simulation.time, None),
+            module.control(
+                initial_control_parameters,
+                simulation.time,
+                MachineStateLoggingServiceNoop(),
+            ),
             module.alarms(),
         )
 

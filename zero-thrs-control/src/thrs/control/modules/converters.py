@@ -4,10 +4,7 @@ from typing import Callable
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
@@ -91,11 +88,11 @@ class ConvertersControl(
         parameters: ConvertersParameters,
         time_fn: Callable[[], datetime],
         initial_control_values: ConvertersControlValues,
-        state_logger: StateLogger | None = None,
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
+        self.state_logger = state_logger
         self.current_values = initial_control_values
 
         self._init_state_machine_states()
