@@ -12,7 +12,7 @@ const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
   <g>
     <HotWaterCircuitInstance
       x="885"
-      y="45"
+      y="15"
       force-height
       height="300"
       v-bind="hotWaterCircuits?.['pcm']"

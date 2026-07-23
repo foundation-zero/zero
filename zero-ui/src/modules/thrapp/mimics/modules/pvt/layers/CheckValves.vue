@@ -1,98 +1,98 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { CheckValveInstance } from "../../../instances";
+import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import { PVT_MIMIC_DATA } from "../data";
+
+const checkValves = PVT_MIMIC_DATA[MimicComponentType.CheckValve];
 </script>
 
 <template>
   <g>
     <CheckValveInstance
-      x="255"
-      y="149"
-      tag-id="1169-05"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="255"
-      y="332"
-      tag-id="1169-04"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="255"
-      y="543"
-      tag-id="1168-12"
-      :orientation="ComponentOrientation.Right"
-    />
-
-    <CheckValveInstance
-      x="573"
-      y="225"
-      tag-id="1069-06"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="679"
-      y="225"
-      tag-id="1169-07"
-      :orientation="ComponentOrientation.Right"
-    />
-
-    <CheckValveInstance
-      x="573"
-      y="367"
-      tag-id="1169-08"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="679"
-      y="367"
-      tag-id="1169-09"
-      :orientation="ComponentOrientation.Right"
-    />
-
-    <CheckValveInstance
-      x="573"
-      y="565"
-      tag-id="1191-01"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="679"
-      y="565"
-      tag-id="1191-02"
-      :orientation="ComponentOrientation.Right"
-    />
-
-    <CheckValveInstance
-      x="824"
-      y="150"
-      tag-id="1077-01"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="824"
-      y="366"
-      tag-id="1077-02"
-      :orientation="ComponentOrientation.Right"
-    />
-    <CheckValveInstance
-      x="824"
-      y="565"
-      tag-id="1076-01"
-      :orientation="ComponentOrientation.Right"
-    />
-
-    <CheckValveInstance
-      x="1151"
-      y="229"
-      tag-id="1167-01"
+      x="430"
+      y="200"
       :orientation="ComponentOrientation.Left"
-    />
+      v-bind="checkValves['1188-01']"
+    >
+      <TagLabelInstance
+        x="430"
+        y="234"
+        :tag-id="checkValves['1188-01'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
     <CheckValveInstance
-      x="1151"
-      y="276"
-      tag-id="1167-11"
+      x="430"
+      y="400"
       :orientation="ComponentOrientation.Left"
-    />
+      v-bind="checkValves['1188-02']"
+    >
+      <TagLabelInstance
+        x="430"
+        y="434"
+        :tag-id="checkValves['1188-02'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
+    <CheckValveInstance
+      x="430"
+      y="620"
+      :orientation="ComponentOrientation.Left"
+      v-bind="checkValves['1188-03']"
+    >
+      <TagLabelInstance
+        x="430"
+        y="654"
+        :tag-id="checkValves['1188-03'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
+    <CheckValveInstance
+      x="750"
+      y="104"
+      :orientation="ComponentOrientation.Right"
+      v-bind="checkValves['1077-01']"
+    >
+      <TagLabelInstance
+        x="750"
+        y="128"
+        :tag-id="checkValves['1077-01'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
+    <CheckValveInstance
+      x="750"
+      y="312"
+      :orientation="ComponentOrientation.Right"
+      v-bind="checkValves['1077-02']"
+    >
+      <TagLabelInstance
+        x="750"
+        y="332"
+        :tag-id="checkValves['1077-02'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
+    <CheckValveInstance
+      x="750"
+      y="520"
+      :orientation="ComponentOrientation.Right"
+      v-bind="checkValves['1076-01']"
+    >
+      <TagLabelInstance
+        x="750"
+        y="540"
+        :tag-id="checkValves['1076-01'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
+    <CheckValveInstance
+      x="885"
+      y="622"
+      :orientation="ComponentOrientation.Left"
+      v-bind="checkValves['1085-01']"
+    >
+      <TagLabelInstance
+        x="885"
+        y="653"
+        :tag-id="checkValves['1085-01'].tooltip?.yardTag"
+      />
+    </CheckValveInstance>
   </g>
 </template>

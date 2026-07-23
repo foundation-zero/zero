@@ -2,6 +2,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { TemperatureSensorInstance } from "../../../instances";
+import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
 
 const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
@@ -11,45 +12,81 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
   <g>
     <TemperatureSensorInstance
       x="298"
-      y="84"
-      tag-id="1038-03"
-      :orientation="ComponentOrientation.Right"
+      y="86"
+      :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-03']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="299"
+        y="47"
+        :tag-id="temperatureSensors['1038-03'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-03'].source"
+      />
+    </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="298"
-      y="255"
-      tag-id="1038-73"
-      :orientation="ComponentOrientation.Right"
+      y="295"
+      :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-73']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="299"
+        y="256"
+        :tag-id="temperatureSensors['1038-73'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-73'].source"
+      />
+    </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="298"
-      y="425"
-      tag-id="1038-04"
-      :orientation="ComponentOrientation.Right"
+      y="503"
+      :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-04']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="299"
+        y="465"
+        :tag-id="temperatureSensors['1038-04'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-04'].source"
+      />
+    </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="468"
-      y="338"
-      tag-id="1038-22"
+      y="387"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-22']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="468"
+        y="349"
+        :tag-id="temperatureSensors['1038-22'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-22'].source"
+      />
+    </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="468"
-      y="509"
-      tag-id="1038-21"
+      y="609"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-21']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="468"
+        y="571"
+        :tag-id="temperatureSensors['1038-21'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-21'].source"
+      />
+    </TemperatureSensorInstance>
     <TemperatureSensorInstance
-      x="960"
+      x="982"
       y="593"
-      tag-id="1038-24"
-      :orientation="ComponentOrientation.Right"
+      :orientation="ComponentOrientation.Left"
       v-bind="temperatureSensors['1038-24']"
-    />
+    >
+      <TemperatureLabelInstance
+        x="1020"
+        y="590"
+        :tag-id="temperatureSensors['1038-24'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-24'].source"
+      />
+    </TemperatureSensorInstance>
   </g>
 </template>

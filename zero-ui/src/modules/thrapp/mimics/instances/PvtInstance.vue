@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
 import {
   ValueList,
-  ValueListDeltaTItem,
   ValueListFlowItem,
   ValueListItem,
   ValueListSeparator,
-  ValueListTemperatureItem,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import { getMimicDataProvider, ModuleField } from "../providers";
+import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
@@ -40,7 +39,6 @@ const { t } = useI18n();
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const pump = getSensorValue(props.pumpSource);
-const flow = getSensorValue(props.flowSource);
 const returnTemp = getSensorValue(props.returnTemperatureSource);
 const supplyTemp = getSensorValue(props.supplyTemperatureSource);
 const state = getComponentState();
@@ -79,12 +77,17 @@ const modeKey = computed(() => {
 
     <ValueList class="pt-1">
       <ValueListSeparator />
-      <ValueListFlowItem :value="flow?.flow?.value" />
+      <ValueListFlowItem :source="props.flowSource" />
       <ValueListTemperatureItem
         :label="t('thrapp.mimics.pvt.assets.labels.temperature')"
         :value="returnTemp?.temperature?.value"
       />
-      <ValueListDeltaTItem :value="deltaT" />
+      <ValueListItem>
+        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Auto :value="deltaT" />
+        </span>
+      </ValueListItem>
       <ValueListItem>
         <span>{{ t("thrapp.mimics.pvt.assets.labels.power") }}</span>
         <strong>{{ Math.round(pump?.speed?.value ?? 0) }} %</strong>

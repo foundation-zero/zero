@@ -14,7 +14,7 @@ import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import { FieldEditor } from "../editors";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
-import { ControlValueForm } from "../providers";
+import { ControlValueForm, getSensorDefinition } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import ComponentInfo from "./partials/ComponentInfo.vue";
@@ -23,6 +23,9 @@ import SubmitControlForm from "./partials/SubmitControlForm.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
 const { labels, items, sources } = useTranslations();
+
+const { source } = props;
+const sourceDefinition = getSensorDefinition(source[1], source[2]);
 </script>
 
 <template>
@@ -31,7 +34,7 @@ const { labels, items, sources } = useTranslations();
       <NoopTooltipProvider>
         <SwitchValveInstance v-bind="props" />
       </NoopTooltipProvider>
-      <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
+      <YardTag class="text-sm">{{ sourceDefinition.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">

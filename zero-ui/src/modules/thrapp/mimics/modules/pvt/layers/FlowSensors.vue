@@ -2,6 +2,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { FlowSensorInstance } from "../../../instances";
+import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
 
 const flowSensors = PVT_MIMIC_DATA[MimicComponentType.FlowSensor];
@@ -10,25 +11,43 @@ const flowSensors = PVT_MIMIC_DATA[MimicComponentType.FlowSensor];
 <template>
   <g>
     <FlowSensorInstance
-      x="794"
-      y="118"
-      tag-id="1058-12"
+      x="694"
+      y="82"
       :orientation="ComponentOrientation.Down"
       v-bind="flowSensors['1058-12']"
-    />
+    >
+      <FlowLabelInstance
+        x="687"
+        y="40"
+        :tag-id="flowSensors['1058-12'].tooltip?.yardTag"
+        :flow="flowSensors['1058-12'].source"
+      />
+    </FlowSensorInstance>
     <FlowSensorInstance
-      x="794"
-      y="289"
-      tag-id="1058-13"
+      x="694"
+      y="290"
       :orientation="ComponentOrientation.Down"
       v-bind="flowSensors['1058-13']"
-    />
+    >
+      <FlowLabelInstance
+        x="687"
+        y="249"
+        :tag-id="flowSensors['1058-13'].tooltip?.yardTag"
+        :flow="flowSensors['1058-13'].source"
+      />
+    </FlowSensorInstance>
     <FlowSensorInstance
-      x="794"
-      y="448"
-      tag-id="1057-03"
+      x="694"
+      y="499"
       :orientation="ComponentOrientation.Down"
       v-bind="flowSensors['1057-03']"
-    />
+    >
+      <FlowLabelInstance
+        x="687"
+        y="458"
+        :tag-id="flowSensors['1057-03'].tooltip?.yardTag"
+        :flow="flowSensors['1057-03'].source"
+      />
+    </FlowSensorInstance>
   </g>
 </template>

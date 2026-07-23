@@ -1,10 +1,8 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField, ModuleField } from "../../../../providers";
-
-const deltaProxy = (field: string) =>
-  [SensorComponentType.DeltaT, "pvt", field] as ModuleField<SensorComponentType.DeltaT, "pvt">;
+import { getCustomField, getField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 
 export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
   [MimicComponentType.ExchangeCircuit]: {
@@ -18,22 +16,19 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
         forceHeight: true,
       },
       parameters: {},
-      source: undefined,
+      source: getCustomField("pvt", { technicalName: "pvt-seawater-loop" }),
       sensors: {
-        deltaT: deltaProxy("pvtTemperatureSupply"),
+        deltaT: getField(SensorComponentType.DeltaT, "pvt", "pvtTemperatureSupply"),
         flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
         incoming: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureSupply"),
         outgoing: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-        heatExchanger: [
-          SensorComponentType.HeatExchanger,
-          "pvt",
-          "pvtMixExchanger",
-        ] as unknown as ModuleField<SensorComponentType.HeatExchanger, "pvt">,
+        heatExchanger: getField(SensorComponentType.HeatExchanger, "pvt", "pvtMixExchanger"),
       },
-      tooltip: {
-        title: "Seawater",
-        itemName: "Seawater loop",
-        technicalName: "pvt-seawater-loop",
+      get tooltip() {
+        return fieldTooltip(this.source, {
+          title: "Seawater",
+          componentType: "Seawater loop",
+        });
       },
     }),
   },
@@ -43,21 +38,15 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       controllerState: {},
       custom: {},
       parameters: {},
-      source: undefined,
+      source: getCustomField("pvt", { technicalName: "pvt-pcm-loop" }),
       sensors: {
-        flowIn: [
-          SensorComponentType.CalculatedFlow,
-          "pvt",
-          "pvtFlowMainAftRecovery",
-        ] as unknown as ModuleField<SensorComponentType.CalculatedFlow, "pvt">,
+        flowIn: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowMainAftRecovery"),
         flowOut: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
         tIn: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
         tOut: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureSupply"),
       },
-      tooltip: {
-        title: "PCM",
-        itemName: "PCM loop",
-        technicalName: "pvt-pcm-loop",
+      get tooltip() {
+        return fieldTooltip(this.source, { title: "PCM", componentType: "PCM loop" });
       },
     }),
   },

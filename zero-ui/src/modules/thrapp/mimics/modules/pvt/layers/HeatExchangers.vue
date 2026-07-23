@@ -1,37 +1,27 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { HeatExchangerPortOrientation } from "../../../components/heat-exchanger";
-import { HeatExchangerInstance } from "../../../instances";
-import { getField } from "../../../providers";
+import { PipeHeatExchangerInstance } from "../../../instances";
+import HeatExchangerLabelInstance from "../../../instances/HeatExchangerLabelInstance.vue";
+import { PVT_MIMIC_DATA } from "../data";
+
+const heatExchangers = PVT_MIMIC_DATA[MimicComponentType.HeatExchanger];
 </script>
 
 <template>
   <g>
-    <HeatExchangerInstance
-      x="972"
-      y="392"
-      tag-id="1002"
-      :orientation="ComponentOrientation.Right"
-      :source="getField(SensorComponentType.HeatExchanger, 'pvt', 'pvtMixExchanger')"
-      :controls="{}"
-      :controller-state="{}"
-      :parameters="{}"
-      :custom="{
-        sideA: HeatExchangerPortOrientation.Top,
-        sideB: HeatExchangerPortOrientation.Side,
-      }"
-      :sensors="{
-        incoming: getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureSupply'),
-        outgoing: getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureOwnersReturn'),
-        flow: getField(SensorComponentType.Flow, 'pvt', 'pvtFlowMainFwdRecovery'),
-      }"
-      :tooltip="{
-        title: 'Heat exchanger',
-        itemName: 'Main heat exchanger',
-        yardTag: '1002',
-        technicalName: 'pvt-heat-exchanger-main',
-      }"
-    />
+    <PipeHeatExchangerInstance
+      x="1037"
+      y="382"
+      :orientation="ComponentOrientation.Up"
+      v-bind="heatExchangers['1002']"
+    >
+      <HeatExchangerLabelInstance
+        x="952"
+        y="372"
+        :tag-id="heatExchangers['1002'].tooltip?.yardTag"
+        :heat-exchanger="heatExchangers['1002'].source"
+      />
+    </PipeHeatExchangerInstance>
   </g>
 </template>

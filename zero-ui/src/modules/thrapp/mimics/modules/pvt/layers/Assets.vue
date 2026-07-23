@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { PvtInstance } from "../../../instances";
 import { getField } from "../../../providers";
 </script>
@@ -49,16 +49,6 @@ import { getField } from "../../../providers";
       :supply-temperature-source="
         getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureOwnersSupply')
       "
-    />
-
-    <rect
-      x="1137"
-      y="111"
-      width="155"
-      height="168"
-      rx="12"
-      class="stroke-background-muted fill-transparent"
-      stroke-dasharray="4 4"
     />
   </g>
 </template>

@@ -1,28 +1,15 @@
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 
-const pid = (name: string) =>
-  [ControllerStateComponentType.PIDController, "pvt", name] as ModuleField<
-    ControllerStateComponentType.PIDController,
-    "pvt"
-  >;
-
-const flowParam = (name: string) =>
-  [ParametersType.Flow, "pvt", name] as ModuleField<ParametersType.Flow, "pvt">;
-
-const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Pressure sensor",
-  itemName: "Pressure sensor",
-  yardTag,
-  technicalName,
-});
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Pressure sensor",
+    componentType: "Pressure sensor",
+  });
 
 export const PVT_PRESSURE_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.PressureSensor]: {
@@ -30,69 +17,69 @@ export const PVT_PRESSURE_SENSOR_DATA = toFieldsMap({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainFwd"),
       },
-      controllerState: {
-        controller: pid("pvtMainFwdPressureController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("mainFwdMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "mainFwdMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Pressure, "pvt", "pvtPressureMainFwd"),
       sensors: {
         flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
       },
-      tooltip: tooltip("1097-03", "pvt-pressure-main-fwd"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1097-04": toInstance<MimicComponentType.PressureSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainAft"),
       },
-      controllerState: {
-        controller: pid("pvtMainAftPressureController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("mainAftMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "mainAftMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Pressure, "pvt", "pvtPressureMainAft"),
       sensors: {
         flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainAftRecovery"),
       },
-      tooltip: tooltip("1097-04", "pvt-pressure-main-aft"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1097-05": toInstance<MimicComponentType.PressureSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpOwners"),
       },
-      controllerState: {
-        controller: pid("pvtOwnersPressureController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("ownersMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "ownersMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Pressure, "pvt", "pvtPressureOwners"),
       sensors: {
         flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersRecovery"),
       },
-      tooltip: tooltip("1097-05", "pvt-pressure-owners"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1097-06": toInstance<MimicComponentType.PressureSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainFwd"),
       },
-      controllerState: {
-        controller: pid("pvtSystemPressureController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("mainFwdMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "mainFwdMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Pressure, "pvt", "pvtPressureSystem"),
       sensors: {
         flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
       },
-      tooltip: tooltip("1097-06", "pvt-pressure-system"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
   },
 });

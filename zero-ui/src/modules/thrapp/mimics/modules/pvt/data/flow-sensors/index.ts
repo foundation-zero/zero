@@ -1,28 +1,15 @@
-import {
-  ControlComponentType,
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 
-const pid = (name: string) =>
-  [ControllerStateComponentType.PIDController, "pvt", name] as ModuleField<
-    ControllerStateComponentType.PIDController,
-    "pvt"
-  >;
-
-const flowParam = (name: string) =>
-  [ParametersType.Flow, "pvt", name] as ModuleField<ParametersType.Flow, "pvt">;
-
-const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Flow sensor",
-  itemName: "Flow sensor",
-  yardTag,
-  technicalName,
-});
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Flow sensor",
+    componentType: "Flow sensor",
+  });
 
 export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.FlowSensor]: {
@@ -30,12 +17,10 @@ export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainFwd"),
       },
-      controllerState: {
-        controller: pid("pvtMainFwdFlowController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("mainFwdMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "mainFwdMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
       sensors: {
@@ -45,18 +30,18 @@ export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
           "pvtTemperatureMainFwdReturn",
         ),
       },
-      tooltip: tooltip("1058-12", "pvt-flow-main-fwd-recovery"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1058-13": toInstance<MimicComponentType.FlowSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainAft"),
       },
-      controllerState: {
-        controller: pid("pvtMainAftFlowController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("mainAftMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "mainAftMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainAftRecovery"),
       sensors: {
@@ -66,24 +51,26 @@ export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
           "pvtTemperatureMainAftReturn",
         ),
       },
-      tooltip: tooltip("1058-13", "pvt-flow-main-aft-recovery"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1057-03": toInstance<MimicComponentType.FlowSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpOwners"),
       },
-      controllerState: {
-        controller: pid("pvtOwnersFlowController"),
-      },
+      controllerState: {},
       custom: {},
       parameters: {
-        flow: flowParam("ownersMinimumPumpDutypoint"),
+        flow: getField(ParametersType.Dutypoint, "pvt", "ownersMinimumPumpDutypoint"),
       },
       source: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersRecovery"),
       sensors: {
         temperature: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
       },
-      tooltip: tooltip("1057-03", "pvt-flow-owners-recovery"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
   },
 });

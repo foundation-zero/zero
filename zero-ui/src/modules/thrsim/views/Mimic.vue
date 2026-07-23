@@ -7,6 +7,8 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import { DHW_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/dhw/data";
 import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
+import { PVT_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/pvt/data";
+import PvtModule from "@/modules/thrapp/mimics/modules/pvt/PvtModule.vue";
 import { THRUSTERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/thrusters/data";
 import ThrustersModule from "@/modules/thrapp/mimics/modules/thrusters/ThrustersModule.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
@@ -22,6 +24,8 @@ const source = computed(() => {
   switch (currentDefinition.value) {
     case "thrusters":
       return THRUSTERS_MIMIC_DATA;
+    case "pvt":
+      return PVT_MIMIC_DATA;
     default:
       return DHW_MIMIC_DATA;
   }
@@ -57,6 +61,10 @@ const { t } = useI18n();
         />
         <ThrustersModule
           v-if="currentDefinition === 'thrusters'"
+          class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
+        />
+        <PvtModule
+          v-if="currentDefinition === 'pvt'"
           class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
         />
       </MimicTooltipProvider>

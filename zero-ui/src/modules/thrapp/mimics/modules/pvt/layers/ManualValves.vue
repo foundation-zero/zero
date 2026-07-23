@@ -3,6 +3,7 @@ import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { ManualValveType } from "../../../components/manual-valve";
 import { ManualValveInstance } from "../../../instances";
+import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
 
 const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
@@ -11,36 +12,240 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
 <template>
   <g>
     <ManualValveInstance
-      x="988"
-      y="418"
-      tag-id="1170-05"
+      x="249"
+      y="99"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1169-05']"
+    >
+      <TagLabelInstance
+        x="251"
+        y="90"
+        :tag-id="manualValves['1169-05'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="249"
+      y="307"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1169-04']"
+    >
+      <TagLabelInstance
+        x="251"
+        y="300"
+        :tag-id="manualValves['1169-04'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="249"
+      y="516"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1168-12']"
+    >
+      <TagLabelInstance
+        x="251"
+        y="510"
+        :tag-id="manualValves['1168-12'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="345"
+      y="250"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-30']"
+    >
+      <TagLabelInstance
+        x="380"
+        y="260"
+        :tag-id="manualValves['1168-30'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="375"
+      y="450"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-31']"
+    >
+      <TagLabelInstance
+        x="405"
+        y="460"
+        :tag-id="manualValves['1168-31'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="345"
+      y="560"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-32']"
+    >
+      <TagLabelInstance
+        x="380"
+        y="570"
+        :tag-id="manualValves['1168-32'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="500"
+      y="203"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1069-06']"
+    >
+      <TagLabelInstance
+        x="500"
+        y="230"
+        :tag-id="manualValves['1069-06'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="577"
+      y="203"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1169-07']"
+    >
+      <TagLabelInstance
+        x="577"
+        y="230"
+        :tag-id="manualValves['1169-07'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+
+    <ManualValveInstance
+      x="500"
+      y="398"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1169-08']"
+    >
+      <TagLabelInstance
+        x="500"
+        y="428"
+        :tag-id="manualValves['1169-08'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="577"
+      y="398"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1169-09']"
+    >
+      <TagLabelInstance
+        x="577"
+        y="428"
+        :tag-id="manualValves['1169-09'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+
+    <ManualValveInstance
+      x="500"
+      y="622"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1191-01']"
+    >
+      <TagLabelInstance
+        x="503"
+        y="649"
+        :tag-id="manualValves['1191-01'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="577"
+      y="622"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1191-02']"
+    >
+      <TagLabelInstance
+        x="577"
+        y="649"
+        :tag-id="manualValves['1191-02'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="1171"
+      y="182"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1168-19']"
+    >
+      <TagLabelInstance
+        x="1174"
+        y="206"
+        :tag-id="manualValves['1168-19'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="1171"
+      y="229"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1167-11']"
+    >
+      <TagLabelInstance
+        x="1174"
+        y="253"
+        :tag-id="manualValves['1167-11'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="1042"
+      y="338"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1170-05']"
-    />
+    >
+      <TagLabelInstance
+        x="1012"
+        y="348"
+        :tag-id="manualValves['1170-05'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
-      x="988"
-      y="483"
-      tag-id="1170-06"
+      x="1042"
+      y="450"
       :type="ManualValveType.Switch"
-      :orientation="ComponentOrientation.Up"
+      :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1170-06']"
-    />
+    >
+      <TagLabelInstance
+        x="1012"
+        y="459"
+        :tag-id="manualValves['1170-06'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
-      x="879"
-      y="595"
-      tag-id="1177-01"
+      x="839"
+      y="569"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1177-01']"
-    />
+    >
+      <TagLabelInstance
+        x="839"
+        y="599"
+        :tag-id="manualValves['1177-01'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
     <ManualValveInstance
-      x="950"
-      y="595"
-      tag-id="1177-02"
+      x="920"
+      y="569"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1177-02']"
-    />
+    >
+      <TagLabelInstance
+        x="920"
+        y="599"
+        :tag-id="manualValves['1177-02'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
   </g>
 </template>

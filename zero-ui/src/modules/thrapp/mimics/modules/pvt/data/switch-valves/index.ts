@@ -1,14 +1,15 @@
-import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ControlComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
+import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 
-const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Switch valve",
-  itemName: "2 way valve DN 25",
-  yardTag,
-  technicalName,
-});
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Switch valve",
+    componentType: "2 way valve DN 25",
+  });
 
 export const PVT_SWITCH_VALVE_DATA = toFieldsMap({
   [MimicComponentType.SwitchValve]: {
@@ -21,7 +22,9 @@ export const PVT_SWITCH_VALVE_DATA = toFieldsMap({
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtSwitchMainFwd"),
       sensors: {},
-      tooltip: tooltip("1067-01", "pvt-switch-main-fwd"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1067-02": toInstance<MimicComponentType.SwitchValve>({
       controls: {
@@ -32,7 +35,9 @@ export const PVT_SWITCH_VALVE_DATA = toFieldsMap({
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtSwitchMainAft"),
       sensors: {},
-      tooltip: tooltip("1067-02", "pvt-switch-main-aft"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
     "1069-01": toInstance<MimicComponentType.SwitchValve>({
       controls: {
@@ -43,7 +48,9 @@ export const PVT_SWITCH_VALVE_DATA = toFieldsMap({
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtSwitchOwners"),
       sensors: {},
-      tooltip: tooltip("1069-01", "pvt-switch-owners"),
+      get tooltip() {
+        return tooltip(this.source);
+      },
     }),
   },
 });
