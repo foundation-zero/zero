@@ -45,10 +45,12 @@ jobs:
         run: uv run pytest
         working-directory: zero-hull-temperature
       - name: Run stub
-        run: uv run python -m zero_hull_temperature stub --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502 --seconds 30&
+        run: |
+          uv run python -m zero_hull_temperature stub --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502 --seconds 30 &
+          sleep 2
         working-directory: zero-hull-temperature
-      - name: Read
-        run: uv run python -m zero_hull_temperature run --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502 --seconds 10 -n 1 --send-topic hull-temperature/temperatures
+      - name: Read once
+        run: timeout 45s uv run python -m zero_hull_temperature read-with-mqtt --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502
         working-directory: zero-hull-temperature
 
       - name: Determine image tag
@@ -90,7 +92,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: zero-hull-temperature
+          context: .
+          file: zero-hull-temperature/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}

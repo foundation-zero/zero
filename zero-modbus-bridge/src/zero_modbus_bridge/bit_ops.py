@@ -1,7 +1,7 @@
 import struct
 
 
-def lsw_registers_to_float(regs):
+def lsw_registers_to_float(regs: list[int]) -> float:
     """
     Convert two Modbus registers to a float.
     Assumes big-endian word order (ABCD), as used by the HES converter.
@@ -11,7 +11,7 @@ def lsw_registers_to_float(regs):
     return val
 
 
-def float_to_lsw_registers(value):
+def float_to_lsw_registers(value: float) -> list[int]:
     """
     Convert a float to two Modbus registers.
     Returns a list of two integers.

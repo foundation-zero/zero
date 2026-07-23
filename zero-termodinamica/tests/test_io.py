@@ -1,10 +1,7 @@
-from zero_termodinamica.io import read_modbus_units
+from zero_termodinamica.io import read_modbus_topics
 
 
 def test_io():
-    total_adresses = sum(
-        len(topic.modbus_fields)
-        for unit in read_modbus_units()
-        for topic in unit.topics
-    )
-    assert total_adresses == 262
+    topics = read_modbus_topics()
+    # 31 AC rooms + 1 ac-misc = 32 topics
+    assert len(topics) == 32

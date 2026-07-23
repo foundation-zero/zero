@@ -3,29 +3,26 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 ENV UV_NO_DEV=1
 ENV UV_PYTHON_DOWNLOADS=0
 
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-editable
+COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
+COPY zero-termodinamica/pyproject.toml zero-termodinamica/uv.lock zero-termodinamica/README.md ./zero-termodinamica/
+COPY zero-termodinamica/src ./zero-termodinamica/src
 
-# Copy the project
-COPY pyproject.toml uv.lock README.md ./
-COPY src ./src
+WORKDIR /app/zero-termodinamica
 
-# Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable
+    uv sync --locked --no-dev --no-editable
 
 FROM python:3.13-slim-bookworm AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-ENV VIRTUAL_ENV=/app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV=/app/zero-termodinamica/.venv
+ENV PATH="/app/zero-termodinamica/.venv/bin:$PATH"
 
 RUN groupadd -g 1001 app && \
     useradd -r -u 1001 -g app app
@@ -34,7 +31,10 @@ COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY --chown=1001:1001 modbus_bridges.json /app/
+COPY --chown=1001:1001 zero-termodinamica/src/ /app/zero-termodinamica/src/
+COPY --chown=1001:1001 zero-termodinamica/modbus_bridges.json /app/zero-termodinamica/
+
+WORKDIR /app/zero-termodinamica
 
 USER 1001
 

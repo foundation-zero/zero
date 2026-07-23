@@ -1,0 +1,83 @@
+name: "Power Tags: Test and push Docker image"
+on:
+  pull_request:
+    paths:
+      - zero-power-tags/**
+      - .github/workflows/ci_power_tags.yaml
+  release:
+    types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-power-tags/**
+      - .github/workflows/ci_power_tags.yaml
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-power-tags"
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
+        working-directory: zero-power-tags
+      - run: uv run ruff check
+        working-directory: zero-power-tags
+      - run: uv run pyright
+        working-directory: zero-power-tags
+      - run: uv run pytest
+        working-directory: zero-power-tags
+
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-power-tags
+
+  docker-push:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v4
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: zero-power-tags/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}

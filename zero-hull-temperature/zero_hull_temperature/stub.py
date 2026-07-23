@@ -6,11 +6,11 @@ from typing import Coroutine
 from aiomqtt import Client as MqttClient
 from jsonpath_ng import parse
 from pyModbusTCP.server import ModbusServer
+from zero_modbus_bridge.bit_ops import float_to_lsw_registers
+from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 
-from zero_hull_temperature.addresses import PROBE_ADDRESSES
-from zero_hull_temperature.bit_ops import float_to_lsw_registers
+from zero_hull_temperature.addresses import HULL_TEMPERATURE_FIELDS
 from zero_hull_temperature.mqtt import MqttValue
-from zero_hull_temperature.settings import ModbusSettings, MqttSettings
 
 TIME_TO_WAKE = 1  # seconds to wait before enabling Modbus server
 TIME_TO_SLEEP = 0
@@ -27,10 +27,11 @@ class Stub:
     ):
         self._mqtt = mqtt
         self._modbus = modbus
-        for address in PROBE_ADDRESSES:
-            self._modbus.data_bank.set_holding_registers(
-                address.register, float_to_lsw_registers(default_temperature)
-            )
+        for field in HULL_TEMPERATURE_FIELDS:
+            if field.data_type == "float32":
+                self._modbus.data_bank.set_holding_registers(
+                    field.register, float_to_lsw_registers(default_temperature)
+                )
         self._topic = topic
         self._json_path = parse(json_path)
 
@@ -43,7 +44,12 @@ class Stub:
         json_path: str,
         default_temperature: float,
     ):
-        async with mqtt_settings.mqtt_client() as mqtt:
+        async with MqttClient(
+            mqtt_settings.mqtt_host,
+            mqtt_settings.mqtt_port,
+            username=mqtt_settings.mqtt_username,
+            password=mqtt_settings.mqtt_password,
+        ) as mqtt:
             yield Stub(
                 mqtt,
                 modbus_settings.modbus_server(),

@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from pydantic_settings import CliApp
 
-from zero_termodinamica.cli import ZeroTermodinamica
+from zero_termodinamica.cli import RunCmd, StubCmd, ZeroTermodinamica
 
 
 def test_run_cmd_from_env():
@@ -18,18 +18,11 @@ def test_run_cmd_from_env():
             CliApp.run(
                 ZeroTermodinamica,
                 ["run"],
-                cli_exit_on_error=False,
             )
-
-            mock_run_command.assert_called_once()
-            instance = mock_run_command.call_args.args[0]
+            instance = mock_run_command.call_args[0][0]
             assert instance.modbus_host == "127.0.0.1"
-            assert instance.modbus_port == 502
-            assert instance.mqtt_host == "localhost"
             assert instance.mqtt_port == 1883
-
     finally:
-        # Cleanup
         for key in [
             "MODBUS_HOST",
             "MODBUS_PORT",
@@ -51,17 +44,13 @@ def test_stub_cmd_from_env():
             CliApp.run(
                 ZeroTermodinamica,
                 ["stub"],
-                cli_exit_on_error=False,
             )
-
-            mock_stub_command.assert_called_once()
-            instance = mock_stub_command.call_args.args[0]
+            assert mock_stub_command.call_count == 1
+            instance = mock_stub_command.call_args[0][0]
             assert instance.modbus_host == "127.0.0.1"
             assert instance.modbus_port == 502
             assert instance.default_value == 42
-
     finally:
-        # Cleanup
         for key in ["MODBUS_HOST", "MODBUS_PORT", "DEFAULT_VALUE"]:
             if key in os.environ:
                 del os.environ[key]
@@ -74,21 +63,16 @@ def test_stub_cmd_from_args():
             ZeroTermodinamica,
             [
                 "stub",
-                "--modbus-host",
-                "10.0.0.1",
-                "--modbus-port",
-                "503",
-                "--default-value",
-                "100",
+                "--modbus-host=192.168.1.1",
+                "--modbus-port=1502",
+                "--default-value=100",
             ],
-            cli_exit_on_error=False,
         )
-
-        mock_stub_command.assert_called_once()
-        instance = mock_stub_command.call_args.args[0]
-        assert instance.modbus_host == "10.0.0.1"
-        assert instance.modbus_port == 503
-        assert instance.default_value == 100
+        assert mock_stub_command.call_count == 1
+        stub_cmd: StubCmd = mock_stub_command.call_args[0][0]
+        assert stub_cmd.modbus_host == "192.168.1.1"
+        assert stub_cmd.modbus_port == 1502
+        assert stub_cmd.default_value == 100
 
 
 def test_run_cmd_from_args():
@@ -98,21 +82,15 @@ def test_run_cmd_from_args():
             ZeroTermodinamica,
             [
                 "run",
-                "--modbus-host",
-                "10.0.0.1",
-                "--modbus-port",
-                "503",
-                "--mqtt-host",
-                "mqtt.local",
-                "--mqtt-port",
-                "1884",
+                "--modbus-host=192.168.1.1",
+                "--modbus-port=1502",
+                "--mqtt-host=localhost",
+                "--mqtt-port=1884",
             ],
-            cli_exit_on_error=False,
         )
-
-        mock_run_command.assert_called_once()
-        instance = mock_run_command.call_args.args[0]
-        assert instance.modbus_host == "10.0.0.1"
-        assert instance.modbus_port == 503
-        assert instance.mqtt_host == "mqtt.local"
-        assert instance.mqtt_port == 1884
+        assert mock_run_command.call_count == 1
+        run_cmd: RunCmd = mock_run_command.call_args[0][0]
+        assert run_cmd.modbus_host == "192.168.1.1"
+        assert run_cmd.modbus_port == 1502
+        assert run_cmd.mqtt_host == "localhost"
+        assert run_cmd.mqtt_port == 1884

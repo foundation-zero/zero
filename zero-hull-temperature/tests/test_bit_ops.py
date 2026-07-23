@@ -1,4 +1,4 @@
-from zero_hull_temperature.bit_ops import float_to_lsw_registers, lsw_registers_to_float
+from zero_modbus_bridge.bit_ops import float_to_lsw_registers, lsw_registers_to_float
 
 
 def test_lsw_registers_to_float():

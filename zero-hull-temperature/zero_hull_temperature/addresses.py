@@ -1,5 +1,7 @@
-# Per https://chatgpt.com/share/68878e3e-7eb8-8006-9142-92fbd124b502
-from dataclasses import dataclass
+"""Hull temperature sensor addresses and bridge configuration."""
+
+from pydantic import BaseModel
+from zero_modbus_bridge.io import ModbusField, ModbusTopic
 
 TOPIC = "marpower/450000-amcs/Command"
 PATH = "$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF"
@@ -492,44 +494,34 @@ HULL_TEMP_SENSORS = {
 }
 
 
-@dataclass
-class ProbeAddress:
-    register: int
-    transmitter: str
-    sensor: str
-    channel: int
+class HullTemperature(BaseModel):
+    temperatures: dict[str, float | None]
 
 
-@dataclass
-class DiagnosticAddress:
-    register: int
-    loop: str
-    description: str
+def hull_temp_converter(
+    values: list[tuple[int | None, int | float | bool | None]],
+) -> HullTemperature:
+    """Map raw register values to sensor names and build HullTemperature."""
+    reg_map = {reg: val for reg, val in values if reg is not None and val is not None}
+    temperatures = {
+        probe["Sensor"]: reg_map.get(probe["Modbus Register"])
+        for name, loop in HULL_TEMP_SENSORS.items()
+        if name != "Diagnostics"
+        for probe in loop
+    }
+    return HullTemperature(temperatures=temperatures)
 
 
-type Address = ProbeAddress | DiagnosticAddress
-
-PROBE_ADDRESSES = [
-    ProbeAddress(
-        register=probe["Modbus Register"],
-        transmitter=probe["Transmitter"],
-        sensor=probe["Sensor"],
-        channel=probe["Channel"],
-    )
-    for loop in [
-        HULL_TEMP_SENSORS["LOOP 1"],
-        HULL_TEMP_SENSORS["LOOP 2"],
-        HULL_TEMP_SENSORS["LOOP 3"],
-        HULL_TEMP_SENSORS["LOOP 4"],
-    ]
-    for probe in loop
+HULL_TEMPERATURE_FIELDS = [
+    ModbusField(register=probe["Modbus Register"], count=2, data_type="float32")
+    for loop_name, loop_data in HULL_TEMP_SENSORS.items()
+    if loop_name != "Diagnostics"
+    for probe in loop_data
 ]
 
-DIAGNOSTIC_ADDRESSES = [
-    DiagnosticAddress(
-        register=diag["Modbus Register"],
-        loop=diag["Loop"],
-        description=diag["Description"],
-    )
-    for diag in HULL_TEMP_SENSORS["Diagnostics"]
-]
+HULL_TEMPERATURE_TOPIC = ModbusTopic(
+    topic="hull-temperature/temperatures",
+    model=HullTemperature,
+    fields=HULL_TEMPERATURE_FIELDS,
+    converter=hull_temp_converter,
+)

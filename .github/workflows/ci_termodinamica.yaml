@@ -79,7 +79,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: zero-hull-temperature
+          context: .
+          file: zero-termodinamica/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
