@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.pcm import PcmControl, PcmParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
@@ -17,7 +18,9 @@ from thrs.simulation.models.fmu_paths import pcm_path
 
 @fixture
 def control(simulation):
-    return PcmControl(PcmParameters(), simulation.time)
+    return PcmControl(
+        PcmParameters(), simulation.time, MachineStateLoggingServiceNoop()
+    )
 
 
 @fixture

@@ -4,10 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field
 
 from thrs.classes.control import Control, ControlMode
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import (
     FlowDistributionController,
     PidController,
@@ -74,11 +71,11 @@ class ConsumersControl(
         self,
         parameters: ConsumersParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger | None = None,
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
+        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )

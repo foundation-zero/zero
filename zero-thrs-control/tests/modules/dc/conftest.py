@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dc import DcAlarms, DcControl, DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, Converter
@@ -110,7 +111,7 @@ def simulation_inputs():
 
 @fixture()
 def control(simulation) -> DcControl:
-    return DcControl(DcParameters(), simulation.time)
+    return DcControl(DcParameters(), simulation.time, MachineStateLoggingServiceNoop())
 
 
 @fixture
