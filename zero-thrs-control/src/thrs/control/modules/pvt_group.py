@@ -69,6 +69,8 @@ class PvtGroupControl(
         PvtGroupControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
         self,
         parameters: PvtGroupParameters,

@@ -98,6 +98,8 @@ class PcmControl(
         PcmControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
         self,
         parameters: PcmParameters,

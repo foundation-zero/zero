@@ -109,6 +109,8 @@ class AdsorptionControl(
         AdsorptionControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
         self,
         parameters: AdsorptionParameters,

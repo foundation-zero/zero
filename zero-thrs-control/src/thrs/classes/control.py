@@ -23,8 +23,6 @@ class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerSt
 
     def update_parameters(self, parameters: Parameters): ...
 
-    state: str = ""  # Set by transitions logic
-
     state_logger: StateLogger
 
 
