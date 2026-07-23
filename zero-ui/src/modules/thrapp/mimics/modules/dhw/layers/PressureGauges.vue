@@ -13,14 +13,13 @@ const manualPressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureGauge];
     <PressureGaugeInstance
       x="197"
       y="423.2099609375"
-      tag-id="1095-14"
       :orientation="ComponentOrientation.Left"
       v-bind="manualPressureSensors['1095-14']"
     >
       <TagLabelInstance
         x="236"
         y="432"
-        tag-id="1095-14"
+        :tag-id="manualPressureSensors['1095-14'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
   </g>
