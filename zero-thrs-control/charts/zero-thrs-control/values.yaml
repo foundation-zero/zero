@@ -1,9 +1,9 @@
 # Required: MQTT host
 mqtt:
-  host: localhost
+  host: rabbitmq.rabbitmq.svc.cluster.local
   port: 1883
   username: thrs
-  existingSecret:
+  existingSecret: thrs-user-user-credentials
   existingSecretPasswordKey: password
   devicesTopicPrefix: thrs
   controllerTopicPrefix: thrs/controller
@@ -15,11 +15,11 @@ mqtt:
 livenessPath: /tmp/liveness
 
 postgresql:
-  host:
+  host: postgres-cluster-rw.postgres.svc.cluster.local
   port: 5432
   user: app
-  db:
-  existingSecret:
+  db: zero
+  existingSecret: postgres-cluster-app
   existingSecretPasswordKey: password
 
 api:
