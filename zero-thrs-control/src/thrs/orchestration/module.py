@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import TYPE_CHECKING, Callable, Mapping
 
@@ -15,6 +16,8 @@ if TYPE_CHECKING:
     from thrs.orchestration.comms import ControlChannels
 
 type ModuleClassMap = Mapping[str, type[ThrsValues]]
+
+logger = logging.getLogger(__name__)
 
 
 class ModuleDescription[
@@ -99,11 +102,18 @@ class Module[
 
     @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
-        return self._alarms.check(
+        alarms: list["Alarm"] = self._alarms.check(
             sensor_values,
             control_values,
             self._control.parameters,
         )
+
+        if alarms:
+            logger.debug(
+                f"Alarms detected: {alarms}"
+            )  # TODO: properly handle alarms for AMCS
+
+        return alarms
 
     async def send_control_updates(
         self, sensor_values: S | None, control_values: C, controller_state: CS

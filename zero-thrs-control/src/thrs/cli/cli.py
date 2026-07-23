@@ -13,7 +13,10 @@ from pydantic_settings import (
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
+from thrs.orchestration.module import Module
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
+from thrs.orchestration.simulation import SimulationUnit
+from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
@@ -40,7 +43,7 @@ class ControlCmd(BaseSettings):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            control_modules = setup_control_modules(
+            control_modules: list[Module] = setup_control_modules(
                 connector,
                 settings,
                 control_mode.control_modules,
@@ -53,11 +56,8 @@ class ControlCmd(BaseSettings):
             await runtime.loop.play(1)
             logger.info("Running control")
 
-            try:
+            async with control_shutdown_context(control_modules):
                 await runtime.start()
-            finally:
-                for module in control_modules:
-                    await module.control_state_logger.shutdown()
 
 
 class SimulationCmd(BaseSettings):
@@ -77,7 +77,7 @@ class SimulationCmd(BaseSettings):
             if simulation_mode.simulation_description is None:
                 raise ValueError("simulation must be defined for simulation mode")
 
-            simulation_module = setup_simulation_module(
+            simulation_module: SimulationUnit = setup_simulation_module(
                 connector,
                 settings,
                 simulation_mode.control_modules,
@@ -107,14 +107,14 @@ class LockstepCmd(BaseSettings):
                 f"Simulation must be defined for lockstep mode. Chosen mode '{self.mode}' has no simulation description."
             )
 
-        simulation_module = setup_simulation_module(
+        simulation_module: SimulationUnit = setup_simulation_module(
             connector,
             settings,
             mode.control_modules,
             mode.simulation_description,
         )
 
-        control_modules = setup_control_modules(
+        control_modules: list[Module] = setup_control_modules(
             connector,
             settings,
             mode.control_modules,
@@ -148,11 +148,8 @@ class LockstepCmd(BaseSettings):
             await runtime.clear_previous()
             logger.info("Running lockstep")
 
-            try:
+            async with control_shutdown_context(runtime.runner.control_modules):  # type: ignore
                 await runtime.start()
-            finally:
-                for module in runtime.runner.control_modules:  # type: ignore
-                    await module.control_state_logger.shutdown()
 
 
 class ThrsCli(BaseSettings, cli_kebab_case=True):

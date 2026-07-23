@@ -18,8 +18,6 @@ from thrs.db.models.machine_state import (
 )
 from thrs.input_output.alarms import Alarm, Severity
 from thrs.input_output.base import ThrsValues
-from thrs.utils.list import ensure_list
-from thrs.utils.model import get_model_from_to_diff
 
 
 class LoggableControl(Protocol):
@@ -336,7 +334,7 @@ class MachineStateLoggingService(StateLogger):
 
         for transition in transitions:
             if "conditions" in transition:
-                conditions = ensure_list(transition["conditions"])
+                conditions = self._ensure_list(transition["conditions"])
 
                 wrapped = []
                 for c in conditions:
@@ -407,7 +405,7 @@ class MachineStateLoggingService(StateLogger):
 
         if model_from != model_to:
             model_diff: dict[str, dict[Literal["from", "to"], Any]] = (
-                get_model_from_to_diff(model_from, model_to)
+                self._get_model_from_to_diff(model_from, model_to)
             )
 
             self.machinestate_logger.log_parameters(
@@ -438,3 +436,17 @@ class MachineStateLoggingService(StateLogger):
 
     def log_event(self, event: MachineStateEvent):
         self.machinestate_logger.log_event(event)
+
+    def _ensure_list[T](self, x: T | list[T]) -> list[T]:
+        """Provide list or single object, return list in both cases"""
+        return x if isinstance(x, list) else [x]
+
+    def _get_model_from_to_diff(
+        self, model_from: dict[str, Any], model_to: dict[str, Any]
+    ) -> dict[str, dict[Literal["from", "to"], Any]]:
+        """Get the difference between the from and to model. Output is a dict of the form {key: {"from": value_from, "to": value_to}} for each key that has a different value in the from and to model."""
+        return {
+            key: {"from": model_from[key], "to": model_to[key]}
+            for key in model_from.keys()
+            if model_from[key] != model_to[key]
+        }
