@@ -4,6 +4,7 @@ import { INCLUDED_APPS, ZeroApps } from "@/apps.ts";
 import {
   RiBarChart2Line,
   RiLightbulbLine,
+  RiPlugLine,
   RiSailboatLine,
   RiTempHotLine,
   RiWindyLine,
@@ -13,7 +14,6 @@ import type { Component } from "vue";
 export type SplashAppLink = {
   id: ZeroApps;
   nameKey: string;
-  descriptionKey: string;
   to: string;
   icon: Component;
   iconBackground: string;
@@ -39,7 +39,6 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
   {
     id: ZeroApps.loads,
     nameKey: "views.splash.apps.loads.title",
-    descriptionKey: "views.splash.apps.loads.description",
     to: "/loads",
     icon: RiWindyLine,
     glow: "color-mix(in srgb, var(--brand-dull) 42%, transparent)",
@@ -50,7 +49,6 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
   {
     id: ZeroApps.thrsim,
     nameKey: "views.splash.apps.thrsim.title",
-    descriptionKey: "views.splash.apps.thrsim.description",
     to: "/thrsim",
     icon: RiTempHotLine,
     glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
@@ -61,7 +59,6 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
   {
     id: ZeroApps.thrs,
     nameKey: "views.splash.apps.thrs.title",
-    descriptionKey: "views.splash.apps.thrs.description",
     to: "/thrs",
     icon: RiTempHotLine,
     glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
@@ -72,7 +69,6 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
   {
     id: ZeroApps.domestic,
     nameKey: "views.splash.apps.domestic.title",
-    descriptionKey: "views.splash.apps.domestic.description",
     to: "/domestic",
     icon: RiLightbulbLine,
     glow: "color-mix(in srgb, var(--constructive-dull) 38%, transparent)",
@@ -83,7 +79,6 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
   {
     id: ZeroApps.grafana,
     nameKey: "views.splash.apps.grafana.title",
-    descriptionKey: "views.splash.apps.grafana.description",
     to: "/grafana",
     icon: RiBarChart2Line,
     glow: "color-mix(in srgb, var(--warning-dull) 36%, transparent)",
@@ -101,5 +96,15 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     border: "var(--brand-dull)",
     shadow: "var(--brand-dull)",
     iconBackground: "color-mix(in srgb, var(--brand) 16%, transparent)",
+  },
+  {
+    id: ZeroApps.powerTags,
+    nameKey: "views.splash.apps.powerTags.title",
+    to: "/power-tags",
+    icon: RiPlugLine,
+    glow: "color-mix(in srgb, var(--brand-dull) 42%, transparent)",
+    border: "var(--brand-dull)",
+    shadow: "var(--brand-dull)",
+    iconBackground: "color-mix(in srgb, var(--brand) 18%, transparent)",
   },
 ].filter((app) => INCLUDED_APPS.includes(app.id));

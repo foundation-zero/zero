@@ -25,7 +25,6 @@ import SplashScreenTile from "./tile/SplashScreenTile.vue";
 import SplashScreenTileAction from "./tile/SplashScreenTileAction.vue";
 import SplashScreenTileCard from "./tile/SplashScreenTileCard.vue";
 import SplashScreenTileContent from "./tile/SplashScreenTileContent.vue";
-import SplashScreenTileDescription from "./tile/SplashScreenTileDescription.vue";
 import SplashScreenTileHeader from "./tile/SplashScreenTileHeader.vue";
 import SplashScreenTileIcon from "./tile/SplashScreenTileIcon.vue";
 import SplashScreenTileTitle from "./tile/SplashScreenTileTitle.vue";
@@ -97,10 +96,6 @@ const { t } = useI18n();
                 <SplashScreenTileTitle>
                   {{ t(appLink.nameKey) }}
                 </SplashScreenTileTitle>
-
-                <SplashScreenTileDescription>
-                  {{ t(appLink.descriptionKey) }}
-                </SplashScreenTileDescription>
               </SplashScreenTileContent>
             </SplashScreenTileCard>
           </SplashScreenTile>

@@ -270,5 +270,8 @@ $RECYCLE.BIN/
 !.env.local.example
 .gsheet-sa-key.json
 
+# Generated AsyncAPI specs (scripts/aggregate-specs.sh)
+/specs/
+
 # Overrides for zero-ui
 !zero-ui/**/lib
