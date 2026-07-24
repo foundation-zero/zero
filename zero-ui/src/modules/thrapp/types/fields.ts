@@ -76,6 +76,9 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.MixValve]: EmptyObject;
+  [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
@@ -114,6 +117,13 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.MixValve]: {
+    valve: ControlComponentType.Valve;
+  };
+  [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ThreeWaySwitchValve]: {
+    valve: ControlComponentType.Valve;
+  };
   [MimicComponentType.HeatPump]: {
     heatpump: ControlComponentType.Heatpump;
   };
@@ -140,6 +150,11 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.MixValve]: {
+    controller?: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
@@ -166,6 +181,9 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.MixValve]: EmptyObject;
+  [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
@@ -225,6 +243,9 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.MixValve]: EmptyObject;
+  [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     controller?: PIDController;
   };
@@ -246,6 +267,9 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
   [MimicComponentType.LevelSensor]: SensorComponentType.Level;
   [MimicComponentType.ManualValve]: undefined;
+  [MimicComponentType.MixValve]: SensorComponentType.Valve;
+  [MimicComponentType.CheckValve]: undefined;
+  [MimicComponentType.ThreeWaySwitchValve]: SensorComponentType.Valve;
   [MimicComponentType.HeatPump]: SensorComponentType.HeatExchanger;
   [MimicComponentType.HVAC]: SensorComponentType.HeatExchanger;
   [MimicComponentType.SwitchValve]: SensorComponentType.Valve;
