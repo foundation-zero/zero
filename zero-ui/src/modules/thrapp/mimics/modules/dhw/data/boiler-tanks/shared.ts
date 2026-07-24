@@ -4,9 +4,11 @@ import {
   SensorComponentType,
 } from "@/modules/thrs/types";
 
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ExtractModuleFields, ParameterFieldDefinitions } from "@/modules/thrapp/types/fields";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
+import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../shared";
 
 export const controller = getField(
   ControllerStateComponentType.DhwTanksController,
@@ -30,3 +32,8 @@ export const parameters = {
   minimumTemperature: getField(ParametersType.Temperature, "dhw", "minimumTankTemperature"),
   maximumTemperature: getField(ParametersType.Temperature, "dhw", "maximumTankTemperature"),
 };
+
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    itemName: "Hot water tank",
+  });

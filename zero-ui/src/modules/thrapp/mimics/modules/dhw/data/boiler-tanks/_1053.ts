@@ -3,7 +3,7 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getCustomField, getField } from "../../../../providers";
-import { boostingSupply, controller, parameters } from "./shared";
+import { boostingSupply, controller, parameters, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.BoilerTank>({
   custom: {
@@ -17,7 +17,11 @@ export default toInstance<MimicComponentType.BoilerTank>({
     ...parameters,
     disabled: getField(ParametersType.Disabled, "dhw", "tank1Disabled"),
   },
-  source: getCustomField("dhw", "tank1"),
+  source: getCustomField("dhw", {
+    title: "Tank 1",
+    yardTag: "1053",
+    technicalName: "hot-water-tank-1",
+  }),
   sensors: {
     boostingSupply,
     level: getField(SensorComponentType.Level, "dhw", "dhwLevelTank1"),
@@ -27,10 +31,7 @@ export default toInstance<MimicComponentType.BoilerTank>({
     supplyValve: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank1Inlet"),
     dischargeValve: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank1Outlet"),
   },
-  tooltip: {
-    title: "Tank 1",
-    itemName: "Hot water tank",
-    technicalName: "hot-water-tank-1",
-    yardTag: "1053",
+  get tooltip() {
+    return tooltip(this.source);
   },
 });

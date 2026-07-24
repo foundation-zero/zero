@@ -1,8 +1,8 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { getField } from "@/modules/thrapp/mimics/providers";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
-import { getField } from "../../../../providers";
+import { SensorComponentType } from "@/modules/thrs/types";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.LevelSensor>({
@@ -12,8 +12,7 @@ export default toInstance<MimicComponentType.LevelSensor>({
   parameters: {},
   sensors: {},
   source: getField(SensorComponentType.Level, "dhw", "dhwLevelTank2"),
-  tooltip: tooltip({
-    yardTag: "1056-02",
-    technicalName: "dhw-level-tank-2",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

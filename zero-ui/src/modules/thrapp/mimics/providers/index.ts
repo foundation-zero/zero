@@ -29,10 +29,16 @@ export { default as ParameterValue } from "./ParameterValue.vue";
 export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
+export type CustomFieldData = {
+  title?: string;
+  yardTag?: string;
+  technicalName: string;
+};
+
 export const getCustomField = <Module extends keyof ThrsDefinitions>(
   module: Module,
-  field: string,
-): ModuleField<"custom", Module> => ["custom", module, field];
+  field: CustomFieldData,
+): ModuleField<"custom", Module> => ["custom", module, field.technicalName, field];
 
 export const getField = <
   Type extends
@@ -60,7 +66,7 @@ export const getField = <
   type: Type,
   module: Module,
   field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>>,
-): ModuleField<Type, Module> => [type, module, field] as ModuleField<Type, Module>;
+): ModuleField<Type, Module> => [type, module, field, null] as ModuleField<Type, Module>;
 
 export type ModuleField<
   Type extends
@@ -77,7 +83,8 @@ export type ModuleField<
     | undefined
     | "custom",
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
-> = [type: Type, module: Module, field: string];
+  CustomData extends CustomFieldData | null = Type extends "custom" ? CustomFieldData : null,
+> = [type: Type, module: Module, field: string, customData: CustomData];
 
 export const isField = <
   Type extends
@@ -235,16 +242,18 @@ export const getFieldValue = <T>(
 ): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValue", fallback);
 
 export const getDefinition = (field: ModuleField) => {
+  const [_, module, fieldName, customData] = field;
+
   if (isSensorField(field)) {
-    return getSensorDefinition(field[1], field[2]);
+    return getSensorDefinition(module, fieldName);
   } else if (isControlField(field)) {
-    return getControlDefinition(field[1], field[2]);
+    return getControlDefinition(module, fieldName);
   } else if (isParameterField(field)) {
-    return getParameterDefinition(field[1], field[2]);
+    return getParameterDefinition(module, fieldName);
   } else if (isControllerStateField(field)) {
-    return getControllerStateDefinition(field[1], field[2]);
+    return getControllerStateDefinition(module, fieldName);
   } else if (isCustomField(field)) {
-    return undefined;
+    return customData;
   }
 };
 
@@ -296,4 +305,14 @@ export const getControllerStateDefinition = <K extends keyof ThrsDefinitions>(
   }
 
   return definition;
+};
+
+export const serializeField = (field: ModuleField | undefined): string | undefined =>
+  field?.slice(0, 3).join(".");
+
+export const deserializeField = (string: string): ModuleField | undefined => {
+  const parts = string.split(".");
+  if (parts.length !== 3) return;
+
+  return parts as ModuleField;
 };

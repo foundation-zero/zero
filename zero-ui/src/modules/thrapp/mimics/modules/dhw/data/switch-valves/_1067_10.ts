@@ -14,8 +14,7 @@ export default toInstance<MimicComponentType.SwitchValve>({
   parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank2BoostingSupply"),
   sensors: {},
-  tooltip: tooltip({
-    yardTag: "1067-10",
-    technicalName: "dhw-switch-tank-2-boosting-supply",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

@@ -1,7 +1,9 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ModuleField } from "@/modules/thrapp/mimics/providers";
+import { fieldTooltip } from "../shared";
 
-export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Manual valve",
-  itemName: "Manual valve",
-  ...content,
-});
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Manual valve",
+    itemName: "Manual valve",
+  });

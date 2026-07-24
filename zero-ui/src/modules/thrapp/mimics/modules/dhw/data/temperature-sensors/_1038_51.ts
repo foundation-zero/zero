@@ -17,8 +17,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   sensors: {
     actuator: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDc"),
   },
-  tooltip: tooltip({
-    yardTag: "1038-51",
-    technicalName: "dhw-temperature-adsorption-return",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

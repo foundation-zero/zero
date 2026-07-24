@@ -3,7 +3,7 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 import { pumpFlowController } from "../controllers";
-import { tooltip } from "./shared";
+import { fieldTooltip } from "../shared";
 
 export default toInstance<MimicComponentType.HeatPump>({
   controls: {
@@ -17,9 +17,10 @@ export default toInstance<MimicComponentType.HeatPump>({
     incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   },
-  tooltip: tooltip({
-    title: "Heat pump",
-    yardTag: "1035",
-    technicalName: "dhw-heatpump",
-  }),
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Heat pump",
+      itemName: "Heat pump",
+    });
+  },
 });

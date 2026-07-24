@@ -17,8 +17,7 @@ export default toInstance<MimicComponentType.FlowControlValve>({
   parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwFlowcontrolDrives"),
   sensors: {},
-  tooltip: tooltip({
-    yardTag: "1064-08",
-    technicalName: "dhw-flowcontrol-drives",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

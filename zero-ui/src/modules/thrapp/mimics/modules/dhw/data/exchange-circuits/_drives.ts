@@ -11,7 +11,10 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Drives & shore",
   },
   parameters: {},
-  source: getCustomField("dhw", "drives"),
+  source: getCustomField("dhw", {
+    title: "Drives & shore",
+    technicalName: "drives-and-shore",
+  }),
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "dhw", "drivesDelta"),
     flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDrives"),
@@ -19,8 +22,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "drivesTemperatureRecoveryReturn"),
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDrivesExchanger"),
   },
-  tooltip: tooltip({
-    title: "Drives & shore",
-    technicalName: "drives",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

@@ -8,10 +8,12 @@ export default toInstance<MimicComponentType.ManualValve>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: getCustomField("dhw", "dhw-manual-valve-1169-01"),
-  sensors: {},
-  tooltip: tooltip({
-    yardTag: "1169-01",
+  source: getCustomField("dhw", {
     technicalName: "dhw-manual-valve-1169-01",
+    yardTag: "1169-01",
   }),
+  sensors: {},
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

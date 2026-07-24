@@ -24,8 +24,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
     flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
   },
-  tooltip: tooltip({
-    yardTag: "1007",
-    technicalName: "dhw-consumers-exchanger",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });
