@@ -10,6 +10,7 @@ import FlowSensors from "./layers/FlowSensors.vue";
 import HeatExchangers from "./layers/HeatExchangers.vue";
 import Labels from "./layers/Labels.vue";
 import LevelSensors from "./layers/LevelSensors.vue";
+import LevelSwitches from "./layers/LevelSwitches.vue";
 import ManualValves from "./layers/ManualValves.vue";
 import Pipes from "./layers/Pipes.vue";
 import PressureGauges from "./layers/PressureGauges.vue";
@@ -33,6 +34,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <ManualValves />
     <Pumps />
     <LevelSensors />
+    <LevelSwitches />
     <PressureSensors />
     <PressureGauges />
     <FlowSensors />

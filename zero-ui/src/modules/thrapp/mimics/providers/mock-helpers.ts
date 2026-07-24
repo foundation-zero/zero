@@ -74,6 +74,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const level = useRandomizedNumber(0, 100);
     return computed(() => ({ level: stamp(level) }));
   },
+  [SensorComponentType.LevelSwitch]: () => {
+    const empty = useRandomizedBoolean();
+    return computed(() => ({ empty: stamp(empty) }));
+  },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
     return computed(() => ({ charged: stamp(charged) }));

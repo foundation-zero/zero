@@ -82,6 +82,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
   SensorLevelSensorType: "Level",
+  SensorLevelSwitchType: "LevelSwitch",
   SensorTemperatureDeltaType: "DeltaT",
   SensorCalculatedFlowType: "CalculatedFlow",
   SensorHeatPumpType: "HeatExchanger",

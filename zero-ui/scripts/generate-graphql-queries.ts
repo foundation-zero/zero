@@ -115,6 +115,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Pcs: ["mode"],
     Pcm: ["charged"],
     Level: ["level"],
+    LevelSwitch: ["empty"],
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],

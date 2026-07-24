@@ -1,13 +1,13 @@
 import { toFieldsMap } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import _1098_01 from "./_1098_01";
-import _1098_02 from "./_1098_02";
-import _1098_03 from "./_1098_03";
+import _1056_01 from "./_1056_01";
+import _1056_02 from "./_1056_02";
+import _1056_03 from "./_1056_03";
 
 export const DHW_LEVEL_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.LevelSensor]: {
-    "1098-01": _1098_01,
-    "1098-02": _1098_02,
-    "1098-03": _1098_03,
+    "1056-01": _1056_01,
+    "1056-02": _1056_02,
+    "1056-03": _1056_03,
   },
 });

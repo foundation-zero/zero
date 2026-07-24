@@ -163,7 +163,8 @@
         "exchanger": "Exchanger",
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
-        "flow": "Flow"
+        "flow": "Flow",
+        "empty": "Level"
       }
     },
     "mimics": {
@@ -275,6 +276,9 @@
       },
       "levelSensors": {
         "title": "Level sensor (L)"
+      },
+      "levelSwitches": {
+        "title": "Level Switch (Empty / not Empty)"
       },
       "manualFlowControlValve": {
         "title": "Manual flow control valve"

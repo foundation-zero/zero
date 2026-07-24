@@ -17,6 +17,8 @@ const editor = computed(() => {
       return FieldRenderer.OnOff;
     case "deltaT":
       return FieldRenderer.DeltaT;
+    case "empty":
+      return FieldRenderer.Empty;
     case "flow":
       return FieldRenderer.FlowRate;
     case "setpoint":

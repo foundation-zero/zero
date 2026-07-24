@@ -1,15 +1,15 @@
-# Level Sensor
+# Level Switch
 
-Stateless directional mimic level sensor component.
+Stateless directional mimic level switch component.
 
 <script setup lang="ts">
-import LevelSensor from '@/modules/thrapp/mimics/components/level-sensor/LevelSensor.vue'
+import LevelSwitch from '@/modules/thrapp/mimics/components/level-switch/LevelSwitch.vue'
 import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 </script>
 
 ## Overview
 
-`LevelSensor` renders the exact Figma level sensor glyph: a circular badge with `LS` mark and a connecting stem.
+`LevelSwitch` renders the exact Figma level sensor glyph: a circular badge with `LS` mark and a connecting stem.
 
 The original exported geometry is `24×30`. It is centered inside a `32×32` square viewBox using `translate(4 1)` so horizontal rotations (`Left` / `Right`) do not clip.
 
@@ -29,25 +29,25 @@ The component is stateless and directional:
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <LevelSensor :orientation="ComponentOrientation.Up" />
+      <LevelSwitch :orientation="ComponentOrientation.Up" />
     </div>
     <span class="text-sm font-mono">Up</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <LevelSensor :orientation="ComponentOrientation.Right" />
+      <LevelSwitch :orientation="ComponentOrientation.Right" />
     </div>
     <span class="text-sm font-mono">Right</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <LevelSensor :orientation="ComponentOrientation.Down" />
+      <LevelSwitch :orientation="ComponentOrientation.Down" />
     </div>
     <span class="text-sm font-mono">Down (base)</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <LevelSensor :orientation="ComponentOrientation.Left" />
+      <LevelSwitch :orientation="ComponentOrientation.Left" />
     </div>
     <span class="text-sm font-mono">Left</span>
   </div>

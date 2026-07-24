@@ -16,7 +16,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 - [Flow Sensor](/mimics/flow-sensor) - Stateless directional flow sensor icon for mimic diagrams
 - [Pressure Gauge](/mimics/pressure-gauge) - Stateless directional pressure gauge icon for mimic diagrams
 - [Pressure Sensor](/mimics/pressure-sensor) - Stateless directional pressure sensor icon for mimic diagrams
-- [Level Sensor](/mimics/level-sensor) - Stateless directional level sensor icon for mimic diagrams
+- [Level Switch](/mimics/level-switch) - Stateless directional level switch icon for mimic diagrams
 
 ## Authoring
 

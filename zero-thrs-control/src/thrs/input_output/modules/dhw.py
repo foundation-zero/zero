@@ -184,6 +184,18 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
+    dhw_level_switch_tank1: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-01", component_type="level_switch"),
+    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
+    dhw_level_switch_tank2: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-02", component_type="level_switch"),
+    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
+    dhw_level_switch_tank3: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-03", component_type="level_switch"),
+    ] = sensor.LevelSwitch(empty=Stamped.stamp(False))
     dhw_pressure: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),

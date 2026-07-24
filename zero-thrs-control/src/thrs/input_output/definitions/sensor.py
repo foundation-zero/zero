@@ -7,6 +7,7 @@ from thrs.input_output.definitions.units import (
     Celsius,
     Charged,
     DeltaT,
+    Empty,
     Hz,
     Liter,
     LMin,
@@ -154,6 +155,10 @@ class Pcm(ThrsValues):
     charged: Stamped[Charged]
 
 
+class LevelSwitch(ThrsValues):
+    empty: Stamped[Empty]
+
+
 # Leaving in commented fields as we might need these IOs in the future, but need to accomodate for them in the SimulationInputs or in the FMU first as they are currently not part of the FMU. For now, they are to be used as reference for the IOs that we might want to add in the future.
 class AdsorptionChiller(ThrsValues):
     operating: Stamped[Operating]
@@ -228,4 +233,5 @@ __all__ = [
     "AdsorptionChiller",
     "PowerSensor",
     "LevelSensor",
+    "LevelSwitch",
 ]

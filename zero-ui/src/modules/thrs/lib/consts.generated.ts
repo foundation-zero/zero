@@ -1065,6 +1065,18 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  dhwLevelSwitchTank1: {
+    yardTag: "50001098-01",
+    componentType: SensorComponentType.LevelSwitch,
+  },
+  dhwLevelSwitchTank2: {
+    yardTag: "50001098-02",
+    componentType: SensorComponentType.LevelSwitch,
+  },
+  dhwLevelSwitchTank3: {
+    yardTag: "50001098-03",
+    componentType: SensorComponentType.LevelSwitch,
+  },
   dhwPressure: {
     yardTag: "50001097-11",
     componentType: SensorComponentType.Pressure,
