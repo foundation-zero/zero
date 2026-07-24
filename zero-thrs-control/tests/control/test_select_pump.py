@@ -6,12 +6,12 @@ def test_activate_pump(thrusters_control):
     thrusters_control._activate_pump(ThrustersSensorValues.zero())
     assert (
         thrusters_control._active_pump
-        is thrusters_control._current_values.thrusters_pump1
+        is thrusters_control._current_control_values.thrusters_pump1
     )
-    assert thrusters_control._current_values.thrusters_pump1.on
+    assert thrusters_control._current_control_values.thrusters_pump1.on
     assert (
         thrusters_control._active_pump
-        is not thrusters_control._current_values.thrusters_pump2
+        is not thrusters_control._current_control_values.thrusters_pump2
     )
     thrusters_control._deactivate_pump(ThrustersSensorValues.zero())
     assert thrusters_control._most_recently_active_pump == "pump1"
@@ -19,7 +19,7 @@ def test_activate_pump(thrusters_control):
     thrusters_control._activate_pump(ThrustersSensorValues.zero())
     assert (
         thrusters_control._active_pump
-        is thrusters_control._current_values.thrusters_pump2
+        is thrusters_control._current_control_values.thrusters_pump2
     )
 
 
@@ -28,12 +28,12 @@ def test_activate_pump_on_mode(thrusters_control):
     thrusters_control.to_recovery(ThrustersSensorValues.zero())
     assert (
         thrusters_control._active_pump
-        is thrusters_control._current_values.thrusters_pump1
+        is thrusters_control._current_control_values.thrusters_pump1
     )
-    assert thrusters_control._current_values.thrusters_pump1.on
+    assert thrusters_control._current_control_values.thrusters_pump1.on
     assert (
         thrusters_control._active_pump
-        is not thrusters_control._current_values.thrusters_pump2
+        is not thrusters_control._current_control_values.thrusters_pump2
     )
     thrusters_control.to_idle(ThrustersSensorValues.zero())
     assert thrusters_control._most_recently_active_pump == "pump1"

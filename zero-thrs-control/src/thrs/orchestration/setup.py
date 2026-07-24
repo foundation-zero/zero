@@ -1,6 +1,11 @@
 from collections.abc import Callable
 from datetime import datetime, timedelta
 
+from thrs.classes.database import PostgresDatabase
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingService,
+    MachineStateLoggingServiceNoop,
+)
 from thrs.control.switching import SwitchingControlMode
 from thrs.orchestration.comms import (
     ControlChannels,
@@ -56,11 +61,20 @@ def setup_control_modules(
     config: Config,
     control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
+    machine_state_logging_service_enabled: bool = True,
 ) -> list[Module]:
     result = []
+    pg_database: PostgresDatabase | None = (
+        PostgresDatabase(config) if machine_state_logging_service_enabled else None
+    )
+    machine_state_logging_service = MachineStateLoggingServiceNoop()
+
     for module_name, module in control_modules.items():
+        if pg_database is not None:
+            machine_state_logging_service = MachineStateLoggingService(pg_database)
+
         parameters = module.parameters_cls()
-        control = module.control(parameters, time_fn)
+        control = module.control(parameters, time_fn, machine_state_logging_service)
 
         # This line should not be here since it exposes that we are dealing with a switching module
         # We need to refactor the switching control functionality to be more local/abstractable

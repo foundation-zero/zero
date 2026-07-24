@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import Callable
 
 from pydantic import model_validator
-from transitions import Machine, State
+from transitions import State
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
@@ -65,15 +66,32 @@ class PvtGroupControl(
         PvtGroupControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
         self,
         parameters: PvtGroupParameters,
         time_fn: Callable[[], datetime],
         initial_control_values: PvtGroupControlValues,
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger
         self._current_values = initial_control_values
+
+        self._init_state_machine_states()
+        self._init_state_machine_transitions()
+        self._state_machine = self.state_logger.create_logged_state_machine(
+            self,
+            transitions=self._transitions,
+            states=self._states,
+            initial="idle",
+        )
+        self._init_controllers()
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_state_machine_states(self):
         self._states = [
             State(name="idle", on_enter=self._set_mix_to_a),
             State(
@@ -91,6 +109,7 @@ class PvtGroupControl(
             ),
         ]
 
+    def _init_state_machine_transitions(self):
         self._transitions = [
             {
                 "trigger": "_check_temperatures",
@@ -106,12 +125,11 @@ class PvtGroupControl(
             },
         ]
 
-        self._state_machine = Machine(
-            model=self,
-            states=self._states,
-            transitions=self._transitions,
-            initial="idle",
-        )
+    def _init_controllers(self):
+        if not hasattr(self, "_state_machine") or self._state_machine is None:
+            raise ValueError(
+                "State machine must be initialized before creating control methods"
+            )
 
         self._warmup_mix_controller = PidController[Ratio, Celsius](
             self._current_values.mix.setpoint.value,
@@ -149,6 +167,7 @@ class PvtGroupControl(
         mode: str = self.state  # type: ignore
         return PvtGroupControlMode(mode=mode)
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
 
@@ -191,6 +210,7 @@ class PvtGroupControl(
     def _deactivate_pump(self, sensor_values: PvtGroupSensorValues):
         self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: PvtGroupSensorValues
     ) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:

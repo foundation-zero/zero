@@ -38,6 +38,10 @@ test_io *args:
 format:
     poetry run ruff format --check src tests
 
+format_fix:
+    poetry run ruff format src tests
+
+
 build_fmu_compile_container:
     docker build . --tag fmu_compile_image --target fmu_compile
 

@@ -1,5 +1,6 @@
 from typing import Protocol
 
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.input_output.base import ThrsValues
 
 
@@ -19,6 +20,8 @@ class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerSt
     def mode(self) -> ControlMode | None: ...
 
     def update_parameters(self, parameters: Parameters): ...
+
+    state_logger: StateLogger
 
 
 class ControlMode(ThrsValues):

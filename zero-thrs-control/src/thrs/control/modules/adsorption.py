@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import Callable
 
 from pydantic import model_validator
-from transitions import Machine, State
+from transitions import State
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -100,34 +101,56 @@ class AdsorptionControl(
         AdsorptionControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
-        self, parameters: AdsorptionParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: AdsorptionParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[self._disable_temperature_controllers],
-            ),
-            State(
-                name="cooling",
-                on_enter=[self._enable_temperature_controllers],
-            ),
-            State(
-                name="free_cooling",
-                on_enter=[
-                    self._open_recovery_mix,
-                    self._disable_recovery_mix,
-                    self._set_free_cooling_setpoint,
-                    self._disable_hot_mix,
-                ],
-            ),
-        ]
+        self._init_state_machine_states()
+        self._init_state_machine_transitions()
+
+        self._state_machine = self.state_logger.create_logged_state_machine(
+            self,
+            transitions=self._transitions,
+            states=self._states,
+            initial="idle",
+        )
+        self._init_controllers()
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(self):
+        self._hot_mix_controller = PidController[Ratio, Celsius](
+            self._current_values.adsorption_mix_hot.setpoint.value,
+            lambda: self._parameters.hot_supply_temperature_setpoint,
+            lambda: self._parameters.hot_mix_tuning,
+            self._time,
+        )
+
+        self._recovery_controller = PidController[Ratio, Celsius](
+            self._current_values.adsorption_flowcontrol_waste.setpoint.value,
+            lambda: self._parameters.waste_recovery_temperature_setpoint,
+            lambda: self._parameters.recovery_tuning,
+            self._time,
+        )
+
+        self._waste_cooling_controller = PidController[Ratio, Celsius](
+            self._current_values.adsorption_mix_waste.setpoint.value,
+            lambda: self._parameters.waste_cooling_temperature_setpoint,
+            lambda: self._parameters.waste_cooling_tuning,
+            self._time,
+        )
+
+    def _init_state_machine_transitions(self):
         # Here the idea is that the Adsorption unit triggers the state machine, and mode switches thus depend on the input parameters for adsorption, and whether it's enabled.
         self._transitions = [
             {
@@ -152,38 +175,32 @@ class AdsorptionControl(
             },
         ]
 
-        self._state_machine = Machine(
-            model=self,
-            states=self._states,
-            transitions=self._transitions,
-            initial="idle",
-        )
-
-        self._hot_mix_controller = PidController[Ratio, Celsius](
-            self._current_values.adsorption_mix_hot.setpoint.value,
-            lambda: self._parameters.hot_supply_temperature_setpoint,
-            lambda: self._parameters.hot_mix_tuning,
-            self._time,
-        )
-
-        self._recovery_controller = PidController[Ratio, Celsius](
-            self._current_values.adsorption_flowcontrol_waste.setpoint.value,
-            lambda: self._parameters.waste_recovery_temperature_setpoint,
-            lambda: self._parameters.recovery_tuning,
-            self._time,
-        )
-
-        self._waste_cooling_controller = PidController[Ratio, Celsius](
-            self._current_values.adsorption_mix_waste.setpoint.value,
-            lambda: self._parameters.waste_cooling_temperature_setpoint,
-            lambda: self._parameters.waste_cooling_tuning,
-            self._time,
-        )
+    def _init_state_machine_states(self):
+        self._states = [
+            State(
+                name="idle",
+                on_enter=[self._disable_temperature_controllers],
+            ),
+            State(
+                name="cooling",
+                on_enter=[self._enable_temperature_controllers],
+            ),
+            State(
+                name="free_cooling",
+                on_enter=[
+                    self._open_recovery_mix,
+                    self._disable_recovery_mix,
+                    self._set_free_cooling_setpoint,
+                    self._disable_hot_mix,
+                ],
+            ),
+        ]
 
     @property
     def parameters(self) -> AdsorptionParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 
@@ -206,6 +223,7 @@ class AdsorptionControl(
             AdsorptionControllerState(),
         )
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: AdsorptionSensorValues
     ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:

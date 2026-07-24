@@ -64,9 +64,7 @@ def resolve_module(
         )
         if module.control_mode
         else None,
-        controller_state=optional_pydantic_to_graphql(
-            ConsumersControllerStateType, module.controller_state
-        ),
+        controller_state=ConsumersControllerStateType(),
     )
 
 

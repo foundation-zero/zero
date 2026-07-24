@@ -7,7 +7,6 @@ from typing import cast
 import pytest
 from aiomqtt import Client
 
-from thrs.cli.cli import LockstepCmd
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
@@ -15,8 +14,14 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
+from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
+from thrs.runtime.descriptions.simulation import Mode, lookup_mode
+from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.messages import SimulationStatusMessage
+from thrs.runtime.runners.lockstep import LockstepRunner
+from thrs.runtime.runtime import Runtime
 
 pytestmark = pytest.mark.mqtt
 
@@ -34,6 +39,48 @@ test_client = pytest.fixture(_mqtt_client)
 status_client = pytest.fixture(_mqtt_client)
 
 
+def setup_lockstep(
+    mode: Mode,
+    settings: Config,
+    mqtt_client: Client,
+    machine_state_logging_service_enabled: bool = True,
+) -> Runtime:
+    """Test helper mirroring LockstepCmd.setup() from the CLI."""
+    connector = MqttConnector(mqtt_client)
+
+    if mode.simulation_description is None:
+        raise ValueError("simulation must be defined for lockstep mode")
+
+    simulation_module = setup_simulation_module(
+        connector,
+        settings,
+        mode.control_modules,
+        mode.simulation_description,
+    )
+
+    control_modules = setup_control_modules(
+        connector,
+        settings,
+        mode.control_modules,
+        time_fn=simulation_module.time,
+        machine_state_logging_service_enabled=machine_state_logging_service_enabled,
+    )
+
+    runner = LockstepRunner(control_modules, simulation_module)
+
+    directive_handling = DirectiveHandling(
+        DirectivesChannels(connector, settings),
+        mode,
+        simulation_module.time,
+    )
+    return Runtime(
+        runner,
+        connector,
+        simulation_module.tick_duration,
+        directive_handling,
+    )
+
+
 @pytest.mark.timeout(30)
 @pytest.mark.slow
 async def test_simulation_run_start_stop(
@@ -48,7 +95,12 @@ async def test_simulation_run_start_stop(
 
     controls_client = controls_client
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await test_client.subscribe(f"{settings.mqtt_devices_topic_prefix}/thrusters/#")
@@ -132,7 +184,12 @@ async def test_simulation_run_playback_rate(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -244,7 +301,12 @@ async def test_simulation_run_step(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -342,7 +404,12 @@ async def test_simulation_controls_automated_control(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await test_client.subscribe(
@@ -449,7 +516,12 @@ async def test_simulation_controls_set_parameters(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -528,7 +600,12 @@ async def test_simulation_controls_set_simulation_inputs(
         f"{settings.mqtt_simulator_topic_suffix}"
     )
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
@@ -606,7 +683,12 @@ async def test_simulation_controls_simulation_output(
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
     )
 
-    runtime = LockstepCmd(mode="thrusters").setup(settings, runtime_client)
+    runtime = setup_lockstep(
+        lookup_mode("thrusters"),
+        settings,
+        runtime_client,
+        machine_state_logging_service_enabled=False,
+    )
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)

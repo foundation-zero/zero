@@ -9,10 +9,10 @@ metadata:
     {{- with .Values.api.service.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- with .Values.api.service.annotations }}
   annotations:
-    {{- with .Values.api.service.annotations }}
     {{- toYaml . | nindent 4 }}
-    {{- end }}
+  {{- end }}
 spec:
   type: ClusterIP
   ports:

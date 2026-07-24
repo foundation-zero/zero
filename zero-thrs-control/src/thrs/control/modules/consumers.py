@@ -4,6 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import (
     FlowDistributionController,
     PidController,
@@ -67,14 +68,22 @@ class ConsumersControl(
     ]
 ):
     def __init__(
-        self, parameters: ConsumersParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: ConsumersParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
+        self._init_controllers()
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(self):
         self._dhw_flow_controller = PidController[Ratio, LMin](
             self._current_values.consumers_flowcontrol_dhw.setpoint.value,
             0.0,
@@ -158,6 +167,7 @@ class ConsumersControl(
         elif not enabled and switch_valve.setpoint.value != Valve.CLOSED:
             switch_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: ConsumersSensorValues
     ) -> tuple[ConsumersControlValues, ConsumersControllerState]:
@@ -188,6 +198,7 @@ class ConsumersControl(
     def parameters(self) -> ConsumersParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: ConsumersParameters):
         self._parameters = parameters
 

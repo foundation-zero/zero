@@ -1,0 +1,3 @@
+table:
+  name: machinestate_issue
+  schema: thrs

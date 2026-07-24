@@ -35,8 +35,9 @@ services:
       - data
       - domestic
       - loads
+      - thrs
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "postgres"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -331,6 +332,7 @@ services:
     ports:
       - "5102:5102"
     environment: &thrs_env
+      MACHINE_STATE_LOGGING: ${MACHINE_STATE_LOGGING:-true}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       MQTT_DEVICES_TOPIC_PREFIX: devices_topic
@@ -339,8 +341,15 @@ services:
       MQTT_CONTROL_TOPIC_SUFFIX: Command
       MQTT_CONTROLLER_TOPIC_SUFFIX: set
       MQTT_SIMULATOR_TOPIC_SUFFIX: set
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
     depends_on:
       vernemq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   thrs-control-thrusters: &thrs_control
@@ -355,6 +364,8 @@ services:
       <<: *thrs_env
     depends_on:
       vernemq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     command: ["lockstep", "--mode=thrusters"]
 

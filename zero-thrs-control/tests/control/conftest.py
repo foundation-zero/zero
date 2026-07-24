@@ -4,6 +4,9 @@ from typing import Generator
 from pytest import fixture
 
 from tests.modules.thrusters.conftest import ThrustersSimulation
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingService,
+)
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -56,5 +59,9 @@ def simulation(
 
 
 @fixture
-def thrusters_control(simulation: ThrustersSimulation) -> ThrustersControl:
-    return ThrustersControl(ThrustersParameters(), simulation.time)
+def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> ThrustersControl:
+    return ThrustersControl(
+        parameters=ThrustersParameters(),
+        time_fn=simulation.time,
+        state_logger=MachineStateLoggingService(postgres_db),
+    )

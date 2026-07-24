@@ -1,4 +1,8 @@
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.input_output.base import ThrsValues
 
 
@@ -24,6 +28,8 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
         control_values: ControlValues,
     ):
         self._control_values = control_values
+        self._parameters = EmptyParameters()
+        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
     @property
     def parameters(self) -> EmptyParameters:
