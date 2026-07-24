@@ -38,6 +38,7 @@ from domestic_control.messages import (
 )
 import logging
 import os
+import sys
 from typing import Callable
 from functools import partial, wraps
 from typing import TypeVar, ParamSpec
@@ -48,7 +49,11 @@ from strawberry.experimental.pydantic.conversion_types import (
     StrawberryTypeFromPydantic,
 )
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
+logging.basicConfig(
+    level=os.environ.get("LOGLEVEL", "INFO").upper(),
+    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    stream=sys.stdout,
+)
 
 settings = Settings()  # type: ignore
 logger = logging.getLogger(__name__)
