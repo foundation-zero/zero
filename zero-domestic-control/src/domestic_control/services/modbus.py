@@ -1,8 +1,8 @@
-from dataclasses import dataclass
+import logging
 from collections.abc import Mapping
+from dataclasses import dataclass
 
 from pyModbusTCP.client import ModbusClient
-import logging
 
 
 @dataclass

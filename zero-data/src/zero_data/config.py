@@ -1,9 +1,9 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, computed_field
 from typing import Annotated, List, Tuple
 
-from zero_data.io_list.types import Source
+from pydantic import Field, computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from zero_data.io_list.types import Source
 
 io_lists: List[Tuple[Source, List[str]]] = [
     (

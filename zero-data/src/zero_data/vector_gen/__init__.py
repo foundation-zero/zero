@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from zero_data.config import io_lists
-from zero_data.io_list import read_io_list, Source
+from zero_data.io_list import Source, read_io_list
 from zero_data.vector_gen.marpower import MarpowerVectorGenerator
 
 logger = logging.getLogger(__name__)

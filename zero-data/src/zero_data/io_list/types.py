@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Literal
+
 from polars import DataFrame
 
 type Source = Literal["marpower", "sail_system"]

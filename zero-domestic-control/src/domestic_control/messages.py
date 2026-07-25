@@ -1,7 +1,8 @@
-from typing import ClassVar, Annotated
+from typing import Annotated, ClassVar
+
 from aiomqtt import Topic, Wildcard
 from pydantic import BaseModel, model_validator
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 
 class Message(BaseModel):

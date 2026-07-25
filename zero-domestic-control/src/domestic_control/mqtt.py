@@ -1,16 +1,18 @@
+import logging
 from typing import AsyncIterable
-from aiomqtt import Client, Message as MqttMessage
+
+from aiomqtt import Client
+from aiomqtt import Message as MqttMessage
 
 from domestic_control.messages import (
-    Blind,
     Amplifier,
+    Blind,
     LightingGroup,
     Message,
-    RoomTemperatureSetpoint,
-    RoomHumiditySetpoint,
     RoomCo2Setpoint,
+    RoomHumiditySetpoint,
+    RoomTemperatureSetpoint,
 )
-import logging
 
 
 async def send_message(mqtt: Client, message: Message):

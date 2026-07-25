@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 from abc import abstractmethod
 from typing import List
 
@@ -7,7 +8,6 @@ from aiomqtt import Client
 
 from zero_data.config import MQTTConfig
 from zero_data.io_list.types import IOTopic, IOValue
-import logging
 
 logger = logging.getLogger(__name__)
 

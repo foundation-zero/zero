@@ -1,6 +1,7 @@
 from pathlib import Path
-from .types import IOResult, Source
 from typing import List
+
+from .types import IOResult, Source
 
 
 def read_io_list(paths: List[Path], type: Source) -> IOResult:

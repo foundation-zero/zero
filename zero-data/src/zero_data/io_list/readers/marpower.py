@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import List
 
-from openpyxl import load_workbook
 import polars as pl
+from openpyxl import load_workbook
 
-from ..types import IOValue, IOTopic, IOResult
 from ..base import ReaderBase
+from ..types import IOResult, IOTopic, IOValue
 
 _DATA_TYPES = {
     "Float": "REAL",

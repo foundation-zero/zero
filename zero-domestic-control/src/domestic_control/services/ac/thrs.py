@@ -1,7 +1,8 @@
 from typing import ClassVar
-from domestic_control.messages import Message
+
 from aiomqtt import Client as MqttClient
 
+from domestic_control.messages import Message
 from domestic_control.mqtt import send_message
 
 

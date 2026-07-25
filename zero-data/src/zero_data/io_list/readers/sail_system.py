@@ -10,8 +10,8 @@ The original hardcoded SAIL_SYSTEM_TOPICS list is retained for comparison
 during migration to the XML-driven approach.
 """
 
-import xml.etree.ElementTree as ET
 import logging
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import List
 

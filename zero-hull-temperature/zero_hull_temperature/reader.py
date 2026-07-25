@@ -123,6 +123,7 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
                 tg.create_task(asyncio.sleep(interval.total_seconds()))
             if i == n:
                 break
+
     async def _send_activate(self, activate: bool):
         """
         Send MQTT message to activate or deactivate the Modbus reader.

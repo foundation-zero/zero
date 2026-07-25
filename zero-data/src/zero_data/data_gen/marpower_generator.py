@@ -1,9 +1,9 @@
+import random
+from datetime import UTC, datetime
+from typing import Annotated, Any
+
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 from pydantic.alias_generators import to_pascal
-from typing import Annotated, Any
-import random
-
-from datetime import UTC, datetime
 
 from zero_data.data_gen import Generator
 from zero_data.io_list.types import IOTopic, IOValue
