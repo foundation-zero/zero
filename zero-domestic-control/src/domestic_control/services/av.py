@@ -1,6 +1,6 @@
 import re
 from contextlib import asynccontextmanager
-from typing import Annotated, AsyncIterable, Coroutine, List, Literal
+from typing import Annotated, AsyncIterable, Coroutine, Literal
 
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
@@ -75,7 +75,7 @@ class Telemetry(BaseModel):
         ),
     ]
     port_states: Annotated[
-        List[PortState],
+        list[PortState],
         Field(
             validation_alias=AliasChoices("portstates", "port_states"),
             serialization_alias="portstates",

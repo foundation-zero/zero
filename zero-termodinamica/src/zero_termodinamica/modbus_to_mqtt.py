@@ -3,7 +3,7 @@ import json
 import logging
 from asyncio import TaskGroup
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, List, Tuple
+from typing import AsyncGenerator
 
 from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
@@ -18,7 +18,7 @@ class ModbusToMQTTBridge:
         self,
         modbus: ModbusClient,
         mqtt: MqttClient,
-        modbus_units: List[ModbusUnit],
+        modbus_units: list[ModbusUnit],
         probe_interval: float = 10.0,
     ):
         self._mqtt = mqtt
@@ -31,7 +31,7 @@ class ModbusToMQTTBridge:
     async def from_settings(
         modbus_settings: ModbusSettings,
         mqtt_settings: MqttSettings,
-        modbus_units: List[ModbusUnit],
+        modbus_units: list[ModbusUnit],
     ) -> "AsyncGenerator[ModbusToMQTTBridge, None]":
         """
         Create a ModbusReader instance from Modbus settings.
@@ -71,7 +71,7 @@ class ModbusToMQTTBridge:
             self._modbus.close()
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
-    def read_modbus(self, addresses: List[Address]) -> List[Tuple[Address, int]]:
+    def read_modbus(self, addresses: list[Address]) -> list[tuple[Address, int]]:
         result = []
         has_fault = False
         for address in addresses:
@@ -91,8 +91,8 @@ class ModbusToMQTTBridge:
         return result
 
     def scale_values(
-        self, modbus_values: List[Tuple[Address, int]]
-    ) -> List[Tuple[Address, float]]:
+        self, modbus_values: list[tuple[Address, int]]
+    ) -> list[tuple[Address, float]]:
         return [
             (address, self.scale_value(address, value))
             for address, value in modbus_values
@@ -103,8 +103,8 @@ class ModbusToMQTTBridge:
 
     def create_json(
         self,
-        modbus_values: List[Tuple[Address, float]],
-        extra_fields: List[LiteralField],
+        modbus_values: list[tuple[Address, float]],
+        extra_fields: list[LiteralField],
     ) -> str:
         extra_fields_dict = {f.field_name: f.value for f in extra_fields}
         modbus_fields = {address.field_name: value for address, value in modbus_values}

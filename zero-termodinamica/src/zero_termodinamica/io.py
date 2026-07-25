@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 from pydantic import BaseModel, TypeAdapter
 
@@ -19,16 +19,16 @@ class Address(BaseModel):
 
 class MqttTopic(BaseModel):
     topic: str
-    modbus_fields: List[Address]
-    extra_fields: List[LiteralField] = []
+    modbus_fields: list[Address]
+    extra_fields: list[LiteralField] = []
 
 
 class ModbusUnit(BaseModel):
     unit_id: int
-    topics: List[MqttTopic]
+    topics: list[MqttTopic]
 
 
-def read_modbus_units() -> List[ModbusUnit]:
+def read_modbus_units() -> list[ModbusUnit]:
     json_path = Path(__file__).parent / "../../modbus_bridges.json"
     with open(json_path, "r", encoding="utf-8") as f:
         return TypeAdapter(list[ModbusUnit]).validate_python(json.loads(f.read()))

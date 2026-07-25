@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import List
 
 from pyModbusTCP.constants import EXP_NONE, EXP_SLAVE_DEVICE_FAILURE
 from pyModbusTCP.server import DataHandler, ModbusServer
@@ -10,7 +9,7 @@ from zero_termodinamica.settings import ModbusSettings
 
 
 class MultiUnitDataHandler(DataHandler):
-    def __init__(self, data: List[ModbusUnit], default_value: int):
+    def __init__(self, data: list[ModbusUnit], default_value: int):
         super().__init__()
         self.data = {}
         for unit in data:
@@ -48,7 +47,7 @@ class Stub:
     @staticmethod
     def from_settings(
         modbus_settings: ModbusSettings,
-        modbus_data: List[ModbusUnit],
+        modbus_data: list[ModbusUnit],
         default_value: int,
     ) -> "Stub":
         data_handler = MultiUnitDataHandler(modbus_data, default_value)
