@@ -117,6 +117,7 @@ export const SIMULATION = toSimulation(
     dc: Definitions.DC_SIMULATION_INPUTS,
     dhw: Definitions.DHW_SIMULATION_INPUTS,
     drives: Definitions.DRIVES_SIMULATION_INPUTS,
+    thrs: Definitions.THRS_SIMULATION_INPUTS,
   },
   {
     highTemperature: Definitions.HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
@@ -128,6 +129,7 @@ export const SIMULATION = toSimulation(
     dc: Definitions.DC_SIMULATION_OUTPUTS,
     dhw: Definitions.DHW_SIMULATION_OUTPUTS,
     drives: Definitions.DRIVES_SIMULATION_OUTPUTS,
+    thrs: Definitions.THRS_SIMULATION_OUTPUTS,
   },
 );
 
@@ -248,6 +250,7 @@ export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
   dc: Queries.DC_SIMULATION_INPUTS_QUERY,
   dhw: Queries.DHW_SIMULATION_INPUTS_QUERY,
   drives: Queries.DRIVES_SIMULATION_INPUTS_QUERY,
+  thrs: Queries.THRS_SIMULATION_INPUTS_QUERY,
 };
 
 export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
@@ -260,6 +263,7 @@ export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
   dc: Queries.DC_SIMULATION_OUTPUTS_QUERY,
   dhw: Queries.DHW_SIMULATION_OUTPUTS_QUERY,
   drives: Queries.DRIVES_SIMULATION_OUTPUTS_QUERY,
+  thrs: Queries.THRS_SIMULATION_OUTPUTS_QUERY,
 };
 
 const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>

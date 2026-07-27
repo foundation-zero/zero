@@ -1797,6 +1797,181 @@ export const PVT_SIMULATION_OUTPUTS_QUERY = `
   }
 `;
 
+export const THRS_SIMULATION_INPUTS_QUERY = `
+  thrustersThrusterAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersThrusterFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+  pvtMainFwd {
+    heatFlow { value timestamp }
+  }
+  pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtOwners {
+    heatFlow { value timestamp }
+  }
+  pvtSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionCoolingSupply {
+    temperature { value timestamp }
+  }
+  adsorptionSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionAvailableHotTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableColdTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableSeawaterTemperature {
+    temperature { value timestamp }
+  }
+  dhwFreshwaterSupply {
+    temperature { value timestamp }
+    overpressure { value timestamp }
+  }
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    temperature { value timestamp }
+  }
+  dhwHotwaterDemand {
+    flow { value timestamp }
+  }
+  dcSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  drivesOilCoolerAft {
+    heatFlow { value timestamp }
+  }
+  drivesOilCoolerFwd {
+    heatFlow { value timestamp }
+  }
+  drivesSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const THRS_SIMULATION_OUTPUTS_QUERY = `
+  drivesSeawaterReturn {
+    temperature { value timestamp }
+  }
+  drivesDhwReturn {
+    temperature { value timestamp }
+  }
+  dcSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dcDhwReturn {
+    temperature { value timestamp }
+  }
+  dhwDrivesReturn {
+    temperature { value timestamp }
+  }
+  dhwDcReturn {
+    temperature { value timestamp }
+  }
+  dhwAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  dhwConsumersReturn {
+    temperature { value timestamp }
+  }
+  dhwSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    flow { value timestamp }
+  }
+  dhwFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionCoolingReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionSeawaterReturn {
+    temperature { value timestamp }
+  }
+  adsorptionDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionConsumersReturn {
+    temperature { value timestamp }
+  }
+  consumersAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmConsumersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmThrustersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmPvtReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtPcmSupply {
+    flow { value timestamp }
+  }
+  pvtSeawaterReturn {
+    temperature { value timestamp }
+  }
+  thrustersSeawaterReturn {
+    temperature { value timestamp }
+  }
+  thrustersPcmSupply {
+    flow { value timestamp }
+  }
+  thrustersPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
 export const THRUSTERS_CONTROL_QUERY = `
   thrustersPump1 {
     dutypoint { value timestamp }
