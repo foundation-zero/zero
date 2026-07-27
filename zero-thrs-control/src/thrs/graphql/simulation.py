@@ -29,6 +29,7 @@ from thrs.input_output.modules.high_temperature import (
 )
 from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
 from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
+from thrs.input_output.modules.thrs import ThrsSimulationInputs, ThrsSimulationOutputs
 from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
@@ -47,6 +48,7 @@ io_mapping = {
         HighTemperatureSimulationInputs,
         HighTemperatureSimulationOutputs,
     ),
+    "thrs": (ThrsSimulationInputs, ThrsSimulationOutputs),
 }
 
 inputs_strawberry_type_mapping = {

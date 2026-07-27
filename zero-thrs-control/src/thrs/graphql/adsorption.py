@@ -30,6 +30,10 @@ AdsorptionControlModeType = pydantic_to_strawberry_type(AdsorptionControlMode)
 class AdsorptionControllerStateType:
     _empty: None = None
 
+    @classmethod
+    def from_pydantic(cls, _type) -> "AdsorptionControllerStateType":
+        return cls()
+
 
 AdsorptionModule = ControlModule[
     AdsorptionSensorValuesType,

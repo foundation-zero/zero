@@ -9,7 +9,8 @@
       "dhw": "DHW",
       "adsorption": "Adsorption",
       "dc": "DC",
-      "drives": "Drives"
+      "drives": "Drives",
+      "thrs": "THRS"
     },
     "title": "HMI",
     "views": {
