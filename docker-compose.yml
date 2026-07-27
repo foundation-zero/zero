@@ -173,7 +173,8 @@ services:
     security_opt:
       - seccomp=unconfined
     environment:
-      # You can copy in credentials for importing data from gcp
+      # You can manually copy in credentials for importing backups from gcp
+      # Instructions can be found in edge-flux/apps/base/greptime-backup/README.md
       GOOGLE_APPLICATION_CREDENTIALS: /gcp-credentials.json
     ports:
       - "4000-4003:4000-4003"
