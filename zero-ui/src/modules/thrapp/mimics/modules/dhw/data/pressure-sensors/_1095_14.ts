@@ -17,7 +17,7 @@ export default toInstance<MimicComponentType.PressureGauge>({
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Manual pressure sensor",
-      itemName: "Manual pressure sensor",
+      componentType: "Manual pressure sensor",
     });
   },
 });

@@ -6,5 +6,5 @@ import { fieldTooltip } from "../shared";
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
     title: "Level switch",
-    itemName: "Level switch",
+    componentType: "Level switch",
   });

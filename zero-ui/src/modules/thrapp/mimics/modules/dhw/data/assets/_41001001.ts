@@ -18,7 +18,7 @@ export default toInstance<MimicComponentType.HVAC>({
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "HVAC",
-      itemName: "HVAC Exchanger",
+      componentType: "HVAC Exchanger",
     });
   },
 });

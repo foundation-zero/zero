@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.HeatPump>({
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Heat pump",
-      itemName: "Heat pump",
+      componentType: "Heat pump",
     });
   },
 });

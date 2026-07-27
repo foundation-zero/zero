@@ -4,5 +4,5 @@ import { fieldTooltip } from "../shared";
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {
-    itemName: "Exchange circuit",
+    componentType: "Exchange circuit",
   });

@@ -10,17 +10,24 @@ defineProps<{ tooltip?: TooltipContent }>();
 
 <template>
   <TooltipListItem
-    v-if="tooltip?.itemName"
-    size="sm"
-  >
-    <TooltipListItemTitle>{{ items("itemName") }}</TooltipListItemTitle>
-    <TooltipListItemTitle>{{ tooltip.itemName }}</TooltipListItemTitle>
-  </TooltipListItem>
-  <TooltipListItem
     v-if="tooltip?.technicalName"
     size="sm"
   >
     <TooltipListItemTitle>{{ items("technicalName") }}</TooltipListItemTitle>
     <TooltipListItemTitle>{{ tooltip.technicalName }}</TooltipListItemTitle>
+  </TooltipListItem>
+  <TooltipListItem
+    v-if="tooltip?.mqttTopic"
+    size="sm"
+  >
+    <TooltipListItemTitle>{{ items("mqttTopic") }}</TooltipListItemTitle>
+    <TooltipListItemTitle>{{ tooltip.mqttTopic }}</TooltipListItemTitle>
+  </TooltipListItem>
+  <TooltipListItem
+    v-if="tooltip?.componentType"
+    size="sm"
+  >
+    <TooltipListItemTitle>{{ items("componentType") }}</TooltipListItemTitle>
+    <TooltipListItemTitle>{{ tooltip.componentType }}</TooltipListItemTitle>
   </TooltipListItem>
 </template>

@@ -9,6 +9,6 @@ export const tooltip = (
 ): TooltipContent =>
   fieldTooltip(field, {
     title: "Pressure sensor",
-    itemName: "Pressure sensor",
+    componentType: "Pressure sensor",
     ...content,
   });

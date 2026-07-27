@@ -6,5 +6,5 @@ import { fieldTooltip } from "../shared";
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
     title: "Flow control valve",
-    itemName: "Flow control valve DN 20",
+    componentType: "Flow control valve DN 20",
   });

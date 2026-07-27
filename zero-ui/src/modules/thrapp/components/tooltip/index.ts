@@ -16,7 +16,7 @@ import { ExtractComponentFields } from "../../types/fields";
 export type TooltipContent = {
   title: string;
   yardTag?: string;
-  itemName?: string;
+  componentType?: string;
   technicalName?: string;
   mqttTopic?: string;
 };

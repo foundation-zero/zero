@@ -9,7 +9,7 @@ import { fieldTooltip } from "../shared";
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
     title: "Switch valve",
-    itemName: "2 way valve DN 25",
+    componentType: "2 way valve DN 25",
   });
 
 export const controller = getField(

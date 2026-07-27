@@ -6,5 +6,5 @@ import { fieldTooltip } from "../shared";
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
     title: "Connecting circuit",
-    itemName: "Connecting circuit",
+    componentType: "Connecting circuit",
   });

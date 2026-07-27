@@ -26,7 +26,7 @@ export default toInstance<MimicComponentType.Pump>({
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Pump",
-      itemName: "Circulation pump hot freshwater",
+      componentType: "Circulation pump hot freshwater",
     });
   },
 });

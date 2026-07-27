@@ -35,5 +35,5 @@ export const parameters = {
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {
-    itemName: "Hot water tank",
+    componentType: "Hot water tank",
   });
