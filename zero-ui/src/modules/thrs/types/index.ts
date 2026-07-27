@@ -90,7 +90,7 @@ export type SensorValueFields =
   | keyof DeltaTSensor
   | keyof HeatExchangerSensor
   | keyof Valve
-  | keyof LevelSwitch;
+  | keyof LevelSwitchSensor;
 
 export type SensorFields = {
   [SensorComponentType.Flow]: (keyof FlowSensor)[];
@@ -102,7 +102,7 @@ export type SensorFields = {
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
-  [SensorComponentType.LevelSwitch]: (keyof LevelSwitch)[];
+  [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
 
 export type SimulationFields = {
@@ -194,7 +194,7 @@ export type SensorType =
   | ThrusterSensor
   | PcsSensor
   | LevelSensor
-  | LevelSwitch
+  | LevelSwitchSensor
   | DeltaTSensor
   | AdsorptionChillerSensor
   | BrightloopSensor
