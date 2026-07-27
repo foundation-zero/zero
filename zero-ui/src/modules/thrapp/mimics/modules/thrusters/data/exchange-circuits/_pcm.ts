@@ -1,15 +1,15 @@
 import { SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField, ModuleField } from "../../../../providers";
-import { tooltip } from "./shared";
+import { getCustomField, getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
 
 export default toInstance<MimicComponentType.HotWaterCircuit>({
   controls: {},
   controllerState: {},
   custom: {},
   parameters: {},
-  source: undefined,
+  source: getCustomField("thrusters", { technicalName: "thrusters-pcm-loop" }),
   sensors: {
     flowIn: [
       SensorComponentType.CalculatedFlow,
@@ -20,8 +20,10 @@ export default toInstance<MimicComponentType.HotWaterCircuit>({
     tIn: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureRecoveryMix"),
     tOut: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
   },
-  tooltip: tooltip({
-    title: "PCM",
-    technicalName: "thrusters-pcm-loop",
-  }),
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "PCM",
+      componentType: "Exchange circuit",
+    });
+  },
 });

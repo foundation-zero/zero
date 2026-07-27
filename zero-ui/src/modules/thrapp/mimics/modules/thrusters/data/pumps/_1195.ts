@@ -3,8 +3,8 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
 import { pumpController } from "../controllers";
-import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.Pump>({
   custom: {
@@ -22,5 +22,10 @@ export default toInstance<MimicComponentType.Pump>({
   sensors: {
     pressure: getField(SensorComponentType.Pressure, "thrusters", "thrustersPressureSystem"),
   },
-  tooltip: tooltip("1195", "thrusters-pump-2", "Thrusters circulation pump FWD"),
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Pump",
+      componentType: "Thrusters circulation pump FWD",
+    });
+  },
 });

@@ -1,14 +1,8 @@
 import { SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField, ModuleField } from "../../../../providers";
-import { tooltip } from "./shared";
-
-export const deltaProxy = (field: string) =>
-  [SensorComponentType.DeltaT, "thrusters", field] as ModuleField<
-    SensorComponentType.DeltaT,
-    "thrusters"
-  >;
+import { getCustomField, getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
@@ -17,9 +11,9 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Seawater",
   },
   parameters: {},
-  source: undefined,
+  source: getCustomField("thrusters", { technicalName: "thrusters-seawater-loop" }),
   sensors: {
-    deltaT: deltaProxy("thrustersTemperatureSupply"),
+    deltaT: getField(SensorComponentType.DeltaT, "thrusters", "thrustersTemperatureSupply"),
     flow: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowAft"),
     incoming: getField(
       SensorComponentType.Temperature,
@@ -33,8 +27,10 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
       "thrustersMixRecovery",
     ] as unknown as ModuleField<SensorComponentType.HeatExchanger, "thrusters">,
   },
-  tooltip: tooltip({
-    title: "Seawater",
-    technicalName: "thrusters-seawater-loop",
-  }),
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Seawater",
+      componentType: "Exchange circuit",
+    });
+  },
 });

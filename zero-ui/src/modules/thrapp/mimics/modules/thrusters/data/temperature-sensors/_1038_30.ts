@@ -24,5 +24,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
       "thrustersTemperatureRecoveryMix",
     ),
   },
-  tooltip: tooltip("1038-30", "thrusters-temperature-recovery-mix"),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

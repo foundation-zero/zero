@@ -23,14 +23,13 @@ export default toInstance<MimicComponentType.FlowControlValve>({
   },
   custom: {},
   parameters: {
-    flow: getField(ParametersType.Tuning, "thrusters", "fwdFlowBalanceTuning"),
+    flow: getField(ParametersType.Tuning, "thrusters", "aftFlowBalanceTuning"),
   },
   source: getField(SensorComponentType.Valve, "thrusters", "thrustersFlowcontrolAft"),
   sensors: {
     measurement: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowAft"),
   },
-  tooltip: tooltip({
-    yardTag: "1064-03",
-    technicalName: "thrusters-flowcontrol-dc",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

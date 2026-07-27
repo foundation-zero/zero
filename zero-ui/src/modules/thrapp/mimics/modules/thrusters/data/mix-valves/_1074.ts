@@ -23,5 +23,7 @@ export default toInstance<MimicComponentType.MixValve>({
   parameters: {},
   source: getField(SensorComponentType.Valve, "thrusters", "thrustersMixRecovery"),
   sensors: {},
-  tooltip: tooltip("1074", "thrusters-mix-recovery"),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

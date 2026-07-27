@@ -12,25 +12,24 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowControlValve>({
   controls: {
-    valve: getField(ControlComponentType.Valve, "thrusters", "thrustersFlowcontrolAft"),
+    valve: getField(ControlComponentType.Valve, "thrusters", "thrustersFlowcontrolFwd"),
   },
   controllerState: {
     controller: getField(
       ControllerStateComponentType.PIDController,
       "thrusters",
-      "aftFlowController",
+      "fwdFlowController",
     ),
   },
   custom: {},
   parameters: {
-    flow: getField(ParametersType.Tuning, "thrusters", "aftFlowBalanceTuning"),
+    flow: getField(ParametersType.Tuning, "thrusters", "fwdFlowBalanceTuning"),
   },
-  source: getField(SensorComponentType.Valve, "thrusters", "thrustersFlowcontrolAft"),
+  source: getField(SensorComponentType.Valve, "thrusters", "thrustersFlowcontrolFwd"),
   sensors: {
-    measurement: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowAft"),
+    measurement: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowFwd"),
   },
-  tooltip: tooltip({
-    yardTag: "1064-02",
-    technicalName: "thrusters-flowcontrol-aft",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

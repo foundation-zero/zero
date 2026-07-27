@@ -20,5 +20,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   sensors: {
     measurement: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureAft"),
   },
-  tooltip: tooltip("1038-01", "thrusters-temperature-aft"),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

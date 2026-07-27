@@ -302,7 +302,7 @@ export const QUERY_ALL = gql`
           ${Queries.THRUSTERS_PARAMETERS_QUERY}
         }
         controllerState {
-          ${THRUSTERS_CONTROLLER_STATE_QUERY}
+          ${Queries.THRUSTERS_CONTROLLER_STATE_QUERY}
         }
       }
       pcm {

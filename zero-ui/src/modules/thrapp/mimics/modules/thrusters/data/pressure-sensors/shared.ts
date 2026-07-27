@@ -1,7 +1,9 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
 
-export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Pressure sensor",
-  itemName: "Pressure sensor",
-  ...content,
-});
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Pressure sensor",
+    componentType: "Pressure sensor",
+  });

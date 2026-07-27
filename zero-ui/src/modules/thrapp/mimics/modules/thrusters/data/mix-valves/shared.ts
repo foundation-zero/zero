@@ -1,6 +1,9 @@
-export const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Mix valve",
-  itemName: "Mix valve",
-  yardTag,
-  technicalName,
-});
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ModuleField } from "@/modules/thrapp/mimics/providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
+
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Mix valve",
+    componentType: "Mix valve",
+  });

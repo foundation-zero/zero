@@ -1,6 +1,9 @@
-export const tooltip = (yardTag: string, technicalName: string) => ({
-  title: "Flow sensor",
-  itemName: "Flow sensor",
-  yardTag,
-  technicalName,
-});
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ModuleField } from "@/modules/thrapp/mimics/providers";
+import { fieldTooltip } from "../../../dhw/data/shared";
+
+export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Flow sensor",
+    componentType: "Flow sensor",
+  });

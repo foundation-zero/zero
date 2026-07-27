@@ -21,8 +21,7 @@ export default toInstance<MimicComponentType.PressureSensor>({
   sensors: {
     flow: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowFwd"),
   },
-  tooltip: tooltip({
-    yardTag: "1097-02",
-    technicalName: "thrusters-pressure-system",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });
