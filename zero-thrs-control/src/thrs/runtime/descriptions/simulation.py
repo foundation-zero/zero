@@ -188,7 +188,7 @@ SIMULATION_INPUTS = {
         ),
         dhw_freshwater_supply=OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20),
-            overpressure=Stamped.stamp(3),
+            overpressure=Stamped.stamp(0.1),
         ),
         dhw_hvac_exchanger=HvacExchanger(
             heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(36)
@@ -293,7 +293,9 @@ SIMULATION_INPUTS = {
         dhw_hvac_exchanger=HvacExchanger(
             heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(35)
         ),
-        dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(SEAWATER_TEMPERATURE)),
+        dhw_seawater_supply=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
         dc_brightloop_fwd1=Converter(
             heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
