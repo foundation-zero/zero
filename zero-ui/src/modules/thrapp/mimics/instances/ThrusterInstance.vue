@@ -5,7 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
 import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { getMimicDataProvider, getSensorDefinition, ModuleField } from "../providers";
 
 const props = withDefaults(
   defineProps<
@@ -14,7 +14,6 @@ const props = withDefaults(
       modeSource: ModuleField<SensorComponentType.Pcs, "thrusters">;
       temperatureSource: ModuleField<SensorComponentType.Temperature, "thrusters">;
       titleKey: "aftTitle" | "fwdTitle";
-      tagId: string;
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
@@ -34,6 +33,7 @@ const thruster = getSensorValue(props.source);
 const pcs = getSensorValue(props.modeSource);
 const temperature = getSensorValue(props.temperatureSource);
 const state = getComponentState();
+const definition = getSensorDefinition(props.source);
 
 const modeLabelMap: Record<string, string> = {
   [ThrusterMode.Off]: "thrapp.mimics.thrusters.assets.modes.off",
@@ -49,7 +49,7 @@ const modeLabelMap: Record<string, string> = {
     :state="state"
     height="170"
   >
-    <YardTag>{{ tagId }}</YardTag>
+    <YardTag>{{ definition.yardTag }}</YardTag>
     <HeatPumpTitle class="pb-1">
       {{ t(`thrapp.mimics.thrusters.assets.${titleKey}`) }}
     </HeatPumpTitle>

@@ -21,7 +21,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="590.649"
         y="147.576"
-        tag-id="1212-01"
+        :tag-id="manualValves['1212-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -34,7 +34,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="718.677"
         y="147.576"
-        tag-id="1212-02"
+        :tag-id="manualValves['1212-02'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -47,7 +47,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="614.055"
         y="510.724"
-        tag-id="1212-03"
+        :tag-id="manualValves['1212-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -60,7 +60,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="743.07"
         y="510.724"
-        tag-id="1212-04"
+        :tag-id="manualValves['1212-04'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -73,7 +73,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="613.068"
         y="610.72"
-        tag-id="1212-05"
+        :tag-id="manualValves['1212-05'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -86,7 +86,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="740.25"
         y="610.72"
-        tag-id="1212-06"
+        :tag-id="manualValves['1212-06'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -99,7 +99,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="214.722"
         y="290"
-        tag-id="1212-07"
+        :tag-id="manualValves['1212-07'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -112,7 +112,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="1025.775"
         y="185"
-        tag-id="1084-01"
+        :tag-id="manualValves['1084-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -125,7 +125,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="214.722"
         y="560.724"
-        tag-id="1087-03"
+        :tag-id="manualValves['1087-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -138,7 +138,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       <TagLabelInstance
         x="1025.775"
         y="136"
-        tag-id="1087-08"
+        :tag-id="manualValves['1087-08'].tooltip?.yardTag"
       />
     </ManualValveInstance>
   </g>

@@ -19,7 +19,7 @@ const pressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureSensor];
       <PressureLabelInstance
         x="453"
         y="515"
-        tag-id="1097-01"
+        :tag-id="pressureSensors['1097-01'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-01'].source"
       />
     </PressureSensorInstance>
@@ -31,7 +31,7 @@ const pressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureSensor];
       ><PressureLabelInstance
         x="934"
         y="193"
-        tag-id="1097-02"
+        :tag-id="pressureSensors['1097-02'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-02'].source"
       />
     </PressureSensorInstance>

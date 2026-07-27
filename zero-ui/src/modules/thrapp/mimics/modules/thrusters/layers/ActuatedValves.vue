@@ -26,7 +26,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <TagLabelInstance
         x="416"
         y="179"
-        tag-id="1091-01"
+        :tag-id="threeWaySwitchValves['1091-01'].tooltip?.yardTag"
       />
     </ThreeWaySwitchValveInstance>
     <ThreeWaySwitchValveInstance
@@ -38,7 +38,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <TagLabelInstance
         x="416"
         y="484"
-        tag-id="1091-02"
+        :tag-id="threeWaySwitchValves['1091-02'].tooltip?.yardTag"
       />
     </ThreeWaySwitchValveInstance>
     <SwitchValveInstance
@@ -50,7 +50,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <TagLabelInstance
         x="575"
         y="332"
-        tag-id="1066-03"
+        :tag-id="switchValves['1066-03'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
 
@@ -63,7 +63,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <FlowControlLabelInstance
         x="218"
         y="163"
-        tag-id="1215"
+        :tag-id="flowControlValves['1215'].tooltip?.yardTag"
         :valve="flowControlValves['1215'].source"
       />
     </FlowControlValveInstance>
@@ -75,7 +75,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       ><FlowControlLabelInstance
         x="214"
         y="418"
-        tag-id="1064-02"
+        :tag-id="flowControlValves['1064-02'].tooltip?.yardTag"
         :valve="flowControlValves['1064-02'].source"
       />
     </FlowControlValveInstance>
@@ -89,7 +89,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <ThreeWayValveLabelInstance
         x="755"
         y="273"
-        tag-id="1214-01"
+        :tag-id="mixValves['1214-01'].tooltip?.yardTag"
         :valve="mixValves['1214-01'].source"
       />
     </MixValveInstance>
@@ -102,7 +102,7 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       <ThreeWayValveLabelInstance
         x="689"
         y="315"
-        tag-id="1074"
+        :tag-id="mixValves['1074'].tooltip?.yardTag"
         :valve="mixValves['1074'].source"
       />
     </MixValveInstance>

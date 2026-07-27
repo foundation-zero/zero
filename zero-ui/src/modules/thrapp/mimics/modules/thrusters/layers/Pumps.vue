@@ -18,7 +18,7 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
       <DutypointLabelInstance
         x="706"
         y="480"
-        tag-id="1194"
+        :tag-id="pumps['1194'].tooltip?.yardTag"
         :pump="pumps['1194'].source"
       />
     </PumpInstance>
@@ -31,7 +31,7 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
       <DutypointLabelInstance
         x="706"
         y="570"
-        tag-id="1195"
+        :tag-id="pumps['1195'].tooltip?.yardTag"
         :pump="pumps['1195'].source"
       />
     </PumpInstance>

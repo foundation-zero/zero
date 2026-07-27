@@ -18,7 +18,7 @@ const manualPressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureGa
       ><TagLabelInstance
         x="516"
         y="213"
-        tag-id="1095-01"
+        :tag-id="manualPressureSensors['1095-01'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
   </g>
