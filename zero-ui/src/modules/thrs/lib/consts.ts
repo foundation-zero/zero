@@ -166,6 +166,7 @@ export const SENSOR_FIELDS: SensorFields = {
   [SensorComponentType.Flow]: ["flow", "temperature"],
   [SensorComponentType.Pcm]: ["charged"],
   [SensorComponentType.Level]: ["level"],
+  [SensorComponentType.LevelSwitch]: ["empty"],
 };
 
 export const SIMULATION_FIELDS: SimulationFields = {

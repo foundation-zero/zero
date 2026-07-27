@@ -89,7 +89,8 @@ export type SensorValueFields =
   | keyof LevelSensor
   | keyof DeltaTSensor
   | keyof HeatExchangerSensor
-  | keyof Valve;
+  | keyof Valve
+  | keyof LevelSwitch;
 
 export type SensorFields = {
   [SensorComponentType.Flow]: (keyof FlowSensor)[];
@@ -101,6 +102,7 @@ export type SensorFields = {
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
+  [SensorComponentType.LevelSwitch]: (keyof LevelSwitch)[];
 };
 
 export type SimulationFields = {
@@ -165,6 +167,10 @@ export type LevelSensor = {
   level: Stamped<number>;
 };
 
+export type LevelSwitch = {
+  empty: Stamped<boolean>;
+};
+
 export type ThrusterSensor = Toggle;
 export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
@@ -188,6 +194,7 @@ export type SensorType =
   | ThrusterSensor
   | PcsSensor
   | LevelSensor
+  | LevelSwitch
   | DeltaTSensor
   | AdsorptionChillerSensor
   | BrightloopSensor
@@ -328,6 +335,7 @@ export const enum SensorComponentType {
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
   Level = "sensor:level",
+  LevelSwitch = "sensor:levelswitch",
   DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   CalculatedFlow = "sensor:calculatedFlow",
@@ -405,6 +413,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
+  [SensorComponentType.LevelSwitch]: LevelSwitch;
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;

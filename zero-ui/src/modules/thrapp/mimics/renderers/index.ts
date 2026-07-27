@@ -4,6 +4,7 @@ import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
 import DeltaT from "./DeltaTRenderer.vue";
+import Empty from "./EmptyRenderer.vue";
 import EnabledDisabled from "./EnabledDisabledRenderer.vue";
 import Energy from "./EnergyRenderer.vue";
 import FlowRate from "./FlowRateRenderer.vue";
@@ -54,4 +55,5 @@ export const FieldRenderer = {
   QuantityLiters,
   Auto,
   EnabledDisabled,
+  Empty,
 };

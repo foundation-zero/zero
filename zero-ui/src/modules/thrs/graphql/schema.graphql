@@ -515,6 +515,9 @@ type DhwSensorValuesType {
   dhwSwitchLowTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
   dhwSwitchHeatpump: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
   dhwSwitchHighTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+  dhwLevelSwitchTank1: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-01", componentType: "level_switch", valveType: null)
+  dhwLevelSwitchTank2: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-02", componentType: "level_switch", valveType: null)
+  dhwLevelSwitchTank3: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-03", componentType: "level_switch", valveType: null)
   dhwPressure: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-11", componentType: "pressure_sensor", valveType: null)
   drivesFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-03", componentType: "flow_sensor", valveType: null)
   drivesTemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-16", componentType: "temperature_sensor", valveType: null)
@@ -1386,6 +1389,10 @@ type SensorHvacExchangerType {
 
 type SensorLevelSensorType {
   level: FloatStampedType!
+}
+
+type SensorLevelSwitchType {
+  empty: BoolStampedType!
 }
 
 type SensorPcmType {

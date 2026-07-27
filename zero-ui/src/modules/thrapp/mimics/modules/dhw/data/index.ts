@@ -7,6 +7,7 @@ import { DHW_FLOW_SENSOR_DATA } from "./flow-sensors";
 import { DHW_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
 import { DHW_HOT_WATER_CIRCUIT_DATA } from "./hot-water-circuits";
 import { DHW_LEVEL_SENSOR_DATA } from "./level-sensors";
+import { DHW_LEVEL_SWITCHES_DATA } from "./level-switches";
 import { DHW_MANUAL_VALVE_DATA } from "./manual-valves";
 import { DHW_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 import { DHW_PUMP_DATA } from "./pumps";
@@ -21,6 +22,7 @@ export { DHW_FLOW_SENSOR_DATA } from "./flow-sensors";
 export { DHW_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
 export { DHW_HOT_WATER_CIRCUIT_DATA } from "./hot-water-circuits";
 export { DHW_LEVEL_SENSOR_DATA } from "./level-sensors";
+export { DHW_LEVEL_SWITCHES_DATA } from "./level-switches";
 export { DHW_MANUAL_VALVE_DATA } from "./manual-valves";
 export { DHW_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 export { DHW_PUMP_DATA } from "./pumps";
@@ -38,6 +40,7 @@ export const DHW_MIMIC_DATA = toFieldsMap({
   ...DHW_FLOW_SENSOR_DATA,
   ...DHW_TEMPERATURE_SENSOR_DATA,
   ...DHW_LEVEL_SENSOR_DATA,
+  ...DHW_LEVEL_SWITCHES_DATA,
   ...DHW_ASSET_DATA,
   ...DHW_HOT_WATER_CIRCUIT_DATA,
   ...DHW_EXCHANGE_CIRCUIT_DATA,

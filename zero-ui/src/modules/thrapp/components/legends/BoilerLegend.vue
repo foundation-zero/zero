@@ -10,7 +10,7 @@ import HeatPump from "./items/HeatPump.vue";
 import HVAC from "./items/HVAC.vue";
 import LabelTag from "./items/LabelTag.vue";
 import LabelValue from "./items/LabelValue.vue";
-import LevelSensors from "./items/LevelSensors.vue";
+import LevelSensors from "./items/LevelSwitches.vue";
 import ManualSwitchValve from "./items/ManualSwitchValve.vue";
 import OtherMimic from "./items/OtherMimic.vue";
 import Pipe from "./items/Pipe.vue";

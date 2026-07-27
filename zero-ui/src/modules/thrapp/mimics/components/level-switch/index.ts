@@ -1,0 +1,13 @@
+import { ComponentOrientation } from "..";
+
+export const FIGMA_URL =
+  "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6147-48182&t=JfBIEDjiEP5NKk6I-4";
+
+/** Square canvas - original geometry is 24x30; padded to 32x32 to prevent clipping on 90 degree rotation. */
+export const LEVEL_SWITCH_WIDTH = 32;
+export const LEVEL_SWITCH_HEIGHT = 32;
+export const LEVEL_SWITCH_BASE_ORIENTATION = ComponentOrientation.Down;
+
+export const LEVEL_SWITCH_BODY_FILL = "var(--muted)";
+export const LEVEL_SWITCH_STROKE_COLOR = "var(--attention)";
+export const LEVEL_SWITCH_MARK_COLOR = "var(--foreground)";

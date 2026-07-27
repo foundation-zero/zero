@@ -1,7 +1,7 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 
 export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Tanks pressure sensor",
-  itemName: "Tanks pressure sensor",
+  title: "Level sensor",
+  itemName: "Level sensor",
   ...content,
 });

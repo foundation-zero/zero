@@ -1,5 +1,19 @@
 # Zero THRS Control
 
+## Development
+
+Copy .env.example to .env and modify if appropriate:
+
+```bash
+cp .env.example .env
+```
+
+Install dependencies:
+
+```bash
+poetry sync
+```
+
 ## FMU
 
 To compile an FMU with FMPy, run:

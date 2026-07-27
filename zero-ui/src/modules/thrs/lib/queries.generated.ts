@@ -772,6 +772,15 @@ export const DHW_SENSOR_QUERY = `
   dhwSwitchHighTemperature {
     positionRel { value timestamp }
   }
+  dhwLevelSwitchTank1 {
+    empty { value timestamp }
+  }
+  dhwLevelSwitchTank2 {
+    empty { value timestamp }
+  }
+  dhwLevelSwitchTank3 {
+    empty { value timestamp }
+  }
   dhwPressure {
     pressure { value timestamp }
   }

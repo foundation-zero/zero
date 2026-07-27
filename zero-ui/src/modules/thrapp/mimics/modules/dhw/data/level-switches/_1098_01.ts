@@ -5,15 +5,15 @@ import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
-export default toInstance<MimicComponentType.LevelSensor>({
+export default toInstance<MimicComponentType.LevelSwitch>({
   controls: {},
   controllerState: {},
   custom: {},
   parameters: {},
   sensors: {},
-  source: getField(SensorComponentType.Level, "dhw", "dhwLevelTank2"),
+  source: getField(SensorComponentType.LevelSwitch, "dhw", "dhwLevelSwitchTank1"),
   tooltip: tooltip({
-    yardTag: "1098-02",
-    technicalName: "dhw-level-1098-02",
+    yardTag: "1098-01",
+    technicalName: "dhw-level-switch-tank-1",
   }),
 });

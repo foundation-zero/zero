@@ -75,6 +75,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
+  [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
@@ -116,6 +117,7 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
+  [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: {
     valve: ControlComponentType.Valve;
@@ -149,6 +151,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
+  [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: {
     controller?: ControllerStateComponentType.PIDController;
@@ -180,6 +183,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.LevelSensor]: EmptyObject;
+  [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
@@ -242,6 +246,7 @@ export type CustomFieldDefinitions = CustomFields<{
     controller?: PIDController;
   };
   [MimicComponentType.LevelSensor]: EmptyObject;
+  [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
@@ -266,6 +271,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
   [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
   [MimicComponentType.LevelSensor]: SensorComponentType.Level;
+  [MimicComponentType.LevelSwitch]: SensorComponentType.LevelSwitch;
   [MimicComponentType.ManualValve]: undefined;
   [MimicComponentType.MixValve]: SensorComponentType.Valve;
   [MimicComponentType.CheckValve]: undefined;
