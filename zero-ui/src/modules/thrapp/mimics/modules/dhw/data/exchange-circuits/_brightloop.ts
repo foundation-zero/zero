@@ -11,7 +11,10 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "DC Converters",
   },
   parameters: {},
-  source: getCustomField("dhw", "brightloop"),
+  source: getCustomField("dhw", {
+    title: "DC converters",
+    technicalName: "dc-converters",
+  }),
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "dhw", "dcDelta"),
     flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
@@ -19,8 +22,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dcTemperatureRecoveryReturn"),
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDcExchanger"),
   },
-  tooltip: tooltip({
-    title: "DC converters",
-    technicalName: "brightloop",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

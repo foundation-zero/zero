@@ -12,8 +12,7 @@ export default toInstance<MimicComponentType.LevelSensor>({
   parameters: {},
   sensors: {},
   source: getField(SensorComponentType.Level, "dhw", "dhwLevelTank1"),
-  tooltip: tooltip({
-    yardTag: "1056-01",
-    technicalName: "dhw-level-tank-1",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

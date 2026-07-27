@@ -8,7 +8,7 @@ import { createContext } from "reka-ui";
 import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
 import { useRoute } from "vue-router";
 import { MimicComponentFieldsMap } from "../../mimics/modules/index.ts";
-import { ModuleField } from "../../mimics/providers/index.ts";
+import { deserializeField, ModuleField, serializeField } from "../../mimics/providers/index.ts";
 import { TOOLTIPS } from "../../mimics/tooltips";
 import { MimicComponentType } from "../../types";
 import { ExtractComponentFields } from "../../types/fields";
@@ -16,8 +16,9 @@ import { ExtractComponentFields } from "../../types/fields";
 export type TooltipContent = {
   title: string;
   yardTag?: string;
-  itemName?: string;
+  componentType?: string;
   technicalName?: string;
+  mqttTopic?: string;
 };
 
 export type TooltipComponentContext<Type extends MimicComponentType = MimicComponentType> = {
@@ -73,7 +74,9 @@ export const createTooltipContext = (
     for (const [type, data] of typesData) {
       const values = Object.values(data) as TooltipComponentContext[];
 
-      const sourceValue = values.find((val) => isEqual(val.source, source));
+      const sourceValue = values.find(
+        (val) => val.source && isEqual(serializeField(val.source), serializeField(source)),
+      );
 
       if (sourceValue) {
         return [type, sourceValue];
@@ -107,10 +110,10 @@ export const createTooltipContext = (
       if (!next.tooltip) {
         clear();
       } else if (next.tooltip !== prev?.tooltip) {
-        const parts = String(next.tooltip).split(".");
-        if (parts.length !== 3) return;
+        const field = deserializeField(String(next.tooltip));
 
-        const field = parts as ModuleField;
+        if (!field) return;
+
         const tooltipContext = findTooltipContext(field);
 
         if (!tooltipContext) return;

@@ -13,140 +13,130 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
     <TemperatureSensorInstance
       x="324"
       y="109.2099609375"
-      tag-id="1038-45"
       v-bind="temperatureSensors['1038-45']"
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
         x="313"
         y="71"
-        tag-id="1038-45"
+        :tag-id="temperatureSensors['1038-45'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-45'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="687"
       y="109.2099609375"
-      tag-id="1038-44"
       v-bind="temperatureSensors['1038-44']"
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
         x="676"
         y="71"
-        tag-id="1038-44"
+        :tag-id="temperatureSensors['1038-44'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-44'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="1025"
       y="109.2099609375"
-      tag-id="1038-27"
       v-bind="temperatureSensors['1038-27']"
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
         x="1016"
         y="71"
-        tag-id="1038-27"
+        :tag-id="temperatureSensors['1038-27'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-27'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="185"
       y="196.2099609375"
-      tag-id="1038-65"
       v-bind="temperatureSensors['1038-65']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="180"
         y="158"
-        tag-id="1038-65"
+        :tag-id="temperatureSensors['1038-65'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-65'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="1170"
       y="534"
-      tag-id="1038-47"
       v-bind="temperatureSensors['1038-47']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="1163"
         y="496"
-        tag-id="1038-47"
+        :tag-id="temperatureSensors['1038-47'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-47'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="403"
       y="621.2099609375"
-      tag-id="1038-46"
       v-bind="temperatureSensors['1038-46']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="393"
         y="580"
-        tag-id="1038-46"
+        :tag-id="temperatureSensors['1038-46'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-46'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="197"
       y="518.2099609375"
-      tag-id="1038-66"
       v-bind="temperatureSensors['1038-66']"
       :orientation="ComponentOrientation.Left"
     >
       <TemperatureLabelInstance
         x="236"
         y="517"
-        tag-id="1038-66"
+        :tag-id="temperatureSensors['1038-66'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-66'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="401"
       y="461.2099609375"
-      tag-id="1038-26"
       v-bind="temperatureSensors['1038-26']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="395"
         y="423"
-        tag-id="1038-26"
+        :tag-id="temperatureSensors['1038-26'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-26'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="562"
       y="461.2099609375"
-      tag-id="1038-25"
       v-bind="temperatureSensors['1038-25']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="553"
         y="420"
-        tag-id="1038-25"
+        :tag-id="temperatureSensors['1038-25'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-25'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="911"
       y="462.2099609375"
-      tag-id="1038-51"
       v-bind="temperatureSensors['1038-51']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
         x="910"
         y="507"
-        tag-id="1038-51"
+        :tag-id="temperatureSensors['1038-51'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-51'].source"
       />
     </TemperatureSensorInstance>

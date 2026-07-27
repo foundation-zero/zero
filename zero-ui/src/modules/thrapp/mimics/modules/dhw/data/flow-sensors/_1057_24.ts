@@ -18,8 +18,7 @@ export default toInstance<MimicComponentType.FlowSensor>({
   sensors: {
     temperature: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
   },
-  tooltip: tooltip({
-    yardTag: "1057-24",
-    technicalName: "dhw-flow-drives",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

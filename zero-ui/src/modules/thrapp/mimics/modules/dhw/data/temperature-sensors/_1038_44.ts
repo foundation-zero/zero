@@ -12,8 +12,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   parameters: {},
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureTank2"),
   sensors: {},
-  tooltip: tooltip({
-    yardTag: "1038-44",
-    technicalName: "dhw-temperature-tank-2",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

@@ -12,14 +12,13 @@ const pressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureSensor];
     <PressureSensorInstance
       x="289"
       y="221.2099609375"
-      tag-id="1097-11"
       v-bind="pressureSensors['1097-11']"
       :orientation="ComponentOrientation.Down"
     >
       <PressureLabelInstance
         x="277"
         y="186"
-        tag-id="1097-11"
+        :tag-id="pressureSensors['1097-11'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-11'].source"
       />
     </PressureSensorInstance>

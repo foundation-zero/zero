@@ -1158,27 +1158,27 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.CalculatedFlow,
   },
   dhwHvacExchanger: {
-    yardTag: "",
+    yardTag: "41001001",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwHeatpump: {
-    yardTag: "",
+    yardTag: "50001035",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwAdsorptionExchanger: {
-    yardTag: "",
+    yardTag: "50001004",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwConsumersExchanger: {
-    yardTag: "",
+    yardTag: "50001007",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwDcExchanger: {
-    yardTag: "",
+    yardTag: "50001008",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwDrivesExchanger: {
-    yardTag: "",
+    yardTag: "50001009",
     componentType: SensorComponentType.HeatExchanger,
   },
 });

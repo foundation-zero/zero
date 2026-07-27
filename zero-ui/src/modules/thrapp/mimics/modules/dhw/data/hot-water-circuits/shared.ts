@@ -1,7 +1,10 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { ModuleField } from "@/modules/thrapp/mimics/providers";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { fieldTooltip } from "../shared";
 
-export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Connecting circuit",
-  itemName: "Connecting circuit",
-  ...content,
-});
+export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Connecting circuit",
+    componentType: "Connecting circuit",
+  });

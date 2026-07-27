@@ -12,8 +12,7 @@ export default toInstance<MimicComponentType.PressureSensor>({
   parameters: {},
   sensors: {},
   source: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),
-  tooltip: tooltip({
-    yardTag: "1097-11",
-    technicalName: "dhw-pressure-boosting",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

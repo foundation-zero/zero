@@ -4,6 +4,7 @@ import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
 import { pumpFlowController, pumpTemperatureController } from "../controllers";
+import { fieldTooltip } from "../shared";
 
 export default toInstance<MimicComponentType.Pump>({
   custom: {
@@ -22,10 +23,10 @@ export default toInstance<MimicComponentType.Pump>({
   sensors: {
     pressure: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),
   },
-  tooltip: {
-    title: "Pump",
-    itemName: "Circulation pump hot freshwater",
-    technicalName: "dhw-pump",
-    yardTag: "1022",
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Pump",
+      componentType: "Circulation pump hot freshwater",
+    });
   },
 });
