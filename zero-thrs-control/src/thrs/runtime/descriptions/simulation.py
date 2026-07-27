@@ -79,7 +79,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(4300.0), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
@@ -119,7 +119,7 @@ SIMULATION_INPUTS = {
     "adsorption": AdsorptionSimulationInputs(
         adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
         adsorption_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         adsorption_available_cold_temperature=TemperatureBoundary(
             temperature=Stamped.stamp(20.0)
@@ -128,7 +128,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(65.0)
         ),
         adsorption_available_seawater_temperature=TemperatureBoundary(
-            temperature=Stamped.stamp(30.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
         adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
         adsorption_consumers_supply=Boundary(
@@ -217,7 +217,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         drives_seawater_supply=Boundary(
-            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         drives_dhw_supply=Boundary(
             temperature=Stamped.stamp(50),
@@ -246,7 +246,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
         ),
         dc_seawater_supply=Boundary(
-            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         dc_dhw_supply=Boundary(
             temperature=Stamped.stamp(60),
@@ -261,21 +261,21 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
         pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
         pvt_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
         adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
         adsorption_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         adsorption_available_hot_temperature=TemperatureBoundary(
             temperature=Stamped.stamp(65.0)
@@ -284,7 +284,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(20.0)
         ),
         adsorption_available_seawater_temperature=TemperatureBoundary(
-            temperature=Stamped.stamp(30.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
         adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
         dhw_freshwater_supply=OverpressureTemperatureBoundary(
@@ -293,7 +293,7 @@ SIMULATION_INPUTS = {
         dhw_hvac_exchanger=HvacExchanger(
             heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(35)
         ),
-        dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
+        dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(SEAWATER_TEMPERATURE)),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
         dc_brightloop_fwd1=Converter(
             heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
@@ -316,7 +316,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
         ),
         dc_seawater_supply=Boundary(
-            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
@@ -336,7 +336,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         drives_seawater_supply=Boundary(
-            temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
     ),
 }
