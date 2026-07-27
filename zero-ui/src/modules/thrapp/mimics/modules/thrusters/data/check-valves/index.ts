@@ -2,7 +2,7 @@ import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { getCustomField, ModuleField } from "@/modules/thrapp/mimics/providers";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { fieldTooltip } from "../../../dhw/data/shared";
+import { fieldTooltip } from "../../../shared";
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {

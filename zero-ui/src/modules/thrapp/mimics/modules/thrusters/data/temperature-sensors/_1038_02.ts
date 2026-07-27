@@ -2,7 +2,7 @@ import { ControlComponentType, ParametersType, SensorComponentType } from "@/mod
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
-import { thrustersPidController } from "../helpers";
+import { fwdRecoveryTemperatureController } from "../controllers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
@@ -10,7 +10,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
     pump: getField(ControlComponentType.Pump, "thrusters", "thrustersPump2"),
   },
   controllerState: {
-    controller: thrustersPidController("fwdTemperatureController"),
+    controller: fwdRecoveryTemperatureController,
   },
   custom: {},
   parameters: {

@@ -126,6 +126,10 @@ export type TemperatureSensor = {
   temperature: Stamped<number>;
 };
 
+export type CalculatedTemperatureSensor = {
+  temperature: Stamped<number>;
+};
+
 export type DeltaTSensor = {
   deltaT: Stamped<number>;
 };
@@ -327,6 +331,7 @@ export type ExtractControllerState<T extends ControllerStateDefinitions> = Extra
 
 export const enum SensorComponentType {
   Temperature = "sensor:temperature",
+  CalculatedTemperature = "sensor.calculatedTemperature",
   Pressure = "sensor:pressure",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
@@ -409,6 +414,7 @@ export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
 
 export type SensorDefinitionMap = {
   [SensorComponentType.Temperature]: TemperatureSensor;
+  [SensorComponentType.CalculatedTemperature]: CalculatedTemperatureSensor;
   [SensorComponentType.Pressure]: PressureSensor;
   [SensorComponentType.Flow]: FlowSensor;
   [SensorComponentType.Pump]: PumpSensor;

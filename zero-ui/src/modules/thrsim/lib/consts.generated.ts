@@ -2677,6 +2677,14 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "1500",
     componentType: SensorComponentType.Pcs,
   },
+  thrustersTemperatureRecovery: {
+    yardTag: "",
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  thrustersSeawaterExchanger: {
+    yardTag: "50001001",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({

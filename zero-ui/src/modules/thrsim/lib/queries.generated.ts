@@ -2158,6 +2158,13 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
+  thrustersTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  thrustersSeawaterExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
 `;
 
 export const THRUSTERS_SIMULATION_INPUTS_QUERY = `

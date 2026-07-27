@@ -3,8 +3,8 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 import { pumpFlowController, pumpTemperatureController } from "../controllers";
-import { fieldTooltip } from "../shared";
 
 export default toInstance<MimicComponentType.Pump>({
   custom: {

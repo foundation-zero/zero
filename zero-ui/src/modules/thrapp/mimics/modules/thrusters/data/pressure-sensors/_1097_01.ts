@@ -3,16 +3,13 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { thrustersPidController } from "../helpers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.PressureSensor>({
   controls: {
     pump: getField(ControlComponentType.Pump, "thrusters", "thrustersPump1"),
   },
-  controllerState: {
-    controller: thrustersPidController("dischargePressureController"),
-  },
+  controllerState: {},
   custom: {},
   parameters: {
     flow: getField(ParametersType.Flow, "thrusters", "thrustersMinimumFlow"),

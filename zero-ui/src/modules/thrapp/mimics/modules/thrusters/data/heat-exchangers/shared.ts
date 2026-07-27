@@ -1,9 +1,10 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ModuleField } from "@/modules/thrapp/mimics/providers";
+import { SensorComponentType } from "@/modules/thrs/types";
 import { fieldTooltip } from "../../../shared";
 
-export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
+export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
-    title: "Flow sensor",
-    componentType: "Flow sensor",
+    title: "Heat Exchanger",
+    componentType: "Heat Exchanger",
   });

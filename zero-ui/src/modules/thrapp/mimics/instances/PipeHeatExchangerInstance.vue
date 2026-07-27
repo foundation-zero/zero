@@ -1,21 +1,41 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
+
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { PipeHeatExchangerState } from "../components/pipe-heat-exchanger";
 import PipeHeatExchanger from "../components/pipe-heat-exchanger/PipeHeatExchanger.vue";
-import { useRandomizedState } from "../providers/mock-helpers.ts";
+import { getMimicDataProvider } from "../providers";
 
-const props = defineProps<MimicComponentInstanceProps>();
+const props = withDefaults(
+  defineProps<
+    MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.HeatExchanger>
+  >(),
+  {},
+);
 
-const state = useRandomizedState([
-  PipeHeatExchangerState.Cooling,
-  PipeHeatExchangerState.Heating,
-  PipeHeatExchangerState.Idle,
-]);
+const { getSensorValue } = getMimicDataProvider();
+
+const heatExchanger = getSensorValue(props.source);
+
+const state = computed<PipeHeatExchangerState>(() => {
+  if (heatExchanger.value?.heat.value === undefined || heatExchanger.value?.heat.value === 0)
+    return PipeHeatExchangerState.Idle;
+  else if (heatExchanger.value.heat.value > 0) return PipeHeatExchangerState.Heating;
+  else return PipeHeatExchangerState.Cooling;
+});
 </script>
 
 <template>
-  <PipeHeatExchanger
-    v-bind="props"
-    :pump-state="state"
-  />
+  <MimicTooltipTrigger
+    :type="MimicComponentType.HeatExchanger"
+    :data="props"
+  >
+    <PipeHeatExchanger
+      v-bind="props"
+      :pump-state="state"
+    />
+    <slot />
+  </MimicTooltipTrigger>
 </template>

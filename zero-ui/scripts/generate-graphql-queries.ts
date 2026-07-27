@@ -107,6 +107,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
   // Sensor component fields
   SensorComponentType: {
     Temperature: ["temperature"],
+    CalculatedTemperature: ["temperature"],
     Pressure: ["pressure"],
     Flow: ["flow", "temperature"],
     Pump: ["flow", "speed", "opTime"],

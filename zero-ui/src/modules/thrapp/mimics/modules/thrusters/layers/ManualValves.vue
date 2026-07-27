@@ -19,8 +19,8 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1212-01']"
     >
       <TagLabelInstance
-        x="590.649"
-        y="147.576"
+        x="610"
+        y="180"
         :tag-id="manualValves['1212-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -32,8 +32,8 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1212-02']"
     >
       <TagLabelInstance
-        x="718.677"
-        y="147.576"
+        x="735"
+        y="180"
         :tag-id="manualValves['1212-02'].tooltip?.yardTag"
       />
     </ManualValveInstance>

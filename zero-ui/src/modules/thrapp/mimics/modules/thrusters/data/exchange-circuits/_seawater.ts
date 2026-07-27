@@ -1,8 +1,8 @@
 import { SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField, ModuleField } from "../../../../providers";
-import { fieldTooltip } from "../../../dhw/data/shared";
+import { getCustomField, getField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
@@ -21,11 +21,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
       "thrustersTemperatureRecoveryMix",
     ),
     outgoing: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
-    heatExchanger: [
-      SensorComponentType.HeatExchanger,
-      "thrusters",
-      "thrustersMixRecovery",
-    ] as unknown as ModuleField<SensorComponentType.HeatExchanger, "thrusters">,
+    heatExchanger: getField(SensorComponentType.HeatExchanger, "thrusters", "thrustersMixRecovery"),
   },
   get tooltip() {
     return fieldTooltip(this.source, {

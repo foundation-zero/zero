@@ -3,7 +3,7 @@ import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { PickKeys, SchemaDefinition, SensorComponentType } from "@/modules/thrsim/types";
 import { kebabCase } from "lodash";
-import { getSensorDefinition, isCustomField, isSensorField, ModuleField } from "../../../providers";
+import { getSensorDefinition, isCustomField, isSensorField, ModuleField } from "../providers";
 
 const THRS_YARDTAG_PREFIX_REGEX = /^5000/;
 
@@ -32,7 +32,7 @@ export const fieldTooltip = <
     const definition = getSensorDefinition(field[1], field[2]);
     return {
       title: toUpperCamelCase(field[2]),
-      yardTag: definition?.yardTag?.replace(THRS_YARDTAG_PREFIX_REGEX, ""),
+      yardTag: definition?.yardTag.replace(THRS_YARDTAG_PREFIX_REGEX, ""),
       technicalName: kebabCase(field[2]), // TODO: should come from api
       mqttTopic: `.../${kebabCase(field[2])}`, // TODO: should come from api
       ...content,

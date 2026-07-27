@@ -74,6 +74,7 @@ interface Config {
 
 const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorTemperatureSensorType: "Temperature",
+  SensorCalculatedTemperatureType: "CalculatedTemperature",
   SensorPressureSensorType: "Pressure",
   SensorFlowSensorType: "Flow",
   SensorPumpType: "Pump",

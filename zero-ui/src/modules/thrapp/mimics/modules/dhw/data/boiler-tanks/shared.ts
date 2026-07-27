@@ -8,7 +8,7 @@ import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ExtractModuleFields, ParameterFieldDefinitions } from "@/modules/thrapp/types/fields";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
-import { fieldTooltip } from "../shared";
+import { fieldTooltip } from "../../../shared";
 
 export const controller = getField(
   ControllerStateComponentType.DhwTanksController,

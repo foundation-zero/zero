@@ -31,9 +31,8 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const thruster = getSensorValue(props.source);
 const pcs = getSensorValue(props.modeSource);
-const temperature = getSensorValue(props.temperatureSource);
 const state = getComponentState();
-const definition = getSensorDefinition(props.source);
+const definition = getSensorDefinition(props.source[1], props.source[2]);
 
 const modeLabelMap: Record<string, string> = {
   [ThrusterMode.Off]: "thrapp.mimics.thrusters.assets.modes.off",
