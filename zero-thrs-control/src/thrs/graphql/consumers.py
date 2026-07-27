@@ -27,6 +27,10 @@ ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
 class ConsumersControlModeType:
     _empty: None = None
 
+    @classmethod
+    def from_pydantic(cls, type) -> "ConsumersControlModeType":
+        return cls()
+
 
 @strawberry.type()
 class ConsumersControllerStateType:
