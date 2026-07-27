@@ -13,7 +13,7 @@ def test_all_idle(
     runner: SimulationTestRunner,
     simulation_inputs_inactive: DcSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
     sensor_values, *_ = runner.run(90)
 
@@ -32,7 +32,7 @@ def test_only_brightloops_aft(
     runner: SimulationTestRunner,
     simulation_inputs_brightloops_aft_active: DcSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(  # type: ignore
+    runner.update_simulation_inputs(  # type: ignore
         simulation_inputs_brightloops_aft_active
     )
 
@@ -65,7 +65,7 @@ def test_only_one_brightloop(
             )
         }
     )
-    runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
     sensor_values, *_ = runner.run(240)
 

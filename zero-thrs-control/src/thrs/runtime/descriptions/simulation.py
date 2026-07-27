@@ -456,20 +456,6 @@ MODES: list[Mode] = [
         ),
     ),
     Mode(
-        name="thrs_control",
-        control_modules={
-            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
-            "pvt": PVT_MODULE_DESCRIPTION,
-            "pcm": PCM_MODULE_DESCRIPTION,
-            "consumers": CONSUMERS_MODULE_DESCRIPTION,
-            "adsorption": ADSORPTION_MODULE_DESCRIPTION,
-            "drives": DRIVES_MODULE_DESCRIPTION,
-            "dc": DC_MODULE_DESCRIPTION,
-            "dhw": DHW_MODULE_DESCRIPTION,
-        },
-        simulation_description=None,
-    ),
-    Mode(
         name="thrs",
         control_modules={
             "thrusters": THRUSTERS_MODULE_DESCRIPTION,

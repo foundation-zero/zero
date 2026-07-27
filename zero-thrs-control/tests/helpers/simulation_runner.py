@@ -1,9 +1,7 @@
-from typing import Callable, cast
+from typing import Any, Callable, cast
 
 from tests.helpers.collector import Collector
-from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.switching import AutomationMode
+from thrs.classes.control import Control, ControlMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -12,8 +10,7 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.comms import ControlChannels, SimulationChannels
-from thrs.orchestration.module import Module, ModuleDescription
+from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.simulation import Simulation, SimulationUnit
 from thrs.simulation.io_mapping import flatten_model_values
 
@@ -35,14 +32,100 @@ def _flatten_for_collector(values: ThrsValues | CombinedValues) -> dict[str, flo
     )
 
 
+class _CombinedControlAdapter[
+    S: CombinedValues,
+    C: CombinedValues,
+    P,
+    M,
+    CS: CombinedValues,
+]:
+    def __init__(
+        self,
+        controls: dict[str, Control[ThrsValues, ThrsValues, P, M, ThrsValues]],
+    ) -> None:
+        self._controls = controls
+        self.parameters = CombinedValues(
+            {
+                name: cast(ThrsValues, control.parameters)
+                for name, control in self._controls.items()
+            }
+        )
+
+    def update_parameters(self, parameters: CombinedValues):
+        self.parameters = parameters
+        for name, control in self._controls.items():
+            if name in parameters.values:
+                control.update_parameters(cast(P, parameters.values[name]))
+
+    def initial(self) -> tuple[CombinedValues, CombinedValues]:
+        initials = {name: control.initial() for name, control in self._controls.items()}
+        return (
+            CombinedValues(
+                {name: control_values for name, (control_values, _) in initials.items()}
+            ),
+            CombinedValues(
+                {
+                    name: controller_state
+                    for name, (_, controller_state) in initials.items()
+                }
+            ),
+        )
+
+    def control(
+        self, sensor_values: CombinedValues
+    ) -> tuple[CombinedValues, CombinedValues]:
+        results = {
+            name: control.initial()
+            if (sensors := sensor_values.values.get(name)) is None
+            else control.control(cast(ThrsValues, sensors))
+            for name, control in self._controls.items()
+        }
+        return (
+            CombinedValues(
+                {name: control_values for name, (control_values, _) in results.items()}
+            ),
+            CombinedValues(
+                {
+                    name: controller_state
+                    for name, (_, controller_state) in results.items()
+                }
+            ),
+        )
+
+    def mode(self) -> ControlMode:
+        return ControlMode(
+            **{name: control.mode for name, control in self._controls.items()}
+        )
+
+
+class _CombinedAlarmsAdapter:
+    def __init__(self, alarms: dict[str, BaseAlarms]):
+        self._alarms = alarms
+
+    def check(
+        self,
+        sensor_values: CombinedValues,
+        control_values: CombinedValues,
+        parameters: CombinedValues,
+    ) -> list[Any]:
+        return [
+            result
+            for name, alarms in self._alarms.items()
+            if (s := sensor_values.values.get(name)) is not None
+            and (c := control_values.values.get(name)) is not None
+            and (p := parameters.values.get(name)) is not None
+            for result in alarms.check(s, c, p)
+        ]
+
+
 class SimulationTestRunner[
-    S: ThrsValues,
-    C: ThrsValues,
+    S: ThrsValues | CombinedValues,
+    C: ThrsValues | CombinedValues,
     I: SimulationInputs,
     O: SimulationValues,
-    P: ThrsValues,
-    M: ThrsValues,
-    CS: ThrsValues,
+    P,
+    M,
+    CS: ThrsValues | CombinedValues,
 ]:
     """Runs a module for a number of ticks
 
@@ -52,48 +135,46 @@ class SimulationTestRunner[
     def __init__(
         self,
         simulation: Simulation[S, C, I, O],
-        control: Control[S, C, P, M, CS],
-        alarms: BaseAlarms[S, C, P],
+        control: Control[S, C, P, M, CS]
+        | dict[str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]],
+        alarms: BaseAlarms | dict[str, BaseAlarms],
     ):
-        self._simulation = simulation
+        if isinstance(control, dict):
+            combined_control = cast(
+                Control,
+                _CombinedControlAdapter(
+                    cast(
+                        dict[
+                            str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]
+                        ],
+                        control,
+                    )
+                ),
+            )
+            combined_alarms = cast(
+                BaseAlarms, _CombinedAlarmsAdapter(cast(dict[str, BaseAlarms], alarms))
+            )
+            self._control = combined_control
+            self._alarms = combined_alarms
+        else:
+            self._control = control
+            self._alarms = cast(BaseAlarms, alarms)
 
-        self._control_values, self._controller_state = control.initial()
-
-        # Since we are not sending or receiving we use None as channels for simplicity
-        self._control_module = Module(
-            "test", control, alarms, cast(ControlChannels, None)
-        )
-        self._control_module._control.switch_mode(AutomationMode(mode="automatic"))
+        self._control_values, self._controller_state = self._control.initial()
         self._simulation_module = SimulationUnit(
             simulation, cast(SimulationChannels, None)
         )
+        self._simulation = simulation
 
-    @staticmethod
-    def from_module[
-        S2: ThrsValues,
-        C2: ThrsValues,
-        I2: SimulationInputs,
-        O2: SimulationValues,
-        P2: ThrsValues,
-        M2: ThrsValues,
-        CS2: ThrsValues,
-    ](
-        module: ModuleDescription[S2, C2, P2, M2, CS2],
-        initial_control_parameters: P2,
-        simulation: Simulation[S2, C2, I2, O2],
-    ) -> "SimulationTestRunner[S2, C2, I2, O2, P2, M2, CS2]":
-        return SimulationTestRunner(
-            simulation,
-            module.control(
-                initial_control_parameters,
-                simulation.time,
-                MachineStateLoggingServiceNoop(),
-            ),
-            module.alarms(),
-        )
+    def update_simulation_inputs(self, simulation_inputs: I):
+        self._simulation.update_simulation_inputs(simulation_inputs)
 
     def tick(self, collector: Collector | None = None) -> tuple[S | None, C, CS]:
         result = self._simulation_module.execute_simulation_tick(self._control_values)
+
+        self._alarms.check(
+            result.sensor_values, self._control_values, self._control.parameters
+        )
 
         if collector is not None:
             collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
@@ -104,12 +185,12 @@ class SimulationTestRunner[
                     **_flatten_for_collector(result.simulation_outputs),
                     **_flatten_for_collector(result.simulation_inputs),
                 },
-                str(self._control_module._control.mode),
+                str(self._control.mode),
                 result.timestamp,
             )
 
-        self._control_values, self._controller_state = (
-            self._control_module.execute_control(result.sensor_values)
+        self._control_values, self._controller_state = self._control.control(
+            result.sensor_values
         )
 
         return result.sensor_values, self._control_values, self._controller_state

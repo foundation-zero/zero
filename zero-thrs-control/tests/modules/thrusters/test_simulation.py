@@ -6,13 +6,7 @@ from pytest import fixture
 from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
-from tests.helpers.simulator_model import SimulatorModel
 from tests.modules.thrusters.conftest import ThrustersSimulation
-from thrs.control.modules.thrusters import (
-    THRUSTERS_MODULE_DESCRIPTION,
-    ThrustersControl,
-    ThrustersParameters,
-)
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.input_output.modules.thrusters import (
@@ -94,29 +88,16 @@ def test_computed_collection(simulation: ThrustersSimulation, control, alarms):
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
-def test_simulation(simulation_inputs, control, alarms):
-    thrusters_model = SimulatorModel(
-        fmu_path=thrusters_path,
-        sensor_values_cls=ThrustersSensorValues,
-        control_values_cls=ThrustersControlValues,
-        control_cls=ThrustersControl,
-        simulation_outputs_cls=ThrustersSimulationOutputs,
-        simulation_inputs=simulation_inputs,
-        alarms=alarms,
-    )
+def test_simulation(simulation, control, alarms):
+    runner = SimulationTestRunner(simulation, control, alarms)
 
-    with thrusters_model.simulation() as simulation:
-        runner = SimulationTestRunner.from_module(
-            THRUSTERS_MODULE_DESCRIPTION, ThrustersParameters(), simulation
-        )
+    collector = PolarsCollector()
 
-        collector = PolarsCollector()
+    runner.run(20, collector)
 
-        runner.run(20, collector)
-
-        result = collector.result()
-        assert result is not None
-        assert result["time"].len() == 20
+    result = collector.result()
+    assert result is not None
+    assert result["time"].len() == 20
 
 
 @fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))

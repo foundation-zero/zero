@@ -40,7 +40,7 @@ class Simulation[
 ]:
     def __init__(
         self,
-        sensor_values_clss: ModuleClassMap | type[ThrsValues],
+        sensor_values_clss: ModuleClassMap | type[S],
         simulation_outputs_cls: type[O],
         fmu: FmuLike,
         simulation_inputs: I,
