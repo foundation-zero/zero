@@ -89,8 +89,6 @@ The shared log format is:
 %(asctime)s | %(levelname)-8s | %(message)s
 ```
 
-- `zero-loads-app` extends this with `%(name)-8s` and `%(levelname)-6s`.
-  Follow the convention of the project you are editing.
 - Use `logging.getLogger(__name__)` for per-module loggers, stored as `logger`:
   ```python
   import logging

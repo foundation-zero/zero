@@ -44,7 +44,7 @@ REG_ROOM_MAPPING = {
 
 
 def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[MqttTopic]:
-    """Ac topics on termondamica/ac/[split_id] are nested topics with the same schema."""
+    """Ac topics on termodinamica/ac/[split_id] are nested topics with the same schema."""
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
     df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
         ~pl.col("register_name").str.contains("_FREE")
