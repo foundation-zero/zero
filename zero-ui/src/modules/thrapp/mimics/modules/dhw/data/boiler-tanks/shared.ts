@@ -2,7 +2,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ExtractModuleFields, ParameterFieldDefinitions } from "@/modules/thrapp/types/fields";

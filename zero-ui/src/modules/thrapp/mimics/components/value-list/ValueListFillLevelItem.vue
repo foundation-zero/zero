@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatNumber } from "@/modules/common/lib/utils";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
 import { RiWaterPercentLine } from "@remixicon/vue";
 import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";

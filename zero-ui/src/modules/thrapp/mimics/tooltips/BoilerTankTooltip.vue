@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState } from "@/modules/thrs/types";
+import { BoilerTankState } from "@/modules/thrsim/types/index.ts";
 import { computed } from "vue";
 import { useTranslations } from ".";
 import {

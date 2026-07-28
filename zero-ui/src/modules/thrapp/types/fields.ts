@@ -3,7 +3,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";

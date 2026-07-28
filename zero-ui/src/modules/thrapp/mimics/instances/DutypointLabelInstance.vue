@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatNumber } from "@/modules/common/lib/utils";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
 import { Label } from "../components/label/index.ts";
 import { ModuleField } from "../providers/index.ts";
 import SensorValue from "../providers/SensorValue.vue";

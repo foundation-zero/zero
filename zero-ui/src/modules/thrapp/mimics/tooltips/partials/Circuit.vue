@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from "..";
 import { isField, isSensorField, ModuleField, SensorValue } from "../../providers";
 import * as Partials from "./";

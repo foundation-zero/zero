@@ -1,5 +1,5 @@
-import { DEFINITIONS } from "@/modules/thrs/lib/consts";
-import { useAutomationStore } from "@/modules/thrs/stores/automation";
+import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
+import { useAutomationStore } from "@/modules/thrsim/stores/automation";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export const useAutomaticMode = () => {

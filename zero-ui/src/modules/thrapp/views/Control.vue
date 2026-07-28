@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider } from "@/modules/thrapp/mimics/providers";
-import { DEFINITIONS } from "@/modules/thrs/lib/consts";
+import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { defineAsyncComponent, inject, Ref } from "vue";
 
 const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;

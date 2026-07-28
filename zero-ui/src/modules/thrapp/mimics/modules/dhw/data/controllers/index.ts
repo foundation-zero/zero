@@ -4,7 +4,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 
 export const dcFlowController: PIDController<SensorComponentType.Temperature> = {
   type: SensorComponentType.Temperature,

@@ -1,6 +1,6 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
-import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
 import { DHW_TANK_DATA } from "../boiler-tanks";

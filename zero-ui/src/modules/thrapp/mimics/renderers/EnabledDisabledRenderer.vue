@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ParametersType } from "@/modules/thrs/types";
+import { ParametersType } from "@/modules/thrsim/types";
 import { computed, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { FieldRendererProps } from ".";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
+import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField } from "../providers";
