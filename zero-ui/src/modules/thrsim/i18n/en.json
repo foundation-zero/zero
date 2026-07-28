@@ -8,7 +8,7 @@
       "consumers": "Consumers",
       "dhw": "DHW",
       "adsorption": "Adsorption",
-      "dc": "DC",
+      "dc": "DC converters",
       "drives": "Drives",
       "thrs": "THRS"
     },
@@ -104,6 +104,55 @@
       "seconds": "Seconds",
       "mode": "Mode",
       "stepInSeconds": "Step (seconds)"
+    }
+  },
+  "components": {
+    "inputs": {
+      "parameter:flow": {
+        "label": "Flow",
+        "unit": "l/s"
+      },
+      "parameter:temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      },
+      "parameter:flowcontrol": {
+        "label": "Valve Setpoint",
+        "unit": "Ratio"
+      },
+      "parameter:tuning": {
+        "label": "Tuning",
+        "unit": "Ratio"
+      },
+      "parameter:enabled": {
+        "label": "Enabled",
+        "unit": ""
+      },
+      "parameter:ratio": {
+        "label": "Ratio",
+        "unit": "%"
+      },
+      "parameter:dutypoint": {
+        "label": "Duty Point",
+        "unit": "%"
+      },
+      "parameter:dT": {
+        "label": "Temperature Difference",
+        "unit": "K"
+      },
+      "parameter:level": {
+        "label": "Level",
+        "unit": "l"
+      },
+      "parameter:disabled": {
+        "label": "Disabled",
+        "unit": ""
+      },
+      "pid": {
+        "p": "P",
+        "i": "I",
+        "d": "D"
+      }
     }
   }
 }

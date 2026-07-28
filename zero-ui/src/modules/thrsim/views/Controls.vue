@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ModuleDefinition } from "@/modules/thrsim/types";
 
-import ControlValuesControls from "@/modules/thrs/components/ControlValuesControls.vue";
+import ControlValuesControls from "@/modules/thrsim/components/ControlValuesControls.vue";
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";

@@ -1,38 +1,36 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
 const { t } = useI18n();
 
-const DEFAULT_PARAMS = {
-  module: "dhw",
-};
+const route = useRoute();
+const currentModule = computed(() => (route.params.module as string) || "dhw");
 
-const menuItems = [
+const menuItems = computed(() => [
   {
     title: t("thrs.views.monitoring.title"),
-    to: "thrsim/monitoring",
-    params: DEFAULT_PARAMS,
+    name: "thrsim/monitoring",
+    params: { module: currentModule.value },
   },
   {
     title: t("thrs.views.controls.title"),
-    to: "thrsim/controls",
-    params: DEFAULT_PARAMS,
+    name: "thrsim/controls",
+    params: { module: currentModule.value },
   },
   {
     title: t("thrs.views.parameters.title"),
-    to: "thrsim/parameters",
-    params: DEFAULT_PARAMS,
+    name: "thrsim/parameters",
+    params: { module: currentModule.value },
   },
   {
     title: t("thrs.views.mimic.title"),
-    to: "thrsim/mimic",
-    params: DEFAULT_PARAMS,
+    name: "thrsim/mimic",
+    params: { module: currentModule.value },
   },
-];
-
-const route = useRoute();
+]);
 </script>
 
 <template>
@@ -43,10 +41,10 @@ const route = useRoute();
     >
       <RouterLink
         v-for="item in menuItems"
-        :key="item.to"
-        :to="item"
+        :key="item.name"
+        :to="{ name: item.name, params: item.params }"
       >
-        <TabsTrigger :value="item.to">
+        <TabsTrigger :value="item.name">
           {{ item.title }}
         </TabsTrigger>
       </RouterLink>

@@ -59,7 +59,9 @@ const [p, i, d] = toElementRefs(value);
     </h3>
 
     <div class="mt-6 grid gap-1.5">
-      <header class="text-2xs tracking-wide uppercase">{{ componentType }}</header>
+      <header class="text-2xs tracking-wide uppercase">
+        {{ t(`components.inputs.${componentType}.label`) }}
+      </header>
 
       <NumberField
         v-model="p"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ModuleDefinition, ParametersType } from "@/modules/thrsim/types";
 
-import ParametersControls from "@/modules/thrs/components/ParametersControls.vue";
+import ParametersControls from "@/modules/thrsim/components/ParametersControls.vue";
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { objectFilter } from "@common/lib/utils";
 import { computed, inject, Ref } from "vue";

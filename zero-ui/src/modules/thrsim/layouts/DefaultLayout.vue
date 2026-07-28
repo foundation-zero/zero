@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import NavTabs from "@/modules/thrs/components/NavTabs.vue";
+import NavTabs from "@/modules/thrsim/components/NavTabs.vue";
 import { useI18n } from "vue-i18n";
 
-import SimulationActions from "@/modules/thrs/components/SimulationActions.vue";
+import SimulationActions from "@/modules/thrsim/components/SimulationActions.vue";
 
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
@@ -24,7 +24,16 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof ThrsModules> = ["thrusters", "pvt", "pcm", "consumers", "dhw"];
+const modules: Array<keyof ThrsModules> = [
+  "thrusters",
+  "pvt",
+  "pcm",
+  "consumers",
+  "adsorption",
+  "drives",
+  "dhw",
+  "dc",
+];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
 provide("currentModule", currentModuleKey);
@@ -55,6 +64,16 @@ provide("currentModule", currentModuleKey);
       <template #right-content>
         <ClearChartHistory />
         <RiSeparator class="text-disabled-foreground" />
+        <RouterLink
+          :to="{ name: 'thrsim/simulation' }"
+          class="flex items-center"
+        >
+          <span
+            class="hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-md px-3 py-2 text-sm font-medium"
+          >
+            {{ t("thrs.views.simulation.title") }}
+          </span>
+        </RouterLink>
         <SimulationActions class="max-md:hidden" />
       </template>
     </TopNavToolbar>

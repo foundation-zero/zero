@@ -3,13 +3,17 @@ import { ThrsModules } from "@/modules/thrsim/lib/consts.types";
 import RouterLinkWithFallback from "@common/components/RouterLinkWithFallback.vue";
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { useI18n } from "vue-i18n";
-import { RouterLink, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 defineProps<{ modules: Array<keyof ThrsModules> }>();
 const activeModule = defineModel<string | undefined>("activeModule", { required: true });
 const currentRoute = useRoute();
 
 const { t } = useI18n();
+
+const displayModuleName = (key: string): string => {
+  return t(`thrs.simulationTypes.${key}`);
+};
 </script>
 
 <template>
@@ -30,15 +34,9 @@ const { t } = useI18n();
         }"
       >
         <TabsTrigger :value="key">
-          {{ key }}
+          {{ displayModuleName(key) }}
         </TabsTrigger>
       </RouterLinkWithFallback>
-
-      <RouterLink :to="{ name: 'thrsim/simulation' }">
-        <TabsTrigger value="simulation">
-          {{ t("thrs.views.simulation.title") }}
-        </TabsTrigger>
-      </RouterLink>
     </TabsList>
   </Tabs>
 </template>
