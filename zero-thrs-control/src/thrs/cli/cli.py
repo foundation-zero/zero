@@ -10,6 +10,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
+from thrs.control.switching import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
@@ -121,6 +122,9 @@ class LockstepCmd(BaseSettings):
             time_fn=simulation_module.time,
             machine_state_logging_service_enabled=self.machine_state_logging,
         )
+
+        for module in control_modules:
+            module._control.switch_mode(AutomationMode(mode="automatic"))
 
         runner = LockstepRunner(control_modules, simulation_module)
 

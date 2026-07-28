@@ -8,6 +8,7 @@ import pytest
 from aiomqtt import Client
 
 from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.switching import AutomationMode
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -65,6 +66,9 @@ def setup_lockstep(
         time_fn=simulation_module.time,
         machine_state_logging_service_enabled=machine_state_logging_service_enabled,
     )
+
+    for module in control_modules:
+        module._control.switch_mode(AutomationMode(mode="automatic"))
 
     runner = LockstepRunner(control_modules, simulation_module)
 
