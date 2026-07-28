@@ -11,7 +11,7 @@ export default toInstance<MimicComponentType.HotWaterCircuit>({
   parameters: {},
   source: getCustomField("thrusters", { technicalName: "thrusters-pcm-loop" }),
   sensors: {
-    flowIn: getField(SensorComponentType.CalculatedFlow, "thrusters", "thrustersFlowAft"),
+    flowIn: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowRecovery"),
     flowOut: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowRecovery"),
     tIn: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureRecoveryMix"),
     tOut: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
