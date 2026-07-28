@@ -2,8 +2,6 @@
 import { BypassArea } from "../../../components/bypass-area";
 </script>
 
-<script setup lang="ts"></script>
-
 <template>
   <g>
     <BypassArea

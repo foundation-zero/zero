@@ -17,7 +17,7 @@ const manualValve = (yardTag: string) =>
     custom: {},
     parameters: {},
     sensors: {},
-    source: getCustomField("pvt", {
+    source: getCustomField("thrusters", {
       yardTag: yardTag,
       technicalName: `thrusters-manual-valve-${yardTag}`,
     }),

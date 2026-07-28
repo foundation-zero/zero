@@ -20,9 +20,9 @@ const { getSensorValue } = getMimicDataProvider();
 const heatExchanger = getSensorValue(props.source);
 
 const state = computed<PipeHeatExchangerState>(() => {
-  if (heatExchanger.value?.heat.value === undefined || heatExchanger.value?.heat.value === 0)
-    return PipeHeatExchangerState.Idle;
-  else if (heatExchanger.value.heat.value > 0) return PipeHeatExchangerState.Heating;
+  const heat = heatExchanger.value?.heat?.value;
+  if (heat === undefined || heat === 0) return PipeHeatExchangerState.Idle;
+  else if (heat > 0) return PipeHeatExchangerState.Heating;
   else return PipeHeatExchangerState.Cooling;
 });
 </script>
