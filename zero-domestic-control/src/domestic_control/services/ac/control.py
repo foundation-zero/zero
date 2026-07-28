@@ -1,30 +1,31 @@
-from asyncio import TaskGroup, sleep
 import asyncio
+import logging
+from asyncio import TaskGroup, sleep
 from functools import partial
 from typing import Callable, Coroutine, Generator, assert_never
 
 from domestic_control.messages import (
     AirConditioning,
-    RoomTemperatureSetpoint,
-    RoomHumiditySetpoint,
     RoomCo2Setpoint,
+    RoomHumiditySetpoint,
+    RoomTemperatureSetpoint,
 )
 from domestic_control.mqtt import (
     ControlReceive,
 )
-from domestic_control.sink import Sink
 from domestic_control.services.ac.thrs import Thrs
+from domestic_control.sink import Sink
+
+from .constants import ROOM_INDICES
 from .interface import AcInterface
 from .properties import (
-    AcUpdate,
     AcProperty,
-    TemperatureSetpoint,
-    ActualTemperature,
     ActualHumidity,
+    ActualTemperature,
+    AcUpdate,
     HumiditySetpoint,
+    TemperatureSetpoint,
 )
-from .constants import ROOM_INDICES
-import logging
 
 AC_CONTROL_BUS_INTERVAL = 0.1  # 100 ms
 

@@ -1,5 +1,4 @@
-from .interface import VentilationInterface
 from .control import VentilationControl
-from .interface import Ventilation
+from .interface import Ventilation, VentilationInterface
 
 __all__ = ["VentilationControl", "VentilationInterface", "Ventilation"]

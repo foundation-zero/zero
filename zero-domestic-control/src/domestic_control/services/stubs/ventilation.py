@@ -1,14 +1,15 @@
+import logging
 from asyncio import (
     Task,
     create_task,
     get_running_loop,
 )
+
 from pyModbusTCP.server import DataBank, ModbusServer
 
 from domestic_control.services.ventilation.constants import (
     CO2_SETPOINT_START_ADDRESS,
 )
-import logging
 
 
 class VentilationDataBank(DataBank):

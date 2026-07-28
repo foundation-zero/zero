@@ -1,5 +1,4 @@
-from .interface import AcInterface
 from .control import AcControl
-from .interface import Ac
+from .interface import Ac, AcInterface
 
 __all__ = ["AcControl", "AcInterface", "Ac"]

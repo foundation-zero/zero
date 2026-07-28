@@ -22,7 +22,9 @@ from zero_hull_temperature.reader import (
 from zero_hull_temperature.settings import ModbusSettings, MqttSettings
 from zero_hull_temperature.stub import Stub
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s"
+)
 
 
 class MqttSend(CliMutuallyExclusiveGroup):

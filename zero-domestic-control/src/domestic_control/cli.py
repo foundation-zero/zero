@@ -8,7 +8,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from domestic_control.config import settings, Settings
+from domestic_control.config import Settings, settings
 from domestic_control.logging import setup_logging
 
 setup_logging()

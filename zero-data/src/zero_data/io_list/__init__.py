@@ -1,9 +1,9 @@
 from pathlib import Path
+
 from .types import IOResult, Source
-from typing import List
 
 
-def read_io_list(paths: List[Path], type: Source) -> IOResult:
+def read_io_list(paths: list[Path], type: Source) -> IOResult:
     if type == "marpower":
         from .readers.marpower import MarpowerReader
 

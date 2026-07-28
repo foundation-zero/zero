@@ -1,13 +1,12 @@
 import asyncio
 import json
+import logging
 from abc import abstractmethod
-from typing import List
 
 from aiomqtt import Client
 
 from zero_data.config import MQTTConfig
 from zero_data.io_list.types import IOTopic, IOValue
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +16,11 @@ class Generator:
         self,
         interval: int | float,
         mqtt_config: MQTTConfig,
-        topics: List[IOTopic],
+        topics: list[IOTopic],
     ):
         self.interval: int | float = interval
         self.mqtt_config: MQTTConfig = mqtt_config
-        self.topics: List[IOTopic] = topics
+        self.topics: list[IOTopic] = topics
 
     async def run(self):
         """Run the generator, sending messages at regular intervals."""

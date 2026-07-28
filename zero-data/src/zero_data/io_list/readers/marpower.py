@@ -1,11 +1,10 @@
 from pathlib import Path
-from typing import List
 
-from openpyxl import load_workbook
 import polars as pl
+from openpyxl import load_workbook
 
-from ..types import IOValue, IOTopic, IOResult
 from ..base import ReaderBase
+from ..types import IOResult, IOTopic, IOValue
 
 _DATA_TYPES = {
     "Float": "REAL",
@@ -103,7 +102,7 @@ class MarpowerReader(ReaderBase):
             }
         )
 
-    def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
+    def _get_io_topics(self, df: pl.DataFrame) -> list[IOTopic]:
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
@@ -147,7 +146,7 @@ class MarpowerReader(ReaderBase):
         }
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
-    def read_io_list(self, paths: List[Path]) -> IOResult:
+    def read_io_list(self, paths: list[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
         io_lists = [
             self._normalize_marpower_io_list(self._read_marpower_excel(path))

@@ -65,6 +65,9 @@ log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
 [tool.ruff]
 fix = true
 
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
+
 [tool.dotenv]
 location = ".env"
 

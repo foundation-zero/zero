@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Literal
+from typing import Literal
+
 from polars import DataFrame
 
 type Source = Literal["marpower", "sail_system"]
@@ -21,11 +22,11 @@ class IOValue:
 @dataclass(frozen=True, eq=True)
 class IOTopic:
     topic: str
-    fields: List[IOValue]
+    fields: list[IOValue]
     group: str | None = None
 
 
 @dataclass(frozen=True, eq=True)
 class IOResult:
     io_list: DataFrame
-    topics: List[IOTopic]
+    topics: list[IOTopic]

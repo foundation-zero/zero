@@ -1,9 +1,10 @@
 from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from typing import NamedTuple
-from domestic_control.config import Settings
+
 from aiomqtt import Client as MqttClient
 
+from domestic_control.config import Settings
 from domestic_control.services.stubs.ac import AcStub
 from domestic_control.services.stubs.av import AvStub
 from domestic_control.services.stubs.ventilation import VentilationStub

@@ -5,13 +5,12 @@ Sail system PLC messages are flat JSON with PLC variable names as keys and
 raw integer/boolean values (no MarpowerMessage wrapper).
 """
 
+import logging
 import random
 from typing import Any
 
-
 from zero_data.data_gen.generator import Generator
 from zero_data.io_list.types import IOValue
-import logging
 
 logger = logging.getLogger(__name__)
 

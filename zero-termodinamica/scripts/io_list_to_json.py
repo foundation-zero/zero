@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 
 import polars as pl
 from pydantic import TypeAdapter
@@ -44,8 +43,8 @@ REG_ROOM_MAPPING = {
 }
 
 
-def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTopic]:
-    """Ac topics on termondamica/ac/[split_id] are nested topics with the same schema."""
+def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[MqttTopic]:
+    """Ac topics on termodinamica/ac/[split_id] are nested topics with the same schema."""
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
     df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
         ~pl.col("register_name").str.contains("_FREE")
@@ -76,7 +75,7 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTop
         .sort("reg_split", "address")
     )
 
-    result: List[MqttTopic] = []
+    result: list[MqttTopic] = []
     for name, data in df.group_by("reg_split"):
         reg_split = str(name[0])
         room = REG_ROOM_MAPPING[reg_split]
@@ -131,8 +130,8 @@ def load_ac_modbus_unit(excel_path: Path, unit_id: int) -> ModbusUnit:
 def load_ac_misc_topic(
     df: pl.DataFrame,
     topic: str,
-    register_name_filter: List[str],
-    field_name_strip: List[str],
+    register_name_filter: list[str],
+    field_name_strip: list[str],
 ) -> MqttTopic:
     df = (
         df.filter(pl.col("register_name").str.contains_any(register_name_filter))
@@ -161,7 +160,7 @@ def load_ac_misc_topic(
         )
     )
     print(f"load flat topic {topic} with {len(df)} registers")
-    result: List[Address] = []
+    result: list[Address] = []
     for row in df.iter_rows(named=True):
         result.append(
             Address(

@@ -1,8 +1,8 @@
 from contextlib import AbstractAsyncContextManager, AsyncExitStack, asynccontextmanager
 from typing import AsyncIterator, Protocol
 
-from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from domestic_control.messages import (
@@ -11,7 +11,6 @@ from domestic_control.messages import (
     LightingGroup,
     Message,
 )
-
 
 type PersistedMessage = Amplifier | Blind | LightingGroup
 

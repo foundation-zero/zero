@@ -12,7 +12,6 @@ sources:
       codec: json
     topic:
       - "marpower/#"
-      - "prop-test/#"
       - "domestic/+"
       - "hull-temperature/temperatures"
       - "termodinamica/#"

@@ -5,12 +5,13 @@ from domestic_control.mqtt import (
     ControlSend,
 )
 from domestic_control.services.modbus import ModbusRoomInterface
+
 from .constants import (
-    ACTUAL_TEMPERATURE_START_ADDRESS,
-    TEMPERATURE_SETPOINT_START_ADDRESS,
     ACTUAL_HUMIDITY_START_ADDRESS,
+    ACTUAL_TEMPERATURE_START_ADDRESS,
     HUMIDITY_SETPOINT_START_ADDRESS,
     ROOM_INDICES,
+    TEMPERATURE_SETPOINT_START_ADDRESS,
 )
 
 

@@ -47,7 +47,7 @@ Idioms:   match/if let, ? everywhere, /// docs on all public API
 
 | Rule | Convention |
 |------|------------|
-| Build system | Poetry. `zero-prop-test` uses uv; new projects use Poetry. |
+| Build system | Poetry (all 7 Python projects). |
 | Versioning | `poetry-dynamic-versioning` from git tags. All packages keep `0.0.0` in pyproject. |
 | Python version | Each service specifies its own in `pyproject.toml`. Most require `>= 3.13.1,<4.0`; `zero-thrs-control` uses `<3.14`. |
 
@@ -89,8 +89,6 @@ The shared log format is:
 %(asctime)s | %(levelname)-8s | %(message)s
 ```
 
-- `zero-loads-app` and `zero-prop-test` extend this with `%(name)-8s` and `%(levelname)-6s`.
-  Follow the convention of the project you are editing.
 - Use `logging.getLogger(__name__)` for per-module loggers, stored as `logger`:
   ```python
   import logging

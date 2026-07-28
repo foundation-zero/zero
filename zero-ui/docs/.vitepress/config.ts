@@ -102,7 +102,7 @@ export default defineConfig({
     resolve: {
       alias: {
         "@": new URL("../../src", import.meta.url).pathname,
-        "@env": new URL("../../src/settings", import.meta.url).pathname,
+        "@env": new URL("../../src/settings/index.ts", import.meta.url).pathname,
         "@common": new URL("../../src/modules/common", import.meta.url).pathname,
       },
     },
