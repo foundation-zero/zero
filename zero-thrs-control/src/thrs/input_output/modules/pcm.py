@@ -173,7 +173,7 @@ class PcmControlValues(ThrsValues):
 
 
 class PcmSimulationInputs(SimulationInputs):
-    # pcm_producers_supply: simulation.Boundary #TODO: make into pcm_pvt_supply
+    pcm_pvt_supply: simulation.Boundary
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
     pcm_consumers_supply: simulation.TemperatureBoundary
@@ -181,6 +181,6 @@ class PcmSimulationInputs(SimulationInputs):
 
 class PcmSimulationOutputs(SimulationValues):
     pcm_consumers_return: simulation.Boundary
-    # pcm_thrusters_return: simulation.Boundary
+    pcm_thrusters_return: simulation.Boundary
     pcm_pvt_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary

@@ -90,7 +90,7 @@ export type SensorValueFields =
   | keyof DeltaTSensor
   | keyof HeatExchangerSensor
   | keyof Valve
-  | keyof LevelSwitch;
+  | keyof LevelSwitchSensor;
 
 export type SensorFields = {
   [SensorComponentType.Flow]: (keyof FlowSensor)[];
@@ -102,7 +102,7 @@ export type SensorFields = {
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
-  [SensorComponentType.LevelSwitch]: (keyof LevelSwitch)[];
+  [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
 
 export type SimulationFields = {
@@ -167,7 +167,7 @@ export type LevelSensor = {
   level: Stamped<number>;
 };
 
-export type LevelSwitch = {
+export type LevelSwitchSensor = {
   empty: Stamped<boolean>;
 };
 
@@ -194,7 +194,7 @@ export type SensorType =
   | ThrusterSensor
   | PcsSensor
   | LevelSensor
-  | LevelSwitch
+  | LevelSwitchSensor
   | DeltaTSensor
   | AdsorptionChillerSensor
   | BrightloopSensor
@@ -335,7 +335,7 @@ export const enum SensorComponentType {
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
   Level = "sensor:level",
-  LevelSwitch = "sensor:levelswitch",
+  LevelSwitch = "sensor:levelSwitch",
   DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   CalculatedFlow = "sensor:calculatedFlow",
@@ -356,6 +356,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Pcs,
   SensorComponentType.Pcm,
   SensorComponentType.Level,
+  SensorComponentType.LevelSwitch,
   SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
   SensorComponentType.CalculatedFlow,
@@ -386,7 +387,7 @@ export type ModuleDefinition<
 
 export type SensorDefinition<T extends SensorComponentType = SensorComponentType> =
   SchemaDefinition<T> & {
-    yardTag: string;
+    yardTag?: string;
   };
 
 export type TemperatureSensorDefinition = SensorDefinition<SensorComponentType.Temperature>;
@@ -400,6 +401,9 @@ export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
+export type DeltaTSensorDefinition = SensorDefinition<SensorComponentType.DeltaT>;
+export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
+export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
 export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
 
@@ -413,7 +417,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
-  [SensorComponentType.LevelSwitch]: LevelSwitch;
+  [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;

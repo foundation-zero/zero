@@ -11,30 +11,44 @@ from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
+    AdsorptionChiller,
     Boundary,
+    Converter,
     FlowBoundary,
     HeatSource,
     HvacExchanger,
     OverpressureTemperatureBoundary,
     Pcs,
+    PropulsionDrive,
     TemperatureBoundary,
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.adsorption import AdsorptionSimulationOutputs
+from thrs.input_output.modules.adsorption import (
+    AdsorptionSimulationInputs,
+    AdsorptionSimulationOutputs,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.dc import DcSimulationOutputs
+from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
 from thrs.input_output.modules.dhw import DhwSimulationInputs, DhwSimulationOutputs
-from thrs.input_output.modules.drives import DrivesSimulationOutputs
+from thrs.input_output.modules.drives import (
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
+)
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
 from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
+from thrs.input_output.modules.thrs import (
+    ThrsSimulationInputs,
+    ThrsSimulationOutputs,
+    thrs_cosimulation,
+)
 from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
@@ -65,7 +79,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(4300.0), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
@@ -81,8 +95,9 @@ SIMULATION_INPUTS = {
     ),
     "pcm": PcmSimulationInputs(
         pcm_thrusters_supply=Boundary(
-            temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
+            temperature=Stamped.stamp(70), flow=Stamped.stamp(40)
         ),
+        pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(50)),
         pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(30)),
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
@@ -99,6 +114,28 @@ SIMULATION_INPUTS = {
         ),
         consumers_pcm_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
+        ),
+    ),
+    "adsorption": AdsorptionSimulationInputs(
+        adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
+        adsorption_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
+        ),
+        adsorption_available_cold_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(20.0)
+        ),
+        adsorption_available_hot_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(65.0)
+        ),
+        adsorption_available_seawater_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
+        adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
+        adsorption_consumers_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
+        ),
+        adsorption_dhw_supply=Boundary(
+            temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
         ),
     ),
     "high_temperature": HighTemperatureSimulationInputs(
@@ -145,13 +182,13 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(45),
         ),
-        dhw_ht_supply=Boundary(
+        dhw_consumers_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),
         ),
         dhw_freshwater_supply=OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20),
-            overpressure=Stamped.stamp(3),
+            overpressure=Stamped.stamp(0.1),
         ),
         dhw_hvac_exchanger=HvacExchanger(
             heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(36)
@@ -161,9 +198,149 @@ SIMULATION_INPUTS = {
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(30)),
     ),
-    "adsorption": None,  # TODO Fill in  # type: ignore
-    "drives": None,  # TODO Fill in  # type: ignore
-    "dc": None,  # TODO Fill in  # type: ignore
+    "drives": DrivesSimulationInputs(
+        drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft1=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_aft2=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd1=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd2=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_shorepower=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        drives_dhw_supply=Boundary(
+            temperature=Stamped.stamp(50),
+            flow=Stamped.stamp(35),  # TODO: Validate if initials are correct
+        ),
+    ),
+    "dc": DcSimulationInputs(
+        dc_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        dc_dhw_supply=Boundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),  # TODO: Validate if initials are correct
+        ),
+    ),
+    "thrs": ThrsSimulationInputs(
+        thrusters_thruster_aft=Thruster(
+            heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
+        ),
+        thrusters_thruster_fwd=Thruster(
+            heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
+        ),
+        thrusters_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
+        pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
+        pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
+        pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
+        pvt_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        pcm_freshwater_supply=Boundary(
+            temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
+        ),
+        adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
+        adsorption_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
+        ),
+        adsorption_available_hot_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(65.0)
+        ),
+        adsorption_available_cold_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(20.0)
+        ),
+        adsorption_available_seawater_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
+        adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
+        dhw_freshwater_supply=OverpressureTemperatureBoundary(
+            temperature=Stamped.stamp(20), overpressure=Stamped.stamp(0.1)
+        ),
+        dhw_hvac_exchanger=HvacExchanger(
+            heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(35)
+        ),
+        dhw_seawater_supply=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
+        dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
+        dc_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        dc_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        dc_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft1=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_aft2=PropulsionDrive(
+            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd1=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_propdrive_fwd2=PropulsionDrive(
+            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+        ),
+        drives_shorepower=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+    ),
 }
 
 
@@ -291,6 +468,10 @@ MODES: list[Mode] = [
             "dc": DC_MODULE_DESCRIPTION,
             "dhw": DHW_MODULE_DESCRIPTION,
         },
-        simulation_description=None,
+        simulation_description=SimulationDescription(
+            ThrsSimulationOutputs,
+            thrs_cosimulation,
+            SIMULATION_INPUTS["thrs"],
+        ),
     ),
 ]

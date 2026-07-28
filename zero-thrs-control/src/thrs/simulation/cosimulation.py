@@ -1,14 +1,14 @@
 import dataclasses
+import operator
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import timedelta
 from functools import reduce
-from operator import or_
-from typing import Any, Self
+from typing import Any, Callable, Self
 
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.simulation.fmu import Fmu
+from thrs.simulation.fmu import Fmu, FmuLike
 
 
 @dataclass
@@ -21,34 +21,47 @@ class Coupling:
 
 
 @dataclass
-class CoSimulationParticipant[
-    S: ThrsValues,
-    C: ThrsValues,
-    I: SimulationInputs,
-    O: SimulationValues,
-]:
+class CoSimulationParticipant:
     """An FMU, its schemas, and how it relates to other FMU and initial boundary conditions."""
 
-    fmu: Fmu
-    sensor_values_cls: type[C]
-    control_values_cls: type[S]
-    simulation_inputs_cls: type[I]
-    simulation_outputs_cls: type[O]
+    fmu_getter: Callable[[], Fmu]
+    sensor_values_clss: list[type[ThrsValues]]
+    control_values_clss: list[type[ThrsValues]]
+    simulation_inputs_cls: type[SimulationInputs]
+    simulation_outputs_cls: type[ThrsValues]
 
     couplings: list[Coupling]
 
+    _fmu: Fmu | None = dataclasses.field(init=False, default=None, repr=False)
     fmu_key_input_mapping: dict[tuple[str, str], str] = dataclasses.field(init=False)
     fmu_key_output_mapping: dict[tuple[str, str], str] = dataclasses.field(init=False)
 
+    def resolve_fmu(self) -> Fmu:
+        if self._fmu is None:
+            self._fmu = self.fmu_getter()
+        return self._fmu
+
+    @property
+    def fmu(self) -> Fmu:
+        return self.resolve_fmu()
+
     def __post_init__(self):
-        self.fmu_key_input_mapping = {
-            **build_fmu_key_mapping(self.control_values_cls, fmu_only=False),
-            **build_fmu_key_mapping(self.simulation_inputs_cls, fmu_only=False),
-        }
-        self.fmu_key_output_mapping = {
-            **build_fmu_key_mapping(self.simulation_outputs_cls, fmu_only=False),
-            **build_fmu_key_mapping(self.sensor_values_cls, fmu_only=False),
-        }
+        self.fmu_key_input_mapping = reduce(
+            operator.ior,
+            [
+                build_fmu_key_mapping(cls, fmu_only=False)
+                for cls in self.control_values_clss + [self.simulation_inputs_cls]
+            ],
+            {},
+        )
+        self.fmu_key_output_mapping = reduce(
+            operator.ior,
+            [
+                build_fmu_key_mapping(cls, fmu_only=False)
+                for cls in self.sensor_values_clss + [self.simulation_outputs_cls]
+            ],
+            {},
+        )
 
         for coupling in self.couplings:
             if (
@@ -60,7 +73,7 @@ class CoSimulationParticipant[
                 )
 
 
-class CoSimulationMaster(ExitStack):
+class CoSimulationMaster(ExitStack, FmuLike):
     """Connect multiple FMU, behaving like a single FMU."""
 
     def __init__(self, participants: list[CoSimulationParticipant]):
@@ -68,9 +81,10 @@ class CoSimulationMaster(ExitStack):
         self._previous_outputs: dict[str, Any] = {}
         self._compiled_couplings: list[dict[str, str]] = []
 
-        self._fmu_key_output_mapping = reduce(
-            or_,
-            (participant.fmu_key_output_mapping for participant in self._participants),
+        self.total_fmu_key_output_mapping = reduce(
+            operator.ior,
+            [participant.fmu_key_output_mapping for participant in self._participants],
+            {},
         )
 
         self._set_initial_conditions()
@@ -79,7 +93,7 @@ class CoSimulationMaster(ExitStack):
 
     def _set_initial_conditions(self):
         self._previous_outputs = {
-            self._fmu_key_output_mapping[
+            self.total_fmu_key_output_mapping[
                 (coupling.src_component, coupling.src_field)
             ]: coupling.initial_value
             for participant in self._participants
@@ -88,7 +102,7 @@ class CoSimulationMaster(ExitStack):
 
     def _compile_couplings(self):
         def _src_fmu_key(coupling):
-            src_fmu_key = self._fmu_key_output_mapping.get(
+            src_fmu_key = self.total_fmu_key_output_mapping.get(
                 (
                     coupling.src_component,
                     coupling.src_field,
@@ -115,7 +129,7 @@ class CoSimulationMaster(ExitStack):
 
         try:
             for participant in self._participants:
-                self.enter_context(participant.fmu)
+                self.enter_context(participant.resolve_fmu())
         except Exception:
             super().__exit__(None, None, None)
             raise
@@ -145,7 +159,9 @@ class CoSimulationMaster(ExitStack):
 
             participant_inputs = {**direct_inputs, **inputs_from_coupling}
 
-            participant_outputs = participant.fmu.tick(participant_inputs, duration)
+            participant_outputs = participant.resolve_fmu().tick(
+                participant_inputs, duration
+            )
             current_outputs.update(participant_outputs)
 
         self._previous_outputs = current_outputs
@@ -153,4 +169,4 @@ class CoSimulationMaster(ExitStack):
 
     @property
     def solver_time(self) -> float:
-        return self._participants[-1].fmu.solver_time
+        return self._participants[-1].resolve_fmu().solver_time

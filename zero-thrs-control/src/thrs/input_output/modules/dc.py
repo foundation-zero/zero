@@ -408,4 +408,5 @@ class DcSimulationInputs(SimulationInputs):
 
 class DcSimulationOutputs(SimulationValues):
     dc_seawater_return: simulation.TemperatureBoundary
+    dc_dhw_exchanger: simulation.ExchangerBoundary
     dc_dhw_return: simulation.TemperatureBoundary

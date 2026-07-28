@@ -1,11 +1,10 @@
 import operator
 from datetime import datetime
-from typing import Any, overload
+from typing import Any, cast, overload
 
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.base import (
-    SimulationValues,
     Stamped,
     ThrsValues,
 )
@@ -28,12 +27,20 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     )  # type: ignore
 
 
+def _field_type(field: FieldInfo | ComputedFieldInfo) -> type[ThrsValues]:
+    annotation = (
+        field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
+    )
+    return cast(type[ThrsValues], annotation)
+
+
 def _fmu_key_for_field(
     component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
 ) -> str:
     annotation = (
         field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
     )
+
     meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
     if meta:
         return f"{component_name}__{field_name}__{meta.modelica_name}"
@@ -45,26 +52,18 @@ def build_fmu_key_mapping(
 ) -> dict[tuple[str, str], str]:
     """Return a dict mapping a (component_name, field_name) tuple to a Modelica name str for a ThrsValues model."""
 
-    component_classes = [
-        (
-            component_name,
-            component.annotation
-            if isinstance(component, FieldInfo)
-            else component.return_type,  ##TODO: return type of json_schema_extra?
-        )
-        for component_name, component in {
-            **cls.model_fields,
-            **cls.model_computed_fields,
-        }.items()
-        if fmu_only is False or included_in_fmu(component)
-    ]
+    components: dict[str, FieldInfo | ComputedFieldInfo] = {
+        **cls.model_fields,
+        **cls.model_computed_fields,
+    }
 
     component_fields = [
         (component_name, field_name, field)
-        for component_name, component_cls in component_classes
+        for component_name, component in components.items()
+        if fmu_only is False or included_in_fmu(component)
         for field_name, field in {
-            **component_cls.model_fields,  # type: ignore
-            **component_cls.model_computed_fields,  # type: ignore
+            **_field_type(component).model_fields,
+            **_field_type(component).model_computed_fields,
         }.items()
         if fmu_only is False or included_in_fmu(field)
     ]
@@ -80,9 +79,9 @@ def build_fmu_key_mapping(
 
 
 def extract_non_fmu_values(
-    simulation_values: SimulationValues, sensor_cls: type[ThrsValues]
+    simulation_outputs: ThrsValues, sensor_cls: type[ThrsValues]
 ) -> dict[str, dict[str, Stamped[Any]]]:
-    """Extract values from simulation values that are not included in the FMU."""
+    """Extract values from simulation outputs that are not included in the FMU."""
 
     def _lookup_values(
         simulation_input: ThrsValues,
@@ -114,9 +113,9 @@ def extract_non_fmu_values(
     return {
         component_name: values
         for component_name, field in all_sensor_fields.items()
-        if hasattr(simulation_values, component_name)
+        if hasattr(simulation_outputs, component_name)
         and (
-            values := _lookup_values(getattr(simulation_values, component_name), field)
+            values := _lookup_values(getattr(simulation_outputs, component_name), field)
         )
     }
 

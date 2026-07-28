@@ -425,9 +425,11 @@ function getWrapperFunction(definitionType: DefinitionType): string {
 function generatePropertyLines(value: ExtractedValue, definitionType: DefinitionType): string[] {
   const props: string[] = [];
 
-  // Add yardTag for control and sensor definitions
-  if (definitionType === "control" || definitionType === "sensor") {
+  // Add yardTag: always for control (required), only when present for sensors (optional)
+  if (definitionType === "control") {
     props.push(`yardTag: "${value.yardTag ?? ""}"`);
+  } else if (definitionType === "sensor" && value.yardTag) {
+    props.push(`yardTag: "${value.yardTag}"`);
   }
 
   // Add componentType based on definition type

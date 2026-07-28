@@ -11,7 +11,7 @@ def test_idle(
     runner: SimulationTestRunner,
     simulation_inputs_inactive: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
     sensor_values, *_ = runner.run(90)
 
@@ -31,7 +31,7 @@ def test_propulsion_all_active(
     runner: SimulationTestRunner,
     simulation_inputs_all_drives_active: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
     sensor_values, *_ = runner.run(180)
 
@@ -65,7 +65,7 @@ def test_shorepower(
     runner: SimulationTestRunner,
     simulation_inputs_shorepower: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
     sensor_values, *_ = runner.run(180)
 
@@ -84,7 +84,7 @@ def test_heat_dump(
     runner: SimulationTestRunner,
     simulation_inputs_shorepower: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     control.update_parameters(
         DrivesParameters(
             shorepower_maximum_supply_temperature=30,
@@ -109,7 +109,7 @@ def test_heat_recovery(
     runner: SimulationTestRunner,
     simulation_inputs_shorepower: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     control.update_parameters(
         DrivesParameters(
             shorepower_maximum_supply_temperature=90,
@@ -134,7 +134,7 @@ def test_flow_balancing(
     runner: SimulationTestRunner,
     simulation_inputs_all_drives_active: DrivesSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
     sensor_values, *_ = runner.run(120)
 

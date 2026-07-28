@@ -30,6 +30,10 @@ DrivesControlModeType = pydantic_to_strawberry_type(DrivesControlMode)
 class DrivesControllerStateType:
     _empty: None = None
 
+    @classmethod
+    def from_pydantic(cls, _type) -> "DrivesControllerStateType":
+        return cls()
+
 
 DrivesModule = ControlModule[
     DrivesSensorValuesType,

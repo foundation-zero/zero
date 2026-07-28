@@ -30,6 +30,10 @@ DcControlModeType = pydantic_to_strawberry_type(DcControlMode)
 class DcControllerStateType:
     _empty: None = None
 
+    @classmethod
+    def from_pydantic(cls, _type) -> "DcControllerStateType":
+        return cls()
+
 
 DcModule = ControlModule[
     DcSensorValuesType,

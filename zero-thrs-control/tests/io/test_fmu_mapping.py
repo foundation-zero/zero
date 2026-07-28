@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
     field_meta,
 )
 from thrs.input_output.definitions.sensor import FlowSensor
@@ -54,7 +55,11 @@ class ExcludedSensorValues(ThrsValues):
 class ModelWithComputed(ThrsValues):
     flow_sensor: FlowSensor
 
-    @computed_field()
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="flow_sensor", included_in_fmu=True
+        )
+    )
     @property
     def computed_component(self) -> FlowSensor:
         return self.flow_sensor
@@ -70,9 +75,7 @@ def test_fmu_simple_inputs():
     assert {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
-    } == flatten_model_values(
-        mini_model, build_fmu_key_mapping(MiniModel, fmu_only=True)
-    )
+    } == flatten_model_values(mini_model, build_fmu_key_mapping(MiniModel))
 
     second_mini_model = SecondMiniModel(
         second_flow_sensor=FlowSensor(
@@ -82,9 +85,7 @@ def test_fmu_simple_inputs():
     assert {
         "second_flow_sensor__flow__l_min": 2,
         "second_flow_sensor__temperature__C": 3,
-    } == flatten_model_values(
-        second_mini_model, build_fmu_key_mapping(SecondMiniModel, fmu_only=True)
-    )
+    } == flatten_model_values(second_mini_model, build_fmu_key_mapping(SecondMiniModel))
 
 
 def test_fmu_input_ignore_excluded():
@@ -100,7 +101,7 @@ def test_fmu_input_ignore_excluded():
         "excluded_field_component__included_field__ratio": 1.0
     } == flatten_model_values(
         excluded_simulation_inputs,
-        build_fmu_key_mapping(ExcludedSimulationInputs, fmu_only=True),
+        build_fmu_key_mapping(ExcludedSimulationInputs),
     )
 
 
@@ -116,9 +117,7 @@ def test_fmu_computed_field():
         "flow_sensor__temperature__C": 17.12,
         "computed_component__flow__l_min": 12.12,
         "computed_component__temperature__C": 17.12,
-    } == flatten_model_values(
-        model, build_fmu_key_mapping(ModelWithComputed, fmu_only=True)
-    )
+    } == flatten_model_values(model, build_fmu_key_mapping(ModelWithComputed))
 
 
 def test_extract_excluded():

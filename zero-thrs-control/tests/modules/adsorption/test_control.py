@@ -213,7 +213,7 @@ def test_waste_cooling():
             temperature=Stamped.stamp(30.0)
         ),
         adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
-        adsorption_ht_supply=Boundary(
+        adsorption_consumers_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
         ),
         adsorption_dhw_supply=Boundary(

@@ -32,6 +32,27 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping
 
 
+class MockFmu(Fmu):
+    # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
+    def __init__(self, outputs: dict[str, Any]):
+        self.inputs: list[dict[str, Any]] = []
+        self._outputs = outputs
+
+    def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
+        self.inputs.append(dict(inputs))
+        return self._outputs
+
+    def __enter__(self) -> "MockFmu":
+        return self
+
+    def __exit__(self, *_) -> bool:
+        return True
+
+    @property
+    def solver_time(self) -> float:
+        return 0.0
+
+
 class DrivesDhwSimulationInputs(SimulationInputs):
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
@@ -41,9 +62,9 @@ class DrivesDhwSimulationInputs(SimulationInputs):
     drives_propdrive_fwd2: simulation.PropulsionDrive
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
-    dhw_lt2_supply: simulation.Boundary
-    dhw_fahrenheit_supply: simulation.Boundary
-    dhw_ht_supply: simulation.Boundary
+    dhw_dc_supply: simulation.Boundary
+    dhw_adsorption_supply: simulation.Boundary
+    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
@@ -52,65 +73,50 @@ class DrivesDhwSimulationInputs(SimulationInputs):
 
 class DrivesDhwSimulationOutputs(SimulationValues):
     drives_seawater_return: simulation.TemperatureBoundary
+    drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary
+    dhw_drives_exchanger: simulation.ExchangerBoundary
     dhw_drives_return: simulation.TemperatureBoundary
-    dhw_lt2_return: simulation.TemperatureBoundary
-    dhw_fahrenheit_return: simulation.TemperatureBoundary
-    dhw_ht_return: simulation.TemperatureBoundary
+    dhw_dc_exchanger: simulation.ExchangerBoundary
+    dhw_dc_return: simulation.TemperatureBoundary
+    dhw_adsorption_exchanger: simulation.ExchangerBoundary
+    dhw_adsorption_return: simulation.TemperatureBoundary
+    dhw_consumers_exchanger: simulation.ExchangerBoundary
+    dhw_consumers_return: simulation.TemperatureBoundary
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.FlowBoundary
 
 
 def test_cosimulation_input_routing():
-    class MockFmu(Fmu):
-        # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
-        def __init__(self, outputs: dict[str, Any]):
-            self.inputs: list[dict[str, Any]] = []
-            self._outputs = outputs
-
-        def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
-            self.inputs.append(dict(inputs))
-            return self._outputs
-
-        def __enter__(self) -> "MockFmu":
-            return self
-
-        def __exit__(self, *_) -> bool:
-            return True
-
-        @property
-        def solver_time(self) -> float:
-            return 0.0
-
     drives_mock = MockFmu(
         {
-            "drives_flow_recovery__flow__l_min": 42.0,
-            "drives_temperature_recovery__temperature__C": 35.0,
+            "drives_dhw_exchanger__flow__l_min": 42.0,
+            "drives_dhw_exchanger__temperature_supply__C": 35.0,
         }
     )
     dhw_mock = MockFmu(
         {
-            "dhw_flow_drives__flow__l_min": 15.0,
-            "dhw_temperature_freshwater_supply__temperature__C": 55.0,
+            "dhw_drives_exchanger__flow__l_min": 15.0,
+            "dhw_drives_exchanger__temperature_supply__C": 55.0,
         }
     )
 
     drives_dhw = CoSimulationMaster(
         [
             CoSimulationParticipant(
-                drives_mock,
-                DrivesSensorValues,
-                DrivesControlValues,
+                lambda: drives_mock,
+                [DrivesSensorValues],
+                [DrivesControlValues],
                 DrivesSimulationInputs,
                 DrivesSimulationOutputs,
                 [
                     Coupling(
-                        "dhw_flow_drives", "flow", "drives_dhw_supply", "flow", 0.0
+                        "dhw_drives_exchanger", "flow", "drives_dhw_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "dhw_temperature_freshwater_supply",
-                        "temperature",
+                        "dhw_drives_exchanger",
+                        "temperature_supply",
                         "drives_dhw_supply",
                         "temperature",
                         30.0,
@@ -118,18 +124,18 @@ def test_cosimulation_input_routing():
                 ],
             ),
             CoSimulationParticipant(
-                dhw_mock,
-                DhwSensorValues,
-                DhwControlValues,
+                lambda: dhw_mock,
+                [DhwSensorValues],
+                [DhwControlValues],
                 DhwSimulationInputs,
                 DhwSimulationOutputs,
                 [
                     Coupling(
-                        "drives_flow_recovery", "flow", "dhw_drives_supply", "flow", 0.0
+                        "drives_dhw_exchanger", "flow", "dhw_drives_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "drives_temperature_recovery",
-                        "temperature",
+                        "drives_dhw_exchanger",
+                        "temperature_supply",
                         "dhw_drives_supply",
                         "temperature",
                         30.0,
@@ -158,13 +164,13 @@ def test_cosimulation_input_routing():
     )
 
     simulation_inputs = DrivesDhwSimulationInputs(
-        dhw_lt2_supply=simulation.Boundary(
+        dhw_dc_supply=simulation.Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(60)
         ),
-        dhw_fahrenheit_supply=simulation.Boundary(
+        dhw_adsorption_supply=simulation.Boundary(
             temperature=Stamped.stamp(30), flow=Stamped.stamp(45)
         ),
-        dhw_ht_supply=simulation.Boundary(
+        dhw_consumers_supply=simulation.Boundary(
             temperature=Stamped.stamp(70), flow=Stamped.stamp(0)
         ),
         dhw_freshwater_supply=simulation.OverpressureTemperatureBoundary(

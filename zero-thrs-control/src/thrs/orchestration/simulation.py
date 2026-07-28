@@ -11,7 +11,7 @@ from thrs.input_output.base import (
 )
 from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.module import ModuleClassMap
-from thrs.simulation.fmu import Fmu
+from thrs.simulation.fmu import FmuLike
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class SimulationResult[
     S,
     C,
     I: SimulationInputs,
-    O: ThrsValues,
+    O: SimulationValues,
 ]:
     timestamp: datetime
     sensor_values: S
@@ -40,9 +40,9 @@ class Simulation[
 ]:
     def __init__(
         self,
-        sensor_values_clss: ModuleClassMap | type[ThrsValues],
+        sensor_values_clss: ModuleClassMap | type[S],
         simulation_outputs_cls: type[O],
-        fmu: Fmu,
+        fmu: FmuLike,
         simulation_inputs: I,
         start_time: datetime,
         tick_duration: timedelta,
@@ -94,7 +94,7 @@ class Simulation[
 @dataclass
 class SimulationDescription:
     simulation_outputs_cls: type[SimulationValues]
-    fmu: Fmu
+    fmu: FmuLike
     simulation_inputs: SimulationInputs
 
 
