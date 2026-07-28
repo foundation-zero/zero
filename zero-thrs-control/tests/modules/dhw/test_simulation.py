@@ -3,7 +3,9 @@ from datetime import datetime, timedelta
 import pytest
 from pytest import fixture
 
+from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.input_output.modules.dhw import (
     DhwControlValues,
     DhwSensorValues,
@@ -13,6 +15,18 @@ from thrs.input_output.modules.dhw import (
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path
+
+
+def test_simulation(simulation, control, alarms):
+    runner = SimulationTestRunner(simulation, control, alarms)
+
+    collector = PolarsCollector()
+
+    runner.run(20, collector)
+
+    result = collector.result()
+    assert result is not None
+    assert result["time"].len() == 20
 
 
 @fixture(params=list(simulator_input_field_setters(DhwSimulationInputs)))
