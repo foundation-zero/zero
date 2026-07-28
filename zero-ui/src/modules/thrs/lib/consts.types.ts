@@ -66,7 +66,6 @@ export const SIMULATION_TYPES = [
   "adsorption",
   "consumers",
   "dhw",
-  "adsorption",
   "dc",
   "drives",
   "thrs",

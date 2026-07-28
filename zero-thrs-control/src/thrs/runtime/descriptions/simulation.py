@@ -355,7 +355,6 @@ type ModeName = Literal[
     "high_temperature",
     "dhw",
     "thrs",
-    "thrs_control",
 ]
 
 
