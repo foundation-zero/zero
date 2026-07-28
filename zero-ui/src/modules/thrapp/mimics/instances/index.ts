@@ -10,6 +10,7 @@ export { default as LevelLabelInstance } from "./LevelLabelInstance.vue";
 export { default as LevelSensorInstance } from "./LevelSensorInstance.vue";
 export { default as LevelSwitchInstance } from "./LevelSwitchInstance.vue";
 export { default as LoopCircuitInstance } from "./LoopCircuitInstance.vue";
+export { default as ManualPumpInstance } from "./ManualPumpInstance.vue";
 export { default as ManualValveInstance } from "./ManualValveInstance.vue";
 export { default as MixValveInstance } from "./MixValveInstance.vue";
 export { default as PipeHeatExchangerInstance } from "./PipeHeatExchangerInstance.vue";

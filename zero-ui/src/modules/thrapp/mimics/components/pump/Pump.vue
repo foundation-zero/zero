@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { MimicComponentBaseProps, MimicComponentState } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
+  MANUAL_PUMP_COLORS,
   PUMP_BASE_ORIENTATION,
   PUMP_CENTER_X,
   PUMP_CENTER_Y,
@@ -18,11 +19,13 @@ const props = withDefaults(defineProps<PumpProps & MimicComponentBaseProps>(), {
   state: MimicComponentState.Normal,
   pumpState: PumpState.Active,
   orientation: PUMP_BASE_ORIENTATION,
+  manual: false,
 });
 
-const colors = computed(
-  () =>
-    PUMP_STATE_COLORS[props.state === MimicComponentState.Normal ? props.pumpState : props.state],
+const colors = computed(() =>
+  props.manual
+    ? MANUAL_PUMP_COLORS
+    : PUMP_STATE_COLORS[props.state === MimicComponentState.Normal ? props.pumpState : props.state],
 );
 </script>
 

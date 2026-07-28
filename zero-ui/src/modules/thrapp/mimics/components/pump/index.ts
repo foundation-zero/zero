@@ -10,6 +10,7 @@ export const enum PumpState {
 
 export interface PumpProps {
   pumpState?: PumpState | MimicComponentState;
+  manual?: boolean;
 }
 
 interface PumpStateColors {
@@ -51,4 +52,10 @@ export const PUMP_STATE_COLORS: Record<PumpState | MimicComponentState, PumpStat
     ring: "var(--attention)",
     blade: "var(--constructive-muted)",
   },
+};
+
+export const MANUAL_PUMP_COLORS = {
+  body: "var(--background)",
+  ring: "var(--brand-muted)",
+  blade: "var(--brand-muted)",
 };

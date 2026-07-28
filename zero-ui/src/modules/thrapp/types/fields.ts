@@ -65,6 +65,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pump]: {
     pressure: SensorComponentType.Pressure;
   };
+  [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
@@ -111,6 +112,7 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.Pump]: {
     pump: ControlComponentType.Pump;
   };
+  [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.PressureGauge]: EmptyObject;
@@ -145,6 +147,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
     controller: ControllerStateComponentType.DhwTanksController;
   };
   [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.PressureGauge]: EmptyObject;
@@ -177,6 +180,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.PressureGauge]: EmptyObject;
@@ -220,6 +224,7 @@ export type CustomFieldDefinitions = CustomFields<{
     flowController: PIDController<SensorComponentType.Flow>;
     temperatureController: PIDController<SensorComponentType.Flow>;
   };
+  [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
@@ -265,6 +270,7 @@ export type CustomFieldDefinitions = CustomFields<{
 
 export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.Pump]: SensorComponentType.Pump;
+  [MimicComponentType.ManualPump]: undefined;
   [MimicComponentType.HeatExchanger]: SensorComponentType.HeatExchanger;
   [MimicComponentType.PressureSensor]: SensorComponentType.Pressure;
   [MimicComponentType.PressureGauge]: undefined;

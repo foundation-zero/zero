@@ -13,6 +13,7 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
     () => import("./HeatExchangerTooltip.vue"),
   ),
   [MimicComponentType.Pump]: defineAsyncComponent(() => import("./PumpTooltip.vue")),
+  [MimicComponentType.ManualPump]: defineAsyncComponent(() => import("./ManualPumpTooltip.vue")),
   [MimicComponentType.ManualValve]: defineAsyncComponent(() => import("./ManualValveTooltip.vue")),
   [MimicComponentType.PressureSensor]: defineAsyncComponent(
     () => import("./PressureSensorTooltip.vue"),
