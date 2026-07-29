@@ -4,10 +4,11 @@ ENV UV_NO_DEV=1
 ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --locked --no-editable
 
 FROM python:3.13-slim-bookworm AS runtime
 
@@ -24,8 +25,7 @@ COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY --chown=1001:1001 ./src/zero_termodinamica/ zero_termodinamica/
-COPY --chown=1001:1001 ./modbus_units.json /app/
+COPY --chown=1001:1001 modbus_bridges.json /app/
 
 USER 1001
 

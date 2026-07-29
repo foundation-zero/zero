@@ -6,10 +6,11 @@ ENV UV_PYTHON_DOWNLOADS=0
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --locked --no-editable
 
 FROM python:3.13-slim-trixie AS prod-base
 
@@ -25,8 +26,6 @@ RUN groupadd -g 1001 app && \
 COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
-
-COPY --chown=1001:1001 ./src/thrs/ thrs/
 
 FROM prod-base AS fmu_compile
 

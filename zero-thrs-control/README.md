@@ -37,28 +37,28 @@ brew install graphviz
 Run the lockstep with:
 
 ```bash
-just run_lockstep module=dhw
+just run_lockstep
 ```
-Replace `dhw` with one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_lockstep module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 ## Control
 
 Run the control with:
 
 ```bash
-just run_control module=dhw
+just run_control
 ```
-Replace `dhw` with one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_control module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 ## Simulator
 
 Run the simulator with:
 
 ```bash
-just run_simulation module=dhw
+just run_simulation
 ```
 
-Replace `dhw` with one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_simulation module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 The UI is located in [zero-ui](../zero-ui) at [http://localhost:5173/thrs/hmi](http://localhost:5173/thrs/hmi).
 

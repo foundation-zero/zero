@@ -4,10 +4,11 @@ ENV UV_NO_DEV=1
 ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
+COPY pyproject.toml uv.lock README.md ./
+COPY zero_hull_temperature ./zero_hull_temperature
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --locked --no-editable
 
 FROM python:3.13-slim-bookworm AS runtime
 
@@ -23,8 +24,6 @@ RUN groupadd -g 1001 app && \
 COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
-
-COPY --chown=1001:1001 zero_hull_temperature/ zero_hull_temperature/
 
 USER 1001
 

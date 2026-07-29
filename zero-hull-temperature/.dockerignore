@@ -1,9 +1,8 @@
 *
-!README.md
 !uv.lock
 !pyproject.toml
-!src/
-!modbus_bridges.json
+!README.md
+!zero_hull_temperature/
 
 # Python
 __pycache__/

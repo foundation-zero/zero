@@ -2,19 +2,15 @@
 name = "generator"
 dynamic = ["version"]
 description = ""
-authors = [{ name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org" }]
+authors = [
+    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org" },
+]
 requires-python = ">= 3.13.1,<4.0"
 readme = "README.md"
-dependencies = [
-    "aiomqtt>=2.4.0,<3.0.0",
-    "pydantic-settings>=2.11.0,<3.0.0",
-]
+dependencies = ["aiomqtt>=2.4.0,<3.0.0", "pydantic-settings>=2.11.0,<3.0.0"]
 
 [dependency-groups]
-dev = [
-    "mypy>=1.14.1,<2.0.0",
-    "ruff>=0.9.5,<1.0.0",
-]
+dev = ["mypy>=1.14.1,<2.0.0", "ruff>=0.9.5,<1.0.0"]
 test = [
     "pytest>=8.3.4,<9.0.0",
     "pytest-asyncio>=0.25.1,<1.0.0",

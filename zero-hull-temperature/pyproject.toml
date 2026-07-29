@@ -1,7 +1,9 @@
 [project]
 name = "zero-hull-temperature"
 description = ""
-authors = [{ name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }]
+authors = [
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" },
+]
 requires-python = ">= 3.13.1,<4.0"
 readme = "README.md"
 dependencies = [
@@ -15,14 +17,8 @@ dependencies = [
 dynamic = ["version"]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.12.7,<0.13",
-    "pyright>=1.1.403,<2",
-]
-test = [
-    "pytest-asyncio>=1.1.0,<2",
-    "pytest>=8.4.1,<9",
-]
+dev = ["ruff>=0.12.7,<0.13", "pyright>=1.1.403,<2"]
+test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9"]
 
 [tool.ruff]
 fix = true
