@@ -5,7 +5,11 @@ from typing import TYPE_CHECKING, Callable, Mapping
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.manual import ManualControl
-from thrs.control.switching import SwitchingControl, SwitchingControlMode
+from thrs.control.switching import (
+    AutomationMode,
+    SwitchingControl,
+    SwitchingControlMode,
+)
 from thrs.input_output.base import ThrsValues
 
 if TYPE_CHECKING:
@@ -97,6 +101,9 @@ class Module[
         self._check_alarms(sensor_values, control_values)
 
         return control_values, controller_state
+
+    def set_automation_mode(self, mode: AutomationMode) -> None:
+        self._control.switch_mode(mode)
 
     @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:

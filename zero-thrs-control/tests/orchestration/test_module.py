@@ -68,7 +68,7 @@ async def test_module_returns_control_when_automatic():
         mock_alarms,
         mock_channels,
     )
-    module._control.switch_mode(AutomationMode(mode="automatic"))
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     control_values = await module.tick(mock.sentinel.sensor_values)
 

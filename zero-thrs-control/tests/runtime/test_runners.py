@@ -55,7 +55,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     alarms.check.return_value = []
 
     module = Module("module", control, alarms, control_channels)
-    module._control.switch_mode(AutomationMode(mode="automatic"))
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     simulation_module = SimulationUnit(simulation, simulation_channels)
     runner = LockstepRunner([module], simulation_module)
@@ -172,7 +172,7 @@ async def test_control_runner_ticks_and_uses_channels():
     alarms.check.return_value = []
 
     module = Module("module", control, alarms, channels)
-    module._control.switch_mode(AutomationMode(mode="automatic"))
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     runner = ControlRunner([module], mock_liveness)
 

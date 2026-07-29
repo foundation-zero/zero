@@ -124,7 +124,7 @@ class LockstepCmd(BaseSettings):
         )
 
         for module in control_modules:
-            module._control.switch_mode(AutomationMode(mode="automatic"))
+            module.set_automation_mode(AutomationMode(mode="automatic"))
 
         runner = LockstepRunner(control_modules, simulation_module)
 
