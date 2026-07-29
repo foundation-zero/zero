@@ -159,8 +159,8 @@ class ConvertersControl(
                 "trigger": "_check_converters_active",
                 "source": "recovery",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._converter_active(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._converter_active(sensor_values)
                 ),
             },
         ]

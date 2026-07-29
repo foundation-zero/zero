@@ -165,8 +165,10 @@ class PcmControl(
                 "trigger": "_check_supplying_conditions",
                 "source": "supplying",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.supplying_enabled
-                or self._all_discharged(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.supplying_enabled
+                    or self._all_discharged(sensor_values)
+                ),
             },
             {
                 "trigger": "_try_charging",
@@ -181,8 +183,10 @@ class PcmControl(
                 "trigger": "_check_charging_conditions",
                 "source": "charging",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.charging_enabled
-                or not self._sufficient_dt(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.charging_enabled
+                    or not self._sufficient_dt(sensor_values)
+                ),
             },
         ]
 

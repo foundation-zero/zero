@@ -79,18 +79,18 @@ def test_filling_level(
 
     # run until tank1 start filling
     sensor_values, *_ = runner.run_until(
-        lambda sensor_values,
-        control_values,
-        controller_state: controller_state.dhw_tanks_controller.tank1_state.value
-        == TankState.FILLING.value
+        lambda sensor_values, control_values, controller_state: (
+            controller_state.dhw_tanks_controller.tank1_state.value
+            == TankState.FILLING.value
+        )
     )
 
     # run until tank1 is full
     sensor_values, *_ = runner.run_until(
-        lambda sensor_values,
-        control_values,
-        controller_state: controller_state.dhw_tanks_controller.tank1_state.value
-        != TankState.FILLING.value
+        lambda sensor_values, control_values, controller_state: (
+            controller_state.dhw_tanks_controller.tank1_state.value
+            != TankState.FILLING.value
+        )
     )
 
     assert sensor_values.dhw_level_tank1.level.value == approx(

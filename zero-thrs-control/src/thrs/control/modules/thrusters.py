@@ -158,9 +158,11 @@ class ThrustersControl(
         """Create controllers and control methods for the different thrusters control aspects."""
         self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_control_values.thrusters_mix_exchanger.setpoint.value,
-            lambda: self._parameters.maximum_supply_temperature
-            if self.mode.is_recovery
-            else self._parameters.cooling_temperature,
+            lambda: (
+                self._parameters.maximum_supply_temperature
+                if self.mode.is_recovery
+                else self._parameters.cooling_temperature
+            ),
             lambda: self._parameters.heat_dump_tuning,
             self._time,
         )
@@ -240,7 +242,9 @@ class ThrustersControl(
                 "trigger": "_check_pcs_mode",
                 "source": ["cooling"],
                 "dest": None,
-                "conditions": lambda sensor_values: False,  # stay in cooling until manually changed
+                "conditions": lambda sensor_values: (
+                    False
+                ),  # stay in cooling until manually changed
             },
             {
                 "trigger": "_check_pcs_mode",

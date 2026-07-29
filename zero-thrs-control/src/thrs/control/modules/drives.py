@@ -174,16 +174,16 @@ class DrivesControl(
                 "trigger": "_check_shorepower",
                 "source": "shorepower",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._shorepower_on(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._shorepower_on(sensor_values)
                 ),
             },
             {
                 "trigger": "_check_thrusters",
                 "source": "propulsion",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._propdrive_active(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._propdrive_active(sensor_values)
                 ),
             },
         ]
@@ -196,9 +196,11 @@ class DrivesControl(
 
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.drives_mix_exchanger.setpoint.value,
-            setpoint=lambda: self._parameters.propulsion_maximum_supply_temperature
-            if self.mode.is_propulsion
-            else self._parameters.shorepower_maximum_supply_temperature,
+            setpoint=lambda: (
+                self._parameters.propulsion_maximum_supply_temperature
+                if self.mode.is_propulsion
+                else self._parameters.shorepower_maximum_supply_temperature
+            ),
             tuning=lambda: self._parameters.heat_dump_tuning,
             time_fn=self._time,
         )
