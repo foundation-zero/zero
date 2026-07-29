@@ -10,6 +10,7 @@ export const enum MimicComponentType {
   HeatExchanger = "HeatExchanger",
   BoilerTank = "BoilerTank",
   Pump = "Pump",
+  ManualPump = "ManualPump",
   PressureSensor = "PressureSensor",
   PressureGauge = "PressureGauge",
   TemperatureSensor = "TemperatureSensor",
