@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,7 +23,7 @@ class Config(BaseSettings):
     mqtt_simulator_topic_suffix: str
     mqtt_control_topic_suffix: str
 
-    liveness_path: str | None = None
+    liveness_path: Path | None = None
 
     @property
     def pg_url(self) -> str:
