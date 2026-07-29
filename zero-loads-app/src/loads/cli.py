@@ -121,7 +121,7 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
     output: Path = Path("../hasura/seeds/zero/loads_reference_values.sql")
 
     async def cli_cmd(self) -> None:
-        from sailpack.export_seed import export_seed_sql
+        from sailpack.export_reference_values_seed import export_seed_sql
 
         logger.info("Exporting sailpack seed SQL...")
         load_case_count, reference_count = export_seed_sql(self.input, self.output)

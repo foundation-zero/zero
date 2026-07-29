@@ -6,6 +6,7 @@ from typing import Any
 import polars as pl
 
 from sailpack.parse import parse_directory
+from sailpack.seed_utils import escape_dollar_quoted_json
 
 KNOWN_SAIL_ABBREVIATIONS = {
     "FM",
@@ -58,10 +59,6 @@ def extract_sail_abbreviations(calculation_id: str) -> list[str]:
 
     # Preserve order while removing duplicates.
     return list(dict.fromkeys(filtered))
-
-
-def escape_dollar_quoted_json(value: str) -> str:
-    return value.replace("$$", "$ $")
 
 
 def should_convert_newton_to_tonne(variable_key: str) -> bool:
