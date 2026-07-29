@@ -53,6 +53,53 @@ Idioms:   match/if let, ? everywhere, /// docs on all public API
 
 ### 2.2 Naming
 
+Semantic names are preferred over generic names like "list" or "result".
+```python
+# Good
+clothing = ["shirt", "trousers", "socks"]
+# Bad
+items = ["shirt", "trousers", "socks"]
+```
+
+It's preferable to lean on context to keep variable names short as long as it stays unambiguous.
+```python
+# Good
+# in clothing.py
+class Wardrobe:
+  def hang(self, article: Article):
+    self._rod_articles.append(article)
+
+# Bad
+# in clothing.py
+class ClothingWardrobe:
+  def hang_clothing_article(self, clothing_article: ClothingArticle):
+    self._clothing_rod_articles.append(clothing_article)
+
+# Good
+shelf_articles = ["shirt"]
+rod_articles = ["trousers"]
+all_articles = shelf_articles + rod_articles
+
+# Bad
+articles = ["shirt"]
+articles.append("trousers")
+```
+
+Do not introduce new abbreviations. Do not abbreviate if it introduces ambiguity.
+```python
+# Good
+shelf_articles = ["shirt"]
+
+# Bad
+s_articles = ["shirt"]
+
+# Good
+delay_ms = 500 # ms is an established abbreviation
+
+# Bad
+stock_ms = 20 # Unclear between milliseconds and MicroSoft
+```
+
 - **Packages**: `snake_case` — `zero_termodinamica`, `domestic_control`, `zero_hull_temperature`.
 - **Project names** (in `pyproject.toml`): vary. Some use the `zero-` prefix (`zero-termodinamica`),
   some omit it (`thrs`, `domestic-control`, `loads`, `generator`). Prefer the
