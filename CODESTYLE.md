@@ -66,8 +66,8 @@ It's preferable to lean on context to keep variable names short as long as it st
 # Good
 # in clothing.py
 class Wardrobe:
-  def hang(self, article: Article):
-    self._rod_articles.append(article)
+    def hang(self, article: Article):
+        self._rod_articles.append(article)
 
 # Bad
 # in clothing.py
