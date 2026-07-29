@@ -207,7 +207,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
                 result = hook(self._value)
                 if isawaitable(result):
                     awaitables.append(result)
-        gather(*awaitables)
+        gather(*awaitables, return_exceptions=True)
 
     def result(self) -> M | None:
         return self._value
