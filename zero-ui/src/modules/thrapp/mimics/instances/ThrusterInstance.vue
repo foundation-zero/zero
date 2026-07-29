@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType, ThrusterMode } from "@/modules/thrs/types";
+import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";

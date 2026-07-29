@@ -27,8 +27,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
-const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrs/lib/queries.generated.ts");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
+const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrsim/lib/queries.generated.ts");
 
 // ============================================================================
 // Types
