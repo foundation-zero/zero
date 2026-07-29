@@ -806,12 +806,14 @@ class DhwControl(
                 if not controller.enabled():
                     controller.enable()
 
-        if not self._drives_heat_available(sensor_values):
-            if self._dhw_drives_flow_controller.enabled():
-                self._dhw_drives_flow_controller.disable()
-                self._current_values.dhw_flowcontrol_drives.setpoint = Stamped(
-                    value=Valve.CLOSED, timestamp=self._time()
-                )
+        if (
+            not self._drives_heat_available(sensor_values)
+            and self._dhw_drives_flow_controller.enabled()
+        ):
+            self._dhw_drives_flow_controller.disable()
+            self._current_values.dhw_flowcontrol_drives.setpoint = Stamped(
+                value=Valve.CLOSED, timestamp=self._time()
+            )
 
         if not self._tanks_controller.filling:
             for controller in [

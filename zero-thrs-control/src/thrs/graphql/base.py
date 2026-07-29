@@ -147,10 +147,7 @@ class StampedType[T]:
 
 
 def get_members(module):
-    if hasattr(module, "__all__"):
-        names = module.__all__
-    else:
-        names = dir(module)
+    names = module.__all__ if hasattr(module, "__all__") else dir(module)
     return {name: getattr(module, name) for name in names}
 
 

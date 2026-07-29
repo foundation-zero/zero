@@ -447,6 +447,6 @@ class MachineStateLoggingService(StateLogger):
         """Get the difference between the from and to model. Output is a dict of the form {key: {"from": value_from, "to": value_to}} for each key that has a different value in the from and to model."""
         return {
             key: {"from": model_from[key], "to": model_to[key]}
-            for key in model_from.keys()
+            for key in model_from
             if model_from[key] != model_to[key]
         }

@@ -1,3 +1,4 @@
+import contextlib
 import logging
 from datetime import datetime, timedelta
 
@@ -171,7 +172,5 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     def cli_cmd(self) -> None:
         setup_logging()
 
-        try:
+        with contextlib.suppress(KeyboardInterrupt):
             CliApp.run_subcommand(self)
-        except KeyboardInterrupt:
-            pass

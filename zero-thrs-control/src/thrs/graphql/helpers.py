@@ -24,7 +24,7 @@ def ensure_dedataframe(annotation):
 
     This function caches converted types to avoid duplicate conversions.
     """
-    if existing := _dedataframed_strawberries.get(annotation, None):
+    if existing := _dedataframed_strawberries.get(annotation):
         return existing
     else:
         gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
@@ -226,8 +226,7 @@ class UnstampedInput(ThrsValues):
             Instance of the original stamped model with timestamps added
         """
         values = {
-            key: Stamped.stamp(getattr(self, key))
-            for key in type(self).model_fields.keys()
+            key: Stamped.stamp(getattr(self, key)) for key in type(self).model_fields
         }
         return self._MODEL(**values)  # type: ignore
 
@@ -249,7 +248,7 @@ def ensure_input_type(annotation, unstamp: bool) -> type:
     Returns:
         A Strawberry input type class
     """
-    if existing := _input_types.get(annotation.__name__, None):
+    if existing := _input_types.get(annotation.__name__):
         return existing
     elif unstamp:
         input_model = UnstampedInput.generate_for_model(

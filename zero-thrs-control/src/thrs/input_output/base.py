@@ -142,7 +142,7 @@ class SimulationValues(ThrsValues):
     @classmethod
     def dedataframe(cls) -> type:
         def _component(component_name, component):
-            if stored := _dedataframed_dataclasses.get(component.annotation, None):
+            if stored := _dedataframed_dataclasses.get(component.annotation):
                 return stored
 
             def _field_type(field):
@@ -265,7 +265,7 @@ class SimulationInputs(SimulationValues):
 
             values = {
                 field_name: _field_value(field_name)
-                for field_name in type(component_value).model_fields.keys()
+                for field_name in type(component_value).model_fields
             }
             return SelectedInputsModel.model_fields[component_name].annotation(**values)
 
