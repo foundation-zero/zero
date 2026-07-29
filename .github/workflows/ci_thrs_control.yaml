@@ -30,11 +30,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+      - uses: astral-sh/setup-uv@v8.1.0
 
       - uses: extractions/setup-just@v4
-
-      - run: pipx install poetry==2.2.1
-        working-directory: zero-thrs-control
 
       - name: Create .env file from secret in root for services
         run: |
@@ -48,7 +46,7 @@ jobs:
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
-      - run: poetry install --with dev,test
+      - run: uv sync --locked
         working-directory: zero-thrs-control
 
       - run: just type_check
@@ -73,7 +71,7 @@ jobs:
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT

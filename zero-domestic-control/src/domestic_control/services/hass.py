@@ -243,8 +243,16 @@ class HassControl:
     def _run(self, loop: asyncio.AbstractEventLoop):
         with self._hass.listen_events("state_changed") as events:
             for event in events:
-                if event.data["entity_id"].startswith("input_number."):
-                    number_change = InputNumberChanged(**event.data)
+                event_data = event.data
+                if not isinstance(event_data, dict):
+                    continue
+
+                entity_id = event_data.get("entity_id")
+                if not isinstance(entity_id, str):
+                    continue
+
+                if entity_id.startswith("input_number."):
+                    number_change = InputNumberChanged.model_validate(event_data)
                     if (
                         number_change.id in _LIGHT_GROUP_IDS.keys()
                         and number_change.id is not None
@@ -258,8 +266,8 @@ class HassControl:
                             / 100,  # hass uses 0..100 values
                         )
                         loop.create_task(self._data.send(lighting_group_msg))
-                elif event.data["entity_id"].startswith("cover."):
-                    cover_change = CoverChanged(**event.data)
+                elif entity_id.startswith("cover."):
+                    cover_change = CoverChanged.model_validate(event_data)
                     if (
                         (cover_change.id in _BLIND_IDS.keys())
                         and cover_change.id is not None

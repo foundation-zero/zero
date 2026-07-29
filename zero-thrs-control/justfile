@@ -17,16 +17,16 @@ fmu_files := (
 default: run
 
 run_api:
-    poetry run fastapi dev src/thrs/graphql/asgi.py
+    uv run fastapi dev src/thrs/graphql/asgi.py
 
 run_control module='dhw':
-    poetry run python -m thrs.cli control --mode {{ module }}
+    uv run python -m thrs.cli control --mode {{ module }}
 
 run_simulation module='dhw':
-    poetry run python -m thrs.cli simulation --mode {{ module }}
+    uv run python -m thrs.cli simulation --mode {{ module }}
 
 run_lockstep module='dhw':
-    poetry run python -m thrs.cli lockstep --mode {{ module }}
+    uv run python -m thrs.cli lockstep --mode {{ module }}
 
 [parallel]
 run module='dhw': run_api (run_lockstep module)
@@ -37,22 +37,22 @@ run_split module='dhw': run_api (run_control module) (run_simulation module)
 check: lint type_check test
 
 lint:
-    poetry run ruff check src tests
+    uv run ruff check src tests
 
 type_check:
-    poetry run pyright
+    uv run pyright
 
 test *args:
-    poetry run pytest -m "not io" {{ args }}
+    uv run pytest -m "not io" {{ args }}
 
 test_io *args:
-    poetry run pytest -m "io" {{ args }}
+    uv run pytest -m "io" {{ args }}
 
 format:
-    poetry run ruff format --check src tests
+    uv run ruff format --check src tests
 
 format_fix:
-    poetry run ruff format src tests
+    uv run ruff format src tests
 
 
 build_fmu_compile_container:
@@ -83,7 +83,7 @@ compile_fmus_for_linux: build_fmu_compile_container
     docker rm -f fmu_compile
 
 compile_fmu file:
-    CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}
+    CFLAGS="-std=gnu17 -include unistd.h" uv run fmpy compile {{ file }}
 
 compile_fmus:
     for file in {{ fmu_files }}; do \
@@ -93,4 +93,4 @@ compile_fmus:
 compile_fmus_all: compile_fmus compile_fmus_for_linux
 
 export_schema:
-    poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql
+    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql

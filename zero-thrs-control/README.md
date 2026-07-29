@@ -11,7 +11,7 @@ cp .env.example .env
 Install dependencies:
 
 ```bash
-poetry sync
+uv sync --locked
 ```
 
 ## FMU
@@ -19,20 +19,17 @@ poetry sync
 To compile an FMU with FMPy, run:
 
 ```bash
-poetry run fmpy compile <path-to-fmu-file>
+just compile_fmu src/thrs/simulation/models/Thruster_Module_V19.fmu
 ```
 
-**Note:** On macOS, set `CFLAGS` beforehand to resolve `mkdtemp` function declaration conflicts in Dymola 2026-generated code:
+Replace the FMU path with the file you want to compile.
+
+The recipe sets `CFLAGS="-std=gnu17 -include unistd.h"` automatically.
+
+On macOS, install graphviz first:
 
 ```bash
-export CFLAGS="-include unistd.h"
-poetry run fmpy compile <path-to-fmu-file>
-```
-
-**Note:** On Linux, when using a newer compiler like GCC 15 or higher you need to set `CFLAGS` to fix and issue with the number of arguments for `select`
-
-```bash
-CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
+brew install graphviz
 ```
 
 ## Lockstep
@@ -40,28 +37,28 @@ CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
 Run the lockstep with:
 
 ```bash
-poetry run python -m thrs.cli lockstep --mode <module>
+just run_lockstep
 ```
-Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_lockstep module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 ## Control
 
 Run the control with:
 
 ```bash
-poetry run python -m thrs.cli control --mode <module>
+just run_control
 ```
-Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_control module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 ## Simulator
 
 Run the simulator with:
 
 ```bash
-poetry run python -m thrs.cli simulation --mode <module>
+just run_simulation
 ```
 
-Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
+To use a different module (other than the default `dhw`), run `just run_simulation module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 The UI is located in [zero-ui](../zero-ui) at [http://localhost:5173/thrs/hmi](http://localhost:5173/thrs/hmi).
 
@@ -73,7 +70,7 @@ Install dependencies on macOS:
 brew install graphviz
 export CFLAGS="-I $(brew --prefix graphviz)/include"
 export LDFLAGS="-L $(brew --prefix graphviz)/lib"
-poetry install
+uv sync --locked
 ```
 
 ## GraphQL
@@ -83,7 +80,7 @@ poetry install
 Start the API with:
 
 ```bash
-poetry run fastapi dev src/thrs/graphql/asgi.py
+just run_api
 ```
 
 ### Exporting the Schema
@@ -91,5 +88,5 @@ poetry run fastapi dev src/thrs/graphql/asgi.py
 Export the GraphQL schema to `zero-ui`:
 
 ```bash
-poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql
+just export_schema
 ```

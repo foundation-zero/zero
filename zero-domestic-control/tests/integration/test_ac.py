@@ -1,19 +1,17 @@
-from asyncio import create_task
 import asyncio
+import json
+from asyncio import TaskGroup, create_task
 
 from aiomqtt import Client as MqttClient
+from pyModbusTCP.client import ModbusClient
 from pytest import fixture
 
 from domestic_control.config import Settings
 from domestic_control.messages import RoomTemperatureSetpoint
 from domestic_control.mqtt import ControlReceive, ControlSend, DataCollection
 from domestic_control.services.ac import Ac, AcControl, AcInterface
-from domestic_control.services.stubs.ac import AcStub
 from domestic_control.services.ac.thrs import Thrs
-
-from pyModbusTCP.client import ModbusClient
-import json
-from asyncio import TaskGroup
+from domestic_control.services.stubs.ac import AcStub
 
 
 @fixture

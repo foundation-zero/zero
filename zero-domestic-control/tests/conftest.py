@@ -1,6 +1,7 @@
-import pathlib
-import pytest
 import os
+import pathlib
+
+import pytest
 
 
 def pytest_addoption(parser):

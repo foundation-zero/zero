@@ -1,6 +1,7 @@
 *
-!poetry.lock
+!uv.lock
 !pyproject.toml
+!README.md
 !src
 
 # Python

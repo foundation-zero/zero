@@ -10,17 +10,19 @@ from domestic_control.messages import (
     Blind,
     LightingGroup,
     Message,
+    Model,
 )
 
 type PersistedMessage = Amplifier | Blind | LightingGroup
+type SinkMessage = Message | Model
 
 
 class Sink(Protocol):
-    async def send(self, message: Message): ...
+    async def send(self, message: SinkMessage): ...
 
 
 class BeginSink(Protocol):
-    def send_begin(self, message: Message) -> AbstractAsyncContextManager[None]: ...
+    def send_begin(self, message: SinkMessage) -> AbstractAsyncContextManager[None]: ...
 
 
 class CompositeSink:
@@ -33,7 +35,7 @@ class CompositeSink:
         self._begin_sinks = begin_sinks
         self._sinks = sinks
 
-    async def send(self, message: Message):
+    async def send(self, message: SinkMessage):
         async with AsyncExitStack() as stack:
             for begin_sink in self._begin_sinks:
                 await stack.enter_async_context(begin_sink.send_begin(message))
@@ -47,7 +49,7 @@ class PostgresSink(BeginSink):
         self._engine = engine
 
     @asynccontextmanager
-    async def send_begin(self, message: Message) -> AsyncIterator[None]:
+    async def send_begin(self, message: SinkMessage) -> AsyncIterator[None]:
         async with AsyncSession(self._engine) as session:
             async with session.begin():
                 data = message.model_dump()
@@ -64,6 +66,6 @@ class PostgresSink(BeginSink):
                 await session.exec(stmt)
                 yield
 
-    async def send(self, message: Message):
+    async def send(self, message: SinkMessage):
         async with self.send_begin(message):
             pass

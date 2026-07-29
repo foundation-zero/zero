@@ -30,24 +30,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
-      - run: poetry check
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
         working-directory: zero-data
-      - run: poetry install --with dev,test
+      - run: uv run ruff check src tests
         working-directory: zero-data
-      - run: poetry run ruff check src tests
+      - run: uv run ruff format --check src tests
         working-directory: zero-data
-      - run: poetry run ruff format --check src tests
-        working-directory: zero-data
-      - run: poetry run mypy src
+      - run: uv run mypy src
         working-directory: zero-data
       - name: Unit Test
-        run: poetry run pytest .
+        run: uv run pytest .
         working-directory: zero-data
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-data

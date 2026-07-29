@@ -1,10 +1,8 @@
 *
 !uv.lock
 !pyproject.toml
-!src
 !README.md
-!io_lists
-!.gsheet-sa-key.json
+!zero_hull_temperature/
 
 # Python
 __pycache__/
