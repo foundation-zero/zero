@@ -1,11 +1,12 @@
 import logging
 import shutil
 from base64 import b64encode
+from collections.abc import Callable, Iterable
 from datetime import timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory, gettempdir
 from types import TracebackType
-from typing import Any, Callable, Iterable, Protocol, Self, cast, runtime_checkable
+from typing import Any, Protocol, Self, cast, runtime_checkable
 
 from fmpy import extract, read_model_description
 from fmpy.fmi2 import FMU2Slave
@@ -147,6 +148,7 @@ class Fmu:
                 zip(
                     self._output_names,
                     self._fmu_instance.getReal(self._var_mapper(self._output_names)),
+                    strict=False,
                 )
             ),
         )  # type: ignore

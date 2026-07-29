@@ -4,9 +4,10 @@ from asyncio import (
     TaskGroup,
     sleep,
 )
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Awaitable, Callable, assert_never
+from typing import assert_never
 
 from thrs.runtime.runners.base import Runner
 

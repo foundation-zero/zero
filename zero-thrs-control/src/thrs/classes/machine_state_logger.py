@@ -1,10 +1,11 @@
 import asyncio
 import logging
 from abc import abstractmethod
+from collections.abc import Coroutine
 from dataclasses import replace
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Coroutine, Literal, Protocol
+from typing import Any, Literal, Protocol
 
 from sqlmodel import SQLModel
 from transitions import Machine, State
@@ -78,7 +79,7 @@ class MachineStateLogger:
     def _log_model(self, model: SQLModel):
         """Log a model to the database asynchronously."""
         self.console_logger.debug(
-            f"Logging model {model.__class__.__qualname__} to database asynchronously."
+            "Logging model %s to database asynchronously.", model.__class__.__qualname__
         )
         self._run_async(self._log_model_async(model))
 
@@ -297,7 +298,8 @@ class MachineStateLoggingService(StateLogger):
         machine.after_state_change = partial(self._after_log, control)
 
         self.console_logger.debug(
-            f"Created logged state machine for control {control.__class__.__name__} with states"
+            "Created logged state machine for control %s with states",
+            control.__class__.__name__,
         )
         return machine
 

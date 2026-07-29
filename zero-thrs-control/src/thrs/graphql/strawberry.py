@@ -1,11 +1,11 @@
 import logging
 import sys
 from asyncio import Task, create_task
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import (
     Annotated,
-    Callable,
 )
 
 import strawberry

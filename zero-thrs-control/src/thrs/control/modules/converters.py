@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from transitions import State
 
@@ -54,7 +54,7 @@ class ConvertersSensorValues(ThrsValues):
             (
                 temperature_sensor.temperature.value
                 for temperature_sensor, flow_sensor in zip(
-                    self.converter_return_temperatures, self.flows
+                    self.converter_return_temperatures, self.flows, strict=False
                 )
                 if flow_sensor.flow.value > 0
             ),
@@ -235,7 +235,7 @@ class ConvertersControl(
 
     def _control_switch_valves(self, sensor_values: ConvertersSensorValues):
         for switch, converter in zip(
-            self.current_values.switches, sensor_values.converters
+            self.current_values.switches, sensor_values.converters, strict=False
         ):
             if switch.setpoint.value == Valve.CLOSED and converter.active.value:
                 switch.setpoint = Stamped(value=Valve.OPEN, timestamp=self._time())

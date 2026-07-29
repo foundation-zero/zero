@@ -1,6 +1,6 @@
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
 from inspect import isclass
-from typing import Callable, Coroutine
 
 import strawberry
 from pydantic.fields import FieldInfo
@@ -173,10 +173,12 @@ class SwitchingControlModeType[Mode]:
 
     @classmethod
     def from_pydantic(
-        cls, type, mode: SwitchingControlMode[Mode]
+        cls, graphql_type, mode: SwitchingControlMode[Mode]
     ) -> "SwitchingControlModeType[Mode]":
         return cls(
-            automatic_mode=optional_pydantic_to_graphql(type, mode.automatic_mode)
+            automatic_mode=optional_pydantic_to_graphql(
+                graphql_type, mode.automatic_mode
+            )
         )
 
     @strawberry.field

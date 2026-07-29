@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
@@ -46,7 +46,7 @@ class DcParameters(ThrsValues):
     ugrids_pump_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
     return DcControlValues(
         dc_pump_aft=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),

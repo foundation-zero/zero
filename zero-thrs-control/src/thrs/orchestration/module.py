@@ -1,6 +1,7 @@
 import logging
+from collections.abc import Callable, Mapping
 from datetime import datetime
-from typing import TYPE_CHECKING, Callable, Mapping
+from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
@@ -68,7 +69,7 @@ class Module[
         self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
         self._alarms = alarms
         self._channels = channels
-        self._active_alarms: dict[str, "Alarm"] = {}
+        self._active_alarms: dict[str, Alarm] = {}
 
     @property
     def control_state_logger(self) -> StateLogger:
@@ -107,7 +108,7 @@ class Module[
 
     @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
-        alarms: list["Alarm"] = self._alarms.check(
+        alarms: list[Alarm] = self._alarms.check(
             sensor_values,
             control_values,
             self._control.parameters,
@@ -115,7 +116,7 @@ class Module[
 
         if alarms:
             logger.debug(
-                f"Alarms detected: {alarms}"
+                "Alarms detected: %s", alarms
             )  # TODO: properly handle alarms for AMCS
 
         return alarms

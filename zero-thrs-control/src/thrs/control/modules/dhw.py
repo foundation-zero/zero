@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Callable
+from typing import Annotated
 
 from pydantic import Field, model_validator
 from transitions import State
@@ -117,7 +118,7 @@ def _zero_pid(timestamp: datetime) -> PidControllerValues:
     )
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
     return DhwControlValues(
         dhw_pump=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -163,7 +164,7 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
     return DhwControllerState(
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -351,7 +352,7 @@ class TanksController:
         ]
 
         for tank, level, temperature, disabled, outlet_position in zip(
-            self._tanks, levels, temperatures, disableds, outlet_positions
+            self._tanks, levels, temperatures, disableds, outlet_positions, strict=False
         ):
             tank.level = level
             tank.temperature = temperature
@@ -854,7 +855,7 @@ class DhwControl(
                 "Both pump temperature and flow controllers cannot be enabled at the same time"
             )
 
-        elif self._pump_flow_controller.enabled():
+        if self._pump_flow_controller.enabled():
             self._current_values.dhw_pump.dutypoint = Stamped(
                 value=self._pump_flow_controller(
                     sensor_values.dhw_flow_boosting.flow.value

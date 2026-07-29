@@ -47,7 +47,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_trigger + 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -58,7 +58,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_hot_trigger + 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -69,7 +69,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_hot_minimum + 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -80,7 +80,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_hot_minimum - 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -94,7 +94,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_minimum - 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -105,7 +105,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_trigger - 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -116,7 +116,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_trigger + 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -127,7 +127,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_minimum + 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -138,7 +138,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_minimum - 1
     )
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -148,13 +148,13 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
 def test_adsorption_cooling(control: AdsorptionControl, simulation: Simulation):
     result = simulation.tick(control.initial()[0])
 
-    for i in range(10):
+    for _i in range(10):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
-    for i in range(100):
+    for _i in range(100):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -179,13 +179,13 @@ def test_waste_recovery(control: AdsorptionControl, simulation: Simulation):
 
     result = simulation.tick(control.initial()[0])
 
-    for i in range(100):
+    for _i in range(100):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
-    for i in range(5 * 60):
+    for _i in range(5 * 60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -240,13 +240,13 @@ def test_waste_cooling():
 
         result = simulation.tick(control.initial()[0])
 
-        for i in range(100):
+        for _i in range(100):
             control_values, _ = control.control(result.sensor_values)
             result = simulation.tick(control_values)
 
         assert control.mode == AdsorptionControlMode(mode="cooling")
 
-        for i in range(5 * 60):
+        for _i in range(5 * 60):
             control_values, _ = control.control(result.sensor_values)
             result = simulation.tick(control_values)
 

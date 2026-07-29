@@ -54,13 +54,11 @@ def compare_modelica_names(
 def compare_fmu_to_classes(filename, classes: list[type[ThrsValues]]):
     model_description = fmpy.read_model_description(filename)
 
-    fmu_keys = set(
-        [
-            var.name
-            for var in model_description.modelVariables
-            if var.causality in {"input", "output"}
-        ]
-    )
+    fmu_keys = {
+        var.name
+        for var in model_description.modelVariables
+        if var.causality in {"input", "output"}
+    }
     py_keys = modelica_names_from_classes(classes)
 
     missing_in_py = fmu_keys - py_keys

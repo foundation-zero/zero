@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Literal
 
 from transitions import State
 
@@ -48,7 +49,7 @@ class DrivesParameters(ThrsValues):
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa: N802
     return DrivesControlValues(
         drives_pump1=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -391,7 +392,7 @@ class DrivesControl(
     def _activate_pump(self, sensor_values: DrivesSensorValues):
         if self._active_pump:
             raise Warning("A pump was already active upon selecting")
-        elif self._most_recently_active_pump == "pump1":
+        if self._most_recently_active_pump == "pump1":
             self._most_recently_active_pump = "pump2"
             self._active_pump = self._current_values.drives_pump2
 

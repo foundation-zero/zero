@@ -35,7 +35,7 @@ class ControlCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
 
     async def cli_cmd(self) -> None:
-        logger.debug(f"Starting control command: {self.mode}")
+        logger.debug("Starting control command: %s", self.mode)
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
@@ -66,7 +66,7 @@ class SimulationCmd(BaseSettings):
     mode: ModeName
 
     async def cli_cmd(self) -> None:
-        logger.debug(f"Starting simulation command: {self.mode}")
+        logger.debug("Starting simulation command: %s", self.mode)
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
@@ -99,7 +99,7 @@ class LockstepCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
-        logger.debug(f"Starting lockstep command: {self.mode}")
+        logger.debug("Starting lockstep command: %s", self.mode)
         mode = lookup_mode(self.mode)
 
         connector = MqttConnector(mqtt_client)

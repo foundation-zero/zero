@@ -43,7 +43,7 @@ def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
         )
 
         with pytest.raises(Exception):
-            for i in range(300):
+            for _i in range(300):
                 simulation.tick(
                     control.initial(datetime.now()),
                 )

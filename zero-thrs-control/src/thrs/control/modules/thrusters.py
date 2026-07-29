@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Literal, NoReturn
+from typing import Literal, NoReturn
 
 from pydantic import model_validator
 from transitions import Machine, State
@@ -70,7 +71,7 @@ class ThrustersParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # noqa: N802
     return ThrustersControlValues(
         thrusters_pump1=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),

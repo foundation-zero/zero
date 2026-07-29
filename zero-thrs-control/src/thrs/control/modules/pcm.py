@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from transitions import State
 
@@ -28,7 +28,7 @@ class PcmParameters(ThrsValues):
     module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
     return PcmControlValues(
         pcm_pump=Pump(
             dutypoint=Stamped(value=0, timestamp=timestamp),

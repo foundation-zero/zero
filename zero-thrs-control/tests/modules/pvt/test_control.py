@@ -29,7 +29,7 @@ def test_idle(control: PvtControl, simulation: PvtSimulation):
         control.control(PvtSensorValues.zero())[0],
     )
 
-    for i in range(30):
+    for _i in range(30):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -41,7 +41,7 @@ def test_recovery(control: PvtControl, simulation):
         control.control(PvtSensorValues.zero())[0],
     )
 
-    for i in range(13 * 60):  # Need about 13 minutes to reach stable state
+    for _i in range(13 * 60):  # Need about 13 minutes to reach stable state
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -106,7 +106,7 @@ def test_heat_dump(control, simulation: PvtSimulation):
         control_values.pvt_pump_owners.dutypoint.value = 1
         result = simulation.tick(control_values)
 
-    for i in range(100):
+    for _i in range(100):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
         assert result.sensor_values.pvt_temperature_supply.temperature.value == approx(

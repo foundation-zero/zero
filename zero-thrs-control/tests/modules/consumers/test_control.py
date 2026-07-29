@@ -22,7 +22,7 @@ def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
         control.control(ConsumersSensorValues.zero())[0],
     )
 
-    for i in range(180):
+    for _i in range(180):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -46,7 +46,7 @@ async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimu
         control.control(ConsumersSensorValues.zero())[0],
     )
 
-    for i in range(180):
+    for _i in range(180):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -65,7 +65,7 @@ def test_adsorption_disabled(
         control.control(ConsumersSensorValues.zero())[0],
     )
 
-    for i in range(180):
+    for _i in range(180):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -84,7 +84,7 @@ def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation)
         control.control(ConsumersSensorValues.zero())[0],
     )
 
-    for i in range(180):
+    for _i in range(180):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Self
 
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dhw import DhwControl, DhwParameters
@@ -42,7 +42,7 @@ class MockFmu(Fmu):
         self.inputs.append(dict(inputs))
         return self._outputs
 
-    def __enter__(self) -> "MockFmu":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *_) -> bool:

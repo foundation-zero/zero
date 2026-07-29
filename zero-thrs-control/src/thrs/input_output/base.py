@@ -38,9 +38,8 @@ class ThrsValues(BaseModel):
                         for field_name, field in component.model_fields.items()
                     }
                 )
-            else:
-                unit = unit_for_annotation(component)
-                return zero_for_unit(unit) if unit else 0.0
+            unit = unit_for_annotation(component)
+            return zero_for_unit(unit) if unit else 0.0
 
         vals = {
             component_name: _zero_component(component.annotation)
@@ -72,11 +71,15 @@ class StampedDf[T](ThrsValues):
     value: pl.DataFrame
 
     @field_validator("value", mode="before")
+    @classmethod
     def validate_field(cls, value):
         if isinstance(value, pl.DataFrame):
             expected_schema = [
-                {"time": pl.Datetime(time_unit="us", time_zone=None), "value": type}
-                for type in [
+                {
+                    "time": pl.Datetime(time_unit="us", time_zone=None),
+                    "value": polars_type,
+                }
+                for polars_type in [
                     pl.Float64,
                     pl.Int64,
                     pl.Boolean,
@@ -157,8 +160,7 @@ class SimulationValues(ThrsValues):
                         Stamped[unit_for_annotation(field.annotation)], info
                     ]
 
-                else:
-                    return (Stamped[unit_for_annotation(field.annotation)], ...)
+                return (Stamped[unit_for_annotation(field.annotation)], ...)
 
             fields = {
                 field_name: _field_type(field)
@@ -190,8 +192,7 @@ class SimulationValues(ThrsValues):
                     else dedataframed_component,
                     info,
                 ]
-            else:
-                return dedataframed_component
+            return dedataframed_component
 
         components = {
             component_name: _component_with_metadata(component_name, component)
@@ -203,21 +204,19 @@ class SimulationValues(ThrsValues):
             for method_name in cls.model_computed_fields
         }
 
-        SelectedInputsModel = create_model(
+        return create_model(
             cls.__name__,
             __base__=SimulationValues,
             __validators__=methods,
             **components,  # type: ignore
         )  # type: ignore
 
-        return SelectedInputsModel
-
 
 class SimulationInputs(SimulationValues):
     model_config = ConfigDict(extra="ignore", arbitrary_types_allowed=True)
 
     def get_values_at_time(self, time: datetime) -> Self:
-        SelectedInputsModel = self.dedataframe()
+        SelectedInputsModel = self.dedataframe()  # noqa: N806
 
         def _component(component_name, component):
             component_value = getattr(self, component_name)
@@ -228,7 +227,8 @@ class SimulationInputs(SimulationValues):
                 if isinstance(value, pl.DataFrame):
                     if value.select(pl.min("time")).item() > time:
                         warn(
-                            f"Time {time} is before the given range of data for field {component_name}."
+                            f"Time {time} is before the given range of data for field {component_name}.",
+                            stacklevel=1,
                         )
 
                         return Stamped(
@@ -238,7 +238,8 @@ class SimulationInputs(SimulationValues):
 
                     if value.select(pl.max("time")).item() < time:
                         warn(
-                            f"Time {time} is after the given range of data for field {component_name}."
+                            f"Time {time} is after the given range of data for field {component_name}.",
+                            stacklevel=1,
                         )
 
                         return Stamped(
@@ -246,22 +247,20 @@ class SimulationInputs(SimulationValues):
                             timestamp=time,
                         )
 
-                    else:
-                        return Stamped(
-                            value=value.filter(
-                                (m := (pl.col("time") - time).abs())
-                                .filter(pl.col("time") <= time)
-                                .min()
-                                == m
-                            )
-                            .limit(1)
-                            .select("value")
-                            .item(),
-                            timestamp=time,
+                    return Stamped(
+                        value=value.filter(
+                            (m := (pl.col("time") - time).abs())
+                            .filter(pl.col("time") <= time)
+                            .min()
+                            == m
                         )
+                        .limit(1)
+                        .select("value")
+                        .item(),
+                        timestamp=time,
+                    )
 
-                else:
-                    return Stamped(value=value, timestamp=time)
+                return Stamped(value=value, timestamp=time)
 
             values = {
                 field_name: _field_value(field_name)

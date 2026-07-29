@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from pydantic import model_validator
 from transitions import State
@@ -53,7 +53,7 @@ class AdsorptionParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802
     return AdsorptionControlValues(
         adsorption_flowcontrol_waste=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)

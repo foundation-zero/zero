@@ -1,10 +1,11 @@
 import dataclasses
 import operator
+from collections.abc import Callable
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import timedelta
 from functools import reduce
-from typing import Any, Callable, Self
+from typing import Any, Self
 
 from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
@@ -139,7 +140,9 @@ class CoSimulationMaster(ExitStack, FmuLike):
     def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
         current_outputs: dict[str, Any] = {}
 
-        for participant, coupling in zip(self._participants, self._compiled_couplings):
+        for participant, coupling in zip(
+            self._participants, self._compiled_couplings, strict=False
+        ):
             # filter the inputs for the current participant
             direct_inputs = {
                 key: value

@@ -1,4 +1,5 @@
-from typing import Any, Callable, cast
+from collections.abc import Callable
+from typing import Any, cast
 
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control, ControlMode

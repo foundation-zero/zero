@@ -47,7 +47,7 @@ def test_high_temperature_simulation_inputs(
         )
 
         with pytest.raises(Exception):
-            for i in range(300):
+            for _i in range(300):
                 simulation.tick(
                     {
                         module_name: module.control(

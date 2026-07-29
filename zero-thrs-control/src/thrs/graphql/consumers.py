@@ -28,7 +28,7 @@ class ConsumersControlModeType:
     _empty: None = None
 
     @classmethod
-    def from_pydantic(cls, type) -> "ConsumersControlModeType":
+    def from_pydantic(cls, graphql_type) -> "ConsumersControlModeType":
         return cls()
 
 
@@ -37,7 +37,7 @@ class ConsumersControllerStateType:
     _empty: None = None
 
     @classmethod
-    def from_pydantic(cls, type) -> "ConsumersControllerStateType":
+    def from_pydantic(cls, graphql_type) -> "ConsumersControllerStateType":
         return cls()
 
 

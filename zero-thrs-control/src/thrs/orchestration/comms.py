@@ -1,11 +1,8 @@
 import logging
 from asyncio import Event, Future, gather, timeout
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Coroutine, Mapping
 from inspect import isawaitable
 from typing import (
-    Awaitable,
-    Callable,
-    Coroutine,
     Protocol,
     cast,
 )
@@ -293,14 +290,15 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             self._mappings.keys()
         ):
             return cast(T, CombinedValues(values=mapping_result))
-        else:
-            return None
+        return None
 
     async def wait_for_result(self) -> T:
         results = await gather(
             *(builder.wait_for_result() for builder in self._mappings.values())
         )
-        return cast(T, CombinedValues(dict(zip(self._mappings.keys(), results))))
+        return cast(
+            T, CombinedValues(dict(zip(self._mappings.keys(), results, strict=False)))
+        )
 
 
 class ControlChannels[

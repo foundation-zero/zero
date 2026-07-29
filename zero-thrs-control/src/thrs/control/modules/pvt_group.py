@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from pydantic import model_validator
 from transitions import State

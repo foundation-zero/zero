@@ -26,16 +26,15 @@ def ensure_dedataframe(annotation):
     """
     if existing := _dedataframed_strawberries.get(annotation):
         return existing
-    else:
-        gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
-        strawberry.experimental.pydantic.type(
-            model=annotation,
-            all_fields=True,
-            json_schema_directive=JsonSchemaDirective,
-            use_pydantic_alias=False,
-        )(gql_cls)
-        _dedataframed_strawberries[annotation] = gql_cls
-        return gql_cls
+    gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
+    strawberry.experimental.pydantic.type(
+        model=annotation,
+        all_fields=True,
+        json_schema_directive=JsonSchemaDirective,
+        use_pydantic_alias=False,
+    )(gql_cls)
+    _dedataframed_strawberries[annotation] = gql_cls
+    return gql_cls
 
 
 def ensure_dedataframes(cls):
@@ -250,7 +249,7 @@ def ensure_input_type(annotation, unstamp: bool) -> type:
     """
     if existing := _input_types.get(annotation.__name__):
         return existing
-    elif unstamp:
+    if unstamp:
         input_model = UnstampedInput.generate_for_model(
             f"{annotation.__name__}InputType", annotation
         )
@@ -259,5 +258,4 @@ def ensure_input_type(annotation, unstamp: bool) -> type:
         )(type(f"{annotation.__name__}InputType", (object,), {}))
         _input_types[annotation.__name__] = input_type
         return input_type
-    else:
-        return annotation
+    return annotation
