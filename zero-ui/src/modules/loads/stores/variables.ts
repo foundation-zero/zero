@@ -60,6 +60,8 @@ const toSupportedValue =
     supportedValues.includes(storedValue) ? storedValue : defaultValue;
 
 const extractId = extractProperty("id");
+const formatAwa = (awa: number) => awa.toFixed(1);
+const formatAws = (aws: number) => aws.toFixed(1);
 
 export const useVariablesStore = defineStore("loads-variables", () => {
   const selectedCardType = useLocalStorage<CardType>("loads-variable-card-type", "numerical");
@@ -222,6 +224,16 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     context: LOADS_CONTEXT,
   });
 
+  const selectedLoadCase = computed(() => referenceValues.value?.loadCase ?? null);
+  const selectedLoadCaseLabel = computed(() => {
+    if (!selectedLoadCase.value) {
+      return null;
+    }
+
+    const { name, awa, aws } = selectedLoadCase.value;
+    return `Sailpack model: ${name} AWA: ${formatAwa(awa)}° AWS: ${formatAws(aws)} kts`;
+  });
+
   const variables = computed<MaybeVariable[]>(() => {
     if (!definitions.value) {
       return [];
@@ -297,6 +309,8 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     availableDashboards,
     visibleDashboardGroups,
     currentVariables,
+    selectedLoadCase,
+    selectedLoadCaseLabel,
     startPolling,
     stopPolling,
     lockWindConditions,

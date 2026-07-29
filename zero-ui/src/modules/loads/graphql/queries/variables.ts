@@ -20,6 +20,12 @@ export const VARIABLE_REFERENCE_VALUES = gql`
         warningLow
       }
     }
+    loadCase(case: { sailset: $sailset, awaRange: $awaRange, awsRange: $awsRange, tack: $tack }) {
+      id
+      name
+      awa
+      aws
+    }
   }
 `;
 
