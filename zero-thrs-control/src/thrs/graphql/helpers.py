@@ -44,7 +44,7 @@ def ensure_dedataframes(cls):
 
     This is used for simulation input/output types that may contain complex nested types.
     """
-    for name, field in cls.model_fields.items():
+    for field in cls.model_fields.values():
         ensure_dedataframe(field.annotation)
 
 
