@@ -215,8 +215,8 @@ class ThrustersControl(
             self._time,
         )
 
-        self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
-        self._active_pump: None | Pump = None
+        self._most_recently_active_pump: Literal["pump1", "pump2"] | None = None
+        self._active_pump: Pump | None = None
 
         self._flow_balance_controller = FlowBalanceController(
             [

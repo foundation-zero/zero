@@ -1,5 +1,5 @@
 import logging
-from asyncio import Event, Future, ensure_future, gather, timeout
+from asyncio import Event, Future, gather, timeout
 from collections.abc import Mapping
 from inspect import isawaitable
 from typing import (
@@ -200,6 +200,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return {self._topic}
 
     def handle_message(self, topic: str, json: str | bytes):
+        awaitables: list[Awaitable] = []
         if topic == self._topic:
             self._value = cast(M, self._adapter.validate_json(json))
             if not self._future.done():
@@ -208,7 +209,8 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
             for hook in self._hooks:
                 result = hook(self._value)
                 if isawaitable(result):
-                    ensure_future(result)
+                    awaitables.append(result)
+        gather(*awaitables)
 
     def result(self) -> M | None:
         return self._value

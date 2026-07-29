@@ -50,7 +50,7 @@ class CoSimulationParticipant:
             operator.ior,
             [
                 build_fmu_key_mapping(cls, fmu_only=False)
-                for cls in self.control_values_clss + [self.simulation_inputs_cls]
+                for cls in [*self.control_values_clss, self.simulation_inputs_cls]
             ],
             {},
         )
@@ -58,7 +58,7 @@ class CoSimulationParticipant:
             operator.ior,
             [
                 build_fmu_key_mapping(cls, fmu_only=False)
-                for cls in self.sensor_values_clss + [self.simulation_outputs_cls]
+                for cls in [*self.sensor_values_clss, self.simulation_outputs_cls]
             ],
             {},
         )

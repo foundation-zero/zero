@@ -34,7 +34,7 @@ class PolarsCollector(Collector[pl.DataFrame]):
             }
         )
 
-    def result(self) -> None | pl.DataFrame:
+    def result(self) -> pl.DataFrame | None:
         if not self._data:
             return None
 

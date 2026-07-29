@@ -240,8 +240,8 @@ class DrivesControl(
             time_fn=self._time,
         )
 
-        self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
-        self._active_pump: None | Pump = None  # TODO: make into controller
+        self._most_recently_active_pump: Literal["pump1", "pump2"] | None = None
+        self._active_pump: Pump | None = None  # TODO: make into controller
 
         self._flow_balance_controller = FlowBalanceController(
             [
