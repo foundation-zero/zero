@@ -7,7 +7,7 @@ from thrs.runtime.liveness import Liveness
 
 
 def test_liveness_no_error():
-    liveness = Liveness(Path("/tmp/does_not_exist"))
+    liveness = Liveness(Path("/tmp/does_not_exist"))  # noqa: S108
 
     with assert_does_not_raise():
         liveness.signal()

@@ -65,7 +65,14 @@ markers = [
 fix = true
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "W", "I", "RUF", "INP", "NPY", "SIM", "PTH", "SLOT", "TID", "PD", "RSE"]
+select = ["E4", "E7", "E9", "F", "W", "I", "RUF", "INP", "NPY", "SIM", "PTH", "SLOT", "TID", "PD", "RSE", "ASYNC", "S"]
+ignore = [
+  "ASYNC109",  # TODO: determine if we want this
+]
+
+[tool.ruff.lint.per-file-ignores]
+# We do want asserts in tests
+"tests/**" = ["S101"]
 
 [build-system]
 requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
