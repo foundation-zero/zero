@@ -1,6 +1,6 @@
 import { toEntries, unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
-import { ControlComponentType, ControlDefinitionMap, ControlValues } from "@/modules/thrs/types";
+import { ControlComponentType, ControlDefinitionMap, ControlValues } from "@/modules/thrsim/types";
 import { isEmpty } from "lodash";
 import { computed, ref, Ref } from "vue";
 import {

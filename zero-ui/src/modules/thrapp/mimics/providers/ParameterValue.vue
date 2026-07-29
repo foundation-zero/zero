@@ -7,7 +7,7 @@
   "
 >
 import { Unstamp } from "@/modules/common/types";
-import { ParameterDefinitionMap, ParametersType } from "@/modules/thrs/types";
+import { ParameterDefinitionMap, ParametersType } from "@/modules/thrsim/types";
 import { getMimicDataProvider, ModuleField, provideFieldValue, provideFieldValueSource } from ".";
 
 const props = defineProps<{

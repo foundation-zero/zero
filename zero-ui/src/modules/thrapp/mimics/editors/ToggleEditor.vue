@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/modules/common/lib/utils.ts";
-import { ParametersType } from "@/modules/thrs/types/index.ts";
+import { ParametersType } from "@/modules/thrsim/types/index.ts";
 import { computed, toRef } from "vue";
 import { injectValueForm } from "../providers/forms.ts";
 import { getFieldValue, injectFieldValueSource } from "../providers/index.ts";

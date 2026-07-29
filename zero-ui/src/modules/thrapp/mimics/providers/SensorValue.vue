@@ -9,7 +9,7 @@
 >
 import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
-import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrs/types";
+import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import {
   DEFAULT_SENSOR_FIELD_VALUE_FIELD,

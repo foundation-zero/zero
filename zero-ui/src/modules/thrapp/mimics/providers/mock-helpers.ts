@@ -12,7 +12,7 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { useIntervalFn } from "@vueuse/core";
 import { computed, MaybeRef, ref, Ref, unref } from "vue";
 

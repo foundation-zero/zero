@@ -4,7 +4,7 @@ import { grafanaRoute, sharedRoutes } from "./modules/common/router";
 import { domesticRoutes } from "./modules/domestic/router";
 import { loadsRoutes } from "./modules/loads/router";
 import { thrappRoutes } from "./modules/thrapp/router";
-import { thrsimRoutes } from "./modules/thrs/router";
+import { thrsimRoutes } from "./modules/thrsim/router";
 
 const appRoutes: Record<ZeroApps, RouteRecordRaw> = {
   [ZeroApps.grafana]: grafanaRoute,
