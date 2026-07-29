@@ -9,13 +9,16 @@ from domestic_control.messages import (
     Blind,
     LightingGroup,
     Message,
+    Model,
     RoomCo2Setpoint,
     RoomHumiditySetpoint,
     RoomTemperatureSetpoint,
 )
 
+type OutgoingMessage = Message | Model
 
-async def send_message(mqtt: Client, message: Message):
+
+async def send_message(mqtt: Client, message: OutgoingMessage):
     exclude = {"id"} if ":id" in message.TOPIC else set()
     payload = message.model_dump_json(exclude_none=True, exclude=exclude)
     topic = message.TOPIC.replace(":id", message.id)
@@ -28,7 +31,7 @@ class DataCollection:
     def __init__(self, mqtt: Client):
         self._mqtt = mqtt
 
-    async def send(self, message: Message):
+    async def send(self, message: OutgoingMessage):
         await send_message(self._mqtt, message)
 
     async def send_amplifier(self, amplifier: Amplifier):

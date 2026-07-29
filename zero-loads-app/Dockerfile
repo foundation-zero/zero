@@ -1,27 +1,14 @@
-FROM python:3.13-slim-bookworm AS builder
-
-ENV POETRY_VERSION=2.2.1 \
-    POETRY_HOME=/opt/poetry \
-    POETRY_CACHE_DIR=/opt/.cache \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=on
-
-RUN pip install "poetry==${POETRY_VERSION}"
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+ENV UV_NO_DEV=1
+ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
-
-COPY zero-loads-app/pyproject.toml zero-loads-app/poetry.lock ./zero-loads-app/
+COPY zero-loads-app/pyproject.toml zero-loads-app/uv.lock ./zero-loads-app/
 COPY zero-generator zero-generator/
 
-WORKDIR /app/zero-loads-app/
-
-ENV POETRY_DYNAMIC_VERSIONING_COMMANDS=""
-
-RUN poetry install --no-root
+RUN --mount=type=cache,target=/root/.cache/uv \
+    cd zero-loads-app && uv sync --locked --no-install-project
 
 FROM python:3.13-slim-bookworm AS runtime
 

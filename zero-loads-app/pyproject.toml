@@ -1,70 +1,62 @@
 [project]
 name = "loads"
 description = ""
-readme = "README.md"
 authors = [
-    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" },
-    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
-]
-packages = [
-    { include = "loads", from = "src" },
-    { include = "sailpack", from = "src" }
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" },
+    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org" },
 ]
 requires-python = ">= 3.13.1,<4.0"
+readme = "README.md"
+dependencies = [
+    "aiomqtt>=2.4.0,<3.0.0",
+    "construct>=2.10.70,<3.0.0",
+    "fastapi[standard]>=0.115.6,<0.116.0",
+    "pydantic>=2.8.2,<2.9.0",
+    "psycopg[binary, async]>=3.2.3,<4.0.0",
+    "pydantic-settings>=2.7.1,<3.0.0",
+    "strawberry-graphql[debug-server, fastapi]>=0.256.1,<0.257.0",
+    "asyncpg>=0.30.0,<0.31.0",
+    "sqlalchemy>=2.0.43,<3.0.0",
+    "greenlet>=3.2.4,<4.0.0",
+    "uvicorn>=0.35.0,<0.36.0",
+    "generator",
+    "pyjwt>=2.11.0,<3",
+]
 dynamic = ["version"]
-
-[tool.poetry]
-version = "0.0.0"
-
-[tool.poetry.dependencies]
-aiomqtt = ">=2.4.0,<3.0.0"
-construct = ">=2.10.70,<3.0.0"
-fastapi = { version = ">=0.115.6,<0.116.0", extras = ["standard"] }
-psycopg = { version = ">=3.2.3,<4.0.0", extras = ["binary", "async"] }
-pydantic-settings = ">=2.7.1,<3.0.0"
-strawberry-graphql = { version = ">=0.256.1,<0.257.0", extras = ["debug-server", "fastapi"] }
-asyncpg = ">=0.30.0,<0.31.0"
-sqlalchemy = ">=2.0.43,<3.0.0"
-greenlet = ">=3.2.4,<4.0.0"
-uvicorn = ">=0.35.0,<0.36.0"
-generator = { path = "../zero-generator", develop=true}
-pyjwt = "^2.11.0"
-
-
-[tool.poetry-dynamic-versioning]
-enable = true
 
 [project.scripts]
 loads = "loads.__main__:run_app"
 
-[tool.poetry.group.dev]
-optional = true
+[dependency-groups]
+dev = [
+    "mypy==1.14.1",
+    "ruff>=0.9.5,<0.10",
+    "python-dotenv>=1.1.0,<2",
+    "jupyter>=1.1.1,<2",
+    "polars>=1.39.3,<2",
+    "pyarrow>=23.0.1,<24",
+    "pandas>=3.0.1,<4",
+    "matplotlib>=3.10.8,<4",
+    "seaborn>=0.13.2,<0.14",
+    "bs4>=0.0.2,<0.0.3",
+]
+test = [
+    "pytest>=8.3.4,<9",
+    "pytest-asyncio>=0.25.1,<0.26",
+    "pytest-env>=1.1.5,<2",
+    "httpx>=0.28.1,<0.29",
+    "pytest-timeout>=2.3.1,<3",
+    "pytest-mock>=3.14.0,<4",
+    "asgi-lifespan>=2.1.0,<3.0.0",
+    "pytest-postgresql>=8.1.0,<9",
+    "factory-boy>=3.3.3,<4",
+]
 
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.14.1"
-ruff = "^0.9.5"
-python-dotenv = "^1.1.0"
-jupyter = "^1.1.1"
-polars = "^1.39.3"
-pyarrow = "^23.0.1"
-pandas = "^3.0.1"
-matplotlib = "^3.10.8"
-seaborn = "^0.13.2"
-bs4 = "^0.0.2"
+[tool.uv]
+default-groups = ["dev", "test"]
 
-[tool.poetry.group.test]
-optional = true
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
-pytest-asyncio = "^0.25.1"
-pytest-env = "^1.1.5"
-httpx = "^0.28.1"
-pytest-timeout = "^2.3.1"
-pytest-mock = "^3.14.0"
-asgi-lifespan = ">=2.1.0,<3.0.0"
-pytest-postgresql = "^8.1.0"
-factory-boy = "^3.3.3"
+[tool.uv.sources]
+generator = { path = "../zero-generator", editable = true }
 
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
@@ -87,9 +79,16 @@ select = ["E4", "E7", "E9", "F", "W", "I"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+search_parent_directories = true
+fallback_version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/loads", "src/sailpack"]

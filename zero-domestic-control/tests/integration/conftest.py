@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock
 
+from pytest import fixture
+
 from domestic_control.app import LogDataLoader, app, data_collection, log_data_loader
 from domestic_control.mqtt import DataCollection
-from pytest import fixture
 
 
 @fixture

@@ -2,6 +2,7 @@ from pathlib import Path
 
 import polars as pl
 from bs4 import BeautifulSoup
+from bs4.element import NavigableString, Tag
 
 
 def parse_directory(folder: str) -> pl.DataFrame:
@@ -30,14 +31,24 @@ def parse_sailpack(file_path: Path) -> pl.DataFrame:
 
 
 def extract_notes(soup: BeautifulSoup) -> pl.DataFrame:
-    result = {}
-    notes = soup.find("b", string="NOTES")  # type: ignore
+    result: dict[str, str] = {}
+    notes = soup.find("b", string="NOTES")
+
+    if not isinstance(notes, Tag):
+        return pl.DataFrame(result).with_columns(
+            pl.lit("NOTES").alias("table_description")
+        )
 
     for tag in notes.next_siblings:
-        if tag.name == "b":
-            break
+        if isinstance(tag, Tag):
+            if tag.name == "b":
+                break
+            text = tag.get_text(strip=True)
+        elif isinstance(tag, NavigableString):
+            text = str(tag).strip()
+        else:
+            continue
 
-        text = tag.get_text(strip=True)
         if not text:
             continue
 

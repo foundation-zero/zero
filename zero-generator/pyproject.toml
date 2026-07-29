@@ -1,26 +1,16 @@
 [project]
 name = "generator"
+dynamic = ["version"]
 description = ""
-readme = "README.md"
-authors = [
-    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
-]
-packages = [
-    { include = "generator", from = "src" },
-]
+authors = [{ name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org" }]
 requires-python = ">= 3.13.1,<4.0"
+readme = "README.md"
 dependencies = [
-    "aiomqtt (>=2.4.0,<3.0.0)",
-    "pydantic-settings (>=2.11.0,<3.0.0)",
+    "aiomqtt>=2.4.0,<3.0.0",
+    "pydantic-settings>=2.11.0,<3.0.0",
 ]
 
-[tool.poetry]
-version = "0.0.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.14.13"
-
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "mypy>=1.14.1,<2.0.0",
     "ruff>=0.9.5,<1.0.0",
@@ -30,6 +20,9 @@ test = [
     "pytest-asyncio>=0.25.1,<1.0.0",
     "pytest-mock>=3.14.0,<4.0.0",
 ]
+
+[tool.uv]
+default-groups = ["dev", "test"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -51,12 +44,16 @@ select = ["E4", "E7", "E9", "F", "W", "I"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
-
-[tool.poetry-dynamic-versioning]
-enable = true
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+search_parent_directories = true
+fallback_version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/generator"]

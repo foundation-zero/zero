@@ -26,7 +26,7 @@ hasura metadata apply --admin-secret myadminsecretkey
 
 1. Install dependencies:
     ```bash
-    poetry install --with dev
+    uv sync --locked
     ```
 
 2. Create a `.env` file in the root folder based on `.env-example`.
@@ -42,17 +42,17 @@ hasura metadata apply --admin-secret myadminsecretkey
 
 Run the backend:
 ```bash
-poetry run domestic_control api
+uv run domestic_control api
 ```
 
 Run the stubs:
 ```bash
-poetry run domestic_control stub
+uv run domestic_control stub
 ```
 
 Run the control process:
 ```bash
-poetry run domestic_control control
+uv run domestic_control control
 ```
 
 ### Generate JWT
@@ -60,20 +60,20 @@ poetry run domestic_control control
 Generate a JWT token:
 ```bash
 # Admin role
-poetry run domestic_control generate-jwt --roles admin
+uv run domestic_control generate-jwt --roles admin
 # Cabin-specific token
-poetry run domestic_control generate-jwt --cabin dutch-cabin
+uv run domestic_control generate-jwt --cabin dutch-cabin
 ```
 
 ## Testing
 
 1. Make sure the dependencies for testing are installed
 ```bash
-poetry install --with dev,test
+uv sync --locked
 ```
 2. Run unit tests
 ```bash
-poetry run pytest --run=unit
+uv run pytest --run=unit
 ```
 3. Run integration tests:
 
@@ -84,5 +84,5 @@ docker compose --profile zero up -d
 
 Run the integration tests:
 ```bash
-poetry run pytest --run=integration
+uv run pytest --run=integration
 ```

@@ -10,7 +10,7 @@
 ### Python
 
 ```
-Package:  snake_case, Poetry, poetry-dynamic-versioning
+Package:  snake_case, uv, hatch-vcs
 Types:    pydantic BaseModel/BaseSettings, 3.12+ generics (list[T] not List[T])
 Async:    asyncio.TaskGroup, aiomqtt, @asynccontextmanager
 Log:      %(asctime)s | %(levelname)-8s | %(message)s
@@ -47,8 +47,8 @@ Idioms:   match/if let, ? everywhere, /// docs on all public API
 
 | Rule | Convention |
 |------|------------|
-| Build system | Poetry (all 7 Python projects). |
-| Versioning | `poetry-dynamic-versioning` from git tags. All packages keep `0.0.0` in pyproject. |
+| Build system | uv. `hatch-vcs` for versioning from git tags. |
+| Versioning | `hatch-vcs` from git tags (via `[tool.hatch.version] source = "vcs"`). All packages keep `dynamic = ["version"]` and fallback `0.0.0` in pyproject. |
 | Python version | Each service specifies its own in `pyproject.toml`. Most require `>= 3.13.1,<4.0`; `zero-thrs-control` uses `<3.14`. |
 
 ### 2.2 Naming
@@ -104,13 +104,13 @@ The shared log format is:
 
 ### 2.6 Dependency Groups
 
-Poetry projects use three scopes:
+Projects use three scopes:
 
 | Scope | Purpose | Key packages |
 |-------|---------|-------------|
 | `dependencies` (top-level) | Runtime | aiomqtt, pydantic-settings, fastapi, strawberry-graphql |
-| `[tool.poetry.group.dev]` | Development | ruff, mypy/pyright, python-dotenv, Jupyter |
-| `[tool.poetry.group.test]` | Testing (optional) | pytest, pytest-asyncio, httpx, pytest-mock |
+| `[dependency-groups] dev` | Development | ruff, mypy/pyright, python-dotenv, Jupyter |
+| `[dependency-groups] test` | Testing (optional) | pytest, pytest-asyncio, httpx, pytest-mock |
 
 ### 2.7 Idioms & Comment Style
 
@@ -413,11 +413,11 @@ Every service has a `Dockerfile` in its project directory.
 ```just
 check: lint type_check test
 lint:
-    poetry run ruff check
+    uv run ruff check
 type_check:
-    poetry run pyright
+    uv run pyright
 test *args:
-    poetry run pytest {{ args }}
+    uv run pytest {{ args }}
 ```
 
 ### 5.3 Environment Variables
@@ -442,11 +442,11 @@ test (lint → type-check → unit test → integration test)
 
 | Language | Pipeline |
 |----------|----------|
-| Python | `poetry install --with dev,test` → `ruff check` + `ruff format --check` → `pyright`/`mypy` → `pytest` (unit, then integration against `docker compose` services) |
+| Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyright`/`mypy` → `pytest` (unit, then integration against `docker compose` services) |
 | Rust | `setup-rust-toolchain` (clippy, rustfmt) → `cargo test --locked` → `cargo clippy --locked` |
 | TypeScript | `pnpm install` → `pnpm lint --max-warnings 0` → `pnpm test:unit` → `docker compose` services → `pnpm test:api` → `pnpm exec playwright test` → Cloudflare Pages deploy |
 
-**Docker tagging:** Python projects use `poetry version -s` (via `poetry-dynamic-versioning`
+**Docker tagging:** Python projects use `uvx hatch version` (via `hatch-vcs`
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use
 `docker/metadata-action` (semver + sha).
 

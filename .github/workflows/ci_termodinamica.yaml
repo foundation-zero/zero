@@ -30,11 +30,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.2.1
-        working-directory: zero-termodinamica
-      - run: poetry check
-        working-directory: zero-termodinamica
-      - run: poetry install --with dev,test
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
         working-directory: zero-termodinamica
       - run: just lint
         working-directory: zero-termodinamica
@@ -46,7 +43,7 @@ jobs:
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
