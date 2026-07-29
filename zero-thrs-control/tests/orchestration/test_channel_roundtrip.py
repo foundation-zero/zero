@@ -69,7 +69,7 @@ def demo_module() -> ModuleDescription:
         lambda *_args, **_kwargs: mock.Mock(),
         DemoMode,
         DemoControllerState,
-        lambda: mock.Mock(),
+        mock.Mock,
     )
 
 

@@ -58,7 +58,7 @@ def compare_fmu_to_classes(filename, classes: list[type[ThrsValues]]):
         [
             var.name
             for var in model_description.modelVariables
-            if var.causality == "input" or var.causality == "output"
+            if var.causality in {"input", "output"}
         ]
     )
     py_keys = modelica_names_from_classes(classes)

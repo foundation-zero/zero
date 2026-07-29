@@ -1,5 +1,6 @@
 import operator
 from datetime import datetime
+from itertools import groupby as _groupby
 from typing import Any, cast, overload
 
 from pydantic.fields import ComputedFieldInfo, FieldInfo
@@ -12,7 +13,6 @@ from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
-    from itertools import groupby as _groupby
 
     data = sorted(iterable, key=key)
     return _groupby(data, key)

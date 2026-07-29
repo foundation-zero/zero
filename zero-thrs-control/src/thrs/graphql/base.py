@@ -6,9 +6,6 @@ import strawberry
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import BaseContext
 
-import thrs.input_output.definitions.control as control
-import thrs.input_output.definitions.controllers as controllers
-import thrs.input_output.definitions.sensor as sensor
 from thrs.control.modules.adsorption import (
     AdsorptionControllerState,
     AdsorptionControlMode,
@@ -45,6 +42,7 @@ from thrs.graphql.messaging import (
     SimulationMessaging,
 )
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.definitions import control, controllers, sensor
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,

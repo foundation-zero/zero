@@ -391,14 +391,13 @@ class DrivesControl(
     def _activate_pump(self, sensor_values: DrivesSensorValues):
         if self._active_pump:
             raise Warning("A pump was already active upon selecting")
-        else:
-            if self._most_recently_active_pump == "pump1":
-                self._most_recently_active_pump = "pump2"
-                self._active_pump = self._current_values.drives_pump2
+        elif self._most_recently_active_pump == "pump1":
+            self._most_recently_active_pump = "pump2"
+            self._active_pump = self._current_values.drives_pump2
 
-            else:
-                self._most_recently_active_pump = "pump1"
-                self._active_pump = self._current_values.drives_pump2
+        else:
+            self._most_recently_active_pump = "pump1"
+            self._active_pump = self._current_values.drives_pump2
 
         self._active_pump.on = Stamped(value=True, timestamp=self._time())
 
