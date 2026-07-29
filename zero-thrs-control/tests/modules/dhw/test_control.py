@@ -31,7 +31,7 @@ async def test_filling_flow(
     )
     simulation.update_simulation_inputs(simulation_inputs_no_consumption)
 
-    sensor_values, control_values, controller_state = runner.run(30)
+    sensor_values, _control_values, controller_state = runner.run(30)
 
     # filling flows
     assert controller_state.dhw_drives_flow_controller.enabled
