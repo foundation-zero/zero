@@ -6,9 +6,18 @@ ENV UV_PYTHON_DOWNLOADS=0
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-editable
+
+# Copy the project
 COPY pyproject.toml uv.lock README.md ./
 COPY src ./src
 
+# Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
 

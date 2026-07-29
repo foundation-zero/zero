@@ -4,12 +4,29 @@ ENV UV_NO_DEV=1
 ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
-COPY zero-loads-app/pyproject.toml zero-loads-app/uv.lock zero-loads-app/README.md ./zero-loads-app/
-COPY zero-loads-app/src ./zero-loads-app/src
+
+# Copy dependency packages first (needed for resolution)
 COPY zero-generator zero-generator/
 
+WORKDIR /app/zero-loads-app
+
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
-    cd zero-loads-app && uv sync --locked --no-editable
+    --mount=type=bind,source=zero-loads-app/uv.lock,target=uv.lock \
+    --mount=type=bind,source=zero-loads-app/pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-editable
+
+WORKDIR /app
+
+# Copy the project
+COPY zero-loads-app/pyproject.toml zero-loads-app/uv.lock zero-loads-app/README.md ./zero-loads-app/
+COPY zero-loads-app/src ./zero-loads-app/src
+
+WORKDIR /app/zero-loads-app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable
 
 FROM python:3.13-slim-bookworm AS runtime
 
