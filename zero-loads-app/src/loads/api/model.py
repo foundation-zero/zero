@@ -95,6 +95,10 @@ async def get_load_case(
         name=load_case.name,  # type: ignore
         awa=load_case.awa,  # type: ignore
         aws=load_case.aws,  # type: ignore
+        twa=load_case.twa,  # type: ignore
+        tws=load_case.tws,  # type: ignore
+        bsp=load_case.bsp,  # type: ignore
+        heel=load_case.heel,  # type: ignore
     )
 
 
@@ -110,6 +114,10 @@ async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
             name=load_case.name,  # type: ignore
             awa=load_case.awa,  # type: ignore
             aws=load_case.aws,  # type: ignore
+            twa=load_case.twa,  # type: ignore
+            tws=load_case.tws,  # type: ignore
+            bsp=load_case.bsp,  # type: ignore
+            heel=load_case.heel,  # type: ignore
         )
         for load_case in load_cases
     ]

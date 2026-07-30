@@ -62,6 +62,9 @@ const toSupportedValue =
 const extractId = extractProperty("id");
 const formatAwa = (awa: number) => awa.toFixed(1);
 const formatAws = (aws: number) => aws.toFixed(1);
+const formatHeel = (heel: number) => heel.toFixed(1);
+const formatTwa = (twa: number) => twa.toFixed(1);
+const formatTws = (tws: number) => tws.toFixed(1);
 
 export const useVariablesStore = defineStore("loads-variables", () => {
   const selectedCardType = useLocalStorage<CardType>("loads-variable-card-type", "numerical");
@@ -230,8 +233,8 @@ export const useVariablesStore = defineStore("loads-variables", () => {
       return null;
     }
 
-    const { name, awa, aws } = selectedLoadCase.value;
-    return `Sailpack model: ${name} AWA: ${formatAwa(awa)}° AWS: ${formatAws(aws)} kts`;
+    const { name, awa, aws, heel, twa, tws } = selectedLoadCase.value;
+    return `Sailpack model: ${name} AWA: ${formatAwa(awa)}° AWS: ${formatAws(aws)} kts Heel: ${formatHeel(heel)}° TWA: ${formatTwa(twa)}° TWS: ${formatTws(tws)} kts`;
   });
 
   const variables = computed<MaybeVariable[]>(() => {

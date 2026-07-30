@@ -12,6 +12,9 @@ export type QueryLoadCase = {
   name: string;
   awa: number;
   aws: number;
+  heel: number;
+  twa: number;
+  tws: number;
 };
 
 export type QueryVariableReference = QueryVariables<"reference"> & {

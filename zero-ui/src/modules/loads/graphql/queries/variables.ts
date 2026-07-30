@@ -25,6 +25,9 @@ export const VARIABLE_REFERENCE_VALUES = gql`
       name
       awa
       aws
+      heel
+      twa
+      tws
     }
   }
 `;
