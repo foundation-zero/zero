@@ -31,10 +31,6 @@ type AdsorptionChillerModeStampedType {
   timestamp: DateTime!
 }
 
-type AdsorptionChillerSimulationType {
-  freeCooling: BoolStampedType!
-}
-
 type AdsorptionControlModeType {
   mode: String!
 }
@@ -155,27 +151,27 @@ type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTy
 }
 
 type AdsorptionSimulationInputsType {
-  adsorptionCoolingSupply: TemperatureBoundarySimulationType!
-  adsorptionSeawaterSupply: BoundarySimulationType!
-  adsorptionAvailableHotTemperature: TemperatureBoundarySimulationType!
+  adsorptionCoolingSupply: SimulationTemperatureBoundaryType!
+  adsorptionSeawaterSupply: SimulationBoundaryType!
+  adsorptionAvailableHotTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionAvailableColdTemperature: TemperatureBoundarySimulationType!
+  adsorptionAvailableColdTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionAvailableSeawaterTemperature: TemperatureBoundarySimulationType!
+  adsorptionAvailableSeawaterTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionChiller: AdsorptionChillerSimulationType!
+  adsorptionChiller: SimulationAdsorptionChillerType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionConsumersSupply: BoundarySimulationType!
-  adsorptionDhwSupply: BoundarySimulationType!
+  adsorptionConsumersSupply: SimulationBoundaryType!
+  adsorptionDhwSupply: SimulationBoundaryType!
 }
 
 type AdsorptionSimulationOutputsType {
-  adsorptionCoolingReturn: BoundarySimulationType!
-  adsorptionSeawaterReturn: TemperatureBoundarySimulationType!
-  adsorptionDhwExchanger: ExchangerBoundarySimulationType!
-  adsorptionDhwReturn: TemperatureBoundarySimulationType!
-  adsorptionConsumersExchanger: ExchangerBoundarySimulationType!
-  adsorptionConsumersReturn: TemperatureBoundarySimulationType!
+  adsorptionCoolingReturn: SimulationBoundaryType!
+  adsorptionSeawaterReturn: SimulationTemperatureBoundaryType!
+  adsorptionDhwExchanger: SimulationExchangerBoundaryType!
+  adsorptionDhwReturn: SimulationTemperatureBoundaryType!
+  adsorptionConsumersExchanger: SimulationExchangerBoundaryType!
+  adsorptionConsumersReturn: SimulationTemperatureBoundaryType!
 }
 
 type BoolStampedType {
@@ -186,11 +182,6 @@ type BoolStampedType {
 input BoundaryInputType {
   temperature: Float!
   flow: Float!
-}
-
-type BoundarySimulationType {
-  temperature: FloatStampedType!
-  flow: FloatStampedType!
 }
 
 type ConsumersControlModeType {
@@ -281,17 +272,17 @@ type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeC
 }
 
 type ConsumersSimulationInputsType {
-  consumersAdsorptionSupply: BoundarySimulationType!
-  consumersDhwSupply: BoundarySimulationType!
-  consumersPcmSupply: BoundarySimulationType!
+  consumersAdsorptionSupply: SimulationBoundaryType!
+  consumersDhwSupply: SimulationBoundaryType!
+  consumersPcmSupply: SimulationBoundaryType!
 }
 
 type ConsumersSimulationOutputsType {
-  consumersAdsorptionExchanger: ExchangerBoundarySimulationType!
-  consumersAdsorptionReturn: TemperatureBoundarySimulationType!
-  consumersDhwExchanger: ExchangerBoundarySimulationType!
-  consumersDhwReturn: TemperatureBoundarySimulationType!
-  consumersPcmReturn: BoundarySimulationType!
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
 }
 
 type ControlAdsorptionChillerType {
@@ -358,11 +349,6 @@ type ControllerTanksControllerValuesType {
 input ConverterInputType {
   heatFlow: Float!
   active: Boolean!
-}
-
-type ConverterSimulationType {
-  heatFlow: FloatStampedType!
-  active: BoolStampedType!
 }
 
 type ConvertersControlModeType {
@@ -639,22 +625,22 @@ type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcCon
 }
 
 type DcSimulationInputsType {
-  dcBrightloopFwd1: ConverterSimulationType!
-  dcBrightloopFwd2: ConverterSimulationType!
-  dcUgrid1: ConverterSimulationType!
-  dcUgrid2: ConverterSimulationType!
-  dcBrightloopAft1: ConverterSimulationType!
-  dcBrightloopAft2: ConverterSimulationType!
-  dcBrightloopAft3: ConverterSimulationType!
-  dcBrightloopAft4: ConverterSimulationType!
-  dcSeawaterSupply: BoundarySimulationType!
-  dcDhwSupply: BoundarySimulationType!
+  dcBrightloopFwd1: SimulationHeatSourceType!
+  dcBrightloopFwd2: SimulationHeatSourceType!
+  dcUgrid1: SimulationHeatSourceType!
+  dcUgrid2: SimulationHeatSourceType!
+  dcBrightloopAft1: SimulationHeatSourceType!
+  dcBrightloopAft2: SimulationHeatSourceType!
+  dcBrightloopAft3: SimulationHeatSourceType!
+  dcBrightloopAft4: SimulationHeatSourceType!
+  dcSeawaterSupply: SimulationBoundaryType!
+  dcDhwSupply: SimulationBoundaryType!
 }
 
 type DcSimulationOutputsType {
-  dcSeawaterReturn: TemperatureBoundarySimulationType!
-  dcDhwExchanger: ExchangerBoundarySimulationType!
-  dcDhwReturn: TemperatureBoundarySimulationType!
+  dcSeawaterReturn: SimulationTemperatureBoundaryType!
+  dcDhwExchanger: SimulationExchangerBoundaryType!
+  dcDhwReturn: SimulationTemperatureBoundaryType!
 }
 
 type DhwControlModeType {
@@ -966,28 +952,28 @@ type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeD
 }
 
 type DhwSimulationInputsType {
-  dhwDrivesSupply: BoundarySimulationType!
-  dhwDcSupply: BoundarySimulationType!
-  dhwAdsorptionSupply: BoundarySimulationType!
-  dhwConsumersSupply: BoundarySimulationType!
-  dhwFreshwaterSupply: OverpressureTemperatureBoundarySimulationType!
-  dhwHvacExchanger: HvacExchangerSimulationType!
-  dhwSeawaterSupply: TemperatureBoundarySimulationType!
-  dhwHotwaterDemand: FlowBoundarySimulationType!
+  dhwDrivesSupply: SimulationBoundaryType!
+  dhwDcSupply: SimulationBoundaryType!
+  dhwAdsorptionSupply: SimulationBoundaryType!
+  dhwConsumersSupply: SimulationBoundaryType!
+  dhwFreshwaterSupply: SimulationOverpressureTemperatureBoundaryType!
+  dhwHvacExchanger: SimulationHvacExchangerType!
+  dhwSeawaterSupply: SimulationTemperatureBoundaryType!
+  dhwHotwaterDemand: SimulationFlowBoundaryType!
 }
 
 type DhwSimulationOutputsType {
-  dhwDrivesExchanger: ExchangerBoundarySimulationType!
-  dhwDrivesReturn: TemperatureBoundarySimulationType!
-  dhwDcExchanger: ExchangerBoundarySimulationType!
-  dhwDcReturn: TemperatureBoundarySimulationType!
-  dhwAdsorptionExchanger: ExchangerBoundarySimulationType!
-  dhwAdsorptionReturn: TemperatureBoundarySimulationType!
-  dhwConsumersExchanger: ExchangerBoundarySimulationType!
-  dhwConsumersReturn: TemperatureBoundarySimulationType!
-  dhwSeawaterReturn: TemperatureBoundarySimulationType!
-  dhwSeawaterSupply: FlowBoundarySimulationType!
-  dhwFreshwaterReturn: BoundarySimulationType!
+  dhwDrivesExchanger: SimulationExchangerBoundaryType!
+  dhwDrivesReturn: SimulationTemperatureBoundaryType!
+  dhwDcExchanger: SimulationExchangerBoundaryType!
+  dhwDcReturn: SimulationTemperatureBoundaryType!
+  dhwAdsorptionExchanger: SimulationExchangerBoundaryType!
+  dhwAdsorptionReturn: SimulationTemperatureBoundaryType!
+  dhwConsumersExchanger: SimulationExchangerBoundaryType!
+  dhwConsumersReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterSupply: SimulationFlowBoundaryType!
+  dhwFreshwaterReturn: SimulationBoundaryType!
 }
 
 type DrivesControlModeType {
@@ -1173,27 +1159,21 @@ type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesCont
 }
 
 type DrivesSimulationInputsType {
-  drivesOilCoolerAft: HeatSourceSimulationType!
-  drivesOilCoolerFwd: HeatSourceSimulationType!
-  drivesPropdriveAft1: PropulsionDriveSimulationType!
-  drivesPropdriveAft2: PropulsionDriveSimulationType!
-  drivesPropdriveFwd1: PropulsionDriveSimulationType!
-  drivesPropdriveFwd2: PropulsionDriveSimulationType!
-  drivesShorepower: ConverterSimulationType!
-  drivesSeawaterSupply: BoundarySimulationType!
-  drivesDhwSupply: BoundarySimulationType!
+  drivesOilCoolerAft: SimulationHeatSourceType!
+  drivesOilCoolerFwd: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationHeatSourceType!
+  drivesPropdriveAft2: SimulationHeatSourceType!
+  drivesPropdriveFwd1: SimulationHeatSourceType!
+  drivesPropdriveFwd2: SimulationHeatSourceType!
+  drivesShorepower: SimulationHeatSourceType!
+  drivesSeawaterSupply: SimulationBoundaryType!
+  drivesDhwSupply: SimulationBoundaryType!
 }
 
 type DrivesSimulationOutputsType {
-  drivesSeawaterReturn: TemperatureBoundarySimulationType!
-  drivesDhwExchanger: ExchangerBoundarySimulationType!
-  drivesDhwReturn: TemperatureBoundarySimulationType!
-}
-
-type ExchangerBoundarySimulationType {
-  flow: FloatStampedType!
-  temperatureSupply: FloatStampedType!
-  temperatureReturn: FloatStampedType!
+  drivesSeawaterReturn: SimulationTemperatureBoundaryType!
+  drivesDhwExchanger: SimulationExchangerBoundaryType!
+  drivesDhwReturn: SimulationTemperatureBoundaryType!
 }
 
 type FloatListStampedType {
@@ -1213,10 +1193,6 @@ type FloatStampedType {
 
 input FlowBoundaryInputType {
   flow: Float!
-}
-
-type FlowBoundarySimulationType {
-  flow: FloatStampedType!
 }
 
 enum FreeCoolingMode {
@@ -1239,50 +1215,41 @@ input HeatSourceInputType {
   heatFlow: Float!
 }
 
-type HeatSourceSimulationType {
-  heatFlow: FloatStampedType!
-}
-
 type HighTemperatureSimulationInputsType {
-  thrustersThrusterAft: ThrusterSimulationType!
-  thrustersThrusterFwd: ThrusterSimulationType!
-  thrustersSeawaterSupply: BoundarySimulationType!
-  thrustersPcs: PcsSimulationType!
-  pvtMainFwd: HeatSourceSimulationType!
-  pvtMainAft: HeatSourceSimulationType!
-  pvtOwners: HeatSourceSimulationType!
-  pvtSeawaterSupply: BoundarySimulationType!
-  pcmFreshwaterSupply: BoundarySimulationType!
-  consumersDhwSupply: BoundarySimulationType!
-  consumersAdsorptionSupply: BoundarySimulationType!
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcs: SimulationPcsType!
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtSeawaterSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  consumersDhwSupply: SimulationBoundaryType!
+  consumersAdsorptionSupply: SimulationBoundaryType!
 }
 
 type HighTemperatureSimulationOutputsType {
-  thrustersSeawaterReturn: TemperatureBoundarySimulationType!
-  thrustersPcmSupply: FlowBoundarySimulationType!
-  thrustersPcmReturn: BoundarySimulationType!
-  pvtPcmReturn: BoundarySimulationType!
-  pvtPcmSupply: FlowBoundarySimulationType!
-  pvtSeawaterReturn: TemperatureBoundarySimulationType!
-  consumersAdsorptionExchanger: ExchangerBoundarySimulationType!
-  consumersAdsorptionReturn: TemperatureBoundarySimulationType!
-  consumersDhwExchanger: ExchangerBoundarySimulationType!
-  consumersDhwReturn: TemperatureBoundarySimulationType!
-  consumersPcmReturn: BoundarySimulationType!
-  pcmConsumersReturn: BoundarySimulationType!
-  pcmThrustersReturn: BoundarySimulationType!
-  pcmPvtReturn: BoundarySimulationType!
-  pcmFreshwaterReturn: BoundarySimulationType!
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
 }
 
 input HvacExchangerInputType {
   heatFlow: Float!
   maximumTemperature: Float!
-}
-
-type HvacExchangerSimulationType {
-  heatFlow: FloatStampedType!
-  maximumTemperature: FloatStampedType!
 }
 
 type Mutation {
@@ -1651,11 +1618,6 @@ input OverpressureTemperatureBoundaryInputType {
   overpressure: Float!
 }
 
-type OverpressureTemperatureBoundarySimulationType {
-  temperature: FloatStampedType!
-  overpressure: FloatStampedType!
-}
-
 type PcmControlModeType {
   mode: String!
 }
@@ -1792,17 +1754,17 @@ type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeP
 }
 
 type PcmSimulationInputsType {
-  pcmPvtSupply: BoundarySimulationType!
-  pcmThrustersSupply: BoundarySimulationType!
-  pcmFreshwaterSupply: BoundarySimulationType!
-  pcmConsumersSupply: TemperatureBoundarySimulationType!
+  pcmPvtSupply: SimulationBoundaryType!
+  pcmThrustersSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  pcmConsumersSupply: SimulationTemperatureBoundaryType!
 }
 
 type PcmSimulationOutputsType {
-  pcmConsumersReturn: BoundarySimulationType!
-  pcmThrustersReturn: BoundarySimulationType!
-  pcmPvtReturn: BoundarySimulationType!
-  pcmFreshwaterReturn: BoundarySimulationType!
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
 }
 
 input PcsInputType {
@@ -1821,18 +1783,9 @@ type PcsModeStampedType {
   timestamp: DateTime!
 }
 
-type PcsSimulationType {
-  mode: PcsModeStampedType!
-}
-
 input PropulsionDriveInputType {
   heatFlow: Float!
   active: Boolean!
-}
-
-type PropulsionDriveSimulationType {
-  heatFlow: FloatStampedType!
-  active: BoolStampedType!
 }
 
 input PumpInputType {
@@ -2302,17 +2255,17 @@ type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeP
 }
 
 type PvtSimulationInputsType {
-  pvtMainFwd: HeatSourceSimulationType!
-  pvtMainAft: HeatSourceSimulationType!
-  pvtOwners: HeatSourceSimulationType!
-  pvtPcmSupply: TemperatureBoundarySimulationType!
-  pvtSeawaterSupply: BoundarySimulationType!
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtPcmSupply: SimulationTemperatureBoundaryType!
+  pvtSeawaterSupply: SimulationBoundaryType!
 }
 
 type PvtSimulationOutputsType {
-  pvtPcmReturn: BoundarySimulationType!
-  pvtPcmSupply: FlowBoundarySimulationType!
-  pvtSeawaterReturn: TemperatureBoundarySimulationType!
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
 }
 
 type Query {
@@ -2421,6 +2374,34 @@ type SensorValveType {
   positionRel: FloatStampedType!
 }
 
+type SimulationAdsorptionChillerType {
+  freeCooling: BoolStampedType!
+}
+
+type SimulationBoundaryType {
+  temperature: FloatStampedType!
+  flow: FloatStampedType!
+}
+
+type SimulationExchangerBoundaryType {
+  flow: FloatStampedType!
+  temperatureSupply: FloatStampedType!
+  temperatureReturn: FloatStampedType!
+}
+
+type SimulationFlowBoundaryType {
+  flow: FloatStampedType!
+}
+
+type SimulationHeatSourceType {
+  heatFlow: FloatStampedType!
+}
+
+type SimulationHvacExchangerType {
+  heatFlow: FloatStampedType!
+  maximumTemperature: FloatStampedType!
+}
+
 union SimulationInputsType =
   | ThrustersSimulationInputsType
   | PcmSimulationInputsType
@@ -2445,11 +2426,29 @@ union SimulationOutputsType =
   | HighTemperatureSimulationOutputsType
   | ThrsSimulationOutputsType
 
+type SimulationOverpressureTemperatureBoundaryType {
+  temperature: FloatStampedType!
+  overpressure: FloatStampedType!
+}
+
+type SimulationPcsType {
+  mode: PcsModeStampedType!
+}
+
 type SimulationState {
   time: DateTime!
   status: String!
   inputs: SimulationInputsType
   outputs: SimulationOutputsType
+}
+
+type SimulationTemperatureBoundaryType {
+  temperature: FloatStampedType!
+}
+
+type SimulationThrusterType {
+  heatFlow: FloatStampedType!
+  active: BoolStampedType!
 }
 
 enum TankControlMode {
@@ -2483,102 +2482,93 @@ input TemperatureBoundaryInputType {
   temperature: Float!
 }
 
-type TemperatureBoundarySimulationType {
-  temperature: FloatStampedType!
-}
-
 type ThrsSimulationInputsType {
-  thrustersThrusterAft: ThrusterSimulationType!
-  thrustersThrusterFwd: ThrusterSimulationType!
-  thrustersSeawaterSupply: BoundarySimulationType!
-  thrustersPcs: PcsSimulationType!
-  pvtMainFwd: HeatSourceSimulationType!
-  pvtMainAft: HeatSourceSimulationType!
-  pvtOwners: HeatSourceSimulationType!
-  pvtSeawaterSupply: BoundarySimulationType!
-  pcmFreshwaterSupply: BoundarySimulationType!
-  adsorptionCoolingSupply: TemperatureBoundarySimulationType!
-  adsorptionSeawaterSupply: BoundarySimulationType!
-  adsorptionAvailableHotTemperature: TemperatureBoundarySimulationType!
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcs: SimulationPcsType!
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtSeawaterSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  adsorptionCoolingSupply: SimulationTemperatureBoundaryType!
+  adsorptionSeawaterSupply: SimulationBoundaryType!
+  adsorptionAvailableHotTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionAvailableColdTemperature: TemperatureBoundarySimulationType!
+  adsorptionAvailableColdTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionAvailableSeawaterTemperature: TemperatureBoundarySimulationType!
+  adsorptionAvailableSeawaterTemperature: SimulationTemperatureBoundaryType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  adsorptionChiller: AdsorptionChillerSimulationType!
+  adsorptionChiller: SimulationAdsorptionChillerType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwFreshwaterSupply: OverpressureTemperatureBoundarySimulationType!
-  dhwHvacExchanger: HvacExchangerSimulationType!
-  dhwSeawaterSupply: TemperatureBoundarySimulationType!
-  dhwHotwaterDemand: FlowBoundarySimulationType!
-  dcBrightloopFwd1: ConverterSimulationType!
-  dcBrightloopFwd2: ConverterSimulationType!
-  dcUgrid1: ConverterSimulationType!
-  dcUgrid2: ConverterSimulationType!
-  dcBrightloopAft1: ConverterSimulationType!
-  dcBrightloopAft2: ConverterSimulationType!
-  dcBrightloopAft3: ConverterSimulationType!
-  dcBrightloopAft4: ConverterSimulationType!
-  dcSeawaterSupply: BoundarySimulationType!
-  drivesOilCoolerAft: HeatSourceSimulationType!
-  drivesOilCoolerFwd: HeatSourceSimulationType!
-  drivesPropdriveAft1: PropulsionDriveSimulationType!
-  drivesPropdriveAft2: PropulsionDriveSimulationType!
-  drivesPropdriveFwd1: PropulsionDriveSimulationType!
-  drivesPropdriveFwd2: PropulsionDriveSimulationType!
-  drivesShorepower: ConverterSimulationType!
-  drivesSeawaterSupply: BoundarySimulationType!
+  dhwFreshwaterSupply: SimulationOverpressureTemperatureBoundaryType!
+  dhwHvacExchanger: SimulationHvacExchangerType!
+  dhwSeawaterSupply: SimulationTemperatureBoundaryType!
+  dhwHotwaterDemand: SimulationFlowBoundaryType!
+  dcBrightloopFwd1: SimulationHeatSourceType!
+  dcBrightloopFwd2: SimulationHeatSourceType!
+  dcUgrid1: SimulationHeatSourceType!
+  dcUgrid2: SimulationHeatSourceType!
+  dcBrightloopAft1: SimulationHeatSourceType!
+  dcBrightloopAft2: SimulationHeatSourceType!
+  dcBrightloopAft3: SimulationHeatSourceType!
+  dcBrightloopAft4: SimulationHeatSourceType!
+  dcSeawaterSupply: SimulationBoundaryType!
+  drivesOilCoolerAft: SimulationHeatSourceType!
+  drivesOilCoolerFwd: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationHeatSourceType!
+  drivesPropdriveAft2: SimulationHeatSourceType!
+  drivesPropdriveFwd1: SimulationHeatSourceType!
+  drivesPropdriveFwd2: SimulationHeatSourceType!
+  drivesShorepower: SimulationHeatSourceType!
+  drivesSeawaterSupply: SimulationBoundaryType!
 }
 
 type ThrsSimulationOutputsType {
-  drivesSeawaterReturn: TemperatureBoundarySimulationType!
-  drivesDhwExchanger: ExchangerBoundarySimulationType!
-  drivesDhwReturn: TemperatureBoundarySimulationType!
-  dcSeawaterReturn: TemperatureBoundarySimulationType!
-  dcDhwExchanger: ExchangerBoundarySimulationType!
-  dcDhwReturn: TemperatureBoundarySimulationType!
-  dhwDrivesExchanger: ExchangerBoundarySimulationType!
-  dhwDrivesReturn: TemperatureBoundarySimulationType!
-  dhwDcExchanger: ExchangerBoundarySimulationType!
-  dhwDcReturn: TemperatureBoundarySimulationType!
-  dhwAdsorptionExchanger: ExchangerBoundarySimulationType!
-  dhwAdsorptionReturn: TemperatureBoundarySimulationType!
-  dhwConsumersExchanger: ExchangerBoundarySimulationType!
-  dhwConsumersReturn: TemperatureBoundarySimulationType!
-  dhwSeawaterReturn: TemperatureBoundarySimulationType!
-  dhwSeawaterSupply: FlowBoundarySimulationType!
-  dhwFreshwaterReturn: BoundarySimulationType!
-  adsorptionCoolingReturn: BoundarySimulationType!
-  adsorptionSeawaterReturn: TemperatureBoundarySimulationType!
-  adsorptionDhwExchanger: ExchangerBoundarySimulationType!
-  adsorptionDhwReturn: TemperatureBoundarySimulationType!
-  adsorptionConsumersExchanger: ExchangerBoundarySimulationType!
-  adsorptionConsumersReturn: TemperatureBoundarySimulationType!
-  consumersAdsorptionExchanger: ExchangerBoundarySimulationType!
-  consumersAdsorptionReturn: TemperatureBoundarySimulationType!
-  consumersDhwExchanger: ExchangerBoundarySimulationType!
-  consumersDhwReturn: TemperatureBoundarySimulationType!
-  consumersPcmReturn: BoundarySimulationType!
-  pcmConsumersReturn: BoundarySimulationType!
-  pcmThrustersReturn: BoundarySimulationType!
-  pcmPvtReturn: BoundarySimulationType!
-  pcmFreshwaterReturn: BoundarySimulationType!
-  pvtPcmReturn: BoundarySimulationType!
-  pvtPcmSupply: FlowBoundarySimulationType!
-  pvtSeawaterReturn: TemperatureBoundarySimulationType!
-  thrustersSeawaterReturn: TemperatureBoundarySimulationType!
-  thrustersPcmSupply: FlowBoundarySimulationType!
-  thrustersPcmReturn: BoundarySimulationType!
+  drivesSeawaterReturn: SimulationTemperatureBoundaryType!
+  drivesDhwExchanger: SimulationExchangerBoundaryType!
+  drivesDhwReturn: SimulationTemperatureBoundaryType!
+  dcSeawaterReturn: SimulationTemperatureBoundaryType!
+  dcDhwExchanger: SimulationExchangerBoundaryType!
+  dcDhwReturn: SimulationTemperatureBoundaryType!
+  dhwDrivesExchanger: SimulationExchangerBoundaryType!
+  dhwDrivesReturn: SimulationTemperatureBoundaryType!
+  dhwDcExchanger: SimulationExchangerBoundaryType!
+  dhwDcReturn: SimulationTemperatureBoundaryType!
+  dhwAdsorptionExchanger: SimulationExchangerBoundaryType!
+  dhwAdsorptionReturn: SimulationTemperatureBoundaryType!
+  dhwConsumersExchanger: SimulationExchangerBoundaryType!
+  dhwConsumersReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterSupply: SimulationFlowBoundaryType!
+  dhwFreshwaterReturn: SimulationBoundaryType!
+  adsorptionCoolingReturn: SimulationBoundaryType!
+  adsorptionSeawaterReturn: SimulationTemperatureBoundaryType!
+  adsorptionDhwExchanger: SimulationExchangerBoundaryType!
+  adsorptionDhwReturn: SimulationTemperatureBoundaryType!
+  adsorptionConsumersExchanger: SimulationExchangerBoundaryType!
+  adsorptionConsumersReturn: SimulationTemperatureBoundaryType!
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
 }
 
 input ThrusterInputType {
   heatFlow: Float!
   active: Boolean!
-}
-
-type ThrusterSimulationType {
-  heatFlow: FloatStampedType!
-  active: BoolStampedType!
 }
 
 type ThrustersControlModeType {
@@ -2719,17 +2709,17 @@ type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeT
 }
 
 type ThrustersSimulationInputsType {
-  thrustersThrusterAft: ThrusterSimulationType!
-  thrustersThrusterFwd: ThrusterSimulationType!
-  thrustersSeawaterSupply: BoundarySimulationType!
-  thrustersPcmSupply: TemperatureBoundarySimulationType!
-  thrustersPcs: PcsSimulationType!
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcmSupply: SimulationTemperatureBoundaryType!
+  thrustersPcs: SimulationPcsType!
 }
 
 type ThrustersSimulationOutputsType {
-  thrustersSeawaterReturn: TemperatureBoundarySimulationType!
-  thrustersPcmSupply: FlowBoundarySimulationType!
-  thrustersPcmReturn: BoundarySimulationType!
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
 }
 
 input ValveInputType {

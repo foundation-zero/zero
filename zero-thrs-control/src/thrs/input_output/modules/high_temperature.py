@@ -1,4 +1,4 @@
-from thrs.input_output.base import SimulationInputs
+from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationOutputs,
@@ -14,7 +14,7 @@ from thrs.input_output.modules.thrusters import (
 )
 
 
-class HighTemperatureSimulationInputs(SimulationInputs):
+class HighTemperatureSimulationInputs(ThrsValues):
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary

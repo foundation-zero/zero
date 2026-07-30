@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -172,14 +170,14 @@ class PcmControlValues(ThrsValues):
     ]
 
 
-class PcmSimulationInputs(SimulationInputs):
+class PcmSimulationInputs(ThrsValues):
     pcm_pvt_supply: simulation.Boundary
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
     pcm_consumers_supply: simulation.TemperatureBoundary
 
 
-class PcmSimulationOutputs(SimulationValues):
+class PcmSimulationOutputs(ThrsValues):
     pcm_consumers_return: simulation.Boundary
     pcm_thrusters_return: simulation.Boundary
     pcm_pvt_return: simulation.Boundary

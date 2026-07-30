@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -105,13 +103,13 @@ class ConsumersControlValues(ThrsValues):
     ]
 
 
-class ConsumersSimulationInputs(SimulationInputs):
+class ConsumersSimulationInputs(ThrsValues):
     consumers_adsorption_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_pcm_supply: simulation.Boundary
 
 
-class ConsumersSimulationOutputs(SimulationValues):
+class ConsumersSimulationOutputs(ThrsValues):
     consumers_adsorption_exchanger: simulation.ExchangerBoundary
     consumers_adsorption_return: simulation.TemperatureBoundary
     consumers_dhw_exchanger: simulation.ExchangerBoundary

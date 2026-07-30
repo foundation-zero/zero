@@ -41,8 +41,8 @@ from thrs.graphql.messaging import (
     DirectiveMessaging,
     SimulationMessaging,
 )
-from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
-from thrs.input_output.definitions import control, controllers, sensor
+from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.definitions import control, controllers, sensor, simulation
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
@@ -164,6 +164,7 @@ def convert_module(module, class_name_prefix: str):
 convert_module(sensor, "Sensor")
 convert_module(control, "Control")
 convert_module(controllers, "Controller")
+convert_module(simulation, "Simulation")
 
 
 # TODO: check if this can't just be based on the pydantic model directly
@@ -327,7 +328,7 @@ def add_parameter_mutations(
 
 def add_simulation_input_mutations(
     mode: str,
-    io_mapping: dict[str, tuple[type[SimulationInputs], type[ThrsValues]]],
+    io_mapping: dict[str, tuple[type[ThrsValues], type[ThrsValues]]],
     inputs_strawberry_type_mapping: dict[str, type],
     messaging: Callable[[ThrsContext], SimulationMessaging],
 ):

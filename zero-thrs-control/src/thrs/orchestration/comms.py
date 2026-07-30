@@ -13,13 +13,7 @@ from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-    get_topic,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
@@ -404,8 +398,8 @@ class ControlChannels[
 
 
 class SimulationChannels[
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     def __init__(
         self,
@@ -560,7 +554,7 @@ class ControlApiChannels[
         self.wait_for_control_modes = control_modes_mapping.wait_for
 
 
-class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
+class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
     def __init__(
         self,
         connector: "MqttConnector",

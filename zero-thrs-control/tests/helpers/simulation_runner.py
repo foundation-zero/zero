@@ -4,12 +4,7 @@ from typing import Any, cast
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control, ControlMode
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.simulation import Simulation, SimulationUnit
@@ -122,8 +117,8 @@ class _CombinedAlarmsAdapter:
 class SimulationTestRunner[
     S: ThrsValues | CombinedValues,
     C: ThrsValues | CombinedValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
     P,
     M,
     CS: ThrsValues | CombinedValues,

@@ -5,8 +5,6 @@ from typing import Any
 
 from thrs.input_output.base import (
     CombinedValues,
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 from thrs.orchestration.comms import SimulationChannels
@@ -21,8 +19,8 @@ logger = logging.getLogger(__name__)
 class SimulationResult[
     S,
     C,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     timestamp: datetime
     sensor_values: S
@@ -35,8 +33,8 @@ class SimulationResult[
 class Simulation[
     S,
     C,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     def __init__(
         self,
@@ -70,7 +68,7 @@ class Simulation[
         logging.debug("Running simulation tick")
         time = self.time()
 
-        simulation_inputs = self._simulation_inputs.get_values_at_time(time)
+        simulation_inputs = self._simulation_inputs
         fmu_inputs = self._io_mapping.generate_inputs(control_values, simulation_inputs)
         fmu_outputs = self._fmu.tick(fmu_inputs, self._tick_duration)
         sensor_values, simulation_outputs, raw = self._io_mapping.construct_outputs(
@@ -93,16 +91,16 @@ class Simulation[
 
 @dataclass
 class SimulationDescription:
-    simulation_outputs_cls: type[SimulationValues]
+    simulation_outputs_cls: type[ThrsValues]
     fmu: FmuLike
-    simulation_inputs: SimulationInputs
+    simulation_inputs: ThrsValues
 
 
 class SimulationUnit[
     S: ThrsValues | CombinedValues,
     C: ThrsValues | CombinedValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     channels: SimulationChannels[I, O]
 

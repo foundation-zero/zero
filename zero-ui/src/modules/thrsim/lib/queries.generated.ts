@@ -515,6 +515,30 @@ export const DC_SENSOR_QUERY = `
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
+  dcBrightloopFwd1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopFwd2 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid1 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid2 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft2 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft3 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft4 {
+    heatFlow { value timestamp }
+  }
   dcSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -1111,6 +1135,21 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
     heatFlow { value timestamp }
   }
   drivesOilCoolerFwd {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveAft1 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveAft2 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveFwd1 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveFwd2 {
+    heatFlow { value timestamp }
+  }
+  drivesShorepower {
     heatFlow { value timestamp }
   }
   drivesSeawaterSupply {

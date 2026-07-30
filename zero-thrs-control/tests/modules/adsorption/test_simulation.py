@@ -18,9 +18,8 @@ from thrs.simulation.models.fmu_paths import adsorption_path
     params=list(simulator_input_field_setters(AdsorptionSimulationInputs, ignore=[]))
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
-    request.param(inputs, -9e7)
-    return inputs
+    request.param(simulation_inputs, -9e7)
+    return simulation_inputs
 
 
 def test_adsorption_simulation_inputs(incorrect_simulation_inputs, control):

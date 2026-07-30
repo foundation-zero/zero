@@ -4,11 +4,11 @@ from typing import cast
 import pytest
 from pydantic import BaseModel
 
-from thrs.input_output.base import SimulationInputs
+from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import included_in_fmu
 
 
-def simulator_input_field_setters(cls: type[SimulationInputs], ignore=None):
+def simulator_input_field_setters(cls: type[ThrsValues], ignore=None):
     if ignore is None:
         ignore = []
     for component_name, component in cls.model_fields.items():

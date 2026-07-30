@@ -29,7 +29,7 @@ async def test_filling_flow(
             )
         }
     )
-    simulation.update_simulation_inputs(simulation_inputs_no_consumption)
+    runner.update_simulation_inputs(simulation_inputs_no_consumption)
 
     sensor_values, _control_values, controller_state = runner.run(30)
 
@@ -48,7 +48,7 @@ async def test_filling_flow(
             )
         }
     )
-    simulation.update_simulation_inputs(simulation_inputs_no_drives)
+    runner.update_simulation_inputs(simulation_inputs_no_drives)
 
     sensor_values, _control_values, controller_state = runner.run(60)
 
@@ -75,7 +75,7 @@ def test_filling_level(
             ),
         }
     )
-    simulation.update_simulation_inputs(simulation_inputs_no_consumption)
+    runner.update_simulation_inputs(simulation_inputs_no_consumption)
 
     # run until tank1 start filling
     sensor_values, *_ = runner.run_until(
@@ -131,7 +131,7 @@ def test_boosting_transitions(
             )
         }
     )
-    simulation.update_simulation_inputs(simulation_inputs_no_ht)
+    runner.update_simulation_inputs(simulation_inputs_no_ht)
     sensor_values, *_ = runner.run(120)
 
     assert control._tanks_controller.boosting

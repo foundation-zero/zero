@@ -2,8 +2,8 @@ import strawberry
 
 from thrs.graphql.base import add_simulation_input_mutations
 from thrs.graphql.helpers import (
-    dedataframed_pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.graphql.messaging import SimulationMessaging
 from thrs.input_output.modules.adsorption import (
@@ -52,12 +52,12 @@ io_mapping = {
 }
 
 inputs_strawberry_type_mapping = {
-    name: dedataframed_pydantic_to_strawberry_type(inputs)
+    name: pydantic_to_strawberry_type(inputs)
     for name, (inputs, _) in io_mapping.items()
 }
 
 outputs_strawberry_type_mapping = {
-    name: dedataframed_pydantic_to_strawberry_type(outputs)
+    name: pydantic_to_strawberry_type(outputs)
     for name, (_, outputs) in io_mapping.items()
 }
 

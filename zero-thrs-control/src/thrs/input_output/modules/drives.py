@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -264,7 +262,7 @@ class DrivesControlValues(ThrsValues):
     ]
 
 
-class DrivesSimulationInputs(SimulationInputs):
+class DrivesSimulationInputs(ThrsValues):
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
     drives_propdrive_aft1: simulation.PropulsionDrive
@@ -276,7 +274,7 @@ class DrivesSimulationInputs(SimulationInputs):
     drives_dhw_supply: simulation.Boundary
 
 
-class DrivesSimulationOutputs(SimulationValues):
+class DrivesSimulationOutputs(ThrsValues):
     drives_seawater_return: simulation.TemperatureBoundary
     drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary

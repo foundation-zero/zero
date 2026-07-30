@@ -1,10 +1,8 @@
-from typing import Annotated, cast
+from typing import Annotated
 
 from pydantic import computed_field
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     Stamped,
     ThrsValues,
     component_meta,
@@ -607,7 +605,7 @@ class DhwControlValues(ThrsValues):
     ]
 
 
-class DhwSimulationInputs(SimulationInputs):
+class DhwSimulationInputs(ThrsValues):
     dhw_drives_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
@@ -621,38 +619,34 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def drives_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_drives_supply.flow),
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature),
+            flow=self.dhw_drives_supply.flow,
+            temperature=self.dhw_drives_supply.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def drives_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature)
-        )
+        return sensor.TemperatureSensor(temperature=self.dhw_drives_supply.temperature)
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_dc_supply.flow),
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature),
+            flow=self.dhw_dc_supply.flow,
+            temperature=self.dhw_dc_supply.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature)
-        )
+        return sensor.TemperatureSensor(temperature=self.dhw_dc_supply.temperature)
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_consumers_supply.flow),
-            temperature=cast(Stamped, self.dhw_consumers_supply.temperature),
+            flow=self.dhw_consumers_supply.flow,
+            temperature=self.dhw_consumers_supply.temperature,
         )
 
     @computed_field(
@@ -663,7 +657,7 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def consumers_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_consumers_supply.temperature)
+            temperature=self.dhw_consumers_supply.temperature
         )
 
     @computed_field(
@@ -674,8 +668,8 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def adsorption_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_adsorption_supply.flow),
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature),
+            flow=self.dhw_adsorption_supply.flow,
+            temperature=self.dhw_adsorption_supply.temperature,
         )
 
     @computed_field(
@@ -686,11 +680,11 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def adsorption_temperature_waste_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature)
+            temperature=self.dhw_adsorption_supply.temperature
         )
 
 
-class DhwSimulationOutputs(SimulationValues):
+class DhwSimulationOutputs(ThrsValues):
     dhw_drives_exchanger: simulation.ExchangerBoundary
     dhw_drives_return: simulation.TemperatureBoundary
     dhw_dc_exchanger: simulation.ExchangerBoundary
@@ -711,7 +705,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_exchanger.temperature_return)
+            temperature=self.dhw_drives_exchanger.temperature_return
         )
 
     @computed_field(
@@ -722,7 +716,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_exchanger.temperature_return)
+            temperature=self.dhw_dc_exchanger.temperature_return
         )
 
     @computed_field(
@@ -733,7 +727,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_exchanger.temperature_return)
+            temperature=self.dhw_adsorption_exchanger.temperature_return
         )
 
     @computed_field(
@@ -744,7 +738,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_consumers_exchanger.temperature_return)
+            temperature=self.dhw_consumers_exchanger.temperature_return
         )
 
     @computed_field(
@@ -755,13 +749,13 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_freshwater_return.flow),
-            temperature=cast(Stamped, self.dhw_freshwater_return.temperature),
+            flow=self.dhw_freshwater_return.flow,
+            temperature=self.dhw_freshwater_return.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_freshwater_return.temperature)
+            temperature=self.dhw_freshwater_return.temperature
         )

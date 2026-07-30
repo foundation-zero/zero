@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from thrs.input_output.base import SimulationInputs, component_meta
+from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
@@ -65,7 +65,7 @@ from thrs.simulation.models.fmu_paths import (
 )
 
 
-class ThrsSimulationInputs(SimulationInputs):
+class ThrsSimulationInputs(ThrsValues):
     # thrusters
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
