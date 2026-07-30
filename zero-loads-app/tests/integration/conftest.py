@@ -3,7 +3,7 @@ from uuid import uuid4
 import pytest
 from aiomqtt import Client as MqttClient
 from asgi_lifespan import LifespanManager
-from factory.base import Factory
+from factory.base import DictFactory
 from factory.declarations import LazyFunction, Sequence
 from httpx import ASGITransport, AsyncClient
 from psycopg import connect
@@ -134,10 +134,7 @@ async def reset_mutable_tables(sessionmanager: SessionManager):
         await connection.execute(text("DELETE FROM loads.load_cases"))
 
 
-class LoadCaseFactory(Factory):
-    class Meta:
-        model = dict
-
+class LoadCaseFactory(DictFactory):
     id = LazyFunction(lambda: str(uuid4()))
     name = Sequence(lambda n: f"it-case-{n}")
     awa = 30.0
@@ -145,20 +142,14 @@ class LoadCaseFactory(Factory):
     sail_set_id = 1
 
 
-class LoadCaseMappingFactory(Factory):
-    class Meta:
-        model = dict
-
+class LoadCaseMappingFactory(DictFactory):
     load_case_id = LazyFunction(lambda: str(uuid4()))
     awa_range_id = "upwind"
     aws_range_id = 1
     sail_set_id = 1
 
 
-class ReferenceValueFactory(Factory):
-    class Meta:
-        model = dict
-
+class ReferenceValueFactory(DictFactory):
     load_case_id = LazyFunction(lambda: str(uuid4()))
     variable_key = "main-sheet-load"
     alarm_low = None

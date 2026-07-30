@@ -40,7 +40,7 @@ jobs:
         working-directory: zero-loads-app
       - run: uv run ruff format --check src tests
         working-directory: zero-loads-app
-      - run: uv run mypy src
+      - run: uv run pyright
         working-directory: zero-loads-app
       - name: Create .env file from secret in root for services
         run: |
