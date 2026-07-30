@@ -24,12 +24,16 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import adsorption_path
 
 
-def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation):
+def test_state_mode_switches(
+    control: AdsorptionControl,
+    simulation: Simulation,
+    simulation_inputs: AdsorptionSimulationInputs,
+):
     # start with cooling demand and insufficient heat
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_minimum - 1
     )
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_trigger + 1
     )
 
@@ -40,10 +44,10 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     result = simulation.tick(control_values)
 
     # higher but still insufficient heat to trigger cooling
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_minimum + 1
     )
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_trigger + 1
     )
 
@@ -54,7 +58,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="idle")
 
     # sufficient heat
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_trigger + 1
     )
 
@@ -65,7 +69,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     # sufficient but lower heat
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_minimum + 1
     )
 
@@ -76,7 +80,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     # insufficient heat
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_minimum - 1
     )
 
@@ -87,10 +91,10 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="idle")
 
     # sufficient heat but no cooling demand
-    simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_trigger + 1
     )
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_minimum - 1
     )
 
@@ -101,7 +105,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="idle")
 
     # insufficient cooling demand
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_trigger - 1
     )
 
@@ -112,7 +116,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="idle")
 
     # sufficient cooling demand to trigger cooling
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_trigger + 1
     )
 
@@ -123,7 +127,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     # sufficient cooling demand
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_minimum + 1
     )
 
@@ -134,7 +138,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     # no cooling demand
-    simulation._simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
+    simulation_inputs.adsorption_available_cold_temperature.temperature.value = (
         control._parameters.adsorption_cold_minimum - 1
     )
 
@@ -172,8 +176,12 @@ def test_adsorption_cooling(control: AdsorptionControl, simulation: Simulation):
     )
 
 
-def test_waste_recovery(control: AdsorptionControl, simulation: Simulation):
-    simulation._simulation_inputs.adsorption_dhw_supply.temperature.value = 20
+def test_waste_recovery(
+    control: AdsorptionControl,
+    simulation: Simulation,
+    simulation_inputs: AdsorptionSimulationInputs,
+):
+    simulation_inputs.adsorption_dhw_supply.temperature.value = 20
     control._parameters.waste_recovery_temperature_setpoint = 40
     control._parameters.waste_cooling_temperature_setpoint = 60
 
