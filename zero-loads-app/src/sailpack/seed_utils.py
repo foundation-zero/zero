@@ -146,17 +146,6 @@ def read_reference_values_mapping(input_source: Path) -> pl.DataFrame:
     return pl.read_csv(mapping_path)
 
 
-def unique_load_cases_from_conditions(conditions: pl.DataFrame) -> pl.DataFrame:
-    return (
-        conditions.with_columns(pl.col("calculation_id").str.strip_chars())
-        .filter(pl.col("calculation_id").str.len_chars() > 0)
-        .drop_nulls(["tws", "twa"])
-        .unique(subset=["calculation_id"], keep="first", maintain_order=True)
-        .with_columns(pl.col("twa").abs().alias("awa"), pl.col("tws").alias("aws"))
-        .select(["calculation_id", "aws", "awa"])
-    )
-
-
 def resolve_sail_set_id_sql(payload_alias: str = "payload") -> str:
     template = """(
             SELECT ssc.id
