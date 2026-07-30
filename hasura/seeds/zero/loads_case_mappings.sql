@@ -221,6 +221,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 1,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -230,6 +231,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 2,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -239,6 +241,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 3,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -248,6 +251,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 4,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -257,6 +261,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 5,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -266,6 +271,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 6,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]
@@ -275,6 +281,7 @@ WITH mapping_payload AS (
     "awa_range_id": "upwind",
     "aws_range_id": 7,
     "sail_abbreviations": [
+      "C0",
       "FM",
       "FMZ"
     ]

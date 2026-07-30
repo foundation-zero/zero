@@ -23,6 +23,8 @@ KNOWN_SAIL_ABBREVIATIONS = {
     "MZSS",
 }
 
+SAIL_ABBREVIATION_ALIASES = {"MH0": "C0"}
+
 MAPPING_FILE_NAME = "Sailpack mapping - Mapping.csv"
 
 
@@ -32,7 +34,11 @@ def escape_dollar_quoted_json(value: str) -> str:
 
 def extract_sail_abbreviations(calculation_id: str) -> list[str]:
     raw_tokens = re.split(r"[^A-Za-z0-9]+", calculation_id.upper())
-    filtered = [token for token in raw_tokens if token in KNOWN_SAIL_ABBREVIATIONS]
+    filtered = [
+        SAIL_ABBREVIATION_ALIASES.get(token, token)
+        for token in raw_tokens
+        if token in KNOWN_SAIL_ABBREVIATIONS or token in SAIL_ABBREVIATION_ALIASES
+    ]
 
     # Preserve order while removing duplicates.
     return list(dict.fromkeys(filtered))
