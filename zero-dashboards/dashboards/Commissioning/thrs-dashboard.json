@@ -172,7 +172,7 @@
           "dataset": "dev",
           "editorMode": "code",
           "editorType": "sql",
-          "format": 1,
+          "format": 0,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -185,9 +185,9 @@
             }
           },
           "pluginVersion": "2.1.4",
-          "queryType": "table",
+          "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t  timestamp          AS time,\r\n\t\ttemperature__value AS temperature1\r\n\tFROM public.marpower__500000_thrs__boilers__boilers_temperature_tank1\r\n\tWHERE $__timeFilter(timestamp)\r\n  AND 'thrusters' IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.test_marpower__500000_thrs__temperatures\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
           "refId": "A",
           "sql": {
             "columns": [
@@ -206,68 +206,33 @@
             ],
             "limit": 50
           }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawSql": "  SELECT\r\n\t  timestamp          AS time,\r\n\t\ttemperature__value AS temperature2\r\n\tFROM public.marpower__500000_thrs__boilers__boilers_temperature_tank2\r\n\tWHERE $__timeFilter(timestamp)\r\n  AND 'adsorption' IN (${section:sqlstring})",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawSql": "  SELECT\r\n\t  timestamp          AS time,\r\n\t\ttemperature__value AS temperature3\r\n\tFROM public.marpower__500000_thrs__boilers__boilers_temperature_tank3\r\n\tWHERE $__timeFilter(timestamp)\r\n  AND 'pvt' IN (${section:sqlstring})",
-          "refId": "C"
         }
       ],
       "title": "",
       "transformations": [
         {
+          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "device": "Device",
               "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2"
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": "Temperature",
+              "time": ""
             }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "device"
+            ],
+            "keepFields": false
           }
         }
       ],
@@ -300,10 +265,10 @@
         "allowCustomValue": false,
         "current": {
           "text": [
-            "$__all"
+            "dhw"
           ],
           "value": [
-            "$__all"
+            "dhw"
           ]
         },
         "includeAll": true,
@@ -332,7 +297,7 @@
             "value": "dc"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "dhw",
             "value": "dhw"
           },
