@@ -5,7 +5,7 @@ defineProps<{ label?: string | null }>();
 <template>
   <p
     v-if="label"
-    class="text-muted-foreground whitespace-nowrap text-xs font-medium leading-none"
+    class="text-muted-foreground text-xs leading-none font-medium whitespace-nowrap"
   >
     {{ label }}
   </p>
