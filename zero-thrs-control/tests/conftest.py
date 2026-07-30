@@ -1,8 +1,8 @@
 import asyncio
 import os
 import socket
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -25,7 +25,7 @@ def settings():
 
 @pytest.fixture(scope="session")
 def app(settings):
-    from thrs.graphql.strawberry import create_app
+    from thrs.graphql.strawberry import create_app  # noqa: PLC0415
 
     return create_app(settings)
 

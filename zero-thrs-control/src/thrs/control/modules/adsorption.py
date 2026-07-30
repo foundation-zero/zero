@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from pydantic import model_validator
 from transitions import State
@@ -53,7 +53,7 @@ class AdsorptionParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802
     return AdsorptionControlValues(
         adsorption_flowcontrol_waste=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
@@ -157,21 +157,27 @@ class AdsorptionControl(
                 "trigger": "_check_adsorption_status",
                 "source": ["idle", "free_cooling"],
                 "dest": "cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and not sensor_values.adsorption_chiller.free_cooling.value,  # TODO: check if we need to add error condition
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and not sensor_values.adsorption_chiller.free_cooling.value
+                ),  # TODO: check if we need to add error condition
             },
             {
                 "trigger": "_check_adsorption_status",
                 "source": ["cooling", "free_cooling"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not sensor_values.adsorption_chiller.operating.value,  # TODO: check if we need to add error condition
+                "conditions": lambda sensor_values: (
+                    not sensor_values.adsorption_chiller.operating.value
+                ),  # TODO: check if we need to add error condition
             },
             {
                 "trigger": "_check_free_cooling",
                 "source": ["idle", "cooling"],
                 "dest": "free_cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and sensor_values.adsorption_chiller.free_cooling.value,
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and sensor_values.adsorption_chiller.free_cooling.value
+                ),
             },
         ]
 

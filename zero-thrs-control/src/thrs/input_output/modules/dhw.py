@@ -411,8 +411,7 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatPump(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatPump(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -448,8 +447,7 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -495,8 +493,7 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
 
 class DhwControlValues(ThrsValues):

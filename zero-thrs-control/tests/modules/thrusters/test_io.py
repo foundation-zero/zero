@@ -69,7 +69,7 @@ def test_set_module_temperature(
 
     # allow temp to stabilize
     result = None
-    for i in range(500):
+    for _i in range(500):
         result = simulation.tick(
             control_values,
         )

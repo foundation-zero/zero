@@ -14,7 +14,7 @@ def test_idle(control: ThrustersControl, simulation: ThrustersSimulation):
 
     result = simulation.tick(control.initial()[0])
 
-    for i in range(90):
+    for _i in range(90):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -28,7 +28,7 @@ def test_cooling(control: ThrustersControl, simulation: ThrustersSimulation):
 
     control.to_cooling(result.sensor_values)  # type: ignore
     # set valves and stabilize
-    for i in range(100):
+    for _i in range(100):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -75,7 +75,7 @@ def test_recovery(control: ThrustersControl, simulation: ThrustersSimulation):
     result = simulation.tick(control.initial()[0])
 
     control.to_recovery(result.sensor_values)  # type: ignore
-    for i in range(200):
+    for _i in range(200):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -134,7 +134,7 @@ def test_recovery_mixing(control: ThrustersControl, simulation: ThrustersSimulat
         )
 
     # if both aft and fwd are warm, mixing valves should be open
-    for i in range(20):
+    for _i in range(20):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -150,11 +150,11 @@ def test_heat_dump_with_cold_sea(
 
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
-    for i in range(360):
+    for _i in range(360):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(30):
+    for _i in range(30):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -173,11 +173,11 @@ def test_heat_dump_with_hot_sea(
 
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
-    for i in range(500):
+    for _i in range(500):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(30):
+    for _i in range(30):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -192,11 +192,11 @@ def test_recovery_temperature(
 ):
     result = simulation.tick(control.initial()[0])
     # set valves and stabilize
-    for i in range(500):
+    for _i in range(500):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(60):
+    for _i in range(60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
         assert control.mode == ThrustersControlMode(mode="recovery")
@@ -218,11 +218,11 @@ def test_recovery_single_thruster(
     simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
 
     # set valves and stabilize
-    for i in range(500):
+    for _i in range(500):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(60):
+    for _i in range(60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -245,11 +245,11 @@ def test_flow_thrusters_off(control: ThrustersControl, simulation: ThrustersSimu
 
     result = simulation.tick(control.initial()[0])
     # set valves and stabilize
-    for i in range(120):
+    for _i in range(120):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(60):
+    for _i in range(60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -261,11 +261,11 @@ def test_flow_cooling(control: ThrustersControl, simulation: ThrustersSimulation
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
     # set valves and stabilize
-    for i in range(200):
+    for _i in range(200):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(60):
+    for _i in range(60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
         assert control.mode == ThrustersControlMode(mode="cooling")
@@ -286,11 +286,11 @@ def test_flow_cooling_single_thruster(
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
     # set valves and stabilize
-    for i in range(200):
+    for _i in range(200):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    for i in range(60):
+    for _i in range(60):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
@@ -305,7 +305,7 @@ def test_cooldown(control: ThrustersControl, simulation: ThrustersSimulation):
     control_values, _ = control.control(result.sensor_values)
 
     # set valves and stabilize
-    for i in range(300):
+    for _i in range(300):
         result = simulation.tick(control_values)
         control_values, _ = control.control(result.sensor_values)
 

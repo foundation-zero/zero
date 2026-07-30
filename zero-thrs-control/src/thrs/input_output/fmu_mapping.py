@@ -1,5 +1,6 @@
 import operator
 from datetime import datetime
+from itertools import groupby as _groupby
 from typing import Any, cast, overload
 
 from pydantic.fields import ComputedFieldInfo, FieldInfo
@@ -12,7 +13,6 @@ from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
-    from itertools import groupby as _groupby
 
     data = sorted(iterable, key=key)
     return _groupby(data, key)
@@ -68,14 +68,12 @@ def build_fmu_key_mapping(
         if fmu_only is False or included_in_fmu(field)
     ]
 
-    mapping = {
+    return {
         (component_name, field_name): _fmu_key_for_field(
             component_name, field_name, field
         )
         for component_name, field_name, field in component_fields
     }
-
-    return mapping
 
 
 def extract_non_fmu_values(
@@ -125,7 +123,7 @@ def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T]],
     values: dict[str, float],
     timestamp: datetime,
-    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] | None = None,
 ) -> tuple[T]: ...
 
 
@@ -134,7 +132,7 @@ def build_outputs_from_fmu[T: ThrsValues, T2: ThrsValues](
     clss: tuple[type[T], type[T2]],
     values: dict[str, float],
     timestamp: datetime,
-    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] | None = None,
 ) -> tuple[T, T2]: ...
 
 
@@ -143,7 +141,7 @@ def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T], ...],
     values: dict[str, float],
     timestamp: datetime,
-    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] | None = None,
 ) -> tuple[T, ...]: ...
 
 
@@ -151,8 +149,11 @@ def build_outputs_from_fmu(
     clss: tuple[type[ThrsValues], ...],
     values: dict[str, float],
     timestamp: datetime,
-    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] | None = None,
 ) -> tuple[ThrsValues, ...]:
+    if non_fmu_simulation_inputs is None:
+        non_fmu_simulation_inputs = {}
+
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
     def _split_component_field(key: str):

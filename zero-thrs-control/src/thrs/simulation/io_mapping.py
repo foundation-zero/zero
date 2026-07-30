@@ -127,7 +127,9 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
             non_fmu_values,
         )
         return (
-            CombinedValues(dict(zip(self._sensor_values_clss.keys(), sensor_values))),
+            CombinedValues(
+                dict(zip(self._sensor_values_clss.keys(), sensor_values, strict=False))
+            ),
             simulation_outputs,
             {**fmu_outputs, **fmu_inputs},
         )

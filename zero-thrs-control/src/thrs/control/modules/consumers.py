@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Callable
+from typing import Annotated
 
 from pydantic import Field
 
@@ -30,7 +31,7 @@ class ConsumersParameters(ThrsValues):
     adsorption_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:  # noqa: N802
     return ConsumersControlValues(
         consumers_flowcontrol_bypass=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
@@ -138,6 +139,7 @@ class ConsumersControl(
                     self._parameters.adsorption_flow_ratio_setpoint,
                 ],
                 actives,
+                strict=False,
             )
         ]
         self._flow_distribution_controller.set_ratios(

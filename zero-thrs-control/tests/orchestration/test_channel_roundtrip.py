@@ -69,7 +69,7 @@ def demo_module() -> ModuleDescription:
         lambda *_args, **_kwargs: mock.Mock(),
         DemoMode,
         DemoControllerState,
-        lambda: mock.Mock(),
+        mock.Mock,
     )
 
 
@@ -83,7 +83,7 @@ def _listener_for_topic(connector: MqttConnector, topic: str):
 
 async def _wait_until(predicate, timeout_s: float = 2.0):
     async with asyncio.timeout(timeout_s):
-        while not predicate():
+        while not predicate():  # noqa: ASYNC110
             await asyncio.sleep(0.01)
 
 

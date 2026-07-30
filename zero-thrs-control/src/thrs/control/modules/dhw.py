@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Callable
+from typing import Annotated
 
 from pydantic import Field, model_validator
 from transitions import State
@@ -117,7 +118,7 @@ def _zero_pid(timestamp: datetime) -> PidControllerValues:
     )
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
     return DhwControlValues(
         dhw_pump=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -163,7 +164,7 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
     return DhwControllerState(
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -351,7 +352,7 @@ class TanksController:
         ]
 
         for tank, level, temperature, disabled, outlet_position in zip(
-            self._tanks, levels, temperatures, disableds, outlet_positions
+            self._tanks, levels, temperatures, disableds, outlet_positions, strict=False
         ):
             tank.level = level
             tank.temperature = temperature
@@ -605,31 +606,39 @@ class DhwControl(
                 "trigger": "_try_boosting",
                 "source": ["idle", "boosting_heatpump"],
                 "dest": "boosting_high_temperature",
-                "conditions": lambda sensor_values: self._tanks_controller.boosting
-                and self._ht_sufficient_boosting_heat(sensor_values)
-                and self._parameters.heatpump_boosting_enabled,
+                "conditions": lambda sensor_values: (
+                    self._tanks_controller.boosting
+                    and self._ht_sufficient_boosting_heat(sensor_values)
+                    and self._parameters.heatpump_boosting_enabled
+                ),
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["idle", "boosting_high_temperature"],
                 "dest": "boosting_heatpump",
-                "conditions": lambda sensor_values: self._tanks_controller.boosting
-                and not self._ht_sufficient_boosting_heat(sensor_values)
-                and self._parameters.ht_boosting_enabled,  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
+                "conditions": lambda sensor_values: (
+                    self._tanks_controller.boosting
+                    and not self._ht_sufficient_boosting_heat(sensor_values)
+                    and self._parameters.ht_boosting_enabled
+                ),  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["boosting_heatpump"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._tanks_controller.boosting
-                or not self._parameters.heatpump_boosting_enabled,
+                "conditions": lambda sensor_values: (
+                    not self._tanks_controller.boosting
+                    or not self._parameters.heatpump_boosting_enabled
+                ),
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["boosting_high_temperature"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._tanks_controller.boosting
-                or not self._parameters.ht_boosting_enabled,
+                "conditions": lambda sensor_values: (
+                    not self._tanks_controller.boosting
+                    or not self._parameters.ht_boosting_enabled
+                ),
             },
         ]
 
@@ -798,12 +807,14 @@ class DhwControl(
                 if not controller.enabled():
                     controller.enable()
 
-        if not self._drives_heat_available(sensor_values):
-            if self._dhw_drives_flow_controller.enabled():
-                self._dhw_drives_flow_controller.disable()
-                self._current_values.dhw_flowcontrol_drives.setpoint = Stamped(
-                    value=Valve.CLOSED, timestamp=self._time()
-                )
+        if (
+            not self._drives_heat_available(sensor_values)
+            and self._dhw_drives_flow_controller.enabled()
+        ):
+            self._dhw_drives_flow_controller.disable()
+            self._current_values.dhw_flowcontrol_drives.setpoint = Stamped(
+                value=Valve.CLOSED, timestamp=self._time()
+            )
 
         if not self._tanks_controller.filling:
             for controller in [
@@ -844,7 +855,7 @@ class DhwControl(
                 "Both pump temperature and flow controllers cannot be enabled at the same time"
             )
 
-        elif self._pump_flow_controller.enabled():
+        if self._pump_flow_controller.enabled():
             self._current_values.dhw_pump.dutypoint = Stamped(
                 value=self._pump_flow_controller(
                     sensor_values.dhw_flow_boosting.flow.value

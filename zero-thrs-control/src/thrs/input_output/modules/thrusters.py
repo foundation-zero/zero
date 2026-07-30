@@ -2,8 +2,6 @@ from typing import Annotated
 
 from pydantic import computed_field
 
-import thrs.input_output.definitions.control as control
-import thrs.input_output.definitions.sensor as sensor
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
@@ -12,7 +10,7 @@ from thrs.input_output.base import (
     component_meta,
     computed_meta,
 )
-from thrs.input_output.definitions import simulation
+from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ThrustersSensorValues(ThrsValues):

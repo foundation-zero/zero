@@ -291,7 +291,7 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
         (16, 32),
         (17, 33),
     ]
-    for payload, (flow, temperature) in zip(payloads, expected_values):
+    for payload, (flow, temperature) in zip(payloads, expected_values, strict=False):
         assert payload.flow.value == flow
         assert payload.temperature.value == temperature
 

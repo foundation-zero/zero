@@ -141,5 +141,5 @@ def tanks_controller(parameters) -> TanksController:
             boosting_return_valve=control_values.dhw_switch_tank3_boosting_return,
             disabled=parameters.tank3_disabled,
         ),
-        time_fn=lambda: datetime.now(),
+        time_fn=datetime.now,
     )

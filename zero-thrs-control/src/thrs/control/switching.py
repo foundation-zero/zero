@@ -76,8 +76,7 @@ class SwitchingControl[
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
-        else:
-            return self._automatic_control.control(sensor_values)
+        return self._automatic_control.control(sensor_values)
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode

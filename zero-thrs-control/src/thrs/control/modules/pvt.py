@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Callable
+from typing import Annotated
 
 from pydantic import Field, model_validator
 
@@ -73,7 +74,7 @@ class PvtParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N802
     return PvtControlValues(
         pvt_pump_main_fwd=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),

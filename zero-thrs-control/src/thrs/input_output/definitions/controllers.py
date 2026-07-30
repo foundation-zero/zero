@@ -21,4 +21,4 @@ class TanksControllerValues(ThrsValues):
     time_to_fill: Stamped[Seconds | None]
 
 
-__all__ = ["TanksControllerValues", "PidControllerValues"]
+__all__ = ["PidControllerValues", "TanksControllerValues"]

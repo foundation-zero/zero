@@ -1,14 +1,11 @@
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
 from inspect import isclass
-from typing import Callable, Coroutine
 
 import strawberry
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import BaseContext
 
-import thrs.input_output.definitions.control as control
-import thrs.input_output.definitions.controllers as controllers
-import thrs.input_output.definitions.sensor as sensor
 from thrs.control.modules.adsorption import (
     AdsorptionControllerState,
     AdsorptionControlMode,
@@ -45,6 +42,7 @@ from thrs.graphql.messaging import (
     SimulationMessaging,
 )
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.definitions import control, controllers, sensor
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
@@ -147,10 +145,7 @@ class StampedType[T]:
 
 
 def get_members(module):
-    if hasattr(module, "__all__"):
-        names = module.__all__
-    else:
-        names = dir(module)
+    names = module.__all__ if hasattr(module, "__all__") else dir(module)
     return {name: getattr(module, name) for name in names}
 
 
@@ -178,10 +173,12 @@ class SwitchingControlModeType[Mode]:
 
     @classmethod
     def from_pydantic(
-        cls, type, mode: SwitchingControlMode[Mode]
+        cls, graphql_type, mode: SwitchingControlMode[Mode]
     ) -> "SwitchingControlModeType[Mode]":
         return cls(
-            automatic_mode=optional_pydantic_to_graphql(type, mode.automatic_mode)
+            automatic_mode=optional_pydantic_to_graphql(
+                graphql_type, mode.automatic_mode
+            )
         )
 
     @strawberry.field

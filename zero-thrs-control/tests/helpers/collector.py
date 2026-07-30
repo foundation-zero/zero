@@ -34,7 +34,7 @@ class PolarsCollector(Collector[pl.DataFrame]):
             }
         )
 
-    def result(self) -> None | pl.DataFrame:
+    def result(self) -> pl.DataFrame | None:
         if not self._data:
             return None
 
@@ -58,7 +58,8 @@ class PolarsCollector(Collector[pl.DataFrame]):
                 )
             },
             **{key: pl.Boolean for key in all_keys if key.endswith("__bool")},
-            **{"time": pl.Datetime(time_unit="us"), "control_mode": pl.String},
+            "time": pl.Datetime(time_unit="us"),
+            "control_mode": pl.String,
         }
         return pl.from_dicts(
             self._data,

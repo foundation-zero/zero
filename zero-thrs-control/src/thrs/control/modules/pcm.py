@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from transitions import State
 
@@ -28,7 +28,7 @@ class PcmParameters(ThrsValues):
     module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
     return PcmControlValues(
         pcm_pump=Pump(
             dutypoint=Stamped(value=0, timestamp=timestamp),
@@ -165,8 +165,10 @@ class PcmControl(
                 "trigger": "_check_supplying_conditions",
                 "source": "supplying",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.supplying_enabled
-                or self._all_discharged(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.supplying_enabled
+                    or self._all_discharged(sensor_values)
+                ),
             },
             {
                 "trigger": "_try_charging",
@@ -181,8 +183,10 @@ class PcmControl(
                 "trigger": "_check_charging_conditions",
                 "source": "charging",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.charging_enabled
-                or not self._sufficient_dt(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.charging_enabled
+                    or not self._sufficient_dt(sensor_values)
+                ),
             },
         ]
 

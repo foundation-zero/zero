@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Literal
 
 from transitions import State
 
@@ -48,7 +49,7 @@ class DrivesParameters(ThrsValues):
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa: N802
     return DrivesControlValues(
         drives_pump1=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -174,16 +175,16 @@ class DrivesControl(
                 "trigger": "_check_shorepower",
                 "source": "shorepower",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._shorepower_on(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._shorepower_on(sensor_values)
                 ),
             },
             {
                 "trigger": "_check_thrusters",
                 "source": "propulsion",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._propdrive_active(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._propdrive_active(sensor_values)
                 ),
             },
         ]
@@ -196,9 +197,11 @@ class DrivesControl(
 
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.drives_mix_exchanger.setpoint.value,
-            setpoint=lambda: self._parameters.propulsion_maximum_supply_temperature
-            if self.mode.is_propulsion
-            else self._parameters.shorepower_maximum_supply_temperature,
+            setpoint=lambda: (
+                self._parameters.propulsion_maximum_supply_temperature
+                if self.mode.is_propulsion
+                else self._parameters.shorepower_maximum_supply_temperature
+            ),
             tuning=lambda: self._parameters.heat_dump_tuning,
             time_fn=self._time,
         )
@@ -238,8 +241,8 @@ class DrivesControl(
             time_fn=self._time,
         )
 
-        self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
-        self._active_pump: None | Pump = None  # TODO: make into controller
+        self._most_recently_active_pump: Literal["pump1", "pump2"] | None = None
+        self._active_pump: Pump | None = None  # TODO: make into controller
 
         self._flow_balance_controller = FlowBalanceController(
             [
@@ -389,14 +392,14 @@ class DrivesControl(
     def _activate_pump(self, sensor_values: DrivesSensorValues):
         if self._active_pump:
             raise Warning("A pump was already active upon selecting")
-        else:
-            if self._most_recently_active_pump == "pump1":
-                self._most_recently_active_pump = "pump2"
-                self._active_pump = self._current_values.drives_pump2
 
-            else:
-                self._most_recently_active_pump = "pump1"
-                self._active_pump = self._current_values.drives_pump2
+        if self._most_recently_active_pump == "pump1":
+            self._most_recently_active_pump = "pump2"
+            self._active_pump = self._current_values.drives_pump2
+
+        else:
+            self._most_recently_active_pump = "pump1"
+            self._active_pump = self._current_values.drives_pump1
 
         self._active_pump.on = Stamped(value=True, timestamp=self._time())
 

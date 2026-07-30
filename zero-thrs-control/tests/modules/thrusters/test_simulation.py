@@ -127,7 +127,7 @@ def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
         control_values.thrusters_pump1.on.value = True
 
         with pytest.raises(Exception):
-            for i in range(100):
+            for _i in range(100):
                 simulation.tick(
                     control._current_values,
                 )

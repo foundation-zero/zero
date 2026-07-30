@@ -1,6 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
 from functools import partial
-from typing import Callable
 
 from thrs.orchestration.comms import DirectivesChannels
 from thrs.runtime.descriptions.simulation import Mode

@@ -1,12 +1,13 @@
 import os
 from contextlib import nullcontext as assert_does_not_raise
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from thrs.runtime.liveness import Liveness
 
 
 def test_liveness_no_error():
-    liveness = Liveness("/tmp/does_not_exist")
+    liveness = Liveness(Path("/tmp/does_not_exist"))  # noqa: S108
 
     with assert_does_not_raise():
         liveness.signal()
@@ -14,11 +15,12 @@ def test_liveness_no_error():
 
 def test_liveness_updates_timestamp():
     with NamedTemporaryFile() as tempfile:
-        os.utime(tempfile.name, (0, 0))
-        mtime = os.stat(tempfile.name).st_mtime
+        tempfile_path = Path(tempfile.name)
+        os.utime(tempfile_path, (0, 0))
+        mtime = tempfile_path.stat().st_mtime
 
-        liveness = Liveness(tempfile.name)
+        liveness = Liveness(tempfile_path)
         liveness.signal()
 
-        stat = os.stat(tempfile.name)
+        stat = tempfile_path.stat()
         assert stat.st_mtime != mtime

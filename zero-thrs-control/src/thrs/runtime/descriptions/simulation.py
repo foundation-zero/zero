@@ -366,7 +366,7 @@ class Mode:
 
 
 def lookup_mode(mode_name: ModeName) -> Mode:
-    return next((m for m in MODES if m.name == mode_name))
+    return next(m for m in MODES if m.name == mode_name)
 
 
 MODES: list[Mode] = [

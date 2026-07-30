@@ -35,7 +35,7 @@ def test_adsorption_simulation_inputs(incorrect_simulation_inputs, control):
         )
 
         with pytest.raises(Exception):
-            for i in range(100):
+            for _i in range(100):
                 simulation.tick(
                     control.initial(datetime.now()),
                 )

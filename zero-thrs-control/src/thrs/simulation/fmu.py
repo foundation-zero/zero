@@ -1,11 +1,12 @@
 import logging
-import os
 import shutil
 from base64 import b64encode
+from collections.abc import Callable, Iterable
 from datetime import timedelta
+from pathlib import Path
 from tempfile import TemporaryDirectory, gettempdir
 from types import TracebackType
-from typing import Any, Callable, Iterable, Protocol, Self, cast, runtime_checkable
+from typing import Any, Protocol, Self, cast, runtime_checkable
 
 from fmpy import extract, read_model_description
 from fmpy.fmi2 import FMU2Slave
@@ -61,16 +62,17 @@ class Fmu:
         ]
 
     def _extract_fmu_contents(self, file):
-        file_path = os.path.abspath(file)
-        file_key = b64encode(file_path.encode()).decode().replace("=", "")
-        cache_root = os.path.join(gettempdir(), "thrs_fmu_cache")
-        os.makedirs(cache_root, exist_ok=True)
-        self._cached_unzip_dir = os.path.join(cache_root, f"fmu_{file_key}")
+        file_path = Path(file).resolve()
+        file_key = b64encode(file_path.as_posix().encode()).decode().replace("=", "")
+        cache_root = Path(gettempdir()) / "thrs_fmu_cache"
+        cache_root.mkdir(parents=True, exist_ok=True)
+        self._cached_unzip_dir = cache_root / f"fmu_{file_key}"
 
-        if not os.path.exists(self._cached_unzip_dir) or os.path.getmtime(
-            file_path
-        ) > os.path.getmtime(self._cached_unzip_dir):
-            if os.path.exists(self._cached_unzip_dir):
+        if (
+            not self._cached_unzip_dir.exists()
+            or file_path.stat().st_mtime > self._cached_unzip_dir.stat().st_mtime
+        ):
+            if self._cached_unzip_dir.exists():
                 shutil.rmtree(self._cached_unzip_dir, ignore_errors=True)
 
             extract(file_path, self._cached_unzip_dir)
@@ -146,6 +148,7 @@ class Fmu:
                 zip(
                     self._output_names,
                     self._fmu_instance.getReal(self._var_mapper(self._output_names)),
+                    strict=False,
                 )
             ),
         )  # type: ignore

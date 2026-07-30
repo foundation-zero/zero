@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (

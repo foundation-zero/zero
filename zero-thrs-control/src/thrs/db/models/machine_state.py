@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import Column, DateTime
@@ -24,7 +24,7 @@ class MachineStateIssue(MachineStateModelBase, table=True):
     )
     issue_details: str | None
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
@@ -36,7 +36,7 @@ class MachineStateEvent(MachineStateModelBase, table=True):
     event_name: str
     event_details: str | None
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
@@ -50,7 +50,7 @@ class MachineStateTransition(MachineStateModelBase, table=True):
     state_from: str
     state_to: str
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
@@ -68,6 +68,6 @@ class MachineStateParametersUpdate(MachineStateModelBase, table=True):
         default=None, sa_column=Column(JSONB, nullable=True)
     )
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )

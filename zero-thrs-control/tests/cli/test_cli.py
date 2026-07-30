@@ -97,8 +97,6 @@ async def test_simulation_run_start_stop(
     # Verifies the simulation can transition from available to running and back to available.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
-    controls_client = controls_client
-
     runtime = setup_lockstep(
         lookup_mode("thrusters"),
         settings,

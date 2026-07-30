@@ -1,4 +1,5 @@
-from typing import Callable, Coroutine, Literal, cast
+from collections.abc import Callable, Coroutine
+from typing import Literal, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
