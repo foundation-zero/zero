@@ -5,11 +5,22 @@ from bs4 import BeautifulSoup
 from bs4.element import NavigableString, Tag
 
 
-def parse_directory(folder: str) -> pl.DataFrame:
+def parse_directory(input_source: Path) -> pl.DataFrame:
+    if input_source.is_file():
+        raise ValueError(
+            "Expected a sailpack directory containing .htm files, "
+            f"got file: {input_source}"
+        )
+
+    if not input_source.exists():
+        raise FileNotFoundError(f"Input directory not found: {input_source}")
     frames = []
-    for file in Path(folder).glob("*.htm"):
+    for file in input_source.glob("*.htm"):
         frame = parse_sailpack(file)
         frames.append(frame)
+
+    if not frames:
+        raise ValueError(f"No .htm files found in sailpack directory: {input_source}")
 
     return pl.concat(frames, how="diagonal")
 

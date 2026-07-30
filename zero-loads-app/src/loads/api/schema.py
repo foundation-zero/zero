@@ -59,8 +59,12 @@ class LoadCases(Base):
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
+    tws = Column(Float, nullable=True)
+    twa = Column(Float, nullable=True)
     awa = Column(Float, nullable=False)
     aws = Column(Float, nullable=False)
+    bsp = Column(Float, nullable=True)
+    heel = Column(Float, nullable=True)
     sail_set_id = Column(Integer, nullable=False, index=True)
 
 

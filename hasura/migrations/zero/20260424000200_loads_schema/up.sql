@@ -45,8 +45,12 @@ CREATE TABLE loads.aws_ranges (
 CREATE TABLE loads.load_cases (
     id TEXT PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
+    tws NUMERIC,
+    twa NUMERIC,
     awa NUMERIC NOT NULL,
     aws NUMERIC NOT NULL,
+    bsp NUMERIC,
+    heel NUMERIC,
     sail_set_id INTEGER
 );
 
