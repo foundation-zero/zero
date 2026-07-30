@@ -347,7 +347,7 @@ class MainHeadstayCombined(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=66),
-        VariableMeta(display_name="Headstay Combined", scale_min=0, scale_max=66),
+        VariableMeta(display_name="Headstay Comb", scale_min=0, scale_max=66),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -577,7 +577,6 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_max_load: Annotated[
         MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoad", ge=0, le=8),
         VariableMeta(
             name="deflector-max-load",
             display_name="Checkstay Deflector Max Load",
@@ -610,7 +609,6 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     max_load_ps: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadPs/i_MaxLoad", ge=0, le=15),
         VariableMeta(
             name="max-ps-load",
             display_name="Checkstay PT Max Load",
@@ -642,7 +640,6 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     max_load_sb: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadSb/i_MaxLoad", ge=0, le=15),
         VariableMeta(
             name="max-sb-load",
             display_name="Checkstay SB Max Load",
@@ -686,7 +683,7 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207-main-halyard-captive-winch"
-    load: Load
+    load: Annotated[Load, VariableMeta(display_name="Halyard")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -811,12 +808,15 @@ class MainVang(LoadsModel, ABC):
 
 class MainTraveller(LoadsModel, ABC):
     TOPIC = "sail-systems/fe405-main-sheet-traveller-winch"
-    load: Load
+    load: Annotated[Load, VariableMeta(display_name="Traveller")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
+        Field(
+            validation_alias="i_PositionPermille"
+        ),  # TODO: inconsistent key (st_position/i_Position_permille) is what we expect
         VariableMeta(
             display_name="Traveller",
             scale_min=-1,
@@ -825,8 +825,8 @@ class MainTraveller(LoadsModel, ABC):
             scale_max_label="sb",
         ),
     ]
-    max_position_alarm: MaxPositionAlarm
-    min_position_alarm: MinPositionAlarm
+    # max_position_alarm: MaxPositionAlarm #TODO: these don't appear in the schema
+    # min_position_alarm: MinPositionAlarm
 
 
 class MizzenCheckstay(LoadsModel, ABC):
