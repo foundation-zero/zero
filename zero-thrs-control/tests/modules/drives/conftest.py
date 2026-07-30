@@ -138,6 +138,11 @@ def alarms() -> DrivesAlarms:
 
 @fixture()
 def runner(
-    control: DrivesControl, simulation, alarms: DrivesAlarms
+    control: DrivesControl,
+    simulation,
+    simulation_inputs_all_drives_active,
+    alarms: DrivesAlarms,
 ) -> SimulationTestRunner:
-    return SimulationTestRunner(simulation, control, alarms)
+    return SimulationTestRunner(
+        simulation, simulation_inputs_all_drives_active, control, alarms
+    )

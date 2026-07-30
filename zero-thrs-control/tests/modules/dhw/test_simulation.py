@@ -17,8 +17,8 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path
 
 
-def test_simulation(simulation, control, alarms):
-    runner = SimulationTestRunner(simulation, control, alarms)
+def test_simulation(simulation, simulation_inputs, control, alarms):
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
     collector = PolarsCollector()
 

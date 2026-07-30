@@ -18,17 +18,19 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-def test_computed_collection(simulation: ThrustersSimulation, control, alarms):
+def test_computed_collection(
+    simulation: ThrustersSimulation, simulation_inputs, control, alarms
+):
     collector = PolarsCollector()
-    runner = SimulationTestRunner(simulation, control, alarms)
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
     runner.run(20, collector)
     frame = collector.result()
     assert frame is not None
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
-def test_simulation(simulation, control, alarms):
-    runner = SimulationTestRunner(simulation, control, alarms)
+def test_simulation(simulation, simulation_inputs, control, alarms):
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
     collector = PolarsCollector()
 
