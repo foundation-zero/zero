@@ -159,15 +159,12 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   adsorptionAvailableHotTemperature: {
-    yardTag: "",
     componentType: SensorComponentType.Temperature,
   },
   adsorptionAvailableColdTemperature: {
-    yardTag: "",
     componentType: SensorComponentType.Temperature,
   },
   adsorptionAvailableSeawaterTemperature: {
-    yardTag: "",
     componentType: SensorComponentType.Temperature,
   },
 });
