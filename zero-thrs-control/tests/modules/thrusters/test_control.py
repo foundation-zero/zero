@@ -5,12 +5,17 @@ from thrs.control.modules.thrusters import ThrustersControl, ThrustersControlMod
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.thrusters import ThrustersSimulationInputs
 
 
-def test_idle(control: ThrustersControl, simulation: ThrustersSimulation):
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
+def test_idle(
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
 
     result = simulation.tick(control.initial()[0])
 
@@ -110,8 +115,12 @@ def test_recovery(control: ThrustersControl, simulation: ThrustersSimulation):
     )
 
 
-def test_recovery_mixing(control: ThrustersControl, simulation: ThrustersSimulation):
-    simulation._simulation_inputs.thrusters_pcm_supply.temperature = Stamped.stamp(
+def test_recovery_mixing(
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    simulation_inputs.thrusters_pcm_supply.temperature = Stamped.stamp(
         control.parameters.recovery_temperature
     )
 
@@ -142,11 +151,11 @@ def test_recovery_mixing(control: ThrustersControl, simulation: ThrustersSimulat
 
 
 def test_heat_dump_with_cold_sea(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
-    simulation._simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(
-        10
-    )
+    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(10)
 
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
@@ -165,11 +174,11 @@ def test_heat_dump_with_cold_sea(
 
 
 def test_heat_dump_with_hot_sea(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
-    simulation._simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(
-        45
-    )
+    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
 
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
@@ -210,12 +219,14 @@ def test_recovery_temperature(
 
 
 def test_recovery_single_thruster(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
     result = simulation.tick(control.initial()[0])
 
-    simulation._simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
 
     # set valves and stabilize
     for _i in range(500):
@@ -237,11 +248,15 @@ def test_recovery_single_thruster(
         assert result.sensor_values.thrusters_flow_fwd.flow.value > 0
 
 
-def test_flow_thrusters_off(control: ThrustersControl, simulation: ThrustersSimulation):
-    simulation._simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
+def test_flow_thrusters_off(
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
 
     result = simulation.tick(control.initial()[0])
     # set valves and stabilize
@@ -278,10 +293,12 @@ def test_flow_cooling(control: ThrustersControl, simulation: ThrustersSimulation
 
 
 def test_flow_cooling_single_thruster(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
-    simulation._simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
 
     result = simulation.tick(control.initial()[0])
     control.to_cooling(result.sensor_values)  # type: ignore
@@ -300,7 +317,11 @@ def test_flow_cooling_single_thruster(
         )
 
 
-def test_cooldown(control: ThrustersControl, simulation: ThrustersSimulation):
+def test_cooldown(
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
+):
     result = simulation.tick(control.initial()[0])
     control_values, _ = control.control(result.sensor_values)
 
@@ -312,11 +333,11 @@ def test_cooldown(control: ThrustersControl, simulation: ThrustersSimulation):
     assert control.mode == ThrustersControlMode(mode="recovery")
     assert control_values.thrusters_mix_recovery.setpoint.value > 0.0
 
-    simulation._simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
-    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
+    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
+    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
+    simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
 
     result = simulation.tick(control_values)
     control_values, _ = control.control(result.sensor_values)

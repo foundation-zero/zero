@@ -19,8 +19,8 @@ type PcmSimulation = Simulation[
 
 
 def test_idle(control: PcmControl, simulation: PcmSimulation):
-    control._parameters.charging_enabled = False
-    control._parameters.supplying_enabled = False
+    control.parameters.charging_enabled = False
+    control.parameters.supplying_enabled = False
 
     result = simulation.tick(
         control.initial()[0],
@@ -114,7 +114,7 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
         control.control(PcmSensorValues.zero())[0],
     )
 
-    control._parameters.charging_enabled = False
+    control.parameters.charging_enabled = False
     control.to_supplying(result.sensor_values)  # type: ignore
 
     for _i in range(100):
@@ -193,9 +193,13 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
     assert pcm_flow == approx(0, abs=0.01)
 
 
-def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
-    simulation._simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(30)
-    simulation._simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(30)
+def test_mode_switches(
+    control: PcmControl,
+    simulation: PcmSimulation,
+    simulation_inputs: PcmSimulationInputs,
+):
+    simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(30)
+    simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(30)
 
     control_values, _ = control.control(PcmSensorValues.zero())
     result = simulation.tick(control_values)
@@ -228,8 +232,8 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
 
     assert control.mode == PcmControlMode(mode="idle")
 
-    simulation._simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(80)
-    simulation._simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(80)
+    simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(80)
+    simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(80)
     for _i in range(10):
         result.sensor_values.pcm_module1.charged.value = False
         result.sensor_values.pcm_module2.charged.value = False
@@ -240,8 +244,8 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
 
     assert control.mode == PcmControlMode(mode="charging")
 
-    simulation._simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(30)
-    simulation._simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(30)
+    simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(30)
+    simulation_inputs.pcm_pvt_supply.temperature = Stamped.stamp(30)
     for _i in range(30):
         result.sensor_values.pcm_module1.charged.value = False
         result.sensor_values.pcm_module2.charged.value = False

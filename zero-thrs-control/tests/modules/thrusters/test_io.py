@@ -53,13 +53,15 @@ def test_yard_tags():
 
 
 def test_set_module_temperature(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
     control_values, _ = control.initial()
 
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0  # type: ignore
-    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0  # type: ignore
-    simulation._simulation_inputs.thrusters_pcm_supply.temperature.value = 60  # type: ignore
+    simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0  # type: ignore
+    simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0  # type: ignore
+    simulation_inputs.thrusters_pcm_supply.temperature.value = 60  # type: ignore
 
     control_values.thrusters_pump1.dutypoint.value = 1
     control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
