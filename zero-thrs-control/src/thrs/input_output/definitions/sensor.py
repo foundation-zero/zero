@@ -1,4 +1,5 @@
-from typing import Self
+from collections.abc import Sequence
+from typing import Self, cast
 
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control
@@ -55,9 +56,54 @@ class CalculatedTemperature(ThrsValues):
             )
         )
 
+    @classmethod
+    def from_weighted_sensors(
+        cls,
+        weights: Sequence[Stamped[Ratio | LMin]],
+        sensors: Sequence[TemperatureSensor],
+        default_if_zero_weight: Celsius | None = None,
+    ):
+        stamps = [sensor.temperature for sensor in sensors]
+
+        return CalculatedTemperature(
+            temperature=weighted_combined_measurement(
+                weights,
+                stamps,
+                default_if_zero_weight,
+            ),
+        )
+
 
 class CalculatedFlow(ThrsValues):
     flow: Stamped[LMin]
+
+    @classmethod
+    def from_weighted_sensors(
+        cls,
+        weights: Sequence[Stamped[Ratio | LMin]],
+        sensors: Sequence[FlowSensor | Self],
+        default_if_zero_weight: LMin,
+    ):
+        stamps = [sensor.flow for sensor in sensors]
+
+        return CalculatedFlow(
+            flow=weighted_combined_measurement(
+                weights,
+                stamps,
+                default_if_zero_weight,
+            ),
+        )
+
+    @classmethod
+    def from_summed_sensors(
+        cls,
+        *sensors: FlowSensor | Self,
+    ):
+        stamps = [sensor.flow for sensor in sensors]
+
+        return CalculatedFlow(
+            flow=Stamped.combine(*stamps, value=sum(sensor.value for sensor in stamps))
+        )
 
 
 class TemperatureDelta(ThrsValues):
@@ -114,12 +160,64 @@ class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
 
 
-def valves_open_closed(open_valves: list[Valve], closed_valves: list[Valve]) -> bool:
+def valves_open_closed(
+    open_valves: list[Valve] | None = None, closed_valves: list[Valve] | None = None
+) -> bool:
+    if open_valves is None:
+        open_valves = []
+
+    if closed_valves is None:
+        closed_valves = []
+
     return all(
         valve.position_rel.value == control.Valve.OPEN for valve in open_valves
     ) and all(
         valve.position_rel.value < (control.Valve.CLOSED + 0.01)
         for valve in closed_valves
+    )
+
+
+def weighted_combined_measurement[
+    Measurement: Celsius | LMin,
+    Default: Celsius | LMin | None,
+](
+    weights: Sequence[Stamped[LMin | Ratio]],
+    measurements: Sequence[Stamped[Measurement]],
+    default_if_zero_weight: Default,
+) -> Stamped[Default]:
+    """Calculates a weighted average of measurements based on valve positions.
+
+    Args:
+        weights: Sequence of Stamped objects containing containing a Flow or Ratio.
+        measurements: Sequence of Stamped measurement values corresponding to each
+          valve.
+        default_if_zero_weight: value to return if total valve position weight
+          is 0 (or empty).
+
+    Returns:
+        The weighted combined measurement as a Stamped[float].
+
+    Raises:
+        ValueError: If the length of `weights` does not match `measurements`.
+    """
+    total_weight = sum(weight.value for weight in weights)
+
+    if total_weight == 0:
+        value = default_if_zero_weight
+    else:
+        weighted_sum = sum(
+            weight.value * measurement.value
+            for weight, measurement in zip(weights, measurements, strict=True)
+        )
+        value = cast(Default, weighted_sum / total_weight)
+
+    return Stamped.combine(*weights, *measurements, value=value)
+
+
+def inverse_ratio(ratio: Stamped["Ratio"]) -> Stamped["Ratio"]:
+    return Stamped(
+        value=1 - ratio.value,
+        timestamp=ratio.timestamp,
     )
 
 

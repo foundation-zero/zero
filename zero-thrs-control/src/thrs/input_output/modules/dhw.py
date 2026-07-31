@@ -475,9 +475,7 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_drives_exchanger(self) -> sensor.HeatExchanger:
-        if sensor.valves_open_closed(
-            open_valves=[], closed_valves=[self.dhw_switch_low_temperature]
-        ):
+        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_low_temperature]):
             return sensor.HeatExchanger.from_sensors(
                 temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
                 temperature_return=self.dhw_temperature_drives_return.temperature,
