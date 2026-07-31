@@ -18,7 +18,9 @@ from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
 )
 
-ConsumersSensorValuesType = pydantic_to_strawberry_type(ConsumersSensorValues)
+ConsumersSensorValuesType = pydantic_to_strawberry_type(
+    ConsumersSensorValues, include_computed=True
+)
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
 ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
 

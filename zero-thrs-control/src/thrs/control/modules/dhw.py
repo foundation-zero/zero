@@ -16,7 +16,6 @@ from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
-    PidControllerValues,
     TanksControllerValues,
 )
 from thrs.input_output.definitions.units import (

@@ -18,7 +18,9 @@ from thrs.input_output.modules.pcm import (
     PcmSensorValues,
 )
 
-PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
+PcmSensorValuesType = pydantic_to_strawberry_type(
+    PcmSensorValues, include_computed=True
+)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
