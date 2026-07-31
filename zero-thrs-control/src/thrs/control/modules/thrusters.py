@@ -8,7 +8,6 @@ from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
-from thrs.control.modules.dhw import _zero_pid
 from thrs.db.models.machine_state import (
     MachineStateEvent,
 )
@@ -139,13 +138,13 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # n
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState:  # noqa: N802
     return ThrustersControllerState(
-        heat_dump_controller=_zero_pid(timestamp),
-        warmup_mix_controller=_zero_pid(timestamp),
-        pump_controller=_zero_pid(timestamp),
-        aft_recovery_temperature_controller=_zero_pid(timestamp),
-        fwd_recovery_temperature_controller=_zero_pid(timestamp),
-        aft_flow_controller=_zero_pid(timestamp),
-        fwd_flow_controller=_zero_pid(timestamp),
+        heat_dump_controller=PidController.zero(timestamp),
+        warmup_mix_controller=PidController.zero(timestamp),
+        pump_controller=PidController.zero(timestamp),
+        aft_recovery_temperature_controller=PidController.zero(timestamp),
+        fwd_recovery_temperature_controller=PidController.zero(timestamp),
+        aft_flow_controller=PidController.zero(timestamp),
+        fwd_flow_controller=PidController.zero(timestamp),
     )
 
 

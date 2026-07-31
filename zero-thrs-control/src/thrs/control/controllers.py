@@ -109,6 +109,18 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
             components=Stamped(value=self._pid.components, timestamp=timestamp),
         )
 
+    @classmethod
+    def zero(cls, timestamp: datetime) -> PidControllerValues:
+        return PidControllerValues(
+            setpoint=Stamped(value=0.0, timestamp=timestamp),
+            measurement=Stamped(value=None, timestamp=timestamp),
+            output=Stamped(value=None, timestamp=timestamp),
+            error=Stamped(value=None, timestamp=timestamp),
+            enabled=Stamped(value=False, timestamp=timestamp),
+            tuning=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
+            components=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
+        )
+
 
 class FlowBalanceController:
     def __init__(

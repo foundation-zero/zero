@@ -106,18 +106,6 @@ class DhwParameters(ThrsValues):
         return self
 
 
-def _zero_pid(timestamp: datetime) -> PidControllerValues:
-    return PidControllerValues(
-        setpoint=Stamped(value=0.0, timestamp=timestamp),
-        measurement=Stamped(value=None, timestamp=timestamp),
-        output=Stamped(value=None, timestamp=timestamp),
-        error=Stamped(value=None, timestamp=timestamp),
-        enabled=Stamped(value=False, timestamp=timestamp),
-        tuning=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
-        components=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
-    )
-
-
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
     return DhwControlValues(
         dhw_pump=Pump(
@@ -172,10 +160,10 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
             tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
         ),
-        dhw_drives_flow_controller=_zero_pid(timestamp),
-        dhw_dc_flow_controller=_zero_pid(timestamp),
-        dhw_pump_flow_controller=_zero_pid(timestamp),
-        dhw_pump_temperature_controller=_zero_pid(timestamp),
+        dhw_drives_flow_controller=PidController.zero(timestamp),
+        dhw_dc_flow_controller=PidController.zero(timestamp),
+        dhw_pump_flow_controller=PidController.zero(timestamp),
+        dhw_pump_temperature_controller=PidController.zero(timestamp),
     )
 
 
