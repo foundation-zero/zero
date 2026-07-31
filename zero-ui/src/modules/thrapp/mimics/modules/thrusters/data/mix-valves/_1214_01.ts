@@ -16,7 +16,7 @@ export default toInstance<MimicComponentType.MixValve>({
     controller: getField(
       ControllerStateComponentType.PIDController,
       "thrusters",
-      "heatDumpController",
+      "thrustersHeatDumpController",
     ),
   },
   custom: {},
