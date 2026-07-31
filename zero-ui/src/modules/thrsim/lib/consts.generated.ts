@@ -2516,7 +2516,29 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const THRUSTERS_CONTROLLER_STATE = toControllerStateDefinition({});
+export const THRUSTERS_CONTROLLER_STATE = toControllerStateDefinition({
+  heatDumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  warmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  aftRecoveryTemperatureController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  fwdRecoveryTemperatureController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  aftFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  fwdFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
   maximumSupplyTemperature: {
@@ -2654,6 +2676,14 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   thrustersPcs: {
     yardTag: "1500",
     componentType: SensorComponentType.Pcs,
+  },
+  thrustersTemperatureRecovery: {
+    yardTag: "",
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  thrustersSeawaterExchanger: {
+    yardTag: "50001001",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 

@@ -2,7 +2,7 @@ import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
-import { fieldTooltip } from "../shared";
+import { fieldTooltip } from "../../../shared";
 
 export default toInstance<MimicComponentType.HVAC>({
   controls: {},

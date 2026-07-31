@@ -23,6 +23,7 @@ export { default as TagLabelInstance } from "./TagLabelInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";
 export { default as ThreeWaySwitchValveInstance } from "./ThreeWaySwitchValveInstance.vue";
 export { default as ThreeWayValveLabelInstance } from "./ThreeWayValveLabelInstance.vue";
+export { default as ThrusterInstance } from "./ThrusterInstance.vue";
 
 export type TitleProps = {
   title: string;

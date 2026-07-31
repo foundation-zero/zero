@@ -160,6 +160,17 @@ class ThrustersSensorValues(ThrsValues):
             )
         )
 
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001001", component_type="heat_exchanger", included_in_fmu=False
+        )
+    )
+    @property
+    def thrusters_seawater_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger(
+            delta_t=Stamped.stamp(0), heat=Stamped.stamp(0)
+        )  # TODO: Find where this should come from
+
 
 class ThrustersControlValues(ThrsValues):
     thrusters_pump1: Annotated[

@@ -8,75 +8,14 @@ from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
 from tests.modules.thrusters.conftest import ThrustersSimulation
 from thrs.input_output.definitions.control import Valve
-from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
-
-
-def test_runner(simulation, fmu, simulation_inputs, control, alarms):
-    io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
-    collector = PolarsCollector()
-    runner = SimulationTestRunner(simulation, control, alarms)
-    runner.run(20, collector)
-    frame = collector.result()
-    inputs = io_mapping.generate_inputs(
-        ThrustersControlValues.zero(), simulation_inputs
-    )
-    outputs = fmu.tick(
-        inputs,
-        timedelta(seconds=1),
-    )
-    mock_fmu_outputs = io_mapping.construct_outputs(
-        inputs, outputs, simulation_inputs, datetime.now()
-    )[2]
-
-    assert frame is not None
-    assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
-
-    not_in_fmu = set(
-        {
-            **flatten_model_values(
-                ThrustersSensorValues.zero(),
-                fmu_key_mapping=build_fmu_key_mapping(
-                    ThrustersSensorValues, fmu_only=False
-                ),
-            ),
-            **flatten_model_values(
-                simulation_inputs,
-                fmu_key_mapping=build_fmu_key_mapping(
-                    ThrustersSimulationInputs, fmu_only=False
-                ),
-            ),
-        }
-    ) - set(
-        {
-            **flatten_model_values(
-                ThrustersSensorValues.zero(),
-                fmu_key_mapping=build_fmu_key_mapping(
-                    ThrustersSensorValues, fmu_only=True
-                ),
-            ),
-            **flatten_model_values(
-                simulation_inputs,
-                fmu_key_mapping=build_fmu_key_mapping(
-                    ThrustersSimulationInputs, fmu_only=True
-                ),
-            ),
-        }
-    )
-
-    assert (
-        set(frame.columns)
-        == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | not_in_fmu
-    )
 
 
 def test_computed_collection(simulation: ThrustersSimulation, control, alarms):

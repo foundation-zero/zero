@@ -61,6 +61,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const temperature = useRandomizedNumber(20, 100);
     return computed(() => ({ temperature: stamp(temperature) }));
   },
+  [SensorComponentType.CalculatedTemperature]: () => {
+    const temperature = useRandomizedNumber(20, 100);
+    return computed(() => ({ temperature: stamp(temperature) }));
+  },
   [SensorComponentType.Pressure]: () => {
     const pressure = useRandomizedNumber(1, 10);
     return computed(() => ({ pressure: stamp(pressure) }));

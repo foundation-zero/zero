@@ -130,7 +130,10 @@ const { labels, actions, items, sources } = useTranslations();
       <Partials.PIDController v-bind="custom.flowController">
         {{ sources("pumpFlowController") }}
       </Partials.PIDController>
-      <Partials.PIDController v-bind="custom.temperatureController">
+      <Partials.PIDController
+        v-if="custom.temperatureController"
+        v-bind="custom.temperatureController"
+      >
         {{ sources("pumpTemperatureController") }}
       </Partials.PIDController>
     </TooltipList>

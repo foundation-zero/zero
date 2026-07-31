@@ -140,6 +140,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [Type in SensorComponentType]: keyof SensorDefinitionMap[Type];
 } = {
   [SensorComponentType.Temperature]: "temperature",
+  [SensorComponentType.CalculatedTemperature]: "temperature",
   [SensorComponentType.Pressure]: "pressure",
   [SensorComponentType.Flow]: "flow",
   [SensorComponentType.Pump]: "flow",

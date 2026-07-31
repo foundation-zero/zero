@@ -2005,7 +2005,69 @@ export const THRUSTERS_CONTROL_QUERY = `
 `;
 
 export const THRUSTERS_CONTROLLER_STATE_QUERY = `
-
+  heatDumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  warmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  aftRecoveryTemperatureController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  fwdRecoveryTemperatureController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  aftFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  fwdFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const THRUSTERS_PARAMETERS_QUERY = `
@@ -2095,6 +2157,13 @@ export const THRUSTERS_SENSOR_QUERY = `
   }
   thrustersPcs {
     mode { value timestamp }
+  }
+  thrustersTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  thrustersSeawaterExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 

@@ -3,7 +3,7 @@ import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { PickKeys, SchemaDefinition, SensorComponentType } from "@/modules/thrsim/types";
 import { kebabCase } from "lodash";
-import { getSensorDefinition, isCustomField, isSensorField, ModuleField } from "../../../providers";
+import { getSensorDefinition, isCustomField, isSensorField, ModuleField } from "../providers";
 
 const THRS_YARDTAG_PREFIX_REGEX = /^5000/;
 

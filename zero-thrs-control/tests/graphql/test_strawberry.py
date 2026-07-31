@@ -19,6 +19,7 @@ from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersControllerState,
     ThrustersControlMode,
     ThrustersParameters,
 )
@@ -162,6 +163,7 @@ async def thrusters_messaging_mock():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
+    mock.controller_state = ThrustersControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=ThrustersControlMode(mode="idle")
     )
@@ -489,7 +491,69 @@ async def test_query_controller_state(app, test_client):
                     }
                     thrusters {
                         controllerState {
-                            Empty
+                            heatDumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            warmupMixController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            pumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            aftRecoveryTemperatureController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            fwdRecoveryTemperatureController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            aftFlowController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            fwdFlowController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
                         }
                     }
                     pvt {
@@ -560,7 +624,225 @@ async def test_query_controller_state(app, test_client):
                     },
                 },
                 "thrusters": {
-                    "controllerState": {"Empty": None},
+                    "controllerState": {
+                        "aftFlowController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "aftRecoveryTemperatureController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "fwdFlowController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "fwdRecoveryTemperatureController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "heatDumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "pumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "warmupMixController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                    },
                 },
                 "pvt": {
                     "controllerState": {"Empty": None},

@@ -3,8 +3,8 @@ import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
 import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 import { DHW_TANK_DATA } from "../boiler-tanks";
-import { fieldTooltip } from "../shared";
 
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
