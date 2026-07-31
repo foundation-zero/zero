@@ -82,8 +82,8 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ExchangeCircuit]: {
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
-    flow: SensorComponentType.Flow;
-    deltaT: SensorComponentType.DeltaT;
+    flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+    deltaT?: SensorComponentType.DeltaT;
     heatExchanger: SensorComponentType.HeatExchanger;
   };
   [MimicComponentType.FreshwaterCircuit]: {
@@ -219,7 +219,7 @@ export type CustomFieldDefinitions = CustomFields<{
     tankStateField: BoilerTankStateField;
   };
   [MimicComponentType.Pump]: {
-    flowController: PIDController<SensorComponentType.Flow>;
+    flowController?: PIDController<SensorComponentType.Flow>;
     temperatureController?: PIDController<SensorComponentType.Flow>;
   };
   [MimicComponentType.ManualPump]: EmptyObject;

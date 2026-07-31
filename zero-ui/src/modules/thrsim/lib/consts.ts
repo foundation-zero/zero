@@ -330,7 +330,7 @@ export const QUERY_ALL = gql`
           ${Queries.PVT_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          ${Queries.PVT_CONTROLLER_STATE_QUERY}
         }
       }
       adsorption {

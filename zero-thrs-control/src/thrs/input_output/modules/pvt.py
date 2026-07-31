@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated
+from typing import Annotated, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -11,6 +11,7 @@ from thrs.input_output.base import (
     computed_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION, Celsius
 
 
 class PvtSensorValues(ThrsValues):
@@ -429,6 +430,16 @@ class PvtSensorValues(ThrsValues):
         component_meta(yard_tag="50009005-45", component_type="temperature_sensor"),
     ]
 
+    pcm_temperature_producers_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-55",
+            component_type="temperature_sensor",
+            topic="pcm/pcm-temperature-producers-supply",
+            included_in_fmu=False,
+        ),
+    ]
+
     @computed_field(
         json_schema_extra=computed_meta(
             component_type="calculated_temperature", included_in_fmu=False
@@ -510,6 +521,75 @@ class PvtSensorValues(ThrsValues):
             ]
         )
 
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_return_temperature(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_aft_recovery.flow,
+                self.pvt_flow_main_fwd_recovery.flow,
+                self.pvt_flow_owners_recovery.flow,
+            ],
+            [
+                self.pvt_temperature_main_aft_return,
+                self.pvt_temperature_main_fwd_return,
+                self.pvt_temperature_owners_return,
+            ],
+            self.pcm_temperature_producers_supply.temperature,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_total_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.pvt_flow_main_aft_recovery.flow,
+                self.pvt_flow_main_fwd_recovery.flow,
+                self.pvt_flow_owners_recovery.flow,
+                value=self.pvt_flow_main_aft_recovery.flow.value
+                + self.pvt_flow_main_fwd_recovery.flow.value
+                + self.pvt_flow_owners_recovery.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_seawater_exchanger_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.pvt_mix_exchanger.position_rel,
+                self.pvt_total_flow.flow,
+                value=(1 - self.pvt_mix_exchanger.position_rel.value)
+                * self.pvt_total_flow.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001002", component_type="heat_exchanger", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_seawater_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.pvt_temperature_supply.temperature,
+            temperature_return=self.pcm_temperature_producers_supply.temperature,
+            flow=self.pvt_seawater_exchanger_flow.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
 
 class PvtControlValues(ThrsValues):
     model_config = ConfigDict(
@@ -583,3 +663,14 @@ class PvtSimulationOutputs(ThrsValues):
     pvt_pcm_return: simulation.Boundary
     pvt_pcm_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="temperature_sensor"
+        )
+    )
+    @property
+    def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
+        )

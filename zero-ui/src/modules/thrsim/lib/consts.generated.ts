@@ -1888,7 +1888,11 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const PVT_CONTROLLER_STATE = toControllerStateDefinition({});
+export const PVT_CONTROLLER_STATE = toControllerStateDefinition({
+  pvtHeatDumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
   maximumSupplyTemperature: {
@@ -2326,6 +2330,10 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009005-45",
     componentType: SensorComponentType.Temperature,
   },
+  pcmTemperatureProducersSupply: {
+    yardTag: "50001038-55",
+    componentType: SensorComponentType.Temperature,
+  },
   pvtMaxTemperatureMainFwdStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
@@ -2334,6 +2342,19 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtMaxTemperatureOwnersStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtReturnTemperature: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTotalFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtSeawaterExchangerFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtSeawaterExchanger: {
+    yardTag: "50001002",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 

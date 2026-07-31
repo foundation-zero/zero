@@ -10,7 +10,7 @@ defineProps<{
   deltaT?: ModuleField<SensorComponentType.DeltaT | SensorComponentType.HeatExchanger>;
   incoming: ModuleField<SensorComponentType.Temperature>;
   outgoing: ModuleField<SensorComponentType.Temperature>;
-  flow?: ModuleField<SensorComponentType.Flow>;
+  flow?: ModuleField<SensorComponentType.Flow | SensorComponentType.CalculatedFlow>;
 }>();
 </script>
 

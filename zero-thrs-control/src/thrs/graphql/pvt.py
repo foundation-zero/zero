@@ -22,7 +22,7 @@ PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
-PvtControllerStateType = empty_pydantic_type_to_strawberry_type(PvtControllerState)
+PvtControllerStateType = pydantic_to_strawberry_type(PvtControllerState)
 
 
 PvtModule = ControlModule[

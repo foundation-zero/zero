@@ -4,11 +4,7 @@ import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getCustomField, getField, ModuleField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
-import {
-  pvtMainAftFlowController,
-  pvtMainFwdFlowController,
-  pvtOwnersFlowController,
-} from "../controllers";
+import {} from "../controllers";
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {
@@ -18,9 +14,7 @@ export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
 export const PVT_PUMP_DATA = toFieldsMap({
   [MimicComponentType.Pump]: {
     "1018": toInstance<MimicComponentType.Pump>({
-      custom: {
-        flowController: pvtMainFwdFlowController,
-      },
+      custom: {},
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpMainFwd"),
       controllerState: {},
       controls: {
@@ -44,9 +38,7 @@ export const PVT_PUMP_DATA = toFieldsMap({
       },
     }),
     "1019": toInstance<MimicComponentType.Pump>({
-      custom: {
-        flowController: pvtMainAftFlowController,
-      },
+      custom: {},
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpMainAft"),
       controllerState: {},
       controls: {
@@ -70,9 +62,7 @@ export const PVT_PUMP_DATA = toFieldsMap({
       },
     }),
     "1020": toInstance<MimicComponentType.Pump>({
-      custom: {
-        flowController: pvtOwnersFlowController,
-      },
+      custom: {},
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpOwners"),
       controllerState: {},
       controls: {

@@ -85,9 +85,9 @@ SIMULATION_INPUTS = {
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
     ),
     "pvt": PvtSimulationInputs(
-        pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(0)),
-        pvt_owners=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
+        pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
+        pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
         pvt_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(50)
