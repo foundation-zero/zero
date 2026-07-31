@@ -968,43 +968,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "text",
-            "mode": "palette-classic"
+            "fixedColor": "dark-blue",
+            "mode": "continuous-blues"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 70,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 300000,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": 60000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "lineWidth": 1
           },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1039,12 +1016,15 @@
       },
       "id": 24,
       "options": {
+        "colWidth": 0.9,
         "legend": {
-          "calcs": [],
           "displayMode": "list",
           "placement": "right",
-          "showLegend": true
+          "showLegend": false
         },
+        "perPage": 25,
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -1072,7 +1052,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp           AS time,\r\n\t\tdevice,\r\n\t\tposition_abs__value AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_abs__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp           AS time,\r\n\t\tdevice,\r\n\t\tposition_abs__value AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_abs__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1126,7 +1106,7 @@
         }
       ],
       "transparent": true,
-      "type": "timeseries"
+      "type": "status-history"
     },
     {
       "datasource": {
@@ -1136,43 +1116,19 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "text",
-            "mode": "palette-classic"
+            "mode": "continuous-greens"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 70,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 300000,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": 60000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "lineWidth": 1
           },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1182,7 +1138,8 @@
                 "value": 0
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": [
           {
@@ -1206,12 +1163,15 @@
       },
       "id": 23,
       "options": {
+        "colWidth": 0.9,
         "legend": {
-          "calcs": [],
           "displayMode": "list",
-          "placement": "right",
-          "showLegend": true
+          "placement": "bottom",
+          "showLegend": false
         },
+        "perPage": 25,
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -1239,7 +1199,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp           AS time,\r\n\t\tdevice,\r\n\t\tposition_rel__value AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_rel__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp                 AS time,\r\n\t\tdevice,\r\n\t\tposition_rel__value * 100 AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_rel__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1293,7 +1253,7 @@
         }
       ],
       "transparent": true,
-      "type": "timeseries"
+      "type": "status-history"
     },
     {
       "datasource": {
@@ -1303,43 +1263,19 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "text",
-            "mode": "palette-classic"
+            "mode": "continuous-reds"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 70,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 300000,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": 60000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "lineWidth": 1
           },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1349,7 +1285,8 @@
                 "value": 0
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": [
           {
@@ -1373,12 +1310,15 @@
       },
       "id": 25,
       "options": {
+        "colWidth": 0.9,
         "legend": {
-          "calcs": [],
           "displayMode": "list",
-          "placement": "right",
-          "showLegend": true
+          "placement": "bottom",
+          "showLegend": false
         },
+        "perPage": 25,
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -1406,7 +1346,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tsetpoint__value AS setpoint\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tsetpoint__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp             AS time,\r\n\t\tdevice,\r\n\t\tsetpoint__value * 100 AS setpoint\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tsetpoint__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1461,7 +1401,7 @@
         }
       ],
       "transparent": true,
-      "type": "timeseries"
+      "type": "status-history"
     }
   ],
   "preload": false,
