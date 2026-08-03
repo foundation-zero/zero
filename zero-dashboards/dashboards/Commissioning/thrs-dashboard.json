@@ -187,7 +187,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.test_marpower__500000_thrs__temperatures\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.test_marpower__500000_thrs__temperatures\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -366,7 +366,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp   AS time,\r\n\t\tdevice,\r\n\t\tflow__value AS flow\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tflow__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp   AS time,\r\n\t\tdevice,\r\n\t\tflow__value AS flow\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tflow__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -533,7 +533,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -699,7 +699,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tquantity__value AS quantity\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tquantity__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tquantity__value AS quantity\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tquantity__value\r\n\t\tFROM public.test_marpower__500000_thrs__flow_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -879,7 +879,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tpressure__value AS pressure\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpressure__value\r\n\t\tFROM public.test_marpower__500000_thrs__pressure_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tpressure__value AS pressure\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpressure__value\r\n\t\tFROM public.test_marpower__500000_thrs__pressure_sensors\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1059,7 +1059,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp    AS time,\r\n\t\tdevice,\r\n\t\tspeed__value AS speed\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tspeed__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp    AS time,\r\n\t\tdevice,\r\n\t\tspeed__value AS speed\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tspeed__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1227,7 +1227,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp   AS time,\r\n\t\tdevice,\r\n\t\tflow__value AS flow\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tflow__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp   AS time,\r\n\t\tdevice,\r\n\t\tflow__value AS flow\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tflow__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1394,7 +1394,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tpressure__value AS pressure\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpressure__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tpressure__value AS pressure\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpressure__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1561,7 +1561,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\tpower_input__value AS power_input\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpower_input__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\tpower_input__value AS power_input\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tpower_input__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1729,7 +1729,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp             AS time,\r\n\t\tdevice,\r\n\t\ten_consumption__value AS energy_consumption\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ten_consumption__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp             AS time,\r\n\t\tdevice,\r\n\t\ten_consumption__value AS energy_consumption\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ten_consumption__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2011,7 +2011,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp           AS time,\r\n\t\tdevice,\r\n\t\tposition_abs__value AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_abs__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device",
+          "rawSql": "  SELECT\r\n\t\ttimestamp           AS time,\r\n\t\tdevice,\r\n\t\tposition_abs__value AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_abs__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2158,7 +2158,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp                 AS time,\r\n\t\tdevice,\r\n\t\tposition_rel__value * 100 AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_rel__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp                 AS time,\r\n\t\tdevice,\r\n\t\tposition_rel__value * 100 AS \"position\"\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tposition_rel__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2305,7 +2305,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp             AS time,\r\n\t\tdevice,\r\n\t\tsetpoint__value * 100 AS setpoint\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tsetpoint__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t\tORDER BY timestamp ASC\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})",
+          "rawSql": "  SELECT\r\n\t\ttimestamp             AS time,\r\n\t\tdevice,\r\n\t\tsetpoint__value * 100 AS setpoint\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tsetpoint__value\r\n\t\tFROM public.test_marpower__500000_thrs__valves\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2364,7 +2364,7 @@
     }
   ],
   "preload": false,
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 42,
   "tags": [
     "commissioning"
@@ -2388,10 +2388,10 @@
         "allowCustomValue": false,
         "current": {
           "text": [
-            "dhw"
+            "$__all"
           ],
           "value": [
-            "dhw"
+            "$__all"
           ]
         },
         "includeAll": true,
@@ -2420,7 +2420,7 @@
             "value": "dc"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "dhw",
             "value": "dhw"
           },
@@ -2451,8 +2451,8 @@
     ]
   },
   "time": {
-    "from": "2026-07-30T10:59:59.618Z",
-    "to": "2026-07-30T11:00:10.321Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
