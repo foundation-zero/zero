@@ -11,18 +11,18 @@ import { ModuleField } from "../mimics/providers";
 
 export type ComponentFields<
   Type extends
-    | ControlComponentType
-    | SensorComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+  | ControlComponentType
+  | SensorComponentType
+  | ParametersType
+  | ControllerStateComponentType,
 > = Record<MimicComponentType, Record<string, Type>>;
 
 export type ComponentTypeFields<
   Type extends
-    | ControlComponentType
-    | SensorComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+  | ControlComponentType
+  | SensorComponentType
+  | ParametersType
+  | ControllerStateComponentType,
   Fields extends ComponentFields<Type>,
 > = Fields;
 
@@ -103,6 +103,11 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.Pvt]: {
+    incoming: SensorComponentType.CalculatedTemperature;
+    outgoing: SensorComponentType.CalculatedTemperature;
+    flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+  };
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
@@ -138,6 +143,7 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.FlowControlValve]: {
     valve: ControlComponentType.Valve;
   };
+  [MimicComponentType.Pvt]: EmptyObject;
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
@@ -165,6 +171,9 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.Pvt]: {
+    controller: ControllerStateComponentType.PvtController;
+  };
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -194,15 +203,16 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.Pvt]: EmptyObject;
 }>;
 
 export type PIDController<
   Type extends SensorComponentType.Temperature | SensorComponentType.Flow =
-    | SensorComponentType.Temperature
-    | SensorComponentType.Flow,
+  | SensorComponentType.Temperature
+  | SensorComponentType.Flow,
   Parameter extends ParametersType = Type extends SensorComponentType.Temperature
-    ? ParametersType.Temperature
-    : ParametersType.Flow | ParametersType.FlowControl,
+  ? ParametersType.Temperature
+  : ParametersType.Flow | ParametersType.FlowControl,
 > = {
   type: Type;
   controller: ModuleField<ControllerStateComponentType.PIDController>;
@@ -264,6 +274,7 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.FlowControlValve]: {
     controller?: PIDController;
   };
+  [MimicComponentType.Pvt]: EmptyObject;
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
@@ -287,6 +298,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: undefined;
   [MimicComponentType.FreshwaterCircuit]: undefined;
+  [MimicComponentType.Pvt]: SensorComponentType.HeatExchanger;
 }>;
 
 export type Defined<P, T extends P | undefined> = T extends P ? T : P;
@@ -297,10 +309,10 @@ export type ExtractModuleFields<
     SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
   >,
 > = {
-  [K in keyof Fields]: Fields[K] extends undefined
+    [K in keyof Fields]: Fields[K] extends undefined
     ? ModuleField<Fields[K]> | undefined
     : ModuleField<Fields[K]>;
-};
+  };
 
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &
@@ -334,6 +346,6 @@ export type ExtractCustomFields<Type extends MimicComponentType> = {
 
 export type ExtractSourceFields<Type extends MimicComponentType> = {
   source: SourceFieldDefinitions[Type] extends undefined
-    ? ModuleField<"custom"> | undefined
-    : ModuleField<SourceFieldDefinitions[Type]>;
+  ? ModuleField<"custom"> | undefined
+  : ModuleField<SourceFieldDefinitions[Type]>;
 };

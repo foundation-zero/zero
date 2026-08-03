@@ -40,6 +40,15 @@ export type PIDController = {
   components: Stamped<PID>;
 };
 
+export const enum PvtMode {
+  Idle = "IDLE",
+  Harvesting = "HARVESTING",
+}
+
+export type PvtController = {
+  mode: Stamped<PvtMode>;
+};
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;
@@ -314,6 +323,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
+  PvtController = "pvtController",
 }
 
 export type ControllerStateDefinition<
@@ -324,14 +334,17 @@ export type DhwTankControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.DhwTanksController>;
 export type PIDControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.PIDController>;
+export type PvtControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.PvtController>;
 
 export type ControllerStateDefinitions = SchemaDefinitions<
-  DhwTankControllerDefinition | PIDControllerDefinition
+  DhwTankControllerDefinition | PIDControllerDefinition | PvtControllerDefinition
 >;
 
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
+  [ControllerStateComponentType.PvtController]: PvtController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<

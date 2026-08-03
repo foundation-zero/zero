@@ -1605,6 +1605,15 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
+  pvtMainAftController {
+    mode { value timestamp }
+  }
+  pvtMainFwdController {
+    mode { value timestamp }
+  }
+  pvtOwnersController {
+    mode { value timestamp }
+  }
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -2006,6 +2015,45 @@ export const PVT_SENSOR_QUERY = `
   }
   pvtMaxTemperatureOwnersStrings {
     temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtFlowMainFwdStrings {
+    flow { value timestamp }
+  }
+  pvtFlowMainAftStrings {
+    flow { value timestamp }
+  }
+  pvtFlowOwnersStrings {
+    flow { value timestamp }
+  }
+  pvtPvtMainFwd {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtMainAft {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtOwners {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   pvtReturnTemperature {
     temperature { value timestamp }

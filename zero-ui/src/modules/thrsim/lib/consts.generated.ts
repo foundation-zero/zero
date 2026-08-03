@@ -1892,6 +1892,15 @@ export const PVT_CONTROLLER_STATE = toControllerStateDefinition({
   pvtHeatDumpController: {
     componentType: ControllerStateComponentType.PIDController,
   },
+  pvtMainAftController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
+  pvtMainFwdController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
+  pvtOwnersController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
 });
 
 export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
@@ -2342,6 +2351,45 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtMaxTemperatureOwnersStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainFwdStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainAftStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureOwnersStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainFwdStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainAftStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureOwnersStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtFlowMainFwdStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtFlowMainAftStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtFlowOwnersStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtPvtMainFwd: {
+    yardTag: "50009001-01",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  pvtPvtMainAft: {
+    yardTag: "50009002-01",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  pvtPvtOwners: {
+    yardTag: "50009001-03",
+    componentType: SensorComponentType.HeatExchanger,
   },
   pvtReturnTemperature: {
     componentType: SensorComponentType.CalculatedTemperature,

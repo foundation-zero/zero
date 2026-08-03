@@ -19,6 +19,7 @@ import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
+import PvtMode from "./PvtModeRenderer.vue";
 import QuantityLiters from "./QuantityLitersRenderer.vue";
 import Source from "./SourceRenderer.vue";
 import Temperature from "./TemperatureRenderer.vue";
@@ -56,4 +57,5 @@ export const FieldRenderer = {
   Auto,
   EnabledDisabled,
   Empty,
+  PvtMode,
 };

@@ -246,6 +246,10 @@ type ControllerPidControllerValuesType {
   components: FloatListStampedType!
 }
 
+type ControllerPvtControllerValuesType {
+  mode: PvtModeStampedType!
+}
+
 type ControllerTanksControllerValuesType {
   tank1State: TankStateStampedType!
   tank2State: TankStateStampedType!
@@ -1203,10 +1207,23 @@ type PvtControlValuesType {
 
 type PvtControllerStateType {
   pvtHeatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtMainAftController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
+  pvtMainFwdController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
+  pvtOwnersController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
 }
 
 type PvtGroupControlModeType {
   mode: String!
+}
+
+enum PvtMode {
+  IDLE
+  HARVESTING
+}
+
+type PvtModeStampedType {
+  value: PvtMode!
+  timestamp: DateTime!
 }
 
 type PvtParametersType {
@@ -1327,6 +1344,18 @@ type PvtSensorValuesType {
   pvtMaxTemperatureMainFwdStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureMainAftStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureOwnersStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureMainFwdStringsSupply: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureMainAftStringsSupply: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureOwnersStringsSupply: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureMainFwdStringsReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureMainAftStringsReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureOwnersStringsReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtFlowMainFwdStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtFlowMainAftStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtFlowOwnersStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtPvtMainFwd: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_exchanger", valveType: null)
+  pvtPvtMainAft: SensorPvtType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_exchanger", valveType: null)
+  pvtPvtOwners: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_exchanger", valveType: null)
   pvtReturnTemperature: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtSeawaterExchangerFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
@@ -1446,6 +1475,11 @@ type SensorPumpType {
   pressure: FloatStampedType!
   energyConsumption: FloatStampedType!
   powerInput: FloatStampedType!
+}
+
+type SensorPvtType {
+  deltaT: FloatStampedType!
+  heat: FloatStampedType!
 }
 
 type SensorShorePowerConverterType {

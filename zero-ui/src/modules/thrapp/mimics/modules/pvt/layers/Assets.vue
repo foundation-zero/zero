@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { PvtInstance } from "../../../instances";
-import { getField } from "../../../providers";
+import { PVT_MIMIC_DATA } from "../data";
+
+const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
 </script>
 
 <template>
@@ -9,46 +11,22 @@ import { getField } from "../../../providers";
     <PvtInstance
       x="14"
       y="30"
-      tag-id="9002-01"
-      title-key="fwdTitle"
-      :pump-source="getField(SensorComponentType.Pump, 'pvt', 'pvtPumpMainFwd')"
-      :flow-source="getField(SensorComponentType.Flow, 'pvt', 'pvtFlowMainFwdRecovery')"
-      :return-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureMainFwdReturn')
-      "
-      :supply-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureMainFwdSupply')
-      "
+      :tag-id="pvt['9001-01'].tooltip?.yardTag"
+      v-bind="pvt['9001-01']"
     />
 
     <PvtInstance
       x="14"
       y="241"
-      tag-id="9002-02"
-      title-key="aftTitle"
-      :pump-source="getField(SensorComponentType.Pump, 'pvt', 'pvtPumpMainAft')"
-      :flow-source="getField(SensorComponentType.Flow, 'pvt', 'pvtFlowMainAftRecovery')"
-      :return-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureMainAftReturn')
-      "
-      :supply-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureMainAftSupply')
-      "
+      :tag-id="pvt['9002-01'].tooltip?.yardTag"
+      v-bind="pvt['9002-01']"
     />
 
     <PvtInstance
       x="14"
       y="455"
-      tag-id="9002-01"
-      title-key="ownersTitle"
-      :pump-source="getField(SensorComponentType.Pump, 'pvt', 'pvtPumpOwners')"
-      :flow-source="getField(SensorComponentType.Flow, 'pvt', 'pvtFlowOwnersRecovery')"
-      :return-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureOwnersReturn')
-      "
-      :supply-temperature-source="
-        getField(SensorComponentType.Temperature, 'pvt', 'pvtTemperatureOwnersSupply')
-      "
+      :tag-id="pvt['9001-03'].tooltip?.yardTag"
+      v-bind="pvt['9001-03']"
     />
   </g>
 </template>

@@ -174,3 +174,8 @@ class TankControlMode(Enum):
     BOTH = 1
     COLD = 2
     HOT = 3
+
+
+class PvtMode(Enum):
+    IDLE = 0
+    HARVESTING = 1

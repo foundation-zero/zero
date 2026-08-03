@@ -8,8 +8,12 @@ const { items, sources } = useTranslations();
 
 defineProps<{
   deltaT?: ModuleField<SensorComponentType.DeltaT | SensorComponentType.HeatExchanger>;
-  incoming: ModuleField<SensorComponentType.Temperature>;
-  outgoing: ModuleField<SensorComponentType.Temperature>;
+  incoming: ModuleField<
+    SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature
+  >;
+  outgoing: ModuleField<
+    SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature
+  >;
   flow?: ModuleField<SensorComponentType.Flow | SensorComponentType.CalculatedFlow>;
 }>();
 </script>

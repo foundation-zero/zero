@@ -117,6 +117,18 @@ class CalculatedFlow(ThrsValues):
     flow: Stamped[LMin]
 
     @classmethod
+    def from_sensors(cls, sensors: list[FlowSensor]):
+        flows = [sensor.flow for sensor in sensors]
+        total_flow = sum(flow.value for flow in flows)
+
+        return CalculatedFlow(
+            flow=Stamped.combine(
+                *flows,
+                value=total_flow,
+            )
+        )
+
+    @classmethod
     def from_weighted_sensors(
         cls,
         weights: Sequence[Stamped[Ratio | LMin]],
@@ -192,6 +204,10 @@ class HeatPump(HeatTransferDevice):
 
 
 class HeatExchanger(HeatTransferDevice):
+    pass
+
+
+class Pvt(HeatTransferDevice):
     pass
 
 
@@ -382,6 +398,7 @@ __all__ = [
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
+    "Pvt",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

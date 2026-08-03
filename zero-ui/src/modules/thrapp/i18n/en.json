@@ -168,7 +168,8 @@
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
-        "empty": "Level"
+        "empty": "Level",
+        "pvt": "Pvt"
       }
     },
     "mimics": {
