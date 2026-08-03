@@ -56,7 +56,7 @@ def test_simulation_test_runner():
             ThrustersSensorValues, ThrustersSimulationOutputs
         )
         collector = PolarsCollector()
-        runner = SimulationTestRunner(simulation, control, alarms)
+        runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
         runner.run(20, collector)
         frame = collector.result()
         inputs = io_mapping.generate_inputs(

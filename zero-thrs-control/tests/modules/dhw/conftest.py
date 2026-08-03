@@ -98,6 +98,7 @@ def runner(
     simulation: Simulation[
         DhwSensorValues, DhwControlValues, DhwSimulationInputs, DhwSimulationOutputs
     ],
+    simulation_inputs: DhwSimulationInputs,
     alarms: DhwAlarms,
 ) -> SimulationTestRunner[
     DhwSensorValues,
@@ -108,7 +109,7 @@ def runner(
     DhwControlMode,
     DhwControllerState,
 ]:
-    return SimulationTestRunner(simulation, control, alarms)
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
 
 @fixture

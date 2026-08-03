@@ -5,12 +5,7 @@ from enum import Enum
 from functools import reduce
 from typing import Any, cast
 
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import (
     build_fmu_key_mapping,
     build_outputs_from_fmu,
@@ -57,7 +52,7 @@ class IoMapping[S, C, I, O](ABC):
     ) -> tuple[S, O, dict[str, Any]]: ...
 
 
-class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
+class CombinedIoMapping[I: ThrsValues, O: ThrsValues](
     IoMapping[CombinedValues, CombinedValues, I, O]
 ):
     def __init__(
@@ -138,8 +133,8 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
 class ThrsModelIoMapping[
     S: ThrsValues,
     C: ThrsValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ](IoMapping[S, C, I, O]):
     def __init__(
         self,

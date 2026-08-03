@@ -7,7 +7,7 @@ from datetime import timedelta
 from functools import reduce
 from typing import Any, Self
 
-from thrs.input_output.base import SimulationInputs, ThrsValues
+from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.simulation.fmu import Fmu, FmuLike
 
@@ -28,7 +28,7 @@ class CoSimulationParticipant:
     fmu_getter: Callable[[], Fmu]
     sensor_values_clss: list[type[ThrsValues]]
     control_values_clss: list[type[ThrsValues]]
-    simulation_inputs_cls: type[SimulationInputs]
+    simulation_inputs_cls: type[ThrsValues]
     simulation_outputs_cls: type[ThrsValues]
 
     couplings: list[Coupling]

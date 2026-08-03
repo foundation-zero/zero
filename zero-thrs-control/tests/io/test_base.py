@@ -1,5 +1,11 @@
 from thrs.classes.control import ControlMode
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.input_output.definitions.simulation import HeatSource
+
+
+class SimpleInputs(ThrsValues):
+    a: HeatSource
 
 
 def test_flow_sensor():
@@ -41,3 +47,16 @@ def test_control_mode_str():
 
     assert str(mode) == "mode, submode: mode"
     assert str(empty_mode) == ""
+
+
+def test_json_dump():
+    inputs = SimpleInputs(
+        a=HeatSource(heat_flow=Stamped.stamp(1.0)),
+    )
+
+    class Test(ThrsValues):
+        inputs: SimpleInputs
+
+    model = Test(inputs=inputs)
+    json = model.model_dump_json()
+    assert model == Test.model_validate_json(json)

@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -133,7 +131,7 @@ class AdsorptionControlValues(ThrsValues):
     ]
 
 
-class AdsorptionSimulationInputs(SimulationInputs):
+class AdsorptionSimulationInputs(ThrsValues):
     adsorption_cooling_supply: simulation.TemperatureBoundary
     adsorption_seawater_supply: simulation.Boundary
     adsorption_available_hot_temperature: Annotated[
@@ -152,7 +150,7 @@ class AdsorptionSimulationInputs(SimulationInputs):
     adsorption_dhw_supply: simulation.Boundary
 
 
-class AdsorptionSimulationOutputs(SimulationValues):
+class AdsorptionSimulationOutputs(ThrsValues):
     adsorption_cooling_return: simulation.Boundary
     adsorption_seawater_return: simulation.TemperatureBoundary
     adsorption_dhw_exchanger: simulation.ExchangerBoundary

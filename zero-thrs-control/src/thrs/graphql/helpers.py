@@ -4,7 +4,7 @@ import strawberry
 from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
 
-from thrs.input_output.base import SimulationValues, Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import unit_for_annotation
 
 
@@ -13,38 +13,6 @@ class JsonSchemaDirective:
     yard_tag: str | None = None
     component_type: str | None = None
     valve_type: str | None = None
-
-
-_dedataframed_strawberries = {}
-
-
-def ensure_dedataframe(annotation):
-    """
-    Ensure a Pydantic model is converted to a Strawberry type for simulation data.
-
-    This function caches converted types to avoid duplicate conversions.
-    """
-    if existing := _dedataframed_strawberries.get(annotation):
-        return existing
-    gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
-    strawberry.experimental.pydantic.type(
-        model=annotation,
-        all_fields=True,
-        json_schema_directive=JsonSchemaDirective,
-        use_pydantic_alias=False,
-    )(gql_cls)
-    _dedataframed_strawberries[annotation] = gql_cls
-    return gql_cls
-
-
-def ensure_dedataframes(cls):
-    """
-    Ensure all fields in a Pydantic model are converted to Strawberry types.
-
-    This is used for simulation input/output types that may contain complex nested types.
-    """
-    for field in cls.model_fields.values():
-        ensure_dedataframe(field.annotation)
 
 
 def pydantic_to_strawberry_type(
@@ -115,43 +83,6 @@ def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
     if pydantic_value is None:
         return None
     return graphql_type.from_pydantic(pydantic_value)
-
-
-def dedataframed_pydantic_to_strawberry_type(cls: type[SimulationValues]) -> type:
-    """
-    Create a Strawberry GraphQL type for a simulation values class.
-
-    Handles the dedataframe boilerplate automatically. This converts simulation
-    models that may contain time-series DataFrames (StampedDf[T]) into GraphQL-
-    compatible types with only scalar values (Stamped[T]).
-
-    Args:
-        cls: The simulation Pydantic model (inputs or outputs)
-
-    Returns:
-        Strawberry GraphQL type
-
-    Example:
-        Instead of:
-            DedataframedInputs = ThrustersSimulationInputs.dedataframe()
-            ensure_dedataframes(DedataframedInputs)
-
-            @strawberry.experimental.pydantic.type(...)
-            class ThrustersSimulationInputsType:
-                pass
-
-        Use:
-            ThrustersSimInputsType = create_simulation_type(ThrustersSimulationInputs)
-            ThrustersSimOutputsType = create_simulation_type(ThrustersSimulationOutputs)
-    """
-    # Dedataframe: convert StampedDf[T] fields to Stamped[T]
-    dedataframed = cls.dedataframe()
-
-    # Ensure all nested component fields are converted to Strawberry types
-    ensure_dedataframes(dedataframed)
-
-    # Create final Strawberry GraphQL type
-    return pydantic_to_strawberry_type(dedataframed)
 
 
 class UnstampedInput(ThrsValues):

@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -416,9 +414,9 @@ class CoolingPanelsControlValues(ThrsValues):
     ]
 
 
-class CoolingPanelsSimulationInputs(SimulationInputs):
+class CoolingPanelsSimulationInputs(ThrsValues):
     pass
 
 
-class CoolingPanelsSimulationOutputs(SimulationValues):
+class CoolingPanelsSimulationOutputs(ThrsValues):
     pass

@@ -18,17 +18,19 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-def test_computed_collection(simulation: ThrustersSimulation, control, alarms):
+def test_computed_collection(
+    simulation: ThrustersSimulation, simulation_inputs, control, alarms
+):
     collector = PolarsCollector()
-    runner = SimulationTestRunner(simulation, control, alarms)
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
     runner.run(20, collector)
     frame = collector.result()
     assert frame is not None
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
-def test_simulation(simulation, control, alarms):
-    runner = SimulationTestRunner(simulation, control, alarms)
+def test_simulation(simulation, simulation_inputs, control, alarms):
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
     collector = PolarsCollector()
 
@@ -40,10 +42,11 @@ def test_simulation(simulation, control, alarms):
 
 
 @fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))
-def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
-    request.param(inputs, -9e7)
-    return inputs
+def incorrect_simulation_inputs(
+    simulation_inputs: ThrustersSimulationInputs, request: pytest.FixtureRequest
+) -> ThrustersSimulationInputs:
+    request.param(simulation_inputs, -9e7)
+    return simulation_inputs
 
 
 def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):

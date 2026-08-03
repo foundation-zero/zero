@@ -120,8 +120,10 @@ def alarms() -> DcAlarms:
 
 
 @fixture()
-def runner(control: DcControl, simulation, alarms: DcAlarms) -> SimulationTestRunner:
-    return SimulationTestRunner(simulation, control, alarms)
+def runner(
+    control: DcControl, simulation, simulation_inputs, alarms: DcAlarms
+) -> SimulationTestRunner:
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
 
 @fixture

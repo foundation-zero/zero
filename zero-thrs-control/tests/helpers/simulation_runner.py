@@ -1,15 +1,11 @@
 from collections.abc import Callable
 from typing import Any, cast
 
+from analysis.simulation_values import SimulationValues
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control, ControlMode
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.simulation import Simulation, SimulationUnit
@@ -122,8 +118,8 @@ class _CombinedAlarmsAdapter:
 class SimulationTestRunner[
     S: ThrsValues | CombinedValues,
     C: ThrsValues | CombinedValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues | SimulationValues,
+    O: ThrsValues,
     P,
     M,
     CS: ThrsValues | CombinedValues,
@@ -136,6 +132,7 @@ class SimulationTestRunner[
     def __init__(
         self,
         simulation: Simulation[S, C, I, O],
+        simulation_inputs: I,
         control: Control[S, C, P, M, CS]
         | dict[str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]],
         alarms: BaseAlarms | dict[str, BaseAlarms],
@@ -162,15 +159,24 @@ class SimulationTestRunner[
             self._alarms = cast(BaseAlarms, alarms)
 
         self._control_values, self._controller_state = self._control.initial()
+        self._simulation_inputs = simulation_inputs
         self._simulation_module = SimulationUnit(
             simulation, cast(SimulationChannels, None)
         )
         self._simulation = simulation
 
     def update_simulation_inputs(self, simulation_inputs: I):
-        self._simulation.update_simulation_inputs(simulation_inputs)
+        self._simulation_inputs = simulation_inputs
 
     def tick(self, collector: Collector | None = None) -> tuple[S | None, C, CS]:
+        if isinstance(self._simulation_inputs, SimulationValues):
+            simulation_inputs = self._simulation_inputs.get_values_at_time(
+                self._simulation.time()
+            )
+        else:
+            simulation_inputs = self._simulation_inputs
+        self._simulation.update_simulation_inputs(simulation_inputs)
+
         result = self._simulation_module.execute_simulation_tick(self._control_values)
 
         self._alarms.check(

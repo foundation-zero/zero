@@ -97,14 +97,14 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
-  ThrusterSimulationType: "Thruster",
-  BoundarySimulationType: "Boundary",
-  TemperatureBoundarySimulationType: "Temperature",
-  OverpressureTemperatureBoundarySimulationType: "OverpressureTemperature",
-  FlowBoundarySimulationType: "Flow",
-  PcsSimulationType: "Pcs",
-  HeatSourceSimulationType: "HeatSource",
-  HvacExchangerSimulationType: "HvacExchanger",
+  SimulationThrusterType: "Thruster",
+  SimulationBoundaryType: "Boundary",
+  SimulationTemperatureBoundaryType: "Temperature",
+  SimulationOverpressureTemperatureBoundaryType: "OverpressureTemperature",
+  SimulationFlowBoundaryType: "Flow",
+  SimulationPcsType: "Pcs",
+  SimulationHeatSourceType: "HeatSource",
+  SimulationHvacExchangerType: "HvacExchanger",
 };
 
 const CONTROL_TYPE_MAP: Record<string, string> = {

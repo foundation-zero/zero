@@ -6,9 +6,8 @@ from thrs.control.modules.dhw import DhwControl, DhwParameters
 from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.base import (
     CombinedValues,
-    SimulationInputs,
-    SimulationValues,
     Stamped,
+    ThrsValues,
 )
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.dhw import (
@@ -53,7 +52,7 @@ class MockFmu(Fmu):
         return 0.0
 
 
-class DrivesDhwSimulationInputs(SimulationInputs):
+class DrivesDhwSimulationInputs(ThrsValues):
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
     drives_propdrive_aft1: simulation.PropulsionDrive
@@ -71,7 +70,7 @@ class DrivesDhwSimulationInputs(SimulationInputs):
     dhw_hotwater_demand: simulation.FlowBoundary
 
 
-class DrivesDhwSimulationOutputs(SimulationValues):
+class DrivesDhwSimulationOutputs(ThrsValues):
     drives_seawater_return: simulation.TemperatureBoundary
     drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary

@@ -7,7 +7,7 @@ from thrs.classes.machine_state_logger import (
     StateLogger,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
@@ -16,11 +16,11 @@ class SimpleInOut(ThrsValues):
     go_with_the: FlowSensor
 
 
-class SimpleSimulationInputs(SimulationInputs):
+class SimpleSimulationInputs(ThrsValues):
     pass
 
 
-class SimpleSimulationOutputs(SimulationValues):
+class SimpleSimulationOutputs(ThrsValues):
     pass
 
 

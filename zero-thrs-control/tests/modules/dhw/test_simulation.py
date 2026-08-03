@@ -17,8 +17,8 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path
 
 
-def test_simulation(simulation, control, alarms):
-    runner = SimulationTestRunner(simulation, control, alarms)
+def test_simulation(simulation, simulation_inputs, control, alarms):
+    runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
     collector = PolarsCollector()
 
@@ -31,9 +31,8 @@ def test_simulation(simulation, control, alarms):
 
 @fixture(params=list(simulator_input_field_setters(DhwSimulationInputs)))
 def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
-    request.param(inputs, -9e7)
-    return inputs
+    request.param(simulation_inputs, -9e7)
+    return simulation_inputs
 
 
 def test_simulation_step(control, simulation):

@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from pydantic import ValidationError
 
-from thrs.input_output.base import Stamped, StampedDf, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     LMin,
     PcsMode,
@@ -25,26 +25,9 @@ def test_unit_for_annotation_stamped():
     assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
 
 
-def test_unit_for_annotation_stamped_df():
-    class Data(ThrsValues):
-        a: StampedDf[Ratio]
-
-    assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
-
-
-def test_unit_for_annotation_union():
-    class Data(ThrsValues):
-        a: Stamped[Ratio] | StampedDf[Ratio]
-
-    assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
-
-
-type Stamp[T] = Stamped[T] | StampedDf[T]
-
-
 def test_unit_for_annotation_union_alias():
     class Data(ThrsValues):
-        a: Stamp[Ratio]
+        a: Stamped[Ratio]
 
     assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
 

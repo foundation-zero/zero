@@ -714,6 +714,30 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
+  dcBrightloopFwd1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopFwd2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcUgrid1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcUgrid2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft3: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft4: {
+    componentType: SimulationComponentType.HeatSource,
+  },
   dcSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
@@ -1480,6 +1504,21 @@ export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.HeatSource,
   },
   drivesOilCoolerFwd: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveAft1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveAft2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveFwd1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveFwd2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesShorepower: {
     componentType: SimulationComponentType.HeatSource,
   },
   drivesSeawaterSupply: {

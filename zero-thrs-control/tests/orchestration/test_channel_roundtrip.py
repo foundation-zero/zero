@@ -8,8 +8,6 @@ from aiomqtt import Client as MqttClient
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 from thrs.orchestration.comms import (
@@ -52,11 +50,11 @@ class DemoControllerState(ThrsValues):
     state: str = "ok"
 
 
-class DemoSimulationInputs(SimulationInputs):
+class DemoSimulationInputs(ThrsValues):
     target: float = 1.0
 
 
-class DemoSimulationOutputs(SimulationValues):
+class DemoSimulationOutputs(ThrsValues):
     measured: float = 2.0
 
 

@@ -2,14 +2,7 @@ from typing import Annotated
 
 from pydantic import computed_field
 
-from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
-    Stamped,
-    ThrsValues,
-    component_meta,
-    computed_meta,
-)
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -221,7 +214,7 @@ class ThrustersControlValues(ThrsValues):
     ]
 
 
-class ThrustersSimulationInputs(SimulationInputs):
+class ThrustersSimulationInputs(ThrsValues):
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary
@@ -229,7 +222,7 @@ class ThrustersSimulationInputs(SimulationInputs):
     thrusters_pcs: simulation.Pcs
 
 
-class ThrustersSimulationOutputs(SimulationValues):
+class ThrustersSimulationOutputs(ThrsValues):
     thrusters_seawater_return: simulation.TemperatureBoundary
     thrusters_pcm_supply: simulation.FlowBoundary
     thrusters_pcm_return: simulation.Boundary

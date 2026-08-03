@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -393,7 +391,7 @@ class DcControlValues(ThrsValues):
     ]
 
 
-class DcSimulationInputs(SimulationInputs):
+class DcSimulationInputs(ThrsValues):
     dc_brightloop_fwd1: simulation.Converter
     dc_brightloop_fwd2: simulation.Converter
     dc_ugrid1: simulation.Converter
@@ -406,7 +404,7 @@ class DcSimulationInputs(SimulationInputs):
     dc_dhw_supply: simulation.Boundary
 
 
-class DcSimulationOutputs(SimulationValues):
+class DcSimulationOutputs(ThrsValues):
     dc_seawater_return: simulation.TemperatureBoundary
     dc_dhw_exchanger: simulation.ExchangerBoundary
     dc_dhw_return: simulation.TemperatureBoundary

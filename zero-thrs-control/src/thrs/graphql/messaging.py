@@ -2,11 +2,7 @@ from collections.abc import Callable, Coroutine
 from typing import Literal, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
-from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-)
+from thrs.input_output.base import ThrsValues
 from thrs.orchestration.comms import (
     ControlApiChannels,
     DirectivesApiChannels,
@@ -105,27 +101,27 @@ class ControlMessaging[
 class SimulationMessaging:
     def __init__(
         self,
-        channels: SimulationApiChannels[SimulationInputs, SimulationValues],
+        channels: SimulationApiChannels[ThrsValues, ThrsValues],
     ):
         self._channels = channels
 
     def wait_for_simulation_inputs(
         self,
-        condition: Callable[[SimulationInputs], bool],
+        condition: Callable[[ThrsValues], bool],
         *_args,
         timeout: float,
-    ) -> Coroutine[None, None, SimulationInputs]:
+    ) -> Coroutine[None, None, ThrsValues]:
         return self._channels.wait_for_simulation_inputs_where(condition, timeout)
 
     @property
-    def simulation_inputs(self) -> SimulationInputs | None:
+    def simulation_inputs(self) -> ThrsValues | None:
         return self._channels.get_simulation_inputs()
 
     @property
-    def simulation_outputs(self) -> SimulationValues | None:
+    def simulation_outputs(self) -> ThrsValues | None:
         return self._channels.get_simulation_outputs()
 
-    async def set_simulation_inputs(self, inputs: SimulationInputs):
+    async def set_simulation_inputs(self, inputs: ThrsValues):
         await self._channels.send_simulation_inputs(inputs)
 
 

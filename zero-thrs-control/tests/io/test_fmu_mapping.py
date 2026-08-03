@@ -4,7 +4,6 @@ from typing import Annotated
 from pydantic import computed_field
 
 from thrs.input_output.base import (
-    SimulationInputs,
     Stamped,
     ThrsValues,
     component_meta,
@@ -38,7 +37,7 @@ class ExcludedFieldComponent(ThrsValues):
     included_field: Annotated[Stamped[Ratio], field_meta(included_in_fmu=True)]
 
 
-class ExcludedSimulationInputs(SimulationInputs):
+class ExcludedSimulationInputs(ThrsValues):
     excluded_component: Annotated[
         IncludedFieldComponent, component_meta(included_in_fmu=False)
     ]
