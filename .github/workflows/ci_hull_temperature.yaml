@@ -2,6 +2,7 @@ name: "Hull temperature: Test and push Docker image"
 on:
   pull_request:
     paths:
+      - zero-modbus-bridge/**
       - zero-hull-temperature/**
       - .github/workflows/ci_hull_temperature.yaml
   release:
@@ -10,6 +11,7 @@ on:
     branches:
       - main
     paths:
+      - zero-modbus-bridge/**
       - zero-hull-temperature/**
       - .github/workflows/ci_hull_temperature.yaml
 

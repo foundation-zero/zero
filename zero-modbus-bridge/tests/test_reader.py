@@ -4,7 +4,11 @@ import pytest
 from pydantic import BaseModel
 
 from tests.conftest import FloatModel, ScaledModel, UintModel
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.io import (
+    AnnotationModbusTopic,
+    ConverterModbusTopic,
+    ModbusField,
+)
 from zero_modbus_bridge.reader import (
     ModbusReader,
 )
@@ -15,7 +19,7 @@ async def test_reader_annotated_float32_success():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [0x4248, 0x0000]
 
-    topic = ModbusTopic(
+    topic = AnnotationModbusTopic(
         topic="test/f",
         model=FloatModel,
         start_register=3000,
@@ -31,7 +35,7 @@ async def test_reader_annotated_invalid_float32():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [0xFFC0, 0x0000]
 
-    topic = ModbusTopic(
+    topic = AnnotationModbusTopic(
         topic="test/f",
         model=FloatModel,
         start_register=3000,
@@ -48,7 +52,7 @@ async def test_reader_annotated_uint16():
     mock_modbus.read_holding_registers.side_effect = [[42], [1]]  # val=42, flag=1
     mock_modbus.read_coils.return_value = [1]
 
-    topic = ModbusTopic(topic="test/u", model=UintModel)
+    topic = AnnotationModbusTopic(topic="test/u", model=UintModel)
     reader = ModbusReader(mock_modbus, [topic])
     result = reader.read_topic(topic)
     assert result is not None
@@ -61,7 +65,7 @@ async def test_reader_annotated_scaling():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [625]
 
-    topic = ModbusTopic(topic="test/s", model=ScaledModel)
+    topic = AnnotationModbusTopic(topic="test/s", model=ScaledModel)
     reader = ModbusReader(mock_modbus, [topic])
     result = reader.read_topic(topic)
     assert result is not None
@@ -73,15 +77,14 @@ async def test_reader_annotated_invalid_value_sentinel():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [0xFFFF]
 
-    topic = ModbusTopic(topic="test/u", model=UintModel)
+    topic = AnnotationModbusTopic(topic="test/u", model=UintModel)
     reader = ModbusReader(mock_modbus, [topic])
     result = reader.read_topic(topic)
     assert result is not None
     assert result.val is None
 
 
-@pytest.mark.asyncio
-async def test_reader_converter():
+def test_reader_converter():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [100]
 
@@ -92,14 +95,14 @@ async def test_reader_converter():
         reg_map = {reg: val for reg, val in values if reg is not None}
         return SumModel(sum=sum(reg_map.values()))
 
-    topic = ModbusTopic(
+    topic = ConverterModbusTopic(
         topic="test/c",
         model=FloatModel,
         fields=[ModbusField(register=10)],
         converter=conv,
     )
     reader = ModbusReader(mock_modbus, [topic])
-    topic, payload = await anext(reader.read_all())
+    topic, payload = next(reader.read_all())
     assert topic == "test/c"
     assert payload.sum == 100
 
@@ -116,7 +119,7 @@ async def test_reader_converter_single():
         reg_map = {reg: val for reg, val in values if reg is not None}
         return SumModel(sum=sum(reg_map.values()))
 
-    topic = ModbusTopic(
+    topic = ConverterModbusTopic(
         topic="test/c",
         model=FloatModel,
         fields=[ModbusField(register=10)],
@@ -133,7 +136,7 @@ async def test_reader_extra_fields_merged():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [25]
 
-    topic = ModbusTopic(
+    topic = AnnotationModbusTopic(
         topic="test/e",
         model=FloatModel,
         extra_fields={"room": "Lounge"},

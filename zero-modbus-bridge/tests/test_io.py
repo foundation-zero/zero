@@ -3,7 +3,13 @@ from typing import Annotated
 import pytest
 from pydantic import BaseModel
 
-from zero_modbus_bridge.io import ModbusField, ModbusTopic, extract_modbus_fields
+from zero_modbus_bridge.io import (
+    AnnotationModbusTopic,
+    ConverterModbusTopic,
+    ModbusField,
+    apply_modbus_field,
+    extract_modbus_fields,
+)
 
 
 def test_modbus_field_register_only():
@@ -14,7 +20,7 @@ def test_modbus_field_register_only():
     assert f.data_type == "uint16"
     assert f.modbus_type == "holding"
     assert f.scale_factor == 1.0
-    assert f.invalid_value is None
+    assert f.validator is None
 
 
 def test_modbus_field_offset_only():
@@ -34,6 +40,12 @@ def test_modbus_field_neither_register_nor_offset():
     f = ModbusField()
     assert f.register is None
     assert f.offset is None
+
+
+def test_apply_modbus_field_validator_rejects():
+    field = ModbusField(register=10, validator=lambda raw: raw != 0xFFFF)
+    assert apply_modbus_field(0xFFFF, field) is None
+    assert apply_modbus_field(100, field) == 100.0
 
 
 class _TestModel(BaseModel):
@@ -69,7 +81,7 @@ def test_extract_modbus_fields_no_annotations():
 
 
 def test_modbus_topic_annotation_driven():
-    topic = ModbusTopic(
+    topic = AnnotationModbusTopic(
         topic="test/foo",
         model=_TestModel,
         start_register=3000,
@@ -93,7 +105,7 @@ def test_modbus_topic_converter_driven():
     def fake_converter(values):
         return ConverterModel(x=1)
 
-    topic = ModbusTopic(
+    topic = ConverterModbusTopic(
         topic="test/bar",
         model=_PlainModel,
         fields=[ModbusField(register=42)],
@@ -106,8 +118,8 @@ def test_modbus_topic_converter_driven():
 
 
 def test_modbus_topic_extra_fields_not_shared():
-    topic_a = ModbusTopic(topic="test/a", model=_PlainModel)
-    topic_b = ModbusTopic(topic="test/b", model=_PlainModel)
+    topic_a = AnnotationModbusTopic(topic="test/a", model=_PlainModel)
+    topic_b = AnnotationModbusTopic(topic="test/b", model=_PlainModel)
 
     topic_a.extra_fields["key"] = "value"
     assert topic_b.extra_fields == {}

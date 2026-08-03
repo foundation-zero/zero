@@ -2,16 +2,22 @@ from typing import Annotated
 
 from pydantic import BaseModel
 
+from zero_modbus_bridge.bit_ops import is_finite_float
 from zero_modbus_bridge.io import ModbusField
 
 
 class FloatModel(BaseModel):
-    value: Annotated[float | None, ModbusField(offset=0, count=2, data_type="float32")]
+    value: Annotated[
+        float | None,
+        ModbusField(offset=0, count=2, data_type="float32", validator=is_finite_float),
+    ]
     room: str | None = None
 
 
 class UintModel(BaseModel):
-    val: Annotated[int | None, ModbusField(register=100, invalid_value=0xFFFF)]
+    val: Annotated[
+        int | None, ModbusField(register=100, validator=lambda raw: raw != 0xFFFF)
+    ]
     flag: Annotated[
         bool | None, ModbusField(register=200, modbus_type="coil", data_type="bool")
     ]

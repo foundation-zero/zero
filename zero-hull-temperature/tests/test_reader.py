@@ -33,7 +33,7 @@ async def test_reader_reads_float32_registers(modbus_settings, modbus_client):
                 server.data_bank.set_holding_registers(
                     field.register, float_to_lsw_registers(20.0)
                 )
-        results = [r async for r in reader.read_all()]
+        results = list(reader.read_all())
         assert len(results) == 1
         _, payload = results[0]
         data = payload  # payload is a HullTemperature instance

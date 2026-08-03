@@ -22,7 +22,7 @@ class ModbusField:
     data_type: Literal["uint16", "float32", "bool"] = "uint16"
     modbus_type: Literal["holding", "coil"] = "holding"
     scale_factor: float = 1.0
-    invalid_value: int | None = None
+    validator: Callable[[RawModbusValue], bool] | None = None
 
     def __init__(
         self,
@@ -33,7 +33,7 @@ class ModbusField:
         data_type: Literal["uint16", "float32", "bool"] = "uint16",
         modbus_type: Literal["holding", "coil"] = "holding",
         scale_factor: float = 1.0,
-        invalid_value: int | None = None,
+        validator: Callable[[RawModbusValue], bool] | None = None,
     ):
         if register is not None and offset is not None:
             raise ValueError("Provide either `register` or `offset`, not both.")
@@ -43,20 +43,20 @@ class ModbusField:
         self.data_type = data_type
         self.modbus_type = modbus_type
         self.scale_factor = scale_factor
-        self.invalid_value = invalid_value
+        self.validator = validator
 
 
 class ModbusTopic[T: BaseModel](BaseModel):
     """Describes one MQTT topic backed by Modbus registers.
 
-    Two modes:
+    Two modes, provided by the two subclasses:
 
-    *Annotation-driven* (``converter=None``):
+    *Annotation-driven* (``AnnotationModbusTopic``):
         ``model`` carries ``Annotated[..., ModbusField(offset=…)]`` fields.
         The reader introspects annotations, computes absolute register
         addresses from ``start_register``, reads, scales, and serialises.
 
-    *Converter-driven* (``converter`` set):
+    *Converter-driven* (``ConverterModbusTopic``):
         ``fields`` lists every register to read.  The reader reads them all
         and passes ``[(abs_register, raw_value), …]`` to ``converter``,
         which returns the JSON payload as a string.
@@ -72,6 +72,10 @@ class ModbusTopic[T: BaseModel](BaseModel):
     extra_fields: dict[str, Any] = Field(default_factory=dict)
     converter: TopicConverter[T] | None = None
 
+
+class AnnotationModbusTopic[T: BaseModel](ModbusTopic[T]):
+    """Annotation-driven topic: fields and converter derive from ``model``."""
+
     def model_post_init(self, __context: Any) -> None:
         annotations = extract_modbus_fields(self.model)
         annotation_items = list(annotations.items())
@@ -85,6 +89,14 @@ class ModbusTopic[T: BaseModel](BaseModel):
                 annotation_items,
                 self.extra_fields,
             )
+
+
+class ConverterModbusTopic[T: BaseModel](ModbusTopic[T]):
+    """Converter-driven topic: caller provides ``fields`` and ``converter``."""
+
+    def model_post_init(self, __context: Any) -> None:
+        if self.fields is None or self.converter is None:
+            raise ValueError("ConverterModbusTopic requires fields and converter")
 
 
 def _find_modbus_field(hint) -> ModbusField | None:
@@ -108,7 +120,7 @@ def extract_modbus_fields(model: type[BaseModel]) -> dict[str, ModbusField]:
 def apply_modbus_field(raw: RawModbusValue, field: ModbusField) -> RawModbusValue:
     if raw is None:
         return None
-    if field.invalid_value is not None and raw == field.invalid_value:
+    if field.validator is not None and not field.validator(raw):
         return None
     if isinstance(raw, bool):
         return raw

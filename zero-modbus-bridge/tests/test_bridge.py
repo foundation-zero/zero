@@ -4,7 +4,7 @@ import pytest
 
 from tests.conftest import FloatModel
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.io import ModbusTopic
+from zero_modbus_bridge.io import AnnotationModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher
 
 
@@ -15,7 +15,7 @@ async def test_publisher_registers_and_publishes():
     mock_broker = MagicMock()
     mock_broker.publisher.return_value = mock_pub
 
-    topic = ModbusTopic(topic="test/p", model=FloatModel)
+    topic = AnnotationModbusTopic(topic="test/p", model=FloatModel)
     pub = MqttPublisher(mock_broker, [topic])
     await pub.publish("test/p", FloatModel(value=1))
     mock_pub.publish.assert_called_once_with(FloatModel(value=1))
@@ -39,7 +39,7 @@ async def test_bridge_run_once_annotation():
     mock_broker = MagicMock()
     mock_broker.publisher.return_value = mock_pub
 
-    topic = ModbusTopic(
+    topic = AnnotationModbusTopic(
         topic="test/b",
         model=FloatModel,
         start_register=3000,
@@ -58,7 +58,7 @@ async def test_bridge_initialization_registers_publishers():
     mock_broker = MagicMock()
     mock_broker.publisher.return_value = MagicMock()
 
-    topic = ModbusTopic(topic="test/r", model=FloatModel)
+    topic = AnnotationModbusTopic(topic="test/r", model=FloatModel)
     ModbusBridge(mock_modbus, mock_broker, [topic])
     mock_broker.publisher.assert_called_once()
 
@@ -68,7 +68,7 @@ async def test_bridge_run_calls_run_once_before_sleep(monkeypatch):
     mock_modbus = MagicMock(host="127.0.0.1", port=502, is_open=True)
     mock_broker = MagicMock()
     mock_broker.publisher.return_value = MagicMock()
-    topic = ModbusTopic(topic="test/r", model=FloatModel)
+    topic = AnnotationModbusTopic(topic="test/r", model=FloatModel)
 
     bridge = ModbusBridge(mock_modbus, mock_broker, [topic], probe_interval=10)
     bridge.run_once = AsyncMock(side_effect=RuntimeError("stop"))
@@ -87,7 +87,7 @@ async def test_bridge_run_compensates_for_run_once_duration(monkeypatch):
     mock_modbus = MagicMock(host="127.0.0.1", port=502, is_open=True)
     mock_broker = MagicMock()
     mock_broker.publisher.return_value = MagicMock()
-    topic = ModbusTopic(topic="test/r", model=FloatModel)
+    topic = AnnotationModbusTopic(topic="test/r", model=FloatModel)
 
     bridge = ModbusBridge(mock_modbus, mock_broker, [topic], probe_interval=1.0)
     bridge.run_once = AsyncMock(side_effect=[None, RuntimeError("stop")])

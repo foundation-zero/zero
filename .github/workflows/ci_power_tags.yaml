@@ -2,6 +2,7 @@ name: "Power Tags: Test and push Docker image"
 on:
   pull_request:
     paths:
+      - zero-modbus-bridge/**
       - zero-power-tags/**
       - .github/workflows/ci_power_tags.yaml
   release:
@@ -10,6 +11,7 @@ on:
     branches:
       - main
     paths:
+      - zero-modbus-bridge/**
       - zero-power-tags/**
       - .github/workflows/ci_power_tags.yaml
 

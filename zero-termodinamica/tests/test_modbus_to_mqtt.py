@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from pydantic import BaseModel
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopic
 
 
 def _make_bridge(mock_modbus, topics):
@@ -39,7 +39,7 @@ async def test_run_once_success():
     mock_modbus.open.return_value = True
     mock_modbus.read_holding_registers.return_value = [1]
 
-    topics = [ModbusTopic(topic="test/pwr", model=_PwrModel)]
+    topics = [AnnotationModbusTopic(topic="test/pwr", model=_PwrModel)]
     bridge, mock_pub = _make_bridge(mock_modbus, topics)
     await bridge.run_once()
     mock_pub.publish.assert_called_once_with(_PwrModel(power=1.0))
@@ -51,7 +51,7 @@ async def test_run_once_multiple_addresses_scaling():
     mock_modbus.open.return_value = True
     mock_modbus.read_holding_registers.side_effect = [[25], [100]]
 
-    topics = [ModbusTopic(topic="test/temp", model=_TempModel)]
+    topics = [AnnotationModbusTopic(topic="test/temp", model=_TempModel)]
     bridge, mock_pub = _make_bridge(mock_modbus, topics)
     await bridge.run_once()
     mock_pub.publish.assert_called_once()
@@ -74,8 +74,8 @@ async def test_run_once_multiple_topics():
     mock_broker.publisher.side_effect = [mock_pub1, mock_pub2]
 
     topics = [
-        ModbusTopic(topic="test/val", model=_ValueModel),
-        ModbusTopic(topic="test/val2", model=_Value2Model),
+        AnnotationModbusTopic(topic="test/val", model=_ValueModel),
+        AnnotationModbusTopic(topic="test/val2", model=_Value2Model),
     ]
     bridge = ModbusBridge(mock_modbus, mock_broker, topics)
     await bridge.run_once()
@@ -90,7 +90,7 @@ async def test_run_once_with_extra_fields():
     mock_modbus.read_holding_registers.return_value = [5]
 
     topics = [
-        ModbusTopic(
+        AnnotationModbusTopic(
             topic="test/extra",
             model=_ValueModel,
             extra_fields={"location": "deck1"},
@@ -112,7 +112,9 @@ async def test_run_multiple_cycles():
     mock_modbus.open.return_value = True
     mock_modbus.read_holding_registers.return_value = [1]
 
-    topics = [ModbusTopic(topic="test/pwr", model=_PwrModel)]
+    topics: list[ModbusTopic] = [
+        AnnotationModbusTopic(topic="test/pwr", model=_PwrModel)
+    ]
     mock_pub = MagicMock()
     mock_pub.publish = AsyncMock()
     mock_broker = MagicMock()

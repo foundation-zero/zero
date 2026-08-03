@@ -1,27 +1,16 @@
 """Modbus reader: yields model instances from annotated topics."""
 
 import logging
-from typing import Any, AsyncIterator
+from typing import Any, Iterator
 
-from pyModbusTCP.client import ModbusClient
 from pydantic import BaseModel
+from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from zero_modbus_bridge.bit_ops import lsw_registers_to_float
-from zero_modbus_bridge.io import ModbusField, ModbusTopic, apply_modbus_field
+from zero_modbus_bridge.io import ModbusField, ModbusTopic
 
 logger = logging.getLogger(__name__)
-
-# Invalid Float32 sentinel used by Schneider PowerTag and Moore HES controllers.
-# 0xFFC00000 → registers [0xFFC0, 0x0000]
-INVALID_FLOAT_SENTINEL = 0xFFC00000
-
-
-def _is_invalid_float(regs: list[int]) -> bool:
-    """Check if two registers represent the invalid Float32 sentinel."""
-    sentinel_high = (INVALID_FLOAT_SENTINEL >> 16) & 0xFFFF
-    sentinel_low = INVALID_FLOAT_SENTINEL & 0xFFFF
-    return len(regs) == 2 and regs[0] == sentinel_high and regs[1] == sentinel_low
 
 
 class ModbusReader:
@@ -29,14 +18,14 @@ class ModbusReader:
 
     Topics are expected to provide both ``fields`` and ``converter``.
     Annotation-driven topics are pre-compiled into those two values by
-    ``ModbusTopic.model_post_init``.
+    ``AnnotationModbusTopic.model_post_init``.
     """
 
     def __init__(self, modbus: ModbusClient, topics: list[ModbusTopic]):
         self._modbus = modbus
         self._topics = topics
 
-    async def read_all(self) -> AsyncIterator[tuple[str, Any]]:
+    def read_all(self) -> Iterator[tuple[str, Any]]:
         """Read every topic once and yield ``(topic_name, payload)``."""
         for topic in self._topics:
             self._modbus.unit_id = topic.unit_id
@@ -69,7 +58,10 @@ class ModbusReader:
         for field in fields:
             reg = _resolve_register(field, topic.start_register)
             try:
-                reads.append((reg, self._read_field(field, reg)))
+                raw = self._read_field(field, reg)
+                if field.validator is not None and not field.validator(raw):
+                    raw = None
+                reads.append((reg, raw))
             except ValueError:
                 logger.warning(
                     "Failed to read register %s for topic %s", reg, topic.topic
@@ -89,8 +81,6 @@ class ModbusReader:
     def _read_float32(self, register: int) -> float | None:
         regs = self._modbus.read_holding_registers(register, 2)
         if regs and len(regs) == 2:
-            if _is_invalid_float(regs):
-                return None
             return lsw_registers_to_float(regs)
         raise ValueError(f"Failed to read float32 from register {register}")
 
@@ -113,9 +103,3 @@ def _resolve_register(field: ModbusField, start_register: int) -> int:
     if field.register is not None:
         return field.register
     raise ValueError("ModbusField has neither register nor offset")
-
-
-def _apply_field(
-    raw: int | float | bool | None, field: ModbusField
-) -> int | float | bool | None:
-    return apply_modbus_field(raw, field)

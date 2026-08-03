@@ -6,56 +6,57 @@ from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.bit_ops import is_finite_float
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopic
 
 
 class PowerTag(BaseModel):
     """Single PowerTag breaker — fields relative to `start_register`."""
 
     current_a: Annotated[
-        float | None, ModbusField(offset=0, count=2, data_type="float32")
+        float | None, ModbusField(offset=0, count=2, data_type="float32", validator=is_finite_float)
     ]
     current_b: Annotated[
-        float | None, ModbusField(offset=2, count=2, data_type="float32")
+        float | None, ModbusField(offset=2, count=2, data_type="float32", validator=is_finite_float)
     ]
     current_c: Annotated[
-        float | None, ModbusField(offset=4, count=2, data_type="float32")
+        float | None, ModbusField(offset=4, count=2, data_type="float32", validator=is_finite_float)
     ]
     current_n: Annotated[
-        float | None, ModbusField(offset=6, count=2, data_type="float32")
+        float | None, ModbusField(offset=6, count=2, data_type="float32", validator=is_finite_float)
     ]
     voltage_an: Annotated[
-        float | None, ModbusField(offset=28, count=2, data_type="float32")
+        float | None, ModbusField(offset=28, count=2, data_type="float32", validator=is_finite_float)
     ]
     voltage_bn: Annotated[
-        float | None, ModbusField(offset=30, count=2, data_type="float32")
+        float | None, ModbusField(offset=30, count=2, data_type="float32", validator=is_finite_float)
     ]
     voltage_cn: Annotated[
-        float | None, ModbusField(offset=32, count=2, data_type="float32")
+        float | None, ModbusField(offset=32, count=2, data_type="float32", validator=is_finite_float)
     ]
     active_power_a: Annotated[
-        float | None, ModbusField(offset=54, count=2, data_type="float32")
+        float | None, ModbusField(offset=54, count=2, data_type="float32", validator=is_finite_float)
     ]
     active_power_b: Annotated[
-        float | None, ModbusField(offset=56, count=2, data_type="float32")
+        float | None, ModbusField(offset=56, count=2, data_type="float32", validator=is_finite_float)
     ]
     active_power_c: Annotated[
-        float | None, ModbusField(offset=58, count=2, data_type="float32")
+        float | None, ModbusField(offset=58, count=2, data_type="float32", validator=is_finite_float)
     ]
     active_power_total: Annotated[
-        float | None, ModbusField(offset=60, count=2, data_type="float32")
+        float | None, ModbusField(offset=60, count=2, data_type="float32", validator=is_finite_float)
     ]
     power_factor_a: Annotated[
-        float | None, ModbusField(offset=78, count=2, data_type="float32")
+        float | None, ModbusField(offset=78, count=2, data_type="float32", validator=is_finite_float)
     ]
     power_factor_b: Annotated[
-        float | None, ModbusField(offset=80, count=2, data_type="float32")
+        float | None, ModbusField(offset=80, count=2, data_type="float32", validator=is_finite_float)
     ]
     power_factor_c: Annotated[
-        float | None, ModbusField(offset=82, count=2, data_type="float32")
+        float | None, ModbusField(offset=82, count=2, data_type="float32", validator=is_finite_float)
     ]
     power_factor_total: Annotated[
-        float | None, ModbusField(offset=84, count=2, data_type="float32")
+        float | None, ModbusField(offset=84, count=2, data_type="float32", validator=is_finite_float)
     ]
 
 
@@ -67,7 +68,7 @@ def parse_topic(t: dict, unit_id: int) -> ModbusTopic:
         extra_fields = {ef["field_name"]: ef["value"] for ef in extra_fields_raw}
     else:
         extra_fields = extra_fields_raw
-    return ModbusTopic(
+    return AnnotationModbusTopic(
         topic=t["topic"],
         model=PowerTag,
         start_register=first_reg,

@@ -4,7 +4,7 @@ from typing import Annotated
 from pydantic import BaseModel
 from pyModbusTCP.constants import EXP_NONE, EXP_SLAVE_DEVICE_FAILURE
 
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField
 from zero_modbus_bridge.stub import MultiUnitDataHandler
 
 
@@ -27,7 +27,7 @@ class TwoCoilsModel(BaseModel):
 
 
 def test_stub_read_h_regs_returns_multiple_registers():
-    topic = ModbusTopic(topic="test/regs", model=TwoRegistersModel, start_register=10)
+    topic = AnnotationModbusTopic(topic="test/regs", model=TwoRegistersModel, start_register=10)
     handler = MultiUnitDataHandler([topic], default_value=7)
 
     ret = handler.read_h_regs(10, 2, _srv_info(1))
@@ -36,7 +36,7 @@ def test_stub_read_h_regs_returns_multiple_registers():
 
 
 def test_stub_read_h_regs_missing_address_returns_error():
-    topic = ModbusTopic(topic="test/regs", model=TwoRegistersModel, start_register=10)
+    topic = AnnotationModbusTopic(topic="test/regs", model=TwoRegistersModel, start_register=10)
     handler = MultiUnitDataHandler([topic], default_value=7)
 
     ret = handler.read_h_regs(999, 1, _srv_info(1))
@@ -44,7 +44,7 @@ def test_stub_read_h_regs_missing_address_returns_error():
 
 
 def test_stub_read_coils_missing_address_returns_error():
-    topic = ModbusTopic(topic="test/coils", model=TwoCoilsModel, start_register=20)
+    topic = AnnotationModbusTopic(topic="test/coils", model=TwoCoilsModel, start_register=20)
     handler = MultiUnitDataHandler([topic], default_value=1)
 
     ret = handler.read_coils(999, 1, _srv_info(1))
@@ -52,7 +52,7 @@ def test_stub_read_coils_missing_address_returns_error():
 
 
 def test_stub_read_coils_returns_multiple_values():
-    topic = ModbusTopic(topic="test/coils", model=TwoCoilsModel, start_register=20)
+    topic = AnnotationModbusTopic(topic="test/coils", model=TwoCoilsModel, start_register=20)
     handler = MultiUnitDataHandler([topic], default_value=1)
 
     ret = handler.read_coils(20, 2, _srv_info(1))

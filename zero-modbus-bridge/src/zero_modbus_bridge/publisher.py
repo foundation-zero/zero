@@ -1,9 +1,10 @@
 """MQTT publisher: registers FastStream publishers and dispatches payloads."""
 
 import logging
-from pydantic import BaseModel
+
 from faststream.mqtt import MQTTBroker, QoS
 from faststream.mqtt.publisher.usecase import MQTTPublisher
+from pydantic import BaseModel
 
 from zero_modbus_bridge.io import ModbusTopic
 

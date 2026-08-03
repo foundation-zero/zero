@@ -14,8 +14,6 @@ from pathlib import Path
 
 import polars as pl
 
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
-
 SCRIPTS_FOLDER = Path(__file__).parent
 DOCS_FOLDER = SCRIPTS_FOLDER / "../docs"
 
@@ -37,7 +35,8 @@ REGISTERS: list[tuple[int, str, str, str]] = [
     (3084, "power_factor_total", "", "Total power factor"),
 ]
 
-INVALID_VALUE = 0xFFC00000
+# NaN sentinel decoded from float32 0xFFC00000 is rejected at read time by
+# each field's ``is_finite_float`` validator (see zero_modbus_bridge.bit_ops)
 
 
 def slugify(text: str, code: str) -> str:
@@ -64,7 +63,6 @@ def build_address_dicts() -> list[dict]:
             "register_count": 2,
             "data_type": "float32",
             "modbus_type": "holding",
-            "invalid_value": INVALID_VALUE,
         }
         for reg, name, unit, desc in REGISTERS
     ]

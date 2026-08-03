@@ -1,4 +1,8 @@
-from zero_modbus_bridge.bit_ops import float_to_lsw_registers, lsw_registers_to_float
+from zero_modbus_bridge.bit_ops import (
+    float_to_lsw_registers,
+    is_finite_float,
+    lsw_registers_to_float,
+)
 
 
 def test_lsw_registers_to_float_known_value():
@@ -25,3 +29,18 @@ def test_lsw_registers_to_float_zero():
 
 def test_float_to_lsw_registers_zero():
     assert float_to_lsw_registers(0.0) == [0x0000, 0x0000]
+
+
+def test_is_finite_float_rejects_nan_sentinel():
+    # 0xFFC00000 decodes to NaN - the invalid-value sentinel
+    sentinel = lsw_registers_to_float([0xFFC0, 0x0000])
+    assert is_finite_float(sentinel) is False
+
+
+def test_is_finite_float_accepts_normal():
+    assert is_finite_float(50.0) is True
+
+
+def test_is_finite_float_rejects_infinity():
+    assert is_finite_float(float("inf")) is False
+    assert is_finite_float(float("-inf")) is False

@@ -19,7 +19,6 @@ SAMPLE_BRIDGES: list[dict[str, Any]] = [
                         "register_count": 2,
                         "data_type": "float32",
                         "modbus_type": "holding",
-                        "invalid_value": 4290772992,
                         "unit": "A",
                     }
                 ],
@@ -44,7 +43,6 @@ SAMPLE_BRIDGES: list[dict[str, Any]] = [
                         "register_count": 2,
                         "data_type": "float32",
                         "modbus_type": "holding",
-                        "invalid_value": 4290772992,
                         "unit": "A",
                     }
                 ],

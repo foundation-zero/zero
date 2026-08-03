@@ -27,9 +27,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroupChangePolicy: Always
-        sysctls: []
-        supplementalGroups: []
         fsGroup: 1001
       containers:
         - name: hull-temperature
@@ -39,38 +36,34 @@ spec:
             capabilities:
               drop:
               - ALL
-            privileged: false
             readOnlyRootFilesystem: true
             runAsGroup: 1001
             runAsNonRoot: true
             runAsUser: 1001
-            seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: RUN__MQTT_HOST
+            - name: MQTT_HOST
               value: {{ .Values.mqtt.host | quote }}
-            - name: RUN__MQTT_PORT
+            - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
-            - name: RUN__MQTT_USERNAME
+            {{- if .Values.mqtt.username }}
+            - name: MQTT_USERNAME
               value: {{ .Values.mqtt.username | quote }}
-            - name: RUN__MQTT_PASSWORD
+            {{- end }}
+            {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
-            - name: RUN__MODBUS_HOST
+            {{- end }}
+            - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
-            - name: RUN__MODBUS_PORT
+            - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: RUN__SEND_TOPIC
-              value: {{ .Values.hullTemperature.sendTopic | quote }}
-            - name: RUN__SECONDS
-              value: {{ .Values.hullTemperature.intervalSeconds | quote }}
-            - name: RUN__N
-              value: {{ .Values.hullTemperature.n | toString | quote }}
             - name: RUN__ACTIVATE_TOPIC
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: RUN__ACTIVATE_JSON_PATH

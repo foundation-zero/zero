@@ -60,5 +60,5 @@ class ModbusBridge:
                     f"{self._modbus.last_error_as_txt}"
                 )
                 return
-        async for topic_name, payload in self._reader.read_all():
+        for topic_name, payload in self._reader.read_all():
             await self._publisher.publish(topic_name, payload)

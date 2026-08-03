@@ -21,7 +21,6 @@ class TestParseTopic:
                     "register_count": 2,
                     "data_type": "float32",
                     "modbus_type": "holding",
-                    "invalid_value": 4290772992,
                     "description": "",
                     "unit": "A",
                 }
@@ -50,7 +49,6 @@ class TestParseTopic:
                     "register_count": 2,
                     "data_type": "float32",
                     "modbus_type": "holding",
-                    "invalid_value": 4290772992,
                     "description": "",
                     "unit": "A",
                 }
@@ -71,7 +69,6 @@ class TestParseTopic:
                     "register_count": 2,
                     "data_type": "float32",
                     "modbus_type": "holding",
-                    "invalid_value": 4290772992,
                     "description": "",
                     "unit": "A",
                 }
@@ -92,7 +89,6 @@ class TestParseTopic:
                     "register_count": 2,
                     "data_type": "float32",
                     "modbus_type": "holding",
-                    "invalid_value": 4290772992,
                     "description": "",
                     "unit": "A",
                 }
@@ -112,7 +108,6 @@ class TestParseTopic:
                     "register_count": 2,
                     "data_type": "float32",
                     "modbus_type": "holding",
-                    "invalid_value": 4290772992,
                     "description": "",
                     "unit": "A",
                 }
@@ -155,7 +150,6 @@ class TestReadModbusTopics:
                                         "register_count": 2,
                                         "data_type": "float32",
                                         "modbus_type": "holding",
-                                        "invalid_value": 4290772992,
                                         "description": "",
                                         "unit": "A",
                                     }

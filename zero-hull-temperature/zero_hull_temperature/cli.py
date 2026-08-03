@@ -14,8 +14,9 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
-from zero_modbus_bridge.bridge import ModbusBridge
+from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher
+from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 
 from zero_hull_temperature.addresses import HULL_TEMPERATURE_TOPIC, PATH, TOPIC
@@ -38,7 +39,6 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
 
     async def cli_cmd(self) -> None:
         async with self.make_broker() as broker:
-            MqttPublisher(broker, [HULL_TEMPERATURE_TOPIC])
             bridge = RelaySwitchingBridge.from_settings(
                 self,
                 broker,
@@ -51,11 +51,15 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
 
 class ReadSkipMqttCmd(ModbusSettings):
     async def cli_cmd(self) -> None:
-        broker = MqttSettings(mqtt_host="localhost", mqtt_port=1883).make_broker()
-        async with broker:
-            bridge = ModbusBridge.from_settings(self, broker, [HULL_TEMPERATURE_TOPIC])
-            await bridge.run_once()
-        print("Read complete — temperatures published to MQTT")
+        modbus = self.modbus_client()
+        topics: list[ModbusTopic] = [HULL_TEMPERATURE_TOPIC]
+        reader = ModbusReader(modbus, topics)
+        modbus.open()
+        try:
+            for topic, payload in reader.read_all():
+                print(f"{topic}: {payload.model_dump(mode='json')}")
+        finally:
+            modbus.close()
 
 
 class StubCmd(ModbusSettings, MqttSettings):
@@ -83,7 +87,6 @@ class RunCmd(ModbusSettings, MqttSettings):
         import asyncio
 
         broker = self.make_broker()
-        MqttPublisher(broker, [HULL_TEMPERATURE_TOPIC])
         bridge = RelaySwitchingBridge.from_settings(
             self,
             broker,

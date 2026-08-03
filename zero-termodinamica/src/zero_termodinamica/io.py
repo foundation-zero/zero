@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopic
 
 
 class AirConditioningRoom(BaseModel):
@@ -79,7 +79,7 @@ def _parse_topic(t: dict, unit_id: int) -> ModbusTopic:
         extra_fields = {ef["field_name"]: ef["value"] for ef in extra_fields_raw}
     else:
         extra_fields = extra_fields_raw
-    return ModbusTopic(
+    return AnnotationModbusTopic(
         topic=t["topic"],
         model=_MODEL_REGISTRY[model_key],
         start_register=start_register,

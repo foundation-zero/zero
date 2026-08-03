@@ -1,7 +1,8 @@
 """Hull temperature sensor addresses and bridge configuration."""
 
 from pydantic import BaseModel
-from zero_modbus_bridge.io import ModbusField, ModbusTopic
+from zero_modbus_bridge.bit_ops import is_finite_float
+from zero_modbus_bridge.io import ConverterModbusTopic, ModbusField
 
 TOPIC = "marpower/450000-amcs/Command"
 PATH = "$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF"
@@ -513,13 +514,18 @@ def hull_temp_converter(
 
 
 HULL_TEMPERATURE_FIELDS = [
-    ModbusField(register=probe["Modbus Register"], count=2, data_type="float32")
+    ModbusField(
+        register=probe["Modbus Register"],
+        count=2,
+        data_type="float32",
+        validator=is_finite_float,
+    )
     for loop_name, loop_data in HULL_TEMP_SENSORS.items()
     if loop_name != "Diagnostics"
     for probe in loop_data
 ]
 
-HULL_TEMPERATURE_TOPIC = ModbusTopic(
+HULL_TEMPERATURE_TOPIC = ConverterModbusTopic(
     topic="hull-temperature/temperatures",
     model=HullTemperature,
     fields=HULL_TEMPERATURE_FIELDS,
