@@ -458,13 +458,13 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/i_Load": 500,
             "st_Load/x_Failure": false,
             "st_Load/x_MaxLimitReached": true,
-            "st_Load/i_MaxLoad": 400,
+            "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
-            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
             "st_LoadSb/x_Failure": false,
-            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/i_MaxLoadSetting": 400,
             "st_LoadSb/x_MaxLimitReached": true
         }""",
     )
@@ -525,13 +525,13 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/i_Load": 500,
             "st_Load/x_Failure": false,
             "st_Load/x_MaxLimitReached": true,
-            "st_Load/i_MaxLoad": 400,
+            "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
-            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
             "st_LoadSb/x_Failure": false,
-            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/i_MaxLoadSetting": 400,
             "st_LoadSb/x_MaxLimitReached": true
         }""",
     )

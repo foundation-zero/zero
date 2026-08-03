@@ -1,20 +1,62 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$defs": {
+    "CyclopsGateway_HDC02": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CyclopsGateway_HDC06": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CyclopsGateway_Tech": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
     "EF": {
       "type": "object",
       "properties": {
         "i_FPKIsoDC": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HYPIsoDC": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LAZIsoDC": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MAINIsoDC": {
-          "type": "integer"
+          "type": "number"
         },
         "x_FPKIsoDC": {
           "type": "boolean"
@@ -112,16 +154,16 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "r_RawSensor": {
           "type": "number"
@@ -138,16 +180,16 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "r_RawSensor": {
           "type": "number"
@@ -164,25 +206,25 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionChangemA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionStart": {
-          "type": "integer"
+          "type": "number"
         },
         "x_Failure": {
           "type": "boolean"
@@ -199,25 +241,25 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionChangemA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionStart": {
-          "type": "integer"
+          "type": "number"
         },
         "x_Failure": {
           "type": "boolean"
@@ -230,20 +272,163 @@
         }
       }
     },
+    "MainBoom_IO": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MainMast_IO": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MainMst_OUT1": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MainMst_OUT2": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MainMst_OUT3": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MainMst_OUT4": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MizzenBoom_IO": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MizzenMast_IO": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MizzenMst_OUT1": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MizzenMst_OUT2": {
+      "type": "object",
+      "properties": {
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        }
+      }
+    },
     "sDrive": {
       "type": "object",
       "properties": {
         "duiRunningTime": {
-          "type": "integer"
+          "type": "number"
         },
         "iActualSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "iSpeedDemand": {
-          "type": "integer"
+          "type": "number"
+        },
+        "NoDcLinkVoltage": {
+          "type": "boolean"
         },
         "ow_Alarmcode": {
-          "type": "integer"
+          "type": "number"
         },
         "rActualTorque": {
           "type": "number"
@@ -258,12 +443,12 @@
           "type": "number"
         },
         "wCanState": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CanAlive": {
           "type": "boolean"
         },
-        "xBrake": {
+        "x_CanMissing": {
           "type": "boolean"
         },
         "xFault": {
@@ -284,13 +469,13 @@
       "type": "object",
       "properties": {
         "duiRunningTime": {
-          "type": "integer"
+          "type": "number"
         },
         "iActualSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "iSpeedDemand": {
-          "type": "integer"
+          "type": "number"
         },
         "rActualTorque": {
           "type": "number"
@@ -305,9 +490,15 @@
           "type": "number"
         },
         "wActiveFault": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
         },
         "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
           "type": "boolean"
         },
         "xBrake": {
@@ -331,13 +522,13 @@
       "type": "object",
       "properties": {
         "duiRunningTime": {
-          "type": "integer"
+          "type": "number"
         },
         "iActualSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "iSpeedDemand": {
-          "type": "integer"
+          "type": "number"
         },
         "rActualTorque": {
           "type": "number"
@@ -352,9 +543,15 @@
           "type": "number"
         },
         "wActiveFault": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
         },
         "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
           "type": "boolean"
         },
         "xBrake": {
@@ -378,16 +575,19 @@
       "type": "object",
       "properties": {
         "duiRunningTime": {
-          "type": "integer"
+          "type": "number"
         },
         "iActualSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "iSpeedDemand": {
-          "type": "integer"
+          "type": "number"
+        },
+        "NoDcLinkVoltage": {
+          "type": "boolean"
         },
         "ow_Alarmcode": {
-          "type": "integer"
+          "type": "number"
         },
         "rActualTorque": {
           "type": "number"
@@ -402,12 +602,12 @@
           "type": "number"
         },
         "wCanState": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CanAlive": {
           "type": "boolean"
         },
-        "xBrake": {
+        "x_CanMissing": {
           "type": "boolean"
         },
         "xFault": {
@@ -428,19 +628,22 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Temperature": {
-          "type": "integer"
+          "type": "number"
         },
         "iMaxTemperature": {
-          "type": "integer"
+          "type": "number"
+        },
+        "ix_Flow": {
+          "type": "boolean"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -568,7 +771,7 @@
           "type": "boolean"
         },
         "s0202_JstckMnBmVng/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0202_JstckMnBmVng/x_Enabled": {
           "type": "boolean"
@@ -580,7 +783,7 @@
           "type": "boolean"
         },
         "s0204_JstckMnBmPrvntr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0204_JstckMnBmPrvntr/x_Enabled": {
           "type": "boolean"
@@ -592,7 +795,7 @@
           "type": "boolean"
         },
         "s0502_JstckMzznBmVng/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0502_JstckMzznBmVng/x_Enabled": {
           "type": "boolean"
@@ -604,7 +807,7 @@
           "type": "boolean"
         },
         "s0506_JstckMzznBmPrvntr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0506_JstckMzznBmPrvntr/x_Enabled": {
           "type": "boolean"
@@ -616,7 +819,7 @@
           "type": "boolean"
         },
         "sE205_JstckMnSht/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE205_JstckMnSht/x_Enabled": {
           "type": "boolean"
@@ -628,7 +831,7 @@
           "type": "boolean"
         },
         "sE405_JstckMnTrvllr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE405_JstckMnTrvllr/x_Enabled": {
           "type": "boolean"
@@ -640,7 +843,7 @@
           "type": "boolean"
         },
         "sE504_JstckMzznSht/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE504_JstckMzznSht/x_Enabled": {
           "type": "boolean"
@@ -699,7 +902,7 @@
           "type": "boolean"
         },
         "s0202_JstckMnBmVng/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0202_JstckMnBmVng/x_Enabled": {
           "type": "boolean"
@@ -711,7 +914,7 @@
           "type": "boolean"
         },
         "s0204_JstckMnBmPrvntr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0204_JstckMnBmPrvntr/x_Enabled": {
           "type": "boolean"
@@ -723,7 +926,7 @@
           "type": "boolean"
         },
         "s0502_JstckMzznBmVng/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0502_JstckMzznBmVng/x_Enabled": {
           "type": "boolean"
@@ -735,7 +938,7 @@
           "type": "boolean"
         },
         "s0506_JstckMzznBmPrvntr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0506_JstckMzznBmPrvntr/x_Enabled": {
           "type": "boolean"
@@ -747,7 +950,7 @@
           "type": "boolean"
         },
         "sE205_JstckMnSht/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE205_JstckMnSht/x_Enabled": {
           "type": "boolean"
@@ -759,7 +962,7 @@
           "type": "boolean"
         },
         "sE405_JstckMnTrvllr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE405_JstckMnTrvllr/x_Enabled": {
           "type": "boolean"
@@ -771,7 +974,7 @@
           "type": "boolean"
         },
         "sE504_JstckMzznSht/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE504_JstckMzznSht/x_Enabled": {
           "type": "boolean"
@@ -788,19 +991,22 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Temperature": {
-          "type": "integer"
+          "type": "number"
         },
         "iMaxTemperature": {
-          "type": "integer"
+          "type": "number"
+        },
+        "ix_Flow": {
+          "type": "boolean"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -841,19 +1047,22 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Temperature": {
-          "type": "integer"
+          "type": "number"
         },
         "iMaxTemperature": {
-          "type": "integer"
+          "type": "number"
+        },
+        "ix_Flow": {
+          "type": "boolean"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -939,7 +1148,7 @@
           "type": "boolean"
         },
         "s0202_JstckMnBmVng/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0202_JstckMnBmVng/x_Enabled": {
           "type": "boolean"
@@ -951,7 +1160,7 @@
           "type": "boolean"
         },
         "s0204_JstckMnBmPrvntr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0204_JstckMnBmPrvntr/x_Enabled": {
           "type": "boolean"
@@ -963,7 +1172,7 @@
           "type": "boolean"
         },
         "s0206_JstckBldTwkrPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "s0206_JstckBldTwkrPs/x_Enabled": {
           "type": "boolean"
@@ -975,7 +1184,7 @@
           "type": "boolean"
         },
         "sE101_JstckCdZrFrlr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE101_JstckCdZrFrlr/x_Enabled": {
           "type": "boolean"
@@ -987,7 +1196,7 @@
           "type": "boolean"
         },
         "sE102_JstckBldFrlr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE102_JstckBldFrlr/x_Enabled": {
           "type": "boolean"
@@ -999,7 +1208,7 @@
           "type": "boolean"
         },
         "sE103_JstckStyslFrlr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE103_JstckStyslFrlr/x_Enabled": {
           "type": "boolean"
@@ -1011,7 +1220,7 @@
           "type": "boolean"
         },
         "sE201_JstckBldShtPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE201_JstckBldShtPs/x_Enabled": {
           "type": "boolean"
@@ -1023,7 +1232,7 @@
           "type": "boolean"
         },
         "sE203_JstckStyslShtPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE203_JstckStyslShtPs/x_Enabled": {
           "type": "boolean"
@@ -1035,7 +1244,7 @@
           "type": "boolean"
         },
         "sE205_JstckMnSht/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE205_JstckMnSht/x_Enabled": {
           "type": "boolean"
@@ -1047,7 +1256,7 @@
           "type": "boolean"
         },
         "sE301_JstckBldShtSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE301_JstckBldShtSb/x_Enabled": {
           "type": "boolean"
@@ -1059,7 +1268,7 @@
           "type": "boolean"
         },
         "sE303_JstckStyslShtSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE303_JstckStyslShtSb/x_Enabled": {
           "type": "boolean"
@@ -1071,7 +1280,7 @@
           "type": "boolean"
         },
         "sE405_JstckMnTrvllr/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sE405_JstckMnTrvllr/x_Enabled": {
           "type": "boolean"
@@ -1097,7 +1306,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1198,7 +1407,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1254,7 +1463,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1263,7 +1472,7 @@
           "type": "boolean"
         },
         "sCode/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sCode/x_Enabled": {
           "type": "boolean"
@@ -1275,7 +1484,7 @@
           "type": "boolean"
         },
         "sSailDrum/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sSailDrum/x_Enabled": {
           "type": "boolean"
@@ -1287,7 +1496,7 @@
           "type": "boolean"
         },
         "sStaysail/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sStaysail/x_Enabled": {
           "type": "boolean"
@@ -1299,7 +1508,7 @@
           "type": "boolean"
         },
         "sStaysailTack/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sStaysailTack/x_Enabled": {
           "type": "boolean"
@@ -1361,7 +1570,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1370,7 +1579,7 @@
           "type": "boolean"
         },
         "sBladePs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sBladePs/x_Enabled": {
           "type": "boolean"
@@ -1382,7 +1591,7 @@
           "type": "boolean"
         },
         "sBladeSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sBladeSb/x_Enabled": {
           "type": "boolean"
@@ -1394,7 +1603,7 @@
           "type": "boolean"
         },
         "sStaysailPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sStaysailPs/x_Enabled": {
           "type": "boolean"
@@ -1406,7 +1615,7 @@
           "type": "boolean"
         },
         "sStaysailSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sStaysailSb/x_Enabled": {
           "type": "boolean"
@@ -1525,7 +1734,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1534,7 +1743,7 @@
           "type": "boolean"
         },
         "sHalyard/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sHalyard/x_Enabled": {
           "type": "boolean"
@@ -1546,7 +1755,7 @@
           "type": "boolean"
         },
         "sRunnersPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sRunnersPs/x_Enabled": {
           "type": "boolean"
@@ -1558,7 +1767,7 @@
           "type": "boolean"
         },
         "sRunnersSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sRunnersSb/x_Enabled": {
           "type": "boolean"
@@ -1570,7 +1779,7 @@
           "type": "boolean"
         },
         "sSheet/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sSheet/x_Enabled": {
           "type": "boolean"
@@ -1680,7 +1889,13 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
+        },
+        "i_speedHighSetting": {
+          "type": "number"
+        },
+        "i_speedLowSetting": {
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1724,6 +1939,18 @@
         "ix_SecOut_2nd": {
           "type": "boolean"
         },
+        "ix_SpareIn_1st": {
+          "type": "boolean"
+        },
+        "ix_SpareIn_2nd": {
+          "type": "boolean"
+        },
+        "ix_SpareOut_1st": {
+          "type": "boolean"
+        },
+        "ix_SpareOut_2nd": {
+          "type": "boolean"
+        },
         "x_Active": {
           "type": "boolean"
         },
@@ -1731,18 +1958,6 @@
           "type": "boolean"
         },
         "x_Aux2": {
-          "type": "boolean"
-        },
-        "x_Aux3": {
-          "type": "boolean"
-        },
-        "x_Aux4": {
-          "type": "boolean"
-        },
-        "x_Aux5": {
-          "type": "boolean"
-        },
-        "x_Aux6": {
           "type": "boolean"
         },
         "x_Estop": {
@@ -1755,6 +1970,12 @@
           "type": "boolean"
         },
         "x_RangeWarning": {
+          "type": "boolean"
+        },
+        "x_S13_L": {
+          "type": "boolean"
+        },
+        "x_S13_R": {
           "type": "boolean"
         },
         "x_Started": {
@@ -1793,7 +2014,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1802,7 +2023,7 @@
           "type": "boolean"
         },
         "sHalyard/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sHalyard/x_Enabled": {
           "type": "boolean"
@@ -1814,7 +2035,7 @@
           "type": "boolean"
         },
         "sRunnersPs/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sRunnersPs/x_Enabled": {
           "type": "boolean"
@@ -1826,7 +2047,7 @@
           "type": "boolean"
         },
         "sRunnersSb/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sRunnersSb/x_Enabled": {
           "type": "boolean"
@@ -1838,7 +2059,7 @@
           "type": "boolean"
         },
         "sSheet/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sSheet/x_Enabled": {
           "type": "boolean"
@@ -1954,7 +2175,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -1963,7 +2184,7 @@
           "type": "boolean"
         },
         "sJoystick1/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick1/x_Enabled": {
           "type": "boolean"
@@ -1975,7 +2196,7 @@
           "type": "boolean"
         },
         "sJoystick2/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick2/x_Enabled": {
           "type": "boolean"
@@ -1987,7 +2208,7 @@
           "type": "boolean"
         },
         "sJoystick3/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick3/x_Enabled": {
           "type": "boolean"
@@ -1999,7 +2220,7 @@
           "type": "boolean"
         },
         "sJoystick4/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick4/x_Enabled": {
           "type": "boolean"
@@ -2058,7 +2279,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -2067,7 +2288,7 @@
           "type": "boolean"
         },
         "sJoystick1/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick1/x_Enabled": {
           "type": "boolean"
@@ -2079,7 +2300,7 @@
           "type": "boolean"
         },
         "sJoystick2/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick2/x_Enabled": {
           "type": "boolean"
@@ -2091,7 +2312,7 @@
           "type": "boolean"
         },
         "sJoystick3/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick3/x_Enabled": {
           "type": "boolean"
@@ -2103,7 +2324,7 @@
           "type": "boolean"
         },
         "sJoystick4/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick4/x_Enabled": {
           "type": "boolean"
@@ -2162,7 +2383,7 @@
           "type": "boolean"
         },
         "i_rssi": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -2171,7 +2392,7 @@
           "type": "boolean"
         },
         "sJoystick1/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick1/x_Enabled": {
           "type": "boolean"
@@ -2183,7 +2404,7 @@
           "type": "boolean"
         },
         "sJoystick2/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick2/x_Enabled": {
           "type": "boolean"
@@ -2195,7 +2416,7 @@
           "type": "boolean"
         },
         "sJoystick3/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick3/x_Enabled": {
           "type": "boolean"
@@ -2207,7 +2428,7 @@
           "type": "boolean"
         },
         "sJoystick4/iSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "sJoystick4/x_Enabled": {
           "type": "boolean"
@@ -2257,25 +2478,112 @@
       "type": "object",
       "properties": {
         "i_EaseBtnSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "i_EaseMaxSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LineTensionDelay": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PullBtnSpeed": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PullMaxSpeed": {
-          "type": "integer"
+          "type": "number"
+        }
+      }
+    },
+    "sSupplyA": {
+      "type": "object",
+      "properties": {
+        "rCurrent": {
+          "type": "number"
+        },
+        "rPower": {
+          "type": "number"
+        },
+        "rVoltage": {
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "wStatus": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        },
+        "xPowerOn": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sSupplyB": {
+      "type": "object",
+      "properties": {
+        "rCurrent": {
+          "type": "number"
+        },
+        "rPower": {
+          "type": "number"
+        },
+        "rVoltage": {
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "wStatus": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        },
+        "xPowerOn": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sSupplyC": {
+      "type": "object",
+      "properties": {
+        "rCurrent": {
+          "type": "number"
+        },
+        "rPower": {
+          "type": "number"
+        },
+        "rVoltage": {
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "wStatus": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
+        },
+        "xPowerOn": {
+          "type": "boolean"
         }
       }
     },
@@ -2311,16 +2619,16 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -2384,22 +2692,31 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Speed": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2416,16 +2733,16 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -2475,16 +2792,16 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "r_RawSensor": {
           "type": "number"
@@ -2501,19 +2818,45 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "r_RawSensor": {
           "type": "number"
+        },
+        "x_Failure": {
+          "type": "boolean"
+        },
+        "x_MaxLimitReached": {
+          "type": "boolean"
+        }
+      }
+    },
+    "st_LoadLc": {
+      "type": "object",
+      "properties": {
+        "i_Load": {
+          "type": "number"
+        },
+        "i_MaxLoadSetting": {
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2527,10 +2870,19 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2544,16 +2896,16 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "r_RawSensor": {
           "type": "number"
@@ -2570,10 +2922,19 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2601,25 +2962,25 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionChangemA": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionStart": {
-          "type": "integer"
+          "type": "number"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2636,22 +2997,31 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Speed": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2668,22 +3038,31 @@
       "type": "object",
       "properties": {
         "i_CylinderLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Position_permille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Speed": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2700,7 +3079,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -2712,7 +3091,7 @@
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -2761,55 +3140,55 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_speedDownSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_speedUpSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadBottom/i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadBottom/i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadBottom/i_MaxLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadRod/i_LoadAt4rmA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadRod/i_LoadChangePermA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_LoadRod/i_MaxLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos1/i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos1/i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos1/i_PositionChangemA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos1/i_PositionStart": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos2/i_MaxPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos2/i_MinPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos2/i_PositionChangemA": {
-          "type": "integer"
+          "type": "number"
         },
         "ist_SnsrKeelPos2/i_PositionStart": {
-          "type": "integer"
+          "type": "number"
         }
       }
     },
@@ -2817,19 +3196,22 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Temperature": {
-          "type": "integer"
+          "type": "number"
         },
         "iMaxTemperature": {
-          "type": "integer"
+          "type": "number"
+        },
+        "ix_Flow": {
+          "type": "boolean"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -2870,10 +3252,19 @@
       "type": "object",
       "properties": {
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxLoadSetting": {
-          "type": "integer"
+          "type": "number"
+        },
+        "wCanState": {
+          "type": "number"
+        },
+        "x_CanAlive": {
+          "type": "boolean"
+        },
+        "x_CanMissing": {
+          "type": "boolean"
         },
         "x_Failure": {
           "type": "boolean"
@@ -2889,7 +3280,7 @@
       "type": "object",
       "properties": {
         "iDelayTime": {
-          "type": "integer"
+          "type": "number"
         },
         "sFrpk": {
           "$ref": "#/$defs/sFrpk"
@@ -2935,10 +3326,40 @@
         "ix_0000_BtnHydrStopTechRm": {
           "type": "boolean"
         },
+        "ix_0000_BtnSailSysStopMainMstPsNc": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMainMstPsNo": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMainMstSbNc": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMainMstSbNo": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMzznMstPsNc": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMzznMstPsNo": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMzznMstSbNc": {
+          "type": "boolean"
+        },
+        "ix_0000_BtnSailSysStopMzznMstSbNo": {
+          "type": "boolean"
+        },
         "ix_0000_EStopRelay": {
           "type": "boolean"
         },
         "ix_0000_HydrFireStop": {
+          "type": "boolean"
+        },
+        "x_SysStopMainMstPulse": {
+          "type": "boolean"
+        },
+        "x_SysStopMzznMstPulse": {
           "type": "boolean"
         }
       }
@@ -2947,10 +3368,10 @@
       "type": "object",
       "properties": {
         "i_OffDelayTime": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -2962,7 +3383,7 @@
           "$ref": "#/$defs/st_powerEnable"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -3021,10 +3442,16 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
+        },
+        "i_PositionAvg_mm": {
+          "type": "number"
+        },
+        "i_PositionAvg_permille": {
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3042,7 +3469,7 @@
           "$ref": "#/$defs/st_positionSb"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3092,10 +3519,16 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
+        },
+        "i_PositionAvg_mm": {
+          "type": "number"
+        },
+        "i_PositionAvg_permille": {
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3113,7 +3546,7 @@
           "$ref": "#/$defs/st_positionSb"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3163,19 +3596,19 @@
       "type": "object",
       "properties": {
         "i_ActualLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "i_ActualLoad2": {
-          "type": "integer"
+          "type": "number"
         },
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadcellCalibration": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3193,7 +3626,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3243,19 +3676,19 @@
       "type": "object",
       "properties": {
         "i_ActualLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "i_ActualLoad2": {
-          "type": "integer"
+          "type": "number"
         },
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadcellCalibration": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3273,7 +3706,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3323,10 +3756,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3337,11 +3770,14 @@
         "st_Load": {
           "$ref": "#/$defs/st_Load"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_position": {
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3391,19 +3827,19 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ii_EPrssrRlfAB_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_EPrssrRlfAB_Cmd": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_CVangPark": {
           "type": "boolean"
@@ -3427,7 +3863,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3492,13 +3928,13 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3519,7 +3955,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3569,10 +4005,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3592,6 +4028,9 @@
         "st_LoadBottom": {
           "$ref": "#/$defs/st_LoadBottom"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_LoadRod": {
           "$ref": "#/$defs/st_LoadRod"
         },
@@ -3599,7 +4038,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3652,10 +4091,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3670,7 +4109,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3723,10 +4162,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3737,11 +4176,14 @@
         "st_Load": {
           "$ref": "#/$defs/st_Load"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_position": {
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3791,10 +4233,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -3805,11 +4247,14 @@
         "st_Load": {
           "$ref": "#/$defs/st_Load"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_position": {
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -3859,13 +4304,13 @@
       "type": "object",
       "properties": {
         "i_keelPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_liftSeq": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ir_KeelLiftA_Current": {
           "type": "number"
@@ -3918,6 +4363,18 @@
         "ix_SnsrHtchOpen": {
           "type": "boolean"
         },
+        "ix_SnsrKeelLckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelLckdSb": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdSb": {
+          "type": "boolean"
+        },
         "ix_SnsrKeelup100": {
           "type": "boolean"
         },
@@ -3928,12 +4385,18 @@
           "type": "boolean"
         },
         "oi_KeelLiftA": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_KeelLiftB": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_KeelLckA": {
+          "type": "boolean"
+        },
+        "ox_KeelLckB": {
           "type": "boolean"
         },
         "ox_KeelLiftC": {
@@ -3949,7 +4412,7 @@
           "$ref": "#/$defs/st_settings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4002,13 +4465,13 @@
       "type": "object",
       "properties": {
         "i_keelPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_liftSeq": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ir_KeelLiftA_Current": {
           "type": "number"
@@ -4061,6 +4524,18 @@
         "ix_SnsrHtchOpen": {
           "type": "boolean"
         },
+        "ix_SnsrKeelLckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelLckdSb": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdSb": {
+          "type": "boolean"
+        },
         "ix_SnsrKeelup100": {
           "type": "boolean"
         },
@@ -4071,12 +4546,18 @@
           "type": "boolean"
         },
         "oi_KeelLiftA": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_KeelLiftB": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_KeelLckA": {
+          "type": "boolean"
+        },
+        "ox_KeelLckB": {
           "type": "boolean"
         },
         "ox_KeelLiftC": {
@@ -4092,7 +4573,7 @@
           "$ref": "#/$defs/st_settings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4145,13 +4626,13 @@
       "type": "object",
       "properties": {
         "i_keelPosition": {
-          "type": "integer"
+          "type": "number"
         },
         "i_liftSeq": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ir_KeelLiftA_Current": {
           "type": "number"
@@ -4204,6 +4685,18 @@
         "ix_SnsrHtchOpen": {
           "type": "boolean"
         },
+        "ix_SnsrKeelLckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelLckdSb": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdPs": {
+          "type": "boolean"
+        },
+        "ix_SnsrKeelUnlckdSb": {
+          "type": "boolean"
+        },
         "ix_SnsrKeelup100": {
           "type": "boolean"
         },
@@ -4214,12 +4707,18 @@
           "type": "boolean"
         },
         "oi_KeelLiftA": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_KeelLiftB": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_KeelLckA": {
+          "type": "boolean"
+        },
+        "ox_KeelLckB": {
           "type": "boolean"
         },
         "ox_KeelLiftC": {
@@ -4235,7 +4734,7 @@
           "$ref": "#/$defs/st_settings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4288,22 +4787,22 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "iFeedForwardPressure": {
-          "type": "integer"
+          "type": "number"
         },
         "iFurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ii_FrlrA_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "ii_FrlrB_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "iUnfurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnFrl": {
           "type": "boolean"
@@ -4318,16 +4817,16 @@
           "type": "boolean"
         },
         "oi_FrlrA": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_FrlrB": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4359,10 +4858,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -4373,11 +4872,14 @@
         "st_Load": {
           "$ref": "#/$defs/st_Load"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_position": {
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -4427,10 +4929,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_SnsrLock1": {
           "type": "boolean"
@@ -4451,7 +4953,7 @@
           "$ref": "#/$defs/st_F0404LockCylinder"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CloseButton": {
           "type": "boolean"
@@ -4528,10 +5030,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_HtchClsdLckd": {
           "type": "boolean"
@@ -4549,7 +5051,7 @@
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4581,10 +5083,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -4595,11 +5097,14 @@
         "st_Load": {
           "$ref": "#/$defs/st_Load"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_position": {
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -4649,19 +5154,19 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ii_EPrssrRlfAB_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_EPrssrRlfAB_Cmd": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_CVangPark": {
           "type": "boolean"
@@ -4685,7 +5190,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -4750,13 +5255,13 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -4777,7 +5282,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -4827,10 +5332,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -4845,7 +5350,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -4898,10 +5403,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_HtchClsdLckd": {
           "type": "boolean"
@@ -4919,7 +5424,7 @@
           "type": "boolean"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -4951,10 +5456,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -4974,6 +5479,9 @@
         "st_LoadBottom": {
           "$ref": "#/$defs/st_LoadBottom"
         },
+        "st_LoadLc": {
+          "$ref": "#/$defs/st_LoadLc"
+        },
         "st_LoadRod": {
           "$ref": "#/$defs/st_LoadRod"
         },
@@ -4981,7 +5489,7 @@
           "$ref": "#/$defs/st_position"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_CylA": {
           "type": "boolean"
@@ -5034,10 +5542,10 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressure": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Estop": {
           "type": "boolean"
@@ -5064,13 +5572,13 @@
           "type": "boolean"
         },
         "rFlowDemand": {
-          "type": "integer"
+          "type": "number"
         },
         "sDrive": {
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5105,13 +5613,13 @@
       "type": "object",
       "properties": {
         "i_FurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_UnfurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_LocalFurl": {
           "type": "boolean"
@@ -5144,7 +5652,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5179,13 +5687,13 @@
       "type": "object",
       "properties": {
         "i_FurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_UnfurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_LocalFurl": {
           "type": "boolean"
@@ -5218,7 +5726,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5253,13 +5761,13 @@
       "type": "object",
       "properties": {
         "i_FurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_UnfurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_LocalFurl": {
           "type": "boolean"
@@ -5292,7 +5800,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5327,16 +5835,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -5363,7 +5871,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5398,16 +5906,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -5434,7 +5942,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5469,25 +5977,25 @@
       "type": "object",
       "properties": {
         "i_ChainLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighspeedDelay": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighSpeedInSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighSpeedOutSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LowSpeedInSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LowSpeedOutSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnInLoc": {
           "type": "boolean"
@@ -5535,7 +6043,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5573,25 +6081,25 @@
       "type": "object",
       "properties": {
         "i_ChainLength": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighspeedDelay": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighSpeedInSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_HighSpeedOutSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LowSpeedInSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LowSpeedOutSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnInLoc": {
           "type": "boolean"
@@ -5639,7 +6147,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5677,13 +6185,13 @@
       "type": "object",
       "properties": {
         "i_FurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "i_UnfurlSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "ir_RcSetpoint": {
           "type": "number"
@@ -5722,7 +6230,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5757,24 +6265,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -5823,7 +6325,7 @@
           "$ref": "#/$defs/sSettings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -5873,21 +6375,21 @@
       "type": "object",
       "properties": {
         "i_MaxSpeedStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxTorqueStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
-        },
-        "ox_Ease": {
-          "type": "boolean"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ox_LoadAlarm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -5900,7 +6402,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -5935,24 +6437,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -6001,7 +6497,7 @@
           "$ref": "#/$defs/sSettings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -6051,21 +6547,21 @@
       "type": "object",
       "properties": {
         "i_MaxSpeedStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxTorqueStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
-        },
-        "ox_Ease": {
-          "type": "boolean"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ox_LoadAlarm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -6078,7 +6574,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6113,24 +6609,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -6182,7 +6672,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -6232,7 +6722,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -6249,11 +6739,20 @@
         "sDriveB": {
           "$ref": "#/$defs/sDriveB"
         },
+        "sSupplyA": {
+          "$ref": "#/$defs/sSupplyA"
+        },
+        "sSupplyB": {
+          "$ref": "#/$defs/sSupplyB"
+        },
+        "sSupplyC": {
+          "$ref": "#/$defs/sSupplyC"
+        },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "wActiveFault": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6303,24 +6802,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -6378,7 +6871,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -6428,13 +6921,13 @@
       "type": "object",
       "properties": {
         "i_Position_mm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PositionPermille": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnDwn": {
           "type": "boolean"
@@ -6479,7 +6972,7 @@
           "$ref": "#/$defs/st_settings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6523,16 +7016,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -6559,7 +7052,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6594,16 +7087,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -6630,7 +7123,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6665,7 +7158,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -6674,6 +7167,9 @@
           "type": "boolean"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -6686,7 +7182,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6721,19 +7217,19 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1Bw": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -6769,7 +7265,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6804,24 +7300,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -6870,7 +7360,7 @@
           "$ref": "#/$defs/sSettings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -6920,21 +7410,21 @@
       "type": "object",
       "properties": {
         "i_MaxSpeedStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxTorqueStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
-        },
-        "ox_Ease": {
-          "type": "boolean"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ox_LoadAlarm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -6947,7 +7437,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -6982,24 +7472,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -7048,7 +7532,7 @@
           "$ref": "#/$defs/sSettings"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -7098,21 +7582,21 @@
       "type": "object",
       "properties": {
         "i_MaxSpeedStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_MaxTorqueStp": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
-        },
-        "ox_Ease": {
-          "type": "boolean"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
         },
         "ox_LoadAlarm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -7125,7 +7609,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7160,16 +7644,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -7196,7 +7680,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7231,16 +7715,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -7267,7 +7751,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7302,7 +7786,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -7311,6 +7795,9 @@
           "type": "boolean"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -7323,7 +7810,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7358,19 +7845,19 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1Bw": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -7406,7 +7893,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7441,24 +7928,24 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_blockLoad": {
+          "type": "number"
+        },
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "i_stayLoad": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -7516,7 +8003,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -7566,24 +8053,24 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_blockLoad": {
+          "type": "number"
+        },
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "i_stayLoad": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -7641,7 +8128,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -7691,7 +8178,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -7700,6 +8187,9 @@
           "type": "boolean"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -7712,7 +8202,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -7747,24 +8237,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -7822,7 +8306,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -7872,24 +8356,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -7947,7 +8425,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -7997,13 +8475,13 @@
       "type": "object",
       "properties": {
         "i_EaseSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PullSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnEase": {
           "type": "boolean"
@@ -8027,7 +8505,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8062,16 +8540,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -8098,7 +8576,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8133,16 +8611,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -8172,7 +8650,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8207,24 +8685,24 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_blockLoad": {
+          "type": "number"
+        },
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "i_stayLoad": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -8282,7 +8760,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -8332,24 +8810,24 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_blockLoad": {
+          "type": "number"
+        },
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "i_stayLoad": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_BtnEase": {
@@ -8407,7 +8885,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -8457,7 +8935,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -8466,6 +8944,9 @@
           "type": "boolean"
         },
         "ox_GnrlAlrm": {
+          "type": "boolean"
+        },
+        "ox_LowTorque": {
           "type": "boolean"
         },
         "ox_Pull": {
@@ -8478,7 +8959,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8513,24 +8994,18 @@
       "type": "object",
       "properties": {
         "i_ActualLineLength": {
-          "type": "integer"
-        },
-        "i_Position_mm": {
-          "type": "integer"
-        },
-        "i_PositionPermille": {
-          "type": "integer"
-        },
-        "i_SetActualLineLength": {
-          "type": "integer"
-        },
-        "i_State": {
-          "type": "integer"
-        },
-        "ir_setpoint": {
           "type": "number"
         },
-        "ir_SnsrPos": {
+        "i_PositionPermille": {
+          "type": "number"
+        },
+        "i_SetActualLineLength": {
+          "type": "number"
+        },
+        "i_State": {
+          "type": "number"
+        },
+        "ir_setpoint": {
           "type": "number"
         },
         "ix_MnlCtrl": {
@@ -8582,7 +9057,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ActivateLineLengthSetting": {
           "type": "boolean"
@@ -8632,7 +9107,7 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_GnrlAlrm": {
           "type": "boolean"
@@ -8649,11 +9124,20 @@
         "sDriveB": {
           "$ref": "#/$defs/sDriveB"
         },
+        "sSupplyA": {
+          "$ref": "#/$defs/sSupplyA"
+        },
+        "sSupplyB": {
+          "$ref": "#/$defs/sSupplyB"
+        },
+        "sSupplyC": {
+          "$ref": "#/$defs/sSupplyC"
+        },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "wActiveFault": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8703,13 +9187,13 @@
       "type": "object",
       "properties": {
         "i_EaseSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PullSpeedSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_BtnEase": {
           "type": "boolean"
@@ -8733,7 +9217,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8768,16 +9252,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -8804,7 +9288,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8839,16 +9323,16 @@
       "type": "object",
       "properties": {
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp1": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp2": {
-          "type": "integer"
+          "type": "number"
         },
         "io_SpdStp3": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_Btn1": {
           "type": "boolean"
@@ -8878,7 +9362,7 @@
           "$ref": "#/$defs/st_Load"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -8913,22 +9397,22 @@
       "type": "object",
       "properties": {
         "i_Flow": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadSenseOffset": {
-          "type": "integer"
+          "type": "number"
         },
         "i_OffDelaySettings": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Pressure": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PressureSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -8952,7 +9436,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -9014,22 +9498,22 @@
       "type": "object",
       "properties": {
         "i_Flow": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LoadSenseOffset": {
-          "type": "integer"
+          "type": "number"
         },
         "i_OffDelaySettings": {
-          "type": "integer"
+          "type": "number"
         },
         "i_Pressure": {
-          "type": "integer"
+          "type": "number"
         },
         "i_PressureSetpoint": {
-          "type": "integer"
+          "type": "number"
         },
         "i_State": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_RelayStatus": {
           "type": "boolean"
@@ -9053,7 +9537,7 @@
           "$ref": "#/$defs/sDrive"
         },
         "ui_RunningHours": {
-          "type": "integer"
+          "type": "number"
         },
         "x_ExtOnOff": {
           "type": "boolean"
@@ -9135,58 +9619,58 @@
       "type": "object",
       "properties": {
         "i_FeedForwardPressure": {
-          "type": "integer"
+          "type": "number"
         },
         "i_FeedForwardPressureAft": {
-          "type": "integer"
+          "type": "number"
         },
         "i_FeedForwardPressureFore": {
-          "type": "integer"
+          "type": "number"
         },
         "i_FixedPressureSetting": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LsPressure": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LsPressureAft": {
-          "type": "integer"
+          "type": "number"
         },
         "i_LsPressureFwd": {
-          "type": "integer"
+          "type": "number"
         },
         "i_OilTankLevel": {
-          "type": "integer"
+          "type": "number"
         },
         "i_OilTankTemperature": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrAftSystm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrFwdSystm": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrRtr": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB01": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB02": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB03": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB04": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB05": {
-          "type": "integer"
+          "type": "number"
         },
         "i_SnsrPrssrVB06": {
-          "type": "integer"
+          "type": "number"
         },
         "ix_requestEcoMode": {
           "type": "boolean"
@@ -9210,16 +9694,16 @@
           "type": "boolean"
         },
         "oi_LoadLimitAft_Cmd": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_LoadLimitAft_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_LoadLimitFore_Cmd": {
-          "type": "integer"
+          "type": "number"
         },
         "oi_LoadLimitFore_Current": {
-          "type": "integer"
+          "type": "number"
         },
         "ox_Dv1FwdAft": {
           "type": "boolean"
@@ -9286,6 +9770,12 @@
         "FE404_MzznHlyrd": {
           "$ref": "#/$defs/FE404_MzznHlyrd"
         },
+        "i_MainMastLoadShim": {
+          "type": "number"
+        },
+        "i_MzznMastLoadShim": {
+          "type": "number"
+        },
         "ix_SnsrA2Lck": {
           "type": "boolean"
         },
@@ -9309,6 +9799,48 @@
         },
         "ix_SnsrStyslLckOvrhst": {
           "type": "boolean"
+        },
+        "ix_StormJibLck": {
+          "type": "boolean"
+        },
+        "ix_StormJibOvrhst": {
+          "type": "boolean"
+        },
+        "ix_TrysailLck": {
+          "type": "boolean"
+        },
+        "ix_TrysailOvrhst": {
+          "type": "boolean"
+        },
+        "MainBoom_IO": {
+          "$ref": "#/$defs/MainBoom_IO"
+        },
+        "MainMast_IO": {
+          "$ref": "#/$defs/MainMast_IO"
+        },
+        "MainMst_OUT1": {
+          "$ref": "#/$defs/MainMst_OUT1"
+        },
+        "MainMst_OUT2": {
+          "$ref": "#/$defs/MainMst_OUT2"
+        },
+        "MainMst_OUT3": {
+          "$ref": "#/$defs/MainMst_OUT3"
+        },
+        "MainMst_OUT4": {
+          "$ref": "#/$defs/MainMst_OUT4"
+        },
+        "MizzenBoom_IO": {
+          "$ref": "#/$defs/MizzenBoom_IO"
+        },
+        "MizzenMast_IO": {
+          "$ref": "#/$defs/MizzenMast_IO"
+        },
+        "MizzenMst_OUT1": {
+          "$ref": "#/$defs/MizzenMst_OUT1"
+        },
+        "MizzenMst_OUT2": {
+          "$ref": "#/$defs/MizzenMst_OUT2"
         },
         "StormSailFurlerLoad": {
           "$ref": "#/$defs/StormSailFurlerLoad"
@@ -9366,56 +9898,86 @@
     "sail-systems/system": {
       "type": "object",
       "properties": {
+        "CyclopsGateway_HDC02": {
+          "$ref": "#/$defs/CyclopsGateway_HDC02"
+        },
+        "CyclopsGateway_HDC06": {
+          "$ref": "#/$defs/CyclopsGateway_HDC06"
+        },
+        "CyclopsGateway_Tech": {
+          "$ref": "#/$defs/CyclopsGateway_Tech"
+        },
         "e_CanHdc02": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanHdc03": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanHdc04": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanHdc05": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanHdc06": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanMainMst": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanMzznMst": {
-          "type": "integer"
+          "type": "number"
         },
         "e_CanTech": {
-          "type": "integer"
+          "type": "number"
         },
         "EF": {
           "$ref": "#/$defs/EF"
         },
         "i_CanHdc02Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanHdc03Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanHdc04Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanHdc05Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanHdc06Load": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanMainMstLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanMzznMstLoad": {
-          "type": "integer"
+          "type": "number"
         },
         "i_CanTechLoad": {
-          "type": "integer"
+          "type": "number"
+        },
+        "ix_BckpPwrPrsnt": {
+          "type": "boolean"
+        },
+        "ix_RnnngBckpPwr": {
+          "type": "boolean"
+        },
+        "x_HDC02DcEnergized": {
+          "type": "boolean"
+        },
+        "x_HDC03DcEnergized": {
+          "type": "boolean"
+        },
+        "x_HDC04DcEnergized": {
+          "type": "boolean"
+        },
+        "x_HDC05DcEnergized": {
+          "type": "boolean"
+        },
+        "x_HDC06DcEnergized": {
+          "type": "boolean"
         },
         "x_RioFpkConnected": {
           "type": "boolean"
@@ -9436,6 +9998,12 @@
           "type": "boolean"
         },
         "x_RioMstConnected": {
+          "type": "boolean"
+        },
+        "x_SB01P02DcEnergized": {
+          "type": "boolean"
+        },
+        "x_SB02P01DcEnergized": {
           "type": "boolean"
         }
       }

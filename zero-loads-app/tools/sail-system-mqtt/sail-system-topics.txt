@@ -1,4 +1,3 @@
-Project Name: 3094_SailPLC
 sail-systems/cooling-pumps
 sail-systems/e-stop
 sail-systems/f001-filter-pump
