@@ -32,16 +32,16 @@ def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
         + result.sensor_values.consumers_flow_bypass.flow.value
     )
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
-        total_flow * control._parameters.dhw_flow_ratio_setpoint, abs=1.0
+        total_flow * control.parameters.dhw_flow_ratio_setpoint, abs=1.0
     )
     assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
-        total_flow * control._parameters.adsorption_flow_ratio_setpoint, abs=1.0
+        total_flow * control.parameters.adsorption_flow_ratio_setpoint, abs=1.0
     )
 
 
 async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimulation):
-    control._parameters.dhw_enabled = False
-    control._parameters.adsorption_flow_ratio_setpoint = 0.5
+    control.parameters.dhw_enabled = False
+    control.parameters.adsorption_flow_ratio_setpoint = 0.5
     result = simulation.tick(
         control.control(ConsumersSensorValues.zero())[0],
     )
@@ -59,8 +59,8 @@ async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimu
 def test_adsorption_disabled(
     control: ConsumersControl, simulation: ConsumersSimulation
 ):
-    control._parameters.adsorption_enabled = False
-    control._parameters.dhw_flow_ratio_setpoint = 0.5
+    control.parameters.adsorption_enabled = False
+    control.parameters.dhw_flow_ratio_setpoint = 0.5
     result = simulation.tick(
         control.control(ConsumersSensorValues.zero())[0],
     )
@@ -78,8 +78,8 @@ def test_adsorption_disabled(
 
 
 def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation):
-    control._parameters.dhw_enabled = False
-    control._parameters.adsorption_enabled = False
+    control.parameters.dhw_enabled = False
+    control.parameters.adsorption_enabled = False
     result = simulation.tick(
         control.control(ConsumersSensorValues.zero())[0],
     )

@@ -20,10 +20,14 @@ type PvtSimulation = Simulation[
 ]
 
 
-def test_idle(control: PvtControl, simulation: PvtSimulation):
-    simulation._simulation_inputs.pvt_main_fwd.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.pvt_main_aft.heat_flow = Stamped.stamp(0)
-    simulation._simulation_inputs.pvt_owners.heat_flow = Stamped.stamp(0)
+def test_idle(
+    control: PvtControl,
+    simulation: PvtSimulation,
+    simulation_inputs: PvtSimulationInputs,
+):
+    simulation_inputs.pvt_main_fwd.heat_flow = Stamped.stamp(0)
+    simulation_inputs.pvt_main_aft.heat_flow = Stamped.stamp(0)
+    simulation_inputs.pvt_owners.heat_flow = Stamped.stamp(0)
 
     result = simulation.tick(
         control.control(PvtSensorValues.zero())[0],
@@ -36,7 +40,7 @@ def test_idle(control: PvtControl, simulation: PvtSimulation):
     assert result.simulation_outputs.pvt_pcm_return.flow.value == approx(0, abs=0.1)  # type: ignore
 
 
-def test_recovery(control: PvtControl, simulation):
+def test_recovery(control: PvtControl, simulation: PvtSimulation):
     result = simulation.tick(
         control.control(PvtSensorValues.zero())[0],
     )
@@ -76,12 +80,16 @@ def test_recovery(control: PvtControl, simulation):
     )
 
 
-def test_heat_dump(control, simulation: PvtSimulation):
-    simulation._simulation_inputs.pvt_pcm_supply.temperature = Stamped.stamp(
+def test_heat_dump(
+    control: PvtControl,
+    simulation: PvtSimulation,
+    simulation_inputs: PvtSimulationInputs,
+):
+    simulation_inputs.pvt_pcm_supply.temperature = Stamped.stamp(
         control.parameters.maximum_supply_temperature + 5
     )
-    simulation._simulation_inputs.pvt_seawater_supply.flow = Stamped.stamp(100)
-    simulation._simulation_inputs.pvt_seawater_supply.temperature = Stamped.stamp(10)
+    simulation_inputs.pvt_seawater_supply.flow = Stamped.stamp(100)
+    simulation_inputs.pvt_seawater_supply.temperature = Stamped.stamp(10)
 
     result = simulation.tick(
         control.control(PvtSensorValues.zero())[0],
@@ -110,5 +118,5 @@ def test_heat_dump(control, simulation: PvtSimulation):
         control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
         assert result.sensor_values.pvt_temperature_supply.temperature.value == approx(
-            control._parameters.maximum_supply_temperature, abs=3
+            control.parameters.maximum_supply_temperature, abs=3
         )
