@@ -20,7 +20,9 @@ from thrs.input_output.modules.pvt import (
     PvtSensorValues,
 )
 
-PvtSensorValuesType = pydantic_to_strawberry_type(PvtSensorValues)
+PvtSensorValuesType = pydantic_to_strawberry_type(
+    PvtSensorValues, include_computed=True
+)
 PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
