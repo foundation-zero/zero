@@ -318,12 +318,25 @@ def _build_diff_report(
     }
 
 
-def _build_text_summary(diff_report: dict[str, Any]) -> str:
+def _build_text_summary(
+    diff_report: dict[str, Any], capture: dict[str, Any] | None = None
+) -> str:
     lines: list[str] = []
     summary = diff_report.get("summary", {})
+    all_topics = diff_report.get("topics", {})
+
+    generated_at = diff_report.get("generated_at", "")
+    timeout_seconds = (capture or {}).get("timeout_seconds", None)
+    samples_per_topic = (capture or {}).get("samples_per_topic_target", None)
 
     lines.append("MQTT Schema Comparison Summary")
     lines.append("================================")
+    if generated_at:
+        lines.append(f"Generated: {generated_at}")
+    if timeout_seconds is not None:
+        lines.append(f"Logging interval: {timeout_seconds}s per capture")
+    if samples_per_topic is not None:
+        lines.append(f"Samples per topic: {samples_per_topic}")
     lines.append(f"Report scope: {summary.get('report_scope', 'selected')}")
     lines.append(f"Selected topics: {summary.get('selected_topic_count', 0)}")
     lines.append(
@@ -337,23 +350,92 @@ def _build_text_summary(diff_report: dict[str, Any]) -> str:
     missing_topics = summary.get("missing_topics", [])
     unexpected_topics = summary.get("unexpected_topics", [])
 
-    lines.append(f"Missing topics: {len(missing_topics)}")
-    lines.append(f"Unexpected topics: {len(unexpected_topics)}")
+    no_messages_topics = sorted(
+        topic
+        for topic, report in all_topics.items()
+        if report.get("messages_seen", 0) == 0
+    )
+    topics_with_unexpected_keys = sorted(
+        topic
+        for topic, report in all_topics.items()
+        if report.get("messages_seen", 0) > 0 and report.get("unexpected_keys")
+    )
+    topics_with_missing_keys = sorted(
+        topic
+        for topic, report in all_topics.items()
+        if report.get("messages_seen", 0) > 0 and report.get("missing_keys")
+    )
+
+    lines.append(f"Missing topics ({len(missing_topics)}):")
+    if missing_topics:
+        lines.extend([f"  - {t}" for t in missing_topics])
+    else:
+        lines.append("  (none)")
     lines.append("")
 
-    for topic, report in sorted(diff_report.get("topics", {}).items()):
-        if report.get("status") != "compared":
-            continue
+    lines.append(f"Unexpected topics ({len(unexpected_topics)}):")
+    if unexpected_topics:
+        lines.extend([f"  - {t}" for t in unexpected_topics])
+    else:
+        lines.append("  (none)")
+    lines.append("")
 
+    lines.append(f"Topics with no messages seen ({len(no_messages_topics)}):")
+    if no_messages_topics:
+        lines.extend([f"  - {t}" for t in no_messages_topics])
+    else:
+        lines.append("  (none)")
+    lines.append("")
+
+    lines.append(f"Topics with unexpected keys ({len(topics_with_unexpected_keys)}):")
+    if topics_with_unexpected_keys:
+        lines.extend([f"  - {t}" for t in topics_with_unexpected_keys])
+    else:
+        lines.append("  (none)")
+    lines.append("")
+
+    lines.append(f"Topics with missing keys ({len(topics_with_missing_keys)}):")
+    if topics_with_missing_keys:
+        lines.extend([f"  - {t}" for t in topics_with_missing_keys])
+    else:
+        lines.append("  (none)")
+    lines.append("")
+
+    lines.append("--- Topic Details ---")
+    lines.append("")
+
+    for topic, report in sorted(all_topics.items()):
+        messages_seen = report.get("messages_seen", 0)
         missing_keys = report.get("missing_keys", [])
         unexpected_keys = report.get("unexpected_keys", [])
         type_mismatches = report.get("type_mismatches", [])
-
-        if not missing_keys and not unexpected_keys and not type_mismatches:
-            continue
+        status = report.get("status")
 
         lines.append(f"Topic: {topic}")
-        lines.append(f"  Messages seen: {report.get('messages_seen', 0)}")
+
+        if status == "missing_in_expected":
+            lines.append("  Status: not in expected schema")
+            lines.append(f"  Messages seen: {messages_seen}")
+            lines.append("")
+            continue
+
+        if status == "missing_in_observed":
+            lines.append("  Status: not observed (no messages captured)")
+            lines.append("")
+            continue
+
+        if messages_seen == 0:
+            lines.append("  Messages seen: 0")
+            lines.append("")
+            continue
+
+        lines.append(f"  Messages seen: {messages_seen}")
+
+        if not missing_keys and not unexpected_keys and not type_mismatches:
+            lines.append("  OK")
+            lines.append("")
+            continue
+
         lines.append(f"  Missing keys: {len(missing_keys)}")
         lines.append(f"  Unexpected keys: {len(unexpected_keys)}")
         lines.append(f"  Type mismatches: {len(type_mismatches)}")
@@ -383,7 +465,7 @@ def _parse_args() -> argparse.Namespace:
     base_dir = Path(__file__).resolve().parent
     default_schema = base_dir / "sail-system-mqtt-schema.json"
     default_topics_file = base_dir / "sail-system-topics.txt"
-    default_output_prefix = base_dir / "sail-system-mqtt-live"
+    default_output_prefix = base_dir / "comparison" / "sail-system-mqtt-live"
 
     parser = argparse.ArgumentParser(
         description="Capture live MQTT payload schema and compare it with expected schema."
@@ -478,7 +560,7 @@ async def _run(args: argparse.Namespace) -> None:
         report_scope=args.report_scope,
     )
 
-    summary_text = _build_text_summary(diff_report)
+    summary_text = _build_text_summary(diff_report, observed_schema["capture"])
 
     output_prefix = Path(args.output_prefix)
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
