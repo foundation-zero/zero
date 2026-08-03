@@ -4007,8 +4007,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "${datasource}"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
