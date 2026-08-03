@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 21,
   "links": [
     {
       "asDropdown": true,
@@ -130,7 +130,7 @@
               "fixed": "transparent"
             },
             "image": {
-              "field": "water_separator_ppm_alarm",
+              "field": "",
               "mode": "fixed"
             }
           },
@@ -180,6 +180,7 @@
               "placement": {
                 "height": 25,
                 "left": 323,
+                "rotation": 0,
                 "top": 220,
                 "width": 25
               },
@@ -2027,47 +2028,6 @@
             {
               "background": {
                 "color": {
-                  "field": "water_separator_ppm_alarm"
-                },
-                "image": {
-                  "field": "",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "water_separator_ppm_alarm",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "water_separator_ppm_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 250,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
                   "fixed": "transparent"
                 }
               },
@@ -2142,6 +2102,48 @@
                 "width": 105
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "water_separator_ppm_alarm",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 51",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 251,
+                "width": 25
+              },
+              "type": "ellipse"
             }
           ],
           "name": "Element 1767698352074",
@@ -2230,7 +2232,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP_3_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump3_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_5_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_5_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_6_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_6_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_13_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame13_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_15_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame15_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_30_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame30_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_PS_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38ps_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_38_SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_46_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame46_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_47_SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame47sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_48_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame48_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_53_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame53_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME_68_ALARM')         THEN '(' || yard_tag  || ')' ELSE NULL END) AS frame68_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BILGE_WATER_SEPARATOR_PPM_ALARM') THEN '(' || yard_tag  || ')' ELSE NULL END) AS water_separator_ppm_alarm_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP3_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump3_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_5_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_5_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_6_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_6_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME13_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame13_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME15_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame15_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME30_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame30_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38PS_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38ps_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME46_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame46_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME47SB_ALARM')      THEN '(' || yard_tag || ')' ELSE NULL END) AS frame47sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME48_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame48_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME53_ALARM')         THEN '(' || yard_tag || ')' ELSE NULL END) AS frame53_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME68_ALARM')         THEN '(' || yard_tag  || ')' ELSE NULL END) AS frame68_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('WATER_SEPARATOR_PPM_ALARM') THEN '(' || yard_tag  || ')' ELSE NULL END) AS water_separator_ppm_alarm_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
