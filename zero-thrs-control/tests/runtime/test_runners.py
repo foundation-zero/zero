@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
@@ -41,7 +41,7 @@ def test_simulation_test_runner():
             ThrustersSimulationOutputs,
             fmu,
             simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
@@ -67,7 +67,7 @@ def test_simulation_test_runner():
             timedelta(seconds=1),
         )
         mock_fmu_outputs = io_mapping.construct_outputs(
-            inputs, outputs, simulation_inputs, datetime.now()
+            inputs, outputs, simulation_inputs, datetime.now(UTC)
         )[2]
 
         assert frame is not None

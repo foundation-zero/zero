@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import approx
 
@@ -15,7 +15,7 @@ def test_valve_movement(fmu, control, simulation_inputs):
         ThrustersSimulationOutputs,
         fmu,
         simulation_inputs,
-        datetime.now(),
+        datetime.now(UTC),
         timedelta(seconds=45),
     )
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated
 
 from pydantic import computed_field
@@ -140,7 +140,7 @@ def test_extract_excluded():
 
 
 def test_fmu_roundtrip():
-    time = datetime.now()
+    time = datetime.now(UTC)
 
     control_values = MiniModel(
         flow_sensor=FlowSensor(

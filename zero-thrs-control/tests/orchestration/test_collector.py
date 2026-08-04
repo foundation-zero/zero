@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from tests.helpers.collector import PolarsCollector
 
@@ -21,7 +21,7 @@ def test_single():
 def test_multiple():
     col = PolarsCollector()
     for i in range(200):
-        col.collect({"a": float(i)}, None, datetime.now())
+        col.collect({"a": float(i)}, None, datetime.now(UTC))
     result = col.result()
     assert result is not None
     assert result["a"].len() == 200

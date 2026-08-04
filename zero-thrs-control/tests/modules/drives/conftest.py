@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
@@ -119,7 +119,7 @@ def simulation(simulation_inputs_all_drives_active):
             DrivesSimulationOutputs,
             fmu,
             simulation_inputs_all_drives_active,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
