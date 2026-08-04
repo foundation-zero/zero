@@ -173,6 +173,10 @@ class LoadCase:
     name: str
     awa: float
     aws: float
+    twa: float
+    tws: float
+    bsp: float
+    heel: float
 
     @strawberry.field
     async def sails(self, info: strawberry.Info[LoadsContext]) -> list[SailType]:

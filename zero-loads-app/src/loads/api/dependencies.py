@@ -97,7 +97,7 @@ async def get_reference_values(
             key_to_id = dict(zip(variable_keys, variable_ids))
             values = (
                 await get_loads_reference_values(
-                    variable_keys=variable_keys,
+                    variable_keys=[key for key in variable_keys if key is not None],
                     case=case,
                     session=session,
                 )

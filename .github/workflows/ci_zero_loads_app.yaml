@@ -40,7 +40,7 @@ jobs:
         working-directory: zero-loads-app
       - run: uv run ruff format --check src tests
         working-directory: zero-loads-app
-      - run: uv run mypy src
+      - run: uv run pyright
         working-directory: zero-loads-app
       - name: Create .env file from secret in root for services
         run: |
@@ -57,10 +57,14 @@ jobs:
         working-directory: zero-loads-app
       - name: Set up postgres schema
         run: docker compose --profile zero up -d --wait hasura
+        working-directory: zero-loads-app
       - name: Install Hasura CLI
         run: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
       - name: Seed reference values
         run: hasura seed apply --file loads_reference_values.sql --endpoint http://localhost:8080 --admin-secret myadminsecretkey --database-name zero
+        working-directory: hasura
+      - name: Seed case mappings
+        run: hasura seed apply --file loads_case_mappings.sql --endpoint http://localhost:8080 --admin-secret myadminsecretkey --database-name zero
         working-directory: hasura
       - name: Integration Test
         run: uv run pytest --run=integration -vv

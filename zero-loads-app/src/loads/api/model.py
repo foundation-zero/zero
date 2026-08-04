@@ -95,6 +95,10 @@ async def get_load_case(
         name=load_case.name,  # type: ignore
         awa=load_case.awa,  # type: ignore
         aws=load_case.aws,  # type: ignore
+        twa=load_case.twa,  # type: ignore
+        tws=load_case.tws,  # type: ignore
+        bsp=load_case.bsp,  # type: ignore
+        heel=load_case.heel,  # type: ignore
     )
 
 
@@ -110,6 +114,10 @@ async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
             name=load_case.name,  # type: ignore
             awa=load_case.awa,  # type: ignore
             aws=load_case.aws,  # type: ignore
+            twa=load_case.twa,  # type: ignore
+            tws=load_case.tws,  # type: ignore
+            bsp=load_case.bsp,  # type: ignore
+            heel=load_case.heel,  # type: ignore
         )
         for load_case in load_cases
     ]
@@ -256,7 +264,7 @@ def get_variables(ids: Sequence[str]) -> list[VariableType]:
 def resolve_variable_keys(
     variables: Sequence[VariableDefinition],
     tack: Literal["port", "starboard"],
-) -> list[str]:
+) -> list[str | None]:
     def _apply_applicability(variable: VariableDefinition):
         match variable.applicability:
             case None:
@@ -266,7 +274,7 @@ def resolve_variable_keys(
             case _:
                 return None
 
-    return [key for var in variables if (key := _apply_applicability(var))]
+    return [_apply_applicability(var) for var in variables]
 
 
 async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:

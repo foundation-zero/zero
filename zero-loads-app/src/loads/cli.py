@@ -118,16 +118,35 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
     )
 
     input: Path = Path("src/sailpack")
-    output: Path = Path("../hasura/seeds/zero/loads_reference_values.sql")
+    reference_values_output: Path = Path(
+        "../hasura/seeds/zero/loads_reference_values.sql"
+    )
+    load_case_mapping_output: Path = Path(
+        "../hasura/seeds/zero/loads_case_mappings.sql"
+    )
 
     async def cli_cmd(self) -> None:
-        from sailpack.export_seed import export_seed_sql
+        from sailpack.export_load_case_mapping_seed import (
+            export_load_case_mapping_seed_sql,
+        )
+        from sailpack.export_reference_values_seed import (
+            export_reference_values_seed_sql,
+        )
 
         logger.info("Exporting sailpack seed SQL...")
-        load_case_count, reference_count = export_seed_sql(self.input, self.output)
+        load_case_count, reference_count = export_reference_values_seed_sql(
+            input_source=self.input, output_sql=self.reference_values_output
+        )
         logger.info(
-            f"Generated {self.output} with {load_case_count} load cases and "
+            f"Generated {self.reference_values_output} with {load_case_count} load cases and "
             f"{reference_count} reference values."
+        )
+
+        load_case_mapping_count, _ = export_load_case_mapping_seed_sql(
+            input_source=self.input, output_sql=self.load_case_mapping_output
+        )
+        logger.info(
+            f"Generated {self.load_case_mapping_output} with {load_case_mapping_count} load case mappings."
         )
 
 
