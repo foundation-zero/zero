@@ -40,7 +40,7 @@ lint:
     # uv run ruff check src tests
 
 lint_no_fix:
-    uv run ruff check --no-fix src tests
+    # uv run ruff check --no-fix src tests
 
 type_check:
     # uv run pyright

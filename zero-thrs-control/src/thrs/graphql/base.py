@@ -397,7 +397,7 @@ def resolve_module(
 ) -> ControlModule:
     return ControlModule(
         sensor_values=optional_pydantic_to_graphql(module.sensor_values),
-        control_values=optional_pydantic_to_graphql(module.control_values),
+        control_values=None,
         parameters=optional_pydantic_to_graphql(module.parameters),
         control_mode=SwitchingControlModeType.from_pydantic(module.control_mode)
         if module.control_mode
