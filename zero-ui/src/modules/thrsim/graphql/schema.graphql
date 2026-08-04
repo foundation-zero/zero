@@ -606,9 +606,9 @@ type DcSensorValuesType {
   dcBrightloopFwd2: SensorBrightloopType!
     @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop", valveType: null)
   dcUgrid1: SensorUgridType!
-    @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
-  dcUgrid2: SensorUgridType!
     @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
+  dcUgrid2: SensorUgridType!
+    @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
 }
 
 type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule {

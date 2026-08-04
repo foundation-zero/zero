@@ -154,7 +154,7 @@ class Brightloop(ThrsValues):
 
 
 class Ugrid(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="ENABLE")]
 
 
 class Pcs(ThrsValues):

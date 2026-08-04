@@ -293,19 +293,19 @@ class DcSensorValues(ThrsValues):
     dc_ugrid1: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002082",
+            yard_tag="45002081",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid1-active",
+            topic_override="450000-ugrid/aft",
         ),
     ]
     dc_ugrid2: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002081",
+            yard_tag="45002082",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid2-active",
+            topic_override="450000-ugrid/fwd",
         ),
     ]
 

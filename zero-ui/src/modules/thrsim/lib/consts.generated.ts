@@ -704,11 +704,11 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcUgrid1: {
-    yardTag: "45002082",
+    yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
   },
   dcUgrid2: {
-    yardTag: "45002081",
+    yardTag: "45002082",
     componentType: SensorComponentType.Ugrid,
   },
 });
