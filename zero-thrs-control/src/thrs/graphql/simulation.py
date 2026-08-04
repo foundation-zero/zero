@@ -91,7 +91,7 @@ def resolve_inputs(
     if graphql_type is None:
         raise ValueError(f"Unsupported simulation inputs type: {type(inputs)}")
 
-    return optional_pydantic_to_graphql(graphql_type, inputs)
+    return optional_pydantic_to_graphql(inputs)
 
 
 def resolve_outputs(
@@ -105,7 +105,7 @@ def resolve_outputs(
     if graphql_type is None:
         raise ValueError(f"Unsupported simulation outputs type: {type(outputs)}")
 
-    return optional_pydantic_to_graphql(graphql_type, outputs)
+    return optional_pydantic_to_graphql(outputs)
 
 
 @strawberry.type

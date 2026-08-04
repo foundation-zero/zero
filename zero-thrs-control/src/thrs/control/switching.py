@@ -9,8 +9,8 @@ from thrs.control.manual import EmptyParameters, ManualControl
 from thrs.input_output.base import ThrsValues
 
 
-class SwitchingControlMode[M](ThrsValues):
-    automatic_mode: M | None
+class SwitchingControlMode[Mode](ThrsValues):
+    automatic_mode: Mode | None
 
     @property
     def automatic(self) -> bool:

@@ -1802,6 +1802,15 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureOwnersString6Supply {
     temperature { value timestamp }
   }
+  pvtMaxTemperatureMainFwdStrings {
+    temperature { value timestamp }
+  }
+  pvtMaxTemperatureMainAftStrings {
+    temperature { value timestamp }
+  }
+  pvtMaxTemperatureOwnersStrings {
+    temperature { value timestamp }
+  }
 `;
 
 export const PVT_SIMULATION_INPUTS_QUERY = `

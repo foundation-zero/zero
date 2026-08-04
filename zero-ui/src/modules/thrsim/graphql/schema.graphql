@@ -146,8 +146,8 @@ type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTy
 }
 
 type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeSwitchingControlModeType {
-  automaticMode: AdsorptionControlModeType
   automatic: Boolean!
+  automaticMode: AdsorptionControlModeType
 }
 
 type AdsorptionSimulationInputsType {
@@ -267,8 +267,8 @@ type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeC
 }
 
 type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeSwitchingControlModeType {
-  automaticMode: ConsumersControlModeType
   automatic: Boolean!
+  automaticMode: ConsumersControlModeType
 }
 
 type ConsumersSimulationInputsType {
@@ -620,8 +620,8 @@ type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcCon
 }
 
 type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeSwitchingControlModeType {
-  automaticMode: DcControlModeType
   automatic: Boolean!
+  automaticMode: DcControlModeType
 }
 
 type DcSimulationInputsType {
@@ -947,8 +947,8 @@ type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeD
 }
 
 type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeSwitchingControlModeType {
-  automaticMode: DhwControlModeType
   automatic: Boolean!
+  automaticMode: DhwControlModeType
 }
 
 type DhwSimulationInputsType {
@@ -1154,8 +1154,8 @@ type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesCont
 }
 
 type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeSwitchingControlModeType {
-  automaticMode: DrivesControlModeType
   automatic: Boolean!
+  automaticMode: DrivesControlModeType
 }
 
 type DrivesSimulationInputsType {
@@ -1749,8 +1749,8 @@ type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeP
 }
 
 type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeSwitchingControlModeType {
-  automaticMode: PcmControlModeType
   automatic: Boolean!
+  automaticMode: PcmControlModeType
 }
 
 type PcmSimulationInputsType {
@@ -2239,6 +2239,12 @@ type PvtSensorValuesType {
       componentType: "temperature_sensor"
       valveType: null
     )
+  pvtMaxTemperatureMainFwdStrings: SensorCalculatedTemperatureType!
+    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtMaxTemperatureMainAftStrings: SensorCalculatedTemperatureType!
+    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtMaxTemperatureOwnersStrings: SensorCalculatedTemperatureType!
+    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
 }
 
 type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule {
@@ -2250,8 +2256,8 @@ type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeP
 }
 
 type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeSwitchingControlModeType {
-  automaticMode: PvtControlModeType
   automatic: Boolean!
+  automaticMode: PvtControlModeType
 }
 
 type PvtSimulationInputsType {
@@ -2704,8 +2710,8 @@ type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeT
 }
 
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeSwitchingControlModeType {
-  automaticMode: ThrustersControlModeType
   automatic: Boolean!
+  automaticMode: ThrustersControlModeType
 }
 
 type ThrustersSimulationInputsType {

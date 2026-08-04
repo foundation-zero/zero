@@ -1,16 +1,18 @@
 import strawberry
 
-from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.consumers import (
+    ConsumersControllerState,
+    ConsumersControlMode,
+    ConsumersParameters,
+)
 from thrs.graphql.base import (
-    ConsumersMessaging,
     ControlModule,
-    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    optional_pydantic_to_graphql,
+    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.consumers import (
@@ -23,24 +25,10 @@ ConsumersSensorValuesType = pydantic_to_strawberry_type(
 )
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
 ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
-
-
-@strawberry.type()
-class ConsumersControlModeType:
-    _empty: None = None
-
-    @classmethod
-    def from_pydantic(cls, graphql_type) -> "ConsumersControlModeType":
-        return cls()
-
-
-@strawberry.type()
-class ConsumersControllerStateType:
-    _empty: None = None
-
-    @classmethod
-    def from_pydantic(cls, graphql_type) -> "ConsumersControllerStateType":
-        return cls()
+ConsumersControlModeType = empty_pydantic_type_to_strawberry_type(ConsumersControlMode)
+ConsumersControllerStateType = empty_pydantic_type_to_strawberry_type(
+    ConsumersControllerState
+)
 
 
 ConsumersModule = ControlModule[
@@ -50,28 +38,6 @@ ConsumersModule = ControlModule[
     ConsumersControlModeType,
     ConsumersControllerStateType,
 ]
-
-
-def resolve_module(
-    module: ConsumersMessaging,
-) -> ConsumersModule:
-    return ControlModule(
-        sensor_values=optional_pydantic_to_graphql(
-            ConsumersSensorValuesType, module.sensor_values
-        ),
-        control_values=optional_pydantic_to_graphql(
-            ConsumersControlValuesType, module.control_values
-        ),
-        parameters=optional_pydantic_to_graphql(
-            ConsumersParametersType, module.parameters
-        ),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            ConsumersControlModeType, module.control_mode
-        )
-        if module.control_mode
-        else None,
-        controller_state=ConsumersControllerStateType(),
-    )
 
 
 def get_consumers_messaging(context):

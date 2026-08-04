@@ -1,6 +1,7 @@
 from typing import Annotated, get_args, get_origin
 
 import strawberry
+from graphql import GraphQLObjectType
 from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
 
@@ -13,6 +14,9 @@ class JsonSchemaDirective:
     yard_tag: str | None = None
     component_type: str | None = None
     valve_type: str | None = None
+
+
+pydantic_to_strawberry_class_map: dict[type, type] = {}
 
 
 def pydantic_to_strawberry_type(
@@ -47,23 +51,57 @@ def pydantic_to_strawberry_type(
     """
     type_name = f"{pydantic_model.__name__}{suffix}"
     graphql_class = type(type_name, (object,), {})
-    return strawberry.experimental.pydantic.type(
+    graphql_class = strawberry.experimental.pydantic.type(
         model=pydantic_model,
         all_fields=True,
         include_computed=include_computed,
         json_schema_directive=JsonSchemaDirective,
         use_pydantic_alias=False,
     )(graphql_class)
+    pydantic_to_strawberry_class_map[pydantic_model] = graphql_class
+    return graphql_class
 
 
-def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
+def empty_pydantic_type_to_strawberry_type(
+    pydantic_model: type[BaseModel],
+    suffix: str = "Type",
+) -> type:
+    """
+    Create Strawberry type for empty pydantic types.
+
+    Graphql/Strawberry can't deal with empty pydantic types so we need to do some special handling.
+
+        Args:
+        pydantic_model: The Pydantic model class to convert
+        suffix: Suffix to add to the type name (default: "Type")
+
+    Returns:
+        A Strawberry GraphQL type class
+    """
+
+    type_name = f"{pydantic_model.__name__}{suffix}"
+    graphql_class = type(
+        type_name,
+        (object,),
+        {
+            "_empty": None,
+            "from_pydantic": lambda graphql_type: graphql_class(),
+            "__annotations__": {"_empty": None},
+        },
+    )
+    graphql_class = strawberry.type()(graphql_class)
+
+    pydantic_to_strawberry_class_map[pydantic_model] = graphql_class
+    return graphql_class
+
+
+def optional_pydantic_to_graphql(pydantic_value):
     """
     Convert a Pydantic value to Strawberry GraphQL type if the value exists.
 
     This simplifies resolver functions by handling the None-checking pattern.
 
     Args:
-        graphql_type: The Strawberry GraphQL type class
         pydantic_value: The Pydantic model instance (or None)
 
     Returns:
@@ -82,6 +120,12 @@ def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
     """
     if pydantic_value is None:
         return None
+
+    graphql_type = pydantic_to_strawberry_class_map.get(type(pydantic_value))
+    if graphql_type is None:
+        raise ValueError(
+            f"The graphql type for pydantic type {type(pydantic_value).__name__} is not know. Did you create it using a `*_to_strawberry_type` function?"
+        )
     return graphql_type.from_pydantic(pydantic_value)
 
 

@@ -167,20 +167,13 @@ convert_module(controllers, "Controller")
 convert_module(simulation, "Simulation")
 
 
-# TODO: check if this can't just be based on the pydantic model directly
-@strawberry.type
+@strawberry.experimental.pydantic.type(
+    model=SwitchingControlMode,
+    use_pydantic_alias=False,
+    fields=["automatic_mode"],
+)
 class SwitchingControlModeType[Mode]:
     automatic_mode: Mode | None
-
-    @classmethod
-    def from_pydantic(
-        cls, graphql_type, mode: SwitchingControlMode[Mode]
-    ) -> "SwitchingControlModeType[Mode]":
-        return cls(
-            automatic_mode=optional_pydantic_to_graphql(
-                graphql_type, mode.automatic_mode
-            )
-        )
 
     @strawberry.field
     def automatic(self) -> bool:
@@ -396,3 +389,17 @@ def add_automation_mode_mutation(
         return cls
 
     return _do
+
+
+def resolve_module(
+    module: ControlMessaging,
+) -> ControlModule:
+    return ControlModule(
+        sensor_values=optional_pydantic_to_graphql(module.sensor_values),
+        control_values=optional_pydantic_to_graphql(module.control_values),
+        parameters=optional_pydantic_to_graphql(module.parameters),
+        control_mode=SwitchingControlModeType.from_pydantic(module.control_mode)
+        if module.control_mode
+        else None,
+        controller_state=optional_pydantic_to_graphql(module.controller_state),
+    )

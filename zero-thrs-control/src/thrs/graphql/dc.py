@@ -1,38 +1,25 @@
 import strawberry
 
 from thrs.control.modules.converters import ConvertersControlMode
-from thrs.control.modules.dc import DcControlMode, DcParameters
+from thrs.control.modules.dc import DcControllerState, DcControlMode, DcParameters
 from thrs.graphql.base import (
     ControlModule,
-    DcMessaging,
-    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    optional_pydantic_to_graphql,
+    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
-from thrs.input_output.modules.dc import (
-    DcControlValues,
-    DcSensorValues,
-)
+from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
 
 DcSensorValuesType = pydantic_to_strawberry_type(DcSensorValues, include_computed=True)
 DcControlValuesType = pydantic_to_strawberry_type(DcControlValues)
 DcParametersType = pydantic_to_strawberry_type(DcParameters)
 ConvertersControlModeType = pydantic_to_strawberry_type(ConvertersControlMode)
 DcControlModeType = pydantic_to_strawberry_type(DcControlMode)
-
-
-@strawberry.type()
-class DcControllerStateType:
-    _empty: None = None
-
-    @classmethod
-    def from_pydantic(cls, _type) -> "DcControllerStateType":
-        return cls()
+DcControllerStateType = empty_pydantic_type_to_strawberry_type(DcControllerState)
 
 
 DcModule = ControlModule[
@@ -42,28 +29,6 @@ DcModule = ControlModule[
     DcControlModeType,
     DcControllerStateType,
 ]
-
-
-def resolve_module(
-    module: DcMessaging,
-) -> DcModule:
-    return ControlModule(
-        sensor_values=optional_pydantic_to_graphql(
-            DcSensorValuesType, module.sensor_values
-        ),
-        control_values=optional_pydantic_to_graphql(
-            DcControlValuesType, module.control_values
-        ),
-        parameters=optional_pydantic_to_graphql(DcParametersType, module.parameters),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            DcControlModeType, module.control_mode
-        )
-        if module.control_mode
-        else None,
-        controller_state=optional_pydantic_to_graphql(
-            DcControllerStateType, module.controller_state
-        ),
-    )
 
 
 def get_dc_messaging(context):
