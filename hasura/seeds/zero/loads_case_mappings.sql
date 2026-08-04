@@ -9,6 +9,15 @@ WITH mapping_payload AS (
   {
     "load_case_id": "FM B Rchng",
     "awa_range_id": "upwind",
+    "aws_range_id": 0,
+    "sail_abbreviations": [
+      "B",
+      "FM"
+    ]
+  },
+  {
+    "load_case_id": "FM B Rchng",
+    "awa_range_id": "upwind",
     "aws_range_id": 1,
     "sail_abbreviations": [
       "B",
@@ -61,12 +70,13 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
     "awa_range_id": "upwind",
-    "aws_range_id": 7,
+    "aws_range_id": 0,
     "sail_abbreviations": [
       "B",
-      "FM"
+      "FM",
+      "FMZ"
     ]
   },
   {
@@ -130,13 +140,14 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
     "awa_range_id": "upwind",
-    "aws_range_id": 7,
+    "aws_range_id": 0,
     "sail_abbreviations": [
       "B",
       "FM",
-      "FMZ"
+      "FMZ",
+      "MZSS"
     ]
   },
   {
@@ -206,14 +217,13 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
     "awa_range_id": "upwind",
-    "aws_range_id": 7,
+    "aws_range_id": 0,
     "sail_abbreviations": [
-      "B",
+      "C0",
       "FM",
-      "FMZ",
-      "MZSS"
+      "FMZ"
     ]
   },
   {
@@ -277,13 +287,13 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "awa_range_id": "upwind",
-    "aws_range_id": 7,
+    "aws_range_id": 0,
     "sail_abbreviations": [
-      "C0",
-      "FM",
-      "FMZ"
+      "M2R",
+      "MZ2R",
+      "SS"
     ]
   },
   {
@@ -340,16 +350,6 @@ WITH mapping_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "awa_range_id": "upwind",
     "aws_range_id": 6,
-    "sail_abbreviations": [
-      "M2R",
-      "MZ2R",
-      "SS"
-    ]
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "awa_range_id": "upwind",
-    "aws_range_id": 7,
     "sail_abbreviations": [
       "M2R",
       "MZ2R",

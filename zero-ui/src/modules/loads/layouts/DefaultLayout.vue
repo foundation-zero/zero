@@ -12,14 +12,8 @@ import SystemAlerts from "../components/system-alerts/SystemAlerts.vue";
 import { WindConditions, WindConditionsLockTrigger } from "../components/wind-conditions";
 import { useVariablesStore } from "../stores/variables";
 
-const {
-  selectedAWA,
-  selectedAWS,
-  selectedCardType,
-  currentAWA,
-  currentAWS,
-  selectedLoadCaseLabel,
-} = toRefs(useVariablesStore());
+const { selectedAWA, selectedAWS, selectedCardType, currentAWA, currentAWS, selectedLoadCase } =
+  toRefs(useVariablesStore());
 const { setAWA, setAWS, setCardType, lockWindConditions } = useVariablesStore();
 </script>
 
@@ -62,7 +56,7 @@ const { setAWA, setAWS, setCardType, lockWindConditions } = useVariablesStore();
             :aws="currentAWS"
           />
           <div class="col-span-4 col-start-2 justify-self-start pt-0.5">
-            <SelectedLoadCaseLabel :label="selectedLoadCaseLabel" />
+            <SelectedLoadCaseLabel :load-case="selectedLoadCase" />
           </div>
         </div>
       </template>

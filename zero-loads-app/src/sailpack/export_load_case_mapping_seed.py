@@ -19,15 +19,15 @@ AWA_RANGES: dict[str, tuple[float, float]] = {
     "downwind": (120.0, 180.0),
 }
 
-AWS_RANGES: dict[int, tuple[float, float | None]] = {
-    1: (0.0, 10.0),
-    2: (10.0, 15.0),
-    3: (15.0, 20.0),
-    4: (20.0, 25.0),
-    5: (25.0, 30.0),
-    6: (30.0, 40.0),
-    7: (40.0, None),
-}
+AWS_RANGES: list[tuple[float, float | None]] = [
+    (0.0, 10.0),
+    (10.0, 15.0),
+    (15.0, 20.0),
+    (20.0, 25.0),
+    (25.0, 30.0),
+    (30.0, 40.0),
+    (40.0, None),
+]
 
 
 def _aws_distance(aws: float, lower: float, upper: float | None) -> float:
@@ -47,24 +47,21 @@ def _awa_contains(awa: float, range_id: str) -> bool:
 
 def _load_cases_with_sails(data: pl.DataFrame) -> list[dict[str, Any]]:
     load_cases = extract_load_cases(data)
-    cases: list[dict[str, Any]] = []
-    for calc_id, tws, twa, aws, awa, bsp, heel in load_cases.iter_rows():
-        abbreviations = extract_sail_abbreviations(calc_id)
-        if not abbreviations:
-            continue
-        cases.append(
-            {
-                "id": calc_id,
-                "tws": tws,
-                "twa": twa,
-                "aws": aws,
-                "awa": awa,
-                "bsp": bsp,
-                "heel": heel,
-                "sail_abbreviations": sorted(abbreviations),
-            }
-        )
-    return cases
+
+    return [
+        {
+            "id": calc_id,
+            "tws": tws,
+            "twa": twa,
+            "aws": aws,
+            "awa": awa,
+            "bsp": bsp,
+            "heel": heel,
+            "sail_abbreviations": sorted(abbreviations),
+        }
+        for calc_id, tws, twa, aws, awa, bsp, heel in load_cases.iter_rows()
+        if (abbreviations := extract_sail_abbreviations(calc_id))
+    ]
 
 
 def build_records(input_dir: Path) -> list[dict[str, Any]]:
@@ -75,30 +72,32 @@ def build_records(input_dir: Path) -> list[dict[str, Any]]:
         key = tuple(sorted(lc["sail_abbreviations"]))
         by_sails[key].append(lc)
 
-    records: list[dict[str, Any]] = []
-    for sail_abbreviations, candidates in sorted(by_sails.items()):
-        for awa_range_id in AWA_RANGES:
-            awa_candidates = [
+    records = [
+        {
+            "load_case_id": best["id"],
+            "awa_range_id": awa_range_id,
+            "aws_range_id": aws_range_id,
+            "sail_abbreviations": list(sail_abbreviations),
+        }
+        for sail_abbreviations, candidates in sorted(by_sails.items())
+        for awa_range_id in AWA_RANGES
+        if (
+            awa_candidates := [
                 lc for lc in candidates if _awa_contains(lc["awa"], awa_range_id)
             ]
-            if not awa_candidates:
-                continue
-            for aws_range_id, (aws_lower, aws_upper) in AWS_RANGES.items():
-                best = min(
-                    awa_candidates,
-                    key=lambda lc, lower=aws_lower, upper=aws_upper: (
-                        _aws_distance(lc["aws"], lower, upper),
-                        lc["id"],
-                    ),
-                )
-                records.append(
-                    {
-                        "load_case_id": best["id"],
-                        "awa_range_id": awa_range_id,
-                        "aws_range_id": aws_range_id,
-                        "sail_abbreviations": list(sail_abbreviations),
-                    }
-                )
+        )
+        for aws_range_id, (aws_lower, aws_upper) in enumerate(AWS_RANGES)
+        if (
+            best := min(
+                awa_candidates,
+                key=lambda lc, lower=aws_lower, upper=aws_upper: (
+                    _aws_distance(lc["aws"], lower, upper),
+                    lc["id"],
+                ),
+            )
+        )
+    ]
+
     return records
 
 
