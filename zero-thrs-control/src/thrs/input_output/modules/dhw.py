@@ -21,8 +21,8 @@ class DhwSensorValues(ThrsValues):
     )
 
     dhw_pump: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001022", component_type="pump")
+    ] = None
     dhw_temperature_hvac_exchanger_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-25", component_type="temperature_sensor"),

@@ -18,8 +18,8 @@ class PcmSensorValues(ThrsValues):
     )
 
     pcm_pump: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001017", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001017", component_type="pump")
+    ] = None
     pcm_temperature_producers_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-31", component_type="temperature_sensor"),

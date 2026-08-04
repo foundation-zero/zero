@@ -18,11 +18,11 @@ class DrivesSensorValues(ThrsValues):
     )
 
     drives_pump1: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001028", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001028", component_type="pump")
+    ] = None
     drives_pump2: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001029", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001029", component_type="pump")
+    ] = None
     drives_temperature_shorepower_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-11", component_type="temperature_sensor"),

@@ -423,11 +423,11 @@ type DcParametersType {
 }
 
 type DcSensorValuesType {
-  dcPumpAft: SensorPumpType!
+  dcPumpAft: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001020", componentType: "pump", valveType: null)
-  dcPumpUgrid: SensorPumpType!
+  dcPumpUgrid: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001023", componentType: "pump", valveType: null)
-  dcPumpFwd: SensorPumpType!
+  dcPumpFwd: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001025", componentType: "pump", valveType: null)
   dcTemperatureAft4Return: SensorTemperatureSensorType!
     @jsonSchemaDirective(
@@ -738,7 +738,7 @@ type DhwParametersType {
 }
 
 type DhwSensorValuesType {
-  dhwPump: SensorPumpType!
+  dhwPump: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
   dhwTemperatureHvacExchangerReturn: SensorTemperatureSensorType!
     @jsonSchemaDirective(
@@ -1029,9 +1029,9 @@ type DrivesParametersType {
 }
 
 type DrivesSensorValuesType {
-  drivesPump1: SensorPumpType!
+  drivesPump1: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001028", componentType: "pump", valveType: null)
-  drivesPump2: SensorPumpType!
+  drivesPump2: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001029", componentType: "pump", valveType: null)
   drivesTemperatureShorepowerReturn: SensorTemperatureSensorType!
     @jsonSchemaDirective(
@@ -1672,7 +1672,7 @@ type PcmParametersType {
 }
 
 type PcmSensorValuesType {
-  pcmPump: SensorPumpType!
+  pcmPump: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
   pcmTemperatureProducersReturn: SensorTemperatureSensorType!
     @jsonSchemaDirective(
@@ -1853,11 +1853,11 @@ type PvtParametersType {
 }
 
 type PvtSensorValuesType {
-  pvtPumpMainFwd: SensorPumpType!
+  pvtPumpMainFwd: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001018", componentType: "pump", valveType: null)
-  pvtPumpMainAft: SensorPumpType!
+  pvtPumpMainAft: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001019", componentType: "pump", valveType: null)
-  pvtPumpOwners: SensorPumpType!
+  pvtPumpOwners: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001021", componentType: "pump", valveType: null)
   pvtTemperatureMainFwdReturn: SensorTemperatureSensorType!
     @jsonSchemaDirective(
@@ -2663,9 +2663,9 @@ type ThrustersParametersType {
 }
 
 type ThrustersSensorValuesType {
-  thrustersPump1: SensorPumpType!
+  thrustersPump1: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
-  thrustersPump2: SensorPumpType!
+  thrustersPump2: SensorPumpType
     @jsonSchemaDirective(yardTag: "50001195", componentType: "pump", valveType: null)
   thrustersTemperatureAft: SensorTemperatureSensorType!
     @jsonSchemaDirective(

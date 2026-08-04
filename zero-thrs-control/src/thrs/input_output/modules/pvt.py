@@ -43,14 +43,14 @@ class PvtSensorValues(ThrsValues):
     )
 
     pvt_pump_main_fwd: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001018", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001018", component_type="pump")
+    ] = None
     pvt_pump_main_aft: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001019", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001019", component_type="pump")
+    ] = None
     pvt_pump_owners: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001021", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001021", component_type="pump")
+    ] = None
     pvt_temperature_main_fwd_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-03", component_type="temperature_sensor"),

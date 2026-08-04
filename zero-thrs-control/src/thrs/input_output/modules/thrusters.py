@@ -15,11 +15,11 @@ class ThrustersSensorValues(ThrsValues):
     )
 
     thrusters_pump1: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001194", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001194", component_type="pump")
+    ] = None
     thrusters_pump2: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001195", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001195", component_type="pump")
+    ] = None
     thrusters_temperature_aft: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-01", component_type="temperature_sensor"),
