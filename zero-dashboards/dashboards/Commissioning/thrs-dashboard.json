@@ -1794,17 +1794,42 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "text",
+            "mode": "palette-classic"
           },
           "custom": {
-            "align": "left",
-            "cellOptions": {
-              "type": "auto"
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
             },
-            "footer": {
-              "reducers": []
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
             },
-            "inspect": false
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -1813,63 +1838,40 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
-          "unit": "dthms"
+          "unit": "h"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "topic"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "section"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 16,
         "w": 24,
         "x": 0,
         "y": 166
       },
-      "id": 31,
+      "id": 32,
       "options": {
-        "cellHeight": "sm",
-        "enablePagination": true,
-        "showHeader": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
+          "dataset": "dev",
+          "editorMode": "code",
           "editorType": "sql",
-          "format": 1,
+          "format": 0,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -1882,9 +1884,27 @@
             }
           },
           "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawSql": "  SELECT DISTINCT ON (topic)\r\n    timestamp                                                       AS time,\r\n    regexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n    topic,\r\n    regexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n    op_time__value                                                  AS operation_time\r\n  FROM public.test_marpower__500000_thrs__pumps\r\n  WHERE $__timeFilter(timestamp)\r\n\tAND regexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') IN (${section:sqlstring})\r\n  ORDER BY topic, timestamp DESC",
-          "refId": "A"
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "  SELECT\r\n\t\ttimestamp      AS time,\r\n\t\tdevice,\r\n\t\top_time__value AS operation_time\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\top_time__value\r\n\t\tFROM public.test_marpower__500000_thrs__pumps\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Operation time",
@@ -1897,14 +1917,32 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "operation_time": "Operation time",
-              "time": "Timestamp",
-              "topic": ""
+              "energy_consumption": " ",
+              "operation_time": " ",
+              "power_input": " ",
+              "pressure": " ",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
             }
           }
         }
       ],
-      "type": "table"
+      "transparent": true,
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1912,7 +1950,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 177
+        "y": 182
       },
       "id": 15,
       "panels": [],
@@ -1994,7 +2032,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 178
+        "y": 183
       },
       "id": 24,
       "options": {
@@ -2162,7 +2200,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 194
+        "y": 199
       },
       "id": 23,
       "options": {
@@ -2330,7 +2368,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 210
+        "y": 215
       },
       "id": 25,
       "options": {
