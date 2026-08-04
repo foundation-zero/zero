@@ -245,7 +245,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             name: sub_mapping(
                 module_cls,
                 topic_prefix,
-                name,
+                f"500000-thrs/{name}",
                 topic_suffix,
             )
             for name, module_cls in clss.items()
@@ -312,7 +312,7 @@ class ControlChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
         )
         connector._register_listener(sensor_values_mapping)
 
@@ -346,7 +346,7 @@ class ControlChannels[
             PartialMqttMapping[C](
                 control_module.control_values_cls,
                 config.mqtt_devices_topic_prefix,
-                module_name,
+                f"500000-thrs/{module_name}",
                 config.mqtt_control_topic_suffix,
             ),
         )
@@ -469,14 +469,14 @@ class ControlApiChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             module_description.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
         )
         connector._register_listener(sensor_values_mapping)
 
         control_values_mapping = PartialMqttMapping[C](
             module_description.control_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
             config.mqtt_control_topic_suffix,
         )
         connector._register_listener(control_values_mapping)

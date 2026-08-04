@@ -211,7 +211,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-03",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-flow-recovery",
+            topic_override="500000-thrs/drives/drives-flow-recovery",
         ),
     ]
     drives_temperature_recovery: Annotated[
@@ -220,7 +220,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-16",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-temperature-recovery-supply",
+            topic_override="500000-thrs/drives/drives-temperature-recovery",
         ),
     ]
     drives_temperature_recovery_return: Annotated[
@@ -229,7 +229,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-59",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-temperature-recovery-return",
+            topic_override="500000-thrs/drives/drives-temperature-recovery-return",
         ),
     ]
 
@@ -249,7 +249,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-04",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-flow-recovery",
+            topic_override="500000-thrs/dc/dc-flow-recovery",
         ),
     ]
     dc_temperature_recovery: Annotated[
@@ -258,7 +258,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-52",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-temperature-recovery-supply",
+            topic_override="500000-thrs/dc/dc-temperature-recovery",
         ),
     ]
     dc_temperature_recovery_return: Annotated[
@@ -267,7 +267,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-58",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-temperature-recovery-return",
+            topic_override="500000-thrs/dc/dc-temperature-recovery-return",
         ),
     ]
 
@@ -287,7 +287,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-07",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-flow-dhw",
+            topic_override="500000-thrs/consumers/consumers-flow-dhw",
         ),
     ]
     consumers_temperature_dhw_supply: Annotated[
@@ -296,7 +296,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-53",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-temperature-dhw-supply",
+            topic_override="500000-thrs/consumers/consumers-temperature-dhw-supply",
         ),
     ]
 
@@ -306,7 +306,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-48",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-temperature-dhw-return",
+            topic_override="500000-thrs/consumers/consumers-temperature-dhw-return",
         ),
     ]
 
@@ -326,7 +326,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-10",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-flow-dhw",
+            topic_override="500000-thrs/adsorption/adsorption-flow-dhw",
         ),
     ]
     adsorption_temperature_waste_return: Annotated[
@@ -335,7 +335,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-38",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-temperature-waste-return",
+            topic_override="500000-thrs/adsorption/adsorption-temperature-waste-return",
         ),
     ]
 
@@ -345,7 +345,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-56",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-temperature-dhw-return",
+            topic_override="500000-thrs/adsorption/adsorption-temperature-dhw-return",
         ),
     ]
 
