@@ -18,14 +18,14 @@ class DcSensorValues(ThrsValues):
     )
 
     dc_pump_aft: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001020", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001020", component_type="pump")
+    ] = None
     dc_pump_ugrid: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001023", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001023", component_type="pump")
+    ] = None
     dc_pump_fwd: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001025", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001025", component_type="pump")
+    ] = None
     dc_temperature_aft4_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-05", component_type="temperature_sensor"),
