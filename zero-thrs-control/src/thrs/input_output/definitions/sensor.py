@@ -142,7 +142,7 @@ class Thruster(ThrsValues):
 
 
 class PropulsionDrive(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
 
 
 class ShorePowerConverter(ThrsValues):

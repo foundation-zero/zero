@@ -158,37 +158,37 @@ class DrivesSensorValues(ThrsValues):
     drives_propdrive_aft1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002079",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pms/esi_active",
+            topic_override="150000-propulsion/pcs-aft-ara1",
         ),
     ]
     drives_propdrive_aft2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002079",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-aft2-active",
+            topic_override="150000-propulsion/pcs-aft-ara2",
         ),
     ]
     drives_propdrive_fwd1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002080",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-fwd1-active",
+            topic_override="150000-propulsion/pcs-fwd-ara1",
         ),
     ]
     drives_propdrive_fwd2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002080",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-fwd2-active",
+            topic_override="150000-propulsion/pcs-fwd-ara2",
         ),
     ]
     drives_shorepower: Annotated[
