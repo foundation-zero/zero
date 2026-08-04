@@ -1927,18 +1927,41 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "dark-blue",
-            "mode": "continuous-blues"
+            "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
-            "fillOpacity": 70,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 1
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "decimals": 1,
           "mappings": [],
@@ -1975,15 +1998,12 @@
       },
       "id": 24,
       "options": {
-        "colWidth": 0.9,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
           "placement": "right",
-          "showLegend": false
+          "showLegend": true
         },
-        "perPage": 25,
-        "rowHeight": 0.9,
-        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -2065,7 +2085,7 @@
         }
       ],
       "transparent": true,
-      "type": "status-history"
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2075,17 +2095,41 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-greens"
+            "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
-            "fillOpacity": 70,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 1
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "decimals": 1,
           "mappings": [],
@@ -2122,15 +2166,12 @@
       },
       "id": 23,
       "options": {
-        "colWidth": 0.9,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
+          "placement": "right",
+          "showLegend": true
         },
-        "perPage": 25,
-        "rowHeight": 0.9,
-        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -2212,7 +2253,7 @@
         }
       ],
       "transparent": true,
-      "type": "status-history"
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2222,17 +2263,41 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-reds"
+            "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
-            "fillOpacity": 70,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 1
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "decimals": 1,
           "mappings": [],
@@ -2269,15 +2334,12 @@
       },
       "id": 25,
       "options": {
-        "colWidth": 0.9,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
+          "placement": "right",
+          "showLegend": true
         },
-        "perPage": 25,
-        "rowHeight": 0.9,
-        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -2360,7 +2422,7 @@
         }
       ],
       "transparent": true,
-      "type": "status-history"
+      "type": "timeseries"
     }
   ],
   "preload": false,
@@ -2374,8 +2436,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "greptimedb-singel",
-          "value": "PE746E5A5E0A52672"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
