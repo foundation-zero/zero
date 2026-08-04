@@ -766,7 +766,6 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_mak1_alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -847,7 +846,6 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_mak2_alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -928,7 +926,6 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_mak1_alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1008,7 +1005,6 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1090,7 +1086,6 @@
                   "fixed": "#000000"
                 },
                 "text": {
-                  "field": "fresh_water_chlorine_unit_alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
