@@ -264,7 +264,7 @@ def get_variables(ids: Sequence[str]) -> list[VariableType]:
 def resolve_variable_keys(
     variables: Sequence[VariableDefinition],
     tack: Literal["port", "starboard"],
-) -> list[str]:
+) -> list[str | None]:
     def _apply_applicability(variable: VariableDefinition):
         match variable.applicability:
             case None:
@@ -274,7 +274,7 @@ def resolve_variable_keys(
             case _:
                 return None
 
-    return [key for var in variables if (key := _apply_applicability(var))]
+    return [_apply_applicability(var) for var in variables]
 
 
 async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:
