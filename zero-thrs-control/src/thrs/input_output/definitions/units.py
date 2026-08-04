@@ -13,7 +13,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from typing_extensions import _AnnotatedAlias
 
 
@@ -109,19 +109,18 @@ WATER_HEAT_TRANSFER_CONVERSION = 4184 / 60  # kW min/(l*K)
 # ruff: noqa: UP040
 # These cannot be converted to proper type keyword statements because strawberry fails on those
 OptionalCelsius: TypeAlias = Annotated[
-    float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
+    float | None, Field(), UnitMeta(modelica_name="C")
 ]
-Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
+Celsius: TypeAlias = Annotated[float, Field(), UnitMeta(modelica_name="C")]
 DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
 LMin: TypeAlias = Annotated[
     float,
-    Field(ge=-0.1),
+    Field(),
     UnitMeta(modelica_name="l_min"),
 ]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 Ratio: TypeAlias = Annotated[
     float,
-    AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
