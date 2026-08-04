@@ -23,6 +23,7 @@ from thrs.input_output.definitions.units import (
     Seconds,
     Watt,
 )
+from thrs.utils.string import hyphenize
 
 
 class FlowSensor(ThrsValues):
@@ -114,6 +115,12 @@ class HeatExchanger(HeatTransferDevice):
 
 
 class Valve(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=hyphenize,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     position_rel: Stamped[Ratio]
 
 
