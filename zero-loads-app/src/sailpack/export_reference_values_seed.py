@@ -6,10 +6,9 @@ import polars as pl
 
 from sailpack.parse import parse_directory
 from sailpack.seed_utils import (
+    build_load_case_records,
     escape_dollar_quoted_json,
-    extract_load_cases,
     extract_reference_values,
-    extract_sail_abbreviations,
     read_reference_values_mapping,
     resolve_sail_set_id_sql,
 )
@@ -17,67 +16,12 @@ from sailpack.seed_utils import (
 NEWTON_PER_TONNE_FORCE = 9806.65
 
 
-def build_records(
-    input_source: Path,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    # Sail-set IDs are resolved during SQL execution against loads.sail_sets_combined.
-    # We carry abbreviations here because we can extract them from sailpack without DB access.
-    load_case_records: list[dict[str, Any]] = []
-
-    sailpack_data = parse_directory(input_source)
-    reference_values_mapping = read_reference_values_mapping(input_source)
-
+def build_reference_records(
+    sailpack_data: pl.DataFrame, reference_values_mapping: pl.DataFrame
+) -> list[dict[str, Any]]:
     reference_values = extract_reference_values(sailpack_data, reference_values_mapping)
 
-    load_cases = extract_load_cases(sailpack_data)
-
-    for calculation_id, tws, twa, aws, awa, bsp, heel in load_cases.iter_rows():
-        sail_abbreviations = extract_sail_abbreviations(calculation_id)
-
-        load_case_records.append(
-            {
-                "id": calculation_id,
-                "name": calculation_id,
-                "tws": tws,
-                "twa": twa,
-                "aws": aws,
-                "awa": awa,
-                "bsp": bsp,
-                "heel": heel,
-                "sail_abbreviations": sail_abbreviations,
-            }
-        )
-
-    is_load_key = pl.col("Technical name (Loads app)").str.to_lowercase().str.contains(
-        "load"
-    ) | pl.col("Technical name (Loads app)").str.to_lowercase().str.starts_with(
-        "fiber-optic-"
-    )
-    reference_data = (
-        reference_values.with_columns(
-            pl.col("Calculation ID").str.strip_chars(),
-            pl.col("Technical name (Loads app)").str.strip_chars(),
-        )
-        .filter(
-            pl.col("Calculation ID").str.len_chars() > 0,
-            pl.col("Technical name (Loads app)").str.len_chars() > 0,
-        )
-        .with_columns(pl.col("value").cast(pl.Float64, strict=False))
-        .drop_nulls(["value"])
-        .with_columns(
-            pl.when(is_load_key)
-            .then(pl.col("value") / NEWTON_PER_TONNE_FORCE)
-            .otherwise(pl.col("value"))
-            .alias("value")
-        )
-        .unique(
-            subset=["Calculation ID", "Technical name (Loads app)"],
-            keep="first",
-            maintain_order=True,
-        )
-        .select(["Calculation ID", "Technical name (Loads app)", "value"])
-    )
-    reference_records = [
+    return [
         {
             "load_case_id": load_case_id,
             "variable_key": variable_key,
@@ -87,10 +31,8 @@ def build_records(
             "warning_high": None,
             "alarm_high": None,
         }
-        for load_case_id, variable_key, target in reference_data.iter_rows()
+        for load_case_id, variable_key, target in reference_values.iter_rows()
     ]
-
-    return load_case_records, reference_records
 
 
 def render_sql(
@@ -203,7 +145,10 @@ COMMIT;
 def export_reference_values_seed_sql(
     input_source: Path, output_sql: Path
 ) -> tuple[int, int]:
-    load_case_records, reference_records = build_records(input_source)
+    sailpack_data = parse_directory(input_source)
+    reference_values_mapping = read_reference_values_mapping(input_source)
+    load_case_records = build_load_case_records(sailpack_data)
+    reference_records = build_reference_records(sailpack_data, reference_values_mapping)
     sql = render_sql(load_case_records, reference_records)
     output_sql.write_text(sql, encoding="utf-8")
 

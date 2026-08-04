@@ -3,13 +3,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-import polars as pl
-
 from sailpack.parse import parse_directory
 from sailpack.seed_utils import (
+    build_load_case_records,
     escape_dollar_quoted_json,
-    extract_load_cases,
-    extract_sail_abbreviations,
     resolve_sail_set_id_sql,
 )
 
@@ -45,30 +42,12 @@ def _awa_contains(awa: float, range_id: str) -> bool:
     return lower <= awa < upper
 
 
-def _load_cases_with_sails(data: pl.DataFrame) -> list[dict[str, Any]]:
-    load_cases = extract_load_cases(data)
-
-    return [
-        {
-            "id": calc_id,
-            "tws": tws,
-            "twa": twa,
-            "aws": aws,
-            "awa": awa,
-            "bsp": bsp,
-            "heel": heel,
-            "sail_abbreviations": sorted(abbreviations),
-        }
-        for calc_id, tws, twa, aws, awa, bsp, heel in load_cases.iter_rows()
-        if (abbreviations := extract_sail_abbreviations(calc_id))
-    ]
-
-
-def build_records(input_dir: Path) -> list[dict[str, Any]]:
-    load_cases = _load_cases_with_sails(parse_directory(input_dir))
+def build_records(input_source: Path) -> list[dict[str, Any]]:
+    sailpack_data = parse_directory(input_source)
+    load_case_records = build_load_case_records(sailpack_data)
 
     by_sails: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
-    for lc in load_cases:
+    for lc in load_case_records:
         key = tuple(sorted(lc["sail_abbreviations"]))
         by_sails[key].append(lc)
 
