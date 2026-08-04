@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 0,
   "links": [
     {
       "asDropdown": true,
@@ -6861,8 +6861,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-singel",
-          "value": "PE746E5A5E0A52672"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -6874,7 +6874,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
