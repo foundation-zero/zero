@@ -113,6 +113,7 @@ def build_load_case_records(sailpack_data: pl.DataFrame) -> list[dict[str, Any]]
     return [
         {
             "id": calc_id,
+            "name": calc_id,
             "tws": tws,
             "twa": twa,
             "aws": aws,
@@ -203,42 +204,6 @@ def extract_reference_values(
     )  # TODO: check correctness combined runner loads
 
     return reference_values_extended
-
-
-# def extract_reference_values(
-#     parsed: pl.DataFrame, mapping: pl.DataFrame
-# ) -> pl.DataFrame:
-#     columns = [
-#         str(col)
-#         for col in mapping["Sailpack column label"].unique().drop_nulls().to_list()
-#     ]
-#     replacements = {
-#         "Load (N)": "Load (N) - After FSIC",
-#         "Trimming value (N or m)": "Trimming value (N or m) - FSIC trimmings",
-#     }
-#     replaced_cols: list[str] = [replacements.get(col, col) for col in columns]
-
-#     longed = parsed.unpivot(
-#         replaced_cols,
-#         index=["Calculation ID", "Cable name"],
-#         variable_name="result column label",
-#     )
-
-#     cases = extract_load_cases(parsed)
-
-#     return (
-#         mapping.filter(pl.col("Sailpack table name") == pl.lit("CABLE DATA"))
-#         .join_where(
-#             longed,
-#             [
-#                 pl.col("Sailpack row label") == pl.col("Cable name"),
-#                 pl.col("result column label").str.starts_with(
-#                     pl.col("Sailpack column label")
-#                 ),
-#             ],
-#         )
-#         .join(cases, left_on="Calculation ID", right_on="calculation_id")
-#     )
 
 
 def read_reference_values_mapping(input_source: Path) -> pl.DataFrame:

@@ -55,7 +55,8 @@ def build_records(input_source: Path) -> list[dict[str, Any]]:
         {
             "load_case_id": best["id"],
             "awa_range_id": awa_range_id,
-            "aws_range_id": aws_range_id,
+            "aws_range_id": aws_range_id
+            + 1,  # AWS_RANGES is 0-indexed, but the DB is 1-indexed
             "sail_abbreviations": list(sail_abbreviations),
         }
         for sail_abbreviations, candidates in sorted(by_sails.items())

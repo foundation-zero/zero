@@ -7,35 +7,8 @@ WITH load_case_payload AS (
     SELECT *
     FROM jsonb_to_recordset($$[
   {
-    "id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "tws": 26.0,
-    "twa": -84.6,
-    "aws": 32.04,
-    "awa": 52.2,
-    "bsp": 17.2,
-    "heel": 41.8,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "FMZ",
-      "MZSS"
-    ]
-  },
-  {
-    "id": "FM B Rchng",
-    "tws": 22.0,
-    "twa": -90.0,
-    "aws": 27.8,
-    "awa": 50.0,
-    "bsp": 17.9,
-    "heel": 22.0,
-    "sail_abbreviations": [
-      "B",
-      "FM"
-    ]
-  },
-  {
     "id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "name": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
     "tws": 14.0,
     "twa": -42.8,
     "aws": 23.82,
@@ -50,6 +23,7 @@ WITH load_case_payload AS (
   },
   {
     "id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "name": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
     "tws": 12.0,
     "twa": -84.1,
     "aws": 19.06,
@@ -63,7 +37,24 @@ WITH load_case_payload AS (
     ]
   },
   {
+    "id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "name": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "tws": 26.0,
+    "twa": -84.6,
+    "aws": 32.04,
+    "awa": 52.2,
+    "bsp": 17.2,
+    "heel": 41.8,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ",
+      "MZSS"
+    ]
+  },
+  {
     "id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "name": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "tws": 28.0,
     "twa": -69.3,
     "aws": 37.83,
@@ -74,6 +65,20 @@ WITH load_case_payload AS (
       "M2R",
       "MZ2R",
       "SS"
+    ]
+  },
+  {
+    "id": "FM B Rchng",
+    "name": "FM B Rchng",
+    "tws": 22.0,
+    "twa": -90.0,
+    "aws": 27.8,
+    "awa": 50.0,
+    "bsp": 17.9,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM"
     ]
   }
 ]$$::jsonb) AS t(
