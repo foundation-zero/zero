@@ -1,5 +1,8 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
     ThrsValues,
     component_meta,
@@ -8,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class DrivesSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     drives_pump1: Annotated[
         sensor.Pump, component_meta(yard_tag="50001028", component_type="pump")
     ]
@@ -194,6 +203,12 @@ class DrivesSensorValues(ThrsValues):
 
 
 class DrivesControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     drives_pump1: Annotated[
         control.Pump, component_meta(yard_tag="50001028", component_type="pump")
     ]

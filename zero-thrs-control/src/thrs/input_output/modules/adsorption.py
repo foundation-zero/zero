@@ -1,5 +1,8 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
     ThrsValues,
     component_meta,
@@ -8,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class AdsorptionSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     adsorption_flowcontrol_waste: Annotated[
         sensor.Valve,
         component_meta(
@@ -101,6 +110,12 @@ class AdsorptionSensorValues(ThrsValues):
 
 
 class AdsorptionControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     adsorption_flowcontrol_waste: Annotated[
         control.Valve,
         component_meta(

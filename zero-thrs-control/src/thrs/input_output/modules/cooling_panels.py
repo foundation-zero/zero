@@ -1,5 +1,8 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
     ThrsValues,
     component_meta,
@@ -8,6 +11,12 @@ from thrs.input_output.definitions import control, sensor
 
 
 class CoolingPanelsSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     cooling_pump_hydronic: Annotated[
         sensor.Pump, component_meta(yard_tag="50001037", component_type="pump")
     ]
@@ -266,6 +275,12 @@ class CoolingPanelsSensorValues(ThrsValues):
 
 
 class CoolingPanelsControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     cooling_pump_hydronic: Annotated[
         control.Pump, component_meta(yard_tag="50001037", component_type="pump")
     ]

@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from pydantic import computed_field
+from pydantic import ConfigDict, computed_field
+from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     Stamped,
@@ -13,6 +14,12 @@ from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
 class DhwSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dhw_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
@@ -495,6 +502,12 @@ class DhwSensorValues(ThrsValues):
 
 
 class DhwControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dhw_pump: Annotated[
         control.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
