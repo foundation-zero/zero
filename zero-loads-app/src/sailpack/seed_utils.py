@@ -136,11 +136,11 @@ def extract_reference_values(
             index=["Calculation ID", "Cable name", "Trimming mode - FSIC trimmings"],
             variable_name="Column label",
         )
-        .with_columns(
-            pl.col("*")
-            .str.strip_suffix(" - After FSIC")
-            .str.strip_suffix(" - FSIC trimmings")
-        )
+.with_columns(
+    pl.col("Column label")
+    .str.strip_suffix(" - After FSIC")
+    .str.strip_suffix(" - FSIC trimmings")
+)
         .drop_nulls(subset=["value", "Cable name"])
         .filter(
             ~(
