@@ -38,7 +38,7 @@ main-cunningham-relative-position,main-cunningham-relative-position,Main cunno,C
 main-outhaul-load,main-outhaul-load,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),
 main-outhaul-relative-position,main-outhaul-relative-position,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Trimming value (N or m),
 main-traveller-relative-position-ps,main-traveller-relative-position,Main traveller - Port,CABLE DATA,CABLE_TRAVELLER_WW,Trimming value (N or m),
-aft-winch-sb-trisail-load,aft-winch-load-sb,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),May also carry loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+aft-winch-load,aft-winch-load-sb,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),May also carry loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
 main-traveller-relative-position-sb,main-traveller-relative-position,Main traveller - Stbd,CABLE DATA,CABLE_TRAVELLER_LW,Trimming value (N or m),
 mizzen-jib-tack-adjuster-load,mizzen-headsail-tack-adjuster-load,Mizzen tack,CABLE DATA,CABLE_MIZZEN_JIB_Tack,Load (N),
 mizzen-jib-tack-adjuster-relative-position,mizzen-headsail-tack-adjuster-relative-position,- Mizzen tack (remap?),CABLE DATA,CABLE_MIZZEN_JIB_Tack,Trimming value (N or m),
@@ -53,7 +53,7 @@ fiber-optic-mizzen-d1-ps,fiber-optic-mizzen-d1-ps,Mizzen D1,CABLE DATA,CABLE_MD1
 ,,,,,,
 mizzen-runner-load,mizzen-runner-load-ps,Mizzen runner (remap?),CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),2 x Mizzen Runner Tail Load Pin load x cos(17) – (Mizzen Check Stay Load Cell x cos(8)).
 fiber-optic-mizzen-d1-sb,fiber-optic-mizzen-d1-sb,Mizzen D1,CABLE DATA,CABLE_MD1S,Load (N),
-aft-winch-ps-trisail-load,aft-winch-load-ps,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+aft-winch-load,aft-winch-load-ps,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
 mizzen-checkstay-deflector-relative-position,mizzen-checkstay-deflector-relative-position,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Trimming value (N or m),
 mizzen-sheet-load,mizzen-sheet-load,Mizzen sheet load,CABLE DATA,CABLE_MIZZENSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 1:1
 mizzen-cunningham-load,mizzen-cunningham-load,Mizzen cunno,CABLE DATA,CABLE_MIZZEN_CUNN,Load (N),
