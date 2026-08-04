@@ -63,18 +63,48 @@ class DhwSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-66", component_type="temperature_sensor"),
     ]
-    dhw_level_tank1: Annotated[
-        sensor.LevelSensor,
-        component_meta(yard_tag="50001056-01", component_type="level_sensor"),
+
+    tankage_system: Annotated[
+        sensor.TankageSystem,
+        component_meta(
+            included_in_fmu=False,
+            topic_override="340000-tankage-system",
+        ),
     ]
-    dhw_level_tank2: Annotated[
-        sensor.LevelSensor,
-        component_meta(yard_tag="50001056-02", component_type="level_sensor"),
-    ]
-    dhw_level_tank3: Annotated[
-        sensor.LevelSensor,
-        component_meta(yard_tag="50001056-03", component_type="level_sensor"),
-    ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001056-01", component_type="level_sensor", included_in_fmu=False
+        )
+    )
+    @property
+    def dhw_level_tank1(self) -> sensor.LevelSensor:
+        return sensor.LevelSensor(
+            level=self.tankage_system.hotwater11_level,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001056-02", component_type="level_sensor", included_in_fmu=False
+        )
+    )
+    @property
+    def dhw_level_tank2(self) -> sensor.LevelSensor:
+        return sensor.LevelSensor(
+            level=self.tankage_system.hotwater13_level,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001056-03", component_type="level_sensor", included_in_fmu=False
+        )
+    )
+    @property
+    def dhw_level_tank3(self) -> sensor.LevelSensor:
+        return sensor.LevelSensor(
+            level=self.tankage_system.hotwater15_level,
+        )
+
     dhw_flow_dc: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-17", component_type="flow_sensor"),
@@ -371,13 +401,32 @@ class DhwSensorValues(ThrsValues):
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
         )
 
-    freshwater_hotwater_flow: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
+    fresh_water_system: Annotated[
+        sensor.FreshwaterSystem,
+        component_meta(
+            included_in_fmu=False,
+            topic_override="250000-fresh-water",
+        ),
     ]
-    freshwater_hotwater_temperature: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(yard_tag="25001123-1", included_in_fmu=False)
+    )
+    @property
+    def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor(
+            flow=self.fresh_water_system.hotwater_main_tech_space_fr45_flow,
+            temperature=self.fresh_water_system.energy_rec_system_temp7,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(yard_tag="25001038-1", included_in_fmu=False)
+    )
+    @property
+    def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.fresh_water_system.energy_rec_system_temp7
+        )
 
     @computed_field(
         json_schema_extra=computed_meta(

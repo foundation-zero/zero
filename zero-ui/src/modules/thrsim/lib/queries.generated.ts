@@ -724,15 +724,6 @@ export const DHW_SENSOR_QUERY = `
   dhwTemperatureBoostingSupply {
     temperature { value timestamp }
   }
-  dhwLevelTank1 {
-    level { value timestamp }
-  }
-  dhwLevelTank2 {
-    level { value timestamp }
-  }
-  dhwLevelTank3 {
-    level { value timestamp }
-  }
   dhwFlowDc {
     flow { value timestamp }
     temperature { value timestamp }
@@ -848,12 +839,14 @@ export const DHW_SENSOR_QUERY = `
   adsorptionTemperatureDhwReturn {
     temperature { value timestamp }
   }
-  freshwaterHotwaterFlow {
-    flow { value timestamp }
-    temperature { value timestamp }
+  dhwLevelTank1 {
+    level { value timestamp }
   }
-  freshwaterHotwaterTemperature {
-    temperature { value timestamp }
+  dhwLevelTank2 {
+    level { value timestamp }
+  }
+  dhwLevelTank3 {
+    level { value timestamp }
   }
   drivesDelta {
     deltaT { value timestamp }
@@ -866,6 +859,13 @@ export const DHW_SENSOR_QUERY = `
   }
   adsorptionDelta {
     deltaT { value timestamp }
+  }
+  freshwaterHotwaterFlow {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterTemperature {
+    temperature { value timestamp }
   }
   dhwFreshwaterFlowSupply {
     flow { value timestamp }

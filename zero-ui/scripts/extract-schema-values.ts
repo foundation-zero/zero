@@ -72,7 +72,7 @@ interface Config {
 // Type Mappings
 // ============================================================================
 
-const SENSOR_TYPE_MAP: Record<string, string> = {
+const SENSOR_TYPE_MAP: Record<string, string | undefined> = {
   SensorTemperatureSensorType: "Temperature",
   SensorCalculatedTemperatureType: "CalculatedTemperature",
   SensorPressureSensorType: "Pressure",
@@ -94,6 +94,8 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SensorFreshwaterSystemType: undefined,
+  SensorTankageSystemType: undefined,
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -290,9 +292,11 @@ function processSensorField(
   };
 
   const componentType = inferSensorComponentType(fieldType);
-  if (componentType) {
-    entry.componentType = componentType;
+  if (!componentType) {
+    return null;
   }
+
+  entry.componentType = componentType;
 
   if (entry.componentType === "Valve" && directiveArgs.valveType) {
     entry.valveType = directiveArgs.valveType;
