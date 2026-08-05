@@ -2318,6 +2318,15 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009005-45",
     componentType: SensorComponentType.Temperature,
   },
+  pvtMaxTemperatureMainFwdStrings: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtMaxTemperatureMainAftStrings: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtMaxTemperatureOwnersStrings: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
 });
 
 export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
@@ -2714,7 +2723,6 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Pcs,
   },
   thrustersTemperatureRecovery: {
-    yardTag: "",
     componentType: SensorComponentType.CalculatedTemperature,
   },
   thrustersSeawaterExchanger: {

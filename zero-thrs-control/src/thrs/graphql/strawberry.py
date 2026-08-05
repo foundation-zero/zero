@@ -45,6 +45,7 @@ from thrs.graphql.base import (
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
+    resolve_module,
 )
 from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import (
@@ -75,39 +76,39 @@ class ControlModules:
     def thrusters(
         self, info: strawberry.Info[ThrsContext]
     ) -> thrusters.ThrustersModule:
-        return thrusters.resolve_module(info.context.thrusters_messaging)
+        return resolve_module(info.context.thrusters_messaging)
 
     @strawberry.field
     def pvt(self, info: strawberry.Info[ThrsContext]) -> pvt.PvtModule:
-        return pvt.resolve_module(info.context.pvt_messaging)
+        return resolve_module(info.context.pvt_messaging)
 
     @strawberry.field
     def pcm(self, info: strawberry.Info[ThrsContext]) -> pcm.PcmModule:
-        return pcm.resolve_module(info.context.pcm_messaging)
+        return resolve_module(info.context.pcm_messaging)
 
     @strawberry.field
     def adsorption(
         self, info: strawberry.Info[ThrsContext]
     ) -> adsorption.AdsorptionModule:
-        return adsorption.resolve_module(info.context.adsorption_messaging)
+        return resolve_module(info.context.adsorption_messaging)
 
     @strawberry.field
     def consumers(
         self, info: strawberry.Info[ThrsContext]
     ) -> consumers.ConsumersModule:
-        return consumers.resolve_module(info.context.consumers_messaging)
+        return resolve_module(info.context.consumers_messaging)
 
     @strawberry.field
     def dc(self, info: strawberry.Info[ThrsContext]) -> dc.DcModule:
-        return dc.resolve_module(info.context.dc_messaging)
+        return resolve_module(info.context.dc_messaging)
 
     @strawberry.field
     def dhw(self, info: strawberry.Info[ThrsContext]) -> dhw.DhwModule:
-        return dhw.resolve_module(info.context.dhw_messaging)
+        return resolve_module(info.context.dhw_messaging)
 
     @strawberry.field
     def drives(self, info: strawberry.Info[ThrsContext]) -> drives.DrivesModule:
-        return drives.resolve_module(info.context.drives_messaging)
+        return resolve_module(info.context.drives_messaging)
 
 
 @strawberry.type

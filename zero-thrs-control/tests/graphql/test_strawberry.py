@@ -8,14 +8,22 @@ from aiomqtt import Client as MqttClient
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
-from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.adsorption import (
+    AdsorptionControllerState,
+    AdsorptionControlMode,
+    AdsorptionParameters,
+)
+from thrs.control.modules.consumers import ConsumersControllerState, ConsumersParameters
 from thrs.control.modules.converters import ConvertersControlMode
-from thrs.control.modules.dc import DcControlMode, DcParameters
+from thrs.control.modules.dc import DcControllerState, DcControlMode, DcParameters
 from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
-from thrs.control.modules.drives import DrivesControlMode, DrivesParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.drives import (
+    DrivesControllerState,
+    DrivesControlMode,
+    DrivesParameters,
+)
+from thrs.control.modules.pcm import PcmControllerState, PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
@@ -183,6 +191,7 @@ async def pvt_messaging_mock():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
+    mock.controller_state = PvtControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=PvtControlMode(
             aft=PvtGroupControlMode(mode="idle"),
@@ -206,6 +215,7 @@ async def pcm_messaging_mock():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
+    mock.controller_state = PcmControllerState.zero()
     mock.control_mode = SwitchingControlMode(automatic_mode=PcmControlMode(mode="idle"))
 
     async def wait(condition, *_args, timeout):
@@ -223,6 +233,7 @@ async def adsorption_messaging_mock():
     mock.sensor_values = AdsorptionSensorValues.zero()
     mock.control_values = AdsorptionControlValues.zero()
     mock.parameters = AdsorptionParameters()
+    mock.controller_state = AdsorptionControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=AdsorptionControlMode(mode="idle")
     )
@@ -242,6 +253,7 @@ async def consumers_messaging_mock():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
+    mock.controller_state = ConsumersControllerState.zero()
     mock.control_mode = SwitchingControlMode(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
@@ -259,6 +271,7 @@ async def dc_messaging_mock():
     mock.sensor_values = DcSensorValues.zero()
     mock.control_values = DcControlValues.zero()
     mock.parameters = DcParameters()
+    mock.controller_state = DcControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=DcControlMode(
             brightloops_aft=ConvertersControlMode(mode="idle"),
@@ -302,6 +315,7 @@ async def drives_messaging_mock():
     mock.sensor_values = DrivesSensorValues.zero()
     mock.control_values = DrivesControlValues.zero()
     mock.parameters = DrivesParameters()
+    mock.controller_state = DrivesControllerState.zero()
     mock.control_mode = SwitchingControlMode(
         automatic_mode=DrivesControlMode(mode="idle")
     )
