@@ -191,15 +191,27 @@ class DhwSensorValues(ThrsValues):
     ]
     dhw_level_switch_tank1: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-01", component_type="level_switch"),
+        component_meta(
+            yard_tag="50001098-01",
+            component_type="level_switch",
+            topic_override="500000-thrs/boilers-buffertank1",
+        ),
     ]
     dhw_level_switch_tank2: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-02", component_type="level_switch"),
+        component_meta(
+            yard_tag="50001098-02",
+            component_type="level_switch",
+            topic_override="500000-thrs/boilers-buffertank2",
+        ),
     ]
     dhw_level_switch_tank3: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-03", component_type="level_switch"),
+        component_meta(
+            yard_tag="50001098-03",
+            component_type="level_switch",
+            topic_override="500000-thrs/boilers-buffertank3",
+        ),
     ]
     dhw_pressure: Annotated[
         sensor.PressureSensor,
