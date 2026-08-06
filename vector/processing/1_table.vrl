@@ -1,9 +1,20 @@
-.table = .topic
-for_each(grouped_topics) -> |_index, group| {
-  if starts_with(string!(.topic), group) {
-    .table = replace(group, r'/$', "")
+thrs_table = get!(thrs_tables, [.topic])
+
+
+if thrs_table != null {
+  .table = thrs_table.table
+  if thrs_table.yard_tag != null {
+    .yard_tag = thrs_table.yard_tag
   }
+  .technical_name = thrs_table.technical_name
+} else {
+  .table = .topic
+  for_each(grouped_topics) -> |_index, group| {
+    if starts_with(string!(.topic), group) {
+      .table = replace(group, r'/$', "")
+    }
+  }
+  .table = replace(replace!(.table, "/", "__"), "-", "_")
+  .table = replace(.table, " ", "_")
+  .table = replace(.table, r'_{3,}', "__")
 }
-.table = replace(replace!(.table, "/", "__"), "-", "_")
-.table = replace(.table, " ", "_")
-.table = replace(.table, r'_{3,}', "__")
