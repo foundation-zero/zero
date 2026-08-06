@@ -1,14 +1,15 @@
 import asyncio
+import datetime
+import random
 from typing import Any
 from unittest.mock import AsyncMock, patch
 
+from freezegun import freeze_time
 from pydantic import TypeAdapter
+
 from zero_data.config import MQTTConfig
 from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerStruct
 from zero_data.io_list.types import IOTopic, IOValue
-import random
-import datetime
-from freezegun import freeze_time
 
 
 async def test_marpower_generator():

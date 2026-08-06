@@ -52,7 +52,7 @@ jobs:
       - run: just type_check
         working-directory: zero-thrs-control
 
-      - run: just lint
+      - run: just lint_no_fix
         working-directory: zero-thrs-control
 
       - run: just format
