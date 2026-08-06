@@ -8,7 +8,6 @@ from zero_data.io_list.types import IOTopic
 from zero_data.io_list.utils import detect_same_format
 
 EXTRA_GROUPED_TOPICS = [
-    "marpower/150000-propulsion/",
     "marpower/450000-main-power-storage/system-05/",
     "marpower/450000-main-power-storage/system-5/",
     "marpower/500000-thrs/vlv/",

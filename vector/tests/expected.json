@@ -1,5 +1,4 @@
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__test","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/test"}
-{"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__150000_propulsion","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/150000-propulsion/a"}
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__450000_main_power_storage__system_5","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/450000-main-power-storage/system-5/41"}
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__450000_main_power_storage__system_05","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/450000-main-power-storage/system-05/41"}
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__500000_thrs__cold_out","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs//cold out"}

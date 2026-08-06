@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import TypeGuard
+
 from more_itertools import partition
 
 from .types import IOTopic
