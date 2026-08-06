@@ -568,4 +568,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // Exports (for testing)
 // ============================================================================
 
-export { extractSchemaValues, generateObjectString, parseSchema, runExtractSchemaValues, updateConstsFile };
+export {
+  extractSchemaValues,
+  generateObjectString,
+  parseSchema,
+  runExtractSchemaValues,
+  updateConstsFile,
+};
