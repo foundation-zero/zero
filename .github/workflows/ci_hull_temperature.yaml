@@ -34,7 +34,7 @@ jobs:
       - uses: astral-sh/setup-uv@v8.1.0
       - run: uv sync --locked
         working-directory: zero-hull-temperature
-      - run: uv run ruff check zero_hull_temperature tests
+      - run: uv run ruff check --no-fix zero_hull_temperature tests
         working-directory: zero-hull-temperature
       - run: uv run pyright
         working-directory: zero-hull-temperature
