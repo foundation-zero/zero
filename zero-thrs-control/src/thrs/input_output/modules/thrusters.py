@@ -102,7 +102,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="15001001",
             component_type="thruster",
             included_in_fmu=False,
-            topic_override="dummy-pcs/thruster-aft-active",
+            topic_override="150000-propulsion/pcs-aft",
         ),
     ]
     thrusters_thruster_fwd: Annotated[
@@ -111,7 +111,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="15001002",
             component_type="thruster",
             included_in_fmu=False,
-            topic_override="dummy-pcs/thruster-fwd-active",
+            topic_override="150000-propulsion/pcs-fwd",
         ),
     ]
     thrusters_pcs: Annotated[
@@ -120,7 +120,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="1500",
             component_type="pcs",
             included_in_fmu=False,
-            topic_override="dummy-pcs/pcs-mode",
+            topic_override="150000-propulsion/pcs-fwd-pshelm",
         ),
     ]
 
