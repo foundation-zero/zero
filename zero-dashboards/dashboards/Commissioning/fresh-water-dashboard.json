@@ -12221,12 +12221,12 @@
     ]
   },
   "time": {
-    "from": "now-3d",
-    "to": "now-2d"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Fresh water",
   "uid": "commissioning-fresh-water",
-  "version": 3
+  "version": 1
 }

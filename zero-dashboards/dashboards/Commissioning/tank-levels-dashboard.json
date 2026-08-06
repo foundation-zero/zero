@@ -922,7 +922,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                AS time,\r\n\thotwater_11_level__value AS tank11_level,\r\n\thotwater_13_level__value AS tank13_level,\r\n\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                AS time,\r\n\thotwater_11_level__value AS tank11_level,\r\n\thotwater_13_level__value AS tank13_level,\r\n\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage_system\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2461,7 +2461,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3105,7 +3105,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp AS time,\r\n\t\t\thotwater_11_level__value AS tank11_level,\r\n\t\t\thotwater_13_level__value AS tank13_level,\r\n\t\t\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT timestamp AS time,\r\n\t\t\thotwater_11_level__value AS tank11_level,\r\n\t\t\thotwater_13_level__value AS tank13_level,\r\n\t\t\thotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage_system\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3259,7 +3259,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp AS time,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT timestamp AS time,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3917,7 +3917,7 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "greptimedb-singel",
+          "text": "greptimedb-zero",
           "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
@@ -3930,7 +3930,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
