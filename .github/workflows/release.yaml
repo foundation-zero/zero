@@ -1,0 +1,117 @@
+name: "Release: Draft a new release"
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version bump"
+        type: choice
+        default: patch
+        options: [patch, minor, major]
+
+concurrency: release-draft
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: "write"
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Require the commit to be on main
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # main...SHA is "identical" or "behind" exactly when SHA is reachable from main.
+          status=$(gh api "repos/$REPO/compare/main...$SHA" --jq .status)
+          case "$status" in
+            identical) ;;
+            behind)
+              echo "::notice::Drafting from $SHA, an earlier commit on main."
+              echo "> Drafted from \`$SHA\` (\`$REF_NAME\`), an earlier commit on main." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              echo "::error::$SHA ($REF_NAME) is not on main — compare status '$status'."
+              exit 1
+              ;;
+          esac
+
+      - name: Fail if a draft release already exists
+        run: |
+          set -euo pipefail
+          drafts=$(gh api --paginate "repos/$REPO/releases" \
+            --jq '.[] | select(.draft) | "\(.tag_name) \(.html_url)"')
+          if [ -n "$drafts" ]; then
+            echo "::error::A draft release already exists; publish or delete it first."
+            echo "$drafts"
+            exit 1
+          fi
+
+      - name: Compute next version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          set -euo pipefail
+          base=$(
+            {
+              gh api --paginate "repos/$REPO/releases" --jq '.[].tag_name'
+              gh api --paginate "repos/$REPO/git/refs/tags" --jq '.[].ref | ltrimstr("refs/tags/")'
+            } | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1 || true
+          )
+          if [ -z "$base" ]; then
+            echo "::error::Could not determine latest version tag."
+            exit 1
+          fi
+
+          IFS=. read -r major minor patch <<<"${base#v}"
+          case "$BUMP" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+            *) echo "::error::Unknown bump '$BUMP'"; exit 1 ;;
+          esac
+
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "tag=v${major}.${minor}.${patch}" >> "$GITHUB_OUTPUT"
+
+      - name: Create draft release
+        id: draft
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          url=$(gh release create "$TAG" \
+            --draft \
+            --title "$TAG" \
+            --generate-notes \
+            --target "$SHA" \
+            --repo "$REPO")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Write summary
+        env:
+          BASE: ${{ steps.version.outputs.base }}
+          TAG: ${{ steps.version.outputs.tag }}
+          BUMP: ${{ inputs.bump }}
+          SHA: ${{ github.sha }}
+          URL: ${{ steps.draft.outputs.url }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## Draft release \`$TAG\`"
+            echo
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Previous | \`$BASE\` |"
+            echo "| Bump | \`$BUMP\` |"
+            echo "| Tag | \`$TAG\` |"
+            echo "| Target | \`$SHA\` |"
+            echo
+            echo "[Review and publish the draft]($URL) to trigger the build and publish workflows."
+          } >> "$GITHUB_STEP_SUMMARY"
