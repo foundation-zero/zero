@@ -77,7 +77,6 @@ jobs:
       - name: Integration Test
         run: uv run pytest --run=integration -vv
         working-directory: zero-loads-app
-        working-directory: zero-loads-app
 
   docker-push:
     timeout-minutes: 10
