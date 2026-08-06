@@ -50,21 +50,8 @@
     },
     "hullTemperature": {
       "type": "object",
-      "required": ["sendTopic", "intervalSeconds"],
+      "required": ["activateTopic", "activateJsonPath"],
       "properties": {
-        "sendTopic": {
-          "type": "string",
-          "description": "MQTT topic where temperature payloads are published."
-        },
-        "intervalSeconds": {
-          "type": "integer",
-          "description": "Polling interval for sending temperature updates.",
-          "minimum": 1
-        },
-        "n": {
-          "type": "integer",
-          "description": "Number of iterations before exit. Use -1 to run forever."
-        },
         "activateTopic": {
           "type": "string",
           "description": "MQTT topic used to toggle the relay/multiplexer before reading."

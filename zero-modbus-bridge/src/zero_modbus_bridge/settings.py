@@ -1,11 +1,8 @@
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from typing import Any
 
-from aiomqtt import Client as MqttClient
-from pydantic_settings import (
-    BaseSettings,
-    SettingsConfigDict,
-)
+from faststream.mqtt import MQTTBroker
+from faststream.security import SASLPlaintext
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
 
@@ -26,15 +23,11 @@ class MqttSettings(BaseSettings):
     mqtt_username: str | None = None
     mqtt_password: str | None = None
 
-    @asynccontextmanager
-    async def mqtt_client(self) -> AsyncGenerator[MqttClient, None]:
-        async with MqttClient(
-            self.mqtt_host,
-            self.mqtt_port,
-            username=self.mqtt_username,
-            password=self.mqtt_password,
-        ) as mqtt:
-            yield mqtt
+    def make_broker(self) -> MQTTBroker:
+        kwargs: dict[str, Any] = {}
+        if self.mqtt_username and self.mqtt_password:
+            kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
+        return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
 
 
 class ModbusSettings(BaseSettings):
@@ -44,10 +37,10 @@ class ModbusSettings(BaseSettings):
     modbus_port: int
     modbus_probe_interval: int = 10
 
-    def modbus_client(self):
+    def modbus_client(self) -> ModbusClient:
         return ModbusClient(self.modbus_host, self.modbus_port, auto_open=False)
 
-    def modbus_server(self, data_handler):
+    def modbus_server(self, data_handler=None) -> ModbusServer:
         return ModbusServer(
             self.modbus_host, self.modbus_port, no_block=True, data_hdl=data_handler
         )

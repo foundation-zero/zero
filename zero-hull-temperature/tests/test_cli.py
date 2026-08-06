@@ -1,5 +1,7 @@
 from unittest.mock import patch
+
 from pydantic_settings import CliApp
+
 from zero_hull_temperature.cli import ZeroHullTemperature
 
 
@@ -8,7 +10,7 @@ def test_read_mqtt_no_skip():
         CliApp.run(
             ZeroHullTemperature,
             [
-                "read",
+                "read-with-mqtt",
                 "--modbus-host",
                 "localhost",
                 "--modbus-port",

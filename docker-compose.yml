@@ -399,6 +399,35 @@ services:
     profiles: ["thrs-extra"]
     command: ["lockstep", "--mode=dhw"]
 
+  # ---- data collection (power tags) ----
+  power-tags:
+    build:
+      context: .
+      dockerfile: zero-power-tags/Dockerfile
+    profiles:
+      - data-collection
+    environment:
+      MODBUS_HOST: power-tags-stub
+      MODBUS_PORT: "502"
+      MODBUS_PROBE_INTERVAL: "10"
+      MQTT_HOST: vernemq
+      MQTT_PORT: "1883"
+      MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  power-tags-stub:
+    build:
+      context: .
+      dockerfile: zero-power-tags/Dockerfile
+    command: stub
+    profiles:
+      - data-collection
+    environment:
+      MODBUS_HOST: "0.0.0.0"
+      MODBUS_PORT: "502"
+
 volumes:
   db_data:
   grafana:

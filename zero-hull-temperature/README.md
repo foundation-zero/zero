@@ -24,7 +24,11 @@ uv sync --locked
 
 ## Configuration
 
-Settings are read from environment variables or a `.env` file. Because settings belong to CLI subcommands, variables must be prefixed with the subcommand name using `__` as a delimiter (e.g. `RUN__MODBUS_HOST`).
+Settings are read from environment variables or a `.env` file. Base settings fields
+(`mqtt_host`, `mqtt_port`, `mqtt_username`, `mqtt_password`, `modbus_host`, `modbus_port`)
+map to unprefixed variables (`MQTT_HOST`, `MQTT_PORT`, `MODBUS_HOST`, ...). Fields declared
+on a subcommand itself (e.g. `run`'s `activate_topic`) must be prefixed with the subcommand
+name using `__` as a delimiter (`RUN__ACTIVATE_TOPIC`).
 
 For a full list of options for each subcommand, use `--help`:
 
@@ -52,15 +56,12 @@ Reads temperatures on a fixed interval and publishes them to an MQTT topic.
 uv run python -m zero_hull_temperature run \
   --modbus-host <host> --modbus-port 502 \
   --mqtt-host <host> --mqtt-port 1883 \
-  --send-topic hull-temperature/temperatures \
-  --seconds 300
+  --activate-topic marpower/450000-amcs/Command \
+  --activate-json-path '$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF'
 ```
 
 | Option | Description | Default |
 |---|---|---|
-| `--send-topic` | MQTT topic to publish readings to | — |
-| `--seconds` | Interval between readings | — |
-| `--n` | Number of readings to take (`-1` = unlimited) | `-1` |
 | `--activate-topic` | MQTT topic used to switch the relay | `marpower/450000-amcs/Command` |
 | `--activate-json-path` | JSONPath within the activate topic payload | `$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF` |
 
@@ -72,7 +73,11 @@ uv run python -m zero_hull_temperature read \
   --mqtt-host <host> --mqtt-port 1883
 ```
 
-#### `read-skip-mqtt` — Single one-shot read (no relay activation)
+#### `read-skip-mqtt` — Single one-shot read (no relay activation, no MQTT)
+
+Reads the Modbus registers once, without toggling the relay or
+connecting to MQTT, and prints the resulting temperature payload to stdout.
+Useful as an offline diagnostic when no MQTT broker is available.
 
 ```bash
 uv run python -m zero_hull_temperature read-skip-mqtt \
