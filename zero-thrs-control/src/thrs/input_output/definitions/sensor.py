@@ -146,7 +146,7 @@ class PropulsionDrive(ThrsValues):
 
 
 class ShorePowerConverter(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
 
 
 class Brightloop(ThrsValues):

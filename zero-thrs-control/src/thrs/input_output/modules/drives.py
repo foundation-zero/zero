@@ -1,11 +1,13 @@
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
+    Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
@@ -191,15 +193,70 @@ class DrivesSensorValues(ThrsValues):
             topic_override="150000-propulsion/pcs-fwd-ara2",
         ),
     ]
-    drives_shorepower: Annotated[
+    drives_shorepower_11_a: Annotated[
         sensor.ShorePowerConverter,
         component_meta(
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="dummy-pcs/shorepower-active",
+            topic_override="450000-dc-distribution/esi-70/11/tbc1a",
         ),
     ]
+
+    drives_shorepower_11_b: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution/esi-70/11/tbc1b",
+        ),
+    ]
+    drives_shorepower_12_a: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution/esi-70/12/tbc1a",
+        ),
+    ]
+
+    drives_shorepower_12_b: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution/esi-70/12/tbc1b",
+        ),
+    ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_shorepower(self) -> sensor.ShorePowerConverter:
+        return sensor.ShorePowerConverter(
+            active=Stamped.combine(
+                self.drives_shorepower_11_a.active,
+                self.drives_shorepower_11_b.active,
+                self.drives_shorepower_12_a.active,
+                self.drives_shorepower_12_b.active,
+                value=any(
+                    [
+                        self.drives_shorepower_11_a.active.value,
+                        self.drives_shorepower_11_b.active.value,
+                        self.drives_shorepower_12_a.active.value,
+                        self.drives_shorepower_12_b.active.value,
+                    ]
+                ),
+            )
+        )
 
 
 class DrivesControlValues(ThrsValues):
