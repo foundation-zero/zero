@@ -524,6 +524,26 @@ function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config)
   console.log(`📊 Generated object with ${Object.keys(extractedValues).length} entries`);
 }
 
+function extractSchemaValues(config: Config): void {
+  console.log(`🔄 Extracting ${config.definitionType} values from GraphQL schema...`);
+  console.log(`📋 Target: ${config.constName} from ${config.typeName}`);
+
+  if (!fs.existsSync(SCHEMA_PATH)) {
+    throw new Error(`Schema file not found: ${SCHEMA_PATH}`);
+  }
+
+  const extractedValues = parseSchema(SCHEMA_PATH, config);
+  writeUpdatedConstants(extractedValues, config);
+}
+
+function runExtractSchemaValues(constName: string, typeName: string): void {
+  extractSchemaValues({
+    constName,
+    typeName,
+    definitionType: inferDefinitionType(typeName),
+  });
+}
+
 // ============================================================================
 // Main Execution
 // ============================================================================
@@ -531,16 +551,7 @@ function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config)
 function main(): void {
   try {
     const config = parseArguments();
-
-    console.log(`🔄 Extracting ${config.definitionType} values from GraphQL schema...`);
-    console.log(`📋 Target: ${config.constName} from ${config.typeName}`);
-
-    if (!fs.existsSync(SCHEMA_PATH)) {
-      throw new Error(`Schema file not found: ${SCHEMA_PATH}`);
-    }
-
-    const extractedValues = parseSchema(SCHEMA_PATH, config);
-    writeUpdatedConstants(extractedValues, config);
+    extractSchemaValues(config);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("❌ Error:", errorMessage);
@@ -557,4 +568,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // Exports (for testing)
 // ============================================================================
 
-export { generateObjectString, parseSchema, updateConstsFile };
+export {
+  extractSchemaValues,
+  generateObjectString,
+  parseSchema,
+  runExtractSchemaValues,
+  updateConstsFile,
+};

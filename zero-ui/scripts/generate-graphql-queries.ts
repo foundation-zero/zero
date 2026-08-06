@@ -339,6 +339,32 @@ function updateQueriesFile(queryString: string, outputQueryName: string): void {
   fs.writeFileSync(OUTPUT_PATH, updatedContent);
 }
 
+function generateGraphqlQueries(config: Config): void {
+  console.log("🔄 Generating GraphQL query...");
+  console.log(`📋 Input: ${config.inputConstName}`);
+  console.log(`📋 Output: ${config.outputQueryName}`);
+
+  if (!fs.existsSync(CONSTS_PATH)) {
+    throw new Error(`Constants file not found: ${CONSTS_PATH}`);
+  }
+
+  const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
+  const definitions = extractDefinitions(constsContent, config.inputConstName);
+  const fieldCount = Object.keys(definitions).length;
+
+  console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
+
+  const queryString = generateQuery(definitions);
+  updateQueriesFile(queryString, config.outputQueryName);
+
+  console.log(`✅ Successfully updated ${OUTPUT_PATH}`);
+  console.log(`📊 Generated query with ${fieldCount} fields`);
+}
+
+function runGenerateGraphqlQueries(inputConstName: string, outputQueryName: string): void {
+  generateGraphqlQueries({ inputConstName, outputQueryName });
+}
+
 // ============================================================================
 // Main Execution
 // ============================================================================
@@ -346,33 +372,7 @@ function updateQueriesFile(queryString: string, outputQueryName: string): void {
 function main(): void {
   try {
     const config = parseArguments();
-
-    console.log("🔄 Generating GraphQL query...");
-    console.log(`📋 Input: ${config.inputConstName}`);
-    console.log(`📋 Output: ${config.outputQueryName}`);
-
-    // Read constants file
-    if (!fs.existsSync(CONSTS_PATH)) {
-      throw new Error(`Constants file not found: ${CONSTS_PATH}`);
-    }
-
-    const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
-
-    // Extract field definitions
-    const definitions = extractDefinitions(constsContent, config.inputConstName);
-
-    const fieldCount = Object.keys(definitions).length;
-
-    console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
-
-    // Generate query string
-    const queryString = generateQuery(definitions);
-
-    // Update queries file
-    updateQueriesFile(queryString, config.outputQueryName);
-
-    console.log(`✅ Successfully updated ${OUTPUT_PATH}`);
-    console.log(`📊 Generated query with ${fieldCount} fields`);
+    generateGraphqlQueries(config);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error: ${errorMessage}`);
@@ -389,4 +389,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // Exports (for testing)
 // ============================================================================
 
-export { extractDefinitions, generateQuery, updateQueriesFile };
+export {
+  extractDefinitions,
+  generateGraphqlQueries,
+  generateQuery,
+  runGenerateGraphqlQueries,
+  updateQueriesFile,
+};
