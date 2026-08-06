@@ -36,6 +36,14 @@ jobs:
       - uses: astral-sh/setup-uv@v8.1.0
       - run: uv sync --locked
         working-directory: zero-loads-app
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-loads-app
       - run: uv run ruff check --no-fix src tests
         working-directory: zero-loads-app
       - run: uv run ruff format --check src tests
@@ -69,13 +77,6 @@ jobs:
       - name: Integration Test
         run: uv run pytest --run=integration -vv
         working-directory: zero-loads-app
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(uvx hatch version | sed 's/+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-loads-app
 
   docker-push:
