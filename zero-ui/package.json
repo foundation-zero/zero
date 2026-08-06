@@ -16,6 +16,7 @@
     "codegen:schema": "graphql-codegen --require dotenv/config --config codegen.ts --schema-only dotenv_config_path=.env.local",
     "extract-schema-values": "tsx scripts/extract-schema-values.ts",
     "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
+    "extract-all-schemas": "tsx scripts/extract-all-schemas.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
