@@ -1,0 +1,32 @@
+{{- if .Values.externalService.enabled }}
+{{- $stack := default dict (index .Values "hasura-enterprise-stack") -}}
+{{- $graphqlEngine := default dict (index $stack "graphql-engine") -}}
+{{- $port := coalesce (dig "config" "port" nil $graphqlEngine) 8080 -}}
+{{- /* Keep selector/namespace aligned with graphql-engine overrides so this service always targets the right pods. */ -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-hasura-external
+  namespace: {{ coalesce (dig "namespaceOverride" nil $graphqlEngine) (dig "global" "namespaceOverride" nil $graphqlEngine) (dig "global" "namespaceOverride" nil $stack) .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.externalService.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.externalService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.externalService.serviceType }}
+  externalIPs:
+    {{- toYaml .Values.externalService.externalIPs | nindent 4 }}
+  selector:
+    app: {{ coalesce (dig "nameOverride" nil $graphqlEngine) (printf "%s-graphql-engine" (coalesce (dig "global" "prefixOverride" nil $graphqlEngine) (dig "global" "prefixOverride" nil $stack) .Release.Name)) }}
+  ports:
+    - name: http
+      port: {{ $port }}
+      targetPort: {{ $port }}
+      protocol: TCP
+{{- end }}
