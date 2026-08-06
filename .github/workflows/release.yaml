@@ -19,16 +19,25 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO: ${{ github.repository }}
     steps:
-      - name: Warn on non-main ref
+      - name: Require the commit to be on main
         env:
           REF_NAME: ${{ github.ref_name }}
           SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ "$REF_NAME" != "main" ]; then
-            echo "::warning::Drafting a release from '$REF_NAME' ($SHA), not main."
-            echo "> **Warning:** drafted from \`$REF_NAME\` at \`$SHA\`, not \`main\`." >> "$GITHUB_STEP_SUMMARY"
-          fi
+          # main...SHA is "identical" or "behind" exactly when SHA is reachable from main.
+          status=$(gh api "repos/$REPO/compare/main...$SHA" --jq .status)
+          case "$status" in
+            identical) ;;
+            behind)
+              echo "::notice::Drafting from $SHA, an earlier commit on main."
+              echo "> Drafted from \`$SHA\` (\`$REF_NAME\`), an earlier commit on main." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              echo "::error::$SHA ($REF_NAME) is not on main — compare status '$status'."
+              exit 1
+              ;;
+          esac
 
       - name: Fail if a draft release already exists
         run: |
