@@ -2353,6 +2353,12 @@ type SensorPcmType {
 }
 
 type SensorPcsType {
+  propModeSelectAftThruster: BoolStampedType!
+  manModeSelectAftThruster: BoolStampedType!
+  regModeSelectAftThruster: BoolStampedType!
+  propModeSelectFwdThruster: BoolStampedType!
+  manModeSelectFwdThruster: BoolStampedType!
+  regModeSelectFwdThruster: BoolStampedType!
   mode: PcsModeStampedType!
 }
 

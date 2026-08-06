@@ -1,6 +1,7 @@
 from typing import Annotated, Self
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, computed_field
+from pydantic.alias_generators import to_pascal
 
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control
@@ -130,7 +131,7 @@ class PressureSensor(ThrsValues):
 
 
 class Thruster(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="LeverNotInZero")]
 
 
 class PropulsionDrive(ThrsValues):
@@ -150,7 +151,47 @@ class Ugrid(ThrsValues):
 
 
 class Pcs(ThrsValues):
-    mode: Stamped[PcsMode]
+    model_config = ConfigDict(
+        alias_generator=to_pascal,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
+    prop_mode_select_aft_thruster: Stamped[bool]
+    man_mode_select_aft_thruster: Stamped[bool]
+    reg_mode_select_aft_thruster: Stamped[bool]
+    prop_mode_select_fwd_thruster: Stamped[bool]
+    man_mode_select_fwd_thruster: Stamped[bool]
+    reg_mode_select_fwd_thruster: Stamped[bool]
+
+    @computed_field()
+    @property
+    def mode(self) -> Stamped[PcsMode]:
+
+        return Stamped.combine(
+            self.man_mode_select_aft_thruster,
+            self.reg_mode_select_aft_thruster,
+            self.prop_mode_select_aft_thruster,
+            self.man_mode_select_fwd_thruster,
+            self.reg_mode_select_fwd_thruster,
+            self.prop_mode_select_fwd_thruster,
+            value=(
+                PcsMode.MANEUVERING
+                if self.man_mode_select_aft_thruster.value
+                or self.man_mode_select_fwd_thruster.value
+                else (
+                    PcsMode.REGENERATION
+                    if self.reg_mode_select_aft_thruster.value
+                    or self.reg_mode_select_fwd_thruster.value
+                    else (
+                        PcsMode.PROPULSION
+                        if self.prop_mode_select_aft_thruster.value
+                        or self.prop_mode_select_fwd_thruster.value
+                        else PcsMode.OFF
+                    )
+                )
+            ),
+        )
 
 
 class Pcm(ThrsValues):

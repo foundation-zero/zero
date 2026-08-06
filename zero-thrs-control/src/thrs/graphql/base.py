@@ -158,6 +158,7 @@ def convert_module(module, class_name_prefix: str):
                 all_fields=True,
                 json_schema_directive=JsonSchemaDirective,
                 use_pydantic_alias=False,
+                include_computed=True,
             )(gql_cls)
 
 
