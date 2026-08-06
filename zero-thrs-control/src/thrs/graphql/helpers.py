@@ -1,7 +1,6 @@
 from typing import Annotated, get_args, get_origin
 
 import strawberry
-from graphql import GraphQLObjectType
 from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
 
