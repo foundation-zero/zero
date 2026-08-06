@@ -97,6 +97,16 @@
                 "enabled": {
                     "type": "boolean",
                     "default": true
+                },
+                "service": {
+                    "type": "object",
+                    "properties": {
+                        "externalIP": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional external IP for the API service; empty means not set"
+                        }
+                    }
                 }
             }
         },
