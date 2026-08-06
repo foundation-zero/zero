@@ -108,13 +108,15 @@ class MarpowerReader(ReaderBase):
         for row in (
             df.drop_nulls("mqtt_topic")
             .group_by("mqtt_topic")
-            .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
+            .agg(pl.col("mqtt_json_path"), pl.col("data_type"), pl.col("yard_tag"))
             .iter_rows(named=True)
         ):
             topic = self.determine_topic(row)
             values = [
-                IOValue.from_json_path(json_path=jp, data_type=dt)
-                for jp, dt in zip(row["mqtt_json_path"], row["data_type"])
+                IOValue.from_json_path(json_path=jp, data_type=dt, yard_tag=yt)
+                for jp, dt, yt in zip(
+                    row["mqtt_json_path"], row["data_type"], row["yard_tag"]
+                )
             ]
             result.append(IOTopic(topic, values))
         return result
