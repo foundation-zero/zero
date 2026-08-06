@@ -49,6 +49,15 @@ jobs:
       - run: uv sync --locked
         working-directory: zero-thrs-control
 
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-thrs-control
+
       - run: just type_check
         working-directory: zero-thrs-control
 
@@ -67,15 +76,6 @@ jobs:
         run: just test_io -v
         working-directory: zero-thrs-control
         continue-on-error: true
-
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(uvx hatch version | sed 's/+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: zero-thrs-control
 
   docker-push:
     timeout-minutes: 15

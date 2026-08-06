@@ -35,13 +35,6 @@ jobs:
       - uses: astral-sh/setup-uv@v8.1.0
       - run: uv sync --locked
         working-directory: zero-termodinamica
-      - run: just lint
-        working-directory: zero-termodinamica
-      - run: just type_check
-        working-directory: zero-termodinamica
-      - name: Tests
-        run: just test
-        working-directory: zero-termodinamica
       - name: Determine image tag
         id: image_tag
         run: |
@@ -49,6 +42,13 @@ jobs:
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-termodinamica
+      - run: just lint
+        working-directory: zero-termodinamica
+      - run: just type_check
+        working-directory: zero-termodinamica
+      - name: Tests
+        run: just test
         working-directory: zero-termodinamica
 
   docker-push:

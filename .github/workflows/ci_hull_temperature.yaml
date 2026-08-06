@@ -34,6 +34,14 @@ jobs:
       - uses: astral-sh/setup-uv@v8.1.0
       - run: uv sync --locked
         working-directory: zero-hull-temperature
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-hull-temperature
       - run: uv run ruff check --no-fix zero_hull_temperature tests
         working-directory: zero-hull-temperature
       - run: uv run pyright
@@ -53,15 +61,6 @@ jobs:
         working-directory: zero-hull-temperature
       - name: Read once
         run: timeout 45s uv run python -m zero_hull_temperature read-with-mqtt --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502
-        working-directory: zero-hull-temperature
-
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(uvx hatch version | sed 's/+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-hull-temperature
 
   docker-push:
