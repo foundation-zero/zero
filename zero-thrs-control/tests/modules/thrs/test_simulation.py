@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import cast
 
 import pytest
@@ -261,7 +261,7 @@ def test_thrs_simulation_inputs(
             ThrsSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 

@@ -142,16 +142,16 @@ class TestCombinedMqttMapping:
 
         topics = mapping.split_to_topics(combined_values)
 
-        assert "/module1/go-with-the" in topics
-        assert topics["/module1/go-with-the"] == flow_sensor.model_dump_json(
-            by_alias=True
-        )
+        assert "/500000-thrs/module1/go-with-the" in topics
+        assert topics[
+            "/500000-thrs/module1/go-with-the"
+        ] == flow_sensor.model_dump_json(by_alias=True)
 
     def test_subscribe_topic(self):
         clss = {"module1": SimpleInOut}
         mapping_no_suffix = ModuleMqttMapping(clss, PartialMqttMapping)
 
-        assert mapping_no_suffix.subscribe_topics() == {"/module1/+"}
+        assert mapping_no_suffix.subscribe_topics() == {"/500000-thrs/module1/+"}
 
     def test_builder(self):
         clss = {"module1": SimpleInOut}
@@ -161,7 +161,8 @@ class TestCombinedMqttMapping:
             flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
         )
         mapping.handle_message(
-            "/module1/go-with-the", flow_sensor.model_dump_json(by_alias=True)
+            "/500000-thrs/module1/go-with-the",
+            flow_sensor.model_dump_json(by_alias=True),
         )
         result = mapping.result()
         assert result == CombinedValues(
@@ -228,13 +229,13 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
         call.args[0] for call in mock_mqtt_client.publish.call_args_list
     }
     assert published_topics == {
-        "devices_topic_prefix/module/go-with-the/Command",
+        "devices_topic_prefix/500000-thrs/module/go-with-the/Command",
         "devices_topic_prefix/flow-topic/Command",
     }
 
     assert mock_mqtt_client.publish.call_args_list == [
         mock.call(
-            "devices_topic_prefix/module/go-with-the/Command",
+            "devices_topic_prefix/500000-thrs/module/go-with-the/Command",
             mock.ANY,
             qos=1,
             retain=False,
@@ -246,7 +247,7 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
             retain=False,
         ),
         mock.call(
-            "devices_topic_prefix/module/go-with-the/Command",
+            "devices_topic_prefix/500000-thrs/module/go-with-the/Command",
             mock.ANY,
             qos=1,
             retain=False,
@@ -258,7 +259,7 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
             retain=False,
         ),
         mock.call(
-            "devices_topic_prefix/module/go-with-the/Command",
+            "devices_topic_prefix/500000-thrs/module/go-with-the/Command",
             mock.ANY,
             qos=1,
             retain=False,

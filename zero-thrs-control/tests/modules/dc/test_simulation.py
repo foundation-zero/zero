@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -34,7 +34,7 @@ def test_dc_simulation_inputs(incorrect_simulation_inputs):
             DcSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 

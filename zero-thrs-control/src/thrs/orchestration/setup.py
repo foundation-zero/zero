@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
@@ -36,7 +36,7 @@ def setup_simulation_module(
         simulation_description.simulation_outputs_cls,
         simulation_description.fmu,
         simulation_description.simulation_inputs,
-        datetime.now(),
+        datetime.now(UTC),
         timedelta(seconds=1),
     )
 

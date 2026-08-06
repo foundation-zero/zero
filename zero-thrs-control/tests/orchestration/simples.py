@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import datetime
+from datetime import UTC, datetime
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
@@ -43,7 +43,7 @@ class SimpleSimulation(
     ]:
         self.controls.append(control_values)
         return SimulationResult(
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             sensor_values=control_values,
             control_values=control_values,
             simulation_outputs=SimpleSimulationOutputs(),
@@ -56,7 +56,7 @@ class SimpleSimulation(
         return self._start_time
 
     def time(self):
-        return datetime.now()
+        return datetime.now(UTC)
 
 
 class SimpleParameters(ThrsValues):

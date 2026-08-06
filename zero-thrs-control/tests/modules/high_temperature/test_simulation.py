@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -41,7 +41,7 @@ def test_high_temperature_simulation_inputs(
             HighTemperatureSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 

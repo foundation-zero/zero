@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated, Any, Literal, Self, cast
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -55,7 +55,7 @@ class Stamped[T](ThrsValues):
 
     @staticmethod
     def stamp[V](value: V) -> "Stamped[V]":
-        return Stamped(value=value, timestamp=datetime.now())
+        return Stamped(value=value, timestamp=datetime.now(UTC))
 
     @staticmethod
     def combine[V](*stamped: "Stamped[Any]", value: V) -> "Stamped[V]":

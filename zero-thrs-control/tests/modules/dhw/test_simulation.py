@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -48,7 +48,7 @@ def test_dhw_simulation_inputs(incorrect_simulation_inputs):
             DhwSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 

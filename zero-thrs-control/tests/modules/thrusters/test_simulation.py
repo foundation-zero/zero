@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -56,7 +56,7 @@ def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
             ThrustersSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=5),
         )
 

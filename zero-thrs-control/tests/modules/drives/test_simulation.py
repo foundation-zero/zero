@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -33,10 +33,10 @@ def test_drives_simulation_inputs(incorrect_simulation_inputs, control):
             DrivesSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
         with pytest.raises(Exception):
             for _i in range(300):
-                simulation.tick(control.initial(datetime.now()))
+                simulation.tick(control.initial(datetime.now(UTC)))

@@ -1,12 +1,19 @@
 from typing import Annotated
 
-from pydantic import computed_field
+from pydantic import ConfigDict, computed_field
+from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ThrustersSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     thrusters_pump1: Annotated[
         sensor.Pump, component_meta(yard_tag="50001194", component_type="pump")
     ]
@@ -166,6 +173,12 @@ class ThrustersSensorValues(ThrsValues):
 
 
 class ThrustersControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     thrusters_pump1: Annotated[
         control.Pump, component_meta(yard_tag="50001194", component_type="pump")
     ]

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
@@ -67,7 +67,7 @@ def simulation(fmu, simulation_inputs) -> ThrustersSimulation:
         ThrustersSimulationOutputs,
         fmu,
         simulation_inputs,
-        datetime.now(),
+        datetime.now(UTC),
         timedelta(seconds=1),
     )
 

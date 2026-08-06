@@ -1,5 +1,8 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
     ThrsValues,
     component_meta,
@@ -8,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ConsumersSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     consumers_temperature_dhw_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-48", component_type="temperature_sensor"),
@@ -70,6 +79,12 @@ class ConsumersSensorValues(ThrsValues):
 
 
 class ConsumersControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     consumers_flowcontrol_adsorption: Annotated[
         control.Valve,
         component_meta(

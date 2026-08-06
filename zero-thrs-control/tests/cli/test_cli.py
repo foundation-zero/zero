@@ -105,7 +105,9 @@ async def test_simulation_run_start_stop(
     )
 
     await runtime.clear_previous()
-    await test_client.subscribe(f"{settings.mqtt_devices_topic_prefix}/thrusters/#")
+    await test_client.subscribe(
+        f"{settings.mqtt_devices_topic_prefix}/500000-thrs/thrusters/#"
+    )
     await status_client.subscribe(status_topic)
 
     run_task = create_task(runtime.start())
@@ -415,7 +417,7 @@ async def test_simulation_controls_automated_control(
 
     await runtime.clear_previous()
     await test_client.subscribe(
-        f"{settings.mqtt_devices_topic_prefix}/thrusters/+/{settings.mqtt_control_topic_suffix}"
+        f"{settings.mqtt_devices_topic_prefix}/500000-thrs/thrusters/+/{settings.mqtt_control_topic_suffix}"
     )
     await status_client.subscribe(status_topic)
 

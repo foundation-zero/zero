@@ -14,6 +14,7 @@ from thrs.orchestration.config import Config
 @pytest.fixture(scope="session")
 def settings():
     os.environ["MQTT_HOST"] = "localhost"
+    os.environ["MQTT_PORT"] = "1883"
     os.environ["MQTT_DEVICES_TOPIC_PREFIX"] = "test_devices_topic"
     os.environ["MQTT_CONTROLLER_TOPIC_PREFIX"] = "test_controller_topic"
     os.environ["MQTT_SIMULATOR_TOPIC_PREFIX"] = "test_simulation_topic"

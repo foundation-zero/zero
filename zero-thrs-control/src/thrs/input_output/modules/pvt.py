@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from pydantic import computed_field
+from pydantic import ConfigDict, computed_field
+from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     ThrsValues,
@@ -11,6 +12,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class PvtSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pvt_pump_main_fwd: Annotated[
         sensor.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]
@@ -483,6 +490,12 @@ class PvtSensorValues(ThrsValues):
 
 
 class PvtControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pvt_pump_main_fwd: Annotated[
         control.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]
