@@ -54,7 +54,9 @@ jobs:
       - name: Read once
         run: timeout 45s uv run python -m zero_hull_temperature read-with-mqtt --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502
         working-directory: zero-hull-temperature
-
+      - name: dirty check
+        run: git status --porcelain
+        working-directory: zero-hull-temperature
       - name: Determine image tag
         id: image_tag
         run: |

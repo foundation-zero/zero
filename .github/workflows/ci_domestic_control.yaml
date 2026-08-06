@@ -56,6 +56,9 @@ jobs:
       - name: Integration Test
         run: uv run pytest --run=integration -vv
         working-directory: zero-domestic-control
+      - name: dirty check
+        run: git status --porcelain
+        working-directory: zero-domestic-control
       - name: Determine image tag
         id: image_tag
         run: |
