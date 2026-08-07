@@ -18,14 +18,14 @@ class DcSensorValues(ThrsValues):
     )
 
     dc_pump_aft: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001020", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001020", component_type="pump")
+    ] = None
     dc_pump_ugrid: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001023", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001023", component_type="pump")
+    ] = None
     dc_pump_fwd: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001025", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001025", component_type="pump")
+    ] = None
     dc_temperature_aft4_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-05", component_type="temperature_sensor"),
@@ -242,7 +242,7 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002076",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft1-active",
+            topic_override="450000-main-power-storage/system-05/41/1",
         ),
     ]
     dc_brightloop_aft2: Annotated[
@@ -251,7 +251,7 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002075",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft2-active",
+            topic_override="450000-main-power-storage/system-05/42/1",
         ),
     ]
     dc_brightloop_aft3: Annotated[
@@ -260,7 +260,7 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002074",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft3-active",
+            topic_override="450000-main-power-storage/system-05/43/1",
         ),
     ]
     dc_brightloop_aft4: Annotated[
@@ -269,7 +269,7 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002073",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft4-active",
+            topic_override="450000-main-power-storage/system-05/44/1",
         ),
     ]
     dc_brightloop_fwd1: Annotated[
@@ -278,7 +278,7 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002078",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-fwd1-active",
+            topic_override="450000-main-power-storage/system-05/45/1",
         ),
     ]
     dc_brightloop_fwd2: Annotated[
@@ -287,25 +287,25 @@ class DcSensorValues(ThrsValues):
             yard_tag="45002077",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-fwd2-active",
+            topic_override="450000-main-power-storage/system-05/46/1",
         ),
     ]
     dc_ugrid1: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002082",
+            yard_tag="45002081",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid1-active",
+            topic_override="450000-ugrid/aft",
         ),
     ]
     dc_ugrid2: Annotated[
         sensor.Ugrid,
         component_meta(
-            yard_tag="45002081",
+            yard_tag="45002082",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid2-active",
+            topic_override="450000-ugrid/fwd",
         ),
     ]
 

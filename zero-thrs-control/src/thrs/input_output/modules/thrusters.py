@@ -15,11 +15,11 @@ class ThrustersSensorValues(ThrsValues):
     )
 
     thrusters_pump1: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001194", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001194", component_type="pump")
+    ] = None
     thrusters_pump2: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001195", component_type="pump")
-    ]
+        sensor.Pump | None, component_meta(yard_tag="50001195", component_type="pump")
+    ] = None
     thrusters_temperature_aft: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-01", component_type="temperature_sensor"),
@@ -102,7 +102,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="15001001",
             component_type="thruster",
             included_in_fmu=False,
-            topic_override="dummy-pcs/thruster-aft-active",
+            topic_override="150000-propulsion/pcs-aft",
         ),
     ]
     thrusters_thruster_fwd: Annotated[
@@ -111,7 +111,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="15001002",
             component_type="thruster",
             included_in_fmu=False,
-            topic_override="dummy-pcs/thruster-fwd-active",
+            topic_override="150000-propulsion/pcs-fwd",
         ),
     ]
     thrusters_pcs: Annotated[
@@ -120,7 +120,7 @@ class ThrustersSensorValues(ThrsValues):
             yard_tag="1500",
             component_type="pcs",
             included_in_fmu=False,
-            topic_override="dummy-pcs/pcs-mode",
+            topic_override="150000-propulsion/pcs-fwd-pshelm",
         ),
     ]
 

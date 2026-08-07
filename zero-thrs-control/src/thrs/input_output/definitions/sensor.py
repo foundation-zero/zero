@@ -1,4 +1,7 @@
-from typing import Self
+from typing import Annotated, Self
+
+from pydantic import ConfigDict, Field, computed_field
+from pydantic.alias_generators import to_pascal
 
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control
@@ -20,6 +23,7 @@ from thrs.input_output.definitions.units import (
     Seconds,
     Watt,
 )
+from thrs.utils.string import hyphenize
 
 
 class FlowSensor(ThrsValues):
@@ -111,6 +115,12 @@ class HeatExchanger(HeatTransferDevice):
 
 
 class Valve(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=hyphenize,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     position_rel: Stamped[Ratio]
 
 
@@ -128,15 +138,15 @@ class PressureSensor(ThrsValues):
 
 
 class Thruster(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="LeverNotInZero")]
 
 
 class PropulsionDrive(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
 
 
 class ShorePowerConverter(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
 
 
 class Brightloop(ThrsValues):
@@ -144,11 +154,51 @@ class Brightloop(ThrsValues):
 
 
 class Ugrid(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="ENABLE")]
 
 
 class Pcs(ThrsValues):
-    mode: Stamped[PcsMode]
+    model_config = ConfigDict(
+        alias_generator=to_pascal,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
+    prop_mode_select_aft_thruster: Stamped[bool]
+    man_mode_select_aft_thruster: Stamped[bool]
+    reg_mode_select_aft_thruster: Stamped[bool]
+    prop_mode_select_fwd_thruster: Stamped[bool]
+    man_mode_select_fwd_thruster: Stamped[bool]
+    reg_mode_select_fwd_thruster: Stamped[bool]
+
+    @computed_field()
+    @property
+    def mode(self) -> Stamped[PcsMode]:
+
+        return Stamped.combine(
+            self.man_mode_select_aft_thruster,
+            self.reg_mode_select_aft_thruster,
+            self.prop_mode_select_aft_thruster,
+            self.man_mode_select_fwd_thruster,
+            self.reg_mode_select_fwd_thruster,
+            self.prop_mode_select_fwd_thruster,
+            value=(
+                PcsMode.MANEUVERING
+                if self.man_mode_select_aft_thruster.value
+                or self.man_mode_select_fwd_thruster.value
+                else (
+                    PcsMode.REGENERATION
+                    if self.reg_mode_select_aft_thruster.value
+                    or self.reg_mode_select_fwd_thruster.value
+                    else (
+                        PcsMode.PROPULSION
+                        if self.prop_mode_select_aft_thruster.value
+                        or self.prop_mode_select_fwd_thruster.value
+                        else PcsMode.OFF
+                    )
+                )
+            ),
+        )
 
 
 class Pcm(ThrsValues):
@@ -156,7 +206,7 @@ class Pcm(ThrsValues):
 
 
 class LevelSwitch(ThrsValues):
-    empty: Stamped[Empty]
+    empty: Annotated[Stamped[Empty], Field(alias="HIGHLEV")]
 
 
 # Leaving in commented fields as we might need these IOs in the future, but need to accomodate for them in the SimulationInputs or in the FMU first as they are currently not part of the FMU. For now, they are to be used as reference for the IOs that we might want to add in the future.
@@ -202,6 +252,87 @@ class AdsorptionChiller(ThrsValues):
     # power_last_half_cycle: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
+class TankageSystem(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=lambda s: s.upper(),
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
+    hotwater11_level: Stamped[Liter]
+    hotwater13_level: Stamped[Liter]
+    hotwater15_level: Stamped[Liter]
+
+
+class FreshwaterSystem(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=lambda s: s.upper(),
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
+    # mak1_alarm
+    # mak2_alarm
+    # chlorine_unit_alarm
+    # circ_pump_running
+    # coldwater_lower_saloon_flow
+    # coldwater_dayhead_flow
+    # hotwater_guest_cabin_sb_flow
+    # coldwater_guest_cabin_sb_flow
+    # hotwater_guest_cabin_ps_fwd_flow
+    # coldwater_guest_cabin_ps_fwd_flow
+    # hotwater_guest_cabin_ps_aft_flow
+    # coldwater_guest_cabin_ps_aft_flow
+    # hotwater_master_cabin_sb_flow
+    # coldwater_master_cabin_sb_flow
+    # hotwater_master_cabin_ps_flow
+    # coldwater_master_cabin_ps_flow
+    # hotwater_lazaret_flow
+    # coldwater_lazaret_flow
+    # coldwater_water_softner_flow
+    hotwater_main_tech_space_fr45_flow: Stamped[LMin]
+    # coldwater_main_tech_space_flow
+    coldwater_main_tech_space_fr45_flow: Stamped[LMin]
+    # tank_1_fr_45_ps_level
+    # tank_2_fr_45_sb_level
+    # hotwater_dayhead_flow
+    # technical_room_energ_rec_flow
+    # flow_sensor_25001137_c1
+    # coldwater_owners_deckhouse_flow
+    # hotwater_owners_deckhouse_flow
+    energy_rec_system_temp7: Stamped[Celsius]
+    energy_rec_system_temp4: Stamped[Celsius]
+    energy_rec_system_temp5: Stamped[Celsius]
+    energy_rec_system_temp8: Stamped[Celsius]
+    energy_rec_system_temp6: Stamped[Celsius]
+    # circ_pump_onoff
+    # hotwater_crew_mess_flow
+    # coldwater_crew_mess_flow
+    # hotwater_galley_2_flow
+    # coldwater_galley_2_flow
+    # hotwater_guest_bathr_ps_fwd_flow
+    # coldwater_guest_bathr_ps_fwd_flow
+    # hotwater_laundry_ps_1_flow
+    # coldwater_laundry_ps_flow
+    # hotwater_captains_cabin_flow
+    # coldwater_captains_cabin_flow
+    # hotwater_crew_cabin_sb_aft_flow
+    # coldwater_crew_cabin_sb_aft_flow
+    # hotwater_crew_cabin_sb_mid_flow
+    # coldwater_crew_cabin_sb_mid_flow
+    # hotwater_crew_cabin_ps_mid_flow
+    # coldwater_crew_cabin_ps_mid_flow
+    # hotwater_crew_cabin_sb_fwd_flow
+    # coldwater_crew_cabin_sb_fwd_flow
+    # hotwater_crew_cabin_ps_fwd_flow
+    # coldwater_crew_cabin_ps_fwd_flow
+    # hotwater_deckhouse_flow
+    # coldwater_deckhouse_flow
+    # hotwater_deck_fr48_sb_tech_cor_flow
+    # coldwater_deck_fr48_sb_tech_cor_flow
+    # fr_46_system_beh_pres_pumps_press
+
+
 class PowerSensor(ThrsValues):
     flow: Stamped[LMin]
     power: Stamped[Watt]
@@ -216,6 +347,7 @@ __all__ = [
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowSensor",
+    "FreshwaterSystem",
     "HeatExchanger",
     "HeatPump",
     "HeatTransferDevice",
@@ -229,6 +361,7 @@ __all__ = [
     "PropulsionDrive",
     "Pump",
     "ShorePowerConverter",
+    "TankageSystem",
     "TemperatureDelta",
     "TemperatureSensor",
     "Thruster",

@@ -1,14 +1,12 @@
 import operator
 from datetime import datetime
 from itertools import groupby as _groupby
-from typing import Any, cast, overload
+from types import UnionType
+from typing import Any, TypeGuard, Union, cast, get_args, get_origin, overload
 
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.input_output.base import (
-    Stamped,
-    ThrsValues,
-)
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
@@ -27,10 +25,18 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     )  # type: ignore
 
 
+def is_union(type: type | None) -> TypeGuard[UnionType]:
+    return get_origin(type) in (Union, UnionType)
+
+
 def _field_type(field: FieldInfo | ComputedFieldInfo) -> type[ThrsValues]:
     annotation = (
         field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
     )
+
+    if is_union(annotation):
+        annotation = get_args(annotation)[0]
+
     return cast(type[ThrsValues], annotation)
 
 
