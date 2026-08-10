@@ -9,10 +9,7 @@ from thrs.graphql.base import (
     add_control_mutations,
     add_parameter_mutations,
 )
-from thrs.graphql.helpers import (
-    empty_pydantic_type_to_strawberry_type,
-    pydantic_to_strawberry_type,
-)
+from thrs.graphql.helpers import pydantic_to_strawberry_type
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 PvtSensorValuesType = pydantic_to_strawberry_type(

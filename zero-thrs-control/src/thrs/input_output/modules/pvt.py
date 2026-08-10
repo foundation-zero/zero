@@ -553,7 +553,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_main_string6_supply,
                 self.pvt_temperature_main_string6_supply,
             ],
-            self.pvt_temperature_main_string1_supply.temperature,
+            None,
         )
 
     @computed_field(
@@ -588,7 +588,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_main_string12_supply,
                 self.pvt_temperature_main_string13_supply,
             ],
-            self.pvt_temperature_main_string7_supply.temperature,
+            None,
         )
 
     @computed_field(
@@ -615,7 +615,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_owners_string5_supply,
                 self.pvt_temperature_owners_string6_supply,
             ],
-            self.pvt_temperature_owners_string1_supply.temperature,
+            None,
         )
 
     @computed_field(
@@ -650,7 +650,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_main_string6_1_return,
                 self.pvt_temperature_main_string6_2_return,
             ],
-            self.pvt_temperature_main_string1_1_return.temperature,
+            None,
         )
 
     @computed_field(
@@ -685,7 +685,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_main_string12_return,
                 self.pvt_temperature_main_string13_return,
             ],
-            self.pvt_temperature_main_string7_1_return.temperature,
+            None,
         )
 
     @computed_field(
@@ -712,7 +712,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_owners_string5_return,
                 self.pvt_temperature_owners_string6_return,
             ],
-            self.pvt_temperature_owners_string1_return.temperature,
+            None,
         )
 
     @computed_field(
@@ -843,7 +843,7 @@ class PvtSensorValues(ThrsValues):
                 self.pvt_temperature_main_fwd_return,
                 self.pvt_temperature_owners_return,
             ],
-            self.pcm_temperature_producers_supply.temperature,
+            None,
         )
 
     @computed_field(
