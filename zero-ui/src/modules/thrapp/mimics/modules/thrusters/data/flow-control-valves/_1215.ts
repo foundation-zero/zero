@@ -18,7 +18,7 @@ export default toInstance<MimicComponentType.FlowControlValve>({
     controller: getField(
       ControllerStateComponentType.PIDController,
       "thrusters",
-      "aftFlowController",
+      "thrustersAftFlowController",
     ),
   },
   custom: {},

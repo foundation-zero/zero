@@ -2603,19 +2603,19 @@ type ThrustersControlValuesType {
 }
 
 type ThrustersControllerStateType {
-  heatDumpController: ControllerPidControllerValuesType!
+  thrustersHeatDumpController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  warmupMixController: ControllerPidControllerValuesType!
+  thrustersWarmupMixController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  pumpController: ControllerPidControllerValuesType!
+  thrustersPumpController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  aftRecoveryTemperatureController: ControllerPidControllerValuesType!
+  thrustersAftRecoveryTemperatureController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  fwdRecoveryTemperatureController: ControllerPidControllerValuesType!
+  thrustersFwdRecoveryTemperatureController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  aftFlowController: ControllerPidControllerValuesType!
+  thrustersAftFlowController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  fwdFlowController: ControllerPidControllerValuesType!
+  thrustersFwdFlowController: ControllerPidControllerValuesType!
     @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 

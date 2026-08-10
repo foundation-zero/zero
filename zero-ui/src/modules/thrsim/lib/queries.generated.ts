@@ -2053,7 +2053,7 @@ export const THRUSTERS_CONTROL_QUERY = `
 `;
 
 export const THRUSTERS_CONTROLLER_STATE_QUERY = `
-  heatDumpController {
+  thrustersHeatDumpController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2062,7 +2062,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  warmupMixController {
+  thrustersWarmupMixController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2071,7 +2071,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  pumpController {
+  thrustersPumpController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2080,7 +2080,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  aftRecoveryTemperatureController {
+  thrustersAftRecoveryTemperatureController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2089,7 +2089,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  fwdRecoveryTemperatureController {
+  thrustersFwdRecoveryTemperatureController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2098,7 +2098,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  aftFlowController {
+  thrustersAftFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2107,7 +2107,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  fwdFlowController {
+  thrustersFwdFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }

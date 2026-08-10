@@ -505,7 +505,7 @@ async def test_query_controller_state(app, test_client):
                     }
                     thrusters {
                         controllerState {
-                            heatDumpController {
+                            thrustersHeatDumpController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -514,7 +514,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            warmupMixController {
+                            thrustersWarmupMixController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -523,7 +523,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            pumpController {
+                            thrustersPumpController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -532,7 +532,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            aftRecoveryTemperatureController {
+                            thrustersAftRecoveryTemperatureController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -541,7 +541,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            fwdRecoveryTemperatureController {
+                            thrustersFwdRecoveryTemperatureController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -550,7 +550,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            aftFlowController {
+                            thrustersAftFlowController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -559,7 +559,7 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            fwdFlowController {
+                            thrustersFwdFlowController {
                                 setpoint { value }
                                 measurement { value }
                                 output { value }
@@ -639,7 +639,7 @@ async def test_query_controller_state(app, test_client):
                 },
                 "thrusters": {
                     "controllerState": {
-                        "aftFlowController": {
+                        "thrustersAftFlowController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -670,7 +670,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "aftRecoveryTemperatureController": {
+                        "thrustersAftRecoveryTemperatureController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -701,7 +701,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "fwdFlowController": {
+                        "thrustersFwdFlowController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -732,7 +732,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "fwdRecoveryTemperatureController": {
+                        "thrustersFwdRecoveryTemperatureController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -763,7 +763,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "heatDumpController": {
+                        "thrustersHeatDumpController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -794,7 +794,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "pumpController": {
+                        "thrustersPumpController": {
                             "components": {
                                 "value": [
                                     0.0,
@@ -825,7 +825,7 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "warmupMixController": {
+                        "thrustersWarmupMixController": {
                             "components": {
                                 "value": [
                                     0.0,

@@ -2562,25 +2562,25 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const THRUSTERS_CONTROLLER_STATE = toControllerStateDefinition({
-  heatDumpController: {
+  thrustersHeatDumpController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  warmupMixController: {
+  thrustersWarmupMixController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  pumpController: {
+  thrustersPumpController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  aftRecoveryTemperatureController: {
+  thrustersAftRecoveryTemperatureController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  fwdRecoveryTemperatureController: {
+  thrustersFwdRecoveryTemperatureController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  aftFlowController: {
+  thrustersAftFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  fwdFlowController: {
+  thrustersFwdFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
 });

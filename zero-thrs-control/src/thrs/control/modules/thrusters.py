@@ -36,31 +36,31 @@ class ThrustersControlMode(ControlMode):
 
 
 class ThrustersControllerState(ThrsValues):
-    heat_dump_controller: Annotated[
+    thrusters_heat_dump_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    warmup_mix_controller: Annotated[
+    thrusters_warmup_mix_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    pump_controller: Annotated[
+    thrusters_pump_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    aft_recovery_temperature_controller: Annotated[
+    thrusters_aft_recovery_temperature_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    fwd_recovery_temperature_controller: Annotated[
+    thrusters_fwd_recovery_temperature_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    aft_flow_controller: Annotated[
+    thrusters_aft_flow_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    fwd_flow_controller: Annotated[
+    thrusters_fwd_flow_controller: Annotated[
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
@@ -138,13 +138,13 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # n
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState:  # noqa: N802
     return ThrustersControllerState(
-        heat_dump_controller=PidController.zero(timestamp),
-        warmup_mix_controller=PidController.zero(timestamp),
-        pump_controller=PidController.zero(timestamp),
-        aft_recovery_temperature_controller=PidController.zero(timestamp),
-        fwd_recovery_temperature_controller=PidController.zero(timestamp),
-        aft_flow_controller=PidController.zero(timestamp),
-        fwd_flow_controller=PidController.zero(timestamp),
+        thrusters_heat_dump_controller=PidController.zero(timestamp),
+        thrusters_warmup_mix_controller=PidController.zero(timestamp),
+        thrusters_pump_controller=PidController.zero(timestamp),
+        thrusters_aft_recovery_temperature_controller=PidController.zero(timestamp),
+        thrusters_fwd_recovery_temperature_controller=PidController.zero(timestamp),
+        thrusters_aft_flow_controller=PidController.zero(timestamp),
+        thrusters_fwd_flow_controller=PidController.zero(timestamp),
     )
 
 
@@ -404,13 +404,13 @@ class ThrustersControl(
         self._control_flow_balance(sensor_values)
 
         controller_state = ThrustersControllerState(
-            heat_dump_controller=self._heat_dump_controller.values(),
-            warmup_mix_controller=self._warmup_mix_controller.values(),
-            pump_controller=self._pump_controller.values(),
-            aft_recovery_temperature_controller=self._aft_recovery_temperature_controller.values(),
-            fwd_recovery_temperature_controller=self._fwd_recovery_temperature_controller.values(),
-            aft_flow_controller=self._aft_flow_controller.values(),
-            fwd_flow_controller=self._fwd_flow_controller.values(),
+            thrusters_heat_dump_controller=self._heat_dump_controller.values(),
+            thrusters_warmup_mix_controller=self._warmup_mix_controller.values(),
+            thrusters_pump_controller=self._pump_controller.values(),
+            thrusters_aft_recovery_temperature_controller=self._aft_recovery_temperature_controller.values(),
+            thrusters_fwd_recovery_temperature_controller=self._fwd_recovery_temperature_controller.values(),
+            thrusters_aft_flow_controller=self._aft_flow_controller.values(),
+            thrusters_fwd_flow_controller=self._fwd_flow_controller.values(),
         )
 
         return (self._current_control_values, controller_state)

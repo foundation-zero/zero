@@ -11,7 +11,7 @@ export const heatDumpController: PIDController<SensorComponentType.Temperature> 
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "heatDumpController",
+    "thrustersHeatDumpController",
   ),
 };
 export const warmupMixController: PIDController<SensorComponentType.Temperature> = {
@@ -19,7 +19,7 @@ export const warmupMixController: PIDController<SensorComponentType.Temperature>
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "warmupMixController",
+    "thrustersWarmupMixController",
   ),
   setpoint: getField(ParametersType.Temperature, "thrusters", "warmupTemperature"),
 };
@@ -29,7 +29,7 @@ export const aftRecoveryTemperatureController: PIDController<SensorComponentType
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "aftRecoveryTemperatureController",
+    "thrustersAftRecoveryTemperatureController",
   ),
   setpoint: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
 };
@@ -39,14 +39,18 @@ export const fwdRecoveryTemperatureController: PIDController<SensorComponentType
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "fwdRecoveryTemperatureController",
+    "thrustersFwdRecoveryTemperatureController",
   ),
   setpoint: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
 };
 
 export const pumpController: PIDController<SensorComponentType.Flow> = {
   type: SensorComponentType.Flow,
-  controller: getField(ControllerStateComponentType.PIDController, "thrusters", "pumpController"),
+  controller: getField(
+    ControllerStateComponentType.PIDController,
+    "thrusters",
+    "thrustersPumpController",
+  ),
 };
 
 export const aftFlowController: PIDController<SensorComponentType.Flow> = {
@@ -54,7 +58,7 @@ export const aftFlowController: PIDController<SensorComponentType.Flow> = {
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "aftFlowController",
+    "thrustersAftFlowController",
   ),
 };
 
@@ -63,6 +67,6 @@ export const fwdFlowController: PIDController<SensorComponentType.Flow> = {
   controller: getField(
     ControllerStateComponentType.PIDController,
     "thrusters",
-    "fwdFlowController",
+    "thrustersFwdFlowController",
   ),
 };
