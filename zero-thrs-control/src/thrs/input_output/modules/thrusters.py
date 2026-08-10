@@ -1,10 +1,14 @@
-from typing import Annotated
+from typing import Annotated, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.input_output.definitions.units import (
+    WATER_HEAT_TRANSFER_CONVERSION,
+    OptionalCelsius,
+)
 
 
 class ThrustersSensorValues(ThrsValues):
@@ -131,33 +135,60 @@ class ThrustersSensorValues(ThrsValues):
     )
     @property
     def thrusters_temperature_recovery(self) -> sensor.CalculatedTemperature:
-        total_flow = (
-            self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
+        """The average temperature after thrusters before optional mix with pcm."""
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [self.thrusters_flow_aft.flow, self.thrusters_flow_fwd.flow],
+            [self.thrusters_temperature_aft, self.thrusters_temperature_fwd],
+            None,  # No flow, no temperature
         )
-        if (
-            total_flow != 0.0
-            and self.thrusters_temperature_aft.temperature.value is not None
-            and self.thrusters_temperature_fwd.temperature.value is not None
-        ):
-            averaged_return_temperature = (
-                self.thrusters_temperature_aft.temperature.value
-                * self.thrusters_flow_aft.flow.value
-                + self.thrusters_temperature_fwd.temperature.value
-                * self.thrusters_flow_fwd.flow.value
-            ) / total_flow
-        else:
-            averaged_return_temperature = None  # No flow, no temperature
 
-        return sensor.CalculatedTemperature(
-            temperature=Stamped(
-                value=averaged_return_temperature,
-                timestamp=min(
-                    self.thrusters_temperature_aft.temperature.timestamp,
-                    self.thrusters_temperature_fwd.temperature.timestamp,
-                    self.thrusters_flow_aft.flow.timestamp,
-                    self.thrusters_flow_fwd.flow.timestamp,
-                ),
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def thrusters_temperature_pre_cooler(self) -> sensor.CalculatedTemperature:
+        """
+        The temperature after the thrusters and mix with pcm.
+
+        If this was an actual sensor it would have been located just before the inlet to the seawater exchanger.
+        """
+        if sensor.valves_open_closed(
+            open_valves=[self.thrusters_switch_fwd, self.thrusters_switch_aft]
+        ):
+            # If switches to A we can return a real sensor
+            return self.thrusters_temperature_recovery
+
+        if sensor.valves_open_closed(
+            closed_valves=[self.thrusters_switch_fwd, self.thrusters_switch_aft]
+        ):
+            # If switches to B we need to calculate
+            return sensor.CalculatedTemperature(
+                temperature=cast(
+                    Stamped[OptionalCelsius],
+                    self.thrusters_temperature_recovery_mix.temperature,
+                )
             )
+
+        # If valves are not both completely closed or opened, we don't know the temp
+        return sensor.CalculatedTemperature(
+            temperature=Stamped.combine(
+                self.thrusters_switch_fwd.position_rel,
+                self.thrusters_switch_aft.position_rel,
+                value=None,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def thrusters_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow.from_summed_sensors(
+            self.thrusters_flow_aft, self.thrusters_flow_fwd
         )
 
     @computed_field(
@@ -167,9 +198,43 @@ class ThrustersSensorValues(ThrsValues):
     )
     @property
     def thrusters_seawater_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger(
-            delta_t=Stamped.stamp(0), heat=Stamped.stamp(0)
-        )  # TODO: Find where this should come from
+        temperature_supply = self.thrusters_temperature_pre_cooler.temperature
+        temperature_return = self.thrusters_temperature_supply.temperature
+        flow = self.thrusters_flow.flow
+        exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
+
+        # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=(
+                (
+                    1
+                    / exchange_mix_ration.value
+                    * (temperature_return.value - temperature_supply.value)
+                )
+                if exchange_mix_ration.value > 0
+                else 0.0
+            )
+            if temperature_supply.value
+            else 0.0,
+        )
+
+        # We don't use above delta_t because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
+        heat = Stamped.combine(
+            temperature_return,
+            temperature_supply,
+            flow,
+            value=flow.value
+            * (
+                (temperature_return.value - temperature_supply.value)
+                if temperature_supply.value
+                else 0.0
+            )
+            * WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+        return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
 
 
 class ThrustersControlValues(ThrsValues):
