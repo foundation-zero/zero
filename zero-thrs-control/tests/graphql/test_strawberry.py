@@ -540,7 +540,24 @@ async def test_query_controller_state(app, test_client):
                     }
                     pvt {
                         controllerState {
-                            Empty
+                            pvtHeatDumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            pvtMainAftController {
+                                mode { value }
+                            }
+                            pvtMainFwdController {
+                                mode { value }
+                            }
+                            pvtOwnersController {
+                                mode { value }
+                            }
                         }
                     }
                     pcm {
@@ -827,7 +844,54 @@ async def test_query_controller_state(app, test_client):
                     },
                 },
                 "pvt": {
-                    "controllerState": {"Empty": None},
+                    "controllerState": {
+                        "pvtHeatDumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "pvtMainAftController": {
+                            "mode": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "pvtMainFwdController": {
+                            "mode": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "pvtOwnersController": {
+                            "mode": {
+                                "value": "IDLE",
+                            },
+                        },
+                    },
                 },
                 "pcm": {
                     "controllerState": {"Empty": None},
