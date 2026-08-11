@@ -51,6 +51,20 @@ jobs:
             exit 1
           fi
 
+      - name: Fail if target commit already has a tag
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          tags=$(gh api --paginate "repos/$REPO/tags" \
+            --jq ".[] | select(.commit.sha == \"$SHA\") | .name")
+
+          if [ -n "$tags" ]; then
+            echo "::error::Target commit $SHA already has tag(s); refusing to create another release tag."
+            echo "$tags" | sed 's/^/- /'
+            exit 1
+          fi
+
       - name: Compute next version
         id: version
         env:
