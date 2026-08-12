@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - feature/fix-thruster-pvt-dhw-mimic
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml

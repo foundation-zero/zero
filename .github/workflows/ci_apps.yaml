@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - main
+      - feature/fix-thruster-pvt-dhw-mimic
     paths:
       - .github/workflows/ci_apps.yaml
       - zero-ui/**
