@@ -42,7 +42,7 @@ hasura metadata apply --admin-secret myadminsecretkey
 
 Run the backend:
 ```bash
-uv run domestic_control api
+uv run domestic_control api --reload true
 ```
 
 Run the stubs:
