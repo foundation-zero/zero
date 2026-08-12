@@ -39,7 +39,9 @@ class FlowSensor(ThrsValues):
 
 class Pump(ThrsValues):
     speed: Stamped[Hz]
-    op_time: Stamped[Seconds]
+    op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
+        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+    )
     flow: Stamped[LMin]
     pressure: Stamped[Bar] = Field(
         default_factory=lambda: Stamped(
