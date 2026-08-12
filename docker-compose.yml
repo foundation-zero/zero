@@ -56,8 +56,6 @@ services:
     depends_on: []
     volumes:
       - "grafana:/var/lib/grafana"
-      - "./grafana/electrical_flow.png:/usr/share/grafana/public/extra/electrical_flow.png"
-      - "./grafana/boat_outline.png:/usr/share/grafana/public/extra/boat_outline.png"
       - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
       - "./grafana/greptime.yaml:/etc/grafana/provisioning/datasources/greptime.yaml"
     profiles:
