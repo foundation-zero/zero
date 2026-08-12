@@ -1265,6 +1265,7 @@
             "y": 8
           },
           "id": 12,
+          "maxDataPoints": 500,
           "options": {
             "colWidth": 0.6,
             "legend": {
@@ -1305,7 +1306,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT timestamp AS time, -- Alarm\r\nmak_1_alarm__value AS fresh_water_mak1_alarm,\r\nmak_2_alarm__value AS fresh_water_mak2_alarm,\r\nchlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm, -- Status\r\ncirc_pump_running__value AS fresh_water_circ_pump_running, -- Control signals\r\ncirc_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT\r\n  date_bin('$__interval', timestamp) AS time,\r\n  MAX(mak_1_alarm__value)            AS fresh_water_mak1_alarm,\r\n  MAX(mak_2_alarm__value)            AS fresh_water_mak2_alarm,\r\n  MAX(chlorine_unit_alarm__value)    AS fresh_water_chlorine_unit_alarm,\r\n  MAX(circ_pump_running__value)      AS fresh_water_circ_pump_running,\r\n  MAX(circ_pump_onoff__value)        AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
