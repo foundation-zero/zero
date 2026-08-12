@@ -30,7 +30,7 @@ class FlowSensor(ThrsValues):
 
 class Pump(ThrsValues):
     speed: Stamped[Hz]
-    op_time: Stamped[Seconds]
+    op_time: Stamped[Seconds] | None = None
     flow: Stamped[LMin]
 
 
