@@ -36,12 +36,13 @@ def unit_for_annotation(annotation: Any) -> Any | None:
         return next(iter(units))
     if isinstance(annotation, UnionType):
         units = {
-            _unit_for_single_annotation(annotation)
-            for annotation in get_args(annotation)
+            _unit_for_single_annotation(arg)
+            for arg in get_args(annotation)
+            if arg is not type(None)
         }
         if len(units) > 1:
             raise ValueError("Union of annotations with different units.")
-        return next(iter(units))
+        return next(iter(units), None)
 
     return _unit_for_single_annotation(annotation)
 

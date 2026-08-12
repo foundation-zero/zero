@@ -32,6 +32,13 @@ def test_unit_for_annotation_union_alias():
     assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
 
 
+def test_unit_for_annotation_optional_stamped():
+    class Data(ThrsValues):
+        a: Stamped[Ratio] | None = None
+
+    assert unit_for_annotation(Data.model_fields["a"].annotation) == Ratio
+
+
 def test_zero_for_unit_float():
     assert zero_for_unit(float) == 0.0
 
