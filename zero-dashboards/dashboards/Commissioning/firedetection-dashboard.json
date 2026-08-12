@@ -1482,7 +1482,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  date_bin('$__interval', timestamp)                    AS time,\r\n\tMAX(fire_detect_muster__value)                        AS fire_detection,\r\n\tMAX(fire_door_powersupplyfail__value)                 AS door_power_supply_fail,\r\n\tMAX(fire_auxiliary_system_emergencysupplyfail__value) AS aux_sys_emergency_supply_fail,\r\n\tMAX(fire_doors_release__value)                        AS doors_release\r\nFROM marpower__450000_fire_detection_general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n  date_bin('$__interval', timestamp)                    AS time,\r\n\tMAX(fire_detect_muster__value)                        AS fire_detection,\r\n\tMAX(fire_door_powersupplyfail__value)                 AS door_power_supply_fail,\r\n\tMAX(fire_auxiliary_system_emergencysupplyfail__value) AS aux_sys_emergency_supply_fail,\r\n\tMAX(fire_doors_release__value)                        AS doors_release\r\nFROM marpower__450000_fire_detection_general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [

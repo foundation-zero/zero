@@ -1798,7 +1798,7 @@
             ]
           },
           "gridPos": {
-            "h": 7,
+            "h": 10,
             "w": 24,
             "x": 0,
             "y": 10
@@ -1845,7 +1845,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp) AS time,\r\n\tMAX(vacuumalarm__value)            AS vacuum_alarm,\r\n\tMAX(cool_pmp_1_remote__value)      AS cooling_pump_1_remavail,\r\n\tMAX(cool_pmp_1_running__value)     AS cooling_pump_1_running,\r\n\tMAX(cool_pmp_2_remote__value)      AS cooling_pump_2_remavail,\r\n\tMAX(cool_pmp_2_running__value)     AS cooling_pump_2_running,\r\n\tMAX(cool_pmp_1_startstop__value)   AS cooling_pump_1_onoff,\r\n\tMAX(cool_pmp_2_startstop__value)   AS cooling_pump_2_onoff\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp) AS time,\r\n\tMAX(vacuumalarm__value)            AS vacuum_alarm,\r\n\tMAX(cool_pmp_1_remote__value)      AS cooling_pump_1_remavail,\r\n\tMAX(cool_pmp_1_running__value)     AS cooling_pump_1_running,\r\n\tMAX(cool_pmp_2_remote__value)      AS cooling_pump_2_remavail,\r\n\tMAX(cool_pmp_2_running__value)     AS cooling_pump_2_running,\r\n\tMAX(cool_pmp_1_startstop__value)   AS cooling_pump_1_onoff,\r\n\tMAX(cool_pmp_2_startstop__value)   AS cooling_pump_2_onoff\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1964,7 +1964,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 20
           },
           "id": 10,
           "options": {

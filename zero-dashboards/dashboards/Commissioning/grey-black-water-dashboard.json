@@ -3227,7 +3227,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)               AS time,\r\n\tMAX(treat_gen_warning_alarm__value)              AS treat_gen_warning_alarm,\r\n\tMAX(sewage_treatment_plant_general_alarm__value) AS treat_gen_alarm\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)               AS time,\r\n\tMAX(treat_gen_warning_alarm__value)              AS treat_gen_warning_alarm,\r\n\tMAX(sewage_treatment_plant_general_alarm__value) AS treat_gen_alarm\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3360,7 +3360,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)       AS time,\r\n\tMAX(pump_fwd_grey_wat_remavail__value)   AS fwd_pump_grey_wat_remavail,\r\n\tMAX(pump_fwd_grey_wat_running__value)    AS fwd_pump_grey_wat_running,\r\n\tMAX(trans_pump_grey_wat_remavail__value) AS trans_pump_grey_wat_remavail,\r\n\tMAX(trans_pump_grey_wat_running__value)  AS trans_pump_grey_wat_running,\r\n\tMAX(trans_pump_blck_wat_remavail__value) AS trans_pump_black_wat_remavail,\r\n\tMAX(trans_pump_blck_wat_running__value)  AS trans_pump_black_wat_running,\r\n\tMAX(sewage_treatment_plant_on__value)    AS treatment_on,\r\n\tMAX(treat_release__value)                AS treatment_release,\r\n\tMAX(treat_dryrunnprot__value)            AS treatment_dry_run_protect\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)       AS time,\r\n\tMAX(pump_fwd_grey_wat_remavail__value)   AS fwd_pump_grey_wat_remavail,\r\n\tMAX(pump_fwd_grey_wat_running__value)    AS fwd_pump_grey_wat_running,\r\n\tMAX(trans_pump_grey_wat_remavail__value) AS trans_pump_grey_wat_remavail,\r\n\tMAX(trans_pump_grey_wat_running__value)  AS trans_pump_grey_wat_running,\r\n\tMAX(trans_pump_blck_wat_remavail__value) AS trans_pump_black_wat_remavail,\r\n\tMAX(trans_pump_blck_wat_running__value)  AS trans_pump_black_wat_running,\r\n\tMAX(sewage_treatment_plant_on__value)    AS treatment_on,\r\n\tMAX(treat_release__value)                AS treatment_release,\r\n\tMAX(treat_dryrunnprot__value)            AS treatment_dry_run_protect\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3501,7 +3501,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)        AS time,\r\n\tMAX(pump_fwd_grey_wat_startstop__value)   AS fwr_pump_grey_wat_start,\r\n\tMAX(trans_pump_grey_wat_startstop__value) AS trans_pump_grey_wat_start,\r\n\tMAX(trans_pump_blck_wat_startstop__value) AS trans_pump_black_wat_start\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)        AS time,\r\n\tMAX(pump_fwd_grey_wat_startstop__value)   AS fwr_pump_grey_wat_start,\r\n\tMAX(trans_pump_grey_wat_startstop__value) AS trans_pump_grey_wat_start,\r\n\tMAX(trans_pump_blck_wat_startstop__value) AS trans_pump_black_wat_start\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [

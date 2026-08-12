@@ -1451,7 +1451,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)              AS time,\r\n\tMAX(chlorine_unit_alarm__value)                 AS fresh_water_chlorine_unit_alarm,\r\n\tMAX(drain_vlv_y_01_pos_overboard__value)        AS drain_valve1_pos_overboard,\r\n\tMAX(drain_vlv_y_02_pos_overboard__value)        AS drain_valve2_pos_overboard,\r\n\tMAX(valve_cold_air_fr_68_y_03_openclose__value) AS valve_cold_air_cool_water_y03_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_04_openclose__value) AS valve_cold_air_cool_water_y04_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_05_openclose__value) AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)              AS time,\r\n\tMAX(chlorine_unit_alarm__value)                 AS fresh_water_chlorine_unit_alarm,\r\n\tMAX(drain_vlv_y_01_pos_overboard__value)        AS drain_valve1_pos_overboard,\r\n\tMAX(drain_vlv_y_02_pos_overboard__value)        AS drain_valve2_pos_overboard,\r\n\tMAX(valve_cold_air_fr_68_y_03_openclose__value) AS valve_cold_air_cool_water_y03_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_04_openclose__value) AS valve_cold_air_cool_water_y04_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_05_openclose__value) AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3384,7 +3384,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 26
           },
           "id": 15,
           "options": {
@@ -3537,7 +3537,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 34
           },
           "id": 17,
           "options": {
@@ -3701,7 +3701,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 42
           },
           "id": 16,
           "options": {
@@ -3852,7 +3852,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 42
+            "y": 50
           },
           "id": 19,
           "options": {
@@ -4003,7 +4003,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 50
+            "y": 58
           },
           "id": 18,
           "options": {
