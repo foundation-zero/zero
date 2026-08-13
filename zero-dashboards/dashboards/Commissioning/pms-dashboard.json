@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 13,
+  "id": 0,
   "links": [
     {
       "asDropdown": true,
@@ -78,14 +78,25 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -832,7 +843,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_fault__value AS f105_fault,\r\n  keb_6_aft_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_open__value  AS status_f105_open1,\r\n  keb_6_aft_thrust_main_break_of_2_f_105_open__value  AS status_f105_open2,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_7_aft_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_fault__value AS f105_fault,\r\n  keb_6_aft_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_open__value  AS status_f105_open1,\r\n  keb_6_aft_thrust_main_break_of_2_f_105_open__value  AS status_f105_open2,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_7_aft_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -866,7 +877,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1613,7 +1635,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_fault__value   AS f105_fault,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_open__value    AS status_f105_open1,\r\n  keb_8_bow_thrust_mainbreakof_2_f_105_open__value    AS status_f105_open2,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_9_bow_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_fault__value   AS f105_fault,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_open__value    AS status_f105_open1,\r\n  keb_8_bow_thrust_mainbreakof_2_f_105_open__value    AS status_f105_open2,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_9_bow_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1660,7 +1682,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2417,7 +2450,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  tempwarn_1__value           AS temp_warning_1,\r\n  tempwarn_2__value           AS temp_warning_2,\r\n  statusok__value             AS status_ok,\r\n  enabledisable__value        AS control_enable,\r\n  safetydisconnect__value     AS control_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb7_sol1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  tempwarn_1__value           AS temp_warning_1,\r\n  tempwarn_2__value           AS temp_warning_2,\r\n  statusok__value             AS status_ok,\r\n  enabledisable__value        AS control_enable,\r\n  safetydisconnect__value     AS control_safety_discon\r\nFROM public.marpower__450000_dc_distribution_conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution-conv/keb7-sol1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2461,7 +2494,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  keb_7_sol_1_bend_mplus__value AS status_bend_mplus,\r\n  keb_7_sol_1_bend_q__value     AS status_bend_q,\r\n  keb_7_sol_1_bendi__value      AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  keb_7_sol_1_bend_mplus__value AS status_bend_mplus,\r\n  keb_7_sol_1_bend_q__value     AS status_bend_q,\r\n  keb_7_sol_1_bendi__value      AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2495,7 +2528,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3650,7 +3694,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv1_temp_warning_1,\r\n  tempwarn_2__value       AS conv1_temp_warning_2,\r\n  statusok__value         AS status_conv1_ok,\r\n  enabledisable__value    AS control_conv1_enable,\r\n  safetydisconnect__value AS control_conv1_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6_sol2_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv1_temp_warning_1,\r\n  tempwarn_2__value       AS conv1_temp_warning_2,\r\n  statusok__value         AS status_conv1_ok,\r\n  enabledisable__value    AS control_conv1_enable,\r\n  safetydisconnect__value AS control_conv1_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb6-sol2-1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3694,7 +3738,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv2_temp_warning_1,\r\n  tempwarn_2__value       AS conv2_temp_warning_2,\r\n  statusok__value         AS status_conv2_ok,\r\n  enabledisable__value    AS control_conv2_enable,\r\n  safetydisconnect__value AS control_conv2_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6_sol2_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv2_temp_warning_1,\r\n  tempwarn_2__value       AS conv2_temp_warning_2,\r\n  statusok__value         AS status_conv2_ok,\r\n  enabledisable__value    AS control_conv2_enable,\r\n  safetydisconnect__value AS control_conv2_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb6-sol2-2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3738,7 +3782,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  keb_6_sol_2_bendmplus__value AS status_bend_mplus,\r\n  keb_6_sol_2_bendq__value     AS status_bend_q,\r\n  keb_6_sol_2_bendi__value     AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  keb_6_sol_2_bendmplus__value AS status_bend_mplus,\r\n  keb_6_sol_2_bendq__value     AS status_bend_q,\r\n  keb_6_sol_2_bendi__value     AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -3812,7 +3856,18 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -4383,7 +4438,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_6_batt_conv_01_hvil__value AS batt_conv_1,\r\n  keb_6_batt_conv_02_hvil__value AS batt_conv_2,\r\n  keb_7_batt_conv_03_hvil__value AS batt_conv_3,\r\n  keb_7_batt_conv_04_hvil__value AS batt_conv_4,\r\n  keb_8_batt_conv_05_hvil__value AS batt_conv_5,\r\n  keb_9_batt_conv_06_hvil__value AS batt_conv_6\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_6_batt_conv_01_hvil__value AS batt_conv_1,\r\n  keb_6_batt_conv_02_hvil__value AS batt_conv_2,\r\n  keb_7_batt_conv_03_hvil__value AS batt_conv_3,\r\n  keb_7_batt_conv_04_hvil__value AS batt_conv_4,\r\n  keb_8_batt_conv_05_hvil__value AS batt_conv_5,\r\n  keb_9_batt_conv_06_hvil__value AS batt_conv_6\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4430,7 +4485,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -5112,7 +5178,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0571\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0571'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5146,7 +5212,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -5828,7 +5905,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0572\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0572'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5863,7 +5940,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -6545,7 +6633,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0573\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6574,13 +6662,24 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${datasource}"
       },
-      "description": "KEB6",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -7262,7 +7361,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0574\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution-dc-switch/keb7-0574'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7296,7 +7395,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -7978,7 +8088,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0575\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0575'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8012,7 +8122,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -8694,7 +8815,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb8_0576\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8728,7 +8849,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -9410,7 +9542,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb8_0577\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0577'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9444,7 +9576,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -10126,7 +10269,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb9_0578\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10161,7 +10304,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -10836,7 +10990,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0573\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0573'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10865,723 +11019,24 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${datasource}"
       },
-      "description": "KEB7",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-reds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/status_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-greens"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/control_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-blues"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 9,
-        "y": 36
-      },
-      "id": 45,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "tripped",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "f105_fault",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Tripped",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "f105_fault label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 10,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_opened",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open1",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 55,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Opened",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open1 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 55,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_closed",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open2",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 85,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Closed",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open2 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 85,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_running",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_f105_open",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_f105_open label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 115,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_open",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 9",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Open cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 10",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_close",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 11",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Close cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 12",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 190,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 13",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Reset cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 14",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 220,
-                "width": 126
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767698352074",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0574\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "DC Switch 05.74",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
       "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -11888,10 +11343,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -12578,7 +12043,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -13094,10 +12570,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -13374,10 +12860,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -14064,7 +13560,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -14580,10 +14087,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -14860,10 +14377,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -23933,10 +23460,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
             "mode": "continuous-greens"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -24379,7 +23916,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -24820,7 +24368,18 @@
           "color": {
             "mode": "continuous-blues"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -26882,7 +26441,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -27673,7 +27243,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -28464,7 +28045,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -28933,7 +28525,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -29402,7 +29005,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -29957,7 +29571,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -30512,7 +30137,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -31067,7 +30703,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -31635,7 +31282,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -32264,7 +31922,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -32893,7 +32562,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -33522,7 +33202,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -34151,7 +33842,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -34780,7 +34482,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -35422,7 +35135,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -35971,7 +35695,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
