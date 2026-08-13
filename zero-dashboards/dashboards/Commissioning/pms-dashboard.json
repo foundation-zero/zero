@@ -12009,7 +12009,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -12538,7 +12538,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  synccomm__value        AS sync_cmd,\r\n  opencbcomm__value      AS open_breaker_cmd,\r\n  nonpreftrip_1__value   AS non_pref_trip1,\r\n  nonpreftrip_2__value   AS non_pref_trip2,\r\n  nonpreftrip_3__value   AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  synccomm__value        AS sync_cmd,\r\n  opencbcomm__value      AS open_breaker_cmd,\r\n  nonpreftrip_1__value   AS non_pref_trip1,\r\n  nonpreftrip_2__value   AS non_pref_trip2,\r\n  nonpreftrip_3__value   AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -12828,7 +12828,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -13526,7 +13526,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14055,7 +14055,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  synccomm__value      AS sync_cmd,\r\n  opencbcomm__value    AS open_breaker_cmd,\r\n  nonpreftrip_4__value AS non_pref_trip1,\r\n  nonpreftrip_5__value AS non_pref_trip2,\r\n  nonpreftrip_6__value AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  synccomm__value      AS sync_cmd,\r\n  opencbcomm__value    AS open_breaker_cmd,\r\n  nonpreftrip_4__value AS non_pref_trip1,\r\n  nonpreftrip_5__value AS non_pref_trip2,\r\n  nonpreftrip_6__value AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14345,7 +14345,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14635,7 +14635,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n  acgrid_bustieopened__value AS bustie_opened,\r\n  acgrid_bustieclosed__value AS bustie_closed\r\nFROM public.marpower__450000_dynamic_conv\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n  acgrid_bustieopened__value AS bustie_opened,\r\n  acgrid_bustieclosed__value AS bustie_closed\r\nFROM public.marpower__450000_dynamic_conv\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
