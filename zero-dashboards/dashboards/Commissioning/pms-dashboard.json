@@ -15350,7 +15350,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  \"totalactivepower __value\"  AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  totalactivepower__value    AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -15479,7 +15479,7 @@
       },
       "id": 69,
       "options": {
-        "inlineEditing": true,
+        "inlineEditing": false,
         "panZoom": false,
         "root": {
           "background": {
@@ -16065,7 +16065,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  totalactivepower__value     AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor,\r\n  rotatingfield__value        AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  totalactivepower__value     AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor,\r\n  rotatingfield__value        AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -17290,7 +17290,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-ps/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -18515,7 +18515,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-sb/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -19740,7 +19740,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-ps/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -20965,7 +20965,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-sb/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -22190,7 +22190,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-ps/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -23415,7 +23415,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dynamic-conv-sb/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -23882,7 +23882,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_7_ugrid_aft_digin_1__value AS aft_dig_in1,\r\n  keb_7_ugrid_aft_digin_2__value AS aft_dig_in2,\r\n  keb_9_ugrid_fwd_digin_1__value AS fwd_dig_in1,\r\n  keb_9_ugrid_fwd_digin_2__value AS fwd_dig_in2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_7_ugrid_aft_digin_1__value AS aft_dig_in1,\r\n  keb_7_ugrid_aft_digin_2__value AS aft_dig_in2,\r\n  keb_9_ugrid_fwd_digin_1__value AS fwd_dig_in1,\r\n  keb_9_ugrid_fwd_digin_2__value AS fwd_dig_in2\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -23969,170 +23969,6 @@
             {
               "background": {
                 "color": {
-                  "field": "digital_output1",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output1",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Digital output 1",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output1 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "digital_output2",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output2",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Digital output 2",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output2 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 40,
-                "width": 264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
                   "field": "enable",
                   "fixed": "#D9D9D9"
                 },
@@ -24168,7 +24004,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 70,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -24208,7 +24044,7 @@
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 70,
+                "top": 10,
                 "width": 264
               },
               "type": "text"
@@ -24247,7 +24083,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 100,
+                "top": 40,
                 "width": 25
               },
               "type": "ellipse"
@@ -24286,7 +24122,7 @@
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 100,
+                "top": 40,
                 "width": 264
               },
               "type": "text"
@@ -24334,7 +24170,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_aft_enable__value         AS enable,\r\n  ugrid_aft_enablefirmware__value AS enable_firmware_update,\r\n  ugrid_aft_digout_1__value       AS digital_output1,\r\n  ugrid_aft_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  enable__value         AS enable,\r\n  enablefirmware__value AS enable_firmware_update\r\nFROM public.marpower__450000_ugrid\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-ugrid/aft'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -24421,170 +24257,6 @@
             {
               "background": {
                 "color": {
-                  "field": "digital_output1",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output1",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Digital output 1",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output1 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "digital_output2",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output2",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Digital output 2",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "digital_output2 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 40,
-                "width": 264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
                   "field": "enable",
                   "fixed": "#D9D9D9"
                 },
@@ -24620,7 +24292,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 70,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -24659,8 +24331,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 70,
+                "top": 10,
                 "width": 264
               },
               "type": "text"
@@ -24698,8 +24369,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
-                "rotation": 0,
-                "top": 100,
+                "top": 40,
                 "width": 25
               },
               "type": "ellipse"
@@ -24737,8 +24407,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 100,
+                "top": 40,
                 "width": 264
               },
               "type": "text"
@@ -24786,7 +24455,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_fwd_enable__value         AS enable,\r\n  ugrid_fwd_enablefirmware__value AS enable_firmware_update,\r\n  ugrid_fwd_digout_1__value       AS digital_output1,\r\n  ugrid_fwd_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  enable__value         AS enable,\r\n  enablefirmware__value AS enable_firmware_update\r\nFROM public.marpower__450000_ugrid\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-ugrid/fwd'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -25590,7 +25259,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -26394,7 +26063,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
