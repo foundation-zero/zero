@@ -26878,7 +26878,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  isolationwarning__value              AS isolation_warning,\r\n  isolationfault__value                AS isolation_fault,\r\n  auxpower_700_to_24_vdcfailure__value AS failure_700_24v,\r\n  auxpower_24_to_24_vdcfailure__value  AS failure_24v,\r\n  busvoltpresent__value                AS status_bus_volt_present,\r\n  operatingvoltpresent__value          AS status_operating_volt_present,\r\n  isolationdisabled__value             AS status_isolation_disabled,\r\n  disableisolation__value              AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution__350v_conv__keb7\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  isolationwarning__value              AS isolation_warning,\r\n  isolationfault__value                AS isolation_fault,\r\n  auxpower_700_to_24_vdcfailure__value AS failure_700_24v,\r\n  auxpower_24_to_24_vdcfailure__value  AS failure_24v,\r\n  busvoltpresent__value                AS status_bus_volt_present,\r\n  operatingvoltpresent__value          AS status_operating_volt_present,\r\n  isolationdisabled__value             AS status_isolation_disabled,\r\n  disableisolation__value              AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution__350v_conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/350v-conv/keb7'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -27680,7 +27680,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  isolationwarning__value              AS isolation_warning,\r\n  isolationfault__value                AS isolation_fault,\r\n  auxpower_700_to_24_vdcfailure__value AS failure_700_24v,\r\n  auxpower_24_to_24_vdcfailure__value  AS failure_24v,\r\n  busvoltpresent__value                AS status_bus_volt_present,\r\n  operatingvoltpresent__value          AS status_operating_volt_present,\r\n  isolationdisabled__value             AS status_isolation_disabled,\r\n  disableisolation__value              AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution__350v_conv__keb8\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  isolationwarning__value              AS isolation_warning,\r\n  isolationfault__value                AS isolation_fault,\r\n  auxpower_700_to_24_vdcfailure__value AS failure_700_24v,\r\n  auxpower_24_to_24_vdcfailure__value  AS failure_24v,\r\n  busvoltpresent__value                AS status_bus_volt_present,\r\n  operatingvoltpresent__value          AS status_operating_volt_present,\r\n  isolationdisabled__value             AS status_isolation_disabled,\r\n  disableisolation__value              AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution__350v_conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/350v-conv/keb8'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -28160,7 +28160,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_7_ldc_01_isolationwarning__value         AS isolation_warning,\r\n  keb_7_ldc_01_isolationfault__value           AS isolation_fault,\r\n  keb_7_ldc_01_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_7_ldc_01_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_7_ldc_01_isolationwarning__value         AS isolation_warning,\r\n  keb_7_ldc_01_isolationfault__value           AS isolation_fault,\r\n  keb_7_ldc_01_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_7_ldc_01_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -28640,7 +28640,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_9_ldc_02_isolationwarning__value         AS isolation_warning,\r\n  keb_9_ldc_02_isolationfault__value           AS isolation_fault,\r\n  keb_9_ldc_02_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_9_ldc_01_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_9_ldc_02_isolationwarning__value         AS isolation_warning,\r\n  keb_9_ldc_02_isolationfault__value           AS isolation_fault,\r\n  keb_9_ldc_02_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_9_ldc_01_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -29206,7 +29206,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb7_ldc1_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb7-ldc1-1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -29772,7 +29772,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb7_ldc1_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb7-ldc1-2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -30338,7 +30338,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -30904,7 +30904,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
