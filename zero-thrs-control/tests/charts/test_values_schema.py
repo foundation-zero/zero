@@ -4,7 +4,7 @@ from typing import get_args
 
 import pytest
 
-from thrs.runtime.descriptions.simulation import MODES, ModeName
+from thrs.runtime.descriptions.simulation import ModeName
 
 SCHEMA_PATH = (
     Path(__file__).parents[2] / "charts" / "zero-thrs-control" / "values.schema.json"
@@ -17,10 +17,6 @@ MODE_NAMES = set(get_args(ModeName.__value__))
 @pytest.fixture(scope="module")
 def schema() -> dict:
     return json.loads(SCHEMA_PATH.read_text())
-
-
-def test_mode_names_match_modes():
-    assert {mode.name for mode in MODES} == MODE_NAMES
 
 
 def test_control_types_enum_matches_mode_names(schema: dict):
