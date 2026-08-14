@@ -94,3 +94,14 @@ jobs:
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool:${{ needs.test.outputs.image_tag }}
           secret-files: |
             "gsheet_sa_key=./zero-data/.gsheet-sa-key.json"
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-data/charts/data_gen"

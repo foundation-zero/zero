@@ -200,3 +200,14 @@ jobs:
           initial-status: success
           environment-url: ${{steps.deploy.outputs.url}}
           environment: ${{steps.deploy.outputs.environment}}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-ui/charts"
