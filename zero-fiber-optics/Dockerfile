@@ -44,6 +44,7 @@ WORKDIR /app
 
 COPY --from=builder /app/zero-fiber-optics /usr/local/bin/zero-fiber-optics
 COPY --chown=1001:1001 example/config.xml /app/example/config.xml
+COPY --chown=1001:1001 config.xml /app/config.xml
 
 USER 1001
 
