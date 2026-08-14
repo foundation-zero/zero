@@ -1,8 +1,9 @@
 use crate::config::{Port, Var};
 use crate::layout::{Layout, Variable, VariableValue};
+use log::warn;
 use nom::{
     number::complete::{
-        be_f32, be_f64, be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8,
+        be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8, le_f32, le_f64,
     },
     IResult,
 };
@@ -34,11 +35,39 @@ pub fn parse_packet_stream<'layout, S>(
 where
     S: Stream<Item = Vec<u8>> + 'layout,
 {
+    let expected_len = expected_packet_len(port_config);
     packets.map(move |packet| {
+        if packet.len() != expected_len {
+            warn!(
+                "Packet length {} does not match expected length {} on port {}",
+                packet.len(),
+                expected_len,
+                port_config.numport
+            );
+        }
+
         parse_packet(&packet, port_config, layout)
             .map(|(_, vars)| vars)
             .map_err(|e| e.to_string())
     })
+}
+
+fn expected_packet_len(port_config: &Port) -> usize {
+    port_config
+        .variables
+        .iter()
+        .map(expected_var_len)
+        .sum::<usize>()
+}
+
+fn expected_var_len(var: &Var) -> usize {
+    match var.var_type.as_str() {
+        "CounterU32" | "UnSignedInt32" | "SignedInt32" | "Float" | "32BitBoolRegister" => 4,
+        "UnSignedInt16" | "SignedInt16" | "16BitBoolRegister" => 2,
+        "UnSignedInt8" | "SignedInt8" | "8BitBoolRegister" => 1,
+        "UnSignedInt64" | "SignedInt64" | "Double" => 8,
+        _ => 0,
+    }
 }
 
 fn parse_variable<'input, 'layout>(
@@ -138,7 +167,7 @@ fn parse_variable<'input, 'layout>(
             ))
         }
         "Float" => {
-            let (i, v) = be_f32(input)?;
+            let (i, v) = le_f32(input)?;
             Ok((
                 i,
                 vec![Variable {
@@ -148,7 +177,7 @@ fn parse_variable<'input, 'layout>(
             ))
         }
         "Double" => {
-            let (i, v) = be_f64(input)?;
+            let (i, v) = le_f64(input)?;
             Ok((
                 i,
                 vec![Variable {
@@ -373,5 +402,55 @@ mod tests {
         assert_eq!(find_number(&values, "Flag"), 128.0);
         assert!(find_bool(&values, "BitSeven"));
         assert!(values.iter().all(|v| v.key != "BitEightOutOfRange"));
+    }
+
+    #[test]
+    fn test_parse_float_little_endian() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Value", "Float", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        // 8C 2B 38 43 is 184.170105 in little-endian float32.
+        let data: &[u8] = &[0x8C, 0x2B, 0x38, 0x43];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert!((find_number(&values, "Value") - 184.170_105).abs() < 1e-5);
+    }
+
+    #[test]
+    fn test_parse_float_zero_word_is_zero() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Zero", "Float", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        let data: &[u8] = &[0x00, 0x00, 0x00, 0x00];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert_eq!(find_number(&values, "Zero"), 0.0);
+    }
+
+    #[test]
+    fn test_parse_double_little_endian() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Value", "Double", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        // 77 BE 9F 1A 2F DD 5E 40 is 123.456 in little-endian float64.
+        let data: &[u8] = &[0x77, 0xBE, 0x9F, 0x1A, 0x2F, 0xDD, 0x5E, 0x40];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert!((find_number(&values, "Value") - 123.456).abs() < 1e-10);
     }
 }

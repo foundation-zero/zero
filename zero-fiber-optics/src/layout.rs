@@ -53,8 +53,9 @@ pub fn packet_payload(
             let key = topic_segment(topic_map, var.key);
             let value = match &var.value {
                 VariableValue::Number(v) => {
-                    let n = Number::from_f64(*v)
-                        .ok_or_else(|| anyhow::anyhow!("non-finite numeric value for '{}'", key))?;
+                    let n = Number::from_f64(*v).ok_or_else(|| {
+                        anyhow::anyhow!("non-finite numeric value for '{}': {}", key, v)
+                    })?;
                     Value::Number(n)
                 }
                 VariableValue::Boolean(v) => Value::Bool(*v),
