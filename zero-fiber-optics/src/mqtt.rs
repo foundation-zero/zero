@@ -1,5 +1,6 @@
 use crate::layout::{packet_payload, TopicMap, Variable};
-use rumqttc::{AsyncClient, MqttOptions, QoS};
+use log::{error, info, warn};
+use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, Outgoing, QoS};
 use std::time::Duration;
 
 pub struct MqttHandler {
@@ -23,11 +24,30 @@ impl MqttHandler {
         }
 
         let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
+        let host_for_log = host.to_string();
+        let username_for_log = username.unwrap_or("<none>").to_string();
 
         // Spawn a task to handle the event loop
         tokio::spawn(async move {
-            while (eventloop.poll().await).is_ok() {
-                // Keep the connection alive
+            loop {
+                match eventloop.poll().await {
+                    Ok(Event::Incoming(Incoming::ConnAck(_))) => {
+                        info!(
+                            "MQTT client connected to {}:{} as username '{}'",
+                            host_for_log, port, username_for_log
+                        );
+                    }
+                    Ok(Event::Outgoing(Outgoing::Disconnect)) => {
+                        warn!("MQTT client disconnected");
+                    }
+                    Ok(_) => {
+                        // Keep the connection alive
+                    }
+                    Err(e) => {
+                        error!("MQTT event loop stopped: {}", e);
+                        break;
+                    }
+                }
             }
         });
 
