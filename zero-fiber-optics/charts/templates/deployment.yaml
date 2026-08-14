@@ -45,6 +45,8 @@ spec:
           args:
             - {{ .Values.configPath | quote }}
           env:
+            - name: RUST_LOG
+              value: {{ .Values.logLevel | quote }}
             - name: MQTT_HOST
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT

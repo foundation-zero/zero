@@ -26,6 +26,11 @@
       "type": "string",
       "description": "Path to the XML config file inside the container."
     },
+    "logLevel": {
+      "type": "string",
+      "description": "Value for the RUST_LOG environment variable (for example: info, debug, trace).",
+      "default": "info"
+    },
     "mqtt": {
       "type": "object",
       "required": ["host", "port"],

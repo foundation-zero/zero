@@ -6,6 +6,7 @@ image:
   tag: ""
 
 configPath: /app/example/config.xml
+logLevel: info
 
 mqtt:
   host: ""
