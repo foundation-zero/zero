@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ print (include "zero-thrs-control.simulation" .) "-" .Values.simulation.type }}
+  name: {{ include "zero-thrs-control.simulation" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-thrs-control.labels" . | nindent 4 }}
     app.kubernetes.io/part-of: thrs-control
-    app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
+    app.kubernetes.io/component: simulation
 spec:
   replicas: 1
   strategy:
@@ -16,13 +16,14 @@ spec:
     matchLabels:
       {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: thrs-control
-      app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
+      app.kubernetes.io/component: simulation
   template:
     metadata:
       labels:
         {{- include "zero-thrs-control.labels" . | nindent 8 }}
         app.kubernetes.io/part-of: thrs-control
-        app.kubernetes.io/component: {{ print "simulation-" .Values.simulation.type }}
+        app.kubernetes.io/component: simulation
+        thrs.zero.nl/mode: {{ .Values.simulation.type }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
