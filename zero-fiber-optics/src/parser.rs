@@ -1,5 +1,6 @@
 use crate::config::{Port, Var};
 use crate::layout::{Layout, Variable, VariableValue};
+use log::{debug, warn};
 use nom::{
     number::complete::{
         be_f32, be_f64, be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8,
@@ -34,11 +35,46 @@ pub fn parse_packet_stream<'layout, S>(
 where
     S: Stream<Item = Vec<u8>> + 'layout,
 {
+    let expected_len = expected_packet_len(port_config);
     packets.map(move |packet| {
+        if packet.len() == expected_len {
+            debug!(
+                "Packet length {} matches expected length {} on port {}",
+                packet.len(),
+                expected_len,
+                port_config.numport
+            );
+        } else {
+            warn!(
+                "Packet length {} does not match expected length {} on port {}",
+                packet.len(),
+                expected_len,
+                port_config.numport
+            );
+        }
+
         parse_packet(&packet, port_config, layout)
             .map(|(_, vars)| vars)
             .map_err(|e| e.to_string())
     })
+}
+
+fn expected_packet_len(port_config: &Port) -> usize {
+    port_config
+        .variables
+        .iter()
+        .map(expected_var_len)
+        .sum::<usize>()
+}
+
+fn expected_var_len(var: &Var) -> usize {
+    match var.var_type.as_str() {
+        "CounterU32" | "UnSignedInt32" | "SignedInt32" | "Float" | "32BitBoolRegister" => 4,
+        "UnSignedInt16" | "SignedInt16" | "16BitBoolRegister" => 2,
+        "UnSignedInt8" | "SignedInt8" | "8BitBoolRegister" => 1,
+        "UnSignedInt64" | "SignedInt64" | "Double" => 8,
+        _ => 0,
+    }
 }
 
 fn parse_variable<'input, 'layout>(
