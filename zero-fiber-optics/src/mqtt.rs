@@ -47,8 +47,9 @@ impl MqttHandler {
         let payload = serde_json::to_string(&packet_payload(variables, topic_map)?)?;
 
         self.client
-            .publish(topic, QoS::AtLeastOnce, false, payload)
-            .await?;
+            .publish(topic.clone(), QoS::AtLeastOnce, false, payload)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to publish to topic '{}': {}", topic, e))?;
         Ok(())
     }
 }
