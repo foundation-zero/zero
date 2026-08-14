@@ -3,7 +3,7 @@ use crate::layout::{Layout, Variable, VariableValue};
 use log::{debug, warn};
 use nom::{
     number::complete::{
-        be_f32, be_f64, be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8,
+        be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8, le_f32, le_f64,
     },
     IResult,
 };
@@ -174,7 +174,7 @@ fn parse_variable<'input, 'layout>(
             ))
         }
         "Float" => {
-            let (i, v) = be_f32(input)?;
+            let (i, v) = le_f32(input)?;
             Ok((
                 i,
                 vec![Variable {
@@ -184,7 +184,7 @@ fn parse_variable<'input, 'layout>(
             ))
         }
         "Double" => {
-            let (i, v) = be_f64(input)?;
+            let (i, v) = le_f64(input)?;
             Ok((
                 i,
                 vec![Variable {
@@ -409,5 +409,38 @@ mod tests {
         assert_eq!(find_number(&values, "Flag"), 128.0);
         assert!(find_bool(&values, "BitSeven"));
         assert!(values.iter().all(|v| v.key != "BitEightOutOfRange"));
+    }
+
+    #[test]
+    fn test_parse_float_little_endian() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Value", "Float", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        // 8C 2B 38 43 is 184.170105 in little-endian float32.
+        let data: &[u8] = &[0x8C, 0x2B, 0x38, 0x43];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert!((find_number(&values, "Value") - 184.170_105).abs() < 1e-5);
+    }
+
+    #[test]
+    fn test_parse_float_zero_word_is_zero() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Zero", "Float", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        let data: &[u8] = &[0x00, 0x00, 0x00, 0x00];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert_eq!(find_number(&values, "Zero"), 0.0);
     }
 }
