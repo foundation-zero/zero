@@ -46,12 +46,12 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(json)
-        if self._value is not None:
-            setattr(self._value, field, value)
-        else:
-            self._values[field] = value
-            if set(self._values.keys()) == set(self._cls.model_fields.keys()):
-                self._value = self._cls(**self._values)
+
+        self._values[field] = value
+        if set(self._values.keys()) == set(self._cls.model_fields.keys()):
+            self._value = self._cls(**self._values)
+
+            if not self._complete_model.done():
                 self._complete_model.set_result(self._value)
 
     def result(self) -> T | None:
