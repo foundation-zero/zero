@@ -119,9 +119,48 @@
                 },
                 "types": {
                     "type": "array",
+                    "description": "Control modes to run; one Deployment per entry. Must match ModeName in src/thrs/runtime/descriptions/simulation.py.",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "thrusters",
+                            "pvt",
+                            "pcm",
+                            "consumers",
+                            "adsorption",
+                            "drives",
+                            "dc",
+                            "high_temperature",
+                            "dhw",
+                            "thrs"
+                        ]
                     }
+                }
+            }
+        },
+        "simulation": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "type": {
+                    "type": "string",
+                    "default": "thrs",
+                    "description": "Simulation mode. Must match ModeName in src/thrs/runtime/descriptions/simulation.py.",
+                    "enum": [
+                        "thrusters",
+                        "pvt",
+                        "pcm",
+                        "consumers",
+                        "adsorption",
+                        "drives",
+                        "dc",
+                        "high_temperature",
+                        "dhw",
+                        "thrs"
+                    ]
                 }
             }
         }
