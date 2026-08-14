@@ -19,6 +19,7 @@ impl MqttHandler {
     ) -> anyhow::Result<Self> {
         let mut mqttoptions = MqttOptions::new(client_id, host, port);
         mqttoptions.set_keep_alive(Duration::from_secs(5));
+        mqttoptions.set_max_packet_size(65536, 65536);
         if let (Some(user), Some(pass)) = (username, password) {
             mqttoptions.set_credentials(user, pass);
         }
