@@ -115,3 +115,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: ${{matrix.target}}
           tags: ${{ env.IMAGE_PREFIX }}${{matrix.target}}:${{ needs.test.outputs.image_tag }}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-thrs-control/charts/zero-thrs-control"
