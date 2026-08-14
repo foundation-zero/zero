@@ -1,6 +1,6 @@
 use crate::config::{Port, Var};
 use crate::layout::{Layout, Variable, VariableValue};
-use log::{debug, warn};
+use log::warn;
 use nom::{
     number::complete::{
         be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8, le_f32, le_f64,
@@ -37,14 +37,7 @@ where
 {
     let expected_len = expected_packet_len(port_config);
     packets.map(move |packet| {
-        if packet.len() == expected_len {
-            debug!(
-                "Packet length {} matches expected length {} on port {}",
-                packet.len(),
-                expected_len,
-                port_config.numport
-            );
-        } else {
+        if packet.len() != expected_len {
             warn!(
                 "Packet length {} does not match expected length {} on port {}",
                 packet.len(),
@@ -442,5 +435,22 @@ mod tests {
         let data: &[u8] = &[0x00, 0x00, 0x00, 0x00];
         let (_, values) = parse_packet(data, &port, &layout).unwrap();
         assert_eq!(find_number(&values, "Zero"), 0.0);
+    }
+
+    #[test]
+    fn test_parse_double_little_endian() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Value", "Double", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        // 77 BE 9F 1A 2F DD 5E 40 is 123.456 in little-endian float64.
+        let data: &[u8] = &[0x77, 0xBE, 0x9F, 0x1A, 0x2F, 0xDD, 0x5E, 0x40];
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert!((find_number(&values, "Value") - 123.456).abs() < 1e-10);
     }
 }
