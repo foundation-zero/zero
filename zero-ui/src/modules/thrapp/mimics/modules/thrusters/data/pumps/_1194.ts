@@ -19,9 +19,7 @@ export default toInstance<MimicComponentType.Pump>({
     flow: getField(ParametersType.Flow, "thrusters", "thrustersMinimumFlow"),
     temperature: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
   },
-  sensors: {
-    pressure: getField(SensorComponentType.Pressure, "thrusters", "thrustersPressureDischarge"),
-  },
+  sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Pump",

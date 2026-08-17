@@ -57,18 +57,22 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionFlowHt {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   adsorptionFlowHot {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   adsorptionFlowWaste {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   adsorptionFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   adsorptionTemperatureHtReturn {
     temperature { value timestamp }
@@ -193,14 +197,17 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   consumersFlowAdsorption {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   consumersFlowBypass {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   consumersFlowcontrolAdsorption {
     positionRel { value timestamp }
@@ -327,16 +334,25 @@ export const DC_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   dcPumpUgrid {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   dcPumpFwd {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   dcTemperatureAft4Return {
     temperature { value timestamp }
@@ -410,50 +426,62 @@ export const DC_SENSOR_QUERY = `
   dcFlowAft4 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowAft3 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowAft2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowAft1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowUgrid2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowUgrid1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowFwd2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowFwd1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowAftReturn {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowFwdReturn {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcFlowUgridReturn {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcSwitchAft4 {
     positionRel { value timestamp }
@@ -693,6 +721,9 @@ export const DHW_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   dhwTemperatureHvacExchangerReturn {
     temperature { value timestamp }
@@ -736,14 +767,17 @@ export const DHW_SENSOR_QUERY = `
   dhwFlowDc {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dhwFlowDrives {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dhwFlowBoosting {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dhwFlowcontrolDc {
     positionRel { value timestamp }
@@ -811,6 +845,7 @@ export const DHW_SENSOR_QUERY = `
   drivesFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesTemperatureRecovery {
     temperature { value timestamp }
@@ -821,6 +856,7 @@ export const DHW_SENSOR_QUERY = `
   dcFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   dcTemperatureRecovery {
     temperature { value timestamp }
@@ -831,6 +867,7 @@ export const DHW_SENSOR_QUERY = `
   consumersFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   consumersTemperatureDhwSupply {
     temperature { value timestamp }
@@ -841,6 +878,7 @@ export const DHW_SENSOR_QUERY = `
   adsorptionFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   adsorptionTemperatureWasteReturn {
     temperature { value timestamp }
@@ -851,6 +889,7 @@ export const DHW_SENSOR_QUERY = `
   freshwaterHotwaterFlow {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
@@ -1017,11 +1056,17 @@ export const DRIVES_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   drivesPump2 {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   drivesTemperatureShorepowerReturn {
     temperature { value timestamp }
@@ -1065,26 +1110,32 @@ export const DRIVES_SENSOR_QUERY = `
   drivesFlowShorepower {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowPropdriveAft1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowPropdriveFwd2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowPropdriveFwd1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowPropdriveAft2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   drivesFlowcontrolPropdriveAft {
     positionRel { value timestamp }
@@ -1320,6 +1371,9 @@ export const PCM_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   pcmTemperatureProducersReturn {
     temperature { value timestamp }
@@ -1354,18 +1408,22 @@ export const PCM_SENSOR_QUERY = `
   pcmFlowModule1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pcmFlowModule2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pcmFlowModule3 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pcmFlowModule4 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pcmSwitchChargingReturn {
     positionRel { value timestamp }
@@ -1493,16 +1551,25 @@ export const PVT_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   pvtPumpMainAft {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   pvtPumpOwners {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   pvtTemperatureMainFwdReturn {
     temperature { value timestamp }
@@ -1534,14 +1601,17 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowMainFwdRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainAftRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtPressureMainFwd {
     pressure { value timestamp }
@@ -1603,42 +1673,52 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowMainString11 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString12 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString21 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString22 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString3 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString4 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString51 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString52 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString61 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString62 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtTemperatureMainString1Supply {
     temperature { value timestamp }
@@ -1688,38 +1768,47 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowMainString71 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString72 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString81 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString82 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString9 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString10 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString111 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString112 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString13 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtTemperatureMainString7Supply {
     temperature { value timestamp }
@@ -1763,26 +1852,32 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowOwnersString1 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersString2 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersString3 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersString4 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersString5 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowOwnersString6 {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtTemperatureOwnersString1Supply {
     temperature { value timestamp }
@@ -2140,11 +2235,17 @@ export const THRUSTERS_SENSOR_QUERY = `
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   thrustersPump2 {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
   }
   thrustersTemperatureAft {
     temperature { value timestamp }
@@ -2167,10 +2268,12 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFlowFwd {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   thrustersFlowAft {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   thrustersFlowcontrolAft {
     positionRel { value timestamp }
@@ -2190,6 +2293,7 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
   thrustersPressureDischarge {
     pressure { value timestamp }
@@ -2208,6 +2312,12 @@ export const THRUSTERS_SENSOR_QUERY = `
   }
   thrustersTemperatureRecovery {
     temperature { value timestamp }
+  }
+  thrustersTemperaturePreCooler {
+    temperature { value timestamp }
+  }
+  thrustersFlow {
+    flow { value timestamp }
   }
   thrustersSeawaterExchanger {
     heat { value timestamp }

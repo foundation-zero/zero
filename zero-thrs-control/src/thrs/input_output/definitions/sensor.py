@@ -1,6 +1,8 @@
 from collections.abc import Sequence
 from typing import Self, cast
 
+from pydantic import Field
+
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
@@ -10,6 +12,7 @@ from thrs.input_output.definitions.units import (
     DeltaT,
     Empty,
     Hz,
+    Joule,
     Liter,
     LMin,
     NoError,
@@ -26,12 +29,28 @@ from thrs.input_output.definitions.units import (
 class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
+    quantity: Stamped[Liter] = Field(
+        default_factory=lambda: Stamped(value=0.0, timestamp=0),
+        json_schema_extra={"included_in_fmu": False},
+    )
 
 
 class Pump(ThrsValues):
     speed: Stamped[Hz]
     op_time: Stamped[Seconds]
     flow: Stamped[LMin]
+    pressure: Stamped[Bar] = Field(
+        default_factory=lambda: Stamped(value=0.0, timestamp=0),
+        json_schema_extra={"included_in_fmu": False},
+    )
+    energy_consumption: Stamped[Joule] = Field(
+        default_factory=lambda: Stamped(value=0.0, timestamp=0),
+        json_schema_extra={"included_in_fmu": False},
+    )
+    power_input: Stamped[Watt] = Field(
+        default_factory=lambda: Stamped(value=0.0, timestamp=0),
+        json_schema_extra={"included_in_fmu": False},
+    )
 
 
 class TemperatureSensor(ThrsValues):

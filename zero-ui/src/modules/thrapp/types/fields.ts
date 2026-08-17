@@ -62,9 +62,7 @@ export type SensorFieldDefinitions = SensorFields<{
     dischargeValve: SensorComponentType.Valve;
     boostingSupply: SensorComponentType.Temperature;
   };
-  [MimicComponentType.Pump]: {
-    pressure: SensorComponentType.Pressure;
-  };
+  [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {
     incoming: SensorComponentType.Temperature;

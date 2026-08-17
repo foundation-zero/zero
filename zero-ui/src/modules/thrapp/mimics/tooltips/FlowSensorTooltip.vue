@@ -44,12 +44,17 @@ const { items, labels } = useTranslations();
           {{ items("flow") }}
         </Partials.ListItem>
       </SensorValue>
-      <Partials.ListItem>
-        {{ items("quantity") }}
-        <template #renderer>
-          <FieldRenderer.QuantityLiters :value="10" />
-        </template>
-      </Partials.ListItem>
+      <SensorValue
+        :source="source"
+        field="quantity"
+      >
+        <Partials.ListItem no-source>
+          {{ items("quantity") }}
+          <template #renderer>
+            <FieldRenderer.QuantityLiters />
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
       <SensorValue
         :source="source"
         field="temperature"
