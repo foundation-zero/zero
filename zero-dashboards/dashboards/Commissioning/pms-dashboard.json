@@ -2450,7 +2450,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  tempwarn_1__value           AS temp_warning_1,\r\n  tempwarn_2__value           AS temp_warning_2,\r\n  statusok__value             AS status_ok,\r\n  enabledisable__value        AS control_enable,\r\n  safetydisconnect__value     AS control_safety_discon\r\nFROM public.marpower__450000_dc_distribution_conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution-conv/keb7-sol1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  tempwarn_1__value           AS temp_warning_1,\r\n  tempwarn_2__value           AS temp_warning_2,\r\n  statusok__value             AS status_ok,\r\n  enabledisable__value        AS control_enable,\r\n  safetydisconnect__value     AS control_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb7-sol1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5934,7 +5934,7 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${datasource}"
       },
-      "description": "KEB6",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -6003,7 +6003,7 @@
         "x": 6,
         "y": 28
       },
-      "id": 48,
+      "id": 44,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -6052,7 +6052,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "tripped",
+              "name": "f105_fault",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6091,11 +6091,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "tripped label",
+              "name": "f105_fault label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 10,
                 "width": 126
               },
@@ -6134,7 +6133,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_opened",
+              "name": "status_f105_open1",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6173,11 +6172,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_opened label",
+              "name": "status_f105_open1 label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 55,
                 "width": 126
               },
@@ -6215,7 +6213,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_closed",
+              "name": "status_f105_open2",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6254,11 +6252,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_closed label",
+              "name": "status_f105_open2 label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 85,
                 "width": 126
               },
@@ -6297,7 +6294,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_running",
+              "name": "control_f105_open",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6336,11 +6333,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "status_running label",
+              "name": "control_f105_open label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 115,
                 "width": 126
               },
@@ -6378,7 +6374,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_open",
+              "name": "Element 9",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6417,11 +6413,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_open label",
+              "name": "Element 10",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 160,
                 "width": 126
               },
@@ -6459,7 +6454,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_close",
+              "name": "Element 11",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6498,11 +6493,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_close label",
+              "name": "Element 12",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 190,
                 "width": 126
               },
@@ -6540,7 +6534,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_reset",
+              "name": "Element 13",
               "placement": {
                 "height": 25,
                 "left": 15,
@@ -6579,11 +6573,10 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "control_reset label",
+              "name": "Element 14",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 220,
                 "width": 126
               },
@@ -6633,7 +6626,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0573'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7361,7 +7354,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution-dc-switch/keb7-0574'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0574'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8182,733 +8175,6 @@
       "gridPos": {
         "h": 8,
         "w": 3,
-        "x": 15,
-        "y": 28
-      },
-      "id": 51,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "tripped",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "tripped",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Tripped",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "tripped label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_opened",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_opened",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 55,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Opened",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_opened label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 55,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_closed",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_closed",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 85,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Closed",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_closed label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 85,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_running",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_running",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_running label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 115,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_open",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_open",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Open cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_open label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 160,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_close",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_close",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Close cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_close label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 190,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_reset",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Reset cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_reset label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 220,
-                "width": 126
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767698352074",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "DC Switch 05.76",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-reds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null+nan",
-                "result": {
-                  "color": "text",
-                  "index": 0
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/status_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-greens"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/control_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-blues"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
         "x": 18,
         "y": 28
       },
@@ -9567,1768 +8833,12 @@
       "type": "canvas"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-reds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null+nan",
-                "result": {
-                  "color": "text",
-                  "index": 0
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/status_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-greens"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/control_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-blues"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 21,
-        "y": 28
-      },
-      "id": 53,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "tripped",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "tripped",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Tripped",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "tripped label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_opened",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_opened",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 55,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Opened",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_opened label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 55,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_closed",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_closed",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 85,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Closed",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_closed label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 85,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_running",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_running",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_running label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 115,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_open",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_open",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Open cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_open label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 160,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_close",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_close",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Close cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_close label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 190,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_reset",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Reset cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_reset label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 220,
-                "width": 126
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767698352074",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "DC Switch 05.78",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "description": "KEB7",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-reds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null+nan",
-                "result": {
-                  "color": "text",
-                  "index": 0
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/status_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-greens"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/control_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-blues"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 6,
-        "y": 36
-      },
-      "id": 44,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "tripped",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "f105_fault",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Tripped",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "f105_fault label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 10,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_opened",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open1",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 55,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Opened",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open1 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 55,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_closed",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open2",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 85,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Closed",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_f105_open2 label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 85,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_running",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_f105_open",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_f105_open label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 115,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_open",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 9",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Open cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 10",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_close",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 11",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Close cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 12",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 190,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_reset",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 13",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Reset cmd",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 14",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 220,
-                "width": 126
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767698352074",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0573'\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "DC Switch 05.73",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-reds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null+nan",
-                "result": {
-                  "color": "text",
-                  "index": 0
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/status_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-greens"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/control_.*/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-blues"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 15,
-        "y": 36
-      },
-      "id": 46,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "status_heartbeat",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_heartbeat",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Heartbeat",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_heartbeat  label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 126
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "status_undervoltage",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_undervoltage",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Undervoltage",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "status_undervoltage label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 40,
-                "width": 126
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767698352074",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB8_DC_SWITCH_0576_HEARTBEAT\").value ORDER BY time)  AS status_heartbeat,\r\n  LAST_VALUE((\"KEB8_DC_SWITCH_0576_UNDERVOLT\").value ORDER BY time)  AS status_undervoltage\r\nFROM marpower.\"450000_dc_distribution_general\"",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "DC Switch 05.76",
-      "type": "canvas"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 36
       },
       "id": 24,
       "panels": [],
@@ -11373,7 +8883,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 45
+        "y": 37
       },
       "id": 55,
       "options": {
@@ -12071,7 +9581,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 45
+        "y": 37
       },
       "id": 58,
       "options": {
@@ -12600,7 +10110,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 45
+        "y": 37
       },
       "id": 77,
       "options": {
@@ -12890,7 +10400,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 45
+        "y": 37
       },
       "id": 70,
       "options": {
@@ -13588,7 +11098,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 45
+        "y": 37
       },
       "id": 59,
       "options": {
@@ -14117,7 +11627,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 45
+        "y": 37
       },
       "id": 78,
       "options": {
@@ -14407,7 +11917,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 44
       },
       "id": 15,
       "options": {
@@ -14760,7 +12270,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 55
+        "y": 47
       },
       "id": 62,
       "options": {
@@ -15475,7 +12985,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 55
+        "y": 47
       },
       "id": 69,
       "options": {
@@ -16202,7 +13712,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 61
+        "y": 53
       },
       "id": 68,
       "options": {
@@ -17427,7 +14937,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 61
+        "y": 53
       },
       "id": 73,
       "options": {
@@ -18652,7 +16162,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 62
       },
       "id": 71,
       "options": {
@@ -19877,7 +17387,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 62
       },
       "id": 74,
       "options": {
@@ -21102,7 +18612,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 71
       },
       "id": 72,
       "options": {
@@ -22327,7 +19837,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 79
+        "y": 71
       },
       "id": 75,
       "options": {
@@ -23445,7 +20955,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 80
       },
       "id": 76,
       "panels": [],
@@ -23490,7 +21000,7 @@
         "h": 5,
         "w": 5,
         "x": 0,
-        "y": 89
+        "y": 81
       },
       "id": 57,
       "options": {
@@ -23944,7 +21454,7 @@
         "h": 5,
         "w": 5,
         "x": 12,
-        "y": 89
+        "y": 81
       },
       "id": 19,
       "options": {
@@ -24232,7 +21742,7 @@
         "h": 5,
         "w": 5,
         "x": 17,
-        "y": 89
+        "y": 81
       },
       "id": 54,
       "options": {
@@ -24508,7 +22018,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 94
+        "y": 86
       },
       "id": 60,
       "options": {
@@ -25312,7 +22822,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 94
+        "y": 86
       },
       "id": 61,
       "options": {
@@ -26093,7 +23603,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 94
       },
       "id": 32,
       "panels": [],
@@ -26171,7 +23681,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 103
+        "y": 95
       },
       "id": 79,
       "options": {
@@ -26973,7 +24483,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 103
+        "y": 95
       },
       "id": 80,
       "options": {
@@ -27775,7 +25285,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 108
+        "y": 100
       },
       "id": 81,
       "options": {
@@ -28255,7 +25765,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 108
+        "y": 100
       },
       "id": 82,
       "options": {
@@ -28640,7 +26150,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_9_ldc_02_isolationwarning__value         AS isolation_warning,\r\n  keb_9_ldc_02_isolationfault__value           AS isolation_fault,\r\n  keb_9_ldc_02_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_9_ldc_01_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  keb_9_ldc_02_isolationwarning__value         AS isolation_warning,\r\n  keb_9_ldc_02_isolationfault__value           AS isolation_fault,\r\n  keb_9_ldc_02_isolationdisabled__value        AS status_isolation_disabled,\r\n  keb_9_ldc_02_isolationdisable__value         AS control_disable_isolation\r\nFROM public.marpower__450000_dc_distribution_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -28735,7 +26245,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 112
+        "y": 104
       },
       "id": 83,
       "options": {
@@ -29301,7 +26811,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 112
+        "y": 104
       },
       "id": 84,
       "options": {
@@ -29867,7 +27377,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 112
+        "y": 104
       },
       "id": 85,
       "options": {
@@ -30338,7 +27848,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9-ldc2-1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -30433,7 +27943,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 112
+        "y": 104
       },
       "id": 86,
       "options": {
@@ -30904,7 +28414,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9_ldc2_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS temp_warning1,\r\n  tempwarn_2__value       AS temp_warning2,\r\n  statusok__value         AS status_ok,\r\n  enabledisable__value    AS control_enable,\r\n  safetydisconnect__value AS control_safety_disconnect\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE $__timeFilter(timestamp)\r\nAND topic = 'marpower/450000-dc-distribution/conv/keb9-ldc2-2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -30934,7 +28444,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 118
+        "y": 110
       },
       "id": 23,
       "panels": [],
@@ -31012,7 +28522,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 119
+        "y": 111
       },
       "id": 87,
       "options": {
@@ -31652,7 +29162,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 119
+        "y": 111
       },
       "id": 88,
       "options": {
@@ -32292,7 +29802,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 119
+        "y": 111
       },
       "id": 89,
       "options": {
@@ -32932,7 +30442,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 119
+        "y": 111
       },
       "id": 90,
       "options": {
@@ -33572,7 +31082,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 126
+        "y": 118
       },
       "id": 91,
       "options": {
@@ -34212,7 +31722,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 126
+        "y": 118
       },
       "id": 92,
       "options": {
@@ -34787,7 +32297,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 133
+        "y": 125
       },
       "id": 31,
       "panels": [],
@@ -34865,7 +32375,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 134
+        "y": 126
       },
       "id": 93,
       "options": {
@@ -35425,7 +32935,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 134
+        "y": 126
       },
       "id": 94,
       "options": {
@@ -35968,7 +33478,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 139
+        "y": 131
       },
       "id": 13,
       "options": {
@@ -36600,8 +34110,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-singel",
-          "value": "PE746E5A5E0A52672"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
