@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { formatNumber } from "@/modules/common/lib/utils";
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
+import { ControlComponentType } from "@/modules/thrsim/types/index.ts";
 import { Label } from "../components/label/index.ts";
+import ControlValue from "../providers/ControlValue.vue";
 import { ModuleField } from "../providers/index.ts";
-import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers/index.ts";
 import { MimicComponentInstanceProps } from "./index.ts";
 
-defineProps<MimicComponentInstanceProps & { pump: ModuleField<SensorComponentType.Pump> }>();
+defineProps<MimicComponentInstanceProps & { pump: ModuleField<ControlComponentType.Pump> }>();
 </script>
 
 <template>
@@ -17,12 +16,12 @@ defineProps<MimicComponentInstanceProps & { pump: ModuleField<SensorComponentTyp
   >
     {{ tagId }}
     <template #value>
-      <SensorValue
+      <ControlValue
         :source="pump"
-        field="flow"
+        field="dutypoint"
       >
-        <FieldRenderer.Percentage :format="formatNumber.int" />
-      </SensorValue>
+        <FieldRenderer.Percentage />
+      </ControlValue>
     </template>
   </Label>
 </template>
