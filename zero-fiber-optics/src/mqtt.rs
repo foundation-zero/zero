@@ -1,7 +1,8 @@
 use crate::layout::{packet_payload, TopicMap, Variable};
 use log::{error, info, warn};
-use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, Outgoing, QoS};
+use rumqttc::{AsyncClient, ConnectionError, Event, Incoming, MqttOptions, Outgoing, QoS};
 use std::time::Duration;
+use tokio_retry::strategy::{jitter, ExponentialBackoff};
 
 pub struct MqttHandler {
     client: AsyncClient,
@@ -28,8 +29,15 @@ impl MqttHandler {
         let host_for_log = host.to_string();
         let username_for_log = username.unwrap_or("<none>").to_string();
 
-        // Spawn a task to handle the event loop
         tokio::spawn(async move {
+            let make_backoff = || {
+                ExponentialBackoff::from_millis(2)
+                    .factor(500)
+                    .max_delay(Duration::from_secs(60))
+                    .map(jitter)
+            };
+            let mut backoff = make_backoff();
+
             loop {
                 match eventloop.poll().await {
                     Ok(Event::Incoming(Incoming::ConnAck(_))) => {
@@ -37,16 +45,23 @@ impl MqttHandler {
                             "MQTT client connected to {}:{} as username '{}'",
                             host_for_log, port, username_for_log
                         );
+                        backoff = make_backoff();
                     }
                     Ok(Event::Outgoing(Outgoing::Disconnect)) => {
                         warn!("MQTT client disconnected");
                     }
-                    Ok(_) => {
-                        // Keep the connection alive
-                    }
+                    Ok(_) => {}
                     Err(e) => {
-                        error!("MQTT event loop stopped: {}", e);
-                        break;
+                        if matches!(e, ConnectionError::RequestsDone) {
+                            error!("MQTT event loop stopped: request channel closed: {}", e);
+                            break;
+                        }
+                        let delay = backoff.next().unwrap_or(Duration::from_secs(60));
+                        warn!(
+                            "MQTT connection error: {} — reconnecting in {:?}",
+                            e, delay
+                        );
+                        tokio::time::sleep(delay).await;
                     }
                 }
             }
