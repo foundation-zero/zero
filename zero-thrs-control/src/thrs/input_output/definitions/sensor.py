@@ -31,7 +31,9 @@ class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
     quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = Field(
-        default_factory=lambda: Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        default_factory=lambda: Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
     )
 
 
@@ -40,15 +42,21 @@ class Pump(ThrsValues):
     op_time: Stamped[Seconds]
     flow: Stamped[LMin]
     pressure: Stamped[Bar] = Field(
-        default_factory=lambda: Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        default_factory=lambda: Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
         json_schema_extra={"included_in_fmu": False},
     )
     energy_consumption: Stamped[Joule] = Field(
-        default_factory=lambda: Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        default_factory=lambda: Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
         json_schema_extra={"included_in_fmu": False},
     )
     power_input: Stamped[Watt] = Field(
-        default_factory=lambda: Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        default_factory=lambda: Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
         json_schema_extra={"included_in_fmu": False},
     )
 

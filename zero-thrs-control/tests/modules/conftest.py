@@ -4,7 +4,7 @@ import polars as pl
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=1769018304&format=csv"
 
 
 def modelica_names_from_classes(classes: list[type[ThrsValues]]) -> set[str]:
@@ -77,19 +77,13 @@ def compare_yard_tags(
         SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
     )
 
-    sheet_tags_df = (
-        sheet.filter(
-            pl.col("Included in simulation").is_in(["yes", "optional"]),
-        )
-        .with_columns(
-            pl.when(pl.col("Sub") != "")
-            .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
-            .otherwise(pl.col("Pos"))
-            .alias("Tag"),
-            pl.col("Technical name").str.replace_all("-", "_").alias("Technical name"),
-        )
-        .select(["Technical name", "Tag"])
-    )
+    sheet_tags_df = sheet.with_columns(
+        pl.when(pl.col("Sub") != "")
+        .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
+        .otherwise(pl.col("Pos"))
+        .alias("Tag"),
+        pl.col("Technical name").str.replace_all("-", "_").alias("Technical name"),
+    ).select(["Technical name", "Tag"])
 
     duplicated_tags = (
         sheet_tags_df.group_by("Technical name")

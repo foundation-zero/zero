@@ -94,6 +94,22 @@ class PvtSensorValues(ThrsValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
     ]
+    pvt_pressure_main_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-01",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ]
+    pvt_pressure_owners_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-02",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ]
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         component_meta(
