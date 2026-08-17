@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { LoopCircuitInstance } from "../../../instances";
-import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
+import FreshwaterCircuitInstance from "../../../instances/FreshwaterCircuitInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const circuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const hotWaterCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
+const freshwaterCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
 </script>
 
 <template>
   <g>
-    <HotWaterCircuitInstance
+    <FreshwaterCircuitInstance
       x="1002"
       y="316"
       force-height
       height="300"
-      v-bind="hotWaterCircuits?.['pcm']"
+      v-bind="freshwaterCircuits?.['pcm']"
     />
 
     <LoopCircuitInstance

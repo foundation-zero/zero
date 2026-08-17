@@ -90,7 +90,8 @@
         "mode": "Mode",
         "heatExchange": "Heat exchange",
         "thisCircuit": "This circuit",
-        "exchangeCircuit": "Exchange circuit"
+        "exchangeCircuit": "Exchange circuit",
+        "connectingCircuit": "Connecting circuit"
       },
       "sources": {
         "calculated": "Calculated",

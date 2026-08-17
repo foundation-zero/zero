@@ -9,12 +9,12 @@
  */
 
 import { MimicComponentType } from "@/modules/thrapp/types";
-import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
+import FreshwaterCircuitInstance from "../../../instances/FreshwaterCircuitInstance.vue";
 import { LoopCircuitInstance } from "../../../instances/index.ts";
 import { DHW_MIMIC_DATA } from "../data/index.ts";
 
 const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const hotWaterCircuits = DHW_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
+const freshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
 </script>
 
 <template>
@@ -43,12 +43,12 @@ const hotWaterCircuits = DHW_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
       force-height
       v-bind="circuits['adsorption']"
     />
-    <HotWaterCircuitInstance
+    <FreshwaterCircuitInstance
       x="1215"
       y="455"
       force-height
       height="300"
-      v-bind="hotWaterCircuits['domestic']"
+      v-bind="freshwaterCircuits['domestic']"
     />
   </g>
 </template>

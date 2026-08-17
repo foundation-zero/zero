@@ -43,14 +43,14 @@ const t = tScoped("labels");
         <ValueListSeparator />
         <ValueListHeader>
           <RiArrowDownLine class="text-muted-foreground size-3" />
-          {{ t("from") }}
+          {{ t("to") }}
         </ValueListHeader>
         <ValueListFlowItem :source="sensors.flowIn" />
         <ValueListTemperatureItem :source="sensors.tIn" />
         <ValueListSeparator />
         <ValueListHeader>
           <RiArrowLeftLine class="text-muted-foreground size-3" />
-          {{ t("to") }}
+          {{ t("from") }}
         </ValueListHeader>
         <ValueListFlowItem :source="sensors.flowOut" />
         <ValueListTemperatureItem :source="sensors.tOut" />
