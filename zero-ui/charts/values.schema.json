@@ -26,6 +26,10 @@
             "VITE_GRAFANA_URL": {
               "description": "Grafana URL embedded in the UI dashboard iframe (optional)",
               "type": "string"
+            },
+            "VITE_SAIL_SYSTEM_URL": {
+              "description": "Sail system URL embedded in the UI iframe (optional)",
+              "type": "string"
             }
           },
           "required": [
