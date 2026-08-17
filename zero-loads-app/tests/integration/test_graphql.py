@@ -615,15 +615,15 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
         FiberOptic.TOPIC,
         """{
-            "main_v1_ps": 20,
-            "main_v1_sb": 1,
-            "main_d1_ps": 2,
-            "main_d1_sb": 3,
-            "mizzen_v1_ps": 4,
-            "mizzen_v1_sb": 5,
-            "mizzen_d1_ps": 6,
-            "mizzen_d1_sb": 7,
-            "mizzen_forestay": 8
+            "mm-rigging-load-v1-port": 20,
+            "mm-rigging-load-v1-stbd": 1,
+            "mm-rigging-load-d1-port": 2,
+            "mm-rigging-load-d1-stbd": 3,
+            "mz-rigging-load-v1-port": 4,
+            "mz-rigging-load-v1-stbd": 5,
+            "mz-rigging-load-d1-port": 6,
+            "mz-rigging-load-d1-stbd": 7,
+            "mz-mast-strain-s1-fore": 8
         }""",
     )
     await asyncio.sleep(0.1)
