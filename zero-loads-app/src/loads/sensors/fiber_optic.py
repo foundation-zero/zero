@@ -51,7 +51,4 @@ class FiberOptic(LoadsModel):
     mizzen_forestay: Annotated[
         Load,
         VariableMeta(display_name="Forestay", scale_min=0, scale_max=31),
-        Field(
-            validation_alias="mz-mast-strain-s1-fore"
-        ),  # TODO: this isn't correct; should be some other value -> double check if forestay is in fiber optics
-    ]
+    ] = 0
