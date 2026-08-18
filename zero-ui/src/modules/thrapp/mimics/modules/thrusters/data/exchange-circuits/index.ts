@@ -7,7 +7,7 @@ export const THRUSTERS_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
   [MimicComponentType.ExchangeCircuit]: {
     seawater: _seawater,
   },
-  [MimicComponentType.HotWaterCircuit]: {
+  [MimicComponentType.FreshwaterCircuit]: {
     pcm: _pcm,
   },
 });

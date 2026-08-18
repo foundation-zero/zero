@@ -20,13 +20,11 @@ export default toInstance<MimicComponentType.Pump>({
     flow: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
     temperature: getField(ParametersType.Temperature, "dhw", "heatpumpTemperatureSetpoint"),
   },
-  sensors: {
-    pressure: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),
-  },
+  sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Pump",
-      componentType: "Circulation pump hot freshwater",
+      componentType: "Circulation pump boosting",
     });
   },
 });

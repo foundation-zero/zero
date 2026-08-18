@@ -8,19 +8,19 @@ import {
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import HotWaterCircuitInstance from "../instances/HotWaterCircuitInstance.vue";
+import FreshwaterCircuitInstance from "../instances/FreshwaterCircuitInstance.vue";
 import { SensorValue } from "../providers";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
       <NoopTooltipProvider>
-        <HotWaterCircuitInstance
+        <FreshwaterCircuitInstance
           v-bind="props"
           height="243"
           force-height
@@ -35,7 +35,7 @@ const { items, labels, sources } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>
-        {{ labels("exchangeCircuit") }}
+        {{ labels("connectingCircuit") }}
       </TooltipListHeader>
       <SensorValue
         :source="sensors.tIn"
@@ -51,9 +51,6 @@ const { items, labels, sources } = useTranslations();
       >
         <Partials.ListItem size="sm">
           {{ items("incomingFlow") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
         </Partials.ListItem>
       </SensorValue>
       <SensorValue

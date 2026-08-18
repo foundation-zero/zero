@@ -4,17 +4,17 @@ import { MimicComponentType } from "../../../../../types";
 import { getCustomField, getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
-export default toInstance<MimicComponentType.HotWaterCircuit>({
+export default toInstance<MimicComponentType.FreshwaterCircuit>({
   controls: {},
   controllerState: {},
   custom: {},
   parameters: {},
   source: getCustomField("dhw", { technicalName: "fresh-water" }),
   sensors: {
-    flowOut: getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow"),
-    tOut: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
-    flowIn: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
-    tIn: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
+    flowIn: getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow"),
+    tIn: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
+    flowOut: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
+    tOut: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
   },
   get tooltip() {
     return fieldTooltip(this.source, {

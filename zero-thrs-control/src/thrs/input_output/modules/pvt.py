@@ -1,9 +1,11 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict, computed_field
+from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
+    Stamped,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -94,6 +96,30 @@ class PvtSensorValues(ThrsValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
     ]
+    pvt_pressure_main_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-01",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ] = Field(
+        default_factory=lambda: sensor.PressureSensor(
+            pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+        )
+    )
+    pvt_pressure_owners_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-02",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ] = Field(
+        default_factory=lambda: sensor.PressureSensor(
+            pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+        )
+    )
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         component_meta(

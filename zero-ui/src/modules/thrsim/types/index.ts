@@ -120,6 +120,9 @@ export type PumpSensor = {
   flow: Stamped<Ratio>;
   speed: Stamped<number>;
   opTime: Stamped<number>;
+  pressure: Stamped<number>;
+  energyConsumption: Stamped<number>;
+  powerInput: Stamped<number>;
 };
 
 export type TemperatureSensor = {
@@ -145,6 +148,7 @@ export type Valve = {
 export type FlowSensor = {
   flow: Stamped<Ratio>;
   temperature: Stamped<number>;
+  quantity: Stamped<number>;
 };
 
 export type CalculatedFlowSensor = {

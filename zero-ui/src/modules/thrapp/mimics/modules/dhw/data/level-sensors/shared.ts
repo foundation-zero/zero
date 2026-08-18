@@ -5,6 +5,6 @@ import { fieldTooltip } from "../../../shared";
 
 export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
   fieldTooltip(field, {
-    title: "Tanks pressure sensor",
-    componentType: "Tanks pressure sensor",
+    title: "Tank level sensor",
+    componentType: "Tank level sensor",
   });

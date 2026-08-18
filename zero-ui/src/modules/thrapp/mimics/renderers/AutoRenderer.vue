@@ -30,6 +30,8 @@ const editor = computed(() => {
       return FieldRenderer.Heat;
     case "level":
       return FieldRenderer.Level;
+    case "quantity":
+      return FieldRenderer.QuantityLiters;
     case "speed":
       return FieldRenderer.Frequency;
     case "opTime":

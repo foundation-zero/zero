@@ -60,6 +60,10 @@ class CoolingPanelsSensorValues(ThrsValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-01", component_type="flow_sensor"),
     ]
+    cooling_flow_adsorption: Annotated[
+        sensor.FlowSensor,
+        component_meta(yard_tag="50001058-05", component_type="flow_sensor"),
+    ]
     cooling_power_owners_deckhouse: Annotated[
         sensor.PowerSensor,
         component_meta(yard_tag="41006052-1", component_type="power_sensor"),

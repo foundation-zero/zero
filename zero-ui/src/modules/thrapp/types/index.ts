@@ -2,7 +2,7 @@ import { DhwTankController } from "@/modules/thrsim/types";
 
 export const enum MimicComponentType {
   ExchangeCircuit = "ExchangeCircuit",
-  HotWaterCircuit = "HotWaterCircuit",
+  FreshwaterCircuit = "FreshwaterCircuit",
   HeatPump = "HeatPump",
   HVAC = "HVAC",
   SwitchValve = "SwitchValve",
