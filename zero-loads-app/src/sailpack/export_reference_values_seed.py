@@ -46,6 +46,10 @@ def render_sql(
 
 BEGIN;
 
+DELETE FROM loads.reference_values;
+DELETE FROM loads.load_case_mappings;
+DELETE FROM loads.load_cases;
+
 WITH load_case_payload AS (
     SELECT *
     FROM jsonb_to_recordset($${load_cases_json}$$::jsonb) AS t(
@@ -143,10 +147,10 @@ COMMIT;
 
 
 def export_reference_values_seed_sql(
-    input_source: Path, output_sql: Path
+    input_source: Path, mapping_path: Path, output_sql: Path
 ) -> tuple[int, int]:
     sailpack_data = parse_directory(input_source)
-    reference_values_mapping = read_reference_values_mapping(input_source)
+    reference_values_mapping = read_reference_values_mapping(mapping_path)
     load_case_records = build_load_case_records(sailpack_data)
     reference_records = build_reference_records(sailpack_data, reference_values_mapping)
     sql = render_sql(load_case_records, reference_records)

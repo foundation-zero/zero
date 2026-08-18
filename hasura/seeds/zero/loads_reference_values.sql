@@ -3,12 +3,192 @@
 
 BEGIN;
 
+DELETE FROM loads.reference_values;
+DELETE FROM loads.load_case_mappings;
+DELETE FROM loads.load_cases;
+
 WITH load_case_payload AS (
     SELECT *
     FROM jsonb_to_recordset($$[
   {
-    "id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "name": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "name": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "tws": 35.0,
+    "twa": -90.0,
+    "aws": 37.35,
+    "awa": 66.4,
+    "bsp": 15.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "name": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "tws": 27.0,
+    "twa": -39.9,
+    "aws": 36.83,
+    "awa": 25.8,
+    "bsp": 12.5,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "name": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "tws": 24.0,
+    "twa": -40.3,
+    "aws": 33.89,
+    "awa": 24.9,
+    "bsp": 12.5,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "name": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "tws": 35.0,
+    "twa": -45.5,
+    "aws": 44.42,
+    "awa": 32.4,
+    "bsp": 13.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "name": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "tws": 20.0,
+    "twa": -86.0,
+    "aws": 24.19,
+    "awa": 55.2,
+    "bsp": 12.4,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "name": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "tws": 30.0,
+    "twa": -52.0,
+    "aws": 38.73,
+    "awa": 35.3,
+    "bsp": 13.2,
+    "heel": 15.0,
+    "sail_abbreviations": [
+      "M2R",
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "name": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "tws": 19.0,
+    "twa": -41.5,
+    "aws": 28.97,
+    "awa": 23.0,
+    "bsp": 12.5,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "M1R",
+      "MZ1R"
+    ]
+  },
+  {
+    "id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "name": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "tws": 16.0,
+    "twa": -42.5,
+    "aws": 26.43,
+    "awa": 21.7,
+    "bsp": 12.8,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "MZ1R"
+    ]
+  },
+  {
+    "id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "name": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "tws": 25.0,
+    "twa": -70.0,
+    "aws": 35.21,
+    "awa": 40.3,
+    "bsp": 18.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "name": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "tws": 27.0,
+    "twa": -43.1,
+    "aws": 36.97,
+    "awa": 27.9,
+    "bsp": 13.0,
+    "heel": 15.0,
+    "sail_abbreviations": [
+      "M2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "name": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "tws": 15.0,
+    "twa": -91.6,
+    "aws": 22.3,
+    "awa": 40.8,
+    "bsp": 17.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "A3",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "name": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "tws": 14.0,
+    "twa": -87.0,
+    "aws": 22.38,
+    "awa": 36.8,
+    "bsp": 17.2,
+    "heel": 17.5,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ",
+      "MZSS"
+    ]
+  },
+  {
+    "id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "name": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "tws": 14.0,
     "twa": -42.8,
     "aws": 23.82,
@@ -19,37 +199,6 @@ WITH load_case_payload AS (
       "B",
       "FM",
       "FMZ"
-    ]
-  },
-  {
-    "id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "name": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "tws": 12.0,
-    "twa": -84.1,
-    "aws": 19.06,
-    "awa": 37.0,
-    "bsp": 14.0,
-    "heel": 15.0,
-    "sail_abbreviations": [
-      "C0",
-      "FM",
-      "FMZ"
-    ]
-  },
-  {
-    "id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "name": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "tws": 26.0,
-    "twa": -84.6,
-    "aws": 32.04,
-    "awa": 52.2,
-    "bsp": 17.2,
-    "heel": 41.8,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "FMZ",
-      "MZSS"
     ]
   },
   {
@@ -68,17 +217,133 @@ WITH load_case_payload AS (
     ]
   },
   {
-    "id": "FM B Rchng",
-    "name": "FM B Rchng",
+    "id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "name": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "tws": 23.0,
+    "twa": -82.8,
+    "aws": 30.85,
+    "awa": 46.7,
+    "bsp": 18.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "name": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "tws": 24.0,
+    "twa": -43.9,
+    "aws": 34.28,
+    "awa": 26.7,
+    "bsp": 13.4,
+    "heel": 18.0,
+    "sail_abbreviations": [
+      "M1R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "name": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "tws": 20.0,
+    "twa": -83.0,
+    "aws": 28.04,
+    "awa": 44.1,
+    "bsp": 17.7,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "name": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "tws": 22.0,
-    "twa": -90.0,
-    "aws": 27.8,
-    "awa": 50.0,
-    "bsp": 17.9,
+    "twa": -40.7,
+    "aws": 31.92,
+    "awa": 24.2,
+    "bsp": 12.5,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "B",
+      "M1R",
+      "MZ2R"
+    ]
+  },
+  {
+    "id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "name": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "tws": 40.0,
+    "twa": -54.4,
+    "aws": 47.78,
+    "awa": 40.7,
+    "bsp": 13.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R"
+    ]
+  },
+  {
+    "id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "name": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "tws": 45.0,
+    "twa": -47.7,
+    "aws": 53.36,
+    "awa": 36.8,
+    "bsp": 12.5,
+    "heel": 10.0,
+    "sail_abbreviations": [
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "name": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "tws": 14.0,
+    "twa": -50.3,
+    "aws": 24.77,
+    "awa": 23.5,
+    "bsp": 13.8,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ",
+      "MZJ"
+    ]
+  },
+  {
+    "id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "name": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "tws": 18.0,
+    "twa": -42.8,
+    "aws": 28.02,
+    "awa": 23.6,
+    "bsp": 12.5,
     "heel": 22.0,
     "sail_abbreviations": [
       "B",
       "FM"
+    ]
+  },
+  {
+    "id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "name": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "tws": 12.0,
+    "twa": -61.5,
+    "aws": 22.35,
+    "awa": 25.9,
+    "bsp": 14.4,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "C0",
+      "FM",
+      "FMZ"
     ]
   }
 ]$$::jsonb) AS t(
@@ -147,9 +412,18 @@ reference_payload AS (
     SELECT *
     FROM jsonb_to_recordset($$[
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-mizzen-v1-sb",
-    "target": 10.008208715514472,
+    "target": 25.66034272661918,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 25.6596289252701,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -165,36 +439,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-mizzen-v1-sb",
-    "target": 1.5365083897151424,
+    "target": 13.78523756838472,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-mizzen-v1-sb",
-    "target": 18.574538705878155,
+    "target": 27.53345943823834,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-mizzen-v1-sb",
-    "target": 18.931235437177833,
+    "target": 16.568349028465377,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 17.84105683388313,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 6.927849979350746,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 14.565830329419322,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 27.533153523374445,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 25.238384157688916,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 16.858764205921492,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 25.233591491487918,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 13.499207170644409,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 7.702120499864888,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 10.042267237027936,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 24.518770426190393,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 15.629394339555303,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 11.685641885863165,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 24.150041043577573,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 5.137330280982803,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 26.65150688563373,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 4.817649248214222,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 9.74175686906334,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-mizzen-v1-sb",
+    "target": 24.275975995880348,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-mizzen-v1-ps",
-    "target": 34.66535463180597,
+    "target": 27.71221569037337,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 27.71160386064558,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -210,36 +664,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-mizzen-v1-ps",
-    "target": 53.87170950324525,
+    "target": 33.95532623270944,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-mizzen-v1-ps",
-    "target": 21.763293275481434,
+    "target": 28.84399871515757,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-mizzen-v1-ps",
-    "target": 29.837712164704563,
+    "target": 29.580641707412827,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 24.423121045413062,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 37.76172291251345,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 35.49825883456634,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 28.84410068677887,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 28.078701697317637,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 24.918601153299036,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 27.565988385432334,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 31.023744092019193,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 37.057710839073486,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 34.662397454788334,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 27.26180703910102,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 27.56007403139706,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 31.12133093360118,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 27.56252135030821,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 45.67533255494996,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 29.543626008881727,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 41.751260624168296,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 42.15639387558443,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-mizzen-v1-ps",
+    "target": 23.336307505621185,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-mizzen-d1-sb",
-    "target": 0.37464373664809086,
+    "target": 7.317891430814805,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 7.316361856495337,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -255,36 +889,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-mizzen-d1-sb",
-    "target": 0.733379900373726,
+    "target": 1.990995905839405,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-mizzen-d1-sb",
-    "target": 7.623806294708182,
+    "target": 5.708065445386549,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-mizzen-d1-sb",
-    "target": 6.9471226157760295,
+    "target": 4.569756236839288,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 3.598884430463002,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.074311819020767,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.2252298185415,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.707861502143953,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 7.034818210092132,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 2.1989160416656044,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 7.324417614577863,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 0.446941616148226,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 3.4038127189203244,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 0.37882457312130036,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 7.171766097495067,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 6.912758179398674,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.1353928201781445,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.433047982746402,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 5.07645322306802,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-mizzen-d1-sb",
+    "target": 7.436076539898946,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-mizzen-d1-ps",
-    "target": 13.741593714469264,
+    "target": 9.30378875558932,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 9.302259181269852,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -300,36 +1114,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-mizzen-d1-ps",
-    "target": 19.517368316397548,
+    "target": 13.551722555612773,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-mizzen-d1-ps",
-    "target": 11.344852727485941,
+    "target": 7.498381200511898,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-mizzen-d1-ps",
-    "target": 11.185471083397491,
+    "target": 15.237415427286587,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 10.151274900195276,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 19.104893108247975,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 15.156551931597436,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 7.498177257269302,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 9.593286188453753,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 10.655524567512861,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 9.395665186378631,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 11.827790325952288,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 20.66261159519306,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 13.736291190161777,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 9.76164133521641,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 12.444310748318744,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 12.865657487521222,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 9.976087654805667,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 24.827642467101406,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 8.730912187138319,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 15.692004915032147,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 15.327150454028644,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-mizzen-d1-ps",
+    "target": 8.17832797132558,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-mizzen-forestay",
-    "target": 25.750893526331623,
+    "target": 14.371778334089623,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 14.373205936787793,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -345,36 +1339,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-mizzen-forestay",
-    "target": 0.021414040472536495,
+    "target": 21.72046519453636,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-mizzen-forestay",
-    "target": 19.199930659297518,
+    "target": 20.75448802598237,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-mizzen-forestay",
-    "target": 21.442694498121174,
+    "target": 22.554695028373605,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 25.50371431630577,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 22.564382332396896,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 17.378411588055044,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 20.754793940846263,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 14.457740410843662,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 25.87998959889463,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 15.194077488235024,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 23.766933662361765,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 22.249188050965415,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 25.734782010166573,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 16.741700784671625,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 27.879245206059153,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 26.195081908704807,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 16.79319645342701,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 14.782723967919727,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 20.85656161890146,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 14.091152432278097,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 6.654871949136555,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-mizzen-forestay",
+    "target": 24.91656172087308,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-main-v1-ps",
-    "target": 13.66644062957279,
+    "target": 32.47959292928778,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 34.15784187260685,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -390,36 +1564,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-main-v1-ps",
-    "target": 7.204804902795552,
+    "target": 12.058858019813087,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-main-v1-ps",
-    "target": 0.0,
+    "target": 34.09166229038458,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-main-v1-ps",
-    "target": 35.601963973426194,
+    "target": 14.39451800563903,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 6.553716100809145,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 10.756578444218974,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 15.035613588738254,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 35.27555281365196,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 21.674985851437544,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 12.685065746202833,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 33.117527392126775,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 8.676255398122702,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 17.95608082270704,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 11.992270551105628,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 21.863531379217164,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 22.36767907491345,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 11.202806259018116,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 15.512840776411926,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 14.303763262683995,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 6.612247811434078,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 15.18041329098112,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 22.867441990893933,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-main-v1-ps",
+    "target": 42.04901775835785,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-main-v1-sb",
-    "target": 64.16798804892599,
+    "target": 52.52109537915598,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 55.182860609892266,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -435,36 +1789,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-main-v1-sb",
-    "target": 77.9855506212621,
+    "target": 68.5889676902918,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-main-v1-sb",
-    "target": 72.93550804811021,
+    "target": 44.20316825827372,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-main-v1-sb",
-    "target": 104.52182957482933,
+    "target": 73.43425124787771,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 67.49460825052388,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 68.3344465235325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 72.41545277949147,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 43.303064757078104,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 64.71108890395803,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 72.39913732008382,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 54.98462777808936,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 68.32373950329624,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 66.9248928023331,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 65.57427867824384,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 67.3275787348381,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 65.75629802226041,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 63.56941463190794,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 75.97395644792054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 72.03397694421642,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 70.54539521651125,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 65.91017319879877,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 62.07257320287764,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-main-v1-sb",
+    "target": 47.66724620538104,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-main-d1-sb",
-    "target": 2.064721388037709,
+    "target": 7.8398841602382054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 8.204738621241708,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -480,16 +2014,16 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-main-d1-sb",
-    "target": 1.011558483274105,
+    "target": 1.945618534361887,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-main-d1-sb",
     "target": 0.0,
     "alarm_low": null,
@@ -498,18 +2032,198 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-main-d1-sb",
-    "target": 14.544926147053275,
+    "target": 11.436015356926168,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 11.194546557692995,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 4.140251767932984,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 3.407075810801854,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.8479960027124451,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 16.64401197146834,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.8846038147583528,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 13.362463226484069,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 1.277194556754855,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 3.546267073873341,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 3.8054789352123306,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 3.437973212055085,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 10.034925280294495,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 1.5389557086262893,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 8.632407600964651,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-main-d1-sb",
+    "target": 15.886260853604442,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "fiber-optic-main-d1-ps",
-    "target": 25.280498437284905,
+    "target": 32.29889921634809,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 32.16806962622302,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -525,981 +2239,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "fiber-optic-main-d1-ps",
-    "target": 32.46888590905151,
+    "target": 24.982843274716647,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "fiber-optic-main-d1-ps",
-    "target": 33.1298659583038,
+    "target": 29.25994095843127,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "fiber-optic-main-d1-ps",
-    "target": 37.18884634406245,
+    "target": 38.892996079191164,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-runner-load",
-    "target": 1.1435097612334488,
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 26.970576088674523,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-runner-load",
-    "target": 8.951782718869339,
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 30.172077110940027,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-runner-load",
-    "target": 14.32986799773623,
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 26.574620283175193,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-runner-load",
-    "target": 5.244196540102889,
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 21.367235498360806,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-runner-load",
-    "target": 4.538654892343461,
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 36.29384142393172,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-checkstay-load",
-    "target": 1.2799477905298955,
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 32.438294422662175,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-checkstay-load",
-    "target": 1.5472154099514106,
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 39.05502898543335,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-checkstay-load",
-    "target": 1.6682557244318905,
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 26.698719746294607,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-checkstay-load",
-    "target": 1.9973181463598682,
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 33.58007066633356,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-checkstay-load",
-    "target": 3.4489861471552468,
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 25.8581676719369,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-checkstay-deflector-load",
-    "target": 0.23759387762385728,
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 31.582446605109798,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-checkstay-deflector-load",
-    "target": 0.20679844799192384,
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 31.520753774224634,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-checkstay-deflector-load",
-    "target": 0.25492905324448206,
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 25.240729504978766,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-checkstay-deflector-load",
-    "target": 0.33742409487439645,
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 35.88993183197116,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-checkstay-deflector-load",
-    "target": 0.5201572402400412,
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 35.72973441491233,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-preventer-load",
-    "target": 0.0,
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 27.810312390061846,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-preventer-load",
-    "target": 3.3805631892644277,
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 23.704119143642323,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-preventer-load",
-    "target": 4.715881570159024,
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 24.24395690679284,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-preventer-load",
-    "target": null,
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "fiber-optic-main-d1-ps",
+    "target": 22.71897131028435,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-preventer-load",
-    "target": 1.6279769340192625,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-sheet-load",
-    "target": 6.3680257784258645,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-sheet-load",
-    "target": 1.692219055436872,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-sheet-load",
-    "target": 3.233927997838202,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-sheet-load",
-    "target": 0.5850111913854374,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-sheet-load",
-    "target": 0.17294386972105663,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-checkstay-load",
-    "target": 0.8505452932448899,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-checkstay-load",
-    "target": 4.319415906553206,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-checkstay-load",
-    "target": 2.9374964947255178,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-checkstay-load",
-    "target": 3.6208083290420277,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-checkstay-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-runner-load",
-    "target": 17.70247740053943,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-runner-load",
-    "target": 14.438365802797081,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-runner-load",
-    "target": 27.69600220258702,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-runner-load",
-    "target": 26.94906007658069,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-runner-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-checkstay-deflector-load",
-    "target": 0.07668265921594021,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-checkstay-deflector-load",
-    "target": 0.21281477364849363,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-checkstay-deflector-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-checkstay-deflector-load",
-    "target": 0.2803199869476325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-checkstay-deflector-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-vang-load",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-vang-load",
-    "target": 0.06342634844722714,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-vang-load",
-    "target": 3.6618009208037403,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-vang-load",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-vang-load",
-    "target": 56.084391713786054,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-preventer-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-preventer-load",
-    "target": 8.441108839409992,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-preventer-load",
-    "target": 9.653347473398153,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-preventer-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-preventer-load",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-tweaker-load",
-    "target": 4.103440012644481,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-tweaker-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-tweaker-load",
-    "target": 0.04415371202194429,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-tweaker-load",
-    "target": 0.006730127005654327,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-tweaker-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-sheet-load",
-    "target": 8.931490366231078,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-sheet-load",
-    "target": 4.394670963070977,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-sheet-load",
-    "target": 4.444535085885598,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-sheet-load",
-    "target": 9.713714673206447,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-sheet-load",
-    "target": 1.010028908954638,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-halyard-load",
-    "target": 19.3440165601913,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-halyard-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-halyard-load",
-    "target": 17.05893449852906,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-halyard-load",
-    "target": 24.325024345724586,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-halyard-load",
-    "target": 11.16426098616755,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-outhaul-load",
-    "target": 8.188831048319253,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-outhaul-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-outhaul-load",
-    "target": 7.376525113061035,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-outhaul-load",
-    "target": 14.167019318523655,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-outhaul-load",
-    "target": 4.791340569919392,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-cunningham-load",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-cunningham-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-cunningham-load",
-    "target": 1.7845033727113744,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-cunningham-load",
-    "target": 5.0985810648896415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-cunningham-load",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-halyard-load",
-    "target": 13.937277255739728,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-halyard-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-halyard-load",
-    "target": 6.8047702324443105,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-halyard-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-halyard-load",
-    "target": 5.873463415131569,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-outhaul-load",
-    "target": 5.720098096699688,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-outhaul-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-outhaul-load",
-    "target": 4.154017936808186,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-outhaul-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-outhaul-load",
-    "target": 5.187602290282614,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-cunningham-load",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-cunningham-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-cunningham-load",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-cunningham-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-cunningham-load",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-sheet-feeder-load",
-    "target": 8.941381613496963,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-sheet-feeder-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-sheet-feeder-load",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-sheet-feeder-load",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-sheet-feeder-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "primary-winch-load",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "primary-winch-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "primary-winch-load",
-    "target": 10.59321990689991,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "primary-winch-load",
-    "target": 11.316096730279963,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "primary-winch-load",
-    "target": 6.520371380644766,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-cunningham-load",
-    "target": 15.67385396644114,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-cunningham-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-cunningham-load",
-    "target": 18.938067535804787,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-cunningham-load",
-    "target": 20.305506977408186,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-cunningham-load",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "blade-adjuster-load",
-    "target": 27.456776779022398,
+    "target": 16.96889355692311,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "blade-adjuster-load",
+    "target": 15.01226208746106,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -1515,26 +2464,881 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "blade-adjuster-load",
-    "target": 23.089638153701824,
+    "target": 17.165596814406552,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "blade-adjuster-load",
-    "target": 23.195382724987635,
+    "target": 24.777472429422893,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "blade-adjuster-load",
+    "target": 12.699341773184523,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 30.61320634467428,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "blade-adjuster-load",
+    "target": 22.304660612951416,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "blade-adjuster-load",
+    "target": 13.803490488597024,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "blade-adjuster-load",
+    "target": 26.841174101247624,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "blade-adjuster-load",
+    "target": 17.992484691510352,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 16.62045652694855,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "blade-adjuster-load",
+    "target": 12.306547087945425,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "blade-adjuster-load",
+    "target": 27.84651231562256,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "blade-adjuster-load",
+    "target": 17.3111103179985,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "blade-adjuster-load",
+    "target": 27.570271193526843,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 11.569088322719788,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 13.435678850575885,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 29.339070936558358,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "blade-adjuster-load",
+    "target": 13.091728571938429,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "blade-adjuster-load",
+    "target": 18.22457210158413,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "blade-adjuster-load",
+    "target": 28.150387747089987,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "blade-adjuster-load",
+    "target": 22.685524618498672,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "blade-adjuster-load",
+    "target": 21.359485655142173,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "blade-adjuster-load",
+    "target": 15.978851085742837,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.9252599001697828,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.9251579285484848,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-runner-load",
+    "target": 8.951782718869339,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.519616790647163,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-runner-load",
+    "target": 3.800788240632632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-runner-load",
+    "target": 7.265783932331632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 8.911605900078008,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-runner-load",
+    "target": 4.200822910983873,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.724171862970535,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-runner-load",
+    "target": 3.800788240632632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.8869185705618126,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 8.916908424385493,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.1668969525780977,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-runner-load",
+    "target": 3.253812463991271,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-runner-load",
+    "target": 5.524006668944033,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-runner-load",
+    "target": 1.1410624423223017,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 3.376076437927325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 9.116976745371764,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 4.703339060739396,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-runner-load",
+    "target": 3.38831303248306,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-runner-load",
+    "target": 2.371961883007959,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-runner-load",
+    "target": 5.764761666828122,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-runner-load",
+    "target": 5.86418399759347,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-runner-load",
+    "target": 8.569797025487807,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-runner-load",
+    "target": 7.473296181672641,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.1436780144085901,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.1432701279233989,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.5472154099514106,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.9706678631336899,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.2692764603610813,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.9042843376688268,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.3315454309065786,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.9434108487607897,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.9590430983057415,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.2692764603610813,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.14469773062156802,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.0581595142071962,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.10064599022092152,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.176446594912636,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.8435449414427965,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.299424370197774,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.001223659455573514,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.721551192303182,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.7655009610825307,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.12053045637399112,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 0.33925958405775675,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.1580254215251897,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.390520718084157,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 1.5421168288865208,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-checkstay-load",
+    "target": 2.6386176727016872,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.023555444519790143,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.02345347289849235,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.20679844799192384,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.15387517653836938,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.23157755196728752,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.12124425772307566,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.17814442240724407,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.46509256473923305,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.15336531843188042,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.23157755196728752,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.023759387762385727,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.14174055360393203,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.01651940265024244,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.22709080063018464,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.250034415422188,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.24095894112668445,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.0008157729703823426,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.11420821585352796,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.07596885786685566,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.017437147241922572,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.03324274854308046,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.37902851636389595,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.45102048100013764,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.25492905324448206,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-checkstay-deflector-load",
+    "target": 0.36016376642380427,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-preventer-load",
     "target": 0.0,
     "alarm_low": null,
     "warning_low": null,
@@ -1542,8 +3346,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "staysail-sheet-feeder-load",
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-preventer-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1552,7 +3356,898 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "staysail-sheet-feeder-load",
+    "variable_key": "mizzen-preventer-load",
+    "target": 3.3805631892644277,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-preventer-load",
+    "target": 6.7381827637368525,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-preventer-load",
+    "target": 5.028628532679355,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-preventer-load",
+    "target": 6.363539027088761,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-preventer-load",
+    "target": 9.18968251135709,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-preventer-load",
+    "target": 3.025498003905513,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-checkstay-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-checkstay-load",
+    "target": 7.093247949095767,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-checkstay-load",
+    "target": 4.319415906553206,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-checkstay-load",
+    "target": 0.9939173927895867,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-checkstay-load",
+    "target": 3.9224403848408986,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-checkstay-load",
+    "target": 7.431487816940545,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 0.9303890727210617,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-checkstay-load",
+    "target": 2.9154706245251947,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-checkstay-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-checkstay-load",
+    "target": 2.692866575232113,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-checkstay-load",
+    "target": 5.473122829916434,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 5.219825322612717,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-checkstay-load",
+    "target": 16.489015107095696,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-checkstay-load",
+    "target": 1.2507839068387268,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-checkstay-load",
+    "target": 6.302356054310086,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-checkstay-load",
+    "target": 0.9693422320568186,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 3.7526576353800736,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 3.02009350797673,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 0.9055079971244003,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-checkstay-load",
+    "target": 0.899287728225235,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-checkstay-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-checkstay-load",
+    "target": 0.804250177175692,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-checkstay-load",
+    "target": 2.3011935778272905,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-checkstay-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-checkstay-load",
+    "target": 13.042782193715489,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-runner-load",
+    "target": 9.65161395583609,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-runner-load",
+    "target": 10.568032916439355,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-runner-load",
+    "target": 14.438365802797081,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-runner-load",
+    "target": 22.44538145034237,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-runner-load",
+    "target": 6.284307077340376,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-runner-load",
+    "target": 11.058618386503037,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-runner-load",
+    "target": 25.864999770563852,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-runner-load",
+    "target": 23.828218606761737,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-runner-load",
+    "target": 19.45404393957162,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-runner-load",
+    "target": 7.507252731564805,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-runner-load",
+    "target": 9.4710222145177,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-runner-load",
+    "target": 9.405658405265815,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-runner-load",
+    "target": 7.339509414529936,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-runner-load",
+    "target": 18.779297721444124,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-runner-load",
+    "target": 12.477451525240525,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-runner-load",
+    "target": 18.071410726394845,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-runner-load",
+    "target": 12.802842968801782,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-runner-load",
+    "target": 14.069432476941667,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-runner-load",
+    "target": 21.51866335598803,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-runner-load",
+    "target": 8.779756593739963,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-runner-load",
+    "target": 7.602188310993051,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-runner-load",
+    "target": 19.175049583700858,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-runner-load",
+    "target": 14.330173912600124,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-runner-load",
+    "target": 19.600679130997843,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-runner-load",
+    "target": 7.565070640840654,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 1.2611850122111017,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.21281477364849363,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.12114228610177788,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.17579907511739484,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 1.057751627722005,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.06454803628150285,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.1607072751653215,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.11859299556933306,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.9950390806238624,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.909077003869823,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 4.260272366200486,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.11165892532108314,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.9210076835616648,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.08698179296701727,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.4263433486460718,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.21118322770772893,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.11125103883589198,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.0483345484951538,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.07087027680196602,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.42134673920247995,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-checkstay-deflector-load",
+    "target": 3.376076437927325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-vang-load",
+    "target": 48.98726884308097,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-vang-load",
     "target": 0.10197162129779283,
     "alarm_low": null,
     "warning_low": null,
@@ -1560,35 +4255,224 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "staysail-sheet-feeder-load",
-    "target": null,
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-vang-load",
+    "target": 0.06342634844722714,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "staysail-sheet-feeder-load",
-    "target": null,
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-vang-load",
+    "target": 0.01193067969184176,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "staysail-sheet-feeder-load",
-    "target": null,
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-vang-load",
+    "target": 0.0003059148638933785,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "staysail-stay-adjuster-load",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-vang-load",
+    "target": 56.084391713786054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-vang-load",
+    "target": 56.084391713786054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-vang-load",
+    "target": 1.9325661668357696,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-vang-load",
+    "target": 0.0003059148638933785,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-vang-load",
+    "target": 35.69006745422749,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-vang-load",
+    "target": 56.084391713786054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-vang-load",
+    "target": 0.010197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-vang-load",
+    "target": 56.084391713786054,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-vang-load",
+    "target": 0.010197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-vang-load",
+    "target": 0.008055758082525634,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-vang-load",
+    "target": 4.921456358695375,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-vang-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-preventer-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1597,16 +4481,25 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "staysail-stay-adjuster-load",
-    "target": 29.41932260251972,
+    "variable_key": "main-preventer-load",
+    "target": 8.441108839409992,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "staysail-stay-adjuster-load",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-preventer-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1614,8 +4507,17 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "staysail-stay-adjuster-load",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-preventer-load",
+    "target": 4.900654147950625,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-preventer-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1623,8 +4525,26 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "staysail-stay-adjuster-load",
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-preventer-load",
+    "target": 3.9958599521753095,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-preventer-load",
+    "target": 3.1546960480898165,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-preventer-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1632,8 +4552,377 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-preventer-load",
+    "target": 1.9678483478048059,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-preventer-load",
+    "target": 5.4654749583191,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-preventer-load",
+    "target": 12.239959619237966,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-preventer-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-preventer-load",
+    "target": 0.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-preventer-load",
+    "target": 5.4128576017294385,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-preventer-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-sheet-load",
+    "target": 3.670978366720542,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-sheet-load",
+    "target": 5.219723350991419,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-sheet-load",
+    "target": 4.394670963070977,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-sheet-load",
+    "target": 4.276587825608133,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-sheet-load",
+    "target": 3.059148638933785,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-sheet-load",
+    "target": 4.662856327084173,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 8.321292184385086,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-sheet-load",
+    "target": 2.44721693952573,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-sheet-load",
+    "target": 1.7896019537762642,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-sheet-load",
+    "target": 3.059148638933785,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-sheet-load",
+    "target": 9.718609311028741,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 11.152432278097006,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-sheet-load",
+    "target": 2.0597247785941173,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-sheet-load",
+    "target": 9.827311059332189,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-sheet-load",
+    "target": 2.248474249616332,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-sheet-load",
+    "target": 9.3554883675873,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 7.8709855047340325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 7.915343159998573,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 8.363304492359777,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-sheet-load",
+    "target": 10.680711557973416,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-sheet-load",
+    "target": 2.410303212615929,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-sheet-load",
+    "target": 11.708279585791274,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-sheet-load",
+    "target": 6.917448873978372,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-sheet-load",
+    "target": 2.5184951028128872,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-sheet-load",
+    "target": 1.0197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-halyard-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1642,7 +4931,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "variable_key": "main-halyard-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1650,17 +4939,17 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-staysail-tack-adjuster-load",
-    "target": 21.151463547694675,
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-halyard-load",
+    "target": 11.164362957788848,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-halyard-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1668,8 +4957,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-halyard-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1677,7 +4966,1312 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-halyard-load",
+    "target": 16.301081409043864,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-halyard-load",
+    "target": 10.276598022770264,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-halyard-load",
+    "target": 20.921007683561665,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-halyard-load",
+    "target": 20.09279417538099,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-halyard-load",
+    "target": 22.2406224347764,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-halyard-load",
+    "target": 26.83067102425395,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-halyard-load",
+    "target": 16.669810791656683,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-halyard-load",
+    "target": 12.815997307949198,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-outhaul-load",
+    "target": 4.5313129356100195,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-outhaul-load",
+    "target": 7.2548729688527684,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-outhaul-load",
+    "target": 4.432502434572458,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-outhaul-load",
+    "target": 7.931046789678432,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-outhaul-load",
+    "target": 8.810755966614492,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-outhaul-load",
+    "target": 9.981900037219642,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-outhaul-load",
+    "target": 15.292378131166096,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-outhaul-load",
+    "target": 7.779516960429913,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-outhaul-load",
+    "target": 4.7171052296145985,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "main-cunningham-load",
+    "target": 1.5295743194668925,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-cunningham-load",
+    "target": 2.5492905324448207,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-cunningham-load",
+    "target": 1.5295743194668925,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-cunningham-load",
+    "target": 2.5492905324448207,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-cunningham-load",
+    "target": 2.5492905324448207,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-cunningham-load",
+    "target": 2.5492905324448207,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-cunningham-load",
+    "target": 6.0383515267701,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-cunningham-load",
+    "target": 2.0394324259558565,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-cunningham-load",
+    "target": 1.7845033727113744,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-halyard-load",
+    "target": 9.831287952562802,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-halyard-load",
+    "target": 13.088873366542092,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-halyard-load",
+    "target": 9.398826306638863,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-halyard-load",
+    "target": 14.058317570220208,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-halyard-load",
+    "target": 15.800604691714296,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-halyard-load",
+    "target": 14.12612869838324,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-halyard-load",
+    "target": 6.9957630791350764,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-halyard-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 5.816359307204805,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 8.559905778221921,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 5.822783519346566,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 7.749027445661873,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 9.948555317055265,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 7.372854134694315,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-outhaul-load",
+    "target": 3.284403950380609,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-outhaul-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 1.0197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 2.0394324259558565,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 1.0197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 1.5295743194668925,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 2.0394324259558565,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 1.5295743194668925,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-cunningham-load",
+    "target": 1.0197162129779282,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
@@ -1695,7 +6289,16 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "code-zero-tack-load",
+    "target": 23.81700172841898,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
@@ -1704,7 +6307,7 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
@@ -1713,35 +6316,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_key": "code-zero-tack-load",
-    "target": 12.67874350568237,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-checkstay-deflector-relative-position",
-    "target": -0.75,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-checkstay-deflector-relative-position",
-    "target": -0.3,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-checkstay-deflector-relative-position",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1749,89 +6325,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-checkstay-deflector-relative-position",
-    "target": -0.75,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-checkstay-deflector-relative-position",
-    "target": -0.5,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-traveller-relative-position-ps",
-    "target": 0.5,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-traveller-relative-position-ps",
-    "target": 2.5,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-traveller-relative-position-ps",
-    "target": 2.5,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-traveller-relative-position-ps",
-    "target": 2.85,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-traveller-relative-position-ps",
-    "target": 2.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-checkstay-deflector-relative-position",
-    "target": -0.75,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-checkstay-deflector-relative-position",
-    "target": -0.5,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-checkstay-deflector-relative-position",
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1839,35 +6334,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-checkstay-deflector-relative-position",
-    "target": -0.75,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-checkstay-deflector-relative-position",
-    "target": -0.75,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-tweaker-relative-position",
-    "target": -0.15,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-tweaker-relative-position",
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1875,26 +6343,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-tweaker-relative-position",
-    "target": 0.2,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-tweaker-relative-position",
-    "target": -0.15,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-tweaker-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1902,17 +6352,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-outhaul-relative-position",
-    "target": -0.05,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-outhaul-relative-position",
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1920,44 +6361,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-outhaul-relative-position",
-    "target": -0.045,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-outhaul-relative-position",
-    "target": -0.05,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-outhaul-relative-position",
-    "target": -0.065,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-outhaul-relative-position",
-    "target": 0.01,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-outhaul-relative-position",
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1965,17 +6370,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-outhaul-relative-position",
-    "target": -0.01,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-outhaul-relative-position",
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "code-zero-tack-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -1983,17 +6379,125 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-outhaul-relative-position",
-    "target": -0.03,
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-cunningham-relative-position",
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "code-zero-tack-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "aft-winch-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2002,7 +6506,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-cunningham-relative-position",
+    "variable_key": "aft-winch-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2010,8 +6514,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-cunningham-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "aft-winch-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2019,8 +6523,17 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-cunningham-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "aft-winch-load",
+    "target": 14.015897375760327,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "aft-winch-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2028,8 +6541,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-cunningham-relative-position",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "aft-winch-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2037,8 +6550,179 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "blade-adjuster-relative-position",
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "aft-winch-load",
+    "target": 9.78835789999643,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "aft-winch-load",
+    "target": 5.974721235080278,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "aft-winch-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "aft-winch-load-ps",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2047,7 +6731,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "blade-adjuster-relative-position",
+    "variable_key": "aft-winch-load-ps",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2055,8 +6739,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "blade-adjuster-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "aft-winch-load-ps",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2064,8 +6748,17 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "blade-adjuster-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "aft-winch-load-ps",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "aft-winch-load-ps",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2073,8 +6766,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "blade-adjuster-relative-position",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "aft-winch-load-ps",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2082,8 +6775,179 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "main-vang-relative-position",
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "aft-winch-load-ps",
+    "target": 3.633962668189443,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "aft-winch-load-ps",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "aft-winch-load-sb",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2092,25 +6956,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "main-vang-relative-position",
-    "target": 0.055,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-vang-relative-position",
-    "target": 0.035,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-vang-relative-position",
+    "variable_key": "aft-winch-load-sb",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2118,8 +6964,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "main-vang-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "aft-winch-load-sb",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2127,8 +6973,206 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "staysail-stay-adjuster-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "aft-winch-load-sb",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "aft-winch-load-sb",
+    "target": 3.633962668189443,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "aft-winch-load-sb",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "blade-tweaker-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2137,16 +7181,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "staysail-stay-adjuster-relative-position",
-    "target": -0.1,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "staysail-stay-adjuster-relative-position",
+    "variable_key": "blade-tweaker-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2154,8 +7189,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "staysail-stay-adjuster-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "blade-tweaker-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2163,8 +7198,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "staysail-stay-adjuster-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "blade-tweaker-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2172,8 +7207,197 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "mizzen-staysail-tack-adjuster-relative-position",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": 0.07423534030479317,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "blade-tweaker-load",
+    "target": 0.056186363335083846,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "blade-tweaker-load",
+    "target": 6.006842295789082,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "blade-tweaker-load",
+    "target": 4.459422942595076,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": 3.4244109864224788,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "blade-tweaker-load",
+    "target": 5.62159351052602,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "blade-tweaker-load",
+    "target": 0.04303202418766857,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "blade-tweaker-load",
+    "target": 0.04445962688583767,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "blade-tweaker-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "blade-sheet-feeder-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2182,7 +7406,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "mizzen-staysail-tack-adjuster-relative-position",
+    "variable_key": "blade-sheet-feeder-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2190,17 +7414,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "mizzen-staysail-tack-adjuster-relative-position",
-    "target": -0.1,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "mizzen-staysail-tack-adjuster-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "blade-sheet-feeder-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2208,8 +7423,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "mizzen-staysail-tack-adjuster-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "blade-sheet-feeder-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2217,8 +7432,197 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
-    "variable_key": "code-zero-tack-relative-position",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 11.231562256224093,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 9.803041813463313,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 7.406504769722586,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 12.220279096327491,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": 0.10197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "blade-sheet-feeder-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "blade-cunningham-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2227,7 +7631,7 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_key": "code-zero-tack-relative-position",
+    "variable_key": "blade-cunningham-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2235,8 +7639,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "code-zero-tack-relative-position",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "blade-cunningham-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2244,8 +7648,8 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "code-zero-tack-relative-position",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "blade-cunningham-load",
     "target": null,
     "alarm_low": null,
     "warning_low": null,
@@ -2253,18 +7657,648 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
-    "variable_key": "code-zero-tack-relative-position",
-    "target": 0.05,
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": 22.22400106050486,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "blade-cunningham-load",
+    "target": 16.502883247592194,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "blade-cunningham-load",
+    "target": 18.252206410955832,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "blade-cunningham-load",
+    "target": 16.636466071492304,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": 16.93870995701896,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "blade-cunningham-load",
+    "target": 19.73619941570261,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "blade-cunningham-load",
+    "target": 14.451316198701901,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "blade-cunningham-load",
+    "target": 12.286050792064568,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "blade-cunningham-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": 15.257197921818358,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-jib-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": 13.69183156327594,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-staysail-tack-adjuster-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "main-headstay-combined-load",
-    "target": 43.130630745463534,
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -2280,25 +8314,7 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
-    "variable_key": "main-headstay-combined-load",
-    "target": 42.02770568950661,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "FM B Rchng",
-    "variable_key": "main-headstay-combined-load",
-    "target": 43.500889702395824,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "main-headstay-combined-load",
     "target": null,
     "alarm_low": null,
@@ -2307,9 +8323,207 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": 52.83720740517914,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-headstay-combined-load",
+    "target": 38.80754386054361,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-headstay-combined-load",
+    "target": 46.0987187265784,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-headstay-combined-load",
+    "target": 44.20673726501914,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": 46.277780893577315,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-headstay-combined-load",
+    "target": 47.886587162792594,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-headstay-combined-load",
+    "target": 37.13684081720057,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-headstay-combined-load",
+    "target": 33.64553644720674,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-headstay-combined-load",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "main-runner-combined-load",
-    "target": 18.553022693784317,
+    "target": 9.65161395583609,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "main-runner-combined-load",
+    "target": 17.661280865535122,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -2325,36 +8539,216 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "main-runner-combined-load",
-    "target": 30.63349869731254,
+    "target": 23.439298843131958,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "main-runner-combined-load",
-    "target": 30.569868405622717,
+    "target": 10.206747462181275,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "main-runner-combined-load",
-    "target": 0.0,
+    "target": 18.49010620344358,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20250306",
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 26.795388843284915,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "main-runner-combined-load",
+    "target": 26.743689231286933,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "main-runner-combined-load",
+    "target": 19.45404393957162,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "main-runner-combined-load",
+    "target": 10.200119306796918,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "main-runner-combined-load",
+    "target": 14.944145044434133,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 14.625483727878532,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "main-runner-combined-load",
+    "target": 23.82852452162563,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "main-runner-combined-load",
+    "target": 20.03008162828285,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "main-runner-combined-load",
+    "target": 18.77980757955061,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "main-runner-combined-load",
+    "target": 19.040752958451662,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 16.555500604181855,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 17.089525984918396,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 22.424171353112428,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "main-runner-combined-load",
+    "target": 9.679044321965197,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "main-runner-combined-load",
+    "target": 7.602188310993051,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "main-runner-combined-load",
+    "target": 19.97929976087655,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "main-runner-combined-load",
+    "target": 16.631367490427415,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "main-runner-combined-load",
+    "target": 19.600679130997843,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "main-runner-combined-load",
+    "target": 20.60785283455614,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_key": "mizzen-runner-combined-load",
-    "target": 2.4234575517633443,
+    "target": 3.068937914578373,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 3.0684280564718835,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
@@ -2370,27 +8764,198 @@ reference_payload AS (
     "alarm_high": null
   },
   {
-    "load_case_id": "LC35_ B_FM_FMZ_MZSS_TWA115_TWS26_RMMax_20240411",
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_key": "mizzen-runner-combined-load",
-    "target": 15.99812372216812,
+    "target": 3.490284653780853,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "FM B Rchng",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_key": "mizzen-runner-combined-load",
-    "target": 7.241514686462757,
+    "target": 6.070064700993713,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,
     "alarm_high": null
   },
   {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA110_TWS12_RM15_NoRunner_20240630",
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_key": "mizzen-runner-combined-load",
-    "target": 7.987641039498707,
+    "target": 8.17006827000046,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 10.243151330984587,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 7.144233759744663,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 3.683214961276277,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 6.070064700993713,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 3.0316163011833805,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 9.975067938592689,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 2.267542942799019,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 4.430259058903907,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 7.367551610386829,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 2.4404868125200756,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 3.3773000973828986,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 9.838527937674945,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 5.4688400218219275,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 3.508843488857051,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 2.7112214670657155,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 7.922787088353312,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 8.254704715677626,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 10.111913854374327,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": null,
+    "alarm_high": null
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_key": "mizzen-runner-combined-load",
+    "target": 10.111913854374329,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": null,

@@ -26,7 +26,7 @@ KNOWN_SAIL_ABBREVIATIONS = {
 
 SAIL_ABBREVIATION_ALIASES = {"MH0": "C0"}
 
-MAPPING_FILE_NAME = "Sailpack mapping - Mapping.csv"
+MAPPING_FILE_NAME = "sailpack_mapping.csv"
 
 NEWTON_PER_TONNE_FORCE = 9806.65
 
@@ -141,7 +141,6 @@ def extract_reference_values(
             .str.strip_suffix(" - After FSIC")
             .str.strip_suffix(" - FSIC trimmings")
         )
-        .drop_nulls(subset=["value", "Cable name"])
         .filter(
             ~(
                 (pl.col("Trimming mode - FSIC trimmings") == "Target load")
@@ -150,6 +149,7 @@ def extract_reference_values(
         )
         .drop("Trimming mode - FSIC trimmings")
         .cast({"value": pl.Float64}, strict=False)
+        .drop_nulls(subset=["value", "Cable name"])
     )
 
     reference_values_raw = (
@@ -174,6 +174,9 @@ def extract_reference_values(
             .alias("type")
         )
         .drop("Column label")
+        .filter(
+            pl.col("type") == "load"
+        )  # TODO: remove later, but drop target positions for now as they require remapping to be useful as reference values
     )
 
     reference_values = reference_values_raw.with_columns(
@@ -206,8 +209,7 @@ def extract_reference_values(
     return reference_values_extended
 
 
-def read_reference_values_mapping(input_source: Path) -> pl.DataFrame:
-    mapping_path = input_source / MAPPING_FILE_NAME
+def read_reference_values_mapping(mapping_path: Path) -> pl.DataFrame:
     if not mapping_path.exists():
         raise FileNotFoundError(f"Mapping file not found: {mapping_path}")
 

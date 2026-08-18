@@ -137,6 +137,9 @@ def parse_tables(file_path: Path, soup: BeautifulSoup) -> list[pl.DataFrame]:
             if tr.find_all("td")
         ]
 
+        if not rows:
+            continue
+
         try:
             result.append(
                 pl.DataFrame(rows, schema=header, orient="row").with_columns(
