@@ -2,8 +2,6 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
-from pydantic import Field
-
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
@@ -30,10 +28,8 @@ from thrs.input_output.definitions.units import (
 class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
-    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = Field(
-        default_factory=lambda: Stamped(
-            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
+    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = Stamped(
+        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
     )
 
 
@@ -43,23 +39,14 @@ class Pump(ThrsValues):
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
     )
     flow: Stamped[LMin]
-    pressure: Stamped[Bar] = Field(
-        default_factory=lambda: Stamped(
-            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+    pressure: Annotated[Stamped[Bar], field_meta(included_in_fmu=False)] = Stamped(
+        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
     )
-    energy_consumption: Stamped[Joule] = Field(
-        default_factory=lambda: Stamped(
-            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+    energy_consumption: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)] = (
+        Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
-    power_input: Stamped[Watt] = Field(
-        default_factory=lambda: Stamped(
-            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+    power_input: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)] = Stamped(
+        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
     )
 
 
