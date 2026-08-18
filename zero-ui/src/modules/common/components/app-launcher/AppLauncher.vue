@@ -34,6 +34,10 @@ const APPS: App[] = [
     name: ZeroApps.grafana,
     link: "/grafana",
   },
+  {
+    name: ZeroApps.sailSystem,
+    link: "/sail-system",
+  },
 ].filter((app) => INCLUDED_APPS.includes(app.name));
 </script>
 <template>

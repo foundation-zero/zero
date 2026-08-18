@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { INCLUDED_APPS, ZeroApps } from "./apps";
-import { grafanaRoute, sharedRoutes } from "./modules/common/router";
+import { grafanaRoute, sailSystemRoute, sharedRoutes } from "./modules/common/router";
 import { domesticRoutes } from "./modules/domestic/router";
 import { loadsRoutes } from "./modules/loads/router";
 import { thrappRoutes } from "./modules/thrapp/router";
@@ -8,6 +8,7 @@ import { thrsimRoutes } from "./modules/thrsim/router";
 
 const appRoutes: Record<ZeroApps, RouteRecordRaw> = {
   [ZeroApps.grafana]: grafanaRoute,
+  [ZeroApps.sailSystem]: sailSystemRoute,
   [ZeroApps.thrsim]: thrsimRoutes,
   [ZeroApps.domestic]: domesticRoutes,
   [ZeroApps.loads]: loadsRoutes,
