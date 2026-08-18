@@ -72,7 +72,12 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Flow]: () => {
     const flow = useRandomizedNumber(1, 10);
     const temperature = useRandomizedNumber(20, 100);
-    return computed(() => ({ flow: stamp(flow), temperature: stamp(temperature) }));
+    const quantity = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      flow: stamp(flow),
+      temperature: stamp(temperature),
+      quantity: stamp(quantity),
+    }));
   },
   [SensorComponentType.Level]: () => {
     const level = useRandomizedNumber(0, 100);
@@ -99,10 +104,16 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const flow = useRandomizedNumber(0, 10);
     const speed = useRandomizedNumber(0, 100);
     const opTime = useRandomizedNumber(0, 1000);
+    const pressure = useRandomizedNumber(1, 10);
+    const energyConsumption = useRandomizedNumber(0, 1000);
+    const powerInput = useRandomizedNumber(0, 100);
     return computed(() => ({
       flow: stamp(flow),
       speed: stamp(speed),
       opTime: stamp(opTime),
+      pressure: stamp(pressure),
+      energyConsumption: stamp(energyConsumption),
+      powerInput: stamp(powerInput),
     }));
   },
   [SensorComponentType.Thruster]: () => {
