@@ -1211,6 +1211,8 @@ type PvtSensorValuesType {
   pvtPressureMainAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-04", componentType: "pressure_sensor", valveType: null)
   pvtPressureOwners: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-05", componentType: "pressure_sensor", valveType: null)
   pvtPressureSystem: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-06", componentType: "pressure_sensor", valveType: null)
+  pvtPressureMainVacuum: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50009059-01", componentType: "pressure_sensor", valveType: null)
+  pvtPressureOwnersVacuum: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50009059-02", componentType: "pressure_sensor", valveType: null)
   pvtSwitchMainFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-01", componentType: "valve", valveType: "switch")
   pvtSwitchMainAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: "valve", valveType: "switch")
   pvtSwitchOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: "valve", valveType: "switch")
