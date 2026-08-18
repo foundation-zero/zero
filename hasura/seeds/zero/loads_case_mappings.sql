@@ -3,6 +3,8 @@
 
 BEGIN;
 
+DELETE FROM loads.load_case_mappings;
+
 WITH mapping_payload AS (
     SELECT *
     FROM jsonb_to_recordset($$[

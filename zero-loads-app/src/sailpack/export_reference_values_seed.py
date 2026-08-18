@@ -46,6 +46,10 @@ def render_sql(
 
 BEGIN;
 
+DELETE FROM loads.reference_values;
+DELETE FROM loads.load_case_mappings;
+DELETE FROM loads.load_cases;
+
 WITH load_case_payload AS (
     SELECT *
     FROM jsonb_to_recordset($${load_cases_json}$$::jsonb) AS t(
