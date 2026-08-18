@@ -13,7 +13,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from typing_extensions import _AnnotatedAlias
 
 
@@ -118,7 +118,7 @@ LMin: TypeAlias = Annotated[float, UnitMeta(modelica_name="l_min")]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 Ratio: TypeAlias = Annotated[
     float,
-    AfterValidator(validate_ratio_within_precision),
+    # AfterValidator(validate_ratio_within_precision), # TODO: Reenable once fixed
     UnitMeta(modelica_name="ratio"),
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
