@@ -1,0 +1,62 @@
+blueprint:
+  name: "Lights: Smart Dim"
+  description: "Dim up/down a light when a button is held down"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level entity"
+  button:
+    description: "Button entity controlling the dimming action"
+  max_level:
+    description: "Maximum dim level"
+  min_level:
+    description: "Minimum dim level"
+  reverse_delay:
+    description: "Delay in seconds before reversing dim direction when hitting a boundary"
+
+sequence:
+  - variables:
+      min_bound: "{{ min_level | int }}"
+      max_bound: "{{ max_level | int }}"
+      direction: "{{ 1 if (states(dim_level) | int) <= (min_level | int) else (-1 if (states(dim_level) | int) >= (max_level | int) else (-1 if (states(dim_level) | int) < (((min_level | int) + (max_level | int)) / 2) else 1)) }}"
+      boundary_since: ""
+  - repeat:
+      sequence:
+        - variables:
+            current_level: "{{ states(dim_level) | int }}"
+            at_boundary: "{{ current_level <= min_bound or current_level >= max_bound }}"
+            now_ts: "{{ as_timestamp(now()) }}"
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: "{{ at_boundary and boundary_since != '' and (now_ts - (boundary_since | float(0))) >= (reverse_delay | float(0)) }}"
+              sequence:
+                - variables:
+                    direction: "{{ direction * -1 }}"
+                    boundary_since: "{{ now_ts }}"
+            - conditions:
+                - condition: template
+                  value_template: "{{ at_boundary and boundary_since == '' }}"
+              sequence:
+                - variables:
+                    boundary_since: "{{ now_ts }}"
+            - conditions:
+                - condition: template
+                  value_template: "{{ not at_boundary }}"
+              sequence:
+                - variables:
+                    boundary_since: ""
+        - alias: Update dim level
+          action: input_number.set_value
+          target:
+            entity_id: "{{ dim_level }}"
+          data:
+            value: >
+              {% set next_level = current_level + (direction | int) %}
+              {{ [max_bound, [min_bound, next_level] | max] | min }}
+        - delay:
+            milliseconds: 50.0
+      while:
+        - condition: template
+          value_template: "{{ is_state(button, 'on') }}"
