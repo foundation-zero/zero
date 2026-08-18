@@ -174,6 +174,9 @@ def extract_reference_values(
             .alias("type")
         )
         .drop("Column label")
+        .filter(
+            pl.col("type") == "load"
+        )  # TODO: remove later, but drop target positions for now as they require remapping to be useful as reference values
     )
 
     reference_values = reference_values_raw.with_columns(
