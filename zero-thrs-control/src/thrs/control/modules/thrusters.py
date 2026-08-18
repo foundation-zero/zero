@@ -128,10 +128,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # n
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
         thrusters_switch_aft=Valve(
-            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+            setpoint=Stamped(value=Valve.SWITCH_B, timestamp=timestamp)
         ),
         thrusters_switch_fwd=Valve(
-            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+            setpoint=Stamped(value=Valve.SWITCH_B, timestamp=timestamp)
         ),
     )
 
@@ -436,10 +436,10 @@ class ThrustersControl(
 
     def _set_valves_to_cooling(self, sensor_values: ThrustersSensorValues):
         self._current_control_values.thrusters_switch_aft.setpoint = Stamped(
-            value=Valve.SWITCH_STRAIGHT, timestamp=self._time()
+            value=Valve.SWITCH_A, timestamp=self._time()
         )
         self._current_control_values.thrusters_switch_fwd.setpoint = Stamped(
-            value=Valve.SWITCH_STRAIGHT, timestamp=self._time()
+            value=Valve.SWITCH_A, timestamp=self._time()
         )
         self._current_control_values.thrusters_switch_recovery.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
@@ -447,10 +447,10 @@ class ThrustersControl(
 
     def _set_valves_to_recovery(self, sensor_values: ThrustersSensorValues):
         self._current_control_values.thrusters_switch_aft.setpoint = Stamped(
-            value=Valve.SWITCH_BRANCH, timestamp=self._time()
+            value=Valve.SWITCH_B, timestamp=self._time()
         )
         self._current_control_values.thrusters_switch_fwd.setpoint = Stamped(
-            value=Valve.SWITCH_BRANCH, timestamp=self._time()
+            value=Valve.SWITCH_B, timestamp=self._time()
         )
         self._current_control_values.thrusters_switch_recovery.setpoint = Stamped(
             value=Valve.OPEN, timestamp=self._time()

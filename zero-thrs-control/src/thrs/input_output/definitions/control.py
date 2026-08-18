@@ -21,8 +21,8 @@ class Valve(ThrsValues):
     CLOSED: ClassVar = 0.0
     OPEN: ClassVar = 1.0
 
-    SWITCH_BRANCH: ClassVar = 0.0
-    SWITCH_STRAIGHT: ClassVar = 1.0
+    SWITCH_B: ClassVar = 0.0
+    SWITCH_A: ClassVar = 1.0
 
     MIXING_B_TO_AB: ClassVar = 0.0
     MIXING_A_TO_AB: ClassVar = 1.0
@@ -32,12 +32,12 @@ class Valve(ThrsValues):
     The setpoint of the valve, represented as a ratio between 0 and 1.
 
     Valve Conventions:
-        - 2-Way Switch or Needle Valve:
+        - 2-Way Switch or Flow Control Valve:
             - 0: Closed
             - 1: Open
         - 3-Way Switch Valve:
-            - 0: Branch (flow from the other inlet to the outlet)
-            - 1: Straight (flow from one inlet to the outlet)
+            - 0: Flow from AB to B
+            - 1: Flow from AB to A
         - Mixing Valve:
             - 0: Flow from B to AB
             - 1: Flow from A to AB
