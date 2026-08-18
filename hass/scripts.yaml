@@ -3,7 +3,7 @@ set_input_helper:
     - variables:
         input_number_id:
         value:
-    - action: number.set_value
+    - action: input_number.set_value
       metadata: {}
       target:
         entity_id: "{{ input_number_id }}"

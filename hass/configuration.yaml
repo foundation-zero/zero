@@ -18,20 +18,19 @@ light:
     channel: 2
 
 mqtt:
-  - binary_sensor:
-      name: "Night Mode (interior)"
+  binary_sensor:
+    - name: "Night Mode (interior)"
       state_topic: "marpower/550000-navigation-lights"
       qos: 0
-      value_template: "{{ value_json.InternalNightMode.Value }}"
-      payload_on: true
-      payload_off: false
-  - binary_sensor:
-      name: "Night Mode (exterior)"
+      value_template: "{{ value_json.InternalNightMode.Value | string | lower }}"
+      payload_on: "true"
+      payload_off: "false"
+    - name: "Night Mode (exterior)"
       state_topic: "marpower/550000-navigation-lights"
       qos: 0
-      value_template: "{{ value_json.ExternalNightMode.Value }}"
-      payload_on: true
-      payload_off: false
+      value_template: "{{ value_json.ExternalNightMode.Value | string | lower }}"
+      payload_on: "true"
+      payload_off: "false"
 
 cover:
   - platform: template

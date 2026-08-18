@@ -1,22 +1,22 @@
 blueprint:
-  name: Single/Dual Button Light Control
+  name: Dual Button Light Control
   description: Control light brightness using up and down buttons of a Rocker Button
   domain: automation
   input:
-    button_one_section:
-      name: Button One
+    button_up_section:
+      name: Button Up
       icon: mdi:gesture-tap-button
       description: These options control the behavior of the first button
       input:
-        button_one:
+        button_up:
           name: Button
-          description: First button
+          description: Up button
           selector:
             entity:
               domain: [binary_sensor, input_boolean]
-        button_one_short_press:
+        button_up_short_press:
           name: Short Press
-          description: When the first button is pressed and released quickly
+          description: When the up button is pressed and released quickly
           default: "script.light_toggle"
           selector:
             select:
@@ -28,9 +28,9 @@ blueprint:
                   value: "script.light_turn_on"
                 - label: "Turn Off"
                   value: "script.light_turn_off"
-        button_one_hold:
+        button_up_hold:
           name: Press & Hold
-          description: When the first button is held down
+          description: When the up button is held down
           default: script.light_dim_up
           selector:
             select:
@@ -43,22 +43,21 @@ blueprint:
                 - label: "Smart Dim (up/down)"
                   value: "script.light_smart_dim"
 
-    button_two_section:
-      name: Button Two (optional)
+    button_down_section:
+      name: Button Down
       collapsed: true
       icon: mdi:gesture-tap-button
       description: These options control the behavior of the second button
       input:
-        button_two:
+        button_down:
           name: Button
-          default: "sensor.none"
-          description: Second button
+          description: Down button
           selector:
             entity:
               domain: [binary_sensor, input_boolean]
-        button_two_short_press:
+        button_down_short_press:
           name: Short Press
-          description: When the second button is pressed and released quickly
+          description: When the down button is pressed and released quickly
           default: "script.light_toggle"
           selector:
             select:
@@ -70,9 +69,9 @@ blueprint:
                   value: "script.light_turn_on"
                 - label: "Turn Off"
                   value: "script.light_turn_off"
-        button_two_hold:
+        button_down_hold:
           name: Press & Hold
-          description: When the second button is held down
+          description: When the down button is held down
           default: script.light_dim_down
           selector:
             select:
@@ -103,10 +102,10 @@ blueprint:
         min_level:
           name: Minimum Level
           description: Minimum dim level
-          default: 0
+          default: 1
           selector:
             number:
-              min: 0
+              min: 1
               max: 100
               step: 1
         max_level:
@@ -135,13 +134,13 @@ blueprint:
       description: These options control the behavior of the red light when night mode is active
       input:
         red_light_label:
-          default: "sensor.none"
+          default: []
           name: Red Light Label
           description: Label to select red light outputs
           selector:
             label:
         night_mode:
-          default: "sensor.none"
+          default: []
           name: Night Mode
           description: Select a toggle to determine if night mode is active. If night mode is active, the red light will be used instead of the white light.
           selector:
@@ -158,29 +157,29 @@ variables:
 
 trigger_variables:
   scripts:
-    "short_press:button_one": !input button_one_short_press
-    "short_press:button_two": !input button_two_short_press
-    "hold:button_one": !input button_one_hold
-    "hold:button_two": !input button_two_hold
+    "short_press:button_up": !input button_up_short_press
+    "short_press:button_down": !input button_down_short_press
+    "hold:button_up": !input button_up_hold
+    "hold:button_down": !input button_down_hold
 
-trigger:
-  - id: "short_press:button_one"
+triggers:
+  - id: "short_press:button_up"
     trigger: state
-    entity_id: !input button_one
+    entity_id: !input button_up
     to: "on"
-  - id: "hold:button_one"
+  - id: "hold:button_up"
     trigger: state
-    entity_id: !input button_one
+    entity_id: !input button_up
     to: "on"
     for:
       milliseconds: 500
-  - id: "short_press:button_two"
+  - id: "short_press:button_down"
     trigger: state
-    entity_id: !input button_two
+    entity_id: !input button_down
     to: "on"
-  - id: "hold:button_two"
+  - id: "hold:button_down"
     trigger: state
-    entity_id: !input button_two
+    entity_id: !input button_down
     to: "on"
     for:
       milliseconds: 500
@@ -191,7 +190,7 @@ trigger:
     trigger: state
     entity_id: !input night_mode
 
-action:
+actions:
   - choose:
       - conditions:
           - alias: Short press
@@ -237,7 +236,7 @@ action:
         sequence:
           - if:
               - condition: template
-                value_template: "{{ night_mode != 'sensor.none' and red_light_label != 'sensor.none' }}"
+                value_template: "{{ not not night_mode and not not red_light_label }}"
             then:
               - action: light.turn_off
                 alias: Turn off other light
@@ -245,10 +244,10 @@ action:
                   label_id: "{{ is_state(night_mode, 'off') | iif(red_light_label, light_label) }}"
               - action: script.light_set_dim
                 data:
-                  dim_level: "{{ trigger.to_state.state | int }}"
+                  dim_level: "{{ states(dim_level) | int }}"
                   light_label: "{{ is_state(night_mode, 'on') | iif(red_light_label, light_label) }}"
             else:
               - action: script.light_set_dim
                 data:
-                  dim_level: "{{ trigger.to_state.state | int }}"
+                  dim_level: "{{ states(dim_level) | int }}"
                   light_label: !input light_label
