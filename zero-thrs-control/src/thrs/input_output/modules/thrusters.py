@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Annotated, cast
 
 from pydantic import ConfigDict, computed_field
@@ -8,6 +9,7 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
     OptionalCelsius,
+    PcsMode,
 )
 
 
@@ -108,7 +110,9 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/thruster-aft-active",
         ),
-    ]
+    ] = sensor.Thruster(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     thrusters_thruster_fwd: Annotated[
         sensor.Thruster,
         component_meta(
@@ -117,7 +121,9 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/thruster-fwd-active",
         ),
-    ]
+    ] = sensor.Thruster(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     thrusters_pcs: Annotated[
         sensor.Pcs,
         component_meta(
@@ -126,7 +132,9 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/pcs-mode",
         ),
-    ]
+    ] = sensor.Pcs(
+        mode=Stamped(value=PcsMode.OFF, timestamp=datetime.fromtimestamp(0, UTC))
+    )
 
     @computed_field(
         json_schema_extra=computed_meta(
