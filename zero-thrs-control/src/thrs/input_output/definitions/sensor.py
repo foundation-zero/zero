@@ -36,6 +36,8 @@ class FlowSensor(ThrsValues):
 
 
 class Pump(ThrsValues):
+    dutypoint: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
+    on: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)

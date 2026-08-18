@@ -72,7 +72,11 @@ class Simulation[
         fmu_inputs = self._io_mapping.generate_inputs(control_values, simulation_inputs)
         fmu_outputs = self._fmu.tick(fmu_inputs, self._tick_duration)
         sensor_values, simulation_outputs, raw = self._io_mapping.construct_outputs(
-            fmu_inputs, fmu_outputs, simulation_inputs, time + self._tick_duration
+            fmu_inputs,
+            fmu_outputs,
+            control_values,
+            simulation_inputs,
+            time + self._tick_duration,
         )
 
         self._ticks += 1

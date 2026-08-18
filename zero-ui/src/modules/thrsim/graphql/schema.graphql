@@ -1397,6 +1397,8 @@ type SensorPropulsionDriveType {
 }
 
 type SensorPumpType {
+  dutypoint: FloatStampedType!
+  on: BoolStampedType!
   speed: FloatStampedType!
   opTime: FloatStampedType!
   flow: FloatStampedType!

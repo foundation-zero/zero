@@ -101,6 +101,8 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     return computed(() => ({ mode: stamp(mode) }));
   },
   [SensorComponentType.Pump]: () => {
+    const dutypoint = useRandomizedRatio();
+    const on = useRandomizedBoolean();
     const flow = useRandomizedNumber(0, 10);
     const speed = useRandomizedNumber(0, 100);
     const opTime = useRandomizedNumber(0, 1000);
@@ -108,6 +110,8 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const energyConsumption = useRandomizedNumber(0, 1000);
     const powerInput = useRandomizedNumber(0, 100);
     return computed(() => ({
+      dutypoint: stamp(dutypoint),
+      on: stamp(on),
       flow: stamp(flow),
       speed: stamp(speed),
       opTime: stamp(opTime),
