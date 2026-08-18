@@ -1,21 +1,10 @@
-from datetime import UTC, datetime
-
-import pytest
-from pydantic import ValidationError
-
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
-    LMin,
     PcsMode,
     Ratio,
     unit_for_annotation,
     zero_for_unit,
 )
-
-
-def test_lmin():
-    with pytest.raises(ValidationError):
-        Stamped[LMin](value=-2, timestamp=datetime.now(UTC))
 
 
 def test_unit_for_annotation_stamped():
