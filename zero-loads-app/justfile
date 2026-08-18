@@ -1,0 +1,37 @@
+export_seed:
+    uv run loads export-seed
+
+export_ref_values:
+    uv run python -c 'from pathlib import Path; from sailpack.export_reference_values_seed import export_reference_values_seed_sql; export_reference_values_seed_sql(Path("src/sailpack"), Path("../hasura/seeds/zero/loads_reference_values.sql"))'
+
+export_load_case_mapping:
+    uv run python -c 'from pathlib import Path; from sailpack.export_load_case_mapping_seed import export_load_case_mapping_seed_sql; export_load_case_mapping_seed_sql(Path("src/sailpack"), Path("../hasura/seeds/zero/loads_case_mappings.sql"))'
+
+test:
+    uv run pytest
+
+test_integration:
+    uv run pytest --run=integration
+
+test_unit:
+    uv run pytest --run=unit
+
+run:
+    uv run loads api &
+    uv run loads sail-system-sensors-stub &
+    uv run loads fiber-optic-sensors-stub &
+    uv run loads at-sensors-stub &
+    wait
+
+typecheck:
+    uv run pyright
+
+format:
+    uv run ruff check --fix
+    uv run ruff format
+
+check:
+    uv run pyright
+    uv run pytest
+    uv run ruff check --no-fix
+    uv run ruff format --check
