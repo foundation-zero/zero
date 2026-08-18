@@ -2,7 +2,54 @@
   "loads": {
     "dashboards": {
       "overview": "Overview",
-      "dynamic": "Dynamic"
+      "dynamic": "Dynamic",
+      "fiberOptics": "FO"
+    },
+    "units": {
+      "tonne": "tonne",
+      "t_m": "tonne · m",
+      "um_m": "µm/m",
+      "degC": "°C",
+      "m": "m",
+      "mm": "mm",
+      "knots": "kts",
+      "degrees": "°",
+      "ratio": "%",
+      "percent": "%",
+      "bool": ""
+    },
+    "fiberOptics": {
+      "columns": {
+        "mainMast": "Main Mast",
+        "mizzenMast": "Mizzen Mast"
+      },
+      "cards": {
+        "bendingMomentForeAft": "Bending Moment Fore-Aft",
+        "bendingMomentSideWay": "Bending Moment Sideways",
+        "bendingStrainForeAft": "Bending Strain Fore-Aft",
+        "bendingStrainSideWay": "Bending Strain Sideways",
+        "longitudinalLoad": "Longitudinal Load",
+        "longitudinalStrain": "Longitudinal Strain",
+        "strainFore": "Strain Fore",
+        "strainSidePort": "Strain Side PT",
+        "strainSideStbd": "Strain Side SB",
+        "strainAftPort": "Strain Aft PT",
+        "strainAftStbd": "Strain Aft SB",
+        "faDeflection": "FA Deflection",
+        "faDeflectionSpr": "FA Deflection Spreader",
+        "swDeflection": "SW Deflection",
+        "swDeflectionSpr": "SW Deflection Spreader",
+        "temperature": "Temperature",
+        "riggingLoad": "Rigging Load",
+        "riggingStrain": "Rigging Strain",
+        "riggingSumLoad": "Rigging Sum Load",
+        "riggingTemperature": "Rigging Temperature"
+      },
+      "table": {
+        "location": "Location",
+        "value": "Value",
+        "unit": "Unit"
+      }
     },
     "dashboard": {
       "status": "Loads status",

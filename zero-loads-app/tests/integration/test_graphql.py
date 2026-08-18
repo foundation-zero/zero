@@ -1,4 +1,6 @@
 import asyncio
+import json
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -612,20 +614,8 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
 
 @pytest.mark.asyncio
 async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
-    await mqtt_client_send.publish(
-        FiberOptic.TOPIC,
-        """{
-            "mm-rigging-load-v1-port": 20,
-            "mm-rigging-load-v1-stbd": 1,
-            "mm-rigging-load-d1-port": 2,
-            "mm-rigging-load-d1-stbd": 3,
-            "mz-rigging-load-v1-port": 4,
-            "mz-rigging-load-v1-stbd": 5,
-            "mz-rigging-load-d1-port": 6,
-            "mz-rigging-load-d1-stbd": 7,
-            "mz-mast-strain-s1-fore": 8
-        }""",
-    )
+    fo_payload = json.loads((Path(__file__).parent / "fo.json").read_text())
+    await mqtt_client_send.publish(FiberOptic.TOPIC, json.dumps(fo_payload))
     await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
@@ -634,6 +624,11 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
             query {
                 variables(variables: ["fiber-optic-main-v1-ps"]) {
                     id
+                    variable {
+                        id
+                        name
+                        unit
+                    }
                     actual {
                         id
                         value
@@ -650,11 +645,16 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
             "variables": [
                 {
                     "id": "fiber-optic-main-v1-ps",
+                    "variable": {
+                        "id": "fiber-optic-main-v1-ps",
+                        "name": "V1 PT",
+                        "unit": "tonne",
+                    },
                     "actual": {
                         "id": "fiber-optic-main-v1-ps",
-                        "value": 20,
+                        "value": fo_payload["mm-rigging-load-v1-port"],
                     },
-                },
+                }
             ]
         }
     }
