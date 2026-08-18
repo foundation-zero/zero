@@ -1,0 +1,29 @@
+blueprint:
+  name: "Lights: Set dim"
+  description: "Setting the dim level of a light based on a helper input_number"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level"
+  light_label:
+    description: "Light label identifier"
+
+sequence:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ dim_level | int > 0 }}"
+        sequence:
+          - action: light.turn_on
+            data:
+              brightness_pct: "{{ dim_level | int }}"
+            target:
+              label_id: "{{ light_label }}"
+      - conditions:
+          - condition: template
+            value_template: "{{ dim_level | int < 1 }}"
+        sequence:
+          - action: light.turn_off
+            target:
+              label_id: "{{ light_label }}"

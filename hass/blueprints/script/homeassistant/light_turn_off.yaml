@@ -1,0 +1,18 @@
+blueprint:
+  name: "Lights: Turn off"
+  description: "Turn off a light"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level entity"
+  button:
+    description: "Button entity controlling the action"
+
+sequence:
+  - alias: Turn off light
+    service: input_number.set_value
+    target:
+      entity_id: "{{ dim_level }}"
+    data:
+      value: "{{ states(dim_level) | int | abs * -1 }}"

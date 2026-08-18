@@ -1,13 +1,55 @@
 set_input_helper:
   sequence:
-  - variables:
-      input_number_id:
-      value:
-  - action: number.set_value
-    metadata: {}
-    target:
-      entity_id: '{{ input_number_id }}'
-    data:
-      value: '{{ value }}'
+    - variables:
+        input_number_id:
+        value:
+    - action: input_number.set_value
+      metadata: {}
+      target:
+        entity_id: "{{ input_number_id }}"
+      data:
+        value: "{{ value }}"
   alias: Set input helper
-  description: ''
+  description: ""
+
+light_dim_down:
+  use_blueprint:
+    path: homeassistant/light_dim_down.yaml
+  alias: light_dim_down
+  description: ""
+
+light_dim_up:
+  use_blueprint:
+    path: homeassistant/light_dim_up.yaml
+  alias: light_dim_up
+  description: ""
+
+light_set_dim:
+  use_blueprint:
+    path: homeassistant/light_set_dim.yaml
+  alias: light_set_dim
+  description: ""
+
+light_toggle:
+  use_blueprint:
+    path: homeassistant/light_toggle.yaml
+  alias: light_toggle
+  description: ""
+
+light_smart_dim:
+  use_blueprint:
+    path: homeassistant/light_smart_dim.yaml
+  alias: light_smart_dim
+  description: ""
+
+light_turn_on:
+  use_blueprint:
+    path: homeassistant/light_turn_on.yaml
+  alias: light_turn_on
+  description: ""
+
+light_turn_off:
+  use_blueprint:
+    path: homeassistant/light_turn_off.yaml
+  alias: light_turn_off
+  description: ""
