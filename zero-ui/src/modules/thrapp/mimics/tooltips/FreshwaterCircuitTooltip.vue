@@ -51,9 +51,6 @@ const { items, labels, sources } = useTranslations();
       >
         <Partials.ListItem size="sm">
           {{ items("incomingFlow") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
