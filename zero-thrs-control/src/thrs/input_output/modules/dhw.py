@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
@@ -66,15 +67,21 @@ class DhwSensorValues(ThrsValues):
     dhw_level_tank1: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-01", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_level_tank2: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-02", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_level_tank3: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_flow_dc: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-17", component_type="flow_sensor"),
@@ -361,11 +368,16 @@ class DhwSensorValues(ThrsValues):
 
     freshwater_hotwater_flow: Annotated[
         sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
-    ]
+    ] = sensor.FlowSensor(
+        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     freshwater_hotwater_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ]
+    ] = sensor.TemperatureSensor(
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
 
     @computed_field(
         json_schema_extra=computed_meta(
