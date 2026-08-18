@@ -143,10 +143,10 @@ COMMIT;
 
 
 def export_reference_values_seed_sql(
-    input_source: Path, output_sql: Path
+    input_source: Path, mapping_path: Path, output_sql: Path
 ) -> tuple[int, int]:
     sailpack_data = parse_directory(input_source)
-    reference_values_mapping = read_reference_values_mapping(input_source)
+    reference_values_mapping = read_reference_values_mapping(mapping_path)
     load_case_records = build_load_case_records(sailpack_data)
     reference_records = build_reference_records(sailpack_data, reference_values_mapping)
     sql = render_sql(load_case_records, reference_records)

@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from urllib.request import urlretrieve
 
 import uvicorn
 from generator import DataGenerator
@@ -117,7 +118,8 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
         extra="allow",
     )
 
-    input: Path = Path("src/sailpack")
+    input: Path = Path("src/sailpack/load_cases")
+    sailpack_mapping: Path = Path("src/sailpack/sailpack_mapping.csv")
     reference_values_output: Path = Path(
         "../hasura/seeds/zero/loads_reference_values.sql"
     )
@@ -133,9 +135,21 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
             export_reference_values_seed_sql,
         )
 
+        logger.info("Updating sailpack mapping from Google Sheets...")
+        mapping_url = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid=605184652"
+        try:
+            urlretrieve(mapping_url, self.sailpack_mapping)
+            logger.info(f"Mapping updated: {self.sailpack_mapping}")
+        except Exception as e:
+            logger.warning(
+                f"Failed to fetch mapping from Google Sheets: {e}. Using existing file: {self.sailpack_mapping}"
+            )
+
         logger.info("Exporting sailpack seed SQL...")
         load_case_count, reference_count = export_reference_values_seed_sql(
-            input_source=self.input, output_sql=self.reference_values_output
+            input_source=self.input,
+            mapping_path=self.sailpack_mapping,
+            output_sql=self.reference_values_output,
         )
         logger.info(
             f"Generated {self.reference_values_output} with {load_case_count} load cases and "
