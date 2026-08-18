@@ -300,8 +300,13 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
     assert payload_json[0] == {
         "Flow": {"Value": 1, "TimeStamp": mock.ANY},
         "Temperature": {"Value": 2, "TimeStamp": mock.ANY},
+        "Quantity": {
+            "Value": 0.0,
+            "TimeStamp": "1970-01-01T00:00:00Z",
+        },
     }
     assert payload_json[1] == {
         "Flow": {"Value": 3, "TimeStamp": mock.ANY},
         "Temperature": {"Value": 4, "TimeStamp": mock.ANY},
+        "Quantity": {"Value": 0.0, "TimeStamp": "1970-01-01T00:00:00Z"},
     }

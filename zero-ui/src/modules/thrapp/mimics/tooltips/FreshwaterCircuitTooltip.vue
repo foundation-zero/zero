@@ -13,7 +13,7 @@ import { SensorValue } from "../providers";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
 
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 </script>
 
 <template>
