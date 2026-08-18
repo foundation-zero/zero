@@ -103,7 +103,7 @@ class PvtSensorValues(ThrsValues):
             component_type="pressure_sensor",
             included_in_fmu=False,
         ),
-    ] = sensor.PressureSensor(
+    ] = sensor.PressureSensor(  # TODO: Remove default
         pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pvt_pressure_owners_vacuum: Annotated[
@@ -113,7 +113,7 @@ class PvtSensorValues(ThrsValues):
             component_type="pressure_sensor",
             included_in_fmu=False,
         ),
-    ] = sensor.PressureSensor(
+    ] = sensor.PressureSensor(  # TODO: Remove default
         pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pvt_switch_main_fwd: Annotated[

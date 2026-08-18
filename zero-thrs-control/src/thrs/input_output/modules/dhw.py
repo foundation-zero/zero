@@ -67,19 +67,19 @@ class DhwSensorValues(ThrsValues):
     dhw_level_tank1: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-01", component_type="level_sensor"),
-    ] = sensor.LevelSensor(
+    ] = sensor.LevelSensor(  # TODO: Remove default
         level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
     dhw_level_tank2: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-02", component_type="level_sensor"),
-    ] = sensor.LevelSensor(
+    ] = sensor.LevelSensor(  # TODO: Remove default
         level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
     dhw_level_tank3: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="level_sensor"),
-    ] = sensor.LevelSensor(
+    ] = sensor.LevelSensor(  # TODO: Remove default
         level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
     )
     dhw_flow_dc: Annotated[
@@ -368,14 +368,14 @@ class DhwSensorValues(ThrsValues):
 
     freshwater_hotwater_flow: Annotated[
         sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
-    ] = sensor.FlowSensor(
+    ] = sensor.FlowSensor(  # TODO: Remove default
         flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
         temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
     )
     freshwater_hotwater_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ] = sensor.TemperatureSensor(
+    ] = sensor.TemperatureSensor(  # TODO: Remove default
         temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
     )
 

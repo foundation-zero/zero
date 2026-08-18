@@ -110,7 +110,7 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/thruster-aft-active",
         ),
-    ] = sensor.Thruster(
+    ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     thrusters_thruster_fwd: Annotated[
@@ -121,7 +121,7 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/thruster-fwd-active",
         ),
-    ] = sensor.Thruster(
+    ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     thrusters_pcs: Annotated[
@@ -132,7 +132,7 @@ class ThrustersSensorValues(ThrsValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/pcs-mode",
         ),
-    ] = sensor.Pcs(
+    ] = sensor.Pcs(  # TODO: Remove default
         mode=Stamped(value=PcsMode.OFF, timestamp=datetime.fromtimestamp(0, UTC))
     )
 

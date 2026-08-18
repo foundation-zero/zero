@@ -28,8 +28,10 @@ from thrs.input_output.definitions.units import (
 class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
-    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = Stamped(
-        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        )
     )
 
 
@@ -39,14 +41,21 @@ class Pump(ThrsValues):
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
     )
     flow: Stamped[LMin]
-    pressure: Annotated[Stamped[Bar], field_meta(included_in_fmu=False)] = Stamped(
-        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+    pressure: Annotated[Stamped[Bar], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        )
     )
     energy_consumption: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)] = (
-        Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+        Stamped(  # TODO: Remove default
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        )
     )
-    power_input: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)] = Stamped(
-        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+
+    power_input: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        )
     )
 
 
