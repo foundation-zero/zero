@@ -214,7 +214,9 @@ class Valve(ThrsValues):
 
 
 def valves_open_closed(
-    open_valves: list[Valve] | None = None, closed_valves: list[Valve] | None = None
+    open_valves: list[Valve] | None = None,
+    closed_valves: list[Valve] | None = None,
+    tolerance=0.05,
 ) -> bool:
     if open_valves is None:
         open_valves = []
@@ -223,9 +225,10 @@ def valves_open_closed(
         closed_valves = []
 
     return all(
-        valve.position_rel.value == control.Valve.OPEN for valve in open_valves
+        valve.position_rel.value > (control.Valve.OPEN - tolerance)
+        for valve in open_valves
     ) and all(
-        valve.position_rel.value < (control.Valve.CLOSED + 0.01)
+        valve.position_rel.value < (control.Valve.CLOSED + tolerance)
         for valve in closed_valves
     )
 
