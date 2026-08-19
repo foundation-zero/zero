@@ -72,6 +72,27 @@ export const PVT_TEMPERATURE_SENSOR_DATA = toFieldsMap({
         return tooltip(this.source);
       },
     }),
+    "1038-23": toInstance<MimicComponentType.TemperatureSensor>({
+      controls: {
+        pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainFwd"),
+      },
+      controllerState: {},
+      custom: {},
+      parameters: {
+        temperature: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
+      },
+      source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainFwdSupply"),
+      sensors: {
+        measurement: getField(
+          SensorComponentType.Temperature,
+          "pvt",
+          "pvtTemperatureMainFwdSupply",
+        ),
+      },
+      get tooltip() {
+        return tooltip(this.source);
+      },
+    }),
     "1038-22": toInstance<MimicComponentType.TemperatureSensor>({
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainAft"),

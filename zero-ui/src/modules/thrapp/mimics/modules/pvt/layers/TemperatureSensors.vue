@@ -51,6 +51,19 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="468"
+      y="190"
+      :orientation="ComponentOrientation.Down"
+      v-bind="temperatureSensors['1038-23']"
+    >
+      <TemperatureLabelInstance
+        x="468"
+        y="152"
+        :tag-id="temperatureSensors['1038-23'].tooltip?.yardTag"
+        :temperature="temperatureSensors['1038-23'].source"
+      />
+    </TemperatureSensorInstance>
+    <TemperatureSensorInstance
+      x="468"
       y="387"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-22']"
