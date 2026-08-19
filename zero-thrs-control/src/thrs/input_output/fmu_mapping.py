@@ -100,7 +100,7 @@ def extract_non_fmu_values(
         return {
             name: getattr(simulation_input, name)
             for name, field in component_type.model_fields.items()  # type: ignore
-            if not included_in_fmu(field)
+            if not included_in_fmu(field) and hasattr(simulation_input, name)
         }
 
     all_sensor_fields: dict[str, FieldInfo | ComputedFieldInfo] = {

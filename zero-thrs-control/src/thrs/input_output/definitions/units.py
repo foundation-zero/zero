@@ -13,7 +13,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from typing_extensions import _AnnotatedAlias
 
 
@@ -36,12 +36,13 @@ def unit_for_annotation(annotation: Any) -> Any | None:
         return next(iter(units))
     if isinstance(annotation, UnionType):
         units = {
-            _unit_for_single_annotation(annotation)
-            for annotation in get_args(annotation)
+            _unit_for_single_annotation(arg)
+            for arg in get_args(annotation)
+            if arg is not type(None)
         }
         if len(units) > 1:
             raise ValueError("Union of annotations with different units.")
-        return next(iter(units))
+        return next(iter(units), None)
 
     return _unit_for_single_annotation(annotation)
 
@@ -113,15 +114,11 @@ OptionalCelsius: TypeAlias = Annotated[
 ]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
-LMin: TypeAlias = Annotated[
-    float,
-    Field(ge=-0.1),
-    UnitMeta(modelica_name="l_min"),
-]
+LMin: TypeAlias = Annotated[float, UnitMeta(modelica_name="l_min")]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 Ratio: TypeAlias = Annotated[
     float,
-    AfterValidator(validate_ratio_within_precision),
+    # AfterValidator(validate_ratio_within_precision), # TODO: Reenable once fixed
     UnitMeta(modelica_name="ratio"),
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]

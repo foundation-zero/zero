@@ -67,7 +67,11 @@ def test_simulation_test_runner():
             timedelta(seconds=1),
         )
         mock_fmu_outputs = io_mapping.construct_outputs(
-            inputs, outputs, simulation_inputs, datetime.now(UTC)
+            inputs,
+            outputs,
+            ThrustersControlValues.zero(),
+            simulation_inputs,
+            datetime.now(UTC),
         )[2]
 
         assert frame is not None

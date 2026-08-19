@@ -117,6 +117,8 @@ export type SimulationFields = {
 };
 
 export type PumpSensor = {
+  dutypoint: Stamped<Ratio>;
+  on: Stamped<boolean>;
   flow: Stamped<Ratio>;
   speed: Stamped<number>;
   opTime: Stamped<number>;

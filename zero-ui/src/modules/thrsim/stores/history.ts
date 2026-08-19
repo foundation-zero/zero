@@ -43,6 +43,7 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
 
     objectEntries(components).forEach(([componentKey, component]) => {
       objectEntries(toTypelessRecord(component)).forEach(([fieldKey, stampedValue]) => {
+        if (stampedValue === null) return;
         const history = (newHistory[`${moduleName}/${fieldKey}/${componentKey}`] ??= []);
         const lastItem = history[history.length - 1];
 

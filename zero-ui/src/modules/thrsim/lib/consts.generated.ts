@@ -2018,6 +2018,14 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001097-06",
     componentType: SensorComponentType.Pressure,
   },
+  pvtPressureMainVacuum: {
+    yardTag: "50009059-01",
+    componentType: SensorComponentType.Pressure,
+  },
+  pvtPressureOwnersVacuum: {
+    yardTag: "50009059-02",
+    componentType: SensorComponentType.Pressure,
+  },
   pvtSwitchMainFwd: {
     yardTag: "50001067-01",
     componentType: SensorComponentType.Valve,

@@ -2,8 +2,6 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
-from pydantic import Field
-
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
@@ -30,34 +28,36 @@ from thrs.input_output.definitions.units import (
 class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
-    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = Field(
-        default_factory=lambda: Stamped(
+    quantity: Annotated[Stamped[Liter], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
+        )
     )
 
 
 class Pump(ThrsValues):
+    dutypoint: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
+    on: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     speed: Stamped[Hz]
-    op_time: Stamped[Seconds]
+    op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
+        value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+    )
     flow: Stamped[LMin]
-    pressure: Stamped[Bar] = Field(
-        default_factory=lambda: Stamped(
+    pressure: Annotated[Stamped[Bar], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+        )
     )
-    energy_consumption: Stamped[Joule] = Field(
-        default_factory=lambda: Stamped(
+    energy_consumption: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+        )
     )
-    power_input: Stamped[Watt] = Field(
-        default_factory=lambda: Stamped(
+
+    power_input: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)] = (
+        Stamped(  # TODO: Remove default
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
-        ),
-        json_schema_extra={"included_in_fmu": False},
+        )
     )
 
 
