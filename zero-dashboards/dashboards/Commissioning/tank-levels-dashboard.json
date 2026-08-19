@@ -3134,9 +3134,6 @@
                 "includeByName": {},
                 "indexByName": {},
                 "renameByName": {
-                  "tank11_level": "Hot water - Tank 1",
-                  "tank13_level": "",
-                  "tank15_level": "",
                   "tank1_level": "Hot water - Tank 1",
                   "tank2_level": "Hot water - Tank 2",
                   "tank3_level": "Hot water - Tank 3"
