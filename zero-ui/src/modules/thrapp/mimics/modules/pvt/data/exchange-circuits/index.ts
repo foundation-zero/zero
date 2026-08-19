@@ -31,8 +31,8 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       },
     }),
   },
-  [MimicComponentType.HotWaterCircuit]: {
-    pcm: toInstance<MimicComponentType.HotWaterCircuit>({
+  [MimicComponentType.FreshwaterCircuit]: {
+    pcm: toInstance<MimicComponentType.FreshwaterCircuit>({
       controls: {},
       controllerState: {},
       custom: {},

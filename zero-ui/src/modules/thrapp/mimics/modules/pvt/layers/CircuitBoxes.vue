@@ -5,7 +5,7 @@ import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.
 import { PVT_MIMIC_DATA } from "../data";
 
 const circuits = PVT_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
+const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
 </script>
 
 <template>
