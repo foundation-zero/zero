@@ -296,6 +296,7 @@ class TanksController:
         self._tanks = [tank1, tank2, tank3]
         self._filling_tank: Tank | None = None
         self._boosting_tank: Tank | None = None
+        self._boost_candidate: Tank | None = None
         self._tank_in_use: Tank | None = None
 
     @property
@@ -388,28 +389,37 @@ class TanksController:
             )
             self._filling_tank.fill(self._time) if self._filling_tank else None
 
-    def _select_boosting_tank(
-        self, parameters: DhwParameters, sensor_values: DhwSensorValues
-    ):
+    def _select_boost_candidate(self, parameters: DhwParameters):
+        if (
+            self._boosting_tank is not None
+            and self._boosting_tank.enabled
+            and not self._boosting_tank.above_temperature_setpoint(parameters)
+        ):
+            self._boost_candidate = self._boosting_tank
+            return
+
+        self._boost_candidate = max(
+            (tank for tank in self.available_tanks if tank.boostable(parameters)),
+            key=lambda tank: tank.temperature if tank.temperature is not None else 0,
+            default=None,
+        )  # prioritize hottest tank for boosting #TODO this might not be want you want, as one tank might sit full for a long time (with the other two alternating)
+
+    def apply_boosting(self, sensor_values: DhwSensorValues, boosting_available: bool):
+        # actually apply boosting if available and the valves are closed, otherwise stop boosting
         if self._boosting_tank is not None and (
-            self._boosting_tank.above_temperature_setpoint(parameters)
-            or not self._boosting_tank.enabled
+            not boosting_available or self._boosting_tank is not self._boost_candidate
         ):
             self._boosting_tank.stop_boosting(self._time)
-            self._boosting_tank = None  # Don't wait for valves to close as we want boosting flow to stop when the valves are closing
+            self._boosting_tank = None
 
-        if self._boosting_tank is None and self._boosting_valves_closed(sensor_values):
-            boostable_tanks = [
-                tank for tank in self.available_tanks if tank.boostable(parameters)
-            ]
-            if boostable_tanks:
-                self._boosting_tank = max(  # prioritize hottest tank for boosting #TODO this might not be want you want, as one tank might sit full for a long time (with the other two alternating)
-                    boostable_tanks,
-                    key=lambda tank: (
-                        tank.temperature if tank.temperature is not None else 0
-                    ),
-                )
-                self._boosting_tank.boost(self._time)
+        if (
+            boosting_available
+            and self._boosting_tank is None
+            and self._boost_candidate is not None
+            and self._boosting_valves_closed(sensor_values)
+        ):
+            self._boosting_tank = self._boost_candidate
+            self._boosting_tank.boost(self._time)
 
     @staticmethod
     def _boosting_valves_closed(sensor_values: DhwSensorValues) -> bool:
@@ -444,6 +454,14 @@ class TanksController:
     def boosting(self) -> bool:
         return self._boosting_tank is not None
 
+    @property
+    def boost_candidate(self) -> Tank | None:
+        return self._boost_candidate
+
+    @property
+    def boost_demand(self) -> bool:
+        return self._boost_candidate is not None
+
     def time_to_fill(
         self, sensor_values: DhwSensorValues, parameters: DhwParameters
     ) -> Seconds | None:
@@ -463,7 +481,7 @@ class TanksController:
         self._update_tank_states(sensor_values, parameters)
         self._select_tank_in_use(parameters)
         self._select_filling_tank(parameters, sensor_values)
-        self._select_boosting_tank(parameters, sensor_values)
+        self._select_boost_candidate(parameters)
 
     def tank_state(self, tank: Tank, parameters: DhwParameters) -> TankState:
         if not tank.enabled:
@@ -474,7 +492,7 @@ class TanksController:
             return TankState.BOOSTING
         if tank is self._tank_in_use:
             return TankState.IN_USE
-        if tank.boostable(parameters):
+        if tank is self._boost_candidate or tank.boostable(parameters):
             return TankState.NEEDS_BOOST
         if tank.fillable(parameters):
             return TankState.NEEDS_FILL
@@ -510,6 +528,10 @@ class DhwControlMode(ControlMode):
         return self.boosting_mode == "idle"
 
     @property
+    def is_boosting(self) -> bool:
+        return not self.is_boosting_idle
+
+    @property
     def is_boosting_low_temperature(self) -> bool:
         return self.boosting_mode == "boosting_low_temperature"
 
@@ -543,6 +565,10 @@ class DhwControl(
         self._time = time_fn
         self.state_logger = state_logger or MachineStateLoggingServiceNoop()
         self._current_values, self._current_controller_state = self.initial()
+        self._boosting_pump_controller: PidController | None = None
+        self._boosting_pump_measurement: (
+            Callable[[DhwSensorValues], float | None] | None
+        ) = None
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -562,6 +588,7 @@ class DhwControl(
                 on_enter=[
                     self._deactivate_pump,
                     self._close_boosting_valves,
+                    self._clear_pump_control,
                 ],
                 on_exit=[self._activate_pump],
             ),
@@ -569,14 +596,14 @@ class DhwControl(
                 name="boosting_low_temperature",  # TODO: Low temperature boosting not implemented yet
                 on_enter=[
                     self._set_valves_to_boosting_low_temperature,
-                    self._enable_pump_temperature_control,
+                    self._select_pump_temperature_control,
                 ],
             ),
             State(
                 name="boosting_high_temperature",
                 on_enter=[
                     self._set_valves_to_boosting_high_temperature,
-                    self._enable_pump_temperature_control,
+                    self._select_pump_temperature_control,
                 ],
                 on_exit=[self._disable_pump_temperature_control],
             ),
@@ -585,7 +612,7 @@ class DhwControl(
                 on_enter=[
                     self._set_valves_to_boosting_heatpump,
                     self._activate_heatpump,
-                    self._enable_pump_flow_control,
+                    self._select_pump_flow_control,
                 ],
                 on_exit=[self._deactivate_heatpump, self._disable_pump_flow_control],
             ),
@@ -597,39 +624,25 @@ class DhwControl(
                 "trigger": "_try_boosting",
                 "source": ["idle", "boosting_heatpump"],
                 "dest": "boosting_high_temperature",
-                "conditions": lambda sensor_values: (
-                    self._tanks_controller.boosting
-                    and self._ht_sufficient_boosting_heat(sensor_values)
-                    and self._parameters.heatpump_boosting_enabled
-                ),
+                "conditions": self._ht_boosting_available,
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["idle", "boosting_high_temperature"],
                 "dest": "boosting_heatpump",
-                "conditions": lambda sensor_values: (
-                    self._tanks_controller.boosting
-                    and not self._ht_sufficient_boosting_heat(sensor_values)
-                    and self._parameters.ht_boosting_enabled
-                ),  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
+                "conditions": self._heatpump_boosting_available,
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["boosting_heatpump"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._tanks_controller.boosting
-                    or not self._parameters.heatpump_boosting_enabled
-                ),
+                "conditions": self._heatpump_boosting_unavailable,
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["boosting_high_temperature"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._tanks_controller.boosting
-                    or not self._parameters.ht_boosting_enabled
-                ),
+                "conditions": self._ht_boosting_unavailable,
             },
         ]
 
@@ -749,6 +762,9 @@ class DhwControl(
     ) -> tuple[DhwControlValues, DhwControllerState]:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
+        self._tanks_controller.apply_boosting(
+            sensor_values, boosting_available=self.mode.is_boosting
+        )
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
@@ -757,37 +773,41 @@ class DhwControl(
 
         return (self._current_values, self._current_controller_state)
 
-    def _drives_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
-        if self._tanks_controller._boosting_tank is None:
-            return False
-
-        delta = (
-            sensor_values.drives_temperature_recovery.temperature.value
-            - self._tanks_controller._boosting_tank.temperature
-            if self._tanks_controller._boosting_tank.temperature is not None
-            else False
-        )
-
-        return (
-            delta > self._parameters.boosting_delta
-            and sensor_values.drives_flow_recovery.flow.value > 0.1
-        )
-
     def _ht_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
-        if self._tanks_controller._boosting_tank is None:
+        candidate = self._tanks_controller.boost_candidate
+        if candidate is None or candidate.temperature is None:
             return False
 
         delta = (
             sensor_values.consumers_temperature_dhw_supply.temperature.value
-            - self._tanks_controller._boosting_tank.temperature
-            if self._tanks_controller._boosting_tank.temperature is not None
-            else False
+            - candidate.temperature
         )
 
         return (
             delta > self._parameters.boosting_delta
             and sensor_values.consumers_flow_dhw.flow.value > 0.1
         )
+
+    def _ht_boosting_available(self, sensor_values: DhwSensorValues) -> bool:
+        return (
+            self._tanks_controller.boost_demand
+            and self._parameters.ht_boosting_enabled
+            and self._ht_sufficient_boosting_heat(sensor_values)
+        )
+
+    def _heatpump_boosting_available(self, sensor_values: DhwSensorValues) -> bool:
+        # The heatpump is the fallback source, so it is only used when high temperature boosting is unavailable.
+        return (
+            self._tanks_controller.boost_demand
+            and self._parameters.heatpump_boosting_enabled
+            and not self._ht_boosting_available(sensor_values)
+        )
+
+    def _ht_boosting_unavailable(self, sensor_values: DhwSensorValues) -> bool:
+        return not self._ht_boosting_available(sensor_values)
+
+    def _heatpump_boosting_unavailable(self, sensor_values: DhwSensorValues) -> bool:
+        return not self._heatpump_boosting_available(sensor_values)
 
     def _enable_filling_flow_control(self, sensor_values: DhwSensorValues):
         if self._tanks_controller.filling:
@@ -837,30 +857,61 @@ class DhwControl(
                 timestamp=self._time(),
             )
 
+    def _boosting_loop_open(
+        self, sensor_values: DhwSensorValues, tolerance=0.3
+    ) -> bool:
+        source_open = any(
+            valve.position_rel.value > tolerance
+            for valve in [
+                sensor_values.dhw_switch_low_temperature,
+                sensor_values.dhw_switch_heatpump,
+                sensor_values.dhw_switch_high_temperature,
+            ]
+        )
+
+        tank_boosting_valves_open = any(
+            supply.position_rel.value > tolerance
+            and returns.position_rel.value > tolerance
+            for supply, returns in [
+                (
+                    sensor_values.dhw_switch_tank1_boosting_supply,
+                    sensor_values.dhw_switch_tank1_boosting_return,
+                ),
+                (
+                    sensor_values.dhw_switch_tank2_boosting_supply,
+                    sensor_values.dhw_switch_tank2_boosting_return,
+                ),
+                (
+                    sensor_values.dhw_switch_tank3_boosting_supply,
+                    sensor_values.dhw_switch_tank3_boosting_return,
+                ),
+            ]
+        )
+        return source_open and tank_boosting_valves_open
+
     def _control_boosting_flow(self, sensor_values: DhwSensorValues):
+        # The boosting valves take ~90s to travel, so hold the pump until the loop is open to avoid deadheading it and saturating the controller.
         if (
-            self._pump_temperature_controller.enabled()
-            and self._pump_flow_controller.enabled()
+            self._boosting_pump_controller is None
+            or self._boosting_pump_measurement is None
+            or not self._boosting_loop_open(sensor_values)
         ):
-            raise Exception(
-                "Both pump temperature and flow controllers cannot be enabled at the same time"
-            )
-
-        if self._pump_flow_controller.enabled():
+            self._disable_pump_temperature_control(sensor_values)
+            self._disable_pump_flow_control(sensor_values)
             self._current_values.dhw_pump.dutypoint = Stamped(
-                value=self._pump_flow_controller(
-                    sensor_values.dhw_flow_boosting.flow.value
-                ),
-                timestamp=self._time(),
+                value=0.0, timestamp=self._time()
             )
+            return
 
-        elif self._pump_temperature_controller.enabled():
-            self._current_values.dhw_pump.dutypoint = Stamped(
-                value=self._pump_temperature_controller(
-                    sensor_values.dhw_temperature_boosting_return.temperature.value
-                ),
-                timestamp=self._time(),
-            )
+        if not self._boosting_pump_controller.enabled():
+            self._boosting_pump_controller.enable()
+
+        self._current_values.dhw_pump.dutypoint = Stamped(
+            value=self._boosting_pump_controller(
+                self._boosting_pump_measurement(sensor_values)
+            ),
+            timestamp=self._time(),
+        )
 
     def _drives_heat_available(self, sensor_values: DhwSensorValues) -> bool:
         return sensor_values.drives_flow_recovery.flow.value > 0.1
@@ -931,19 +982,29 @@ class DhwControl(
             value=False, timestamp=self._time()
         )
 
-    def _enable_pump_temperature_control(self, sensor_values: DhwSensorValues):
-        if not self._pump_temperature_controller.enabled():
-            self._pump_temperature_controller.enable()
+    def _select_pump_temperature_control(self, sensor_values: DhwSensorValues):
+        self._boosting_pump_controller = self._pump_temperature_controller
+        self._boosting_pump_measurement = lambda values: (
+            values.dhw_temperature_boosting_return.temperature.value
+        )
+
+    def _select_pump_flow_control(self, sensor_values: DhwSensorValues):
+        self._boosting_pump_controller = self._pump_flow_controller
+        self._boosting_pump_measurement = lambda values: (
+            values.dhw_flow_boosting.flow.value
+        )
+
+    def _clear_pump_control(self, sensor_values: DhwSensorValues):
+        self._boosting_pump_controller = None
+        self._boosting_pump_measurement = None
 
     def _disable_pump_temperature_control(self, sensor_values: DhwSensorValues):
         if self._pump_temperature_controller.enabled():
             self._pump_temperature_controller.disable()
 
-    def _enable_pump_flow_control(self, sensor_values: DhwSensorValues):
-        self._pump_flow_controller.enable()
-
     def _disable_pump_flow_control(self, sensor_values: DhwSensorValues):
-        self._pump_flow_controller.disable()
+        if self._pump_flow_controller.enabled():
+            self._pump_flow_controller.disable()
 
 
 class DhwAlarms(BaseAlarms):
