@@ -179,8 +179,11 @@ class Mutation(
     ) -> None:
         if info.context.messaging.simulation_status is None:
             raise Exception("No simulation status available, cannot play")
-        if info.context.messaging.simulation_status.status != "available":
-            raise Exception("Can only play an available simulation")
+        if info.context.messaging.simulation_status.status not in (
+            "available",
+            "running",
+        ):
+            raise Exception("Can only play an available or running simulation")
         expect_status = info.context.messaging.wait_for_simulation_status(
             "running", timeout=2.0
         )
