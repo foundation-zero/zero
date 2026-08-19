@@ -1,6 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 from asyncio import Future
+from contextlib import suppress
 from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
@@ -51,7 +52,9 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         value = self._fields[field].validate_json(json)
 
         self._values[field] = value
-        if set(self._values.keys()) == set(self._cls.model_fields.keys()):
+
+        # Just try to create the object, we can't compare key sets because of optional values
+        with suppress(ValidationError):
             self._value = self._cls(**self._values)
 
             if not self._complete_model.done():
