@@ -909,14 +909,14 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   maximumTankLevel: {
     componentType: ParametersType.Level,
   },
-  tank1Disabled: {
-    componentType: ParametersType.Disabled,
+  tank1Enabled: {
+    componentType: ParametersType.Enabled,
   },
-  tank2Disabled: {
-    componentType: ParametersType.Disabled,
+  tank2Enabled: {
+    componentType: ParametersType.Enabled,
   },
-  tank3Disabled: {
-    componentType: ParametersType.Disabled,
+  tank3Enabled: {
+    componentType: ParametersType.Enabled,
   },
   pumpTemperatureTuning: {
     componentType: ParametersType.Tuning,

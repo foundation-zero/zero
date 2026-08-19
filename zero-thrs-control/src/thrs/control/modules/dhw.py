@@ -84,13 +84,13 @@ class DhwParameters(ThrsValues):
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
     maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
-    tank1_disabled: bool = False
-    tank2_disabled: bool = False
-    tank3_disabled: bool = False
+    tank1_enabled: bool = True
+    tank2_enabled: bool = True
+    tank3_enabled: bool = True
     pump_temperature_tuning: Tuning = (-0.01, -0.001, 0.0)
     pump_flow_tuning: Tuning = (0.01, 0.001, 0.0)
     dc_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
-    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
+    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)   
 
     @model_validator(mode="after")
     def check_tank_setpoints(self):
@@ -173,13 +173,13 @@ class Tank:
         outlet: Valve,
         boosting_supply_valve: Valve,
         boosting_return_valve: Valve,
-        disabled: bool,
+        enabled: bool,
     ):
         self._inlet = inlet
         self._outlet = outlet
         self._boosting_supply_valve = boosting_supply_valve
         self._boosting_return_valve = boosting_return_valve
-        self._disabled = disabled
+        self._enabled = enabled
         self._temperature = None
         self._level = None
         self._full = False
@@ -210,12 +210,12 @@ class Tank:
         self._temperature = temperature
 
     @property
-    def disabled(self) -> bool:
-        return self._disabled
+    def enabled(self) -> bool:
+        return self._enabled
 
-    @disabled.setter
-    def disabled(self, value: bool):
-        self._disabled = value
+    @enabled.setter
+    def enabled(self, value: bool):
+        self._enabled = value
 
     def above_temperature_setpoint(self, parameters: DhwParameters) -> bool:
         if self._temperature is None:
@@ -238,7 +238,7 @@ class Tank:
 
     def standby(self, parameters: DhwParameters) -> bool:
         return (
-            not self._disabled
+            self._enabled
             and self._full
             and not self.below_temperature_setpoint(parameters)
         )
@@ -258,7 +258,7 @@ class Tank:
 
     def boostable(self, parameters: DhwParameters) -> bool:
         return (
-            not self.disabled
+            self._enabled
             and self._full
             and self.below_temperature_setpoint(parameters)
         )
@@ -273,7 +273,7 @@ class Tank:
             self._inlet.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
     def fillable(self, parameters: DhwParameters) -> bool:
-        return (not self._disabled) and (not self._full) and self.outlet_closed()
+        return self._enabled and (not self._full) and self.outlet_closed()
 
     def use(self, time: Callable[[], datetime]):
         self._full = False
@@ -308,7 +308,7 @@ class TanksController:
             if tank is not self._tank_in_use
             and tank is not self._filling_tank
             and tank is not self._boosting_tank
-            and not tank.disabled
+            and tank.enabled
         ]
 
     def _update_tank_states(
@@ -326,10 +326,10 @@ class TanksController:
             sensor_values.dhw_level_tank3.level.value,
         ]
 
-        disableds = [
-            parameters.tank1_disabled,
-            parameters.tank2_disabled,
-            parameters.tank3_disabled,
+        enableds = [
+            parameters.tank1_enabled,
+            parameters.tank2_enabled,
+            parameters.tank3_enabled,
         ]
 
         outlet_positions = [
@@ -338,12 +338,12 @@ class TanksController:
             sensor_values.dhw_switch_tank3_outlet.position_rel.value,
         ]
 
-        for tank, level, temperature, disabled, outlet_position in zip(
-            self._tanks, levels, temperatures, disableds, outlet_positions, strict=False
+        for tank, level, temperature, enabled, outlet_position in zip(
+            self._tanks, levels, temperatures, enableds, outlet_positions, strict=False
         ):
             tank.level = level
             tank.temperature = temperature
-            tank.disabled = disabled
+            tank.enabled = enabled
             tank.outlet_position = outlet_position
 
     def _select_tank_in_use(self, parameters: DhwParameters):
@@ -468,7 +468,7 @@ class TanksController:
             return TankState.BOOSTING
         if tank is self._tank_in_use:
             return TankState.IN_USE
-        if tank.disabled:
+        if not tank.enabled:
             return TankState.DISABLED
         if tank.boostable(parameters):
             return TankState.NEEDS_BOOST
@@ -671,21 +671,21 @@ class DhwControl(
                 outlet=self._current_values.dhw_switch_tank1_outlet,
                 boosting_supply_valve=self._current_values.dhw_switch_tank1_boosting_supply,
                 boosting_return_valve=self._current_values.dhw_switch_tank1_boosting_return,
-                disabled=self._parameters.tank1_disabled,
+                enabled=self._parameters.tank1_enabled,
             ),
             tank2=Tank(
                 inlet=self._current_values.dhw_switch_tank2_inlet,
                 outlet=self._current_values.dhw_switch_tank2_outlet,
                 boosting_supply_valve=self._current_values.dhw_switch_tank2_boosting_supply,
                 boosting_return_valve=self._current_values.dhw_switch_tank2_boosting_return,
-                disabled=self._parameters.tank2_disabled,
+                enabled=self._parameters.tank2_enabled,
             ),
             tank3=Tank(
                 inlet=self._current_values.dhw_switch_tank3_inlet,
                 outlet=self._current_values.dhw_switch_tank3_outlet,
                 boosting_supply_valve=self._current_values.dhw_switch_tank3_boosting_supply,
                 boosting_return_valve=self._current_values.dhw_switch_tank3_boosting_return,
-                disabled=self._parameters.tank3_disabled,
+                enabled=self._parameters.tank3_enabled,
             ),
             time_fn=self._time,
         )

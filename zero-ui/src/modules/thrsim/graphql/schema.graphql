@@ -462,9 +462,9 @@ type DhwParametersType {
   fillingTemperatureSetpoint: Float!
   minimumTankLevel: Float!
   maximumTankLevel: Float!
-  tank1Disabled: Boolean!
-  tank2Disabled: Boolean!
-  tank3Disabled: Boolean!
+  tank1Enabled: Boolean!
+  tank2Enabled: Boolean!
+  tank3Enabled: Boolean!
   pumpTemperatureTuning: [Float!]!
   pumpFlowTuning: [Float!]!
   dcFlowTuning: [Float!]!
@@ -906,9 +906,9 @@ type Mutation {
   dhwParameterSetFillingTemperatureSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumTankLevel(value: Float!): DhwParametersType!
   dhwParameterSetMaximumTankLevel(value: Float!): DhwParametersType!
-  dhwParameterSetTank1Disabled(value: Boolean!): DhwParametersType!
-  dhwParameterSetTank2Disabled(value: Boolean!): DhwParametersType!
-  dhwParameterSetTank3Disabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetTank1Enabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetTank2Enabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetTank3Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetPumpTemperatureTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetPumpFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDcFlowTuning(value: [Float!]!): DhwParametersType!
