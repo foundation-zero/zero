@@ -435,7 +435,7 @@ class PvtSensorValues(ThrsValues):
         component_meta(
             yard_tag="50001038-55",
             component_type="temperature_sensor",
-            topic="pcm/pcm-temperature-producers-supply",
+            topic_override="500000-thrs/pcm/pcm-temperature-producers-supply",
             included_in_fmu=False,
         ),
     ]
