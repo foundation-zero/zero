@@ -1429,6 +1429,7 @@ type SensorUgridType {
 
 type SensorValveType {
   positionRel: FloatStampedType!
+  positionAbs: FloatStampedType!
 }
 
 type SimulationAdsorptionChillerType {

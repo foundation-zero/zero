@@ -23,6 +23,8 @@ const editor = computed(() => {
       return FieldRenderer.FlowRate;
     case "setpoint":
       return FieldRenderer.ValveState;
+    case "positionAbs":
+      return FieldRenderer.Degree;
     case "positionRel":
     case "dutypoint":
       return FieldRenderer.Percentage;

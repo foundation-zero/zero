@@ -134,6 +134,9 @@ Empty: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
+Degree: TypeAlias = Annotated[
+    float, Field(ge=0, le=360), UnitMeta(modelica_name="Degree")
+]
 
 
 class TankState(Enum):

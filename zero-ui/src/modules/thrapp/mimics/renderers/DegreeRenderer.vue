@@ -4,7 +4,7 @@ import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: (value: number) => formatNumber.default(value * 360),
+  format: formatNumber.int,
 });
 
 const { units } = useTranslations();
@@ -15,6 +15,5 @@ const { units } = useTranslations();
     v-bind="props"
     :unit="units('degrees')"
     dense
-  >
-  </FieldRenderer.Number>
+  />
 </template>

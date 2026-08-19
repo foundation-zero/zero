@@ -23,6 +23,7 @@ export const randomizedState = <T>(possibleValues: T[]) =>
   possibleValues[Math.floor(Math.random() * possibleValues.length)];
 
 export const randomizedRatio = () => Math.random();
+export const randomizedDegree = () => Math.random() * 360;
 export const randomizedBoolean = () => Math.random() < 0.5;
 
 export const useRandomizedValue = <T>(valueFn: () => T, interval = 10_000) => {
@@ -44,6 +45,9 @@ export const useRandomizedNumber = (min: number, max: number, interval = 10_000)
 
 export const useRandomizedRatio = (interval = 10_000) =>
   useRandomizedValue(randomizedRatio, interval);
+
+export const useRandomizedDegree = (interval = 10_000) =>
+  useRandomizedValue(randomizedDegree, interval);
 
 export const useRandomizedBoolean = (interval = 10_000) =>
   useRandomizedValue(randomizedBoolean, interval);
@@ -126,7 +130,8 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Valve]: () => {
     const positionRel = useRandomizedRatio();
-    return computed(() => ({ positionRel: stamp(positionRel) }));
+    const positionAbs = useRandomizedDegree();
+    return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
   },
   [SensorComponentType.HeatExchanger]: () => {
     const deltaT = useRandomizedNumber(-20, 20);

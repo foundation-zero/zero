@@ -1,10 +1,14 @@
+import logging
 from abc import ABC, abstractmethod
 from asyncio import Future
+from contextlib import suppress
 from typing import Any
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 from thrs.input_output.base import ThrsValues
+
+logger = logging.getLogger(__name__)
 
 
 class ModelBuilder[T](ABC):
@@ -48,13 +52,24 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         value = self._fields[field].validate_json(json)
 
         self._values[field] = value
-        if set(self._values.keys()) == set(self._cls.model_fields.keys()):
+
+        # Just try to create the object, we can't compare key sets because of optional values
+        with suppress(ValidationError):
             self._value = self._cls(**self._values)
 
             if not self._complete_model.done():
                 self._complete_model.set_result(self._value)
 
     def result(self) -> T | None:
+        if logger.isEnabledFor(logging.DEBUG):
+            try:
+                self._cls(**self._values)
+            except ValidationError as e:
+                logger.debug(
+                    "Failed creating model",
+                    exc_info=e,
+                )
+
         return self._value
 
     async def wait_for_result(self) -> T:

@@ -2,12 +2,15 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
+from pydantic import field_validator
+
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    Degree,
     DeltaT,
     Empty,
     Hz,
@@ -59,6 +62,15 @@ class Pump(ThrsValues):
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
         )
     )
+
+    # TODO: Remove once marpower fixes this on their side
+    @field_validator("dutypoint")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
+        if value.value > 1.0:
+            value.value /= 100
+
+        return value
 
 
 class TemperatureSensor(ThrsValues):
@@ -185,6 +197,20 @@ class HeatExchanger(HeatTransferDevice):
 
 class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
+
+    # Not used in control, only in frontend TODO: Remove when graphql api is split off
+    position_abs: Annotated[Stamped[Degree], field_meta(included_in_fmu=False)] = (
+        Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
+
+    # TODO: Remove once marpower fixes this on their side
+    @field_validator("position_rel")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
+        if value.value > 1.0:
+            value.value /= 100
+
+        return value
 
 
 def valves_open_closed(
