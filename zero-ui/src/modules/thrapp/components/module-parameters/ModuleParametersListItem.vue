@@ -2,6 +2,7 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 import { provideMultiLineEditor } from "../../mimics/editors";
+import { injectValueForm } from "../../mimics/providers/forms";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -9,6 +10,8 @@ const props = defineProps<{
 }>();
 
 provideMultiLineEditor(!!props.multiline);
+
+const form = injectValueForm();
 </script>
 
 <template>
@@ -21,5 +24,11 @@ provideMultiLineEditor(!!props.multiline);
     "
   >
     <slot />
+    <span
+      v-if="form?.error.value"
+      class="text-destructive w-full text-xs"
+    >
+      {{ form.error.value }}
+    </span>
   </li>
 </template>

@@ -9,7 +9,7 @@ from typing import (
 
 from aiomqtt import Client
 from paho.mqtt.client import topic_matches_sub
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
@@ -700,7 +700,12 @@ class MqttConnector:
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
                         )
-                    mapping.handle_message(message.topic.value, message.payload)
+                    try:
+                        mapping.handle_message(message.topic.value, message.payload)
+                    except ValidationError:
+                        logger.exception(
+                            f"Discarding invalid payload on {message.topic.value}"
+                        )
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool

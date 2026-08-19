@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from inspect import isclass
 
 import strawberry
+from pydantic import ValidationError
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import BaseContext
 
@@ -292,13 +293,20 @@ def add_parameter_mutations(
                 parameters = mod.parameters
                 if parameters is None:
                     raise Exception("No parameters available to update")
-                setattr(parameters, name, value)
+                try:
+                    updated = parameters_cls.model_validate_json(
+                        parameters.model_copy(update={name: value}).model_dump_json(
+                            by_alias=True
+                        )
+                    )
+                except ValidationError as error:
+                    raise Exception(f"Invalid value for {name}: {error}") from error
                 expect = mod.wait_for_parameters(
                     lambda parameters: getattr(parameters, name) == value, timeout=2
                 )
-                await mod.set_parameters(parameters)
+                await mod.set_parameters(updated)
                 await expect
-                return strawberry_cls.from_pydantic(parameters)
+                return strawberry_cls.from_pydantic(updated)
 
             return _mutation
 
