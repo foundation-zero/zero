@@ -11477,7 +11477,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 2,
           "mappings": [],
           "noValue": "-",
           "thresholds": {
@@ -11489,7 +11488,7 @@
               }
             ]
           },
-          "unit": "mamp"
+          "unit": "L"
         },
         "overrides": []
       },
@@ -11777,7 +11776,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                    AS time,\r\n\ttank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n\ttank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                         AS time,\r\n\ttank_1_fr_45_ps_level__value*1000 AS fresh_water_tank_1_level,\r\n\ttank_2_fr_45_sb_level__value*1000 AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
