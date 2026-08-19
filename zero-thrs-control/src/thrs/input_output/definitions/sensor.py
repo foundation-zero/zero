@@ -8,6 +8,7 @@ from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    Degree,
     DeltaT,
     Empty,
     Hz,
@@ -185,6 +186,11 @@ class HeatExchanger(HeatTransferDevice):
 
 class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
+
+    # Not used in control, only in frontend TODO: Remove when graphql api is split off
+    position_abs: Annotated[Stamped[Degree], field_meta(included_in_fmu=False)] = (
+        Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
 
 
 def valves_open_closed(

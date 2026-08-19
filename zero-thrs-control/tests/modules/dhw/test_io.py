@@ -118,10 +118,12 @@ def test_dhw_heatpump_computed_field():
                 temperature=Stamped.stamp(0.0),
             ),
             "dhw_switch_heatpump": sensor.Valve(
-                position_rel=Stamped.stamp(control.Valve.OPEN)
+                position_rel=Stamped.stamp(control.Valve.OPEN),
+                position_abs=Stamped.stamp(90),
             ),
             "dhw_switch_high_temperature": sensor.Valve(
-                position_rel=Stamped.stamp(control.Valve.CLOSED)
+                position_rel=Stamped.stamp(control.Valve.CLOSED),
+                position_abs=Stamped.stamp(0),
             ),
         }
     )

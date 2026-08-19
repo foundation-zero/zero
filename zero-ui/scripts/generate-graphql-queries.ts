@@ -120,7 +120,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "energyConsumption",
       "powerInput",
     ],
-    Valve: ["positionRel"],
+    Valve: ["positionRel", "positionAbs"],
     Thruster: ["active"],
     Pcs: ["mode"],
     Pcm: ["charged"],
