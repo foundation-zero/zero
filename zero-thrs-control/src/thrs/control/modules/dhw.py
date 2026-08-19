@@ -90,7 +90,7 @@ class DhwParameters(ThrsValues):
     pump_temperature_tuning: Tuning = (-0.01, -0.001, 0.0)
     pump_flow_tuning: Tuning = (0.01, 0.001, 0.0)
     dc_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
-    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)   
+    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
 
     @model_validator(mode="after")
     def check_tank_setpoints(self):
@@ -258,9 +258,7 @@ class Tank:
 
     def boostable(self, parameters: DhwParameters) -> bool:
         return (
-            self._enabled
-            and self._full
-            and self.below_temperature_setpoint(parameters)
+            self._enabled and self._full and self.below_temperature_setpoint(parameters)
         )
 
     def fill(self, time: Callable[[], datetime]):
@@ -347,7 +345,9 @@ class TanksController:
             tank.outlet_position = outlet_position
 
     def _select_tank_in_use(self, parameters: DhwParameters):
-        if self._tank_in_use and self._tank_in_use.empty(parameters):
+        if self._tank_in_use and (
+            self._tank_in_use.empty(parameters) or not self._tank_in_use.enabled
+        ):
             self._tank_in_use.stop_use(self._time)
             self._tank_in_use = (
                 None  # Don't wait for valve to close as we always need water available
@@ -364,7 +364,11 @@ class TanksController:
     def _select_filling_tank(
         self, parameters: DhwParameters, sensor_values: DhwSensorValues
     ):
-        if self._filling_tank:
+        if self._filling_tank and not self._filling_tank.enabled:
+            self._filling_tank.stop_filling(self._time)
+            self._filling_tank = None  # Disabling overrides the fill in progress, don't wait for the inlet valve to close
+
+        elif self._filling_tank:
             if not self._filling_tank.full:
                 time_to_fill = self.time_to_fill(sensor_values, parameters)
                 if (
@@ -377,7 +381,7 @@ class TanksController:
             ):  # Filling is temperature controlled and will continue until the inlet valves is closed, so wait for the filling valves to close before deselecting tank.
                 self._filling_tank = None
 
-        else:
+        if self._filling_tank is None:
             self._filling_tank = next(
                 (tank for tank in self.available_tanks if tank.fillable(parameters)),
                 None,
@@ -387,9 +391,9 @@ class TanksController:
     def _select_boosting_tank(
         self, parameters: DhwParameters, sensor_values: DhwSensorValues
     ):
-        if (
-            self._boosting_tank is not None
-            and self._boosting_tank.above_temperature_setpoint(parameters)
+        if self._boosting_tank is not None and (
+            self._boosting_tank.above_temperature_setpoint(parameters)
+            or not self._boosting_tank.enabled
         ):
             self._boosting_tank.stop_boosting(self._time)
             self._boosting_tank = None  # Don't wait for valves to close as we want boosting flow to stop when the valves are closing
@@ -462,14 +466,14 @@ class TanksController:
         self._select_boosting_tank(parameters, sensor_values)
 
     def tank_state(self, tank: Tank, parameters: DhwParameters) -> TankState:
+        if not tank.enabled:
+            return TankState.DISABLED
         if tank is self._filling_tank:
             return TankState.FILLING
         if tank is self._boosting_tank:
             return TankState.BOOSTING
         if tank is self._tank_in_use:
             return TankState.IN_USE
-        if not tank.enabled:
-            return TankState.DISABLED
         if tank.boostable(parameters):
             return TankState.NEEDS_BOOST
         if tank.fillable(parameters):
