@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
-from urllib.request import urlretrieve
 
+import requests
 import uvicorn
 from generator import DataGenerator
 from generator.base import GeneratorConfig
@@ -138,7 +138,9 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
         logger.info("Updating sailpack mapping from Google Sheets...")
         mapping_url = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid=605184652"
         try:
-            urlretrieve(mapping_url, self.sailpack_mapping)
+            response = requests.get(mapping_url)
+            response.raise_for_status()
+            self.sailpack_mapping.write_bytes(response.content)
             logger.info(f"Mapping updated: {self.sailpack_mapping}")
         except Exception as e:
             logger.warning(
