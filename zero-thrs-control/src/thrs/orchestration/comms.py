@@ -700,7 +700,12 @@ class MqttConnector:
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
                         )
-                    mapping.handle_message(message.topic.value, message.payload)
+                    try:
+                        mapping.handle_message(message.topic.value, message.payload)
+                    except Exception:
+                        logger.exception(
+                            "Failed handling MQTT message, message ignored"
+                        )
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool
