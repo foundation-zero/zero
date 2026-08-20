@@ -448,7 +448,6 @@ class SimulationChannels[
         self.get_control_values = control_values_mapping.result
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = simulation_inputs_mapping.wait_for_result
 
 
 class ControlApiChannels[
@@ -582,9 +581,8 @@ class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
         )
 
         self.get_simulation_inputs = self.simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for_result
         self.get_simulation_outputs = self.simulation_outputs_mapping.result
-        self.wait_for_simulation_inputs_where = self.simulation_inputs_mapping.wait_for
+        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for
 
 
 class DirectivesChannels:

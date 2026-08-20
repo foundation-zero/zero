@@ -111,7 +111,7 @@ class SimulationMessaging:
         *_args,
         timeout: float,
     ) -> Coroutine[None, None, ThrsValues]:
-        return self._channels.wait_for_simulation_inputs_where(condition, timeout)
+        return self._channels.wait_for_simulation_inputs(condition, timeout)
 
     @property
     def simulation_inputs(self) -> ThrsValues | None:
