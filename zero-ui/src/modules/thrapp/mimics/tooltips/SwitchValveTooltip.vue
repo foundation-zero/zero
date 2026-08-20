@@ -69,7 +69,7 @@ const { labels, items, sources } = useTranslations();
         v-bind="custom.tankController"
         :controller="custom.tankController.controllerState.controller"
         :tank-state-field="custom.tankController.custom.tankStateField"
-        :disabled-parameter="custom.tankController.parameters.disabled"
+        :enabled-parameter="custom.tankController.parameters.enabled"
         :source="custom.tankController.source"
       >
         {{ items("tankSelector") }}

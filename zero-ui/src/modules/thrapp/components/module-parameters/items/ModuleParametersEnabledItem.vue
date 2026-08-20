@@ -5,7 +5,7 @@ import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
 import { ParametersType } from "@/modules/thrsim/types";
 import * as Parameters from "..";
 
-defineProps<{ source: ModuleField<ParametersType.Enabled | ParametersType.Disabled> }>();
+defineProps<{ source: ModuleField<ParametersType.Enabled> }>();
 </script>
 
 <template>

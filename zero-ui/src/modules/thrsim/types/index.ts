@@ -489,7 +489,6 @@ export const enum ParametersType {
   Dutypoint = "parameter:dutypoint",
   dT = "parameter:dT",
   Level = "parameter:level",
-  Disabled = "parameter:disabled",
 }
 
 export const PARAMETERS_TYPES = [
@@ -502,7 +501,6 @@ export const PARAMETERS_TYPES = [
   ParametersType.Dutypoint,
   ParametersType.dT,
   ParametersType.Level,
-  ParametersType.Disabled,
 ];
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
@@ -517,7 +515,6 @@ export type RatioParameterDefinition = ParameterDefinition<ParametersType.Ratio>
 export type DutypointParameterDefinition = ParameterDefinition<ParametersType.Dutypoint>;
 export type dTParameterDefinition = ParameterDefinition<ParametersType.dT>;
 export type LevelParameterDefinition = ParameterDefinition<ParametersType.Level>;
-export type DisabledParameterDefinition = ParameterDefinition<ParametersType.Disabled>;
 export type ParameterType = number | PID | boolean;
 export type Parameters = Record<string, ParameterType>;
 
@@ -531,7 +528,6 @@ export type ParameterDefinitionMap = {
   [ParametersType.Dutypoint]: Ratio;
   [ParametersType.dT]: number;
   [ParametersType.Level]: number;
-  [ParametersType.Disabled]: boolean;
 };
 
 export type ExtractParameterValues<T extends ParameterDefinitions> = ExtractValues<

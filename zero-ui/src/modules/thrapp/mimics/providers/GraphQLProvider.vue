@@ -71,7 +71,6 @@ const getControllerState = <
   );
 
 const PARAMETER_INPUT_TYPES: Partial<Record<ParametersType, string>> = {
-  [ParametersType.Disabled]: "Boolean!",
   [ParametersType.Enabled]: "Boolean!",
   [ParametersType.Flow]: "Float!",
   [ParametersType.FlowControl]: "Float!",

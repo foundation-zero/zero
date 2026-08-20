@@ -12,7 +12,7 @@ defineProps<{
   controller: ModuleField<ControllerStateComponentType.DhwTanksController>;
   source?: ModuleField;
   tankStateField: BoilerTankStateField;
-  disabledParameter: ModuleField<ParametersType.Disabled>;
+  enabledParameter: ModuleField<ParametersType.Enabled>;
 }>();
 </script>
 
@@ -35,7 +35,7 @@ defineProps<{
           v-if="source"
           :source="source"
         />
-        <FieldRenderer.Source :source="disabledParameter" />
+        <FieldRenderer.Source :source="enabledParameter" />
       </template>
       <template #value>
         <FieldRenderer.BoilerTankMode />

@@ -42,7 +42,6 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
   [ParametersType.Dutypoint]: RatioParameter,
   [ParametersType.dT]: NumberParameter,
   [ParametersType.Level]: NumberParameter,
-  [ParametersType.Disabled]: BooleanParameter,
   [ParametersType.FlowControl]: RatioParameter,
 };
 </script>
