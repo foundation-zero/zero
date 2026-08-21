@@ -220,12 +220,27 @@ def generate_mutation_for_field[T](
     name: str,
     field_name: str,
     field: FieldInfo,
-    make_fn: "Callable[[str, type], FieldMutation[T]]",
+    make_fn_key: str,
+    messaging: "Callable[[ThrsContext], ControlMessaging | SimulationMessaging]",
     *args,
     unstamp: bool,
 ) -> "FieldMutation[T]":
     input_type = ensure_input_type(field.annotation, unstamp=unstamp)
-    mutation = make_fn(field_name, input_type)
+
+    def _make_mutation(name: str, component_type: type):
+        async def _mutation(
+            self,
+            value: component_type,  # type: ignore
+            info: "strawberry.Info[ThrsContext]",
+        ) -> cls:  # type: ignore
+            mod = messaging(info.context)
+            value = value.to_pydantic().to_stamped() if unstamp else value
+            result = await getattr(mod, make_fn_key)(name, value)
+            return cls.from_pydantic(result)  # type: ignore
+
+        return _mutation
+
+    mutation = _make_mutation(field_name, input_type)
     mutation.__name__ = name
     return mutation
 
@@ -234,41 +249,17 @@ def add_control_mutations(
     module: str,
     control_values_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
-        def _make_control_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                component: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                control_values = mod.control_values
-                if control_values is None:
-                    raise Exception("No control values available to modify")
-                value = component.to_pydantic().to_stamped()
-                control_values = control_values.model_copy()
-                setattr(control_values, name, value)
-                expect = mod.wait_for_manual_values(
-                    lambda v: getattr(v, name) == value, timeout=2.0
-                )
-                await mod.send_manual_controls(control_values)
-                try:
-                    await expect
-                except TimeoutError as e:
-                    raise Exception("Timeout when setting control values") from e
-                return strawberry_cls.from_pydantic(control_values)
-
-            return _mutation
-
         for name, field in control_values_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{module}_control_set_{name}",
                 name,
                 field,
-                _make_control_mutation,
+                "set_manual_control",
+                messaging,
                 unstamp=True,
             )
             method = strawberry.mutation(fn)
@@ -283,41 +274,17 @@ def add_parameter_mutations(
     module: str,
     parameters_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
-        def _make_parameter_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                value: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                parameters = mod.parameters
-                if parameters is None:
-                    raise Exception("No parameters available to update")
-                parameters = parameters.model_copy()
-                setattr(parameters, name, value)
-                expect = mod.wait_for_parameters(
-                    lambda parameters: getattr(parameters, name) == value, timeout=2
-                )
-                await mod.set_parameters(parameters)
-                try:
-                    await expect
-                except TimeoutError as e:
-                    raise Exception("Timeout when setting parameters") from e
-
-                return strawberry_cls.from_pydantic(parameters)
-
-            return _mutation
-
         for name, field in parameters_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{module}_parameter_set_{name}",
                 name,
                 field,
-                _make_parameter_mutation,
+                "set_parameter",
+                messaging,
                 unstamp=False,
             )
             method = strawberry.mutation(fn)
@@ -332,46 +299,20 @@ def add_simulation_input_mutations(
     mode: str,
     io_mapping: dict[str, tuple[type[ThrsValues], type[ThrsValues]]],
     inputs_strawberry_type_mapping: dict[str, type],
-    messaging: Callable[[ThrsContext], SimulationMessaging],
+    messaging: "Callable[[ThrsContext], SimulationMessaging]",
 ):
     strawberry_cls = inputs_strawberry_type_mapping[mode]
     inputs_cls = io_mapping[mode][0]
 
     def _do(cls):
-        def _make_simulation_input_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                component: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                inputs = mod.simulation_inputs
-                if inputs is None:
-                    raise Exception("No simulation inputs available to modify")
-                value = component.to_pydantic().to_stamped()
-                inputs = inputs.model_copy()
-                setattr(inputs, name, value)
-
-                expect = mod.wait_for_simulation_inputs(
-                    lambda inputs: getattr(inputs, name) == value,
-                    timeout=2,
-                )
-                await mod.set_simulation_inputs(inputs)
-                try:
-                    await expect
-                except TimeoutError as e:
-                    raise Exception("Timeout when setting simulation inputs") from e
-                return strawberry_cls.from_pydantic(inputs)
-
-            return _mutation
-
         for name, field in inputs_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{mode}_simulation_set_{name}",
                 name,
                 field,
-                _make_simulation_input_mutation,
+                "set_simulation_input",
+                messaging,
                 unstamp=True,
             )
             method = strawberry.mutation(fn)
@@ -384,21 +325,16 @@ def add_simulation_input_mutations(
 
 def add_automation_mode_mutation(
     module: str,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
         async def set_automation_mode(
             self,
             automatic: bool,
-            info: strawberry.Info[ThrsContext],
+            info: "strawberry.Info[ThrsContext]",
         ) -> bool:
             mod = messaging(info.context)
-            await mod.set_automation_mode(automatic)
-            try:
-                await mod.wait_for_control_mode(automatic, timeout=2)
-            except TimeoutError as e:
-                raise Exception("Timeout when setting simulation inputs") from e
-            return True
+            return await mod.set_automation_mode(automatic)
 
         mutation = strawberry.mutation(set_automation_mode)
         setattr(cls, f"{module}_set_automation_mode", mutation)

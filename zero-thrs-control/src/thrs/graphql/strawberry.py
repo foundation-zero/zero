@@ -135,14 +135,14 @@ class Query:
 
     @strawberry.field
     def simulation(self, info: strawberry.Info[ThrsContext]) -> SimulationState | None:
-        if (
-            info.context.messaging.simulation_status is None
-            or info.context.messaging.simulation_status.simulation_time is None
-        ):
+        simulation_status = info.context.messaging.simulation_status
+
+        if simulation_status is None or simulation_status.simulation_time is None:
             return None
+
         return SimulationState(
-            time=info.context.messaging.simulation_status.simulation_time,
-            status=info.context.messaging.simulation_status.status,
+            time=simulation_status.simulation_time,
+            status=simulation_status.status,
         )
 
 
@@ -177,44 +177,17 @@ class Mutation(
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
     ) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot play")
-        if info.context.messaging.simulation_status.status not in (
-            "available",
-            "running",
-        ):
-            raise Exception("Can only play an available or running simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "running", timeout=2.0
-        )
         await info.context.messaging.play_simulation(playback_rate)
-        await expect_status
 
     @strawberry.mutation
     async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot pause")
-        if info.context.messaging.simulation_status.status != "running":
-            raise Exception("Can only pause a running simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "available", timeout=2.0
-        )
         await info.context.messaging.pause_simulation()
-        await expect_status
 
     @strawberry.mutation
     async def simulation_step(
         self, info: strawberry.Info[ThrsContext], seconds: float
     ) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot step")
-        if info.context.messaging.simulation_status.status != "available":
-            raise Exception("Can only step an available simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "stepping", timeout=2.0
-        )
         await info.context.messaging.step_simulation(seconds)
-        await expect_status
 
 
 def messaging(request: Request) -> DirectiveMessaging:

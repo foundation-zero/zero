@@ -131,7 +131,7 @@ const setControlValue = async <
 
   const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
   const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(component: $input) {
+          ${mutation}(value: $input) {
             ${QUERIES[source[1]].controlValues}
           }
       }`;
