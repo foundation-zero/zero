@@ -1,7 +1,6 @@
 import logging
 import sys
 from asyncio import Task, create_task
-from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import (
@@ -12,7 +11,6 @@ import strawberry
 from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
 from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
@@ -40,14 +38,12 @@ from thrs.graphql.base import (
     DcMessaging,
     DhwMessaging,
     DrivesMessaging,
-    FieldMutation,
     PcmMessaging,
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
     resolve_module,
 )
-from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -144,21 +140,6 @@ class Query:
             time=simulation_status.simulation_time,
             status=simulation_status.status,
         )
-
-
-def generate_mutation_for_field[T](
-    cls: type[T],
-    name: str,
-    field_name: str,
-    field: FieldInfo,
-    make_fn: "Callable[[str, type], FieldMutation[T]]",
-    *args,
-    unstamp: bool,
-) -> "FieldMutation[T]":
-    input_type = ensure_input_type(field.annotation, unstamp=unstamp)
-    mutation = make_fn(field_name, input_type)
-    mutation.__name__ = f"set_{name}"
-    return mutation
 
 
 @strawberry.type
