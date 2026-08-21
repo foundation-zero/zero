@@ -13,6 +13,7 @@ export const ENV_KEYS = [
   "VITE_THRS_API_SERVER_URL",
   "VITE_LOADS_API_SERVER",
   "VITE_LOADS_API_SERVER_URL",
+  "VITE_INCLUDE_APPS",
 ] as const;
 
 export type EnvKey = (typeof ENV_KEYS)[number];
