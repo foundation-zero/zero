@@ -1034,12 +1034,7 @@ async def test_query_simulation_inputs_actual(
         ),
     )
     directives_channels = DirectivesApiChannels(control_connector, settings)
-    msg = DirectiveMessaging(
-        [thrusters_msg],
-        simulation_msg,
-        directives_channels,
-        control_connector,
-    )
+    msg = DirectiveMessaging([thrusters_msg], directives_channels)
     app.dependency_overrides[messaging] = lambda: msg
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
@@ -1054,7 +1049,7 @@ async def test_query_simulation_inputs_actual(
         f"{settings.mqtt_simulator_topic_prefix}/status", None, qos=1, retain=True
     )
 
-    run_task = create_task(await msg.run())
+    run_task = create_task(await control_connector.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(

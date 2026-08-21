@@ -129,13 +129,9 @@ class DirectiveMessaging:
     def __init__(
         self,
         control_modules: list[ControlMessaging],
-        simulation: SimulationMessaging,
         directives_channels: DirectivesApiChannels,
-        connector: MqttConnector,
     ):
         self._control_modules = control_modules
-        self._simulation = simulation
-        self._connector = connector
         self._directives_channels = directives_channels
 
         self._simulation_status: SimulationStatusMessage | None = None
@@ -149,9 +145,6 @@ class DirectiveMessaging:
 
         for module in self._control_modules:
             module.active = module._channels.module_name in status.control_modules
-
-    async def run(self) -> Coroutine[None, None, None]:
-        return await self._connector.run()
 
     async def play_simulation(self, playback_rate: float):
         await self._directives_channels.send_play(playback_rate)

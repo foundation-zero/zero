@@ -380,11 +380,9 @@ def create_app(settings: Config):
                     dc_messaging,
                     dhw_messaging,
                 ],
-                simulation_messaging,
                 directives_channels,
-                messaging_connector,
             )
-            run_task = create_task(await messaging.run())
+            run_task = create_task(await messaging_connector.run())
 
             def _finish(task: Task):
                 if err := task.exception():
