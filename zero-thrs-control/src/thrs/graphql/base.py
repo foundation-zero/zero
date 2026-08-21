@@ -247,13 +247,17 @@ def add_control_mutations(
                 control_values = mod.control_values
                 if control_values is None:
                     raise Exception("No control values available to modify")
-                pydantic_value = component.to_pydantic().to_stamped()
-                setattr(control_values, name, pydantic_value)
+                value = component.to_pydantic().to_stamped()
+                control_values = control_values.model_copy()
+                setattr(control_values, name, value)
                 expect = mod.wait_for_manual_values(
-                    lambda v: getattr(v, name) == pydantic_value, timeout=2.0
+                    lambda v: getattr(v, name) == value, timeout=2.0
                 )
                 await mod.send_manual_controls(control_values)
-                await expect
+                try:
+                    await expect
+                except TimeoutError as e:
+                    raise Exception("Timeout when setting control values") from e
                 return strawberry_cls.from_pydantic(control_values)
 
             return _mutation
@@ -292,12 +296,17 @@ def add_parameter_mutations(
                 parameters = mod.parameters
                 if parameters is None:
                     raise Exception("No parameters available to update")
+                parameters = parameters.model_copy()
                 setattr(parameters, name, value)
                 expect = mod.wait_for_parameters(
                     lambda parameters: getattr(parameters, name) == value, timeout=2
                 )
                 await mod.set_parameters(parameters)
-                await expect
+                try:
+                    await expect
+                except TimeoutError as e:
+                    raise Exception("Timeout when setting parameters") from e
+
                 return strawberry_cls.from_pydantic(parameters)
 
             return _mutation
@@ -339,15 +348,19 @@ def add_simulation_input_mutations(
                 inputs = mod.simulation_inputs
                 if inputs is None:
                     raise Exception("No simulation inputs available to modify")
-                pydantic_value = component.to_pydantic().to_stamped()
-                setattr(inputs, name, pydantic_value)
+                value = component.to_pydantic().to_stamped()
+                inputs = inputs.model_copy()
+                setattr(inputs, name, value)
 
                 expect = mod.wait_for_simulation_inputs(
-                    lambda inputs: getattr(inputs, name) == pydantic_value,
+                    lambda inputs: getattr(inputs, name) == value,
                     timeout=2,
                 )
                 await mod.set_simulation_inputs(inputs)
-                await expect
+                try:
+                    await expect
+                except TimeoutError as e:
+                    raise Exception("Timeout when setting simulation inputs") from e
                 return strawberry_cls.from_pydantic(inputs)
 
             return _mutation
@@ -381,7 +394,10 @@ def add_automation_mode_mutation(
         ) -> bool:
             mod = messaging(info.context)
             await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_mode(automatic, timeout=2)
+            try:
+                await mod.wait_for_control_mode(automatic, timeout=2)
+            except TimeoutError as e:
+                raise Exception("Timeout when setting simulation inputs") from e
             return True
 
         mutation = strawberry.mutation(set_automation_mode)
