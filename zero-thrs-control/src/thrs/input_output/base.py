@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Annotated, Any, Literal, Self, cast
+from inspect import isclass
+from typing import Annotated, Any, Literal, NamedTuple, Self, cast, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_pascal
@@ -101,3 +102,82 @@ def field_meta(*args, **kwargs):
 @dataclass
 class CombinedValues:
     values: dict[str, ThrsValues]
+
+
+class Payload:
+    """Marker mixin: a ThrsValues subclass whose fields are serialised as a single JSON payload
+    on its own MQTT topic rather than being further expanded into sub-topics."""
+
+
+class FieldLeaf(NamedTuple):
+    """A resolved leaf in the topic tree produced by :func:`walk_fields`."""
+
+    topic: str
+    """Full MQTT topic for this leaf (no wildcards)."""
+    field_path: tuple[str, ...]
+    """Sequence of attribute names to reach the value from the root model."""
+    annotation: type
+    """Concrete Python type of the leaf value (a ThrsValues+Payload subclass or a scalar)."""
+    is_payload: bool
+    """True when *annotation* inherits from both ThrsValues and Payload."""
+
+
+def _bare_type(annotation: Any) -> Any:
+    """Strip a single level of Annotated[T, ...] and return the bare type."""
+    if get_origin(annotation) is Annotated:
+        return get_args(annotation)[0]
+    return annotation
+
+
+def walk_fields(
+    cls: type[ThrsValues],
+    base_topic: str,
+    *,
+    _field_path: tuple[str, ...] = (),
+) -> list[FieldLeaf]:
+    """Recursively walk all fields of a :class:`ThrsValues` subclass and return a flat list of
+    :class:`FieldLeaf` entries, one per MQTT topic leaf.
+
+    The walk follows these rules for each field:
+
+    * If the bare annotation is a subclass of both :class:`ThrsValues` **and** :class:`Payload`,
+      the field is a **payload leaf** — its full model is expected as a JSON payload on a single
+      topic and is not expanded further.
+    * If the bare annotation is a subclass of :class:`ThrsValues` **only**, the field is a
+      **path component** — ``field_name`` (or a ``topic_override``) is appended to the topic
+      and the walk recurses into that nested model.
+    * Otherwise the field is a **scalar leaf** — its raw value lives on the derived topic.
+
+    Topic segments are derived from ``field_name`` with underscores replaced by hyphens unless
+    a ``topic_override`` is present in the field's :class:`ComponentMeta`.
+
+    Args:
+        cls: The root :class:`ThrsValues` subclass to inspect.
+        base_topic: MQTT topic prefix for this level of the tree (e.g. ``"vessel/module"``).
+
+    Returns:
+        A flat list of :class:`FieldLeaf` instances in field-declaration order.
+    """
+    leaves: list[FieldLeaf] = []
+
+    for field_name, field_info in cls.model_fields.items():
+        bare = _bare_type(field_info.annotation)
+
+        topic_override = get_topic(field_info)
+        segment = topic_override if topic_override else field_name.replace("_", "-")
+        topic = f"{base_topic}/{segment}"
+
+        path = _field_path + (field_name,)
+
+        if isclass(bare) and issubclass(bare, ThrsValues):
+            if issubclass(bare, Payload):
+                # Payload leaf: entire sub-model serialised as one JSON blob
+                leaves.append(FieldLeaf(topic=topic, field_path=path, annotation=bare, is_payload=True))
+            else:
+                # Path component: recurse into the nested ThrsValues
+                leaves.extend(walk_fields(bare, topic, _field_path=path))
+        else:
+            # Scalar leaf
+            leaves.append(FieldLeaf(topic=topic, field_path=path, annotation=bare, is_payload=False))
+
+    return leaves
