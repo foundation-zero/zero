@@ -16,7 +16,12 @@ from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
 from thrs.orchestration.module import Module
-from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
+from thrs.orchestration.setup import (
+    setup_control_modules,
+    setup_database,
+    setup_persistence_manager,
+    setup_simulation_module,
+)
 from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
@@ -33,6 +38,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 class ControlCmd(BaseSettings):
     mode: ModeName
     machine_state_logging: CliImplicitFlag[bool] = True
+    module_persistence: CliImplicitFlag[bool] = True
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command: %s", self.mode)
@@ -42,6 +48,17 @@ class ControlCmd(BaseSettings):
 
         control_mode = lookup_mode(self.mode)
 
+        database = setup_database(
+            settings,
+            self.module_persistence,
+            self.machine_state_logging,
+        )
+
+        persistence = setup_persistence_manager(
+            database,
+            self.module_persistence,
+        )
+
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
@@ -50,9 +67,13 @@ class ControlCmd(BaseSettings):
                 settings,
                 control_mode.control_modules,
                 datetime.now,
-                machine_state_logging_service_enabled=self.machine_state_logging,
+                database,
+                self.machine_state_logging,
             )
-            runner = ControlRunner(control_modules, liveness_check)
+
+            await persistence.restore_all(control_modules)
+
+            runner = ControlRunner(control_modules, liveness_check, persistence)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
@@ -98,6 +119,9 @@ class LockstepCmd(BaseSettings):
     mode: ModeName
     machine_state_logging: CliImplicitFlag[bool] = True
     play: CliImplicitFlag[bool] = False
+    # Off by default: lockstep forces automatic mode, so persisting would overwrite the
+    # mode a real controller stored.
+    module_persistence: CliImplicitFlag[bool] = False
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -117,18 +141,30 @@ class LockstepCmd(BaseSettings):
             mode.simulation_description,
         )
 
+        database = setup_database(
+            settings,
+            self.module_persistence,
+            self.machine_state_logging,
+        )
+
+        persistence = setup_persistence_manager(
+            database,
+            self.module_persistence,
+        )
+
         control_modules: list[Module] = setup_control_modules(
             connector,
             settings,
             mode.control_modules,
             time_fn=simulation_module.time,
+            database=database,
             machine_state_logging_service_enabled=self.machine_state_logging,
         )
 
         for module in control_modules:
             module.set_automation_mode(AutomationMode(mode="automatic"))
 
-        runner = LockstepRunner(control_modules, simulation_module)
+        runner = LockstepRunner(control_modules, simulation_module, persistence)
 
         directives_channels = DirectivesChannels(connector, settings)
 

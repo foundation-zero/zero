@@ -1,0 +1,1874 @@
+{
+  "info": {
+    "title": "Termodinamica",
+    "version": "1.0.0"
+  },
+  "asyncapi": "3.0.0",
+  "defaultContentType": "application/json",
+  "servers": {
+    "development": {
+      "host": "localhost:1883",
+      "pathname": "",
+      "protocol": "mqtt",
+      "protocolVersion": "5.0"
+    }
+  },
+  "channels": {
+    "termodinamica.ac.31:Publisher": {
+      "address": "termodinamica/ac/31:Publisher",
+      "description": "Modbus data for termodinamica/ac/31",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.31:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/31",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.13:Publisher": {
+      "address": "termodinamica/ac/13:Publisher",
+      "description": "Modbus data for termodinamica/ac/13",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.13:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/13",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.17:Publisher": {
+      "address": "termodinamica/ac/17:Publisher",
+      "description": "Modbus data for termodinamica/ac/17",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.17:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/17",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac-misc:Publisher": {
+      "address": "termodinamica/ac-misc:Publisher",
+      "description": "Modbus data for termodinamica/ac-misc",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac-misc:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac-misc",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.21:Publisher": {
+      "address": "termodinamica/ac/21:Publisher",
+      "description": "Modbus data for termodinamica/ac/21",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.21:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/21",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.18:Publisher": {
+      "address": "termodinamica/ac/18:Publisher",
+      "description": "Modbus data for termodinamica/ac/18",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.18:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/18",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.14:Publisher": {
+      "address": "termodinamica/ac/14:Publisher",
+      "description": "Modbus data for termodinamica/ac/14",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.14:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/14",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.23:Publisher": {
+      "address": "termodinamica/ac/23:Publisher",
+      "description": "Modbus data for termodinamica/ac/23",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.23:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/23",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.11:Publisher": {
+      "address": "termodinamica/ac/11:Publisher",
+      "description": "Modbus data for termodinamica/ac/11",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.11:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/11",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.07:Publisher": {
+      "address": "termodinamica/ac/07:Publisher",
+      "description": "Modbus data for termodinamica/ac/07",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.07:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/07",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.19:Publisher": {
+      "address": "termodinamica/ac/19:Publisher",
+      "description": "Modbus data for termodinamica/ac/19",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.19:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/19",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.05:Publisher": {
+      "address": "termodinamica/ac/05:Publisher",
+      "description": "Modbus data for termodinamica/ac/05",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.05:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/05",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.09:Publisher": {
+      "address": "termodinamica/ac/09:Publisher",
+      "description": "Modbus data for termodinamica/ac/09",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.09:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/09",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.15:Publisher": {
+      "address": "termodinamica/ac/15:Publisher",
+      "description": "Modbus data for termodinamica/ac/15",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.15:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/15",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.02:Publisher": {
+      "address": "termodinamica/ac/02:Publisher",
+      "description": "Modbus data for termodinamica/ac/02",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.02:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/02",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.22:Publisher": {
+      "address": "termodinamica/ac/22:Publisher",
+      "description": "Modbus data for termodinamica/ac/22",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.22:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/22",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.24:Publisher": {
+      "address": "termodinamica/ac/24:Publisher",
+      "description": "Modbus data for termodinamica/ac/24",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.24:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/24",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.06:Publisher": {
+      "address": "termodinamica/ac/06:Publisher",
+      "description": "Modbus data for termodinamica/ac/06",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.06:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/06",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.25:Publisher": {
+      "address": "termodinamica/ac/25:Publisher",
+      "description": "Modbus data for termodinamica/ac/25",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.25:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/25",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.26:Publisher": {
+      "address": "termodinamica/ac/26:Publisher",
+      "description": "Modbus data for termodinamica/ac/26",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.26:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/26",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.27:Publisher": {
+      "address": "termodinamica/ac/27:Publisher",
+      "description": "Modbus data for termodinamica/ac/27",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.27:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/27",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.08:Publisher": {
+      "address": "termodinamica/ac/08:Publisher",
+      "description": "Modbus data for termodinamica/ac/08",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.08:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/08",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.10:Publisher": {
+      "address": "termodinamica/ac/10:Publisher",
+      "description": "Modbus data for termodinamica/ac/10",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.10:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/10",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.12:Publisher": {
+      "address": "termodinamica/ac/12:Publisher",
+      "description": "Modbus data for termodinamica/ac/12",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.12:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/12",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.16:Publisher": {
+      "address": "termodinamica/ac/16:Publisher",
+      "description": "Modbus data for termodinamica/ac/16",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.16:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/16",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.28:Publisher": {
+      "address": "termodinamica/ac/28:Publisher",
+      "description": "Modbus data for termodinamica/ac/28",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.28:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/28",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.20:Publisher": {
+      "address": "termodinamica/ac/20:Publisher",
+      "description": "Modbus data for termodinamica/ac/20",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.20:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/20",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.29:Publisher": {
+      "address": "termodinamica/ac/29:Publisher",
+      "description": "Modbus data for termodinamica/ac/29",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.29:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/29",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.03:Publisher": {
+      "address": "termodinamica/ac/03:Publisher",
+      "description": "Modbus data for termodinamica/ac/03",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.03:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/03",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.30:Publisher": {
+      "address": "termodinamica/ac/30:Publisher",
+      "description": "Modbus data for termodinamica/ac/30",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.30:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/30",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.04:Publisher": {
+      "address": "termodinamica/ac/04:Publisher",
+      "description": "Modbus data for termodinamica/ac/04",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.04:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/04",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    },
+    "termodinamica.ac.01:Publisher": {
+      "address": "termodinamica/ac/01:Publisher",
+      "description": "Modbus data for termodinamica/ac/01",
+      "servers": [
+        {
+          "$ref": "#/servers/development"
+        }
+      ],
+      "messages": {
+        "Message": {
+          "$ref": "#/components/messages/termodinamica.ac.01:Publisher:Message"
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "termodinamica/ac/01",
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      }
+    }
+  },
+  "operations": {
+    "termodinamica.ac.31:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.31:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.31:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.13:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.13:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.13:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.17:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.17:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.17:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac-misc:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac-misc:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac-misc:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.21:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.21:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.21:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.18:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.18:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.18:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.14:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.14:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.14:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.23:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.23:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.23:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.11:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.11:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.11:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.07:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.07:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.07:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.19:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.19:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.19:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.05:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.05:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.05:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.09:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.09:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.09:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.15:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.15:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.15:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.02:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.02:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.02:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.22:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.22:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.22:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.24:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.24:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.24:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.06:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.06:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.06:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.25:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.25:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.25:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.26:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.26:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.26:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.27:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.27:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.27:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.08:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.08:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.08:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.10:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.10:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.10:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.12:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.12:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.12:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.16:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.16:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.16:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.28:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.28:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.28:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.20:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.20:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.20:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.29:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.29:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.29:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.03:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.03:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.03:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.30:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.30:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.30:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.04:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.04:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.04:Publisher/messages/Message"
+        }
+      ]
+    },
+    "termodinamica.ac.01:Publisher": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/termodinamica.ac.01:Publisher"
+      },
+      "bindings": {
+        "mqtt": {
+          "qos": 1,
+          "retain": false,
+          "bindingVersion": "0.2.0"
+        }
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/termodinamica.ac.01:Publisher/messages/Message"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "termodinamica.ac.31:Publisher:Message": {
+        "title": "termodinamica/ac/31:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.13:Publisher:Message": {
+        "title": "termodinamica/ac/13:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.17:Publisher:Message": {
+        "title": "termodinamica/ac/17:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac-misc:Publisher:Message": {
+        "title": "termodinamica/ac-misc:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/ACMisc"
+        }
+      },
+      "termodinamica.ac.21:Publisher:Message": {
+        "title": "termodinamica/ac/21:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.18:Publisher:Message": {
+        "title": "termodinamica/ac/18:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.14:Publisher:Message": {
+        "title": "termodinamica/ac/14:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.23:Publisher:Message": {
+        "title": "termodinamica/ac/23:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.11:Publisher:Message": {
+        "title": "termodinamica/ac/11:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.07:Publisher:Message": {
+        "title": "termodinamica/ac/07:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.19:Publisher:Message": {
+        "title": "termodinamica/ac/19:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.05:Publisher:Message": {
+        "title": "termodinamica/ac/05:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.09:Publisher:Message": {
+        "title": "termodinamica/ac/09:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.15:Publisher:Message": {
+        "title": "termodinamica/ac/15:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.02:Publisher:Message": {
+        "title": "termodinamica/ac/02:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.22:Publisher:Message": {
+        "title": "termodinamica/ac/22:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.24:Publisher:Message": {
+        "title": "termodinamica/ac/24:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.06:Publisher:Message": {
+        "title": "termodinamica/ac/06:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.25:Publisher:Message": {
+        "title": "termodinamica/ac/25:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.26:Publisher:Message": {
+        "title": "termodinamica/ac/26:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.27:Publisher:Message": {
+        "title": "termodinamica/ac/27:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.08:Publisher:Message": {
+        "title": "termodinamica/ac/08:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.10:Publisher:Message": {
+        "title": "termodinamica/ac/10:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.12:Publisher:Message": {
+        "title": "termodinamica/ac/12:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.16:Publisher:Message": {
+        "title": "termodinamica/ac/16:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.28:Publisher:Message": {
+        "title": "termodinamica/ac/28:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.20:Publisher:Message": {
+        "title": "termodinamica/ac/20:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.29:Publisher:Message": {
+        "title": "termodinamica/ac/29:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.03:Publisher:Message": {
+        "title": "termodinamica/ac/03:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.30:Publisher:Message": {
+        "title": "termodinamica/ac/30:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.04:Publisher:Message": {
+        "title": "termodinamica/ac/04:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      },
+      "termodinamica.ac.01:Publisher:Message": {
+        "title": "termodinamica/ac/01:Publisher:Message",
+        "correlationId": {
+          "location": "$message.header#/correlation_id"
+        },
+        "payload": {
+          "$ref": "#/components/schemas/AirConditioningRoom"
+        }
+      }
+    },
+    "schemas": {
+      "AirConditioningRoom": {
+        "properties": {
+          "power": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Power"
+          },
+          "setpoint_room_temperature": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Setpoint Room Temperature"
+          },
+          "fan_speed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fan Speed"
+          },
+          "air_temperature_in": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Air Temperature In"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "ahu_mode": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ahu Mode"
+          },
+          "heater_power": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Heater Power"
+          },
+          "humidity": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Humidity"
+          }
+        },
+        "required": [
+          "power",
+          "setpoint_room_temperature",
+          "fan_speed",
+          "air_temperature_in",
+          "status",
+          "ahu_mode",
+          "heater_power",
+          "humidity"
+        ],
+        "title": "AirConditioningRoom",
+        "type": "object"
+      },
+      "ACMisc": {
+        "properties": {
+          "engine_box_compressor_speed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box Compressor Speed"
+          },
+          "engine_box_water_pump_speed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box Water Pump Speed"
+          },
+          "current_req_pressure": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Req Pressure"
+          },
+          "engine_box_t_sea_water": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box T Sea Water"
+          },
+          "engine_box_p_gas": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box P Gas"
+          },
+          "engine_box_p_liquid": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box P Liquid"
+          },
+          "engine_box_p_condenser": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box P Condenser"
+          },
+          "engine_box_compressor2_speed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Box Compressor2 Speed"
+          },
+          "watt_ac_compressor_1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Watt Ac Compressor 1"
+          },
+          "watt_ac_compressor_2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Watt Ac Compressor 2"
+          },
+          "watt_sea_water_pump": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Watt Sea Water Pump"
+          },
+          "ac_compressor_1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ac Compressor 1"
+          },
+          "ac_compressor_2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ac Compressor 2"
+          },
+          "sea_water_pump": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sea Water Pump"
+          }
+        },
+        "required": [
+          "engine_box_compressor_speed",
+          "engine_box_water_pump_speed",
+          "current_req_pressure",
+          "engine_box_t_sea_water",
+          "engine_box_p_gas",
+          "engine_box_p_liquid",
+          "engine_box_p_condenser",
+          "engine_box_compressor2_speed",
+          "watt_ac_compressor_1",
+          "watt_ac_compressor_2",
+          "watt_sea_water_pump",
+          "ac_compressor_1",
+          "ac_compressor_2",
+          "sea_water_pump"
+        ],
+        "title": "ACMisc",
+        "type": "object"
+      }
+    }
+  }
+}

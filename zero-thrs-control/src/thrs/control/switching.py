@@ -9,6 +9,8 @@ from thrs.control.manual import EmptyParameters, ManualControl
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
+type ControlModes = Literal["manual", "automatic"]
+
 
 class SwitchingControlMode[Mode](ThrsValues):
     automatic_mode: Mode | None
@@ -19,7 +21,7 @@ class SwitchingControlMode[Mode](ThrsValues):
 
 
 class AutomationMode(ThrsValues):
-    mode: Literal["manual", "automatic"]
+    mode: ControlModes
 
 
 class Switching[
@@ -42,7 +44,7 @@ class Switching[
     ):
         self._manual_control = manual
         self._automatic_control = automatic
-        self._mode: Literal["manual", "automatic"] = "manual"
+        self._mode: ControlModes = "manual"
         self._parameters = cast(ControlParameters, EmptyParameters())
         self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 

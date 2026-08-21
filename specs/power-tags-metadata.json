@@ -1,0 +1,2040 @@
+{
+  "group": "power-tags",
+  "group_by": "panel",
+  "topics": [
+    {
+      "topic": "power-tags/10P0.1/iridium-gmdss-supply",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "iridium-gmdss-supply",
+        "component": "109F01",
+        "consumer": "IRIDIUM GMDSS SUPPLY"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/main-propulsion-unit-offline-filter",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "main-propulsion-unit-offline-filter",
+        "component": "129F01",
+        "consumer": "MAIN PROPULSION UNIT OFFLINE FILTER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/ahu-owners-state-room-130f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "ahu-owners-state-room-130f01",
+        "component": "130F01",
+        "consumer": "AHU OWNERS STATE ROOM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/erec-1-power-supply-heat-recovery",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "erec-1-power-supply-heat-recovery",
+        "component": "132F01",
+        "consumer": "EREC 1 POWER SUPPLY HEAT RECOVERY"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/ahu-owners-state-room-135f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "ahu-owners-state-room-135f01",
+        "component": "135F01",
+        "consumer": "AHU OWNERS STATE ROOM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/main-propulsion-unit-ac-heating",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "main-propulsion-unit-ac-heating",
+        "component": "137F01",
+        "consumer": "MAIN PROPULSION UNIT AC HEATING"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/potable-water",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "potable-water",
+        "component": "138F01",
+        "consumer": "POTABLE WATER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/21001006-1-drain-pump-1-portside-deck-locker",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "21001006-1-drain-pump-1-portside-deck-locker",
+        "component": "139F01",
+        "consumer": "21001006-1 DRAIN PUMP 1 PORTSIDE DECK LOCKER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/21001006-3-drain-pump-3-portside-deck-locker",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "21001006-3-drain-pump-3-portside-deck-locker",
+        "component": "140F01",
+        "consumer": "21001006-3 DRAIN PUMP 3 PORTSIDE DECK LOCKER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/21001007-bilge-water-separator",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "21001007-bilge-water-separator",
+        "component": "141F01",
+        "consumer": "21001007 BILGE WATER SEPARATOR"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/drain-tank-mast-142f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "drain-tank-mast-142f01",
+        "component": "142F01",
+        "consumer": "DRAIN TANK MAST"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/drain-tank-mast-143f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "drain-tank-mast-143f01",
+        "component": "143F01",
+        "consumer": "DRAIN TANK MAST"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/drain-tank-mast-144f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "drain-tank-mast-144f01",
+        "component": "144F01",
+        "consumer": "DRAIN TANK MAST"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/drain-tank-mast-145f01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "drain-tank-mast-145f01",
+        "component": "145F01",
+        "consumer": "DRAIN TANK MAST"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/25001001-1-watermaker",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "25001001-1-watermaker",
+        "component": "146F01",
+        "consumer": "25001001-1 WATERMAKER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/discharge-pumps-aft-technical-water",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "discharge-pumps-aft-technical-water",
+        "component": "147F01",
+        "consumer": "DISCHARGE PUMPS AFT TECHNICAL WATER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/co2",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "co2",
+        "component": "148F01",
+        "consumer": "CO2"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/antifouling-system",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "antifouling-system",
+        "component": "149F01",
+        "consumer": "ANTIFOULING SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/adsorption-unit",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "adsorption-unit",
+        "component": "150F01",
+        "consumer": "ADSORPTION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/25001008-1-hydrophore-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "25001008-1-hydrophore-1",
+        "component": "152F01",
+        "consumer": "25001008-1 HYDROPHORE 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/25004001-hydrophore-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "25004001-hydrophore-1",
+        "component": "153F01",
+        "consumer": "25004001 HYDROPHORE 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/circulation-pump-adiabatic-pump-tech-water-purge-pump",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "circulation-pump-adiabatic-pump-tech-water-purge-pump",
+        "component": "154F01",
+        "consumer": "CIRCULATION PUMP ADIABATIC PUMP (tech. water purge pump)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/main-salon-jb",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "main-salon-jb",
+        "component": "161F01",
+        "consumer": "MAIN SALON JB"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/115v-distribution-panel",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "115v-distribution-panel",
+        "component": "164F01",
+        "consumer": "115V DISTRIBUTION PANEL"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/340010041-discharge-pump-master-cabin-ps",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "340010041-discharge-pump-master-cabin-ps",
+        "component": "165F01",
+        "consumer": "34001004.1 DISCHARGE PUMP MASTER CABIN PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/340010042-discharge-pump-guest-ps",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "340010042-discharge-pump-guest-ps",
+        "component": "166F01",
+        "consumer": "34001004.2 DISCHARGE PUMP GUEST PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/340010043-discharge-pump-guest-ps-and-overflow",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "340010043-discharge-pump-guest-ps-and-overflow",
+        "component": "167F01",
+        "consumer": "34001004.3 DISCHARGE PUMP GUEST PS AND OVERFLOW"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/charger-radio-batteries-gmdss",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "charger-radio-batteries-gmdss",
+        "component": "168F01",
+        "consumer": "CHARGER RADIO BATTERIES (GMDSS)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/underwater-lights-ps-group-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "underwater-lights-ps-group-1",
+        "component": "169F01",
+        "consumer": "UNDERWATER LIGHTS PS (GROUP 1)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/underwater-lights-ps-group-2",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "underwater-lights-ps-group-2",
+        "component": "170F01",
+        "consumer": "UNDERWATER LIGHTS PS (GROUP 2)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/ahu-exh2000-above-laundry",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "ahu-exh2000-above-laundry",
+        "component": "171F01",
+        "consumer": "AHU EXH2000 ABOVE LAUNDRY"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/340010044-discharge-pump-galleycrew-mess",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "340010044-discharge-pump-galleycrew-mess",
+        "component": "172F01",
+        "consumer": "34001004.4 DISCHARGE PUMP GALLEY/CREW MESS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/display-switching-ship-office",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "display-switching-ship-office",
+        "component": "175F01",
+        "consumer": "DISPLAY SWITCHING SHIP OFFICE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/display-switching-supply-helm-ps",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "display-switching-supply-helm-ps",
+        "component": "176F01",
+        "consumer": "DISPLAY SWITCHING SUPPLY HELM PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/ecdis-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "ecdis-1",
+        "component": "177F01",
+        "consumer": "ECDIS 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/radar-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "radar-1",
+        "component": "178F01",
+        "consumer": "RADAR 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/speedlog",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "speedlog",
+        "component": "179F01",
+        "consumer": "SPEEDLOG"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/vhf-1-main",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "vhf-1-main",
+        "component": "180F01",
+        "consumer": "VHF 1 (MAIN)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/ahu-technical-room",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "ahu-technical-room",
+        "component": "181F01",
+        "consumer": "AHU TECHNICAL ROOM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/central-panel-smart-ventilation-system",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "central-panel-smart-ventilation-system",
+        "component": "182F01",
+        "consumer": "CENTRAL PANEL SMART VENTILATION SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/bnwas",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "bnwas",
+        "component": "183F01",
+        "consumer": "BNWAS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/gps",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "gps",
+        "component": "184F01",
+        "consumer": "GPS"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/locker-ventilation-230vac-4a",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "locker-ventilation-230vac-4a",
+        "component": "186F01",
+        "consumer": "LOCKER VENTILATION 230VAC 4A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/5g-peplink",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "5g-peplink",
+        "component": "201F01",
+        "consumer": "5G PEPLINK"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/transfer-pump-1-greyblack-water-11-kw-2a",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "transfer-pump-1-greyblack-water-11-kw-2a",
+        "component": "110Q01",
+        "consumer": "TRANSFER PUMP 1 GREY/BLACK WATER 1,1 kW / 2A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/circulation-pump-system-water",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "circulation-pump-system-water",
+        "component": "116Q01",
+        "consumer": "CIRCULATION PUMP SYSTEM WATER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/sea-water-cooling-pump-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "sea-water-cooling-pump-1",
+        "component": "117Q01",
+        "consumer": "SEA WATER COOLING PUMP 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/technical-space-ventilator-in",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "technical-space-ventilator-in",
+        "component": "131Q01",
+        "consumer": "TECHNICAL SPACE VENTILATOR - IN"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/fresh-air-unit-aft-ship",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "fresh-air-unit-aft-ship",
+        "component": "133Q01",
+        "consumer": "FRESH AIR UNIT AFT SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/extraction-unit-aft-ship",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "extraction-unit-aft-ship",
+        "component": "134Q01",
+        "consumer": "EXTRACTION UNIT AFT SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/10p1-power-distr-panel-aft",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "10p1-power-distr-panel-aft",
+        "component": "135Q01",
+        "consumer": "10P1 - POWER DISTR. PANEL AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/9427033-dishwasher",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "9427033-dishwasher",
+        "component": "136Q01",
+        "consumer": "9427033 DISHWASHER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/cooling-water-pump-main-propulsion-unit",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "cooling-water-pump-main-propulsion-unit",
+        "component": "151Q01",
+        "consumer": "COOLING WATER PUMP MAIN PROPULSION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/29001001-a-compressor-1",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "29001001-a-compressor-1",
+        "component": "155Q01",
+        "consumer": "29001001-a COMPRESSOR 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/heat-recovery-pump-compression-chiller",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "heat-recovery-pump-compression-chiller",
+        "component": "156Q01",
+        "consumer": "HEAT RECOVERY PUMP COMPRESSION CHILLER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/circulation-pump-pvt-panels-fwd-157q01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "circulation-pump-pvt-panels-fwd-157q01",
+        "component": "157Q01",
+        "consumer": "CIRCULATION PUMP PVT PANELS FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/circulation-pump-pvt-panels-fwd-158q01",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "circulation-pump-pvt-panels-fwd-158q01",
+        "component": "158Q01",
+        "consumer": "CIRCULATION PUMP PVT PANELS FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/45008012-1-battery-room-ventilator-ps-fwd",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "45008012-1-battery-room-ventilator-ps-fwd",
+        "component": "173Q01",
+        "consumer": "45008012-1 BATTERY ROOM VENTILATOR PS FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.1/45008012-3-battery-room-ventilator-ps-aft",
+      "metadata": {
+        "panel": "10P0.1",
+        "slug": "45008012-3-battery-room-ventilator-ps-aft",
+        "component": "174Q01",
+        "consumer": "45008012-3 BATTERY ROOM VENTILATOR PS AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/34001011-sewage-treatment-plant",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "34001011-sewage-treatment-plant",
+        "component": "320F01",
+        "consumer": "34001011 SEWAGE TREATMENT PLANT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/main-propulsion-unit-offline-filter",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "main-propulsion-unit-offline-filter",
+        "component": "329F01",
+        "consumer": "MAIN PROPULSION UNIT OFFLINE FILTER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/ahu-2000t-crew-mess-room",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "ahu-2000t-crew-mess-room",
+        "component": "330F01",
+        "consumer": "AHU 2000T CREW MESS ROOM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/fwd-main-propulsion-unit-ac-heating",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "fwd-main-propulsion-unit-ac-heating",
+        "component": "337F01",
+        "consumer": "FWD MAIN PROPULSION UNIT AC HEATING"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/spare",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "spare",
+        "component": "338F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/21001006-3-submersible-bilge-pump-3",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "21001006-3-submersible-bilge-pump-3",
+        "component": "339F01",
+        "consumer": "21001006-3 SUBMERSIBLE BILGE PUMP 3"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/drain-tank-airco-342f01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "drain-tank-airco-342f01",
+        "component": "342F01",
+        "consumer": "DRAIN TANK AIRCO"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/drain-tank-airco-343f01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "drain-tank-airco-343f01",
+        "component": "343F01",
+        "consumer": "DRAIN TANK AIRCO"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/drain-tank-airco-344f01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "drain-tank-airco-344f01",
+        "component": "344F01",
+        "consumer": "DRAIN TANK AIRCO"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/drain-tank-airco-345f01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "drain-tank-airco-345f01",
+        "component": "345F01",
+        "consumer": "DRAIN TANK AIRCO"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/25001001-2-watermaker",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "25001001-2-watermaker",
+        "component": "346F01",
+        "consumer": "25001001-2 WATERMAKER"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/25001140-2-hydrophore-2",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "25001140-2-hydrophore-2",
+        "component": "352F01",
+        "consumer": "25001140-2 HYDROPHORE 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/250010017-chlorine-dosing-unit",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "250010017-chlorine-dosing-unit",
+        "component": "353F01",
+        "consumer": "250010017 CHLORINE DOSING UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/9427024-3-quooker-salon",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "9427024-3-quooker-salon",
+        "component": "361F01",
+        "consumer": "9427024-3 QUOOKER SALON"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/main-salon-jb-2",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "main-salon-jb-2",
+        "component": "362F01",
+        "consumer": "MAIN SALON JB 2:"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/serv-corridor-jb",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "serv-corridor-jb",
+        "component": "363F01",
+        "consumer": "SERV. CORRIDOR JB"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/34001005-galley-drain-pump",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "34001005-galley-drain-pump",
+        "component": "364F01",
+        "consumer": "34001005 GALLEY DRAIN PUMP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/kvm-helmstation-pssb",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "kvm-helmstation-pssb",
+        "component": "365F01",
+        "consumer": "KVM HELMSTATION PS/SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/underwater-lights-sb-group-1",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "underwater-lights-sb-group-1",
+        "component": "368F01",
+        "consumer": "UNDERWATER LIGHTS SB (GROUP 1)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/underwater-lights-sb-group-2",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "underwater-lights-sb-group-2",
+        "component": "369F01",
+        "consumer": "UNDERWATER LIGHTS SB (GROUP 2)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/lighting-technical-space",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "lighting-technical-space",
+        "component": "370F01",
+        "consumer": "LIGHTING TECHNICAL SPACE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/fan-coil-engine-office",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "fan-coil-engine-office",
+        "component": "371F01",
+        "consumer": "FAN COIL ENGINE OFFICE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/sockets-main-technical-space",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "sockets-main-technical-space",
+        "component": "376F01",
+        "consumer": "SOCKETS MAIN TECHNICAL SPACE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/ecdis-2",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "ecdis-2",
+        "component": "377F01",
+        "consumer": "ECDIS 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/kvm-captains-cabin-ships-office",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "kvm-captains-cabin-ships-office",
+        "component": "378F01",
+        "consumer": "KVM CAPTAIN'S CABIN SHIP'S OFFICE"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/kvm-mission-room-navcomm-locker-fwd-rack",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "kvm-mission-room-navcomm-locker-fwd-rack",
+        "component": "379F01",
+        "consumer": "KVM MISSION ROOM NAV/COMM LOCKER FWD RACK"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/erec-2-power-supply-heat-recovery",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "erec-2-power-supply-heat-recovery",
+        "component": "380F01",
+        "consumer": "EREC 2 POWER SUPPLY HEAT RECOVERY"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/transfer-pump-2-black-water-11-kw-2a-310q01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "transfer-pump-2-black-water-11-kw-2a-310q01",
+        "component": "310Q01",
+        "consumer": "TRANSFER PUMP 2 BLACK WATER 1,1 kW / 2A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/transfer-pump-3-greywater-11-kw-2a",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "transfer-pump-3-greywater-11-kw-2a",
+        "component": "311Q01",
+        "consumer": "TRANSFER PUMP 3 GREYWATER 1,1 kW / 2A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/dirty-oil-pump-06kw-11a",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "dirty-oil-pump-06kw-11a",
+        "component": "312Q01",
+        "consumer": "DIRTY OIL PUMP 0,6kW / 1,1A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/transfer-pump-2-black-water-11-kw-2a-317q01",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "transfer-pump-2-black-water-11-kw-2a-317q01",
+        "component": "317Q01",
+        "consumer": "TRANSFER PUMP 2 BLACK WATER 1,1 kW / 2A"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/technical-space-ventilator-out-extractor",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "technical-space-ventilator-out-extractor",
+        "component": "331Q01",
+        "consumer": "TECHNICAL SPACE VENTILATOR - OUT (EXTRACTOR)"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/fresh-air-unit-fore-ship",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "fresh-air-unit-fore-ship",
+        "component": "333Q01",
+        "consumer": "FRESH AIR UNIT FORE SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/extraction-unit-fore-ship",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "extraction-unit-fore-ship",
+        "component": "334Q01",
+        "consumer": "EXTRACTION UNIT FORE SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/10p2-power-distr-panel-galley",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "10p2-power-distr-panel-galley",
+        "component": "335Q01",
+        "consumer": "10P2 - POWER DISTR. PANEL GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/pressure-pump",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "pressure-pump",
+        "component": "349Q01",
+        "consumer": "PRESSURE PUMP"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/chilled-water-pump-adsorption-unit",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "chilled-water-pump-adsorption-unit",
+        "component": "350Q01",
+        "consumer": "CHILLED WATER PUMP ADSORPTION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/cooling-water-pump-fwd-propulsion-unit",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "cooling-water-pump-fwd-propulsion-unit",
+        "component": "351Q01",
+        "consumer": "COOLING WATER PUMP FWD PROPULSION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/29001001-b-compressor-2",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "29001001-b-compressor-2",
+        "component": "355Q01",
+        "consumer": "29001001-b COMPRESSOR 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/circulation-pump-warm-water-adsorption-unit",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "circulation-pump-warm-water-adsorption-unit",
+        "component": "356Q01",
+        "consumer": "CIRCULATION PUMP WARM WATER ADSORPTION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/cooling-water-pump-adsorption-unit",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "cooling-water-pump-adsorption-unit",
+        "component": "357Q01",
+        "consumer": "COOLING WATER PUMP ADSORPTION UNIT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/circulation-pump-pvt-panels-aft",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "circulation-pump-pvt-panels-aft",
+        "component": "358Q01",
+        "consumer": "CIRCULATION PUMP PVT PANELS AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/circulation-pump-heating-water-fresh-hotwater-system",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "circulation-pump-heating-water-fresh-hotwater-system",
+        "component": "359Q01",
+        "consumer": "CIRCULATION PUMP HEATING WATER FRESH HOTWATER SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/circulation-pump-cooling-water-electrical-system",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "circulation-pump-cooling-water-electrical-system",
+        "component": "360Q01",
+        "consumer": "CIRCULATION PUMP COOLING WATER ELECTRICAL SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/45008012-2-battery-room-ventilator-sb-fwd",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "45008012-2-battery-room-ventilator-sb-fwd",
+        "component": "374Q01",
+        "consumer": "45008012-2 BATTERY ROOM VENTILATOR SB FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/45008012-4-battery-room-ventilator-sb-aft",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "45008012-4-battery-room-ventilator-sb-aft",
+        "component": "375Q01",
+        "consumer": "45008012-4 BATTERY ROOM VENTILATOR SB AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P0.3/welding-socket-lazarette",
+      "metadata": {
+        "panel": "10P0.3",
+        "slug": "welding-socket-lazarette",
+        "component": "376Q01",
+        "consumer": "WELDING SOCKET LAZARETTE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/spare-10f01",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "spare-10f01",
+        "component": "10F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/spare-11f01",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "spare-11f01",
+        "component": "11F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/spare-12f01",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "spare-12f01",
+        "component": "12F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/ventilator-aft-peak",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "ventilator-aft-peak",
+        "component": "19F01",
+        "consumer": "VENTILATOR AFT PEAK"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/ventilator-bilge-aft-ship",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "ventilator-bilge-aft-ship",
+        "component": "20F01",
+        "consumer": "VENTILATOR BILGE AFT SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-deck-lounge-guest-cabin-aft-sb",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-deck-lounge-guest-cabin-aft-sb",
+        "component": "21F01",
+        "consumer": "FCU: DECK LOUNGE GUEST CABIN AFT SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-technical-space",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-technical-space",
+        "component": "22F01",
+        "consumer": "FCU: TECHNICAL SPACE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-guest-cabin-fwd-ps-guest-cabin-aft-ps",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-guest-cabin-fwd-ps-guest-cabin-aft-ps",
+        "component": "23F01",
+        "consumer": "FCU: GUEST CABIN FWD PS GUEST CABIN AFT PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-owners-bathhers-owners-state-room-ps",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-owners-bathhers-owners-state-room-ps",
+        "component": "24F01",
+        "consumer": "FCU: OWNERS BATH.(HERS) OWNERS STATE ROOM PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-owners-bathhis-owners-state-room-sb",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-owners-bathhis-owners-state-room-sb",
+        "component": "25F01",
+        "consumer": "FCU: OWNERS BATH.(HIS) OWNERS STATE ROOM SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-ships-office-watersport-storage",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-ships-office-watersport-storage",
+        "component": "26F01",
+        "consumer": "FCU: SHIPS OFFICE WATERSPORT STORAGE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/fcu-owners-deckhouse-main-salon-dining-main-salon-lounge",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "fcu-owners-deckhouse-main-salon-dining-main-salon-lounge",
+        "component": "27F01",
+        "consumer": "FCU: OWNERS DECKHOUSE MAIN SALON DINING MAIN SALON LOUNGE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/ahu1500-aft-area",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "ahu1500-aft-area",
+        "component": "28F01",
+        "consumer": "AHU1500 AFT AREA"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/25004002-1-discharge-pump-mast",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "25004002-1-discharge-pump-mast",
+        "component": "29F01",
+        "consumer": "25004002-1 DISCHARGE PUMP MAST"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/lights-technical-area-901jb004",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "lights-technical-area-901jb004",
+        "component": "30F01",
+        "consumer": "LIGHTS TECHNICAL AREA - 901JB004"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-guest-cabin-2-emp120",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-guest-cabin-2-emp120",
+        "component": "31F01",
+        "consumer": "OUTLETS GUEST CABIN 2 - EMP120"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-guest-cabin-3-emp123",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-guest-cabin-3-emp123",
+        "component": "32F01",
+        "consumer": "OUTLETS GUEST CABIN 3 - EMP123"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/3400104209-toilet-captains-cabin",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "3400104209-toilet-captains-cabin",
+        "component": "33F01",
+        "consumer": "34001042.09 TOILET CAPTAIN'S CABIN"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-owner-emp126",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-owner-emp126",
+        "component": "34F01",
+        "consumer": "OUTLETS OWNER - EMP126"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-guest-cabin-4-emp124",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-guest-cabin-4-emp124",
+        "component": "35F01",
+        "consumer": "OUTLETS GUEST CABIN 4 - EMP124"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-lower-deck-lounge-emp121",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-lower-deck-lounge-emp121",
+        "component": "36F01",
+        "consumer": "OUTLETS LOWER DECK LOUNGE - EMP121"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/outlets-owner-private-lounge-emp220",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "outlets-owner-private-lounge-emp220",
+        "component": "37F01",
+        "consumer": "OUTLETS OWNER PRIVATE LOUNGE - EMP220"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/knx-supply-emp121",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "knx-supply-emp121",
+        "component": "38F01",
+        "consumer": "KNX SUPPLY - EMP121"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/supply-greenwall-15w",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "supply-greenwall-15w",
+        "component": "39F01",
+        "consumer": "SUPPLY GREENWALL 15W"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/spare-40f01",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "spare-40f01",
+        "component": "40F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/spare-41f01",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "spare-41f01",
+        "component": "41F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/starlink",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "starlink",
+        "component": "60F01",
+        "consumer": "STARLINK"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/diving-compressor",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "diving-compressor",
+        "component": "61F01",
+        "consumer": "DIVING COMPRESSOR"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/burglar-alarm-system",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "burglar-alarm-system",
+        "component": "62F01",
+        "consumer": "BURGLAR ALARM SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/av-system-supply-1",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "av-system-supply-1",
+        "component": "63F01",
+        "consumer": "AV SYSTEM SUPPLY #1"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/sliding-window-private-salon",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "sliding-window-private-salon",
+        "component": "64F01",
+        "consumer": "SLIDING WINDOW PRIVATE SALON"
+      }
+    },
+    {
+      "topic": "power-tags/10P1/supply-greenwall",
+      "metadata": {
+        "panel": "10P1",
+        "slug": "supply-greenwall",
+        "component": "107F01",
+        "consumer": "SUPPLY GREENWALL"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427015-induction-cooktop-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427015-induction-cooktop-galley",
+        "component": "10F01",
+        "consumer": "9427015 INDUCTION COOKTOP GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427013-1-dishwasher-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427013-1-dishwasher-galley",
+        "component": "11F01",
+        "consumer": "9427013-1 DISHWASHER GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427013-2-dishwasher-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427013-2-dishwasher-galley",
+        "component": "12F01",
+        "consumer": "9427013-2 DISHWASHER GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427014-oven-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427014-oven-galley",
+        "component": "13F01",
+        "consumer": "9427014 OVEN GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427016-steam-oven-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427016-steam-oven-galley",
+        "component": "14F01",
+        "consumer": "9427016 STEAM OVEN GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427024-1-quooker-service-sink-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427024-1-quooker-service-sink-galley",
+        "component": "15F01",
+        "consumer": "9427024-1 QUOOKER SERVICE SINK GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427024-2-quooker-chef-sink-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427024-2-quooker-chef-sink-galley",
+        "component": "16F01",
+        "consumer": "9427024-2 QUOOKER CHEF SINK GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/galley-jb-1",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "galley-jb-1",
+        "component": "17F01",
+        "consumer": "GALLEY JB 1"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/galley-jb-2",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "galley-jb-2",
+        "component": "18F01",
+        "consumer": "GALLEY JB 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427028-walk-in-freezer",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427028-walk-in-freezer",
+        "component": "19F01",
+        "consumer": "9427028 WALK IN FREEZER"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/2x-fridge",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "2x-fridge",
+        "component": "20F01",
+        "consumer": "2x FRIDGE"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/rf08x1-compressor-fridge-system",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "rf08x1-compressor-fridge-system",
+        "component": "21F01",
+        "consumer": "RF08X1 COMPRESSOR FRIDGE SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/rf08x1-compressor-freeze-system",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "rf08x1-compressor-freeze-system",
+        "component": "22F01",
+        "consumer": "RF08X1 COMPRESSOR FREEZE SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/340010044-discharge-pump-galleycrew-mess",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "340010044-discharge-pump-galleycrew-mess",
+        "component": "23F01",
+        "consumer": "34001004_4 DISCHARGE PUMP GALLEY/CREW MESS"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/socket-circuit-2",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "socket-circuit-2",
+        "component": "24F01",
+        "consumer": "SOCKET CIRCUIT 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/socket-circuit-3",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "socket-circuit-3",
+        "component": "25F01",
+        "consumer": "SOCKET CIRCUIT 3"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/evaporator-fridge-system",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "evaporator-fridge-system",
+        "component": "26F01",
+        "consumer": "EVAPORATOR FRIDGE SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/evaporator-freeze-system",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "evaporator-freeze-system",
+        "component": "27F01",
+        "consumer": "EVAPORATOR FREEZE SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/circulation-pump-cooling-set",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "circulation-pump-cooling-set",
+        "component": "40F01",
+        "consumer": "CIRCULATION PUMP COOLING SET"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/34001005-drain-pump-galley",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "34001005-drain-pump-galley",
+        "component": "41F01",
+        "consumer": "34001005 DRAIN PUMP GALLEY"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/fcu-galley-aft",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "fcu-galley-aft",
+        "component": "50F01",
+        "consumer": "FCU: GALLEY AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/fcu-galley-fwd",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "fcu-galley-fwd",
+        "component": "50F02",
+        "consumer": "FCU: GALLEY FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/9427027-galley-hood",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "9427027-galley-hood",
+        "component": "53F01",
+        "consumer": "9427027 GALLEY HOOD"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/outlets-galley-emp-111-60f01",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "outlets-galley-emp-111-60f01",
+        "component": "60F01",
+        "consumer": "OUTLETS GALLEY - EMP 111"
+      }
+    },
+    {
+      "topic": "power-tags/10P2/outlets-galley-emp-111-61f01",
+      "metadata": {
+        "panel": "10P2",
+        "slug": "outlets-galley-emp-111-61f01",
+        "component": "61F01",
+        "consumer": "OUTLETS GALLEY - EMP 111"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/9427004-1-washer",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "9427004-1-washer",
+        "component": "10F01",
+        "consumer": "9427004-1 WASHER"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/9427004-2-washer",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "9427004-2-washer",
+        "component": "11F01",
+        "consumer": "9427004-2 WASHER"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/9427012-dishwasher-crew-mess",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "9427012-dishwasher-crew-mess",
+        "component": "12F01",
+        "consumer": "9427012 DISHWASHER CREW MESS"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/9427003-1-dryer-9427003-2-dryer",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "9427003-1-dryer-9427003-2-dryer",
+        "component": "13F01",
+        "consumer": "9427003-1 DRYER 9427003-2 DRYER"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/sockets-crew-cabins-ps",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "sockets-crew-cabins-ps",
+        "component": "14F01",
+        "consumer": "SOCKETS CREW CABINS PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/sockets-crew-cabins-sb",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "sockets-crew-cabins-sb",
+        "component": "15F01",
+        "consumer": "SOCKETS CREW CABINS SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/mfhf-ssb-main-supply",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "mfhf-ssb-main-supply",
+        "component": "16F01",
+        "consumer": "MF/HF SSB (MAIN SUPPLY)"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/sliding-door-crew-corridor",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "sliding-door-crew-corridor",
+        "component": "17F01",
+        "consumer": "SLIDING DOOR CREW CORRIDOR"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/crew-mess-jb",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "crew-mess-jb",
+        "component": "18F01",
+        "consumer": "CREW MESS JB"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/interior-sliding-door-galley-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "interior-sliding-door-galley-fwd",
+        "component": "19F01",
+        "consumer": "INTERIOR SLIDING DOOR GALLEY FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/interior-sliding-door-galley-aft",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "interior-sliding-door-galley-aft",
+        "component": "20F01",
+        "consumer": "INTERIOR SLIDING DOOR GALLEY AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/main-companion-way-door-system",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "main-companion-way-door-system",
+        "component": "21F01",
+        "consumer": "MAIN COMPANION WAY DOOR SYSTEM"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/entrance-door-aft-deckhouse",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "entrance-door-aft-deckhouse",
+        "component": "22F01",
+        "consumer": "ENTRANCE DOOR AFT DECKHOUSE"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/door-crew-entrance",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "door-crew-entrance",
+        "component": "23F01",
+        "consumer": "DOOR CREW ENTRANCE"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/340010046-discharge-pump-crew-sb-aftmid",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "340010046-discharge-pump-crew-sb-aftmid",
+        "component": "24F01",
+        "consumer": "34001004.6 DISCHARGE PUMP CREW SB AFT/MID"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/340010047-discharge-pump-crew-ps-midsb-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "340010047-discharge-pump-crew-ps-midsb-fwd",
+        "component": "25F01",
+        "consumer": "34001004.7 DISCHARGE PUMP CREW PS MID/SB FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/circulation-pump-wall-ceiling-cooling-aft",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "circulation-pump-wall-ceiling-cooling-aft",
+        "component": "26F01",
+        "consumer": "CIRCULATION PUMP WALL & CEILING COOLING AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/circulation-pump-wall-ceiling-cooling-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "circulation-pump-wall-ceiling-cooling-fwd",
+        "component": "27F01",
+        "consumer": "CIRCULATION PUMP WALL & CEILING COOLING FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/wall-ceiling-cooling-pump-section-2",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "wall-ceiling-cooling-pump-section-2",
+        "component": "28F01",
+        "consumer": "WALL & CEILING COOLING PUMP SECTION 2"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/wall-ceiling-cooling-pump-section-4",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "wall-ceiling-cooling-pump-section-4",
+        "component": "29F01",
+        "consumer": "WALL & CEILING COOLING PUMP SECTION 4"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/wall-ceiling-cooling-pump-section-5",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "wall-ceiling-cooling-pump-section-5",
+        "component": "30F01",
+        "consumer": "WALL & CEILING COOLING PUMP SECTION 5"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104207-toilet-guest-cabin-ps-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104207-toilet-guest-cabin-ps-fwd",
+        "component": "31F01",
+        "consumer": "34001042.07 TOILET GUEST CABIN PS FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104208-to-overflow-cabin",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104208-to-overflow-cabin",
+        "component": "32F01",
+        "consumer": "34001042.08 TO OVERFLOW CABIN"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104209-toilet-captains-cabin",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104209-toilet-captains-cabin",
+        "component": "33F01",
+        "consumer": "34001042.09 TOILET CAPTAIN'S CABIN"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104210-toilet-crew-cabin-sb-aft",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104210-toilet-crew-cabin-sb-aft",
+        "component": "34F01",
+        "consumer": "34001042.10 TOILET CREW CABIN SB AFT"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104211-toilet-crew-cabin-sb-mid",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104211-toilet-crew-cabin-sb-mid",
+        "component": "35F01",
+        "consumer": "34001042.11 TOILET CREW CABIN SB MID"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104212-toilet-crew-cabin-ps-mid",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104212-toilet-crew-cabin-ps-mid",
+        "component": "36F01",
+        "consumer": "34001042.12 TOILET CREW CABIN PS MID"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104213-toilet-crew-cabin-sb-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104213-toilet-crew-cabin-sb-fwd",
+        "component": "37F01",
+        "consumer": "34001042.13 TOILET CREW CABIN SB FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/3400104214-toilet-crew-cabin-ps-fwd",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "3400104214-toilet-crew-cabin-ps-fwd",
+        "component": "38F01",
+        "consumer": "34001042.14 TOILET CREW CABIN PS FWD"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/lighting-aft-ship",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "lighting-aft-ship",
+        "component": "39F01",
+        "consumer": "LIGHTING AFT SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/lighting-fore-ship-section-5",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "lighting-fore-ship-section-5",
+        "component": "40F01",
+        "consumer": "LIGHTING FORE SHIP (SECTION 5)"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/lighting-fore-ship-section-4",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "lighting-fore-ship-section-4",
+        "component": "41F01",
+        "consumer": "LIGHTING FORE SHIP (SECTION 4)"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/spare-lighting",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "spare-lighting",
+        "component": "42F01",
+        "consumer": "SPARE (LIGHTING)"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/ventilator-fore-peak",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "ventilator-fore-peak",
+        "component": "51F01",
+        "consumer": "VENTILATOR FORE PEAK"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/ventilator-bilge-fore-ship",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "ventilator-bilge-fore-ship",
+        "component": "52F01",
+        "consumer": "VENTILATOR BILGE FORE SHIP"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-guest-fwd-cabin-ps",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-guest-fwd-cabin-ps",
+        "component": "53F01",
+        "consumer": "FCU GUEST FWD CABIN PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-overflow-bathroom",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-overflow-bathroom",
+        "component": "54F01",
+        "consumer": "FCU OVERFLOW BATHROOM"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-laundry-captain-cabin-crew-cabin-mid-ps",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-laundry-captain-cabin-crew-cabin-mid-ps",
+        "component": "55F01",
+        "consumer": "FCU: LAUNDRY CAPTAIN CABIN CREW CABIN MID PS"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-crew-mess-crew-cabin-aft-sb-crew-cabin-mid-sb",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-crew-mess-crew-cabin-aft-sb-crew-cabin-mid-sb",
+        "component": "56F01",
+        "consumer": "FCU: CREW MESS CREW CABIN AFT SB CREW CABIN MID SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-crew-cabin-fwd-ps-crew-cabin-fwd-sb",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-crew-cabin-fwd-ps-crew-cabin-fwd-sb",
+        "component": "57F01",
+        "consumer": "FCU: CREW CABIN FWD PS CREW CABIN FWD SB"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/fcu-main-salon-bar",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "fcu-main-salon-bar",
+        "component": "58F01",
+        "consumer": "FCU MAIN SALON BAR"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/discharge-pumps-25004002-8910",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "discharge-pumps-25004002-8910",
+        "component": "70F01",
+        "consumer": "DISCHARGE PUMPS: 25004002-8/9/10"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/lights-technical-areas-901jb003",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "lights-technical-areas-901jb003",
+        "component": "80F01",
+        "consumer": "LIGHTS TECHNICAL AREA'S - 901JB003"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/lights-technical-areas-emp109",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "lights-technical-areas-emp109",
+        "component": "81F01",
+        "consumer": "LIGHTS TECHNICAL AREA'S - EMP109"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-cabin-1-emp101",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-cabin-1-emp101",
+        "component": "82F01",
+        "consumer": "OUTLETS CREW CABIN 1 - EMP101"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-cabin-2-emp102",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-cabin-2-emp102",
+        "component": "83F01",
+        "consumer": "OUTLETS CREW CABIN 2 - EMP102"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-cabin-3-emp103",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-cabin-3-emp103",
+        "component": "84F01",
+        "consumer": "OUTLETS CREW CABIN 3 - EMP103"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-cabin-4-emp104",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-cabin-4-emp104",
+        "component": "85F01",
+        "consumer": "OUTLETS CREW CABIN 4 - EMP104"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-captains-cabin-emp105",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-captains-cabin-emp105",
+        "component": "86F01",
+        "consumer": "OUTLETS CAPTAIN'S CABIN - EMP105"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-cabin-5-emp106",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-cabin-5-emp106",
+        "component": "87F01",
+        "consumer": "OUTLETS CREW CABIN 5 - EMP106"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-laundry-emp108",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-laundry-emp108",
+        "component": "88F01",
+        "consumer": "OUTLETS LAUNDRY - EMP108"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-lounge-emp108",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-lounge-emp108",
+        "component": "89F01",
+        "consumer": "OUTLETS CREW LOUNGE - EMP108"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-crew-mess-emp109",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-crew-mess-emp109",
+        "component": "90F01",
+        "consumer": "OUTLETS CREW MESS - EMP109"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-guest-cabin-1-emp112",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-guest-cabin-1-emp112",
+        "component": "91F01",
+        "consumer": "OUTLETS GUEST CABIN 1 - EMP112"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-dining-emp202",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-dining-emp202",
+        "component": "92F01",
+        "consumer": "OUTLETS DINING - EMP202"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/outlets-salon-emp201",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "outlets-salon-emp201",
+        "component": "93F01",
+        "consumer": "OUTLETS SALON - EMP201"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/emp110",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "emp110",
+        "component": "94F01",
+        "consumer": "- EMP110"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/emp113",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "emp113",
+        "component": "95F01",
+        "consumer": "EMP113"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/spare",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "spare",
+        "component": "97F01",
+        "consumer": "SPARE"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/knx-supply",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "knx-supply",
+        "component": "98F01",
+        "consumer": "KNX SUPPLY"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/av-system-supply-2",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "av-system-supply-2",
+        "component": "99F01",
+        "consumer": "AV SYSTEM SUPPLY #2"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/340010045-discharge-pump-captainlaundry",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "340010045-discharge-pump-captainlaundry",
+        "component": "111F01",
+        "consumer": "34001004.5 DISCHARGE PUMP CAPTAIN/LAUNDRY"
+      }
+    },
+    {
+      "topic": "power-tags/10P3/ahu2000t-crew-messroom",
+      "metadata": {
+        "panel": "10P3",
+        "slug": "ahu2000t-crew-messroom",
+        "component": "59Q01",
+        "consumer": "AHU2000T CREW MESSROOM"
+      }
+    }
+  ]
+}

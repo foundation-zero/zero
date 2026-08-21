@@ -1,3 +1,4 @@
+from thrs.classes.persistence.manager import PersistManager
 from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import SimulationUnit
@@ -15,9 +16,11 @@ class LockstepRunner[
         self,
         control_modules: list[Module],
         simulation_module: SimulationUnit[S, CombinedValues, I, O],
+        persistence: PersistManager,
     ) -> None:
         self.control_modules = control_modules
         self.simulation_module = simulation_module
+        self._persistence = persistence
 
         self._control_values = CombinedValues(
             values={
@@ -53,3 +56,5 @@ class LockstepRunner[
         }
 
         self._control_values = CombinedValues(values=control_values_map)
+
+        await self._persistence.persist_all(self.control_modules)

@@ -1,0 +1,165 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "Hull Temperature",
+    "version": "1.0.0"
+  },
+  "channels": {
+    "hull-temperature/temperatures": {
+      "address": "hull-temperature/temperatures",
+      "messages": {
+        "temperature-readings": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "94455001-26": {
+                "type": "number"
+              },
+              "94455001-27": {
+                "type": "number"
+              },
+              "94455001-28": {
+                "type": "number"
+              },
+              "94455001-29": {
+                "type": "number"
+              },
+              "94455001-34": {
+                "type": "number"
+              },
+              "94455001-35": {
+                "type": "number"
+              },
+              "94455001-30": {
+                "type": "number"
+              },
+              "94455001-31": {
+                "type": "number"
+              },
+              "94455001-32": {
+                "type": "number"
+              },
+              "94455001-33": {
+                "type": "number"
+              },
+              "94455001-24": {
+                "type": "number"
+              },
+              "94455001-25": {
+                "type": "number"
+              },
+              "94455001-36": {
+                "type": "number"
+              },
+              "94455001-37": {
+                "type": "number"
+              },
+              "94455001-6": {
+                "type": "number"
+              },
+              "94455001-7": {
+                "type": "number"
+              },
+              "94455001-8": {
+                "type": "number"
+              },
+              "94455001-9": {
+                "type": "number"
+              },
+              "94455001-10": {
+                "type": "number"
+              },
+              "94455001-11": {
+                "type": "number"
+              },
+              "94455001-16": {
+                "type": "number"
+              },
+              "94455001-17": {
+                "type": "number"
+              },
+              "94455001-18": {
+                "type": "number"
+              },
+              "94455001-19": {
+                "type": "number"
+              },
+              "94455001-20": {
+                "type": "number"
+              },
+              "94455001-21": {
+                "type": "number"
+              },
+              "94455001-22": {
+                "type": "number"
+              },
+              "94455001-23": {
+                "type": "number"
+              },
+              "94455001-12": {
+                "type": "number"
+              },
+              "94455001-13": {
+                "type": "number"
+              },
+              "94455001-14": {
+                "type": "number"
+              },
+              "94455001-15": {
+                "type": "number"
+              },
+              "94455001-2": {
+                "type": "number"
+              },
+              "94455001-3": {
+                "type": "number"
+              },
+              "94455001-1": {
+                "type": "number"
+              },
+              "94455001-4": {
+                "type": "number"
+              },
+              "94455001-5": {
+                "type": "number"
+              },
+              "94455001-38": {
+                "type": "number"
+              },
+              "94455001-39": {
+                "type": "number"
+              },
+              "94455001-40": {
+                "type": "number"
+              },
+              "94455001-41": {
+                "type": "number"
+              },
+              "94455001-42": {
+                "type": "number"
+              },
+              "94455001-43": {
+                "type": "number"
+              },
+              "94455001-44": {
+                "type": "number"
+              },
+              "94455001-45": {
+                "type": "number"
+              },
+              "94455001-46": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "bindings": {
+        "mqtt": {
+          "topic": "hull-temperature/temperatures",
+          "qos": 1
+        }
+      }
+    }
+  }
+}

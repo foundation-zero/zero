@@ -25,6 +25,8 @@ class Config(BaseSettings):
 
     liveness_path: Path | None = None
 
+    module_persistence_heartbeat_seconds: float = 60.0
+
     @property
     def pg_url(self) -> str:
         if not all(

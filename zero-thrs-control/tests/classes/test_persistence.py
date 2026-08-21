@@ -1,0 +1,276 @@
+from datetime import timedelta
+
+import pytest
+from sqlalchemy.exc import OperationalError
+
+from tests.helpers.modules import (
+    ConfigurableModule,
+    make_async_channels,
+    make_module,
+)
+from tests.orchestration.simples import SimpleInOut
+from thrs.classes.persistence.engine import (
+    InMemoryPersistentEngine,
+    NoopPersistentEngine,
+    PersistentEngine,
+)
+from thrs.classes.persistence.manager import PersistManager
+from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
+
+HEARTBEAT = timedelta(seconds=60)
+
+
+class FailingSnapshotStore(PersistentEngine):
+    def _error(self) -> OperationalError:
+        return OperationalError("select 1", {}, Exception("connection refused"))
+
+    async def load(self, module_name: str) -> ModulePersistenceSnapshot | None:
+        raise self._error()
+
+    async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
+        raise self._error()
+
+
+def make_manager(store: PersistentEngine) -> PersistManager:
+    return PersistManager(store, HEARTBEAT)
+
+
+def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
+    module.apply_persistence_snapshot(
+        ModulePersistenceSnapshot(parameters={"setpoint": setpoint})
+    )
+
+
+async def test_persist_writes_on_first_call():
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.persist(module) is True
+    assert store.snapshots["dhw"] == module.get_persistence_snapshot()
+
+
+async def test_persist_skips_unchanged_snapshot():
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.persist(module) is True
+
+    assert await manager.persist(module) is False
+    assert store.snapshots["dhw"] == module.get_persistence_snapshot()
+
+
+async def test_persist_writes_when_config_changes():
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.persist(module) is True
+    change_setpoint(module, 60.0)
+
+    assert await manager.persist(module) is True
+    assert store.snapshots["dhw"].parameters == {"setpoint": 60.0}
+
+
+async def test_persist_all_covers_every_module():
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store)
+
+    await manager.persist_all([make_module("dhw"), make_module("pvt")])
+
+    assert set(store.snapshots) == {"dhw", "pvt"}
+
+
+async def test_restore_without_stored_config_keeps_defaults():
+    manager = make_manager(InMemoryPersistentEngine())
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+async def test_restore_applies_stored_snapshot():
+    stored = ModulePersistenceSnapshot(
+        parameters={"setpoint": 60.0},
+        control_mode="automatic",
+    )
+    manager = make_manager(InMemoryPersistentEngine({"dhw": stored}))
+    module = make_module()
+
+    assert await manager.restore(module) is True
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 60.0}
+    assert module.get_persistence_snapshot().control_mode == "automatic"
+
+
+async def test_restore_does_not_trigger_an_immediate_rewrite():
+    stored = ModulePersistenceSnapshot(parameters={"setpoint": 60.0})
+    store = InMemoryPersistentEngine({"dhw": stored})
+    manager = make_manager(store)
+    module = make_module()
+
+    await manager.restore(module)
+
+    assert await manager.persist(module) is False
+    assert store.snapshots["dhw"] == stored
+
+
+async def test_restore_all_covers_every_module():
+    store = InMemoryPersistentEngine(
+        {"dhw": ModulePersistenceSnapshot(control_mode="automatic")}
+    )
+    manager = make_manager(store)
+    modules = [make_module("dhw"), make_module("pvt")]
+
+    await manager.restore_all(modules)
+
+    assert modules[0].get_persistence_snapshot().control_mode == "automatic"
+    assert modules[1].get_persistence_snapshot().control_mode == "manual"
+
+
+async def test_restore_keeps_defaults_when_stored_config_no_longer_validates():
+    store = InMemoryPersistentEngine(
+        {"dhw": ModulePersistenceSnapshot(parameters={"setpoint": "warm"})}
+    )
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+async def test_database_errors_do_not_break_the_control_loop():
+    manager = make_manager(FailingSnapshotStore())
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert await manager.persist(module) is False
+
+
+async def test_failed_write_is_retried_next_call():
+    manager = make_manager(FailingSnapshotStore())
+
+    await manager.persist(make_module())
+
+    assert manager._persisted_at == {}
+
+
+async def test_noop_store_never_returns_a_snapshot():
+    store = NoopPersistentEngine()
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert await manager.persist(module) is True
+    assert await store.load("dhw") is None
+
+
+# --- Excessive / adversarial input handling -----------------------------------
+#
+# A corrupt or malicious row in the persistence store must never end up applied to
+# a running module and, in turn, must never be published over MQTT. These tests
+# feed obviously wrong data through `restore()` and prove the module keeps its safe
+# defaults end-to-end, including through a real `tick()` that would otherwise send
+# values out over the control channels.
+
+
+@pytest.mark.parametrize(
+    "bad_parameters",
+    [
+        pytest.param({"setpoint": 1_000_000.0}, id="wildly-out-of-bound-high"),
+        pytest.param({"setpoint": -1_000_000.0}, id="wildly-out-of-bound-low"),
+        pytest.param({"setpoint": float("inf")}, id="infinity"),
+        pytest.param({"setpoint": float("-inf")}, id="negative-infinity"),
+        pytest.param({"setpoint": float("nan")}, id="nan"),
+        pytest.param({"setpoint": "warm"}, id="wrong-type-string"),
+        pytest.param({"setpoint": None}, id="wrong-type-none"),
+        pytest.param({"setpoint": [1, 2, 3]}, id="wrong-type-list"),
+        pytest.param({"setpoint": {"nested": True}}, id="wrong-type-dict"),
+        pytest.param({}, id="missing-field-falls-back-to-default"),
+        pytest.param({"unexpected_field": "surprise"}, id="unknown-extra-field-only"),
+    ],
+)
+async def test_restore_rejects_or_safely_ignores_bad_parameters(bad_parameters):
+    stored = ModulePersistenceSnapshot(parameters=bad_parameters)
+    manager = make_manager(InMemoryPersistentEngine({"dhw": stored}))
+    module = make_module()
+
+    await manager.restore(module)
+
+    # Whatever happened, the module must never end up holding a value outside its
+    # declared bounds.
+    assert 0.0 <= module.get_persistence_snapshot().parameters["setpoint"] <= 100.0
+
+
+async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
+    """The most important guarantee: a corrupt snapshot must not leak into a control
+    tick's outgoing MQTT payload."""
+    stored = ModulePersistenceSnapshot(parameters={"setpoint": 1_000_000.0})
+    manager = make_manager(InMemoryPersistentEngine({"dhw": stored}))
+    channels = make_async_channels()
+    module = make_module(channels=channels)
+
+    assert await manager.restore(module) is False
+
+    await module.tick(SimpleInOut.zero())
+
+    sent_parameters = channels.send_parameters.call_args.args[0]
+    assert sent_parameters.setpoint == 50.0
+
+
+async def test_restore_with_malformed_control_mode_keeps_module_untouched():
+    """A snapshot bypassing normal validation (e.g. a hand-edited or truncated DB
+    row) must not be able to smuggle an unrecognized control mode into the module."""
+    corrupt = ModulePersistenceSnapshot.model_construct(
+        parameters={"setpoint": 60.0},
+        manual_control_values=None,
+        control_mode="deleted-enum-value",  # type: ignore[arg-type]
+    )
+    manager = make_manager(InMemoryPersistentEngine({"dhw": corrupt}))
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert module.get_persistence_snapshot().control_mode == "manual"
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+async def test_restore_with_malformed_manual_control_values_keeps_defaults():
+    corrupt = ModulePersistenceSnapshot(
+        parameters={"setpoint": 60.0},
+        manual_control_values={"go_with_the": "not-a-flow-sensor"},
+    )
+    manager = make_manager(InMemoryPersistentEngine({"dhw": corrupt}))
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    # Since manual control values fail validation, the whole restore is rejected -
+    # even the otherwise-valid setpoint must not be partially applied.
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+async def test_excessive_bad_snapshots_across_many_modules_never_crash_the_loop():
+    """Simulates a fleet of modules with every kind of corrupted row at once - the
+    manager must degrade every one of them to safe defaults, never raise, and never
+    take down `restore_all`."""
+    bad_values = [
+        1_000_000.0,
+        -1_000_000.0,
+        float("inf"),
+        float("-inf"),
+        float("nan"),
+        "warm",
+        None,
+    ]
+    store = InMemoryPersistentEngine(
+        {
+            f"module-{i}": ModulePersistenceSnapshot(parameters={"setpoint": value})
+            for i, value in enumerate(bad_values)
+        }
+    )
+    manager = make_manager(store)
+    modules = [make_module(f"module-{i}") for i in range(len(bad_values))]
+
+    await manager.restore_all(modules)
+
+    for module in modules:
+        assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}

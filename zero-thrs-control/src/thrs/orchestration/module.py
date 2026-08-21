@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
+from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
@@ -107,6 +108,53 @@ class Module[
 
     def set_automation_mode(self, mode: AutomationMode) -> None:
         self._control.switch_mode(mode)
+
+    def get_persistence_snapshot(self) -> ModulePersistenceSnapshot:
+        """Serialize the configuration a restart should be able to pick up again."""
+        return ModulePersistenceSnapshot(
+            parameters=self._control.parameters.model_dump(mode="json"),
+            manual_control_values=self._control.manual_controls.model_dump(mode="json"),
+            control_mode="automatic" if self._control.automatic else "manual",
+        )
+
+    def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
+        """Apply a configuration snapshot.
+
+        Every field is validated first and only applied once the whole snapshot is
+        known to be valid, so a single bad field (e.g. an unrecognized control mode)
+        can never leave the module with some values updated and others not - a
+        corrupt or malformed snapshot must be rejected atomically, never partially
+        applied."""
+
+        parameters = self._validate_parameters(snapshot)
+        manual_control_values = self._validate_manual_control_values(snapshot)
+        automation_mode = AutomationMode(mode=snapshot.control_mode)
+
+        if parameters is not None:
+            self._control.update_parameters(parameters)
+
+        if manual_control_values is not None:
+            self._control.update_manual_controls(manual_control_values)
+
+        self._control.switch_mode(automation_mode)
+
+    def _validate_manual_control_values(
+        self, snapshot: ModulePersistenceSnapshot
+    ) -> C | None:
+        """Validate manual control values from a snapshot without applying them."""
+        if snapshot.manual_control_values is None:
+            return None
+
+        control_values_cls = type(self._control.manual_controls)
+        return control_values_cls.model_validate(snapshot.manual_control_values)
+
+    def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
+        """Validate control parameters from a snapshot without applying them."""
+        if snapshot.parameters is None:
+            return None
+
+        parameters_cls = type(self._control.parameters)
+        return parameters_cls.model_validate(snapshot.parameters)
 
     @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
