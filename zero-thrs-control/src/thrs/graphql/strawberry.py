@@ -44,6 +44,7 @@ from thrs.graphql.base import (
     ThrustersMessaging,
     resolve_module,
 )
+from thrs.graphql.helpers import optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -114,13 +115,17 @@ class SimulationState:
 
     @strawberry.field
     def inputs(self, info: strawberry.Info[ThrsContext]) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-        return simulation.resolve_inputs(info.context.simulation_messaging)
+        return optional_pydantic_to_graphql(
+            info.context.simulation_messaging.simulation_inputs
+        )
 
     @strawberry.field
     def outputs(
         self, info: strawberry.Info[ThrsContext]
     ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-        return simulation.resolve_outputs(info.context.simulation_messaging)
+        return optional_pydantic_to_graphql(
+            info.context.simulation_messaging.simulation_outputs
+        )
 
 
 @strawberry.type

@@ -1,11 +1,7 @@
 import strawberry
 
 from thrs.graphql.base import add_simulation_input_mutations
-from thrs.graphql.helpers import (
-    optional_pydantic_to_graphql,
-    pydantic_to_strawberry_type,
-)
-from thrs.graphql.messaging import SimulationMessaging
+from thrs.graphql.helpers import pydantic_to_strawberry_type
 from thrs.input_output.modules.adsorption import (
     AdsorptionSimulationInputs,
     AdsorptionSimulationOutputs,
@@ -61,15 +57,6 @@ outputs_strawberry_type_mapping = {
     for name, (_, outputs) in io_mapping.items()
 }
 
-inputs_strawberry_type_by_cls = {
-    inputs_cls: inputs_strawberry_type_mapping[name]
-    for name, (inputs_cls, _) in io_mapping.items()
-}
-
-outputs_strawberry_type_by_cls = {
-    outputs_cls: outputs_strawberry_type_mapping[name]
-    for name, (_, outputs_cls) in io_mapping.items()
-}
 
 SimulationInputsType = strawberry.union(
     "SimulationInputsType", tuple(inputs_strawberry_type_mapping.values())
@@ -78,34 +65,6 @@ SimulationInputsType = strawberry.union(
 SimulationOutputsType = strawberry.union(
     "SimulationOutputsType", tuple(outputs_strawberry_type_mapping.values())
 )
-
-
-def resolve_inputs(
-    simulation: SimulationMessaging,
-) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    inputs = simulation.simulation_inputs
-    if inputs is None:
-        return None
-
-    graphql_type = inputs_strawberry_type_by_cls.get(type(inputs))
-    if graphql_type is None:
-        raise ValueError(f"Unsupported simulation inputs type: {type(inputs)}")
-
-    return optional_pydantic_to_graphql(inputs)
-
-
-def resolve_outputs(
-    simulation: SimulationMessaging,
-) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    outputs = simulation.simulation_outputs
-    if outputs is None:
-        return None
-
-    graphql_type = outputs_strawberry_type_by_cls.get(type(outputs))
-    if graphql_type is None:
-        raise ValueError(f"Unsupported simulation outputs type: {type(outputs)}")
-
-    return optional_pydantic_to_graphql(outputs)
 
 
 @strawberry.type
