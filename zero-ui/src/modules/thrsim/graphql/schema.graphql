@@ -955,6 +955,42 @@ type Mutation {
   drivesControlSetDrivesSwitchPropdriveAft2(value: ValveInputType!): DrivesControlValuesType!
   drivesControlSetDrivesSwitchPropdriveFwd1(value: ValveInputType!): DrivesControlValuesType!
   drivesControlSetDrivesSwitchPropdriveFwd2(value: ValveInputType!): DrivesControlValuesType!
+  thrsSimulationSetThrustersThrusterAft(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersPcs(value: PcsInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtOwners(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionCoolingSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableHotTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableColdTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableSeawaterTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionChiller(value: AdsorptionChillerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwFreshwaterSupply(value: OverpressureTemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesShorepower(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterAft(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!

@@ -163,5 +163,11 @@ def resolve_outputs(
     inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
+@add_simulation_input_mutations(
+    "thrs",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
 class SimulationMutations:
     pass
