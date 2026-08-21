@@ -1,3 +1,5 @@
+import { ENV } from "./settings";
+
 export const enum ZeroApps {
   "thrsim" = "thrsim",
   "thrs" = "thrs",
@@ -18,7 +20,7 @@ const VALID_APPS = new Set<ZeroApps>([
   ZeroApps.sailSystem,
 ]);
 
-const envIncludedApps = String(import.meta.env.VITE_INCLUDE_APPS)
+const envIncludedApps = String(ENV.VITE_INCLUDE_APPS)
   .split(",")
   .map((s) => s.trim())
   .filter((s): s is ZeroApps => VALID_APPS.has(s as ZeroApps));
