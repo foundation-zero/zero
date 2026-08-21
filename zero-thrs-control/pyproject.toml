@@ -119,7 +119,7 @@ fallback_version = "0.0.0"
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-strawberry-graphql = { git = "https://github.com/foundation-zero/strawberry.git", rev = "feature/improved-pydantics" }
+strawberry-graphql = { git = "https://github.com/foundation-zero/strawberry.git", rev = "feature/allow-pydantic-generics" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/thrs"]

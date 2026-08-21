@@ -31,11 +31,7 @@ from thrs.control.modules.thrusters import (
     ThrustersParameters,
 )
 from thrs.control.switching import SwitchingControlMode
-from thrs.graphql.helpers import (
-    JsonSchemaDirective,
-    ensure_input_type,
-    optional_pydantic_to_graphql,
-)
+from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -137,7 +133,6 @@ type DhwMessaging = ControlMessaging[
 @strawberry.experimental.pydantic.type(
     model=Stamped,
     all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
     use_pydantic_alias=False,
 )
 class StampedType[T]:
@@ -156,7 +151,6 @@ def convert_module(module, class_name_prefix: str):
             strawberry.experimental.pydantic.type(
                 model=cls,
                 all_fields=True,
-                json_schema_directive=JsonSchemaDirective,
                 use_pydantic_alias=False,
             )(gql_cls)
 
@@ -170,7 +164,6 @@ convert_module(simulation, "Simulation")
 @strawberry.experimental.pydantic.type(
     model=SwitchingControlMode,
     use_pydantic_alias=False,
-    fields=["automatic_mode"],
 )
 class SwitchingControlModeType[Mode]:
     automatic_mode: Mode | None

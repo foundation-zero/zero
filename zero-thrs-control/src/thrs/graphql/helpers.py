@@ -26,6 +26,8 @@ def pydantic_to_strawberry_type(
     """
     Convert a Pydantic model to a Strawberry GraphQL type.
 
+    Also supports schema directives based on json schema extra
+
     Args:
         pydantic_model: The Pydantic model class to convert
         suffix: Suffix to add to the type name (default: "Type")
@@ -49,12 +51,39 @@ def pydantic_to_strawberry_type(
             ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
     """
     type_name = f"{pydantic_model.__name__}{suffix}"
-    graphql_class = type(type_name, (object,), {})
+
+    fields = (
+        {**pydantic_model.model_fields, **pydantic_model.model_computed_fields}
+        if include_computed
+        else pydantic_model.model_fields
+    )
+
+    graphql_class = type(
+        type_name,
+        (object,),
+        {
+            "__annotations__": dict.fromkeys(fields.keys(), strawberry.auto),
+            **{
+                key: strawberry.field(
+                    directives=[
+                        JsonSchemaDirective(
+                            yard_tag=field.json_schema_extra.get("yard_tag"),  # type: ignore
+                            component_type=field.json_schema_extra.get(  # type: ignore
+                                "component_type"
+                            ),
+                            valve_type=field.json_schema_extra.get("valve_type"),  # type: ignore
+                        )
+                    ]  # type: ignore
+                    if field.json_schema_extra
+                    else None
+                )
+                for key, field in fields.items()
+            },
+        },
+    )
     graphql_class = strawberry.experimental.pydantic.type(
         model=pydantic_model,
-        all_fields=True,
         include_computed=include_computed,
-        json_schema_directive=JsonSchemaDirective,
         use_pydantic_alias=False,
     )(graphql_class)
     pydantic_to_strawberry_class_map[pydantic_model] = graphql_class

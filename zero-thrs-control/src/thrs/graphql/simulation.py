@@ -1,4 +1,6 @@
 import strawberry
+from strawberry.annotation import StrawberryAnnotation
+from strawberry.types.union import StrawberryUnion
 
 from thrs.graphql.base import add_simulation_input_mutations
 from thrs.graphql.helpers import pydantic_to_strawberry_type
@@ -58,12 +60,14 @@ outputs_strawberry_type_mapping = {
 }
 
 
-SimulationInputsType = strawberry.union(
-    "SimulationInputsType", tuple(inputs_strawberry_type_mapping.values())
+SimulationInputsType = StrawberryUnion(
+    "SimulationInputsType",
+    tuple(StrawberryAnnotation(t) for t in inputs_strawberry_type_mapping.values()),  # type: ignore
 )
 
-SimulationOutputsType = strawberry.union(
-    "SimulationOutputsType", tuple(outputs_strawberry_type_mapping.values())
+SimulationOutputsType = StrawberryUnion(
+    "SimulationOutputsType",
+    tuple(StrawberryAnnotation(t) for t in outputs_strawberry_type_mapping.values()),  # type: ignore
 )
 
 

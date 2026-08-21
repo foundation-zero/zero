@@ -1496,9 +1496,9 @@ type SimulationHvacExchangerType {
   maximumTemperature: FloatStampedType!
 }
 
-union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | AdsorptionSimulationInputsType | DrivesSimulationInputsType | DcSimulationInputsType | DhwSimulationInputsType | HighTemperatureSimulationInputsType | ThrsSimulationInputsType
+union SimulationInputsType = AdsorptionSimulationInputsType | ConsumersSimulationInputsType | PcmSimulationInputsType | DhwSimulationInputsType | DrivesSimulationInputsType | ThrustersSimulationInputsType | ThrsSimulationInputsType | HighTemperatureSimulationInputsType | PvtSimulationInputsType | DcSimulationInputsType
 
-union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | AdsorptionSimulationOutputsType | DrivesSimulationOutputsType | DcSimulationOutputsType | DhwSimulationOutputsType | HighTemperatureSimulationOutputsType | ThrsSimulationOutputsType
+union SimulationOutputsType = ThrsSimulationOutputsType | ConsumersSimulationOutputsType | PvtSimulationOutputsType | DrivesSimulationOutputsType | PcmSimulationOutputsType | AdsorptionSimulationOutputsType | DhwSimulationOutputsType | ThrustersSimulationOutputsType | HighTemperatureSimulationOutputsType | DcSimulationOutputsType
 
 type SimulationOverpressureTemperatureBoundaryType {
   temperature: FloatStampedType!
