@@ -13,6 +13,7 @@ TABLES = {
     "temperature": "temperatures",
     "flow": "flows",
     "pressure": "pressures",
+    "power": "rh33s",
 }
 
 

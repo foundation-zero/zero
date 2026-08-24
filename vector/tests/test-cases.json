@@ -3,3 +3,4 @@
 { "topic": "marpower/450000-main-power-storage/system-05/41", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
 { "topic": "marpower/500000-thrs//cold out", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
 { "topic": "marpower/500000-thrs/dhw/dhw-switch-tank2-inlet", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
+{ "topic": "marpower/500000-thrs/cooling/cooling-power-crew1", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
