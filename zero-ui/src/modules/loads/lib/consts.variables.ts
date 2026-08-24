@@ -283,6 +283,7 @@ export const VARIABLE_IDS = [
   "fiber-optic-mizzen-mast-longitudinal-strain-s9",
   "fiber-optic-mizzen-mast-strain-s1-aft-port",
   "fiber-optic-mizzen-mast-strain-s1-aft-stbd",
+  "fiber-optic-mizzen-mast-strain-s1-fore",
   "fiber-optic-mizzen-mast-strain-s1-side-port",
   "fiber-optic-mizzen-mast-strain-s1-side-stbd",
   "fiber-optic-mizzen-mast-strain-s2-aft-port",

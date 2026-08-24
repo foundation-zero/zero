@@ -399,7 +399,7 @@ export const FIBER_MIZZEN_CARDS: FiberOpticCard[] = [
       "fiber-optic-mizzen-mast-strain-s4-fore",
       "fiber-optic-mizzen-mast-strain-s3-fore",
       "fiber-optic-mizzen-mast-strain-s2-fore",
-      "fiber-optic-mizzen-forestay",
+      "fiber-optic-mizzen-mast-strain-s1-fore",
     ],
   },
   {

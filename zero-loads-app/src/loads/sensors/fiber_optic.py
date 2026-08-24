@@ -1342,6 +1342,11 @@ class FiberOptic(LoadsModel):
         VariableMeta(display_name="S1", unit="um/m", type="actual"),
         Field(validation_alias="mz-mast-strain-s1-aft-stbd"),
     ]
+    mizzen_mast_strain_s1_fore: Annotated[
+        float,
+        VariableMeta(display_name="S1", unit="um/m", type="actual"),
+        Field(validation_alias="mz-mast-strain-s1-fore"),
+    ]
     mizzen_mast_strain_s1_side_port: Annotated[
         float,
         VariableMeta(display_name="S1", unit="um/m", type="actual"),
