@@ -216,7 +216,7 @@ class Valve(ThrsValues):
 def valves_open_closed(
     open_valves: list[Valve] | None = None,
     closed_valves: list[Valve] | None = None,
-    tolerance=0.05,
+    tolerance: Ratio = 0.05,
 ) -> bool:
     if open_valves is None:
         open_valves = []

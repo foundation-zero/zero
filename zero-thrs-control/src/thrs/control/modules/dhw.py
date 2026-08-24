@@ -265,8 +265,9 @@ class Tank:
         if self._inlet.setpoint.value != Valve.OPEN:
             self._inlet.setpoint = Stamped(value=Valve.OPEN, timestamp=time())
 
-    def stop_filling(self, time: Callable[[], datetime]):
-        self._full = True
+    def stop_filling(self, time: Callable[[], datetime], set_full: bool = True):
+        if set_full:
+            self._full = True
         if self._inlet.setpoint.value != Valve.CLOSED:
             self._inlet.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
@@ -366,7 +367,7 @@ class TanksController:
         self, parameters: DhwParameters, sensor_values: DhwSensorValues
     ):
         if self._filling_tank and not self._filling_tank.enabled:
-            self._filling_tank.stop_filling(self._time)
+            self._filling_tank.stop_filling(self._time, set_full=False)
             self._filling_tank = None  # Disabling overrides the fill in progress, don't wait for the inlet valve to close
 
         elif self._filling_tank:
@@ -859,7 +860,7 @@ class DhwControl(
             )
 
     def _boosting_loop_open(
-        self, sensor_values: DhwSensorValues, tolerance=0.3
+        self, sensor_values: DhwSensorValues, tolerance: Ratio = 0.3
     ) -> bool:
         source_open = any(
             valve.position_rel.value > tolerance
@@ -897,16 +898,18 @@ class DhwControl(
             or self._boosting_pump_measurement is None
             or not self._boosting_loop_open(sensor_values)
         ):
-            self._boosting_pump_controller.disable() if (
+            if (
                 self._boosting_pump_controller
                 and self._boosting_pump_controller.enabled()
-            ) else None
+            ):
+                self._boosting_pump_controller.disable()
             self._current_values.dhw_pump.dutypoint = Stamped(
                 value=0.0, timestamp=self._time()
             )
             return
 
-        self._boosting_pump_controller.enable() if not self._boosting_pump_controller.enabled() else None
+        if not self._boosting_pump_controller.enabled():
+            self._boosting_pump_controller.enable()
         self._current_values.dhw_pump.dutypoint = Stamped(
             value=self._boosting_pump_controller(
                 self._boosting_pump_measurement(sensor_values)
@@ -998,9 +1001,8 @@ class DhwControl(
         )
 
     def _clear_pump_control(self, sensor_values: DhwSensorValues):
-        self._boosting_pump_controller.disable() if (
-            self._boosting_pump_controller and self._boosting_pump_controller.enabled()
-        ) else None
+        if self._boosting_pump_controller and self._boosting_pump_controller.enabled():
+            self._boosting_pump_controller.disable()
         self._boosting_pump_controller = None
         self._boosting_pump_measurement = None
 
