@@ -19,9 +19,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.externalService.serviceType }}
+  type: {{ if .Values.externalService.externalIPs }}LoadBalancer{{ else }}ClusterIP{{ end }}
+  {{- with .Values.externalService.externalIPs }}
   externalIPs:
-    {{- toYaml .Values.externalService.externalIPs | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     app: {{ coalesce (dig "nameOverride" nil $graphqlEngine) (printf "%s-graphql-engine" (coalesce (dig "global" "prefixOverride" nil $graphqlEngine) (dig "global" "prefixOverride" nil $stack) .Release.Name)) }}
   ports:

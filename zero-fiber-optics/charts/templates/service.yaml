@@ -13,9 +13,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.udp.serviceType }}
+  type: {{ if .Values.udp.externalIPs }}LoadBalancer{{ else }}ClusterIP{{ end }}
+  {{- with .Values.udp.externalIPs }}
   externalIPs:
-    {{- toYaml .Values.udp.externalIPs | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     {{- include "zero-fiber-optics.selectorLabels" . | nindent 4 }}
   ports:

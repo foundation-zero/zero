@@ -6,7 +6,6 @@ hasura-enterprise-stack:
 
 externalService:
   enabled: false
-  serviceType: LoadBalancer
   labels: {}
   annotations: {}
   externalIPs: []
