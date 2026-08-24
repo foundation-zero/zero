@@ -48,7 +48,7 @@ class MarpowerVectorGenerator:
                 yard_tag=thrs_topic.topic.yard_tag,
                 technical_name=thrs_topic.technical_name,
             )
-            for thrs_topic in thrs_topics
+            for thrs_topic in sorted(thrs_topics, key=lambda t: t.topic.topic)
         }
         mapping_adapter = TypeAdapter(dict[str, ThrsTopicMapping])
 
