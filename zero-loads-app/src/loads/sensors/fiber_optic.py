@@ -314,47 +314,47 @@ class FiberOptic(LoadsModel):
     ]
     main_mast_longitudinal_load_s1: Annotated[
         float,
-        VariableMeta(display_name="S1", unit="T.m", type="actual"),
+        VariableMeta(display_name="S1", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s1"),
     ]
     main_mast_longitudinal_load_s2: Annotated[
         float,
-        VariableMeta(display_name="S2", unit="T.m", type="actual"),
+        VariableMeta(display_name="S2", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s2"),
     ]
     main_mast_longitudinal_load_s3: Annotated[
         float,
-        VariableMeta(display_name="S3", unit="T.m", type="actual"),
+        VariableMeta(display_name="S3", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s3"),
     ]
     main_mast_longitudinal_load_s4: Annotated[
         float,
-        VariableMeta(display_name="S4", unit="T.m", type="actual"),
+        VariableMeta(display_name="S4", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s4"),
     ]
     main_mast_longitudinal_load_s5: Annotated[
         float,
-        VariableMeta(display_name="S5", unit="T.m", type="actual"),
+        VariableMeta(display_name="S5", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s5"),
     ]
     main_mast_longitudinal_load_s6: Annotated[
         float,
-        VariableMeta(display_name="S6", unit="T.m", type="actual"),
+        VariableMeta(display_name="S6", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s6"),
     ]
     main_mast_longitudinal_load_s7: Annotated[
         float,
-        VariableMeta(display_name="S7", unit="T.m", type="actual"),
+        VariableMeta(display_name="S7", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s7"),
     ]
     main_mast_longitudinal_load_s8: Annotated[
         float,
-        VariableMeta(display_name="S8", unit="T.m", type="actual"),
+        VariableMeta(display_name="S8", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s8"),
     ]
     main_mast_longitudinal_load_s9: Annotated[
         float,
-        VariableMeta(display_name="S9", unit="T.m", type="actual"),
+        VariableMeta(display_name="S9", unit="tonne", type="actual"),
         Field(validation_alias="mm-mast-longitudinal-load-s9"),
     ]
     main_mast_longitudinal_strain_s1: Annotated[
@@ -1244,47 +1244,47 @@ class FiberOptic(LoadsModel):
     ]
     mizzen_mast_longitudinal_load_s1: Annotated[
         float,
-        VariableMeta(display_name="S1", unit="T.m", type="actual"),
+        VariableMeta(display_name="S1", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s1"),
     ]
     mizzen_mast_longitudinal_load_s2: Annotated[
         float,
-        VariableMeta(display_name="S2", unit="T.m", type="actual"),
+        VariableMeta(display_name="S2", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s2"),
     ]
     mizzen_mast_longitudinal_load_s3: Annotated[
         float,
-        VariableMeta(display_name="S3", unit="T.m", type="actual"),
+        VariableMeta(display_name="S3", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s3"),
     ]
     mizzen_mast_longitudinal_load_s4: Annotated[
         float,
-        VariableMeta(display_name="S4", unit="T.m", type="actual"),
+        VariableMeta(display_name="S4", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s4"),
     ]
     mizzen_mast_longitudinal_load_s5: Annotated[
         float,
-        VariableMeta(display_name="S5", unit="T.m", type="actual"),
+        VariableMeta(display_name="S5", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s5"),
     ]
     mizzen_mast_longitudinal_load_s6: Annotated[
         float,
-        VariableMeta(display_name="S6", unit="T.m", type="actual"),
+        VariableMeta(display_name="S6", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s6"),
     ]
     mizzen_mast_longitudinal_load_s7: Annotated[
         float,
-        VariableMeta(display_name="S7", unit="T.m", type="actual"),
+        VariableMeta(display_name="S7", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s7"),
     ]
     mizzen_mast_longitudinal_load_s8: Annotated[
         float,
-        VariableMeta(display_name="S8", unit="T.m", type="actual"),
+        VariableMeta(display_name="S8", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s8"),
     ]
     mizzen_mast_longitudinal_load_s9: Annotated[
         float,
-        VariableMeta(display_name="S9", unit="T.m", type="actual"),
+        VariableMeta(display_name="S9", unit="tonne", type="actual"),
         Field(validation_alias="mz-mast-longitudinal-load-s9"),
     ]
     mizzen_mast_longitudinal_strain_s1: Annotated[
