@@ -10,6 +10,8 @@ from thrs.orchestration.comms import (
 )
 from thrs.runtime.messages import SimulationStatusMessage
 
+WAIT_TIMEOUT = 5
+
 
 class ControlMessaging[
     SensorValues: ThrsValues,
@@ -45,7 +47,7 @@ class ControlMessaging[
         setattr(control_values, name, value)
 
         expect = self._channels.wait_for_manual_values(
-            lambda v: getattr(v, name) == value, timeout_s=2.0
+            lambda v: getattr(v, name) == value, timeout_s=WAIT_TIMEOUT
         )
         await self._channels.send_manual_values(control_values)
         try:
@@ -64,7 +66,8 @@ class ControlMessaging[
         setattr(parameters, name, value)
 
         expect = self._channels.wait_for_parameters(
-            lambda parameters: getattr(parameters, name) == value, timeout_s=2
+            lambda parameters: getattr(parameters, name) == value,
+            timeout_s=WAIT_TIMEOUT,
         )
 
         await self._channels.send_parameters(parameters)
@@ -98,7 +101,7 @@ class ControlMessaging[
         try:
             await self._channels.wait_for_control_modes(
                 lambda m: bool(getattr(m, "automatic", False)) == enabled,
-                timeout_s=2,
+                timeout_s=WAIT_TIMEOUT,
             )
         except TimeoutError as e:
             raise Exception("Timeout when setting automation mode") from e
@@ -137,7 +140,7 @@ class SimulationMessaging:
 
         expect = self._channels.wait_for_simulation_inputs(
             lambda inputs: getattr(inputs, name) == value,
-            timeout_s=2,
+            timeout_s=WAIT_TIMEOUT,
         )
         await self._channels.send_simulation_inputs(inputs)
         try:
@@ -175,7 +178,9 @@ class DirectiveMessaging:
         if simulation_status.status not in ("available", "running"):
             raise Exception("Can only play an available or running simulation")
 
-        expect_status = self._wait_for_simulation_status("running", timeout=2.0)
+        expect_status = self._wait_for_simulation_status(
+            "running", timeout=WAIT_TIMEOUT
+        )
         await self._directives_channels.send_play(playback_rate)
         await expect_status
 
@@ -186,7 +191,9 @@ class DirectiveMessaging:
         if simulation_status.status != "running":
             raise Exception("Can only pause a running simulation")
 
-        expect_status = self._wait_for_simulation_status("available", timeout=2.0)
+        expect_status = self._wait_for_simulation_status(
+            "available", timeout=WAIT_TIMEOUT
+        )
         await self._directives_channels.send_pause()
         await expect_status
 
@@ -197,7 +204,9 @@ class DirectiveMessaging:
         if simulation_status.status != "available":
             raise Exception("Can only step an available simulation")
 
-        expect_status = self._wait_for_simulation_status("stepping", timeout=2.0)
+        expect_status = self._wait_for_simulation_status(
+            "stepping", timeout=WAIT_TIMEOUT
+        )
         await self._directives_channels.send_step(seconds)
         await expect_status
 
