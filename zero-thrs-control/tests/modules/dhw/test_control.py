@@ -52,8 +52,8 @@ async def test_filling_flow(
 
     sensor_values, _control_values, controller_state = runner.run(60)
 
-    assert not control._dhw_drives_flow_controller.enabled()
-    assert control._dhw_dc_flow_controller.enabled()
+    assert not control._drives_flow_controller.enabled()
+    assert control._dc_flow_controller.enabled()
 
     assert isinstance(sensor_values, DhwSensorValues)
     assert sensor_values.dhw_flow_drives.flow.value == approx(0.0, abs=0.01)
@@ -109,7 +109,7 @@ def test_boosting_transitions(
         control.parameters.model_copy(update={"maximum_tank_level": 10})
     )
 
-    sensor_values, *_ = runner.run(120)
+    sensor_values, *_ = runner.run(150)
 
     assert isinstance(control, DhwControl) and isinstance(
         control._tanks_controller, TanksController
