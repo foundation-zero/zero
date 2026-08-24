@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useSimulationStore } from "@/modules/thrsim/stores/simulation";
 import { tScoped } from "@common/lib/utils";
 import { RiPauseLine, RiPlayLine, RiRestartLine, RiSettingsLine } from "@remixicon/vue";
-import { useLocalStorage } from "@vueuse/core";
+import { useLocalStorage, watchDebounced } from "@vueuse/core";
 import { toRefs } from "vue";
 
 const { pause, play, step } = useSimulationStore();
@@ -30,6 +30,14 @@ const toggle = async () => {
 };
 
 const next = () => step(playbackRate.value);
+
+watchDebounced(
+  playbackRate,
+  async (rate) => {
+    if (isRunning.value) await play(rate);
+  },
+  { debounce: 300 },
+);
 </script>
 
 <template>
@@ -42,7 +50,6 @@ const next = () => step(playbackRate.value);
         <Button
           variant="ghost"
           size="icon"
-          :disabled="isRunning"
         >
           <RiSettingsLine />
         </Button>
@@ -55,7 +62,6 @@ const next = () => step(playbackRate.value);
           </header>
           <NumberField
             v-model="playbackRate"
-            :disabled="isProcessing"
             :step="0.25"
             :min="0.25"
             :max="10"

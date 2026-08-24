@@ -173,7 +173,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
     maximumLevel: ParametersType.Level;
     minimumTemperature: ParametersType.Temperature;
     maximumTemperature: ParametersType.Temperature;
-    disabled: ParametersType.Disabled;
+    enabled: ParametersType.Enabled;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: EmptyObject;

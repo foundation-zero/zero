@@ -252,7 +252,6 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
 };
 
 export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
-  [ParametersType.Disabled]: () => useRandomizedBoolean(),
   [ParametersType.Dutypoint]: () => useRandomizedRatio(),
   [ParametersType.Enabled]: () => useRandomizedBoolean(),
   [ParametersType.Flow]: () => useRandomizedNumber(0, 10),

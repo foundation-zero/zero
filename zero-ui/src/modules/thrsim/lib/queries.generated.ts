@@ -735,9 +735,9 @@ export const DHW_PARAMETERS_QUERY = `
   fillingTemperatureSetpoint
   minimumTankLevel
   maximumTankLevel
-  tank1Disabled
-  tank2Disabled
-  tank3Disabled
+  tank1Enabled
+  tank2Enabled
+  tank3Enabled
   pumpTemperatureTuning
   pumpFlowTuning
   dcFlowTuning

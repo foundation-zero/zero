@@ -15,7 +15,7 @@ export default toInstance<MimicComponentType.BoilerTank>({
   },
   parameters: {
     ...parameters,
-    disabled: getField(ParametersType.Disabled, "dhw", "tank3Disabled"),
+    enabled: getField(ParametersType.Enabled, "dhw", "tank3Enabled"),
   },
   source: getCustomField("dhw", {
     title: "Tank 3",
