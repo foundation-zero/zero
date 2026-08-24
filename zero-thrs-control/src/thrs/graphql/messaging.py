@@ -37,9 +37,7 @@ class ControlMessaging[
         if not self.active:
             raise Exception("Cannot send manual controls to inactive module")
 
-        control_values = (
-            self._channels.get_control_values() or self._channels.get_manual_values()
-        )
+        control_values = self._channels.get_manual_values()
         if control_values is None:
             raise Exception("No control values available to modify")
 

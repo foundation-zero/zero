@@ -15,7 +15,7 @@ class DummyValues(ThrsValues):
 
 async def test_control_messaging_set_manual_control():
     mock_channels = mock.AsyncMock()
-    mock_channels.get_control_values = mock.Mock(return_value=DummyValues())
+    mock_channels.get_manual_values = mock.Mock(return_value=DummyValues())
 
     messaging = ControlMessaging(mock_channels)
     messaging.active = True
@@ -23,7 +23,7 @@ async def test_control_messaging_set_manual_control():
     result = await messaging.set_manual_control("test", True)
 
     assert result == DummyValues(test=True)
-    assert mock_channels.get_control_values.call_count == 1
+    assert mock_channels.get_manual_values.call_count == 1
     assert mock_channels.wait_for_manual_values.call_count == 1
 
     # Waits for the correct condition
