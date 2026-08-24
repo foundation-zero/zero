@@ -234,82 +234,82 @@ class FiberOptic(LoadsModel):
     ]
     main_mast_fa_deflection_spr1: Annotated[
         float,
-        VariableMeta(display_name="Spr1", unit="m", type="actual"),
+        VariableMeta(display_name="Spr1", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection-spr1"),
     ]
     main_mast_fa_deflection_spr2: Annotated[
         float,
-        VariableMeta(display_name="Spr2", unit="m", type="actual"),
+        VariableMeta(display_name="Spr2", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection-spr2"),
     ]
     main_mast_fa_deflection_spr3: Annotated[
         float,
-        VariableMeta(display_name="Spr3", unit="m", type="actual"),
+        VariableMeta(display_name="Spr3", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection-spr3"),
     ]
     main_mast_fa_deflection_spr4: Annotated[
         float,
-        VariableMeta(display_name="Spr4", unit="m", type="actual"),
+        VariableMeta(display_name="Spr4", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection-spr4"),
     ]
     main_mast_fa_deflection_spr5: Annotated[
         float,
-        VariableMeta(display_name="Spr5", unit="m", type="actual"),
+        VariableMeta(display_name="Spr5", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection-spr5"),
     ]
     main_mast_fa_deflection000: Annotated[
         float,
-        VariableMeta(display_name="000", unit="m", type="actual"),
+        VariableMeta(display_name="000", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection000"),
     ]
     main_mast_fa_deflection010: Annotated[
         float,
-        VariableMeta(display_name="010", unit="m", type="actual"),
+        VariableMeta(display_name="010", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection010"),
     ]
     main_mast_fa_deflection020: Annotated[
         float,
-        VariableMeta(display_name="020", unit="m", type="actual"),
+        VariableMeta(display_name="020", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection020"),
     ]
     main_mast_fa_deflection030: Annotated[
         float,
-        VariableMeta(display_name="030", unit="m", type="actual"),
+        VariableMeta(display_name="030", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection030"),
     ]
     main_mast_fa_deflection040: Annotated[
         float,
-        VariableMeta(display_name="040", unit="m", type="actual"),
+        VariableMeta(display_name="040", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection040"),
     ]
     main_mast_fa_deflection050: Annotated[
         float,
-        VariableMeta(display_name="050", unit="m", type="actual"),
+        VariableMeta(display_name="050", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection050"),
     ]
     main_mast_fa_deflection060: Annotated[
         float,
-        VariableMeta(display_name="060", unit="m", type="actual"),
+        VariableMeta(display_name="060", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection060"),
     ]
     main_mast_fa_deflection070: Annotated[
         float,
-        VariableMeta(display_name="070", unit="m", type="actual"),
+        VariableMeta(display_name="070", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection070"),
     ]
     main_mast_fa_deflection080: Annotated[
         float,
-        VariableMeta(display_name="080", unit="m", type="actual"),
+        VariableMeta(display_name="080", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection080"),
     ]
     main_mast_fa_deflection090: Annotated[
         float,
-        VariableMeta(display_name="090", unit="m", type="actual"),
+        VariableMeta(display_name="090", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection090"),
     ]
     main_mast_fa_deflection100: Annotated[
         float,
-        VariableMeta(display_name="100", unit="m", type="actual"),
+        VariableMeta(display_name="100", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-fa-deflection100"),
     ]
     main_mast_longitudinal_load_s1: Annotated[
@@ -629,82 +629,82 @@ class FiberOptic(LoadsModel):
     ]
     main_mast_sw_deflection_spr1: Annotated[
         float,
-        VariableMeta(display_name="Spr1", unit="m", type="actual"),
+        VariableMeta(display_name="Spr1", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection-spr1"),
     ]
     main_mast_sw_deflection_spr2: Annotated[
         float,
-        VariableMeta(display_name="Spr2", unit="m", type="actual"),
+        VariableMeta(display_name="Spr2", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection-spr2"),
     ]
     main_mast_sw_deflection_spr3: Annotated[
         float,
-        VariableMeta(display_name="Spr3", unit="m", type="actual"),
+        VariableMeta(display_name="Spr3", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection-spr3"),
     ]
     main_mast_sw_deflection_spr4: Annotated[
         float,
-        VariableMeta(display_name="Spr4", unit="m", type="actual"),
+        VariableMeta(display_name="Spr4", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection-spr4"),
     ]
     main_mast_sw_deflection_spr5: Annotated[
         float,
-        VariableMeta(display_name="Spr5", unit="m", type="actual"),
+        VariableMeta(display_name="Spr5", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection-spr5"),
     ]
     main_mast_sw_deflection000: Annotated[
         float,
-        VariableMeta(display_name="000", unit="m", type="actual"),
+        VariableMeta(display_name="000", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection000"),
     ]
     main_mast_sw_deflection010: Annotated[
         float,
-        VariableMeta(display_name="010", unit="m", type="actual"),
+        VariableMeta(display_name="010", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection010"),
     ]
     main_mast_sw_deflection020: Annotated[
         float,
-        VariableMeta(display_name="020", unit="m", type="actual"),
+        VariableMeta(display_name="020", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection020"),
     ]
     main_mast_sw_deflection030: Annotated[
         float,
-        VariableMeta(display_name="030", unit="m", type="actual"),
+        VariableMeta(display_name="030", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection030"),
     ]
     main_mast_sw_deflection040: Annotated[
         float,
-        VariableMeta(display_name="040", unit="m", type="actual"),
+        VariableMeta(display_name="040", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection040"),
     ]
     main_mast_sw_deflection050: Annotated[
         float,
-        VariableMeta(display_name="050", unit="m", type="actual"),
+        VariableMeta(display_name="050", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection050"),
     ]
     main_mast_sw_deflection060: Annotated[
         float,
-        VariableMeta(display_name="060", unit="m", type="actual"),
+        VariableMeta(display_name="060", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection060"),
     ]
     main_mast_sw_deflection070: Annotated[
         float,
-        VariableMeta(display_name="070", unit="m", type="actual"),
+        VariableMeta(display_name="070", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection070"),
     ]
     main_mast_sw_deflection080: Annotated[
         float,
-        VariableMeta(display_name="080", unit="m", type="actual"),
+        VariableMeta(display_name="080", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection080"),
     ]
     main_mast_sw_deflection090: Annotated[
         float,
-        VariableMeta(display_name="090", unit="m", type="actual"),
+        VariableMeta(display_name="090", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection090"),
     ]
     main_mast_sw_deflection100: Annotated[
         float,
-        VariableMeta(display_name="100", unit="m", type="actual"),
+        VariableMeta(display_name="100", unit="mm", type="actual"),
         Field(validation_alias="mm-mast-sw-deflection100"),
     ]
     main_mast_temperature_spr0_port: Annotated[
@@ -1164,82 +1164,82 @@ class FiberOptic(LoadsModel):
     ]
     mizzen_mast_fa_deflection_spr1: Annotated[
         float,
-        VariableMeta(display_name="Spr1", unit="m", type="actual"),
+        VariableMeta(display_name="Spr1", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection-spr1"),
     ]
     mizzen_mast_fa_deflection_spr2: Annotated[
         float,
-        VariableMeta(display_name="Spr2", unit="m", type="actual"),
+        VariableMeta(display_name="Spr2", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection-spr2"),
     ]
     mizzen_mast_fa_deflection_spr3: Annotated[
         float,
-        VariableMeta(display_name="Spr3", unit="m", type="actual"),
+        VariableMeta(display_name="Spr3", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection-spr3"),
     ]
     mizzen_mast_fa_deflection_spr4: Annotated[
         float,
-        VariableMeta(display_name="Spr4", unit="m", type="actual"),
+        VariableMeta(display_name="Spr4", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection-spr4"),
     ]
     mizzen_mast_fa_deflection_spr5: Annotated[
         float,
-        VariableMeta(display_name="Spr5", unit="m", type="actual"),
+        VariableMeta(display_name="Spr5", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection-spr5"),
     ]
     mizzen_mast_fa_deflection000: Annotated[
         float,
-        VariableMeta(display_name="000", unit="m", type="actual"),
+        VariableMeta(display_name="000", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection000"),
     ]
     mizzen_mast_fa_deflection010: Annotated[
         float,
-        VariableMeta(display_name="010", unit="m", type="actual"),
+        VariableMeta(display_name="010", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection010"),
     ]
     mizzen_mast_fa_deflection020: Annotated[
         float,
-        VariableMeta(display_name="020", unit="m", type="actual"),
+        VariableMeta(display_name="020", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection020"),
     ]
     mizzen_mast_fa_deflection030: Annotated[
         float,
-        VariableMeta(display_name="030", unit="m", type="actual"),
+        VariableMeta(display_name="030", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection030"),
     ]
     mizzen_mast_fa_deflection040: Annotated[
         float,
-        VariableMeta(display_name="040", unit="m", type="actual"),
+        VariableMeta(display_name="040", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection040"),
     ]
     mizzen_mast_fa_deflection050: Annotated[
         float,
-        VariableMeta(display_name="050", unit="m", type="actual"),
+        VariableMeta(display_name="050", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection050"),
     ]
     mizzen_mast_fa_deflection060: Annotated[
         float,
-        VariableMeta(display_name="060", unit="m", type="actual"),
+        VariableMeta(display_name="060", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection060"),
     ]
     mizzen_mast_fa_deflection070: Annotated[
         float,
-        VariableMeta(display_name="070", unit="m", type="actual"),
+        VariableMeta(display_name="070", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection070"),
     ]
     mizzen_mast_fa_deflection080: Annotated[
         float,
-        VariableMeta(display_name="080", unit="m", type="actual"),
+        VariableMeta(display_name="080", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection080"),
     ]
     mizzen_mast_fa_deflection090: Annotated[
         float,
-        VariableMeta(display_name="090", unit="m", type="actual"),
+        VariableMeta(display_name="090", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection090"),
     ]
     mizzen_mast_fa_deflection100: Annotated[
         float,
-        VariableMeta(display_name="100", unit="m", type="actual"),
+        VariableMeta(display_name="100", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-fa-deflection100"),
     ]
     mizzen_mast_longitudinal_load_s1: Annotated[
@@ -1554,82 +1554,82 @@ class FiberOptic(LoadsModel):
     ]
     mizzen_mast_sw_deflection_spr1: Annotated[
         float,
-        VariableMeta(display_name="Spr1", unit="m", type="actual"),
+        VariableMeta(display_name="Spr1", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection-spr1"),
     ]
     mizzen_mast_sw_deflection_spr2: Annotated[
         float,
-        VariableMeta(display_name="Spr2", unit="m", type="actual"),
+        VariableMeta(display_name="Spr2", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection-spr2"),
     ]
     mizzen_mast_sw_deflection_spr3: Annotated[
         float,
-        VariableMeta(display_name="Spr3", unit="m", type="actual"),
+        VariableMeta(display_name="Spr3", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection-spr3"),
     ]
     mizzen_mast_sw_deflection_spr4: Annotated[
         float,
-        VariableMeta(display_name="Spr4", unit="m", type="actual"),
+        VariableMeta(display_name="Spr4", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection-spr4"),
     ]
     mizzen_mast_sw_deflection_spr5: Annotated[
         float,
-        VariableMeta(display_name="Spr5", unit="m", type="actual"),
+        VariableMeta(display_name="Spr5", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection-spr5"),
     ]
     mizzen_mast_sw_deflection000: Annotated[
         float,
-        VariableMeta(display_name="000", unit="m", type="actual"),
+        VariableMeta(display_name="000", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection000"),
     ]
     mizzen_mast_sw_deflection010: Annotated[
         float,
-        VariableMeta(display_name="010", unit="m", type="actual"),
+        VariableMeta(display_name="010", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection010"),
     ]
     mizzen_mast_sw_deflection020: Annotated[
         float,
-        VariableMeta(display_name="020", unit="m", type="actual"),
+        VariableMeta(display_name="020", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection020"),
     ]
     mizzen_mast_sw_deflection030: Annotated[
         float,
-        VariableMeta(display_name="030", unit="m", type="actual"),
+        VariableMeta(display_name="030", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection030"),
     ]
     mizzen_mast_sw_deflection040: Annotated[
         float,
-        VariableMeta(display_name="040", unit="m", type="actual"),
+        VariableMeta(display_name="040", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection040"),
     ]
     mizzen_mast_sw_deflection050: Annotated[
         float,
-        VariableMeta(display_name="050", unit="m", type="actual"),
+        VariableMeta(display_name="050", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection050"),
     ]
     mizzen_mast_sw_deflection060: Annotated[
         float,
-        VariableMeta(display_name="060", unit="m", type="actual"),
+        VariableMeta(display_name="060", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection060"),
     ]
     mizzen_mast_sw_deflection070: Annotated[
         float,
-        VariableMeta(display_name="070", unit="m", type="actual"),
+        VariableMeta(display_name="070", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection070"),
     ]
     mizzen_mast_sw_deflection080: Annotated[
         float,
-        VariableMeta(display_name="080", unit="m", type="actual"),
+        VariableMeta(display_name="080", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection080"),
     ]
     mizzen_mast_sw_deflection090: Annotated[
         float,
-        VariableMeta(display_name="090", unit="m", type="actual"),
+        VariableMeta(display_name="090", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection090"),
     ]
     mizzen_mast_sw_deflection100: Annotated[
         float,
-        VariableMeta(display_name="100", unit="m", type="actual"),
+        VariableMeta(display_name="100", unit="mm", type="actual"),
         Field(validation_alias="mz-mast-sw-deflection100"),
     ]
     mizzen_mast_temperature_spr0_port: Annotated[
