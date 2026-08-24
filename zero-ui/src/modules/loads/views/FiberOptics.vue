@@ -15,13 +15,13 @@ import { useI18n } from "vue-i18n";
 import { LOADS_CONTEXT } from "../graphql/client";
 import { VARIABLE_ACTUALS, VARIABLE_DEFINITIONS } from "../graphql/queries/variables";
 import { formatUnit } from "../lib/consts";
-import { FIBER_OPTICS_COLUMNS } from "../lib/consts.fiber-optics";
+import { FIBER_OPTICS_COLUMNS, FiberOpticCard } from "../lib/consts.fiber-optics";
 import { QueryVariableActual, QueryVariableDefinition } from "../types/queries";
 
 const { t } = useI18n();
 
 const fiberVariableIds = FIBER_OPTICS_COLUMNS.flatMap((column) =>
-  column.cards.flatMap((card) => card.variableIds),
+  column.cards.flatMap((card) => card.rows.flatMap((row) => row.variableIds)),
 );
 
 const { data: definitions } = useQuery<QueryVariableDefinition>({
@@ -68,11 +68,14 @@ const formatValue = (value: number | null | undefined): string => {
   return Number(value).toFixed(1);
 };
 
-const getValue = (variableId: string): string => formatValue(valueById.value[variableId]);
+const getValue = (variableId?: string): string => formatValue(valueById.value[variableId ?? ""]);
 
-const getUnit = (variableId: string): string => formatUnit(unitById.value[variableId], t);
+const getUnit = (variableId?: string): string => formatUnit(unitById.value[variableId ?? ""], t);
 
 const getName = (variableId: string): string => nameById.value[variableId] ?? variableId;
+
+const getColumnUnit = (card: FiberOpticCard, colIndex: number): string =>
+  getUnit(card.rows.map((row) => row.variableIds[colIndex]).find(Boolean));
 </script>
 
 <template>
@@ -86,7 +89,7 @@ const getName = (variableId: string): string => nameById.value[variableId] ?? va
         {{ t(column.titleKey) }}
       </h2>
 
-      <div class="3xl:grid-cols-3 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-3">
+      <div class="grid grid-cols-1 gap-3">
         <Card
           v-for="card in column.cards"
           :key="card.titleKey"
@@ -105,28 +108,30 @@ const getName = (variableId: string): string => nameById.value[variableId] ?? va
                   <TableHead class="w-24">
                     {{ t("loads.fiberOptics.table.location") }}
                   </TableHead>
-                  <TableHead class="text-right">
-                    {{ t("loads.fiberOptics.table.value") }}
-                  </TableHead>
-                  <TableHead class="w-20">
-                    {{ t("loads.fiberOptics.table.unit") }}
+                  <TableHead
+                    v-for="(col, colIndex) in card.columns"
+                    :key="col.titleKey"
+                    class="text-right"
+                  >
+                    {{ t(col.titleKey) }} ({{ getColumnUnit(card, colIndex) }})
                   </TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 <TableRow
-                  v-for="variableId in card.variableIds"
-                  :key="variableId"
+                  v-for="row in card.rows"
+                  :key="row.label"
                 >
                   <TableCell class="font-medium">
-                    {{ getName(variableId) }}
+                    {{ row.label ?? getName(row.variableIds[0]) }}
                   </TableCell>
-                  <TableCell class="text-right font-mono">
-                    {{ getValue(variableId) }}
-                  </TableCell>
-                  <TableCell class="text-muted-foreground">
-                    {{ getUnit(variableId) }}
+                  <TableCell
+                    v-for="(col, colIndex) in card.columns"
+                    :key="col.titleKey"
+                    class="text-right font-mono"
+                  >
+                    {{ getValue(row.variableIds[colIndex]) }}
                   </TableCell>
                 </TableRow>
               </TableBody>
