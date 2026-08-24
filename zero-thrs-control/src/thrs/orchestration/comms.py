@@ -448,7 +448,6 @@ class SimulationChannels[
         self.get_control_values = control_values_mapping.result
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = simulation_inputs_mapping.wait_for_result
 
 
 class ControlApiChannels[
@@ -582,9 +581,8 @@ class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
         )
 
         self.get_simulation_inputs = self.simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for_result
         self.get_simulation_outputs = self.simulation_outputs_mapping.result
-        self.wait_for_simulation_inputs_where = self.simulation_inputs_mapping.wait_for
+        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for
 
 
 class DirectivesChannels:
@@ -700,7 +698,12 @@ class MqttConnector:
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
                         )
-                    mapping.handle_message(message.topic.value, message.payload)
+                    try:
+                        mapping.handle_message(message.topic.value, message.payload)
+                    except Exception:
+                        logger.exception(
+                            "Failed handling MQTT message, message ignored"
+                        )
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool

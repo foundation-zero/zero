@@ -19,6 +19,7 @@ class ThrsValues(BaseModel):
         alias_generator=to_pascal,
         use_enum_values=True,
         validate_by_name=True,
+        validate_assignment=True,
     )
 
     @classmethod

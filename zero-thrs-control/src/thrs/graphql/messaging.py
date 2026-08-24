@@ -1,15 +1,16 @@
-from collections.abc import Callable, Coroutine
-from typing import Literal, cast
+from collections.abc import Coroutine
+from typing import Any, Literal, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.comms import (
     ControlApiChannels,
     DirectivesApiChannels,
-    MqttConnector,
     SimulationApiChannels,
 )
 from thrs.runtime.messages import SimulationStatusMessage
+
+WAIT_TIMEOUT = 5
 
 
 class ControlMessaging[
@@ -34,26 +35,48 @@ class ControlMessaging[
         self.active = False
         self._channels = channels
 
-    async def send_manual_controls(self, control_values: ControlValues):
+    async def set_manual_control(self, name: str, value: Any) -> ControlValues:
         if not self.active:
             raise Exception("Cannot send manual controls to inactive module")
+
+        control_values = self._channels.get_manual_values()
+        if control_values is None:
+            raise Exception("No control values available to modify")
+
+        control_values = control_values.model_copy()
+        setattr(control_values, name, value)
+
+        expect = self._channels.wait_for_manual_values(
+            lambda v: getattr(v, name) == value, timeout_s=WAIT_TIMEOUT
+        )
         await self._channels.send_manual_values(control_values)
+        try:
+            await expect
+        except TimeoutError as e:
+            raise Exception("Timeout when setting control values") from e
 
-    def wait_for_manual_values(
-        self, condition: Callable[[ControlValues], bool], *_args, timeout: float
-    ) -> Coroutine[None, None, ControlValues]:
-        return cast(
-            Coroutine[None, None, ControlValues],
-            self._channels.wait_for_manual_values(condition, timeout),
+        return control_values
+
+    async def set_parameter(self, name: str, value: Any) -> Parameters:
+        parameters = self._channels.get_parameters()
+        if parameters is None:
+            raise Exception("No parameters available to update")
+
+        parameters = parameters.model_copy()
+        setattr(parameters, name, value)
+
+        expect = self._channels.wait_for_parameters(
+            lambda parameters: getattr(parameters, name) == value,
+            timeout_s=WAIT_TIMEOUT,
         )
 
-    def wait_for_parameters(
-        self, condition: Callable[[Parameters], bool], *_args, timeout: float
-    ) -> Coroutine[None, None, Parameters]:
-        return cast(
-            Coroutine[None, None, Parameters],
-            self._channels.wait_for_parameters(condition, timeout),
-        )
+        await self._channels.send_parameters(parameters)
+        try:
+            await expect
+        except TimeoutError as e:
+            raise Exception("Timeout when setting parameters") from e
+
+        return parameters
 
     @property
     def sensor_values(self) -> SensorValues | None:
@@ -71,24 +94,18 @@ class ControlMessaging[
     def parameters(self) -> Parameters | None:
         return self._channels.get_parameters()
 
-    async def set_parameters(self, parameters: Parameters):
-        await self._channels.send_parameters(parameters)
-
-    async def set_automation_mode(self, enabled: bool):
+    async def set_automation_mode(self, enabled: bool) -> bool:
         mode = AutomationMode(mode="automatic" if enabled else "manual")
         await self._channels.send_automation_mode(mode)
 
-    def wait_for_control_mode(
-        self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, SwitchingControlMode[Mode]]:
-        async def _wait():
-            mode = await self._channels.wait_for_control_modes(
-                lambda m: bool(getattr(m, "automatic", False)) == automatic,
-                timeout,
+        try:
+            await self._channels.wait_for_control_modes(
+                lambda m: bool(getattr(m, "automatic", False)) == enabled,
+                timeout_s=WAIT_TIMEOUT,
             )
-            return cast(SwitchingControlMode[Mode], mode)
-
-        return _wait()
+        except TimeoutError as e:
+            raise Exception("Timeout when setting automation mode") from e
+        return enabled
 
     @property
     def control_mode(self) -> SwitchingControlMode[Mode] | None:
@@ -105,14 +122,6 @@ class SimulationMessaging:
     ):
         self._channels = channels
 
-    def wait_for_simulation_inputs(
-        self,
-        condition: Callable[[ThrsValues], bool],
-        *_args,
-        timeout: float,
-    ) -> Coroutine[None, None, ThrsValues]:
-        return self._channels.wait_for_simulation_inputs_where(condition, timeout)
-
     @property
     def simulation_inputs(self) -> ThrsValues | None:
         return self._channels.get_simulation_inputs()
@@ -121,21 +130,33 @@ class SimulationMessaging:
     def simulation_outputs(self) -> ThrsValues | None:
         return self._channels.get_simulation_outputs()
 
-    async def set_simulation_inputs(self, inputs: ThrsValues):
+    async def set_simulation_input(self, name: str, value: Any) -> ThrsValues:
+        inputs = self._channels.get_simulation_inputs()
+        if inputs is None:
+            raise Exception("No simulation inputs available to modify")
+
+        inputs = inputs.model_copy()
+        setattr(inputs, name, value)
+
+        expect = self._channels.wait_for_simulation_inputs(
+            lambda inputs: getattr(inputs, name) == value,
+            timeout_s=WAIT_TIMEOUT,
+        )
         await self._channels.send_simulation_inputs(inputs)
+        try:
+            await expect
+        except TimeoutError as e:
+            raise Exception("Timeout when setting simulation inputs") from e
+        return inputs
 
 
 class DirectiveMessaging:
     def __init__(
         self,
         control_modules: list[ControlMessaging],
-        simulation: SimulationMessaging,
         directives_channels: DirectivesApiChannels,
-        connector: MqttConnector,
     ):
         self._control_modules = control_modules
-        self._simulation = simulation
-        self._connector = connector
         self._directives_channels = directives_channels
 
         self._simulation_status: SimulationStatusMessage | None = None
@@ -150,19 +171,46 @@ class DirectiveMessaging:
         for module in self._control_modules:
             module.active = module._channels.module_name in status.control_modules
 
-    async def run(self) -> Coroutine[None, None, None]:
-        return await self._connector.run()
-
     async def play_simulation(self, playback_rate: float):
+        simulation_status = self._directives_channels.get_simulation_status()
+        if simulation_status is None:
+            raise Exception("No simulation status available, cannot play")
+        if simulation_status.status not in ("available", "running"):
+            raise Exception("Can only play an available or running simulation")
+
+        expect_status = self._wait_for_simulation_status(
+            "running", timeout=WAIT_TIMEOUT
+        )
         await self._directives_channels.send_play(playback_rate)
+        await expect_status
 
     async def pause_simulation(self):
+        simulation_status = self._directives_channels.get_simulation_status()
+        if simulation_status is None:
+            raise Exception("No simulation status available, cannot pause")
+        if simulation_status.status != "running":
+            raise Exception("Can only pause a running simulation")
+
+        expect_status = self._wait_for_simulation_status(
+            "available", timeout=WAIT_TIMEOUT
+        )
         await self._directives_channels.send_pause()
+        await expect_status
 
     async def step_simulation(self, seconds: float):
-        await self._directives_channels.send_step(seconds)
+        simulation_status = self._directives_channels.get_simulation_status()
+        if simulation_status is None:
+            raise Exception("No simulation status available, cannot step")
+        if simulation_status.status != "available":
+            raise Exception("Can only step an available simulation")
 
-    def wait_for_simulation_status(
+        expect_status = self._wait_for_simulation_status(
+            "stepping", timeout=WAIT_TIMEOUT
+        )
+        await self._directives_channels.send_step(seconds)
+        await expect_status
+
+    def _wait_for_simulation_status(
         self,
         status: Literal["stepping", "running", "available"],
         *_args,

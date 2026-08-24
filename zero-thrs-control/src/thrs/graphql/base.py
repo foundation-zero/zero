@@ -31,11 +31,7 @@ from thrs.control.modules.thrusters import (
     ThrustersParameters,
 )
 from thrs.control.switching import SwitchingControlMode
-from thrs.graphql.helpers import (
-    JsonSchemaDirective,
-    ensure_input_type,
-    optional_pydantic_to_graphql,
-)
+from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -137,7 +133,6 @@ type DhwMessaging = ControlMessaging[
 @strawberry.experimental.pydantic.type(
     model=Stamped,
     all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
     use_pydantic_alias=False,
 )
 class StampedType[T]:
@@ -156,7 +151,6 @@ def convert_module(module, class_name_prefix: str):
             strawberry.experimental.pydantic.type(
                 model=cls,
                 all_fields=True,
-                json_schema_directive=JsonSchemaDirective,
                 use_pydantic_alias=False,
             )(gql_cls)
 
@@ -170,7 +164,6 @@ convert_module(simulation, "Simulation")
 @strawberry.experimental.pydantic.type(
     model=SwitchingControlMode,
     use_pydantic_alias=False,
-    fields=["automatic_mode"],
 )
 class SwitchingControlModeType[Mode]:
     automatic_mode: Mode | None
@@ -220,12 +213,27 @@ def generate_mutation_for_field[T](
     name: str,
     field_name: str,
     field: FieldInfo,
-    make_fn: "Callable[[str, type], FieldMutation[T]]",
+    make_fn_key: str,
+    messaging: "Callable[[ThrsContext], ControlMessaging | SimulationMessaging]",
     *args,
     unstamp: bool,
 ) -> "FieldMutation[T]":
     input_type = ensure_input_type(field.annotation, unstamp=unstamp)
-    mutation = make_fn(field_name, input_type)
+
+    def _make_mutation(name: str, component_type: type):
+        async def _mutation(
+            self,
+            value: component_type,  # type: ignore
+            info: "strawberry.Info[ThrsContext]",
+        ) -> cls:  # type: ignore
+            mod = messaging(info.context)
+            value = value.to_pydantic().to_stamped() if unstamp else value
+            result = await getattr(mod, make_fn_key)(name, value)
+            return cls.from_pydantic(result)  # type: ignore
+
+        return _mutation
+
+    mutation = _make_mutation(field_name, input_type)
     mutation.__name__ = name
     return mutation
 
@@ -234,37 +242,17 @@ def add_control_mutations(
     module: str,
     control_values_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
-        def _make_control_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                component: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                control_values = mod.control_values
-                if control_values is None:
-                    raise Exception("No control values available to modify")
-                pydantic_value = component.to_pydantic().to_stamped()
-                setattr(control_values, name, pydantic_value)
-                expect = mod.wait_for_manual_values(
-                    lambda v: getattr(v, name) == pydantic_value, timeout=2.0
-                )
-                await mod.send_manual_controls(control_values)
-                await expect
-                return strawberry_cls.from_pydantic(control_values)
-
-            return _mutation
-
         for name, field in control_values_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{module}_control_set_{name}",
                 name,
                 field,
-                _make_control_mutation,
+                "set_manual_control",
+                messaging,
                 unstamp=True,
             )
             method = strawberry.mutation(fn)
@@ -279,36 +267,17 @@ def add_parameter_mutations(
     module: str,
     parameters_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
-        def _make_parameter_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                value: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                parameters = mod.parameters
-                if parameters is None:
-                    raise Exception("No parameters available to update")
-                setattr(parameters, name, value)
-                expect = mod.wait_for_parameters(
-                    lambda parameters: getattr(parameters, name) == value, timeout=2
-                )
-                await mod.set_parameters(parameters)
-                await expect
-                return strawberry_cls.from_pydantic(parameters)
-
-            return _mutation
-
         for name, field in parameters_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{module}_parameter_set_{name}",
                 name,
                 field,
-                _make_parameter_mutation,
+                "set_parameter",
+                messaging,
                 unstamp=False,
             )
             method = strawberry.mutation(fn)
@@ -323,42 +292,20 @@ def add_simulation_input_mutations(
     mode: str,
     io_mapping: dict[str, tuple[type[ThrsValues], type[ThrsValues]]],
     inputs_strawberry_type_mapping: dict[str, type],
-    messaging: Callable[[ThrsContext], SimulationMessaging],
+    messaging: "Callable[[ThrsContext], SimulationMessaging]",
 ):
     strawberry_cls = inputs_strawberry_type_mapping[mode]
     inputs_cls = io_mapping[mode][0]
 
     def _do(cls):
-        def _make_simulation_input_mutation(name: str, component_type: type):
-            async def _mutation(
-                self,
-                component: component_type,  # type: ignore
-                info: strawberry.Info[ThrsContext],
-            ) -> strawberry_cls:  # type: ignore
-                mod = messaging(info.context)
-                inputs = mod.simulation_inputs
-                if inputs is None:
-                    raise Exception("No simulation inputs available to modify")
-                pydantic_value = component.to_pydantic().to_stamped()
-                setattr(inputs, name, pydantic_value)
-
-                expect = mod.wait_for_simulation_inputs(
-                    lambda inputs: getattr(inputs, name) == pydantic_value,
-                    timeout=2,
-                )
-                await mod.set_simulation_inputs(inputs)
-                await expect
-                return strawberry_cls.from_pydantic(inputs)
-
-            return _mutation
-
         for name, field in inputs_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
                 f"{mode}_simulation_set_{name}",
                 name,
                 field,
-                _make_simulation_input_mutation,
+                "set_simulation_input",
+                messaging,
                 unstamp=True,
             )
             method = strawberry.mutation(fn)
@@ -371,18 +318,16 @@ def add_simulation_input_mutations(
 
 def add_automation_mode_mutation(
     module: str,
-    messaging: Callable[[ThrsContext], ControlMessaging],
+    messaging: "Callable[[ThrsContext], ControlMessaging]",
 ):
     def _do(cls):
         async def set_automation_mode(
             self,
             automatic: bool,
-            info: strawberry.Info[ThrsContext],
+            info: "strawberry.Info[ThrsContext]",
         ) -> bool:
             mod = messaging(info.context)
-            await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_mode(automatic, timeout=2)
-            return True
+            return await mod.set_automation_mode(automatic)
 
         mutation = strawberry.mutation(set_automation_mode)
         setattr(cls, f"{module}_set_automation_mode", mutation)

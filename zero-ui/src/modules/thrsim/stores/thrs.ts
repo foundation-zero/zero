@@ -118,7 +118,7 @@ export const controlValuesForm = <
 
     const mutation = `${module}${capitalizeFirst(mutationType)}Set${capitalizeFirst(componentName)}`;
     const query = `mutation ($input: ${inputType}) {
-      ${mutation}(${mutationType == MutationType.Parameter ? "value" : "component"}: $input) {
+      ${mutation}(value: $input) {
         ${returnValuesQuery}
       }
     }`;

@@ -66,8 +66,6 @@ const {
           v-model="value"
           class="grow"
           :step="1"
-          :min="0"
-          :max="100"
         >
           <NumberFieldContent>
             <NumberFieldDecrement />

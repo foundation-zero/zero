@@ -1,7 +1,6 @@
 import logging
 import sys
 from asyncio import Task, create_task
-from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import (
@@ -12,7 +11,6 @@ import strawberry
 from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
 from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
@@ -40,14 +38,13 @@ from thrs.graphql.base import (
     DcMessaging,
     DhwMessaging,
     DrivesMessaging,
-    FieldMutation,
     PcmMessaging,
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
     resolve_module,
 )
-from thrs.graphql.helpers import ensure_input_type
+from thrs.graphql.helpers import optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -118,13 +115,17 @@ class SimulationState:
 
     @strawberry.field
     def inputs(self, info: strawberry.Info[ThrsContext]) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-        return simulation.resolve_inputs(info.context.simulation_messaging)
+        return optional_pydantic_to_graphql(
+            info.context.simulation_messaging.simulation_inputs
+        )
 
     @strawberry.field
     def outputs(
         self, info: strawberry.Info[ThrsContext]
     ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-        return simulation.resolve_outputs(info.context.simulation_messaging)
+        return optional_pydantic_to_graphql(
+            info.context.simulation_messaging.simulation_outputs
+        )
 
 
 @strawberry.type
@@ -135,30 +136,15 @@ class Query:
 
     @strawberry.field
     def simulation(self, info: strawberry.Info[ThrsContext]) -> SimulationState | None:
-        if (
-            info.context.messaging.simulation_status is None
-            or info.context.messaging.simulation_status.simulation_time is None
-        ):
+        simulation_status = info.context.messaging.simulation_status
+
+        if simulation_status is None or simulation_status.simulation_time is None:
             return None
+
         return SimulationState(
-            time=info.context.messaging.simulation_status.simulation_time,
-            status=info.context.messaging.simulation_status.status,
+            time=simulation_status.simulation_time,
+            status=simulation_status.status,
         )
-
-
-def generate_mutation_for_field[T](
-    cls: type[T],
-    name: str,
-    field_name: str,
-    field: FieldInfo,
-    make_fn: "Callable[[str, type], FieldMutation[T]]",
-    *args,
-    unstamp: bool,
-) -> "FieldMutation[T]":
-    input_type = ensure_input_type(field.annotation, unstamp=unstamp)
-    mutation = make_fn(field_name, input_type)
-    mutation.__name__ = f"set_{name}"
-    return mutation
 
 
 @strawberry.type
@@ -177,44 +163,17 @@ class Mutation(
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
     ) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot play")
-        if info.context.messaging.simulation_status.status not in (
-            "available",
-            "running",
-        ):
-            raise Exception("Can only play an available or running simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "running", timeout=2.0
-        )
         await info.context.messaging.play_simulation(playback_rate)
-        await expect_status
 
     @strawberry.mutation
     async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot pause")
-        if info.context.messaging.simulation_status.status != "running":
-            raise Exception("Can only pause a running simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "available", timeout=2.0
-        )
         await info.context.messaging.pause_simulation()
-        await expect_status
 
     @strawberry.mutation
     async def simulation_step(
         self, info: strawberry.Info[ThrsContext], seconds: float
     ) -> None:
-        if info.context.messaging.simulation_status is None:
-            raise Exception("No simulation status available, cannot step")
-        if info.context.messaging.simulation_status.status != "available":
-            raise Exception("Can only step an available simulation")
-        expect_status = info.context.messaging.wait_for_simulation_status(
-            "stepping", timeout=2.0
-        )
         await info.context.messaging.step_simulation(seconds)
-        await expect_status
 
 
 def messaging(request: Request) -> DirectiveMessaging:
@@ -380,11 +339,9 @@ def create_app(settings: Config):
                     dc_messaging,
                     dhw_messaging,
                 ],
-                simulation_messaging,
                 directives_channels,
-                messaging_connector,
             )
-            run_task = create_task(await messaging.run())
+            run_task = create_task(await messaging_connector.run())
 
             def _finish(task: Task):
                 if err := task.exception():

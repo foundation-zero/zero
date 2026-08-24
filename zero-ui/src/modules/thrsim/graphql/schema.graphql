@@ -772,15 +772,15 @@ type Mutation {
   thrustersParameterSetFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
   thrustersParameterSetAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
   thrustersParameterSetFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
-  thrustersControlSetThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersMixExchanger(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersFlowcontrolAft(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersFlowcontrolFwd(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersSwitchRecovery(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersSwitchAft(component: ValveInputType!): ThrustersControlValuesType!
-  thrustersControlSetThrustersSwitchFwd(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersPump1(value: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersPump2(value: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixRecovery(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixExchanger(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolAft(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolFwd(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchRecovery(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchAft(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchFwd(value: ValveInputType!): ThrustersControlValuesType!
   pvtSetAutomationMode(automatic: Boolean!): Boolean!
   pvtParameterSetMaximumSupplyTemperature(value: Float!): PvtParametersType!
   pvtParameterSetRecoveryTemperature(value: Float!): PvtParametersType!
@@ -797,16 +797,16 @@ type Mutation {
   pvtParameterSetMainFwdPumpTuning(value: [Float!]!): PvtParametersType!
   pvtParameterSetMainAftPumpTuning(value: [Float!]!): PvtParametersType!
   pvtParameterSetOwnersPumpTuning(value: [Float!]!): PvtParametersType!
-  pvtControlSetPvtPumpMainFwd(component: PumpInputType!): PvtControlValuesType!
-  pvtControlSetPvtPumpMainAft(component: PumpInputType!): PvtControlValuesType!
-  pvtControlSetPvtPumpOwners(component: PumpInputType!): PvtControlValuesType!
-  pvtControlSetPvtMixMainFwd(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtMixMainAft(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtMixOwners(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtSwitchMainFwd(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtSwitchMainAft(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtSwitchOwners(component: ValveInputType!): PvtControlValuesType!
-  pvtControlSetPvtMixExchanger(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpMainFwd(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpMainAft(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpOwners(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainFwd(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainAft(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixOwners(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainFwd(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainAft(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchOwners(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixExchanger(value: ValveInputType!): PvtControlValuesType!
   pcmSetAutomationMode(automatic: Boolean!): Boolean!
   pcmParameterSetPcmDischargeFlow(value: Float!): PcmParametersType!
   pcmParameterSetPcmChargeFlow(value: Float!): PcmParametersType!
@@ -819,16 +819,16 @@ type Mutation {
   pcmParameterSetModule2FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule3FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule4FlowBalanceTuning(value: [Float!]!): PcmParametersType!
-  pcmControlSetPcmPump(component: PumpInputType!): PcmControlValuesType!
-  pcmControlSetPcmSwitchChargingReturn(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmFlowcontrolModule1(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmFlowcontrolModule2(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmFlowcontrolModule3(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmFlowcontrolModule4(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmSwitchDischarging(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmSwitchChargingSupply(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmSwitchConsumers(component: ValveInputType!): PcmControlValuesType!
-  pcmControlSetPcmModule1(component: PcmInputType!): PcmControlValuesType!
+  pcmControlSetPcmPump(value: PumpInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchChargingReturn(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule1(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule2(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule3(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule4(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchDischarging(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchChargingSupply(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchConsumers(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmModule1(value: PcmInputType!): PcmControlValuesType!
   adsorptionSetAutomationMode(automatic: Boolean!): Boolean!
   adsorptionParameterSetChillerEnabled(value: Boolean!): AdsorptionParametersType!
   adsorptionParameterSetWasteCoolingTemperatureSetpoint(value: Float!): AdsorptionParametersType!
@@ -843,11 +843,11 @@ type Mutation {
   adsorptionParameterSetRecoveryTuning(value: [Float!]!): AdsorptionParametersType!
   adsorptionParameterSetWasteCoolingTuning(value: [Float!]!): AdsorptionParametersType!
   adsorptionParameterSetFreeCoolingEnabled(value: Boolean!): AdsorptionParametersType!
-  adsorptionControlSetAdsorptionFlowcontrolWaste(component: ValveInputType!): AdsorptionControlValuesType!
-  adsorptionControlSetAdsorptionMixHot(component: ValveInputType!): AdsorptionControlValuesType!
-  adsorptionControlSetAdsorptionMixWaste(component: ValveInputType!): AdsorptionControlValuesType!
-  adsorptionControlSetAdsorptionSwitchDhw(component: ValveInputType!): AdsorptionControlValuesType!
-  adsorptionControlSetAdsorptionChiller(component: AdsorptionChillerInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionFlowcontrolWaste(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionMixHot(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionMixWaste(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionSwitchDhw(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionChiller(value: AdsorptionChillerInputType!): AdsorptionControlValuesType!
   consumersSetAutomationMode(automatic: Boolean!): Boolean!
   consumersParameterSetDhwEnabled(value: Boolean!): ConsumersParametersType!
   consumersParameterSetDhwFlowRatioSetpoint(value: Float!): ConsumersParametersType!
@@ -856,11 +856,11 @@ type Mutation {
   consumersParameterSetDhwFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
   consumersParameterSetBypassFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
   consumersParameterSetAdsorptionFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
-  consumersControlSetConsumersFlowcontrolAdsorption(component: ValveInputType!): ConsumersControlValuesType!
-  consumersControlSetConsumersFlowcontrolBypass(component: ValveInputType!): ConsumersControlValuesType!
-  consumersControlSetConsumersFlowcontrolDhw(component: ValveInputType!): ConsumersControlValuesType!
-  consumersControlSetConsumersSwitchAdsorption(component: ValveInputType!): ConsumersControlValuesType!
-  consumersControlSetConsumersSwitchDhw(component: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersFlowcontrolAdsorption(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersFlowcontrolBypass(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersFlowcontrolDhw(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersSwitchAdsorption(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersSwitchDhw(value: ValveInputType!): ConsumersControlValuesType!
   dcSetAutomationMode(automatic: Boolean!): Boolean!
   dcParameterSetMaximumSupplyTemperature(value: Float!): DcParametersType!
   dcParameterSetRecoveryTemperature(value: Float!): DcParametersType!
@@ -876,22 +876,22 @@ type Mutation {
   dcParameterSetBrightloopsFwdPumpTuning(value: [Float!]!): DcParametersType!
   dcParameterSetBrightloopsAftPumpTuning(value: [Float!]!): DcParametersType!
   dcParameterSetUgridsPumpTuning(value: [Float!]!): DcParametersType!
-  dcControlSetDcPumpAft(component: PumpInputType!): DcControlValuesType!
-  dcControlSetDcPumpFwd(component: PumpInputType!): DcControlValuesType!
-  dcControlSetDcPumpUgrid(component: PumpInputType!): DcControlValuesType!
-  dcControlSetDcMixAft(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcMixFwd(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcMixUgrid(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcMixRecovery(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcMixExchanger(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchAft4(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchAft3(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchAft2(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchAft1(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchFwd2(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchFwd1(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchUgrid2(component: ValveInputType!): DcControlValuesType!
-  dcControlSetDcSwitchUgrid1(component: ValveInputType!): DcControlValuesType!
+  dcControlSetDcPumpAft(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcPumpFwd(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcPumpUgrid(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcMixAft(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixFwd(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixUgrid(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixRecovery(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixExchanger(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft4(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft3(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft1(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchFwd2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchFwd1(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchUgrid2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchUgrid1(value: ValveInputType!): DcControlValuesType!
   dhwSetAutomationMode(automatic: Boolean!): Boolean!
   dhwParameterSetHeatpumpBoostingEnabled(value: Boolean!): DhwParametersType!
   dhwParameterSetHtBoostingEnabled(value: Boolean!): DhwParametersType!
@@ -913,25 +913,25 @@ type Mutation {
   dhwParameterSetPumpFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDcFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDrivesFlowTuning(value: [Float!]!): DhwParametersType!
-  dhwControlSetDhwPump(component: PumpInputType!): DhwControlValuesType!
-  dhwControlSetDhwHeatpump(component: HeatPumpInputType!): DhwControlValuesType!
-  dhwControlSetDhwFlowcontrolDc(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwFlowcontrolDrives(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank3Inlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank3BoostingReturn(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank3Outlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank3BoostingSupply(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank2Inlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank2BoostingReturn(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank2Outlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank2BoostingSupply(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank1Inlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank1BoostingReturn(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank1Outlet(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchTank1BoostingSupply(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchLowTemperature(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchHeatpump(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwSwitchHighTemperature(component: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwPump(value: PumpInputType!): DhwControlValuesType!
+  dhwControlSetDhwHeatpump(value: HeatPumpInputType!): DhwControlValuesType!
+  dhwControlSetDhwFlowcontrolDc(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwFlowcontrolDrives(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchLowTemperature(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchHeatpump(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchHighTemperature(value: ValveInputType!): DhwControlValuesType!
   drivesSetAutomationMode(automatic: Boolean!): Boolean!
   drivesParameterSetShorepowerMaximumSupplyTemperature(value: Float!): DrivesParametersType!
   drivesParameterSetPropulsionMaximumSupplyTemperature(value: Float!): DrivesParametersType!
@@ -943,81 +943,117 @@ type Mutation {
   drivesParameterSetHeatDumpTuning(value: [Float!]!): DrivesParametersType!
   drivesParameterSetAftFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
   drivesParameterSetFwdFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
-  drivesControlSetDrivesPump1(component: PumpInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesPump2(component: PumpInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesMixExchanger(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesMixRecovery(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesFlowcontrolPropdriveAft(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesFlowcontrolPropdriveFwd(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchShorepowerSupply(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchShorepowerReturn(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchPropdriveAft1(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchPropdriveAft2(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchPropdriveFwd1(component: ValveInputType!): DrivesControlValuesType!
-  drivesControlSetDrivesSwitchPropdriveFwd2(component: ValveInputType!): DrivesControlValuesType!
-  highTemperatureSimulationSetThrustersThrusterAft(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetThrustersThrusterFwd(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetThrustersPcs(component: PcsInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPvtMainFwd(component: HeatSourceInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPvtMainAft(component: HeatSourceInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPvtOwners(component: HeatSourceInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPvtSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPcmFreshwaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetConsumersDhwSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetConsumersAdsorptionSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
-  dhwSimulationSetDhwDrivesSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwDcSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwAdsorptionSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwConsumersSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwFreshwaterSupply(component: OverpressureTemperatureBoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwHvacExchanger(component: HvacExchangerInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwSeawaterSupply(component: TemperatureBoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwHotwaterDemand(component: FlowBoundaryInputType!): DhwSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcUgrid1(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcUgrid2(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft2(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft3(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4(component: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcSeawaterSupply(component: BoundaryInputType!): DcSimulationInputsType!
-  dcSimulationSetDcDhwSupply(component: BoundaryInputType!): DcSimulationInputsType!
-  drivesSimulationSetDrivesOilCoolerAft(component: HeatSourceInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesOilCoolerFwd(component: HeatSourceInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesPropdriveAft1(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesPropdriveAft2(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesPropdriveFwd1(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesPropdriveFwd2(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesShorepower(component: ConverterInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesSeawaterSupply(component: BoundaryInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesDhwSupply(component: BoundaryInputType!): DrivesSimulationInputsType!
-  adsorptionSimulationSetAdsorptionCoolingSupply(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionSeawaterSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionAvailableHotTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionAvailableColdTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionAvailableSeawaterTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionChiller(component: AdsorptionChillerInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionConsumersSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionDhwSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
-  consumersSimulationSetConsumersAdsorptionSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
-  consumersSimulationSetConsumersDhwSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
-  consumersSimulationSetConsumersPcmSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
-  pcmSimulationSetPcmPvtSupply(component: BoundaryInputType!): PcmSimulationInputsType!
-  pcmSimulationSetPcmThrustersSupply(component: BoundaryInputType!): PcmSimulationInputsType!
-  pcmSimulationSetPcmFreshwaterSupply(component: BoundaryInputType!): PcmSimulationInputsType!
-  pcmSimulationSetPcmConsumersSupply(component: TemperatureBoundaryInputType!): PcmSimulationInputsType!
-  pvtSimulationSetPvtMainFwd(component: HeatSourceInputType!): PvtSimulationInputsType!
-  pvtSimulationSetPvtMainAft(component: HeatSourceInputType!): PvtSimulationInputsType!
-  pvtSimulationSetPvtOwners(component: HeatSourceInputType!): PvtSimulationInputsType!
-  pvtSimulationSetPvtPcmSupply(component: TemperatureBoundaryInputType!): PvtSimulationInputsType!
-  pvtSimulationSetPvtSeawaterSupply(component: BoundaryInputType!): PvtSimulationInputsType!
-  thrustersSimulationSetThrustersThrusterAft(component: ThrusterInputType!): ThrustersSimulationInputsType!
-  thrustersSimulationSetThrustersThrusterFwd(component: ThrusterInputType!): ThrustersSimulationInputsType!
-  thrustersSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): ThrustersSimulationInputsType!
-  thrustersSimulationSetThrustersPcmSupply(component: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
-  thrustersSimulationSetThrustersPcs(component: PcsInputType!): ThrustersSimulationInputsType!
+  drivesControlSetDrivesPump1(value: PumpInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesPump2(value: PumpInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesMixExchanger(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesMixRecovery(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesFlowcontrolPropdriveAft(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesFlowcontrolPropdriveFwd(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchShorepowerSupply(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchShorepowerReturn(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveAft1(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveAft2(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveFwd1(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveFwd2(value: ValveInputType!): DrivesControlValuesType!
+  thrsSimulationSetThrustersThrusterAft(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersPcs(value: PcsInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtOwners(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionCoolingSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableHotTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableColdTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableSeawaterTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionChiller(value: AdsorptionChillerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwFreshwaterSupply(value: OverpressureTemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesShorepower(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  highTemperatureSimulationSetThrustersThrusterAft(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersPcs(value: PcsInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtMainFwd(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtMainAft(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtOwners(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetConsumersDhwSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetConsumersAdsorptionSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  dhwSimulationSetDhwDrivesSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwDcSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwAdsorptionSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwConsumersSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwFreshwaterSupply(value: OverpressureTemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): DhwSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcSeawaterSupply(value: BoundaryInputType!): DcSimulationInputsType!
+  dcSimulationSetDcDhwSupply(value: BoundaryInputType!): DcSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesShorepower(value: ConverterInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesDhwSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
+  adsorptionSimulationSetAdsorptionCoolingSupply(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionSeawaterSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableHotTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableColdTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableSeawaterTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionChiller(value: AdsorptionChillerInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionConsumersSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionDhwSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  consumersSimulationSetConsumersAdsorptionSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersDhwSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersPcmSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  pcmSimulationSetPcmPvtSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmThrustersSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmConsumersSupply(value: TemperatureBoundaryInputType!): PcmSimulationInputsType!
+  pvtSimulationSetPvtMainFwd(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtMainAft(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtOwners(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtPcmSupply(value: TemperatureBoundaryInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): PvtSimulationInputsType!
+  thrustersSimulationSetThrustersThrusterAft(value: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersPcmSupply(value: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersPcs(value: PcsInputType!): ThrustersSimulationInputsType!
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void
@@ -1460,9 +1496,9 @@ type SimulationHvacExchangerType {
   maximumTemperature: FloatStampedType!
 }
 
-union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | AdsorptionSimulationInputsType | DrivesSimulationInputsType | DcSimulationInputsType | DhwSimulationInputsType | HighTemperatureSimulationInputsType | ThrsSimulationInputsType
+union SimulationInputsType = AdsorptionSimulationInputsType | ConsumersSimulationInputsType | PcmSimulationInputsType | DhwSimulationInputsType | DrivesSimulationInputsType | ThrustersSimulationInputsType | ThrsSimulationInputsType | HighTemperatureSimulationInputsType | PvtSimulationInputsType | DcSimulationInputsType
 
-union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | AdsorptionSimulationOutputsType | DrivesSimulationOutputsType | DcSimulationOutputsType | DhwSimulationOutputsType | HighTemperatureSimulationOutputsType | ThrsSimulationOutputsType
+union SimulationOutputsType = ThrsSimulationOutputsType | ConsumersSimulationOutputsType | PvtSimulationOutputsType | DrivesSimulationOutputsType | PcmSimulationOutputsType | AdsorptionSimulationOutputsType | DhwSimulationOutputsType | ThrustersSimulationOutputsType | HighTemperatureSimulationOutputsType | DcSimulationOutputsType
 
 type SimulationOverpressureTemperatureBoundaryType {
   temperature: FloatStampedType!

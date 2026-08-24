@@ -1,6 +1,7 @@
 from asyncio import create_task, sleep
 from datetime import datetime
-from unittest.mock import Mock
+from typing import Any
+from unittest.mock import AsyncMock, Mock, call
 
 import pytest
 import strawberry
@@ -165,9 +166,26 @@ def app(
     return app
 
 
+def _create_base_control_messaging_mock() -> Mock:
+    mock = AsyncMock(ControlMessaging)
+
+    def create_updater(mock, field):
+        def update(name: str, value: Any) -> Any:
+            data = getattr(mock, field)
+            setattr(data, name, value)
+            return data
+
+        return update
+
+    mock.set_automation_mode.side_effect = lambda value: value
+    mock.set_manual_control.side_effect = create_updater(mock, "control_values")
+    mock.set_parameter.side_effect = create_updater(mock, "parameters")
+    return mock
+
+
 @pytest.fixture
 async def thrusters_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
@@ -176,18 +194,12 @@ async def thrusters_messaging_mock():
         automatic_mode=ThrustersControlMode(mode="idle")
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def pvt_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
@@ -200,36 +212,24 @@ async def pvt_messaging_mock():
         ),
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def pcm_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
     mock.controller_state = PcmControllerState.zero()
     mock.control_mode = SwitchingControlMode(automatic_mode=PcmControlMode(mode="idle"))
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def adsorption_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = AdsorptionSensorValues.zero()
     mock.control_values = AdsorptionControlValues.zero()
     mock.parameters = AdsorptionParameters()
@@ -238,36 +238,24 @@ async def adsorption_messaging_mock():
         automatic_mode=AdsorptionControlMode(mode="idle")
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def consumers_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
     mock.controller_state = ConsumersControllerState.zero()
     mock.control_mode = SwitchingControlMode(automatic_mode=None)
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def dc_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = DcSensorValues.zero()
     mock.control_values = DcControlValues.zero()
     mock.parameters = DcParameters()
@@ -280,18 +268,12 @@ async def dc_messaging_mock():
         )
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def dhw_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = DhwSensorValues.zero()
     mock.control_values = DhwControlValues.zero()
     mock.parameters = DhwParameters()
@@ -300,18 +282,12 @@ async def dhw_messaging_mock():
         automatic_mode=DhwControlMode(boosting_mode="idle", filling_mode="idle")
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def drives_messaging_mock():
-    mock = Mock(ControlMessaging)
+    mock = _create_base_control_messaging_mock()
     mock.sensor_values = DrivesSensorValues.zero()
     mock.control_values = DrivesControlValues.zero()
     mock.parameters = DrivesParameters()
@@ -320,18 +296,12 @@ async def drives_messaging_mock():
         automatic_mode=DrivesControlMode(mode="idle")
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_control_mode.side_effect = wait
-    mock.wait_for_manual_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def messaging_mock():
-    mock = Mock(DirectiveMessaging)
+    mock = AsyncMock(DirectiveMessaging)
     mock.simulation_status = SimulationStatusMessage(
         mode="thrusters",
         status="available",
@@ -339,23 +309,21 @@ async def messaging_mock():
         control_modules=["thrusters"],
     )
 
-    async def wait(condition, *_args, timeout):
-        return None
-
-    mock.wait_for_simulation_status.side_effect = wait
     return mock
 
 
 @pytest.fixture
 async def simulation_messaging_mock():
-    mock = Mock(SimulationMessaging)
+    mock = AsyncMock(SimulationMessaging)
     mock.simulation_inputs = ThrustersSimulationInputs.zero()
     mock.simulation_outputs = ThrustersSimulationOutputs.zero()
 
-    async def wait(condition, *_args, timeout):
-        return None
+    def update(name: str, value: Any) -> Any:
+        setattr(mock.simulation_inputs, name, value)
+        return mock.simulation_inputs
 
-    mock.wait_for_simulation_inputs = wait
+    mock.set_simulation_input.side_effect = update
+
     return mock
 
 
@@ -1034,12 +1002,7 @@ async def test_query_simulation_inputs_actual(
         ),
     )
     directives_channels = DirectivesApiChannels(control_connector, settings)
-    msg = DirectiveMessaging(
-        [thrusters_msg],
-        simulation_msg,
-        directives_channels,
-        control_connector,
-    )
+    msg = DirectiveMessaging([thrusters_msg], directives_channels)
     app.dependency_overrides[messaging] = lambda: msg
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
@@ -1054,7 +1017,7 @@ async def test_query_simulation_inputs_actual(
         f"{settings.mqtt_simulator_topic_prefix}/status", None, qos=1, retain=True
     )
 
-    run_task = create_task(await msg.run())
+    run_task = create_task(await control_connector.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(
@@ -1224,7 +1187,7 @@ async def test_mutation_control_value(app, test_client, thrusters_messaging_mock
         "/graphql",
         json={
             "query": """mutation {
-                thrustersControlSetThrustersPump1(component: {dutypoint: 0.5, on:true}) {
+                thrustersControlSetThrustersPump1(value: {dutypoint: 0.5, on:true}) {
                     thrustersPump1 {
                         dutypoint {
                             value
@@ -1242,10 +1205,13 @@ async def test_mutation_control_value(app, test_client, thrusters_messaging_mock
             }
         }
     }
-    thrusters_messaging_mock.send_manual_controls.assert_awaited_once()
-    control_values = thrusters_messaging_mock.send_manual_controls.call_args[0][0]
-    assert control_values.thrusters_pump1.dutypoint.value == 0.5
-    assert control_values.thrusters_pump1.on.value
+    thrusters_messaging_mock.set_manual_control.assert_awaited_once()
+    assert (
+        thrusters_messaging_mock.set_manual_control.call_args[0][0] == "thrusters_pump1"
+    )
+    thrusters_pump = thrusters_messaging_mock.set_manual_control.call_args[0][1]
+    assert thrusters_pump.dutypoint.value == 0.5
+    assert thrusters_pump.on.value
 
 
 async def test_mutation_control_set_automation_mode(
@@ -1269,7 +1235,7 @@ async def test_mutation_control_values_hanging_around(app, test_client, messagin
         "/graphql",
         json={
             "query": """mutation {
-                thrustersControlSetThrustersPump1(component: {dutypoint: 0.5, on:true}) {
+                thrustersControlSetThrustersPump1(value: {dutypoint: 0.5, on:true}) {
                     thrustersPump1 {
                         dutypoint {
                             value
@@ -1283,7 +1249,7 @@ async def test_mutation_control_values_hanging_around(app, test_client, messagin
         "/graphql",
         json={
             "query": """mutation {
-                thrustersControlSetThrustersPump2(component: {dutypoint: 0.4, on:true}) {
+                thrustersControlSetThrustersPump2(value: {dutypoint: 0.4, on:true}) {
                     thrustersPump1 {
                         dutypoint {
                             value
@@ -1324,9 +1290,9 @@ async def test_mutation_parameter(app, test_client, thrusters_messaging_mock):
     assert response.json() == {
         "data": {"thrustersParameterSetCoolingFlow": {"coolingFlow": 99.0}}
     }
-    thrusters_messaging_mock.set_parameters.assert_awaited_once()
-    parameters = thrusters_messaging_mock.set_parameters.call_args[0][0]
-    assert parameters.cooling_flow == 99.0
+    assert thrusters_messaging_mock.set_parameter.await_args_list == [
+        call("cooling_flow", 99.0)
+    ]
 
 
 async def test_mutation_set_simulation_inputs(
@@ -1336,7 +1302,7 @@ async def test_mutation_set_simulation_inputs(
         "/graphql",
         json={
             "query": """mutation {
-                thrustersSimulationSetThrustersThrusterAft(component: { heatFlow: 99.0, active: false }) {
+                thrustersSimulationSetThrustersThrusterAft(value: { heatFlow: 99.0, active: false }) {
                     thrustersThrusterAft {
                         heatFlow {
                             value
@@ -1354,6 +1320,10 @@ async def test_mutation_set_simulation_inputs(
             }
         }
     }
-    simulation_messaging_mock.set_simulation_inputs.assert_awaited_once()
-    inputs = simulation_messaging_mock.set_simulation_inputs.call_args[0][0]
-    assert inputs.thrusters_thruster_aft.heat_flow.value == 99.0
+    simulation_messaging_mock.set_simulation_input.assert_awaited_once()
+    assert (
+        simulation_messaging_mock.set_simulation_input.call_args[0][0]
+        == "thrusters_thruster_aft"
+    )
+    thrusters_aft = simulation_messaging_mock.set_simulation_input.call_args[0][1]
+    assert thrusters_aft.heat_flow.value == 99.0

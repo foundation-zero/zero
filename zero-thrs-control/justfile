@@ -19,20 +19,20 @@ default: run
 run_api:
     uv run fastapi dev src/thrs/graphql/asgi.py
 
-run_control module='dhw':
+run_control module='thrs':
     uv run python -m thrs.cli control --mode {{ module }}
 
-run_simulation module='dhw':
+run_simulation module='thrs':
     uv run python -m thrs.cli simulation --mode {{ module }}
 
-run_lockstep module='dhw':
+run_lockstep module='thrs':
     uv run python -m thrs.cli lockstep --mode {{ module }}
 
 [parallel]
-run module='dhw': run_api (run_lockstep module)
+run module='thrs': run_api (run_lockstep module)
 
 [parallel]
-run_split module='dhw': run_api (run_control module) (run_simulation module)
+run_split module='thrs': run_api (run_control module) (run_simulation module)
 
 check: lint type_check test
 
