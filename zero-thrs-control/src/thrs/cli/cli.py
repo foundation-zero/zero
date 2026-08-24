@@ -119,11 +119,9 @@ class LockstepCmd(BaseSettings):
     mode: ModeName
     machine_state_logging: CliImplicitFlag[bool] = True
     play: CliImplicitFlag[bool] = False
-    # Off by default: lockstep forces automatic mode, so persisting would overwrite the
-    # mode a real controller stored.
-    module_persistence: CliImplicitFlag[bool] = False
+    module_persistence: CliImplicitFlag[bool] = True
 
-    def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
+    async def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
         mode = lookup_mode(self.mode)
 
@@ -161,6 +159,12 @@ class LockstepCmd(BaseSettings):
             machine_state_logging_service_enabled=self.machine_state_logging,
         )
 
+        # Restore any previously persisted parameters/manual control values before
+        # forcing automatic mode below - lockstep always runs in automatic mode
+        # regardless of what was stored, but the parameters/manual values themselves
+        # should still pick up where the last run left off.
+        await persistence.restore_all(control_modules)
+
         for module in control_modules:
             module.set_automation_mode(AutomationMode(mode="automatic"))
 
@@ -186,7 +190,7 @@ class LockstepCmd(BaseSettings):
         async with (
             MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
         ):
-            runtime = self.setup(settings, mqtt_client)
+            runtime = await self.setup(settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")
 

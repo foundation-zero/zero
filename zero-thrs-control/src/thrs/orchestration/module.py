@@ -3,9 +3,14 @@ from collections.abc import Callable, Mapping
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from pydantic import ValidationError
+
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
+from thrs.classes.persistence.module_snapshot import (
+    ModulePersistenceSnapshot,
+    _deep_diff,
+)
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
@@ -130,18 +135,8 @@ class Module[
         manual_control_values = self._validate_manual_control_values(snapshot)
         automation_mode = AutomationMode(mode=snapshot.control_mode)
 
-        if logger.isEnabledFor(logging.DEBUG):
-            diff = snapshot.diff(self.get_persistence_snapshot())
-            pretty_diff = (
-                "\n".join(
-                    f"  {path}: {old!r} -> {new!r}"
-                    for path, (old, new) in sorted(diff.items())
-                )
-                or "  (no differences)"
-            )
-            logger.debug(
-                "Difference between snapshot and current module state:\n%s", pretty_diff
-            )
+        if parameters is not None and logger.isEnabledFor(logging.DEBUG):
+            self._log_restored_parameters_diff_from_defaults(parameters)
 
         if parameters is not None:
             self._control.update_parameters(parameters)
@@ -150,6 +145,39 @@ class Module[
             self._control.update_manual_controls(manual_control_values)
 
         self._control.switch_mode(automation_mode)
+
+    def _log_restored_parameters_diff_from_defaults(self, parameters: P) -> None:
+        """Debug-log which restored parameter values differ from the hardcoded
+        defaults on the parameters model, so it's visible on restore which settings
+        were actually overridden versus left at their code-level default."""
+        parameters_cls = type(parameters)
+        try:
+            default_parameters = parameters_cls()
+        except ValidationError:
+            logger.debug(
+                "Could not construct default %s to diff restored parameters against "
+                "(a field has no default) - skipping.",
+                parameters_cls.__name__,
+            )
+            return
+
+        diff = _deep_diff(
+            default_parameters.model_dump(mode="json"),
+            parameters.model_dump(mode="json"),
+            path="",
+        )
+
+        diff_lines = [
+            f"{path}: default={old!r} -> restored={new!r}"
+            for path, (old, new) in sorted(diff.items())
+        ] or ["(matches defaults)"]
+
+        logger.debug(
+            "Restored parameters for module %s differing from hardcoded defaults:",
+            self.name,
+        )
+        for line in diff_lines:
+            logger.debug("  %s", line)
 
     def _validate_manual_control_values(
         self, snapshot: ModulePersistenceSnapshot

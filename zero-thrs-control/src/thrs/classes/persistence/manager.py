@@ -37,11 +37,11 @@ class PersistManager:
         """Retrieve the module configuration from the persistence engine and apply it to the module.
         Returns True if a restore was performed."""
 
-        logger.debug("Restoring config for module %s", module.name)
+        logger.debug("Persistence restoring config for module %s", module.name)
         stored = await self._load_snapshot(module.name)
 
         if stored is not None:
-            logger.debug("Applying stored config for module %s", module.name)
+            logger.debug("Persistence applying stored config for module %s", module.name)
             return self._apply_snapshot(module, stored)
 
         return False
