@@ -130,6 +130,19 @@ class Module[
         manual_control_values = self._validate_manual_control_values(snapshot)
         automation_mode = AutomationMode(mode=snapshot.control_mode)
 
+        if logger.isEnabledFor(logging.DEBUG):
+            diff = snapshot.diff(self.get_persistence_snapshot())
+            pretty_diff = (
+                "\n".join(
+                    f"  {path}: {old!r} -> {new!r}"
+                    for path, (old, new) in sorted(diff.items())
+                )
+                or "  (no differences)"
+            )
+            logger.debug(
+                "Difference between snapshot and current module state:\n%s", pretty_diff
+            )
+
         if parameters is not None:
             self._control.update_parameters(parameters)
 

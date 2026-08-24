@@ -1,4 +1,5 @@
 from datetime import timedelta
+from pathlib import Path
 
 import pytest
 from sqlalchemy.exc import OperationalError
@@ -7,6 +8,7 @@ from tests.helpers.modules import (
     ConfigurableModule,
     make_async_channels,
     make_module,
+    manual_values,
 )
 from tests.orchestration.simples import SimpleInOut
 from thrs.classes.persistence.engine import (
@@ -31,14 +33,60 @@ class FailingSnapshotStore(PersistentEngine):
         raise self._error()
 
 
-def make_manager(store: PersistentEngine) -> PersistManager:
-    return PersistManager(store, HEARTBEAT)
+def make_manager(
+    store: PersistentEngine, persistence_log_path: Path | None = None
+) -> PersistManager:
+    kwargs = {} if persistence_log_path is None else {"persistence_log_path": persistence_log_path}
+    return PersistManager(store, HEARTBEAT, **kwargs)
 
 
 def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
     module.apply_persistence_snapshot(
         ModulePersistenceSnapshot(parameters={"setpoint": setpoint})
     )
+
+
+def test_diff_is_empty_for_identical_snapshots():
+    snapshot = ModulePersistenceSnapshot(
+        parameters={"setpoint": 50.0},
+        manual_control_values={"dhw_pump": {"on": {"value": False}}},
+        control_mode="manual",
+    )
+
+    assert snapshot.diff(snapshot.model_copy(deep=True)) == {}
+
+
+def test_diff_reports_only_the_changed_leaf_by_dotted_path():
+    old = ModulePersistenceSnapshot(
+        manual_control_values={
+            "dhw_pump": {
+                "on": {"value": False, "timestamp": "2026-08-24T12:10:00"},
+                "dutypoint": {"value": 0.0, "timestamp": "2026-08-24T12:10:00"},
+            }
+        },
+    )
+    new = ModulePersistenceSnapshot(
+        manual_control_values={
+            "dhw_pump": {
+                "on": {"value": True, "timestamp": "2026-08-24T12:29:00"},
+                "dutypoint": {"value": 0.0, "timestamp": "2026-08-24T12:29:00"},
+            }
+        },
+    )
+
+    diff = old.diff(new)
+
+    assert diff == {
+        "manual_control_values.dhw_pump.on.value": (False, True),
+        "manual_control_values.dhw_pump.on.timestamp": (
+            "2026-08-24T12:10:00",
+            "2026-08-24T12:29:00",
+        ),
+        "manual_control_values.dhw_pump.dutypoint.timestamp": (
+            "2026-08-24T12:10:00",
+            "2026-08-24T12:29:00",
+        ),
+    }
 
 
 async def test_persist_writes_on_first_call():
@@ -61,6 +109,25 @@ async def test_persist_skips_unchanged_snapshot():
     assert store.snapshots["dhw"] == module.get_persistence_snapshot()
 
 
+async def test_persist_skips_snapshot_that_only_changed_timestamps():
+    """A re-published manual control value with the same value but a fresher
+    Stamped timestamp (e.g. a dashboard re-sending the current setpoint) must
+    not be treated as a config change - only actual value changes should."""
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store)
+    channels = make_async_channels()
+    channels.get_manual_controls.side_effect = lambda: manual_values(3.5)
+    module = make_module(channels=channels)
+    await module.sync_control_channels_state()
+
+    assert await manager.persist(module) is True
+
+    # Re-sync with the identical value - `manual_values` re-stamps on every call.
+    await module.sync_control_channels_state()
+
+    assert await manager.persist(module) is False
+
+
 async def test_persist_writes_when_config_changes():
     store = InMemoryPersistentEngine()
     manager = make_manager(store)
@@ -71,6 +138,51 @@ async def test_persist_writes_when_config_changes():
 
     assert await manager.persist(module) is True
     assert store.snapshots["dhw"].parameters == {"setpoint": 60.0}
+
+
+async def test_persist_writes_initial_save_to_persistence_log(tmp_path: Path):
+    log_path = tmp_path / "persistance_log.txt"
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store, log_path)
+    module = make_module()
+
+    assert await manager.persist(module) is True
+
+    content = log_path.read_text()
+    assert "module=dhw" in content
+    assert "initial save" in content
+
+
+async def test_persist_logs_the_changed_values_only(tmp_path: Path):
+    log_path = tmp_path / "persistance_log.txt"
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store, log_path)
+    module = make_module()
+
+    await manager.persist(module)
+    change_setpoint(module, 60.0)
+    await manager.persist(module)
+
+    lines = log_path.read_text().splitlines()
+    assert len(lines) == 2
+    assert "initial save" in lines[0]
+    assert "parameters.setpoint: 50.0 -> 60.0" in lines[1]
+
+
+async def test_persist_heartbeat_write_logs_no_value_changes(tmp_path: Path):
+    log_path = tmp_path / "persistance_log.txt"
+    store = InMemoryPersistentEngine()
+    manager = make_manager(store, log_path)
+    manager._heartbeat = timedelta(seconds=-1)  # force the heartbeat branch
+    module = make_module()
+
+    await manager.persist(module)
+    await manager.persist(module)
+
+    lines = log_path.read_text().splitlines()
+    assert len(lines) == 2
+    assert "heartbeat (no value changes)" in lines[1]
+    assert "timestamp" not in lines[1]
 
 
 async def test_persist_all_covers_every_module():

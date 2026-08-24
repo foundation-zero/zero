@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from pydantic import ValidationError
 
@@ -82,6 +84,39 @@ def test_apply_snapshot_is_atomic_when_control_mode_is_invalid():
 
     assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
     assert module.get_persistence_snapshot().control_mode == "manual"
+
+
+def test_apply_snapshot_with_unchanged_default_values_applies_correctly():
+    """Applying a module's own (unmodified) default snapshot back to itself should
+    be a no-op: same parameters, same manual control values, same mode."""
+    module = make_module()
+    default_snapshot = module.get_persistence_snapshot()
+
+    module.apply_persistence_snapshot(default_snapshot)
+
+    assert module.get_persistence_snapshot().control_mode == "manual"
+    assert module.get_persistence_snapshot().parameters == default_snapshot.parameters
+    assert (
+        module.get_persistence_snapshot().manual_control_values
+        == default_snapshot.manual_control_values
+    )
+
+
+def test_apply_snapshot_with_unchanged_values_does_not_crash_with_debug_logging(
+    caplog: pytest.LogCaptureFixture,
+):
+    """Regression test: applying a snapshot used to crash with
+    `AttributeError: 'ModulePersistenceSnapshot' object has no attribute 'diff'`
+    whenever DEBUG logging was enabled, because the debug log line called
+    `snapshot.diff(...)` before that method existed. Same default values in, same
+    values out - only the diff log should fire, nothing should raise."""
+    caplog.set_level(logging.DEBUG, logger="thrs.orchestration.module")
+    module = make_module()
+    default_snapshot = module.get_persistence_snapshot()
+
+    module.apply_persistence_snapshot(default_snapshot)
+
+    assert "Difference between snapshot and current module state" in caplog.text
 
 
 async def test_persist_then_restore_reproduces_the_module_snapshot():
