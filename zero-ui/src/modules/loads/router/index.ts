@@ -7,6 +7,11 @@ const loadsChildRoutes: RouteRecordRaw[] = [
     name: "loads/dashboard",
     component: () => import("@/modules/loads/views/Dashboard.vue"),
   },
+  {
+    path: "fiber-optics",
+    name: "loads/fiber-optics",
+    component: () => import("@/modules/loads/views/FiberOptics.vue"),
+  },
 ];
 
 export const loadsRoutes: RouteRecordRaw = {

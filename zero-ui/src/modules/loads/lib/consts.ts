@@ -5,6 +5,28 @@ export const LOAD_UNIT: Record<VariableUnit, string> = {
   [VariableUnit.Ratio]: "%",
   [VariableUnit.Tonne]: "t",
   [VariableUnit.Bool]: "",
+  [VariableUnit.Mm]: "mm",
+  [VariableUnit.Meter]: "m",
+  [VariableUnit.Knots]: "kts",
+  [VariableUnit.Degrees]: "°",
+  [VariableUnit.MicroMeterPerMeter]: "µm/m",
+  [VariableUnit.DegreeCelsius]: "°C",
+  [VariableUnit.TonneMeter]: "tonne · m",
+  [VariableUnit.Percent]: "%",
+};
+
+const UNIT_I18N_KEY: Record<string, string> = {
+  tonne: "tonne",
+  t_m: "t_m",
+  um_m: "um_m",
+  deg_c: "degC",
+  m: "m",
+};
+
+export const formatUnit = (unit: string | null | undefined, t: (key: string) => string): string => {
+  if (!unit) return "";
+  const key = UNIT_I18N_KEY[unit];
+  return key ? t(`loads.units.${key}`) : unit;
 };
 
 const AWAS = [AWA.Upwind, AWA.Reaching, AWA.Downwind];

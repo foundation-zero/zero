@@ -29,6 +29,11 @@ class Unit(Enum):
     mm = "mm"
     knots = "knots"
     degrees = "degrees"
+    um_m = "um/m"
+    m = "m"
+    deg_c = "degC"
+    t_m = "T.m"
+    percent = "%"
 
 
 @strawberry.enum

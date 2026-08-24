@@ -12,6 +12,14 @@ export const enum VariableUnit {
   Ratio = "ratio",
   Tonne = "tonne",
   Bool = "bool",
+  Mm = "mm",
+  Meter = "m",
+  Knots = "knots",
+  Degrees = "degrees",
+  MicroMeterPerMeter = "um/m",
+  DegreeCelsius = "degC",
+  TonneMeter = "T.m",
+  Percent = "%",
 }
 
 export type VariableUnitMap = {

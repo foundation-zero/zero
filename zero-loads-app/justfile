@@ -10,12 +10,15 @@ test_integration:
 test_unit:
     uv run pytest --run=unit
 
-run:
+run_demo:
     uv run loads api &
     uv run loads sail-system-sensors-stub &
     uv run loads fiber-optic-sensors-stub &
     uv run loads at-sensors-stub &
     wait
+
+run:
+    uv run loads api 
 
 typecheck:
     uv run pyright
