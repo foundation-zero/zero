@@ -3,7 +3,7 @@ import { toNumRangeId, toRange } from "./utils";
 
 export const LOAD_UNIT: Record<VariableUnit, string> = {
   [VariableUnit.Ratio]: "%",
-  [VariableUnit.Tonne]: "tonne",
+  [VariableUnit.Tonne]: "t",
   [VariableUnit.Bool]: "",
   [VariableUnit.Mm]: "mm",
   [VariableUnit.Meter]: "m",
