@@ -942,6 +942,686 @@
         "x": 0,
         "y": 85
       },
+      "id": 37,
+      "panels": [],
+      "title": "RH33s",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "flowlpm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 86
+      },
+      "id": 39,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "  SELECT\r\n\t\ttimestamp   AS time,\r\n\t\tdevice,\r\n\t\tflow__value AS flow\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tflow__value\r\n\t\tFROM public.marpower__thrs__rh33s\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Flow",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "flow": " ",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 102
+      },
+      "id": 40,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "  SELECT\r\n\t\ttimestamp               AS time,\r\n\t\tdevice,\r\n\t\ttemperature_warm__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature_warm__value\r\n\t\tFROM public.marpower__thrs__rh33s\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Temperature Warm",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 118
+      },
+      "id": 41,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "  SELECT\r\n\t\ttimestamp               AS time,\r\n\t\tdevice,\r\n\t\ttemperature_cold__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature_cold__value\r\n\t\tFROM public.marpower__thrs__rh33s\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Temperature Cold",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 134
+      },
+      "id": 42,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "  SELECT\r\n\t\ttimestamp                                         AS time,\r\n\t\tdevice,\r\n\t\ttemperature_warm__value - temperature_cold__value AS delta_temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature_warm__value,\r\n\t\t\ttemperature_cold__value\r\n\t\tFROM public.marpower__thrs__rh33s\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Temperature Delta",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "delta_temperature": " ",
+              "device": "Device",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": "",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 150
+      },
       "id": 33,
       "panels": [],
       "title": "Tank level sensors",
@@ -1022,7 +1702,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 151
       },
       "id": 34,
       "options": {
@@ -1122,7 +1802,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 167
       },
       "id": 35,
       "panels": [],
@@ -1184,7 +1864,7 @@
               }
             ]
           },
-          "unit": "L"
+          "unit": "Wm2"
         },
         "overrides": [
           {
@@ -1204,9 +1884,9 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 103
+        "y": 168
       },
-      "id": 36,
+      "id": 38,
       "options": {
         "legend": {
           "calcs": [],
@@ -1305,7 +1985,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 119
+        "y": 184
       },
       "id": 16,
       "panels": [],
@@ -1387,7 +2067,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 185
       },
       "id": 26,
       "options": {
@@ -1555,7 +2235,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 136
+        "y": 201
       },
       "id": 27,
       "options": {
@@ -1722,7 +2402,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 152
+        "y": 217
       },
       "id": 28,
       "options": {
@@ -1889,7 +2569,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 168
+        "y": 233
       },
       "id": 29,
       "options": {
@@ -2057,7 +2737,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 184
+        "y": 249
       },
       "id": 30,
       "options": {
@@ -2214,7 +2894,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 200
+        "y": 265
       },
       "id": 32,
       "options": {
@@ -2315,7 +2995,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 216
+        "y": 281
       },
       "id": 15,
       "panels": [],
@@ -2397,7 +3077,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 217
+        "y": 282
       },
       "id": 24,
       "options": {
@@ -2565,7 +3245,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 233
+        "y": 298
       },
       "id": 23,
       "options": {
@@ -2733,7 +3413,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 249
+        "y": 314
       },
       "id": 25,
       "options": {
