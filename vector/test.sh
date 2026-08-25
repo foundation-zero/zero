@@ -2,6 +2,7 @@
 set -euo pipefail
 
 actual_output="$(docker run -q --rm -w /home/vector -v "$(pwd):/home/vector" timberio/vector:0.54.0-debian --config tests/config.yaml -q -q)"
+actual_output+=$'\n'
 
 if ! diff -u tests/expected.json <(printf '%s' "$actual_output") >/dev/null; then
   echo "Vector output does not match tests/expected.json, got output:" >&2
