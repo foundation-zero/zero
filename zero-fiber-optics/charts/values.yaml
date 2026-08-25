@@ -17,7 +17,6 @@ mqtt:
   existingSecretPasswordKey: password
 
 udp:
-  serviceType: ClusterIP
   annotations: {}
   labels: {}
   externalIPs: []

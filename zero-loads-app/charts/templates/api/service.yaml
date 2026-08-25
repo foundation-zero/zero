@@ -13,9 +13,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  type: LoadBalancer
+  type: {{ if .Values.api.service.externalIPs }}LoadBalancer{{ else }}ClusterIP{{ end }}
+  {{- with .Values.api.service.externalIPs }}
   externalIPs:
-    {{- toYaml .Values.api.service.externalIPs | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   ports:
     - port: 5101
       targetPort: http
