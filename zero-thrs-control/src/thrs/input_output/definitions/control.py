@@ -1,5 +1,7 @@
 from typing import Annotated, ClassVar
 
+from pydantic import field_validator
+
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
@@ -15,6 +17,14 @@ from thrs.input_output.definitions.units import (
 class Pump(ThrsValues):
     dutypoint: Stamped[Ratio]
     on: Stamped[OnOff]
+
+    # TODO: Remove once marpower fixes this on their side
+    @field_validator("dutypoint")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
+        value.value *= 100
+
+        return value
 
 
 class Valve(ThrsValues):

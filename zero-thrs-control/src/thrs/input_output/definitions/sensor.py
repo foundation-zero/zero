@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
@@ -39,8 +39,16 @@ class FlowSensor(ThrsValues):
 
 
 class Pump(ThrsValues):
-    dutypoint: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
-    on: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    dutypoint: Annotated[
+        Stamped[Ratio],
+        field_meta(included_in_fmu=False),
+        Field(validation_alias="CC_DutyPoint"),
+    ]
+    on: Annotated[
+        Stamped[OnOff],
+        field_meta(included_in_fmu=False),
+        Field(validation_alias="CC_OnOff"),
+    ]
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
@@ -67,8 +75,7 @@ class Pump(ThrsValues):
     @field_validator("dutypoint")
     @classmethod
     def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        if value.value > 1.0:
-            value.value /= 100
+        value.value /= 100
 
         return value
 
