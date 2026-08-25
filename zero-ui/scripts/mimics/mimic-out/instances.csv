@@ -1,0 +1,103 @@
+module,folder,key,componentType,title,tooltipTitle,tooltipComponentType,tooltipTechnicalName,slots
+dhw,assets,1035,HeatPump,Heatpump,Heat pump,Heat pump,,controls.heatpump;source;custom.controller;sensors.incoming;sensors.outgoing
+dhw,assets,41001001,HVAC,Hvac Exchanger,HVAC,HVAC Exchanger,,source;sensors.incoming;sensors.outgoing;sensors.flow
+dhw,boiler-tanks,1053,BoilerTank,Tank 1,,Hot water tank,,custom.tankStateField;controllerState.controller;parameters.minimumLevel;parameters.maximumLevel;parameters.minimumTemperature;parameters.maximumTemperature;parameters.enabled;source;sensors.boostingSupply;sensors.level;sensors.temperature;sensors.boostSupplyValve;sensors.boostReturnValve;sensors.supplyValve;sensors.dischargeValve
+dhw,boiler-tanks,1054,BoilerTank,Tank 2,,Hot water tank,,custom.tankStateField;controllerState.controller;parameters.minimumLevel;parameters.maximumLevel;parameters.minimumTemperature;parameters.maximumTemperature;parameters.enabled;source;sensors.boostingSupply;sensors.level;sensors.temperature;sensors.boostSupplyValve;sensors.boostReturnValve;sensors.supplyValve;sensors.dischargeValve
+dhw,boiler-tanks,1055,BoilerTank,Tank 3,,Hot water tank,,custom.tankStateField;controllerState.controller;parameters.minimumLevel;parameters.maximumLevel;parameters.minimumTemperature;parameters.maximumTemperature;parameters.enabled;source;sensors.boostingSupply;sensors.level;sensors.temperature;sensors.boostSupplyValve;sensors.boostReturnValve;sensors.supplyValve;sensors.dischargeValve
+dhw,connecting-circuits,domestic,FreshwaterCircuit,,Fresh water,,fresh-water,source;sensors.flowIn;sensors.tIn;sensors.flowOut;sensors.tOut
+dhw,exchange-circuits,adsorption,ExchangeCircuit,Adsorption,,Exchange circuit,,custom.circuitName;source;sensors.deltaT;sensors.flow;sensors.incoming;sensors.outgoing;sensors.heatExchanger
+dhw,exchange-circuits,brightloop,ExchangeCircuit,DC converters,,Exchange circuit,,custom.circuitName;source;sensors.deltaT;sensors.flow;sensors.incoming;sensors.outgoing;sensors.heatExchanger
+dhw,exchange-circuits,drives,ExchangeCircuit,Drives & shore,,Exchange circuit,,custom.circuitName;source;sensors.deltaT;sensors.flow;sensors.incoming;sensors.outgoing;sensors.heatExchanger
+dhw,exchange-circuits,highTempLoop,ExchangeCircuit,High temperature,,Exchange circuit,,custom.circuitName;source;sensors.deltaT;sensors.flow;sensors.incoming;sensors.outgoing;sensors.heatExchanger
+dhw,flow-control-valves,1064-03,FlowControlValve,Flowcontrol Dc,Flow control valve,Flow control valve DN 20,,controls.valve;custom.controller;source
+dhw,flow-control-valves,1064-08,FlowControlValve,Flowcontrol Drives,Flow control valve,Flow control valve DN 20,,controls.valve;custom.controller;source
+dhw,flow-sensors,1057-17,FlowSensor,Flow Dc,Flow sensor,Flow sensor,,controls.pump;parameters.flow;source;sensors.temperature
+dhw,flow-sensors,1057-24,FlowSensor,Flow Drives,Flow sensor,Flow sensor,,controls.pump;parameters.flow;source;sensors.temperature
+dhw,flow-sensors,1058-11,FlowSensor,Flow Boosting,Flow sensor,Flow sensor,,controls.pump;controllerState.controller;parameters.flow;source;sensors.temperature
+dhw,heat-exchangers,1004,HeatExchanger,Adsorption Exchanger,Heat Exchanger,Heat Exchanger,,custom.sideA;custom.sideB;custom.exchangeCircuit;source;sensors.incoming;sensors.outgoing;sensors.flow
+dhw,heat-exchangers,1007,HeatExchanger,Consumers Exchanger,Heat Exchanger,Heat Exchanger,,custom.sideA;custom.sideB;custom.exchangeCircuit;source;sensors.incoming;sensors.outgoing;sensors.flow
+dhw,heat-exchangers,1008,HeatExchanger,Dc Exchanger,Heat Exchanger,Heat Exchanger,,custom.sideA;custom.sideB;custom.exchangeCircuit;source;sensors.incoming;sensors.outgoing;sensors.flow
+dhw,heat-exchangers,1009,HeatExchanger,Drives Exchanger,Heat Exchanger,Heat Exchanger,,custom.sideA;custom.sideB;custom.exchangeCircuit;source;sensors.incoming;sensors.outgoing;sensors.flow
+dhw,level-sensors,1056-01,LevelSensor,Level Tank1,Tank level sensor,Tank level sensor,,source
+dhw,level-sensors,1056-02,LevelSensor,Level Tank2,Tank level sensor,Tank level sensor,,source
+dhw,level-sensors,1056-03,LevelSensor,Level Tank3,Tank level sensor,Tank level sensor,,source
+dhw,level-switches,1098-01,LevelSwitch,Level Switch Tank1,Level switch,Level switch,,source
+dhw,level-switches,1098-02,LevelSwitch,Level Switch Tank2,Level switch,Level switch,,source
+dhw,level-switches,1098-03,LevelSwitch,Level Switch Tank3,Level switch,Level switch,,source
+dhw,manual-valves,1069-10,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1069-17,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1069-18,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1168-04,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1168-05,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1168-06,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1169-01,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1169-02,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1169-03,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1174-01,ManualValve,,Manual valve,Manual valve,,source
+dhw,manual-valves,1174-02,ManualValve,,Manual valve,Manual valve,,source
+dhw,pressure-sensors,1095-14,PressureGauge,,Manual pressure sensor,Manual pressure sensor,,source
+dhw,pressure-sensors,1097-11,PressureSensor,Pressure,Pressure sensor,Pressure sensor,,source
+dhw,pumps,1022,Pump,Pump,Pump,Circulation pump boosting,,custom.temperatureController;custom.flowController;source;controls.pump;parameters.flow;parameters.temperature
+dhw,switch-valves,1067-03,SwitchValve,Switch Tank3 Inlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-04,SwitchValve,Switch Tank3 Boosting Return,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-05,SwitchValve,Switch Tank3 Outlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-06,SwitchValve,Switch Tank3 Boosting Supply,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-07,SwitchValve,Switch Tank2 Inlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-08,SwitchValve,Switch Tank2 Boosting Return,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-09,SwitchValve,Switch Tank2 Outlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-10,SwitchValve,Switch Tank2 Boosting Supply,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-11,SwitchValve,Switch Tank1 Inlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-12,SwitchValve,Switch Tank1 Boosting Return,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-13,SwitchValve,Switch Tank1 Outlet,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-14,SwitchValve,Switch Tank1 Boosting Supply,Switch valve,2 way valve DN 25,,controls.valve;custom.tankController;source
+dhw,switch-valves,1067-16,SwitchValve,Switch Low Temperature,Switch valve,2 way valve DN 25,,controls.valve;source
+dhw,switch-valves,1067-17,SwitchValve,Switch Heatpump,Switch valve,2 way valve DN 25,,controls.valve;source
+dhw,switch-valves,1067-18,SwitchValve,Switch High Temperature,Switch valve,2 way valve DN 25,,controls.valve;source
+dhw,temperature-sensors,1038-25,TemperatureSensor,Temperature Hvac Exchanger Return,Temperature sensor,Temperature sensor Pt100 RTD,,custom.controller;source
+dhw,temperature-sensors,1038-26,TemperatureSensor,Temperature Dc Return,Temperature sensor,Temperature sensor Pt100 RTD,,custom.controller;source
+dhw,temperature-sensors,1038-27,TemperatureSensor,Temperature Tank3,Temperature sensor,Temperature sensor Pt100 RTD,,source
+dhw,temperature-sensors,1038-44,TemperatureSensor,Temperature Tank2,Temperature sensor,Temperature sensor Pt100 RTD,,source
+dhw,temperature-sensors,1038-45,TemperatureSensor,Temperature Tank1,Temperature sensor,Temperature sensor Pt100 RTD,,source
+dhw,temperature-sensors,1038-46,TemperatureSensor,Temperature Drives Return,Temperature sensor,Temperature sensor Pt100 RTD,,custom.controller;source;sensors.actuator
+dhw,temperature-sensors,1038-47,TemperatureSensor,Temperature Freshwater Supply,Temperature sensor,Temperature sensor Pt100 RTD,,source
+dhw,temperature-sensors,1038-51,TemperatureSensor,Temperature Adsorption Return,Temperature sensor,Temperature sensor Pt100 RTD,,custom.controller;source;sensors.actuator
+dhw,temperature-sensors,1038-65,TemperatureSensor,Temperature Boosting Return,Temperature sensor,Temperature sensor Pt100 RTD,,source;sensors.actuator
+dhw,temperature-sensors,1038-66,TemperatureSensor,Temperature Boosting Supply,Temperature sensor,Temperature sensor Pt100 RTD,,custom.controller;source
+thrusters,check-valves,1213-01,CheckValve,,Check valve,Check valve,,source
+thrusters,check-valves,1213-02,CheckValve,,Check valve,Check valve,,source
+thrusters,check-valves,1217-01,CheckValve,,Check valve,Check valve,,source
+thrusters,check-valves,1217-02,CheckValve,,Check valve,Check valve,,source
+thrusters,exchange-circuits,pcm,FreshwaterCircuit,,PCM,Exchange circuit,,source;sensors.flowIn;sensors.flowOut;sensors.tIn;sensors.tOut
+thrusters,exchange-circuits,seawater,ExchangeCircuit,,Seawater,Exchange circuit,,custom.circuitName;source;sensors.deltaT;sensors.flow;sensors.incoming;sensors.outgoing;sensors.heatExchanger
+thrusters,flow-control-valves,1064-02,FlowControlValve,Flowcontrol Fwd,Flow Control valve,2 way valve DN 25,,controls.valve;controllerState.controller;parameters.flow;source;sensors.measurement
+thrusters,flow-control-valves,1215,FlowControlValve,Flowcontrol Aft,Flow Control valve,2 way valve DN 25,,controls.valve;controllerState.controller;parameters.flow;source;sensors.measurement
+thrusters,flow-sensors,1057-22,FlowSensor,Flow Fwd,Flow sensor,Flow sensor,,controls.pump;parameters.flow;source;sensors.temperature
+thrusters,flow-sensors,1218-01,FlowSensor,Flow Recovery,Flow sensor,Flow sensor,,controls.pump;parameters.flow;source;sensors.temperature
+thrusters,flow-sensors,1218-02,FlowSensor,Flow Aft,Flow sensor,Flow sensor,,controls.pump;parameters.flow;source;sensors.temperature
+thrusters,heat-exchangers,1001,HeatExchanger,Seawater Exchanger,Heat Exchanger,Heat Exchanger,,custom.sideA;custom.sideB;custom.exchangeCircuit;source;sensors.incoming;sensors.outgoing;sensors.flow
+thrusters,manual-valves,1084-01,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1087-08,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-01,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-02,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-03,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-04,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-05,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-06,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1212-07,ManualValve,,Manual valve,Manual valve,,source
+thrusters,manual-valves,1087-03,ManualValve,,Manual valve,Manual valve,,source
+thrusters,mix-valves,1074,MixValve,Mix Recovery,Mix valve,Mix valve,,controls.valve;controllerState.controller;source
+thrusters,mix-valves,1091-01,ThreeWaySwitchValve,Switch Aft,Mix valve,Mix valve,,controls.valve;source
+thrusters,mix-valves,1091-02,ThreeWaySwitchValve,Switch Fwd,Mix valve,Mix valve,,controls.valve;source
+thrusters,mix-valves,1214-01,MixValve,Mix Exchanger,Mix valve,Mix valve,,controls.valve;controllerState.controller;source
+thrusters,pressure-sensors,1095-01,PressureGauge,,Manual Pressure Sensor,,,source
+thrusters,pressure-sensors,1097-01,PressureSensor,Pressure Discharge,Pressure sensor,Pressure sensor,,controls.pump;parameters.flow;source;sensors.flow
+thrusters,pressure-sensors,1097-02,PressureSensor,Pressure System,Pressure sensor,Pressure sensor,,controls.pump;parameters.flow;source;sensors.flow
+thrusters,pumps,1194,Pump,Pump1,Pump,Thrusters circulation pump AFT,,custom.flowController;source;controls.pump;parameters.flow;parameters.temperature
+thrusters,pumps,1195,Pump,Pump2,Pump,Thrusters circulation pump FWD,,custom.flowController;source;controls.pump;parameters.flow;parameters.temperature
+thrusters,switch-valves,1066-03,SwitchValve,Switch Recovery,Switch valve,2 way valve DN 25,,controls.valve;source
+thrusters,switch-valves,1091-01,SwitchValve,Switch Aft,Switch valve,2 way valve DN 25,,controls.valve;source
+thrusters,switch-valves,1091-02,SwitchValve,Switch Fwd,Switch valve,2 way valve DN 25,,controls.valve;source
+thrusters,temperature-sensors,1038-01,TemperatureSensor,Temperature Aft,Temperature sensor,Temperature sensor,,controls.pump;parameters.temperature;source;sensors.measurement
+thrusters,temperature-sensors,1038-02,TemperatureSensor,Temperature Fwd,Temperature sensor,Temperature sensor,,controls.pump;controllerState.controller;parameters.temperature;source;sensors.measurement
+thrusters,temperature-sensors,1038-28,TemperatureSensor,Temperature Supply,Temperature sensor,Temperature sensor,,controls.pump;parameters.temperature;source;sensors.measurement
+thrusters,temperature-sensors,1038-30,TemperatureSensor,Temperature Recovery Mix,Temperature sensor,Temperature sensor,,controls.pump;parameters.temperature;source;sensors.measurement

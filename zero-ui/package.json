@@ -17,6 +17,9 @@
     "extract-schema-values": "tsx scripts/extract-schema-values.ts",
     "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
     "extract-all-schemas": "tsx scripts/extract-all-schemas.ts",
+    "generate-sheet-tabs": "tsx scripts/mimics/generate-sheet-tabs.ts",
+    "generate-mimic-data": "tsx scripts/mimics/generate-mimic-data.ts",
+    "roundtrip-mimic": "tsx scripts/mimics/roundtrip-mimic.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

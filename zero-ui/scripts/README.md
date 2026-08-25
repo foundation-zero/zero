@@ -374,3 +374,10 @@ The scripts include comprehensive error handling:
 - Provides clear error messages for debugging
 - Exits with appropriate error codes for CI/CD integration
 - Validates component type mappings and field definitions
+
+---
+
+The mimic data workflow (Google Sheet driven) has moved to
+[mimics/README.md](./mimics/README.md); maintenance instructions for agents are in
+[mimics/MAINTENANCE_INSTRUCTIONS.md](./mimics/MAINTENANCE_INSTRUCTIONS.md).
+
