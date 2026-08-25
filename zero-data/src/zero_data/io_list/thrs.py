@@ -22,6 +22,7 @@ TABLES = {
     "level": "level_sensors",
 }
 
+
 def extract_parts(topic: IOTopic) -> tuple[str, str] | None:
     # example topics
     # marpower/500000-thrs/thrusters/thrusters-switch-aft
@@ -35,12 +36,14 @@ def extract_parts(topic: IOTopic) -> tuple[str, str] | None:
     # Sort table keys by length in descending order to match the longest key first
     table_keys = sorted(TABLES.keys(), key=len, reverse=True)
 
-    match = re.compile(r'^.*?-(.*)').match(technical_name)
+    match = re.compile(r"^.*?-(.*)").match(technical_name)
     if not match:
         return None
     component_string = match.group(1)
     for table_key in table_keys:
-        if component_string == table_key or component_string.startswith(table_key + '-'):
+        if component_string == table_key or component_string.startswith(
+            table_key + "-"
+        ):
             return TABLES[table_key], technical_name
     return None
 
