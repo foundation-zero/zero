@@ -4,3 +4,6 @@
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__500000_thrs__cold_out","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs//cold out"}
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__thrs__valves","technical_name":"dhw-switch-tank2-inlet","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs/dhw/dhw-switch-tank2-inlet"}
 {"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__thrs__rh33s","technical_name":"cooling-power-crew1","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs/cooling/cooling-power-crew1"}
+{"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__500000_thrs__pumps","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs/thrusters/thrusters-pump1"}
+{"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__500000_thrs__pumps","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs/drives/drives-pump2"}
+{"a__timestamp":"2024-06-01T12:00:00Z","a__value":"test","pascal_case":"test","table":"marpower__500000_thrs__pyranometers","timestamp":"2024-06-01T12:00:00Z","topic":"marpower/500000-thrs/pvt/pvt-pyranometer-sb"}
