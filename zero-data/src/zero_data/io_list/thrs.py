@@ -1,10 +1,10 @@
+import re
 from dataclasses import dataclass
 from typing import TypeGuard
 
 from more_itertools import partition
 
 from .types import IOTopic
-import re
 
 TABLES = {
     "mix": "valves",
@@ -17,7 +17,7 @@ TABLES = {
     "flow": "flows",
     "pressure": "pressures",
     "power": "rh33s",
-    "pyranometer": "pyranometers", 
+    "pyranometer": "pyranometers",
     "level-switch": "level_switches",
     "level": "level_sensors",
 }
