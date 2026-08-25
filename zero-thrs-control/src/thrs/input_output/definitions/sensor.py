@@ -1,3 +1,4 @@
+import bisect
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
@@ -86,6 +87,58 @@ class TemperatureSensor(ThrsValues):
 
 class LevelSensor(ThrsValues):
     level: Stamped[Liter]
+
+    @field_validator("level")
+    @classmethod
+    def ma_to_liters(cls, value: Stamped[Liter]) -> Stamped[Liter]:
+
+        ma_points = [
+            4.00,
+            4.66,
+            5.32,
+            5.98,
+            6.63,
+            7.29,
+            7.95,
+            8.61,
+            9.27,
+            9.93,
+            10.58,
+            11.24,
+            11.90,
+            12.56,
+        ]
+        liter_points = [
+            0.0,
+            25.0,
+            50.0,
+            75.0,
+            100.0,
+            125.0,
+            150.0,
+            175.0,
+            200.0,
+            225.0,
+            250.0,
+            275.0,
+            300.0,
+            306.0,
+        ]
+
+        ma = value.value
+        if ma <= ma_points[0]:
+            return Stamped(value=liter_points[0], timestamp=value.timestamp)
+        if ma >= ma_points[-1]:
+            return Stamped(value=liter_points[-1], timestamp=value.timestamp)
+
+        idx = bisect.bisect_right(ma_points, ma) - 1
+        x0, x1 = ma_points[idx], ma_points[idx + 1]
+        y0, y1 = liter_points[idx], liter_points[idx + 1]
+
+        return Stamped(
+            value=round(y0 + (ma - x0) * (y1 - y0) / (x1 - x0), 2),
+            timestamp=value.timestamp,
+        )
 
 
 class CalculatedTemperature(ThrsValues):
