@@ -57,12 +57,12 @@ class DhwControllerState(ThrsValues):
 
 class DhwParameters(ThrsValues):
     heatpump_boosting_enabled: bool = True
-    ht_boosting_enabled: bool = True
+    ht_boosting_enabled: bool = False
     heatpump_flow_setpoint: LMin = 25
     heatpump_temperature_setpoint: Celsius = 65
     ht_boosting_temperature_setpoint: Celsius = 65
-    minimum_tank_temperature: Celsius = 55
-    maximum_tank_temperature: Celsius = 60
+    minimum_tank_temperature: Celsius = 50
+    maximum_tank_temperature: Celsius = 55
     boosting_delta: Annotated[
         DeltaT,
         Field(
@@ -83,7 +83,7 @@ class DhwParameters(ThrsValues):
     ] = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
-    maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
+    maximum_tank_level: Annotated[Liter, Field(le=275)] = 230
     tank1_enabled: bool = True
     tank2_enabled: bool = True
     tank3_enabled: bool = True
