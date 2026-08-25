@@ -10,6 +10,7 @@ import {
   PvtAutomaticMode,
   useAutomationStore,
 } from "@/modules/thrsim/stores/automation";
+import { ENV } from "@/settings";
 import { RiLock2Fill } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
@@ -45,13 +46,14 @@ const mode = computed(() => {
   }
 });
 
+const shouldShowManualModeDialog = !!ENV.VITE_MANUAL_MODE_PWD;
 const showManualModeDialog = ref(false);
 
 const toggleAutomaticMode = async () => {
-  if (isAutomatic.value) {
+  if (isAutomatic.value && shouldShowManualModeDialog) {
     showManualModeDialog.value = true;
   } else {
-    isAutomatic.value = true;
+    isAutomatic.value = !isAutomatic.value;
   }
 };
 </script>
