@@ -10,10 +10,13 @@ TABLES = {
     "switch": "valves",
     "flowcontrol": "valves",
     "pump": "pumps",
+    "pump1": "pumps",
+    "pump2": "pumps",
     "temperature": "temperatures",
     "flow": "flows",
     "pressure": "pressures",
     "power": "rh33s",
+    "pyranometer": "pyranometers", 
 }
 
 
