@@ -84,7 +84,7 @@ thrs_tables = {
   },
   "marpower/500000-thrs/adsorption/adsorption-switch-dhw": {
     "table": "marpower__thrs__valves",
-    "yard_tag": "50001187-01 ",
+    "yard_tag": "50001187-01",
     "technical_name": "adsorption-switch-dhw"
   },
   "marpower/500000-thrs/adsorption/adsorption-temperature-dhw-return": {

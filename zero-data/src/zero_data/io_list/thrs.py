@@ -22,6 +22,8 @@ TABLES = {
     "level": "level_sensors",
 }
 
+# Sort table keys by length in descending order to match the longest key first
+table_keys = sorted(TABLES.keys(), key=len, reverse=True)
 pattern = re.compile(r"^.*?-(.*)")
 
 
@@ -34,10 +36,6 @@ def extract_parts(topic: IOTopic) -> tuple[str, str] | None:
     if len(parts) < 4:
         return None
     technical_name = parts[3]
-
-    # Sort table keys by length in descending order to match the longest key first
-    table_keys = sorted(TABLES.keys(), key=len, reverse=True)
-
     match = pattern.match(technical_name)
     if not match:
         return None
