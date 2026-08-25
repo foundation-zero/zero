@@ -742,6 +742,36 @@ thrs_tables = {
     "yard_tag": null,
     "technical_name": "dhw-flowcontrol-drives"
   },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank1": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001053",
+    "technical_name": "dhw-level-switch-tank1"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank2": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001054",
+    "technical_name": "dhw-level-switch-tank2"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank3": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001055",
+    "technical_name": "dhw-level-switch-tank3"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank1": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_1",
+    "technical_name": "dhw-level-tank1"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank2": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_2",
+    "technical_name": "dhw-level-tank2"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank3": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_3",
+    "technical_name": "dhw-level-tank3"
+  },
   "marpower/500000-thrs/dhw/dhw-pressure": {
     "table": "marpower__thrs__pressures",
     "yard_tag": null,
