@@ -1,0 +1,46 @@
+topic = string!(.topic)
+parts = split(topic, "/")
+if length(parts) != 3 {
+  # Silently drop A+T's NMEA0183 sentences (`atpx/nmea0183/...`) and our own
+  # republished rows (`atpx/processed/...`, which loop back when source and
+  # publish sink share a broker); warn only on unexpected shapes.
+  if !(length(parts) >= 2 && (parts[1] == "nmea0183" || parts[1] == "processed")) {
+    log("Unexpected ATPX topic shape: " + topic, level: "warn")
+  }
+  abort
+}
+
+field_id = parts[1]
+source = to_int(parts[2]) ?? 0
+sender_id = floor(source / 256)
+instance = mod(source, 256)
+
+field, field_err = get(atpx_fields, [field_id])
+if field_err != null || field == null {
+  log("Unknown ATPX field id: " + field_id, level: "warn")
+  abort
+}
+
+sender_name = get(atpx_senders, [to_string(sender_id)]) ?? ("sender_" + to_string(sender_id))
+
+value, value_err = to_float(string!(.message))
+if value_err != null {
+  log("Non-numeric ATPX payload on " + topic + ": " + string!(.message), level: "warn")
+  abort
+}
+
+field_name = string!(field)
+sender_source = string!(sender_name) + "_" + to_string(instance)
+
+# The raw topic is the unique series key (it carries field_id and source);
+# `field` and `sender` are resolved names and may collide across field_ids.
+. = {}
+.timestamp = now()
+.topic = topic
+.sender = sender_source
+.field = field_name
+.value = value
+
+# Republish topic as metadata, so the mqtt sink can template on it
+# (`{{ %mqtt_topic }}`) without duplicating it inside the payload.
+%mqtt_topic = "atpx/processed/" + field_name + "/" + sender_source

@@ -31,11 +31,16 @@ async def _run_all_generators(
                 logger.info(f"Skipping {source}; excluded by name")
                 continue
 
+            generator_class = _GENERATORS.get(source)
+            if generator_class is None:
+                logger.warning(f"No data generator found for source: {source}")
+                continue
+
             paths = [Path(f"io_lists/{file_name}") for file_name in file_names]
             logger.debug(f"Processing {source} {paths}")
             topics = read_io_list(paths, source, cache_dir=cache_dir).topics
             logger.info(f"Starting {source} generator for {len(topics)} topics")
-            tg.create_task(_GENERATORS[source](10, mqtt_config, topics).run())
+            tg.create_task(generator_class(10, mqtt_config, topics).run())
 
 
 def generate_data(

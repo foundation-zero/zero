@@ -1,0 +1,11 @@
+{ "topic": "atpx/4864/3840", "message": "12.3" }
+{ "topic": "atpx/4866/3840", "message": "84.5004" }
+{ "topic": "atpx/4885/3840", "message": "5.6" }
+{ "topic": "atpx/4866/3840", "message": "99.9" }
+{ "topic": "atpx/1025/3840", "message": "45.2" }
+{ "topic": "atpx/5121/3840", "message": "44.8" }
+{ "topic": "atpx/4864/1281", "message": "10.1" }
+{ "topic": "atpx/4866/1281", "message": "80.0" }
+{ "topic": "atpx/999999/3840", "message": "1.0" }
+{ "topic": "atpx/4864/3840", "message": "not-a-number" }
+{ "topic": "atpx/nmea0183/3143/HDT", "message": "123.4" }

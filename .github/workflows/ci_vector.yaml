@@ -24,3 +24,6 @@ jobs:
       - name: Run Vector test
         working-directory: vector
         run: bash test.sh
+      - name: Run Vector ATPX test
+        working-directory: vector
+        run: bash test-atpx.sh
