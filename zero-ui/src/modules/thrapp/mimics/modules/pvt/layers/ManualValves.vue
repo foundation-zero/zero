@@ -64,8 +64,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="375"
-      y="450"
+      x="361"
+      y="445"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Left"
       v-bind="manualValves['1168-31']"

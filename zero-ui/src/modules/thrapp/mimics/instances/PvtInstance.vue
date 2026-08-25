@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SolarPanelIcon } from "@/modules/common/components/icons";
 import { PvtMode as PvtModeEnum } from "@/modules/thrsim/types";
 import { RiDropLine, RiFireLine, RiFlashlightLine } from "@remixicon/vue";
 import { computed } from "vue";
@@ -53,10 +54,11 @@ const modeKey = computed(() => {
     <Pvt
       v-bind="props"
       :state="state"
-      :height="228"
+      :height="200"
     >
       <YardTag>{{ props.tagId }}</YardTag>
-      <PvtTitle class="pb-1">
+      <PvtTitle class="gap-2 pb-1">
+        <SolarPanelIcon class="fill-brand-muted" />
         {{ props.tooltip?.title }}
       </PvtTitle>
 
@@ -64,7 +66,7 @@ const modeKey = computed(() => {
         :mode="modeKey"
         :state="state"
       />
-      <ValueList class="pt-1">
+      <ValueList class="gap-0 pt-1">
         <ValueListSeparator />
 
         <ValueListItem>

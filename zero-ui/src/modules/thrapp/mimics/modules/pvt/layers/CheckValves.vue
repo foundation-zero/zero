@@ -66,7 +66,7 @@ const checkValves = PVT_MIMIC_DATA[MimicComponentType.CheckValve];
     >
       <TagLabelInstance
         x="750"
-        y="332"
+        y="335"
         :tag-id="checkValves['1077-02'].tooltip?.yardTag"
       />
     </CheckValveInstance>
@@ -78,7 +78,7 @@ const checkValves = PVT_MIMIC_DATA[MimicComponentType.CheckValve];
     >
       <TagLabelInstance
         x="750"
-        y="540"
+        y="543"
         :tag-id="checkValves['1076-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>

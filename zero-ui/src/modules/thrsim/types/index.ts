@@ -356,6 +356,7 @@ export const enum SensorComponentType {
   Temperature = "sensor:temperature",
   CalculatedTemperature = "sensor:calculatedTemperature",
   Pressure = "sensor:pressure",
+  Irradiance = "sensor:irradiance",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
   Valve = "sensor:valve",

@@ -251,7 +251,8 @@
           },
           "modes": {
             "harvesting": "Harvesting",
-            "idle": "Idle"
+            "idle": "Idle",
+            "manual": "Manual"
           }
         }
       }

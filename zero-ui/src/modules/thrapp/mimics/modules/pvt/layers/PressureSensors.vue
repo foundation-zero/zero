@@ -56,8 +56,8 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       v-bind="pressureSensors['1097-06']"
     >
       <PressureLabelInstance
-        x="1044"
-        y="239"
+        x="1030"
+        y="240"
         :tag-id="pressureSensors['1097-06'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-06'].source"
       />

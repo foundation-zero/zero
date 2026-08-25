@@ -17,7 +17,7 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-03']"
     >
       <TemperatureLabelInstance
-        x="299"
+        x="283"
         y="47"
         :tag-id="temperatureSensors['1038-03'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-03'].source"
@@ -30,7 +30,7 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-73']"
     >
       <TemperatureLabelInstance
-        x="299"
+        x="283"
         y="256"
         :tag-id="temperatureSensors['1038-73'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-73'].source"
@@ -43,7 +43,7 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-04']"
     >
       <TemperatureLabelInstance
-        x="299"
+        x="283"
         y="465"
         :tag-id="temperatureSensors['1038-04'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-04'].source"

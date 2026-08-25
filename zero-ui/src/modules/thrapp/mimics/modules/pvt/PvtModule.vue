@@ -5,6 +5,7 @@ import Bypasses from "./layers/Bypasses.vue";
 import CheckValves from "./layers/CheckValves.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
+import ExpansionTanks from "./layers/ExpansionTanks.vue";
 import FlowControlValves from "./layers/FlowControlValves.vue";
 import FlowSensors from "./layers/FlowSensors.vue";
 import HeatExchangers from "./layers/HeatExchangers.vue";
@@ -19,12 +20,13 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
 
 <template>
   <svg
-    viewBox="0 0 1300 707"
+    viewBox="-60 0 1358 715"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
     <Bypasses />
+    <DirectionArrows />
     <Pipes />
     <HeatExchangers />
     <CheckValves />
@@ -37,8 +39,8 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <FlowSensors />
     <TemperatureSensors />
     <Labels />
-    <DirectionArrows />
     <CircuitBoxes />
     <Assets />
+    <ExpansionTanks />
   </svg>
 </template>

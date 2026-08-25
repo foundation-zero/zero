@@ -16,8 +16,10 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
 <template>
   <g>
     <PumpInstance
-      x="530"
-      y="194"
+      x="542"
+      y="205"
+      :width="32"
+      :height="32"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1018']"
     >
@@ -29,8 +31,10 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       />
     </PumpInstance>
     <PumpInstance
-      x="530"
-      y="390"
+      x="542"
+      y="401"
+      :width="32"
+      :height="32"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1019']"
     >
@@ -42,8 +46,10 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       />
     </PumpInstance>
     <PumpInstance
-      x="530"
-      y="612"
+      x="542"
+      y="624"
+      :width="32"
+      :height="32"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1020']"
     >
@@ -55,14 +61,16 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       />
     </PumpInstance>
     <ManualPumpInstance
-      x="870"
-      y="512"
+      x="882"
+      y="516"
+      :width="32"
+      :height="32"
       :orientation="ComponentOrientation.Left"
       v-bind="manualPumps['1182']"
     >
       <TagLabelInstance
-        x="890"
-        y="560"
+        x="888"
+        y="547"
         :tag-id="manualPumps['1182'].tooltip?.yardTag"
       />
     </ManualPumpInstance>

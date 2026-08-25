@@ -6,6 +6,7 @@ export { default as FlowControlValveInstance } from "./FlowControlValveInstance.
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as HeatExchangerInstance } from "./HeatExchangerInstance.vue";
 export { default as HeatExchangerLabelInstance } from "./HeatExchangerLabelInstance.vue";
+export { default as IrradianceLabelInstance } from "./IrradianceLabelInstance.vue";
 export { default as LevelLabelInstance } from "./LevelLabelInstance.vue";
 export { default as LevelSensorInstance } from "./LevelSensorInstance.vue";
 export { default as LevelSwitchInstance } from "./LevelSwitchInstance.vue";

@@ -13,6 +13,7 @@ import Frequency from "./FrequencyRenderer.vue";
 import HeatExchangerMode from "./HeatExchangerModeRenderer.vue";
 import HeatPumpMode from "./HeatPumpModeRenderer.vue";
 import Heat from "./HeatRenderer.vue";
+import Irradiance from "./IrradianceRenderer.vue";
 import Level from "./LevelRenderer.vue";
 import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
@@ -58,4 +59,5 @@ export const FieldRenderer = {
   EnabledDisabled,
   Empty,
   PvtMode,
+  Irradiance,
 };
