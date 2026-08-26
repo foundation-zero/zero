@@ -2,8 +2,6 @@ import logging
 import os
 from collections.abc import Iterable
 from datetime import datetime, timedelta
-from pathlib import Path
-
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -14,9 +12,6 @@ from thrs.orchestration.module import Module
 logger: logging.Logger = logging.getLogger(__name__)
 
 
-DEFAULT_PERSISTENCE_LOG_PATH = "/mnt/c/temp/persistence_log.txt"
-
-
 class PersistManager:
     """Restores module configuration on start and writes it back on change, with a
     periodic heartbeat."""
@@ -25,13 +20,11 @@ class PersistManager:
         self,
         persistence_engine: PersistentEngine,
         heartbeat: timedelta = timedelta(seconds=60),
-        persistence_log_path: Path | str = DEFAULT_PERSISTENCE_LOG_PATH,
     ) -> None:
         self._persistence_engine = persistence_engine
         self._heartbeat = heartbeat
         self._persisted: dict[str, ModulePersistenceSnapshot] = {}
         self._persisted_at: dict[str, datetime] = {}
-        self._persistence_log_path = Path(persistence_log_path)
 
     async def restore(self, module: Module) -> bool:
         """Retrieve the module configuration from the persistence engine and apply it to the module.
@@ -59,49 +52,14 @@ class PersistManager:
 
         logger.debug("Persisting config for module %s", module.name)
         snapshot: ModulePersistenceSnapshot = module.get_persistence_snapshot()
-        previous = self._persisted.get(module.name)
 
         is_saved = await self._save_snapshot(module.name, snapshot)
 
         if is_saved:
             logger.debug("Saved config for module %s", module.name)
-            self._log_persistence_event(module.name, previous, snapshot)
             self._save_to_cache(module.name, snapshot)
 
         return is_saved
-
-    def _log_persistence_event(
-        self,
-        module_name: str,
-        previous: ModulePersistenceSnapshot | None,
-        snapshot: ModulePersistenceSnapshot,
-    ) -> None:
-        """Append a line to the persistence log file recording when a save
-        happened and which values actually changed (Stamped timestamps excluded).
-        Never raises - a logging failure must not break persistence itself."""
-        if previous is None:
-            summary = "initial save"
-        else:
-            changes = previous.value_diff(snapshot)
-            summary = (
-                "; ".join(
-                    f"{path}: {old!r} -> {new!r}"
-                    for path, (old, new) in sorted(changes.items())
-                )
-                if changes
-                else "heartbeat (no value changes)"
-            )
-
-        line = f"{datetime.now().isoformat()} | module={module_name} | {summary}\n"
-
-        try:
-            self._persistence_log_path.parent.mkdir(parents=True, exist_ok=True)
-            with self._persistence_log_path.open("a", encoding="utf-8") as log_file:
-                log_file.write(line)
-        except OSError:
-            logger.exception(
-                "Could not write to persistence log at %s", self._persistence_log_path
-            )
 
     async def _save_snapshot(
         self, module_name: str, snapshot: ModulePersistenceSnapshot
