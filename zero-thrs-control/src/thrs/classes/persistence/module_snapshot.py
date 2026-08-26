@@ -35,7 +35,9 @@ class ModulePersistenceSnapshot(BaseModel):
             diffs.update(_deep_diff(getattr(self, field), getattr(other, field), field))
         return diffs
 
-    def value_diff(self, other: "ModulePersistenceSnapshot") -> dict[str, tuple[Any, Any]]:
+    def value_diff(
+        self, other: "ModulePersistenceSnapshot"
+    ) -> dict[str, tuple[Any, Any]]:
         """Like diff(), but with Stamped `timestamp` leaves stripped out - only
         actual value changes remain."""
         return {

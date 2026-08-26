@@ -41,7 +41,9 @@ class PersistManager:
         stored = await self._load_snapshot(module.name)
 
         if stored is not None:
-            logger.debug("Persistence applying stored config for module %s", module.name)
+            logger.debug(
+                "Persistence applying stored config for module %s", module.name
+            )
             return self._apply_snapshot(module, stored)
 
         return False

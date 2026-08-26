@@ -36,7 +36,11 @@ class FailingSnapshotStore(PersistentEngine):
 def make_manager(
     store: PersistentEngine, persistence_log_path: Path | None = None
 ) -> PersistManager:
-    kwargs = {} if persistence_log_path is None else {"persistence_log_path": persistence_log_path}
+    kwargs = (
+        {}
+        if persistence_log_path is None
+        else {"persistence_log_path": persistence_log_path}
+    )
     return PersistManager(store, HEARTBEAT, **kwargs)
 
 

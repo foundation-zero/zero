@@ -116,7 +116,8 @@ def test_apply_snapshot_with_unchanged_values_does_not_crash_with_debug_logging(
 
     module.apply_persistence_snapshot(default_snapshot)
 
-    assert "Difference between snapshot and current module state" in caplog.text
+    assert "differing from hardcoded defaults" in caplog.text
+    assert "(matches defaults)" in caplog.text
 
 
 async def test_persist_then_restore_reproduces_the_module_snapshot():

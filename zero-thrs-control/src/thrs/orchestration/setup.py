@@ -1,5 +1,9 @@
+import logging
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
+
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.machine_state_logger import (
@@ -26,6 +30,8 @@ from thrs.orchestration.simulation import (
     SimulationDescription,
     SimulationUnit,
 )
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 def setup_simulation_module(
@@ -77,19 +83,32 @@ def setup_database(
     return PostgresDatabase(config)
 
 
-def setup_persistence_manager(
+async def setup_persistence_manager(
     database: PostgresDatabase | None,
     module_persistence_enabled: bool,
 ) -> PersistManager:
     """Build the persist manager. Without persistence enabled it silently no-ops, so
     the runtime can run against MQTT only."""
-    engine: PersistentEngine = (
-        PostgresPersistentEngine(database)
-        if module_persistence_enabled and database is not None
-        else NoopPersistentEngine()
-    )
+    engine: PersistentEngine = NoopPersistentEngine()
+
+    if module_persistence_enabled and database is not None:
+        if await _is_postgres_reachable(database):
+            engine = PostgresPersistentEngine(database)
+        else:
+            logger.warning("Postgres is not reachable - module persistence disabled")
 
     return PersistManager(engine)
+
+
+async def _is_postgres_reachable(database: PostgresDatabase) -> bool:
+    """Check if Postgres is reachable."""
+    try:
+        async with database.session_factory() as session:
+            await session.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        return False
+
+    return True
 
 
 def setup_machine_state_logger(

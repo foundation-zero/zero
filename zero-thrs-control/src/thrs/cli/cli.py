@@ -54,7 +54,7 @@ class ControlCmd(BaseSettings):
             self.machine_state_logging,
         )
 
-        persistence = setup_persistence_manager(
+        persistence = await setup_persistence_manager(
             database,
             self.module_persistence,
         )
@@ -145,7 +145,7 @@ class LockstepCmd(BaseSettings):
             self.machine_state_logging,
         )
 
-        persistence = setup_persistence_manager(
+        persistence = await setup_persistence_manager(
             database,
             self.module_persistence,
         )
