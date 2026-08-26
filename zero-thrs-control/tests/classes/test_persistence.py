@@ -1,6 +1,8 @@
+import logging
 from datetime import timedelta
 
 import pytest
+from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
 
 from tests.helpers.modules import (
@@ -32,8 +34,23 @@ class FailingSnapshotStore(PersistentEngine):
         raise self._error()
 
 
-def make_manager(store: PersistentEngine) -> PersistManager:
-    return PersistManager(store, HEARTBEAT)
+class CorruptSnapshotStore(PersistentEngine):
+    """Simulates a real `PostgresPersistentEngine` hitting a row with an
+    unrecognized `automation_mode` - the snapshot construction itself raises."""
+
+    async def load(self, module_name: str) -> ModulePersistenceSnapshot | None:
+        return ModulePersistenceSnapshot.model_validate(
+            {"parameters": None, "manual_control_values": None, "control_mode": "x"}
+        )
+
+    async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
+        raise NotImplementedError
+
+
+def make_manager(
+    store: PersistentEngine, apply_module_defaults_on_corrupt_database: bool = False
+) -> PersistManager:
+    return PersistManager(store, HEARTBEAT, apply_module_defaults_on_corrupt_database)
 
 
 def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
@@ -210,6 +227,56 @@ async def test_database_errors_do_not_break_the_control_loop():
     assert await manager.persist(module) is False
 
 
+async def test_corrupt_stored_snapshot_raises_by_default():
+    """`apply_module_defaults_on_corrupt_database` defaults to False - a corrupt row
+    must surface loudly (raise) rather than silently fall back to defaults."""
+    manager = make_manager(CorruptSnapshotStore())
+    module = make_module()
+
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
+
+
+async def test_corrupt_stored_snapshot_keeps_defaults_instead_of_crashing(
+    caplog: pytest.LogCaptureFixture,
+):
+    """With `apply_module_defaults_on_corrupt_database=True`, a row with an
+    unrecognized `automation_mode` (e.g. hand-edited) must degrade that single
+    module to its defaults and log it - never crash `restore_all` for every other
+    module."""
+    caplog.set_level(logging.ERROR, logger="thrs.classes.persistence.manager")
+    manager = make_manager(
+        CorruptSnapshotStore(), apply_module_defaults_on_corrupt_database=True
+    )
+    module = make_module()
+
+    assert await manager.restore(module) is False
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    assert "corrupt" in caplog.text
+
+
+async def test_restore_all_survives_one_module_with_a_corrupt_snapshot():
+    manager = make_manager(
+        CorruptSnapshotStore(), apply_module_defaults_on_corrupt_database=True
+    )
+    modules = [make_module("dhw"), make_module("pvt")]
+
+    await manager.restore_all(modules)
+
+    for module in modules:
+        assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+async def test_restore_all_stops_on_first_corrupt_snapshot_by_default():
+    """Without opting in, one corrupt module must abort `restore_all` rather than
+    silently skipping it and continuing to the next module."""
+    manager = make_manager(CorruptSnapshotStore())
+    modules = [make_module("dhw"), make_module("pvt")]
+
+    with pytest.raises(ValidationError):
+        await manager.restore_all(modules)
+
+
 async def test_failed_write_is_retried_next_call():
     manager = make_manager(FailingSnapshotStore())
 
@@ -262,7 +329,9 @@ async def test_restore_rejects_or_safely_ignores_bad_parameters(bad_parameters):
 
     # Whatever happened, the module must never end up holding a value outside its
     # declared bounds.
-    assert 0.0 <= module.get_persistence_snapshot().parameters["setpoint"] <= 100.0
+    parameters = module.get_persistence_snapshot().parameters
+    assert parameters is not None
+    assert 0.0 <= parameters["setpoint"] <= 100.0
 
 
 async def test_restore_with_out_of_bound_value_never_reaches_mqtt():

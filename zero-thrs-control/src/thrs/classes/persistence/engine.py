@@ -59,9 +59,7 @@ class PostgresPersistentEngine(PersistentEngine):
             return ModulePersistenceSnapshot(
                 parameters=stored.parameters,
                 manual_control_values=stored.manual_control_values,
-                control_mode="automatic"
-                if stored.automation_mode == "automatic"
-                else "manual",
+                control_mode=stored.automation_mode,  # type: ignore[arg-type]
             )
 
     async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:

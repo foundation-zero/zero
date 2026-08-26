@@ -1,7 +1,7 @@
 import logging
-import os
 from collections.abc import Iterable
 from datetime import datetime, timedelta
+
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,9 +20,13 @@ class PersistManager:
         self,
         persistence_engine: PersistentEngine,
         heartbeat: timedelta = timedelta(seconds=60),
+        apply_module_defaults_on_corrupt_database: bool = False,
     ) -> None:
         self._persistence_engine = persistence_engine
         self._heartbeat = heartbeat
+        self._apply_module_defaults_on_corrupt_database = (
+            apply_module_defaults_on_corrupt_database
+        )
         self._persisted: dict[str, ModulePersistenceSnapshot] = {}
         self._persisted_at: dict[str, datetime] = {}
 
@@ -132,11 +136,21 @@ class PersistManager:
     async def _load_snapshot(
         self, module_name: str
     ) -> ModulePersistenceSnapshot | None:
-        """Load a stored configuration snapshot for the module from the persistence engine. Returns None if no snapshot is found or if an error occurred during loading."""
+        """Load a stored configuration snapshot for the module from the persistence
+        engine. Returns None if no snapshot is found or if a database error occurred"""
         try:
             is_stored = await self._persistence_engine.load(module_name)
         except SQLAlchemyError:
             logger.exception("Unable to load stored config for module %s", module_name)
+            return None
+        except ValidationError:
+            if not self._apply_module_defaults_on_corrupt_database:
+                raise
+
+            logger.exception(
+                "Stored database config for module %s is corrupt (failed validation) - using defaults",
+                module_name,
+            )
             return None
 
         if is_stored is None:

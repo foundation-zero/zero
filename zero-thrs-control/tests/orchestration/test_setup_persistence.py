@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 from unittest import mock
 
 import pytest
@@ -60,7 +61,11 @@ async def test_falls_back_to_noop_when_postgres_is_unreachable(
     caplog.set_level(logging.WARNING, logger="thrs.orchestration.setup")
     database = _fake_database(_FailingSessionFactory())
 
-    manager = await setup_persistence_manager(database, module_persistence_enabled=True)
+    manager = await setup_persistence_manager(
+        database,
+        module_persistence_enabled=True,
+        allow_boot_without_persistence_having_active_postgres=True,
+    )
 
     assert isinstance(manager._persistence_engine, NoopPersistentEngine)
     assert "not reachable" in caplog.text
@@ -77,6 +82,26 @@ async def test_uses_postgres_engine_when_reachable():
     manager = await setup_persistence_manager(database, module_persistence_enabled=True)
 
     assert isinstance(manager._persistence_engine, PostgresPersistentEngine)
+
+
+async def test_uses_the_persist_managers_own_default_heartbeat():
+    """`setup_persistence_manager` doesn't configure a heartbeat - it always builds
+    a `PersistManager` at that class's own default (60s)."""
+    database = _fake_database(_WorkingSessionFactory())
+
+    manager = await setup_persistence_manager(database, module_persistence_enabled=True)
+
+    assert manager._heartbeat == timedelta(seconds=60)
+
+
+async def test_persistence_manager_defaults_to_not_applying_module_defaults_on_corrupt_database():
+    """`setup_persistence_manager` doesn't expose this as a setting - it always
+    builds a `PersistManager` with that option at its own default (False)."""
+    database = _fake_database(_WorkingSessionFactory())
+
+    manager = await setup_persistence_manager(database, module_persistence_enabled=True)
+
+    assert manager._apply_module_defaults_on_corrupt_database is False
 
 
 async def test_stays_noop_when_persistence_disabled_even_if_postgres_is_up():

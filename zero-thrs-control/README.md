@@ -50,6 +50,22 @@ just run_control
 ```
 To use a different module (other than the default `dhw`), run `just run_control module=<module_name>` where `<module_name>` is one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
+## Persistence
+
+`control` and `lockstep` restore each module's config from Postgres on startup and persist changes back to it.
+
+`MODULE_PERSISTENCE` enables/disables persistence (default `true` on the CLI, `false` in `.env.example`/docker-compose). To disable it, run:
+
+```bash
+MODULE_PERSISTENCE=false just run_control
+```
+
+`ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES` controls whether to boot anyway when Postgres is unreachable at startup, instead of refusing to start (default `false`). To allow it, run:
+
+```bash
+ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES=true just run_control
+```
+
 ## Simulator
 
 Run the simulator with:

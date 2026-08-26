@@ -1,6 +1,5 @@
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
-from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector

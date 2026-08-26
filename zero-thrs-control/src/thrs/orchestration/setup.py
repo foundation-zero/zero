@@ -86,7 +86,7 @@ def setup_database(
 async def setup_persistence_manager(
     database: PostgresDatabase | None,
     module_persistence_enabled: bool,
-    allow_boot_without_persistence_having_active_postgres: bool = True,
+    allow_boot_without_persistence_having_active_postgres: bool = False,
 ) -> PersistManager:
     """Build the persist manager. Without persistence enabled it silently no-ops, so
     the runtime can run against MQTT only."""
