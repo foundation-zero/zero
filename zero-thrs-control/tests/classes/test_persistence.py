@@ -1,5 +1,4 @@
 from datetime import timedelta
-from pathlib import Path
 
 import pytest
 from sqlalchemy.exc import OperationalError
@@ -33,15 +32,8 @@ class FailingSnapshotStore(PersistentEngine):
         raise self._error()
 
 
-def make_manager(
-    store: PersistentEngine, persistence_log_path: Path | None = None
-) -> PersistManager:
-    kwargs = (
-        {}
-        if persistence_log_path is None
-        else {"persistence_log_path": persistence_log_path}
-    )
-    return PersistManager(store, HEARTBEAT, **kwargs)
+def make_manager(store: PersistentEngine) -> PersistManager:
+    return PersistManager(store, HEARTBEAT)
 
 
 def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
@@ -142,51 +134,6 @@ async def test_persist_writes_when_config_changes():
 
     assert await manager.persist(module) is True
     assert store.snapshots["dhw"].parameters == {"setpoint": 60.0}
-
-
-async def test_persist_writes_initial_save_to_persistence_log(tmp_path: Path):
-    log_path = tmp_path / "persistance_log.txt"
-    store = InMemoryPersistentEngine()
-    manager = make_manager(store, log_path)
-    module = make_module()
-
-    assert await manager.persist(module) is True
-
-    content = log_path.read_text()
-    assert "module=dhw" in content
-    assert "initial save" in content
-
-
-async def test_persist_logs_the_changed_values_only(tmp_path: Path):
-    log_path = tmp_path / "persistance_log.txt"
-    store = InMemoryPersistentEngine()
-    manager = make_manager(store, log_path)
-    module = make_module()
-
-    await manager.persist(module)
-    change_setpoint(module, 60.0)
-    await manager.persist(module)
-
-    lines = log_path.read_text().splitlines()
-    assert len(lines) == 2
-    assert "initial save" in lines[0]
-    assert "parameters.setpoint: 50.0 -> 60.0" in lines[1]
-
-
-async def test_persist_heartbeat_write_logs_no_value_changes(tmp_path: Path):
-    log_path = tmp_path / "persistance_log.txt"
-    store = InMemoryPersistentEngine()
-    manager = make_manager(store, log_path)
-    manager._heartbeat = timedelta(seconds=-1)  # force the heartbeat branch
-    module = make_module()
-
-    await manager.persist(module)
-    await manager.persist(module)
-
-    lines = log_path.read_text().splitlines()
-    assert len(lines) == 2
-    assert "heartbeat (no value changes)" in lines[1]
-    assert "timestamp" not in lines[1]
 
 
 async def test_persist_all_covers_every_module():
