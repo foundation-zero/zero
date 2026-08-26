@@ -1,0 +1,4 @@
+# Routes a parsed NMEA row (from the zero-atpx-nmea service on
+# atpx/processed/nmea/<type>/<sender>) to its Greptime table, keyed by `type`.
+.table = "atpx__nmea_" + string!(.type)
+.timestamp = now()

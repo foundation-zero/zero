@@ -27,3 +27,6 @@ jobs:
       - name: Run Vector ATPX test
         working-directory: vector
         run: bash test-atpx.sh
+      - name: Run Vector ATPX NMEA test
+        working-directory: vector
+        run: bash test-atpx-nmea.sh

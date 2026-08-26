@@ -1,0 +1,2 @@
+{ "type": "gga", "sender": "3143", "talker": "GP", "raw": "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47", "lat": "4807.038", "lat_dir": "N", "lon": "01131.000", "lon_dir": "E", "gps_qual": 1, "num_sats": 8, "horizontal_dil": 0.9, "altitude": 545.4, "altitude_units": "M", "geo_sep": 46.9, "geo_sep_units": "M", "age_gps_data": null, "ref_station_id": null, "latitude": 48.1173, "longitude": 11.516666666666666 }
+{ "type": "hdt", "sender": "3144", "talker": "HE", "raw": "$HEHDT,199.1,T*2F", "heading": 199.1, "hdg_true": "T" }

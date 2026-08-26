@@ -1,0 +1,2 @@
+{"age_gps_data":null,"altitude":545.4,"altitude_units":"M","geo_sep":46.9,"geo_sep_units":"M","gps_qual":1,"horizontal_dil":0.9,"lat":"4807.038","lat_dir":"N","latitude":48.1173,"lon":"01131.000","lon_dir":"E","longitude":11.516666666666666,"num_sats":8,"raw":"$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47","ref_station_id":null,"sender":"3143","table":"atpx__nmea_gga","talker":"GP","type":"gga"}
+{"hdg_true":"T","heading":199.1,"raw":"$HEHDT,199.1,T*2F","sender":"3144","table":"atpx__nmea_hdt","talker":"HE","type":"hdt"}

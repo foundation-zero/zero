@@ -437,6 +437,25 @@ services:
       MODBUS_PORT: "502"
       MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
 
+  # ---- data collection (atpx nmea) ----
+  zero-atpx-nmea:
+    build:
+      context: .
+      dockerfile: zero-atpx-nmea/Dockerfile
+    profiles:
+      - data-collection
+    environment:
+      # loads-at-sensors-stub publishes mocked ATPX data (including NMEA
+      # sentences) to vernemq locally; in production ATPX_MQTT_HOST points at
+      # A+T's onboard MQTT broker instead.
+      ATPX_MQTT_HOST: vernemq
+      ATPX_MQTT_PORT: "1883"
+      MQTT_HOST: vernemq
+      MQTT_PORT: "1883"
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
 volumes:
   db_data:
   grafana:
