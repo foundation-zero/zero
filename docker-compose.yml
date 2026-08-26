@@ -130,6 +130,7 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
+      ATPX_RAW_TOPIC_PREFIX: atpx_raw
     depends_on:
       vernemq:
         condition: service_healthy
@@ -159,6 +160,8 @@ services:
       MQTT_PASSWORD: mqtt
       ATPX_MQTT_HOST: ${ATPX_MQTT_HOST:-vernemq}
       ATPX_MQTT_PORT: ${ATPX_MQTT_PORT:-1883}
+      # Local raw feed is on atpx_raw/#; unset in prod -> A+T's real atpx/# bus.
+      ATPX_MQTT_TOPIC: ${ATPX_MQTT_TOPIC:-atpx_raw/#}
       GREPTIMEDB_HOST: greptimedb
       GREPTIMEDB_PORT: 4000
     volumes:
@@ -169,6 +172,10 @@ services:
         condition: service_healthy
       greptimedb:
         condition: service_healthy
+      # Bridges raw atpx/nmea0183/# sentences to the atpx/processed/nmea/# rows
+      # vector ingests, so the one-command local e2e starts it too.
+      zero-atpx-nmea:
+        condition: service_started
 
   greptimedb:
     image: greptime/greptimedb:v1.1.3
