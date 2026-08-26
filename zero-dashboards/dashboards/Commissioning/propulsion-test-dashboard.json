@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 13,
+  "id": 0,
   "links": [
     {
       "asDropdown": true,
@@ -63,7 +63,7 @@
       "type": "text"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -71,1502 +71,1504 @@
         "y": 2
       },
       "id": 77,
-      "panels": [],
-      "title": "Test PLC - Speed, Torque & Power",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "footer": {
-              "reducers": []
-            },
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Prop shaft speed"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Prop shaft torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Prop shaft power"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "watt"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 24,
-        "x": 0,
-        "y": 3
-      },
-      "id": 88,
-      "options": {
-        "cellHeight": "sm",
-        "showHeader": true
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
+      "panels": [
         {
           "datasource": {
             "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawSql": "WITH aft AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_aft_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n),\nfwd AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_fwd_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n)\n\nSELECT * FROM aft\nUNION ALL\nSELECT * FROM fwd",
-          "refId": "A"
-        }
-      ],
-      "title": "Prop shaft values",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "prop_speed": "Prop shaft speed",
-              "prop_torque": "Prop shaft torque",
-              "shaft_power": "Prop shaft power",
-              "time": "Time"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+            "overrides": [
               {
-                "color": "green",
-                "value": 0
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prop shaft speed"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "rotrpm"
+                  }
+                ]
               },
               {
-                "color": "red",
-                "value": 80
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prop shaft torque"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "forceNm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prop shaft power"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "watt"
+                  }
+                ]
               }
             ]
           },
-          "unit": "rotrpm"
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 88,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "WITH aft AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_aft_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n),\nfwd AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_fwd_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n)\n\nSELECT * FROM aft\nUNION ALL\nSELECT * FROM fwd",
+              "refId": "A"
+            }
+          ],
+          "title": "Prop shaft values",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "prop_speed": "Prop shaft speed",
+                  "prop_torque": "Prop shaft torque",
+                  "shaft_power": "Prop shaft power",
+                  "time": "Time"
+                }
+              }
+            }
+          ],
+          "type": "table"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 6
-      },
-      "id": 65,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
         {
-          "dataset": "dev",
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"\r\n  END                                                       AS speed\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Prop shaft speed",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "aradex_speed": "Speed (Aradex)",
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "plc_speed": "Speed (PLC)",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Prop shaft speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "time": "",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
               },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "rotrpm"
+            },
+            "overrides": []
           },
-          "unit": "forceNm"
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 6
+          },
+          "id": 65,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"\r\n  END                                                       AS speed\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Prop shaft speed",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "aradex_speed": "Speed (Aradex)",
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "plc_speed": "Speed (PLC)",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Prop shaft speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 15
-      },
-      "id": 82,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
         {
-          "dataset": "dev",
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__thruster_test.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Prop shaft torque",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
               },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "forceNm"
+            },
+            "overrides": []
           },
-          "unit": "watt"
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 15
+          },
+          "id": 82,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__thruster_test.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Prop shaft torque",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 24
-      },
-      "id": 85,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
         {
-          "dataset": "dev",
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "watt"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 24
+          },
+          "id": 85,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
             }
           },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_watt\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_watt\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_watt\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_watt\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
               }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Prop shaft power",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "aradex_speed": "Speed (Aradex)",
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "plc_speed": "Speed (PLC)",
-              "power": "",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Prop shaft speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "time": "",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
             }
-          }
+          ],
+          "title": "Prop shaft power",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "aradex_speed": "Speed (Aradex)",
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "plc_speed": "Speed (PLC)",
+                  "power": "",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Prop shaft speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         }
       ],
-      "type": "timeseries"
+      "title": "Test PLC - Speed, Torque & Power",
+      "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 3
       },
       "id": 79,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "left",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": false,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "minWidth": 160
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Speed"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "rotrpm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Torque"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "forceNm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/temp/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "celsius"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Current"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "amp"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Voltage"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "volt"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 63,
+          "options": {
+            "cellHeight": "sm",
+            "enablePagination": false,
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "Device"
+              }
+            ]
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\" ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" END AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"   ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"   END AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"   END AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"   END AS torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"  END AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"  END AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "Time",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "amp"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 7
+          },
+          "id": 66,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"\r\n  END                                                  AS \"current\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Current",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "volt"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 16
+          },
+          "id": 83,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"\r\n  END                                                  AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Voltage",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "kwatt"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 25
+          },
+          "id": 68,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)\r\n\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Power (V*A)",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "power": "Power",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": []
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 64,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp AS time,\r\n  \"devices__can_aradex.i_aft_thrstr_emotor_temp\" AS e_motor_temp,\r\n  \"devices__can_aradex.i_aft_thrstr_igbt_temp\" AS igbt_temp\r\nFROM public.prop_test__data \r\nWHERE '${aft_fwd}' = 'AFT' \r\n  AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" AS e_motor_temp,\r\n  \"devices__can_aradex.i_fwd_thrstr_igbt_temp\" AS igbt_temp\r\nFROM public.prop_test__data \r\nWHERE '${aft_fwd}' = 'FWD' \r\n  AND $__timeFilter(timestamp);",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Temperatures",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
       "title": "Test PLC - Aradex",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "left",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": false,
-            "footer": {
-              "reducers": []
-            },
-            "inspect": false,
-            "minWidth": 160
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Speed"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/temp/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Current"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "amp"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Voltage"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "volt"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 24,
-        "x": 0,
-        "y": 34
-      },
-      "id": 63,
-      "options": {
-        "cellHeight": "sm",
-        "enablePagination": false,
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "Device"
-          }
-        ]
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\" ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" END AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"   ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"   END AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"   END AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"   END AS torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"  END AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"  END AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "time": "Time",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "amp"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 37
-      },
-      "id": 66,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"\r\n  END                                                  AS \"current\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Current",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "volt"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 46
-      },
-      "id": 83,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"\r\n  END                                                  AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Voltage",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatt"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 55
-      },
-      "id": 68,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)\r\n\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Power (V*A)",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "power": "Power",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "time": "",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": []
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 64
-      },
-      "id": 64,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  \"devices__can_aradex.i_aft_thrstr_emotor_temp\" AS e_motor_temp,\r\n  \"devices__can_aradex.i_aft_thrstr_igbt_temp\" AS igbt_temp\r\nFROM public.prop_test__data \r\nWHERE '${aft_fwd}' = 'AFT' \r\n  AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" AS e_motor_temp,\r\n  \"devices__can_aradex.i_fwd_thrstr_igbt_temp\" AS igbt_temp\r\nFROM public.prop_test__data \r\nWHERE '${aft_fwd}' = 'FWD' \r\n  AND $__timeFilter(timestamp);",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Temperatures",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 4
       },
       "id": 24,
       "panels": [],
@@ -1627,7 +1629,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 5
       },
       "id": 50,
       "options": {
@@ -2450,7 +2452,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000_propulsion__pcs_fwd_pshelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2528,7 +2530,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 5
       },
       "id": 86,
       "options": {
@@ -3351,7 +3353,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  -- reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  -- reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  -- prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  -- prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  -- man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  -- man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000_propulsion__pcs_fwd_sbhelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3381,7 +3383,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 17
       },
       "id": 25,
       "panels": [],
@@ -3505,7 +3507,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 18
       },
       "id": 41,
       "options": {
@@ -3544,7 +3546,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft1.time,\r\n  'Aradex 1' AS device,\r\n  aft1.speed,\r\n  aft1.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft1.power_stage_temp,\r\n  aft1.igbt_temp,\r\n  aft1.\"power\"\r\nFROM aft1, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  aft2.time,\r\n  'Aradex 2' AS device,\r\n  aft2.speed,\r\n  aft2.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft2.power_stage_temp,\r\n  aft2.igbt_temp,\r\n  aft2.\"power\"\r\nFROM aft2, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time,\r\n  'Aradex 1' AS device,\r\n  fwd1.speed,\r\n  fwd1.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd1.power_stage_temp,\r\n  fwd1.igbt_temp,\r\n  fwd1.\"power\"\r\nFROM fwd1, fwd_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd2.time,\r\n  'Aradex 2' AS device,\r\n  fwd2.speed,\r\n  fwd2.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd2.power_stage_temp,\r\n  fwd2.igbt_temp,\r\n  fwd2.\"power\"\r\nFROM fwd2, fwd_torque\r\n\r\nORDER BY device;",
+          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    speed_or_torque_setpoint__value as torque_setpoint,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    speed_or_torque_setpoint__value as torque_setpoint,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000_propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    speed_or_torque_setpoint__value as torque_setpoint,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    speed_or_torque_setpoint__value as torque_setpoint,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000_propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft1.time,\r\n  'Aradex 1' AS device,\r\n  aft1.speed,\r\n  aft1.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  aft1.torque_setpoint,\r\n  aft1.power_stage_temp,\r\n  aft1.igbt_temp,\r\n  aft1.\"power\"\r\nFROM aft1, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  aft2.time,\r\n  'Aradex 2' AS device,\r\n  aft2.speed,\r\n  aft2.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  aft2.torque_setpoint,\r\n  aft2.power_stage_temp,\r\n  aft2.igbt_temp,\r\n  aft2.\"power\"\r\nFROM aft2, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time,\r\n  'Aradex 1' AS device,\r\n  fwd1.speed,\r\n  fwd1.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  fwd1.torque_setpoint,\r\n  fwd1.power_stage_temp,\r\n  fwd1.igbt_temp,\r\n  fwd1.\"power\"\r\nFROM fwd1, fwd_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd2.time,\r\n  'Aradex 2' AS device,\r\n  fwd2.speed,\r\n  fwd2.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  fwd2.torque_setpoint,\r\n  fwd2.power_stage_temp,\r\n  fwd2.igbt_temp,\r\n  fwd2.\"power\"\r\nFROM fwd2, fwd_torque\r\n\r\nORDER BY device;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3665,7 +3667,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 22
       },
       "id": 31,
       "options": {
@@ -3704,7 +3706,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex1_speed\r\nFROM public.marpower__150000propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex1_speed\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex1_speed\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex1_speed\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "A"
         },
         {
@@ -3728,7 +3730,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex2_speed\r\nFROM public.marpower__150000propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex2_speed\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex2_speed\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  speed__value AS aradex2_speed\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "B"
         }
       ],
@@ -3817,7 +3819,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 101
+        "y": 32
       },
       "id": 84,
       "options": {
@@ -3859,7 +3861,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex1_torque\r\nFROM public.marpower__150000propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex1_torque\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex1_torque\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex1_torque\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3900,7 +3902,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex2_torque\r\nFROM public.marpower__150000propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex2_torque\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex2_torque\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  torque__value AS aradex2_torque\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "B"
         },
         {
@@ -3924,7 +3926,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_aft\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_fwd\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000_propulsion__pcs_fwd\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "C"
         }
       ],
@@ -4015,7 +4017,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 111
+        "y": 42
       },
       "id": 69,
       "options": {
@@ -4057,7 +4059,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4098,7 +4100,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "B"
         }
       ],
@@ -4139,7 +4141,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 51
       },
       "id": 26,
       "panels": [],
@@ -4191,7 +4193,7 @@
         "h": 6,
         "w": 11,
         "x": 0,
-        "y": 121
+        "y": 52
       },
       "id": 87,
       "options": {
@@ -4224,7 +4226,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH supply AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft_supply\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft_supply\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd_supply\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(supply.time, aft_return.time) AS time,\r\n  supply.temperature AS supply_temp,\r\n  aft_return.temperature AS return_temp,\r\n  aft_return.temperature - supply.temperature AS delta_temp\r\nFROM supply, aft_return\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(supply.time, fwd_return.time) AS time,\r\n  supply.temperature AS supply_temp,\r\n  fwd_return.temperature AS return_temp,\r\n  fwd_return.temperature - supply.temperature AS delta_temp\r\nFROM supply, fwd_return;",
+          "rawSql": "WITH supply AS (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/thrusters/thrusters-temperature-supply'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return AS (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/thrusters/thrusters-temperature-aft'\r\n  AND '${aft_fwd}' = 'AFT'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return AS (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/thrusters/thrusters-temperature-fwd'\r\n  AND '${aft_fwd}' = 'FWD'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(supply.time, aft_return.time)         AS time,\r\n  supply.temperature                          AS supply_temp,\r\n  aft_return.temperature                      AS return_temp,\r\n  aft_return.temperature - supply.temperature AS delta_temp\r\nFROM supply, aft_return\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(supply.time, fwd_return.time)         AS time,\r\n  supply.temperature                          AS supply_temp,\r\n  fwd_return.temperature                      AS return_temp,\r\n  fwd_return.temperature - supply.temperature AS delta_temp\r\nFROM supply, fwd_return",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4268,6 +4270,7 @@
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
+              "thruster": "",
               "time": "Time"
             }
           }
@@ -4329,7 +4332,7 @@
         "h": 6,
         "w": 13,
         "x": 11,
-        "y": 121
+        "y": 52
       },
       "id": 13,
       "options": {
@@ -4809,7 +4812,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara1_power_stage_temp,\r\n    temp_igbt__value AS ara1_power_igbt_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara1_power_stage_temp,\r\n    temp_igbt__value AS ara1_power_igbt_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
+          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara1_power_stage_temp,\r\n    temp_igbt__value AS ara1_power_igbt_temp\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara1_power_stage_temp,\r\n    temp_igbt__value AS ara1_power_igbt_temp\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4850,7 +4853,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara2_power_stage_temp,\r\n    temp_igbt__value AS ara2_power_igbt_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara2_power_stage_temp,\r\n    temp_igbt__value AS ara2_power_igbt_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
+          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara2_power_stage_temp,\r\n    temp_igbt__value AS ara2_power_igbt_temp\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temp_power_stage__value AS ara2_power_stage_temp,\r\n    temp_igbt__value AS ara2_power_igbt_temp\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
           "refId": "B"
         },
         {
@@ -4874,7 +4877,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
+          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000_propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000_propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
           "refId": "C"
         }
       ],
@@ -4926,7 +4929,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 127
+        "y": 58
       },
       "id": 37,
       "options": {
@@ -4959,7 +4962,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_supply AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft_supply\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft1_return\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft2_return\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_supply AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd_supply\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd1_return\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd2_return\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_supply.time, aft_return1.time, aft_return2.time) AS time,\r\n  aft_supply.temperature AS supply_temp,\r\n  aft_return1.temperature AS return1_temp,\r\n  aft_return2.temperature AS return2_temp,\r\n  aft_return1.temperature - aft_supply.temperature AS delta1_temp,\r\n  aft_return2.temperature - aft_supply.temperature AS delta2_temp\r\nFROM aft_supply, aft_return1, aft_return2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_supply.time, fwd_return1.time, fwd_return2.time) AS time,\r\n  fwd_supply.temperature AS supply_temp,\r\n  fwd_return1.temperature AS return1_temp,\r\n  fwd_return2.temperature AS return2_temp,\r\n  fwd_return1.temperature - fwd_supply.temperature AS delta1_temp,\r\n  fwd_return2.temperature - fwd_supply.temperature AS delta2_temp\r\nFROM fwd_supply, fwd_return1, fwd_return2;",
+          "rawSql": "WITH aft_supply AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrives-aft-supply'\r\n  AND '${aft_fwd}' = 'AFT'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrive-aft1-return'\r\n  AND '${aft_fwd}' = 'AFT'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_return2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrive-aft2-return'\r\n  AND '${aft_fwd}' = 'AFT'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_supply AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrives-fwd-supply'\r\n  AND '${aft_fwd}' = 'FWD'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrive-fwd1-return'\r\n  AND '${aft_fwd}' = 'FWD'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_return2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__thrs__temperatures\r\n  WHERE $__timeFilter(timestamp)\r\n  AND topic = 'marpower/500000-thrs/drives/drives-temperature-propdrive-fwd2-return'\r\n  AND '${aft_fwd}' = 'FWD'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_supply.time, aft_return1.time, aft_return2.time) AS time,\r\n  aft_supply.temperature AS supply_temp,\r\n  aft_return1.temperature AS return1_temp,\r\n  aft_return2.temperature AS return2_temp,\r\n  aft_return1.temperature - aft_supply.temperature AS delta1_temp,\r\n  aft_return2.temperature - aft_supply.temperature AS delta2_temp\r\nFROM aft_supply, aft_return1, aft_return2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_supply.time, fwd_return1.time, fwd_return2.time) AS time,\r\n  fwd_supply.temperature AS supply_temp,\r\n  fwd_return1.temperature AS return1_temp,\r\n  fwd_return2.temperature AS return2_temp,\r\n  fwd_return1.temperature - fwd_supply.temperature AS delta1_temp,\r\n  fwd_return2.temperature - fwd_supply.temperature AS delta2_temp\r\nFROM fwd_supply, fwd_return1, fwd_return2",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5037,7 +5040,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 131
+        "y": 62
       },
       "id": 59,
       "options": {
@@ -5779,7 +5782,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 137
+        "y": 68
       },
       "id": 27,
       "panels": [],
@@ -5831,7 +5834,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 138
+        "y": 69
       },
       "id": 70,
       "options": {
@@ -5870,7 +5873,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft_motor.time                                                            AS time,\r\n  aft_motor.motor_power                                                     AS motor_power,\r\n  aft1.power + aft2.power                                                   AS aradex_power\r\nFROM aft_motor, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd1.time, fwd2.time)                               AS time,\r\n  fwd_motor.motor_power                                                     AS motor_power,\r\n  fwd1.power + fwd2.power                                                   AS aradex_power\r\nFROM fwd_motor, fwd1, fwd2;",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft_motor.time                                                            AS time,\r\n  aft_motor.motor_power                                                     AS motor_power,\r\n  aft1.power + aft2.power                                                   AS aradex_power\r\nFROM aft_motor, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd1.time, fwd2.time)                               AS time,\r\n  fwd_motor.motor_power                                                     AS motor_power,\r\n  fwd1.power + fwd2.power                                                   AS aradex_power\r\nFROM fwd_motor, fwd1, fwd2;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5991,7 +5994,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 142
+        "y": 73
       },
       "id": 71,
       "options": {
@@ -6033,7 +6036,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\naft2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n)\r\n\r\nSELECT\r\n  aft1.time AS time,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power\r\nFROM aft1\r\nINNER JOIN aft2 ON aft1.time = aft2.time\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time AS time,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power\r\nFROM fwd1\r\nINNER JOIN fwd2 ON fwd1.time = fwd2.time;",
+          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\naft2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n)\r\n\r\nSELECT\r\n  aft1.time AS time,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power\r\nFROM aft1\r\nINNER JOIN aft2 ON aft1.time = aft2.time\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time AS time,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power\r\nFROM fwd1\r\nINNER JOIN fwd2 ON fwd1.time = fwd2.time;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6116,7 +6119,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 151
+        "y": 82
       },
       "id": 52,
       "panels": [],
@@ -6216,7 +6219,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 152
+        "y": 83
       },
       "id": 73,
       "options": {
@@ -6255,7 +6258,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_aft_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT \r\n  LEAST(aft_motor.timestamp, aft_ps_helm.timestamp, aft_sb_helm.timestamp) AS time,\r\n  ((aft_ps_helm.lever_speed / 327.0) - 50) * 2                             AS ps_lever_pos,\r\n  ((aft_sb_helm.lever_speed / 327.0) - 50) * 2                             AS sb_lever_pos,\r\n  aft_motor.motor_speed AS motor_speed,\r\n  aft1.speed AS aradex1_speed,\r\n  aft2.speed AS aradex2_speed,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power,\r\n  aft1.torque AS aradex1_torque,\r\n  aft2.torque AS aradex2_torque\r\nFROM aft_motor, aft_ps_helm, aft_sb_helm, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT \r\n  LEAST(fwd_motor.timestamp, fwd_ps_helm.timestamp, fwd_sb_helm.timestamp) AS time,\r\n  ((fwd_ps_helm.lever_speed / 327.0) - 50) * 2                             AS ps_lever_pos,\r\n  ((fwd_sb_helm.lever_speed / 327.0) - 50) * 2                             AS sb_lever_pos,\r\n  fwd_motor.motor_speed AS motor_speed,\r\n  fwd1.speed AS aradex1_speed,\r\n  fwd2.speed AS aradex2_speed,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power,\r\n  fwd1.torque AS aradex1_torque,\r\n  fwd2.torque AS aradex2_torque\r\nFROM fwd_motor, fwd_ps_helm, fwd_sb_helm, fwd1, fwd2;",
+          "rawSql": "WITH aft_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_aft_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT \r\n  LEAST(aft_motor.timestamp, aft_ps_helm.timestamp, aft_sb_helm.timestamp) AS time,\r\n  ((aft_ps_helm.lever_speed / 327.0) - 50) * 2                             AS ps_lever_pos,\r\n  ((aft_sb_helm.lever_speed / 327.0) - 50) * 2                             AS sb_lever_pos,\r\n  aft_motor.motor_speed AS motor_speed,\r\n  aft1.speed AS aradex1_speed,\r\n  aft2.speed AS aradex2_speed,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power,\r\n  aft1.torque AS aradex1_torque,\r\n  aft2.torque AS aradex2_torque\r\nFROM aft_motor, aft_ps_helm, aft_sb_helm, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT \r\n  LEAST(fwd_motor.timestamp, fwd_ps_helm.timestamp, fwd_sb_helm.timestamp) AS time,\r\n  ((fwd_ps_helm.lever_speed / 327.0) - 50) * 2                             AS ps_lever_pos,\r\n  ((fwd_sb_helm.lever_speed / 327.0) - 50) * 2                             AS sb_lever_pos,\r\n  fwd_motor.motor_speed AS motor_speed,\r\n  fwd1.speed AS aradex1_speed,\r\n  fwd2.speed AS aradex2_speed,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power,\r\n  fwd1.torque AS aradex1_torque,\r\n  fwd2.torque AS aradex2_torque\r\nFROM fwd_motor, fwd_ps_helm, fwd_sb_helm, fwd1, fwd2;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6398,7 +6401,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 155
+        "y": 86
       },
       "id": 74,
       "options": {
@@ -6432,7 +6435,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft1.time)                                                AS time,\r\n  aft_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 1'                                                                           AS device,\r\n  aft1.speed                                                                           AS aradex_speed,\r\n  aft1.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft1.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft2.time)                                                AS time,\r\n  aft_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 2'                                                                           AS device,\r\n  aft2.speed                                                                           AS aradex_speed,\r\n  aft2.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft2.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd1.time)                                                AS time,\r\n  fwd_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 1'                                                                           AS device,\r\n  fwd1.speed                                                                           AS aradex_speed,\r\n  fwd1.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd1.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd2.time)                                                AS time,\r\n  fwd_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 2'                                                                           AS device,\r\n  fwd2.speed                                                                           AS aradex_speed,\r\n  fwd2.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd2.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd2\r\n\r\nORDER BY device;",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft1.time)                                                AS time,\r\n  aft_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 1'                                                                           AS device,\r\n  aft1.speed                                                                           AS aradex_speed,\r\n  aft1.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft1.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft2.time)                                                AS time,\r\n  aft_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 2'                                                                           AS device,\r\n  aft2.speed                                                                           AS aradex_speed,\r\n  aft2.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft2.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd1.time)                                                AS time,\r\n  fwd_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 1'                                                                           AS device,\r\n  fwd1.speed                                                                           AS aradex_speed,\r\n  fwd1.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd1.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd2.time)                                                AS time,\r\n  fwd_motor.motor_speed                                                                AS motor_speed,\r\n  'Aradex 2'                                                                           AS device,\r\n  fwd2.speed                                                                           AS aradex_speed,\r\n  fwd2.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd2.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd2\r\n\r\nORDER BY device;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6580,7 +6583,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 160
+        "y": 91
       },
       "id": 75,
       "options": {
@@ -6619,7 +6622,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.time, aft_measured.time)                                            AS time,\r\n  ABS(aft_motor.prop_torque)                                                           AS prop_torque,\r\n  aft_measured.randax_torque                                                           AS randax_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio}) - ABS(aft_motor.prop_torque)            AS thruster_loss,\r\n  ABS(aft_motor.prop_torque) / NULLIF(aft_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM aft_motor, aft_measured\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd_measured.time)                                            AS time,\r\n  ABS(fwd_motor.prop_torque)                                                           AS prop_torque,\r\n  fwd_measured.randax_torque                                                           AS randax_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio}) - ABS(fwd_motor.prop_torque)            AS thruster_loss,\r\n  ABS(fwd_motor.prop_torque) / NULLIF(fwd_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM fwd_motor, fwd_measured",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000_propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000_propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.time, aft_measured.time)                                            AS time,\r\n  ABS(aft_motor.prop_torque)                                                           AS prop_torque,\r\n  aft_measured.randax_torque                                                           AS randax_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio}) - ABS(aft_motor.prop_torque)            AS thruster_loss,\r\n  ABS(aft_motor.prop_torque) / NULLIF(aft_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM aft_motor, aft_measured\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd_measured.time)                                            AS time,\r\n  ABS(fwd_motor.prop_torque)                                                           AS prop_torque,\r\n  fwd_measured.randax_torque                                                           AS randax_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio}) - ABS(fwd_motor.prop_torque)            AS thruster_loss,\r\n  ABS(fwd_motor.prop_torque) / NULLIF(fwd_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM fwd_motor, fwd_measured",
           "refId": "A",
           "sql": {
             "columns": [
