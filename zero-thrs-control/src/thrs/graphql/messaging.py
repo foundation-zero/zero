@@ -169,7 +169,7 @@ class DirectiveMessaging:
         self._simulation_status = status
 
         for module in self._control_modules:
-            module.active = module._channels.module_name in status.control_modules
+            module.active = True#module._channels.module_name in status.control_modules
 
     async def play_simulation(self, playback_rate: float):
         simulation_status = self._directives_channels.get_simulation_status()

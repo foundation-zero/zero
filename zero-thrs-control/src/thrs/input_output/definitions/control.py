@@ -1,6 +1,7 @@
+
 from typing import Annotated, ClassVar
 
-from pydantic import field_validator
+from pydantic import FieldSerializationInfo, field_serializer
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
@@ -19,12 +20,13 @@ class Pump(ThrsValues):
     on: Stamped[OnOff]
 
     # TODO: Remove once marpower fixes this on their side
-    @field_validator("dutypoint")
+    @field_serializer("dutypoint")
     @classmethod
-    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        value.value *= 100
-
-        return value
+    def correct_marpower_range(cls, value: Stamped[Ratio], info: FieldSerializationInfo) -> Stamped[Ratio]:
+        if info.context and info.context.get("control"):
+            return Stamped(value=value.value * 100, timestamp=value.timestamp)
+        else:
+            return value
 
 
 class Valve(ThrsValues):
@@ -53,6 +55,14 @@ class Valve(ThrsValues):
             - 1: Flow from A to AB
     """
 
+    # TODO: Remove once marpower fixes this on their side
+    @field_serializer("setpoint")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio], info: FieldSerializationInfo) -> Stamped[Ratio]:
+        if info.context and info.context.get("control"):
+            return Stamped(value=value.value * 100, timestamp=value.timestamp)
+        else:
+            return value
 
 class Pcm(ThrsValues):
     on: Stamped[OnOff]

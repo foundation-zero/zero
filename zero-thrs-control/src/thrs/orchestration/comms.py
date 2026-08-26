@@ -75,6 +75,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         topic_suffix: str | None = None,
         *,
         only_computed_fields: bool = False,
+        context = None
     ):
         self._cls = message_type
         self._topic_prefix = topic_prefix
@@ -91,6 +92,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         }
         self._builder = PartialModelBuilder(self._cls)
         self._update_event = Event()
+        self.context = context
 
     @staticmethod
     def only_computed_fields[T: ThrsValues](
@@ -114,7 +116,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             else self._cls.model_fields
         )
         return {
-            self._topic(key, field): getattr(model, key).model_dump_json(by_alias=True)
+            self._topic(key, field): getattr(model, key).model_dump_json(by_alias=True, context=self.context)
             for key, field in fields.items()
         }
 
@@ -157,6 +159,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         cls: type[M] | tuple[type[M], ...],
         topic: str,
         topic_suffix: str | None = None,
+        context = None
     ):
         self._types = cls if isinstance(cls, tuple) else (cls,)
         validate_type: type[M] | object = self._types[0]
@@ -168,6 +171,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._future = Future()
         self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
+        self.context = context
 
     @staticmethod
     def for_module(
@@ -177,15 +181,17 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         *,
         type_topic: str | None = None,
         topic_suffix: str | None = None,
+        context = None
     ) -> "DirectMqttMapping[M]":
         base = f"{topic_prefix}/{module_name}{f'/{type_topic}' if type_topic else ''}"
         return DirectMqttMapping(
             message_type,
             f"{base}{f'/{topic_suffix}' if topic_suffix else ''}",
+            context=context
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
-        return {self._topic: model.model_dump_json(by_alias=True)}
+        return {self._topic: model.model_dump_json(by_alias=True, context=self.context)}
 
     def subscribe_topics(self) -> set[str]:
         return {self._topic}
@@ -348,6 +354,7 @@ class ControlChannels[
                 config.mqtt_devices_topic_prefix,
                 f"500000-thrs/{module_name}",
                 config.mqtt_control_topic_suffix,
+                context={"control": True}
             ),
         )
         self.send_computed_values = connector._create_publisher(

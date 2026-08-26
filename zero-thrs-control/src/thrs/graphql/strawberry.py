@@ -327,16 +327,17 @@ def create_app(settings: Config):
             drives_messaging = ControlMessaging(drives_channels)
             dc_messaging = ControlMessaging(dc_channels)
             dhw_messaging = ControlMessaging(dhw_channels)
+            dhw_messaging.active = True
             simulation_messaging = SimulationMessaging(simulation_channels)
             messaging = DirectiveMessaging(
                 [
-                    thrusters_messaging,
-                    pvt_messaging,
-                    pcm_messaging,
-                    adsorption_messaging,
-                    consumers_messaging,
-                    drives_messaging,
-                    dc_messaging,
+                    # thrusters_messaging,
+                    # pvt_messaging,
+                    # pcm_messaging,
+                    # adsorption_messaging,
+                    # consumers_messaging,
+                    # drives_messaging,
+                    # dc_messaging,
                     dhw_messaging,
                 ],
                 directives_channels,
