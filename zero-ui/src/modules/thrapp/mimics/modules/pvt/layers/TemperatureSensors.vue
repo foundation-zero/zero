@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { TEMPERATURE_SENSOR_WIDTH } from "../../../components/temperature-sensor";
 import { TemperatureSensorInstance } from "../../../instances";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
@@ -17,20 +18,22 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-03']"
     >
       <TemperatureLabelInstance
-        x="283"
-        y="47"
+        :target-x="298"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
+        y="44"
         :tag-id="temperatureSensors['1038-03'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-03'].source"
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
       x="298"
-      y="295"
+      y="293"
       :orientation="ComponentOrientation.Down"
       v-bind="temperatureSensors['1038-73']"
     >
       <TemperatureLabelInstance
-        x="283"
+        :target-x="298"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="256"
         :tag-id="temperatureSensors['1038-73'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-73'].source"
@@ -43,7 +46,8 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-04']"
     >
       <TemperatureLabelInstance
-        x="283"
+        :target-x="298"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="465"
         :tag-id="temperatureSensors['1038-04'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-04'].source"
@@ -56,7 +60,8 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-23']"
     >
       <TemperatureLabelInstance
-        x="468"
+        :target-x="468"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="152"
         :tag-id="temperatureSensors['1038-23'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-23'].source"
@@ -69,7 +74,8 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-22']"
     >
       <TemperatureLabelInstance
-        x="468"
+        :target-x="468"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="349"
         :tag-id="temperatureSensors['1038-22'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-22'].source"
@@ -82,7 +88,8 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-21']"
     >
       <TemperatureLabelInstance
-        x="468"
+        :target-x="468"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="571"
         :tag-id="temperatureSensors['1038-21'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-21'].source"
@@ -96,7 +103,7 @@ const temperatureSensors = PVT_MIMIC_DATA[MimicComponentType.TemperatureSensor];
     >
       <TemperatureLabelInstance
         x="1020"
-        y="590"
+        y="583"
         :tag-id="temperatureSensors['1038-24'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-24'].source"
       />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { BypassArea } from "../../../components/bypass-area";
-import { PyranoMeter } from "../../../components/pyrano-meter";
+import { PYRANO_METER_WIDTH, PyranoMeter } from "../../../components/pyrano-meter";
 import { IrradianceLabelInstance, PvtInstance } from "../../../instances";
 import { PVT_MIMIC_DATA } from "../data";
 
@@ -29,7 +29,8 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     </BypassArea>
 
     <IrradianceLabelInstance
-      x="-58"
+      :target-x="-52"
+      :target-width="PYRANO_METER_WIDTH"
       y="290"
       tag-id="9044"
     />
@@ -38,7 +39,8 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
       y="260"
     />
     <IrradianceLabelInstance
-      x="-58"
+      :target-x="-52"
+      :target-width="PYRANO_METER_WIDTH"
       y="390"
       tag-id="9043"
     />

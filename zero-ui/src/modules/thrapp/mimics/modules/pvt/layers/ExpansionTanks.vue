@@ -10,7 +10,8 @@ import { TagLabelInstance } from "../../../instances";
     y="165"
   />
   <TagLabelInstance
-    x="1215"
+    :target-x="1215"
+    :target-width="36"
     y="220"
     tag-id="1040-01"
   />
@@ -20,7 +21,7 @@ import { TagLabelInstance } from "../../../instances";
   />
   <TagLabelInstance
     x="1165"
-    y="152"
+    y="145"
     tag-id="1041-01"
   />
 </template>

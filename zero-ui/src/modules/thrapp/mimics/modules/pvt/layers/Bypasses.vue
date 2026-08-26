@@ -10,7 +10,7 @@ import { BypassArea } from "../../../components/bypass-area";
       :width="155"
       :height="168"
     >
-      Support components
+      Section 2 Support components
     </BypassArea>
     <BypassArea
       x="832"

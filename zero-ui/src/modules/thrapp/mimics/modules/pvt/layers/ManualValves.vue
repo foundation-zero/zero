@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { ManualValveType } from "../../../components/manual-valve";
+import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
@@ -19,7 +19,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1169-05']"
     >
       <TagLabelInstance
-        x="251"
+        :target-x="249"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="90"
         :tag-id="manualValves['1169-05'].tooltip?.yardTag"
       />
@@ -32,7 +33,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1169-04']"
     >
       <TagLabelInstance
-        x="251"
+        :target-x="249"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="300"
         :tag-id="manualValves['1169-04'].tooltip?.yardTag"
       />
@@ -45,7 +47,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1168-12']"
     >
       <TagLabelInstance
-        x="251"
+        :target-x="249"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="510"
         :tag-id="manualValves['1168-12'].tooltip?.yardTag"
       />
@@ -97,7 +100,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1069-06']"
     >
       <TagLabelInstance
-        x="500"
+        :target-x="500"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="230"
         :tag-id="manualValves['1069-06'].tooltip?.yardTag"
       />
@@ -110,7 +114,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1169-07']"
     >
       <TagLabelInstance
-        x="577"
+        :target-x="577"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="230"
         :tag-id="manualValves['1169-07'].tooltip?.yardTag"
       />
@@ -124,7 +129,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1169-08']"
     >
       <TagLabelInstance
-        x="500"
+        :target-x="500"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="428"
         :tag-id="manualValves['1169-08'].tooltip?.yardTag"
       />
@@ -137,7 +143,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1169-09']"
     >
       <TagLabelInstance
-        x="577"
+        :target-x="577"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="428"
         :tag-id="manualValves['1169-09'].tooltip?.yardTag"
       />
@@ -151,7 +158,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1191-01']"
     >
       <TagLabelInstance
-        x="503"
+        :target-x="500"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="649"
         :tag-id="manualValves['1191-01'].tooltip?.yardTag"
       />
@@ -164,7 +172,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1191-02']"
     >
       <TagLabelInstance
-        x="577"
+        :target-x="577"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="649"
         :tag-id="manualValves['1191-02'].tooltip?.yardTag"
       />
@@ -229,7 +238,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1177-01']"
     >
       <TagLabelInstance
-        x="839"
+        :target-x="839"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="599"
         :tag-id="manualValves['1177-01'].tooltip?.yardTag"
       />
@@ -242,7 +252,8 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1177-02']"
     >
       <TagLabelInstance
-        x="920"
+        :target-x="920"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="599"
         :tag-id="manualValves['1177-02'].tooltip?.yardTag"
       />

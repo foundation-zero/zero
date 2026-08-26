@@ -24,8 +24,9 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       v-bind="pumps['1018']"
     >
       <DutypointLabelInstance
-        x="543"
-        y="160"
+        :target-x="542"
+        :target-width="32"
+        y="170"
         :tag-id="pumps['1018'].tooltip?.yardTag"
         :pump="pumps['1018'].source"
       />
@@ -39,8 +40,9 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       v-bind="pumps['1019']"
     >
       <DutypointLabelInstance
-        x="543"
-        y="360"
+        :target-x="542"
+        :target-width="32"
+        y="365"
         :tag-id="pumps['1019'].tooltip?.yardTag"
         :pump="pumps['1019'].source"
       />
@@ -54,8 +56,9 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       v-bind="pumps['1020']"
     >
       <DutypointLabelInstance
-        x="543"
-        y="580"
+        :target-x="542"
+        :target-width="32"
+        y="590"
         :tag-id="pumps['1020'].tooltip?.yardTag"
         :pump="pumps['1020'].source"
       />
@@ -69,7 +72,8 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       v-bind="manualPumps['1182']"
     >
       <TagLabelInstance
-        x="888"
+        :target-x="882"
+        :target-width="32"
         y="547"
         :tag-id="manualPumps['1182'].tooltip?.yardTag"
       />

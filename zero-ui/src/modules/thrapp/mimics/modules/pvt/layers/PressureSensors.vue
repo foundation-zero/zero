@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
 import { PressureSensorInstance } from "../../../instances";
 import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
@@ -17,7 +18,8 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       v-bind="pressureSensors['1097-03']"
     >
       <PressureLabelInstance
-        x="605"
+        :target-x="610"
+        :target-width="PRESSURE_SENSOR_WIDTH"
         y="151"
         :tag-id="pressureSensors['1097-03'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-03'].source"
@@ -30,7 +32,8 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       v-bind="pressureSensors['1097-04']"
     >
       <PressureLabelInstance
-        x="605"
+        :target-x="610"
+        :target-width="PRESSURE_SENSOR_WIDTH"
         y="348"
         :tag-id="pressureSensors['1097-04'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-04'].source"
@@ -43,7 +46,8 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       v-bind="pressureSensors['1097-05']"
     >
       <PressureLabelInstance
-        x="605"
+        :target-x="610"
+        :target-width="PRESSURE_SENSOR_WIDTH"
         y="570"
         :tag-id="pressureSensors['1097-05'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-05'].source"
@@ -56,7 +60,8 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       v-bind="pressureSensors['1097-06']"
     >
       <PressureLabelInstance
-        x="1030"
+        :target-x="1044"
+        :target-width="PRESSURE_SENSOR_WIDTH"
         y="240"
         :tag-id="pressureSensors['1097-06'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-06'].source"

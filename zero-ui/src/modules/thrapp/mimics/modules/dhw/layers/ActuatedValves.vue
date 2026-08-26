@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { ACTUATED_VALVE_WIDTH } from "../../../components/actuated-valve/index.ts";
 import { ComponentOrientation } from "../../../components/index.ts";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
@@ -19,7 +20,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-11']"
     >
       <TagLabelInstance
-        x="360"
+        :target-x="361"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-11'].tooltip?.yardTag"
       />
@@ -31,7 +33,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-12']"
     >
       <TagLabelInstance
-        x="416"
+        :target-x="417"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-12'].tooltip?.yardTag"
       />
@@ -43,7 +46,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-14']"
     >
       <TagLabelInstance
-        x="470"
+        :target-x="472"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-14'].tooltip?.yardTag"
       />
@@ -55,7 +59,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-13']"
     >
       <TagLabelInstance
-        x="524"
+        :target-x="525"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-13'].tooltip?.yardTag"
       />
@@ -67,7 +72,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-07']"
     >
       <TagLabelInstance
-        x="713"
+        :target-x="715"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-07'].tooltip?.yardTag"
       />
@@ -79,7 +85,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-08']"
     >
       <TagLabelInstance
-        x="767"
+        :target-x="769"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-08'].tooltip?.yardTag"
       />
@@ -91,7 +98,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-10']"
     >
       <TagLabelInstance
-        x="822"
+        :target-x="824"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-10'].tooltip?.yardTag"
       />
@@ -103,7 +111,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-09']"
     >
       <TagLabelInstance
-        x="875"
+        :target-x="877"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-09'].tooltip?.yardTag"
       />
@@ -115,7 +124,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-03']"
     >
       <TagLabelInstance
-        x="1051"
+        :target-x="1053"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-03'].tooltip?.yardTag"
       />
@@ -127,7 +137,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-04']"
     >
       <TagLabelInstance
-        x="1105"
+        :target-x="1107"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-04'].tooltip?.yardTag"
       />
@@ -139,7 +150,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-06']"
     >
       <TagLabelInstance
-        x="1160"
+        :target-x="1161"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-06'].tooltip?.yardTag"
       />
@@ -151,7 +163,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-05']"
     >
       <TagLabelInstance
-        x="1217"
+        :target-x="1219"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="192"
         :tag-id="switchValves['1067-05'].tooltip?.yardTag"
       />
@@ -165,7 +178,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
     >
       <TagLabelInstance
         x="216"
-        y="598"
+        y="591"
         :tag-id="switchValves['1067-17'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
@@ -177,7 +190,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
     >
       <TagLabelInstance
         x="249"
-        y="563"
+        y="556"
         :tag-id="switchValves['1067-16'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
@@ -188,7 +201,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       v-bind="switchValves['1067-18']"
     >
       <TagLabelInstance
-        x="145"
+        :target-x="145"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="542"
         :tag-id="switchValves['1067-18'].tooltip?.yardTag"
       />
@@ -201,7 +215,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       :orientation="ComponentOrientation.Up"
     >
       <FlowControlLabelInstance
-        x="1043"
+        :target-x="1046"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="442"
         :tag-id="flowControlValves['1064-03'].tooltip?.yardTag"
         :valve="flowControlValves['1064-03'].source"
@@ -215,7 +230,8 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       :orientation="ComponentOrientation.Up"
     >
       <FlowControlLabelInstance
-        x="1045"
+        :target-x="1046"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="604"
         :tag-id="flowControlValves['1064-08'].tooltip?.yardTag"
         :valve="flowControlValves['1064-08'].source"

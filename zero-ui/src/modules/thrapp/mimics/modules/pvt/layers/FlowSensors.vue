@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { FLOW_SENSOR_WIDTH } from "../../../components/flow-sensor";
 import { FlowSensorInstance } from "../../../instances";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
@@ -17,7 +18,8 @@ const flowSensors = PVT_MIMIC_DATA[MimicComponentType.FlowSensor];
       v-bind="flowSensors['1058-12']"
     >
       <FlowLabelInstance
-        x="687"
+        :target-x="694"
+        :target-width="FLOW_SENSOR_WIDTH"
         y="40"
         :tag-id="flowSensors['1058-12'].tooltip?.yardTag"
         :flow="flowSensors['1058-12'].source"
@@ -30,7 +32,8 @@ const flowSensors = PVT_MIMIC_DATA[MimicComponentType.FlowSensor];
       v-bind="flowSensors['1058-13']"
     >
       <FlowLabelInstance
-        x="687"
+        :target-x="694"
+        :target-width="FLOW_SENSOR_WIDTH"
         y="249"
         :tag-id="flowSensors['1058-13'].tooltip?.yardTag"
         :flow="flowSensors['1058-13'].source"
@@ -43,7 +46,8 @@ const flowSensors = PVT_MIMIC_DATA[MimicComponentType.FlowSensor];
       v-bind="flowSensors['1057-03']"
     >
       <FlowLabelInstance
-        x="687"
+        :target-x="694"
+        :target-width="FLOW_SENSOR_WIDTH"
         y="458"
         :tag-id="flowSensors['1057-03'].tooltip?.yardTag"
         :flow="flowSensors['1057-03'].source"

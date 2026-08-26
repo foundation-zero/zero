@@ -12,13 +12,13 @@ const heatExchangers = PVT_MIMIC_DATA[MimicComponentType.HeatExchanger];
   <g>
     <PipeHeatExchangerInstance
       x="1037"
-      y="382"
+      y="377.5"
       :orientation="ComponentOrientation.Up"
       v-bind="heatExchangers['1002']"
     >
       <HeatExchangerLabelInstance
-        x="952"
-        y="372"
+        x="950"
+        y="366"
         :tag-id="heatExchangers['1002'].tooltip?.yardTag"
         :heat-exchanger="heatExchangers['1002'].source"
       />

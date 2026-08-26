@@ -23,8 +23,8 @@ const { t } = useI18n();
   <Label
     :x="x"
     :y="y"
-    width="60"
-    height="50"
+    :width="60"
+    :height="50"
   >
     {{ tagId }}
     <template #value>

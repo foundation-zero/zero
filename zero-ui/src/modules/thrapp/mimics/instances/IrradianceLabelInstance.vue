@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { MimicComponentInstanceProps } from ".";
-import { Label } from "../components/label";
+import { Label, LabelProps } from "../components/label";
 import { FieldRenderer } from "../renderers";
 
-defineProps<MimicComponentInstanceProps & {}>();
+defineProps<MimicComponentInstanceProps & LabelProps>();
 </script>
 
 <template>
   <Label
-    :x="x"
-    :y="y"
+    v-bind="$props"
     class="bg-transparent"
   >
     {{ tagId }}

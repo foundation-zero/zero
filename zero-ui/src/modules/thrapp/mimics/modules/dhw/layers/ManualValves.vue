@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { ManualValveType } from "../../../components/manual-valve";
+import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { DHW_MIMIC_DATA } from "../data";
@@ -20,7 +20,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="211"
-        y="295"
+        y="283"
         :tag-id="manualValves['1174-02'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -33,7 +33,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="91"
-        y="505"
+        y="498"
         :tag-id="manualValves['1069-17'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -46,7 +46,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="389"
-        y="370"
+        y="363"
         :tag-id="manualValves['1169-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -58,7 +58,8 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
-        x="802"
+        :target-x="805"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="625"
         :tag-id="manualValves['1169-02'].tooltip?.yardTag"
       />
@@ -72,7 +73,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="295"
-        y="370"
+        y="363"
         :tag-id="manualValves['1169-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -85,7 +86,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="211"
-        y="393"
+        y="382"
         :tag-id="manualValves['1174-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -98,7 +99,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="60"
-        y="548"
+        y="541"
         :tag-id="manualValves['1069-18'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -111,7 +112,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
     >
       <TagLabelInstance
         x="79"
-        y="597"
+        y="590"
         :tag-id="manualValves['1069-10'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -123,7 +124,8 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
-        x="733"
+        :target-x="734"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="341"
         :tag-id="manualValves['1168-06'].tooltip?.yardTag"
       />
@@ -136,7 +138,8 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
-        x="843"
+        :target-x="844"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="464"
         :tag-id="manualValves['1168-05'].tooltip?.yardTag"
       />
@@ -149,7 +152,8 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
-        x="613"
+        :target-x="614"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="463"
         :tag-id="manualValves['1168-04'].tooltip?.yardTag"
       />

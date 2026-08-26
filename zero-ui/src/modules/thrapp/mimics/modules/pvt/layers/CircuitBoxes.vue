@@ -33,7 +33,7 @@ const t = tScoped("labels");
 
     <LoopCircuitInstance
       x="1093"
-      y="347"
+      y="355"
       width="194"
       height="168"
       force-height
