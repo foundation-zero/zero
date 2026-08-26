@@ -23,8 +23,6 @@ import SubmitControlForm from "./partials/SubmitControlForm.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
 const { labels, items, sources } = useTranslations();
-
-const { source } = props;
 </script>
 
 <template>

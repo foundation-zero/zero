@@ -13,10 +13,7 @@ defineProps<MimicComponentInstanceProps & LabelProps>();
   >
     {{ tagId }}
     <template #value>
-      <FieldRenderer.Irradiance
-        class="text-sm font-normal"
-        :value="523"
-      />
+      <FieldRenderer.Irradiance class="text-sm font-normal" />
     </template>
   </Label>
 </template>

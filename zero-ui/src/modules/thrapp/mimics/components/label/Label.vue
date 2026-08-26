@@ -15,6 +15,7 @@ const props = withDefaults(
     width: 140,
     height: 60,
     targetX: 0,
+    targetWidth: 0,
   },
 );
 </script>

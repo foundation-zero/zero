@@ -57,7 +57,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
     }),
     "1047-02": toInstance<MimicComponentType.MixValve>({
       controls: {
-        valve: getField(ControlComponentType.Valve, "pvt", "pvtMixOwners"),
+        valve: getField(ControlComponentType.Valve, "pvt", "pvtMixExchanger"),
       },
       controllerState: {},
       custom: {},

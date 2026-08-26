@@ -24,8 +24,8 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
     v-bind="createSizeAndViewbox(Number(width), Number(height), forceHeight)"
     class="fill-background transition-all"
   >
-    // Seperate foreignObject is needed to prevent the border from pushing the content inwards when
-    state changes
+    <!-- Seperate foreignObject is needed to prevent the border from pushing the content inwards when
+      state changes -->
     <foreignObject
       :width="width"
       :height="height"

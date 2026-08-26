@@ -4,7 +4,6 @@ import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getCustomField, getField, ModuleField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
-import {} from "../controllers";
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {
