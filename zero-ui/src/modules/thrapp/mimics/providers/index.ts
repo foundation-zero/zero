@@ -160,6 +160,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
+  [SensorComponentType.Irradiance]: "irradiance",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {

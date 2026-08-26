@@ -199,6 +199,9 @@ export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
 export type PropulsionDriveSensor = Toggle;
 export type ShorePowerConverterSensor = Toggle;
+export type IrradianceSensor = {
+  irradiance: Stamped<number>;
+};
 
 export type PcsSensor = ModeSelector<string>;
 
@@ -223,7 +226,8 @@ export type SensorType =
   | BrightloopSensor
   | UgridSensor
   | PropulsionDriveSensor
-  | ShorePowerConverterSensor;
+  | ShorePowerConverterSensor
+  | IrradianceSensor;
 
 export type ControlType =
   | PumpControl
@@ -394,6 +398,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
+  SensorComponentType.Irradiance,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -457,6 +462,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
+  [SensorComponentType.Irradiance]: IrradianceSensor;
 };
 
 export type ExtractValues<
