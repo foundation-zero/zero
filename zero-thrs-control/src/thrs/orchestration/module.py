@@ -114,17 +114,11 @@ class Module[
         return ModulePersistenceSnapshot(
             parameters=self._control.parameters.model_dump(mode="json"),
             manual_control_values=self._control.manual_controls.model_dump(mode="json"),
-            control_mode="automatic" if self._control.automatic else "manual",
+            control_mode=self._control.control_mode,
         )
 
     def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
-        """Apply a configuration snapshot.
-
-        Every field is validated first and only applied once the whole snapshot is
-        known to be valid, so a single bad field (e.g. an unrecognized control mode)
-        can never leave the module with some values updated and others not - a
-        corrupt or malformed snapshot must be rejected atomically, never partially
-        applied."""
+        """Apply a configuration snapshot."""
 
         parameters = self._validate_parameters(snapshot)
         manual_control_values = self._validate_manual_control_values(snapshot)

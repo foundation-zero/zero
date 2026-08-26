@@ -77,7 +77,7 @@ class Switching[
                 self._manual_control.update_controls(actuated_control_values)
             self._mode = "manual"
 
-        if self._mode == "manual":
+        if self.control_mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
@@ -111,13 +111,21 @@ class Switching[
     def mode(self) -> SwitchingControlMode[ControlMode]:
         return (
             SwitchingControlMode(automatic_mode=None)
-            if self._mode == "manual"
+            if self.control_mode == "manual"
             else SwitchingControlMode(automatic_mode=self._automatic_control.mode)
         )
 
     @property
     def automatic(self) -> bool:
-        return self._mode == "automatic"
+        return self.control_mode == "automatic"
+
+    @property
+    def manual(self) -> bool:
+        return self.control_mode == "manual"
+
+    @property
+    def control_mode(self) -> ControlModes:
+        return self._mode
 
     @property
     def manual_controls(self) -> ControlValues:

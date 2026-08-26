@@ -121,7 +121,7 @@ def setup_machine_state_logger(
     database: PostgresDatabase | None,
     machine_state_logging_service_enabled: bool,
 ) -> StateLogger:
-    """Disabled by the caller, it logs machine state to a noop service."""
+    """If disabled by the caller or no database is provided, it logs machine state to a noop service."""
     if not machine_state_logging_service_enabled or database is None:
         return MachineStateLoggingServiceNoop()
 

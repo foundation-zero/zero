@@ -39,7 +39,7 @@ class ControlCmd(BaseSettings):
     mode: ModeName
     machine_state_logging: CliImplicitFlag[bool] = True
     module_persistence: CliImplicitFlag[bool] = True
-    allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = True
+    allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command: %s", self.mode)
@@ -122,7 +122,7 @@ class LockstepCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
     play: CliImplicitFlag[bool] = False
     module_persistence: CliImplicitFlag[bool] = True
-    allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = True
+    allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
 
     async def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -163,10 +163,6 @@ class LockstepCmd(BaseSettings):
             machine_state_logging_service_enabled=self.machine_state_logging,
         )
 
-        # Restore any previously persisted parameters/manual control values before
-        # forcing automatic mode below - lockstep always runs in automatic mode
-        # regardless of what was stored, but the parameters/manual values themselves
-        # should still pick up where the last run left off.
         await persistence.restore_all(control_modules)
 
         for module in control_modules:
