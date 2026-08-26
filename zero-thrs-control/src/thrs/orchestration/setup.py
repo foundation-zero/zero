@@ -86,6 +86,7 @@ def setup_database(
 async def setup_persistence_manager(
     database: PostgresDatabase | None,
     module_persistence_enabled: bool,
+    allow_boot_without_persistence_having_active_postgres: bool = True,
 ) -> PersistManager:
     """Build the persist manager. Without persistence enabled it silently no-ops, so
     the runtime can run against MQTT only."""
@@ -94,8 +95,13 @@ async def setup_persistence_manager(
     if module_persistence_enabled and database is not None:
         if await _is_postgres_reachable(database):
             engine = PostgresPersistentEngine(database)
-        else:
+        elif allow_boot_without_persistence_having_active_postgres:
             logger.warning("Postgres is not reachable - module persistence disabled")
+        else:
+            raise RuntimeError(
+                "Postgres is not reachable and allow_boot_without_persistence_having_active_postgres "
+                "is False - refusing to boot without persistence having active postgres"
+            )
 
     return PersistManager(engine)
 

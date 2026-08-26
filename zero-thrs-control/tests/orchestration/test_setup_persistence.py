@@ -93,3 +93,14 @@ async def test_stays_noop_without_a_database():
     manager = await setup_persistence_manager(None, module_persistence_enabled=True)
 
     assert isinstance(manager._persistence_engine, NoopPersistentEngine)
+
+
+async def test_raises_when_postgres_unreachable_and_boot_without_persistence_disallowed():
+    database = _fake_database(_FailingSessionFactory())
+
+    with pytest.raises(RuntimeError, match="refusing to boot"):
+        await setup_persistence_manager(
+            database,
+            module_persistence_enabled=True,
+            allow_boot_without_persistence_having_active_postgres=False,
+        )
