@@ -1,127 +1,178 @@
-import { slotLabel } from "./templates";
-import { InstanceModel, SlotValue } from "./types";
+import { canonicalSlotsOf, slotLabel, typeLabelOf } from "./templates";
+import { InstanceModel, ModuleData, PidControllerDef, SlotValue } from "./types";
 
-export const instancesHeaders = [
-  "module",
-  "folder",
-  "key",
-  "componentType",
-  "title",
-  "tooltipTitle",
-  "tooltipComponentType",
-  "tooltipTechnicalName",
-  "slots",
-];
+export const instanceHeaders = ["module", "folder", "key", "title", "componentType"];
 
 export const toInstancesRow = (instance: InstanceModel): Record<string, string> => ({
   module: instance.module,
   folder: instance.folder,
   key: instance.key,
-  componentType: instance.componentType,
   title: instance.title,
-  tooltipTitle: instance.tooltip?.title ?? "",
-  tooltipComponentType: instance.tooltip?.componentType ?? "",
-  tooltipTechnicalName: instance.tooltip?.technicalName ?? "",
-  slots: instance.slots.map((s) => s.slotId).join(";"),
+  componentType: instance.componentType,
 });
 
-export const fillInHeaders = [
+export const planHeaders = [
   "module",
   "folder",
-  "instanceKey",
-  "componentType",
+  "key",
   "title",
-  "tooltipTitle",
-  "tooltipComponentType",
-  "tooltipTechnicalName",
+  "componentType",
+  "typeLabel",
   "slotId",
   "slotLabel",
   "kind",
   "valueKind",
-  "fieldType",
-  "fieldName",
-  "sourceModule",
-  "customTitle",
-  "customYardTag",
-  "customTechnicalName",
-  "literalValue",
-  "refTarget",
-  "pidType",
-  "pidControllerField",
-  "pidSetpointField",
-  "pidOutputMinimumField",
+  "allowedFieldTypes",
+  "required",
+  "value",
+  "srcTitle",
+  "srcYardTag",
   "notes",
 ];
 
-const toFillInRow = (instance: InstanceModel, slot: SlotValue): Record<string, string> => {
-  const row: Record<string, string> = {
-    module: instance.module,
-    folder: instance.folder,
-    instanceKey: instance.key,
-    componentType: instance.componentType,
-    title: instance.title,
-    tooltipTitle: instance.tooltip?.title ?? "",
-    tooltipComponentType: instance.tooltip?.componentType ?? "",
-    tooltipTechnicalName: instance.tooltip?.technicalName ?? "",
-    slotId: slot.slotId,
-    slotLabel: slotLabel(slot.slotId),
-    kind: slot.kind,
-    valueKind: slot.value.kind,
-    fieldType: "",
-    fieldName: "",
-    sourceModule: "",
-    customTitle: "",
-    customYardTag: "",
-    customTechnicalName: "",
-    literalValue: "",
-    refTarget: "",
-    pidType: "",
-    pidControllerField: "",
-    pidSetpointField: "",
-    pidOutputMinimumField: "",
-    notes: "",
-  };
+interface SerializedValue {
+  value: string;
+  srcTitle: string;
+  srcYardTag: string;
+}
 
+const serializeSlot = (
+  slot: SlotValue,
+  instanceModule: string,
+  fieldModules: Map<string, Set<string>>,
+): SerializedValue => {
   switch (slot.value.kind) {
-    case "field":
-      row.sourceModule = slot.value.module;
-      row.fieldType = slot.value.fieldType;
-      row.fieldName = slot.value.field;
-      break;
+    case "field": {
+      const modules = fieldModules.get(slot.value.field);
+      const needsQualifier = !modules || modules.size > 1 || !modules.has(instanceModule);
+      return {
+        value: needsQualifier ? `${slot.value.module}:${slot.value.field}` : slot.value.field,
+        srcTitle: "",
+        srcYardTag: "",
+      };
+    }
     case "custom":
-      row.sourceModule = slot.value.module;
-      row.customTitle = slot.value.title ?? "";
-      row.customYardTag = slot.value.yardTag ?? "";
-      row.customTechnicalName = slot.value.technicalName;
-      break;
+      return {
+        value: slot.value.technicalName,
+        srcTitle: slot.value.title ?? "",
+        srcYardTag: slot.value.yardTag ?? "",
+      };
     case "literal":
-      row.literalValue = slot.value.value;
-      break;
+      return { value: slot.value.value, srcTitle: "", srcYardTag: "" };
     case "enum":
-      row.refTarget = `enum:${slot.value.enumName}.${slot.value.member}`;
-      break;
+      return { value: slot.value.member, srcTitle: "", srcYardTag: "" };
     case "ref":
-      row.refTarget = slot.value.ref;
-      break;
+      return {
+        value: `${slot.pid ? "@controller:" : "@instance:"}${slot.value.ref}`,
+        srcTitle: "",
+        srcYardTag: "",
+      };
   }
-
-  if (slot.pid) {
-    row.pidType = slot.pid.pidType;
-    row.pidControllerField = slot.pid.controllerField.field;
-    row.pidSetpointField = slot.pid.setpoint?.field ?? "";
-    row.pidOutputMinimumField = slot.pid.outputMinimum?.field ?? "";
-  }
-
-  return row;
 };
 
-export const instancesToFillIn = (instances: InstanceModel[]): Record<string, string>[] => {
+const VALUE_KIND_BY_FIELD_KIND: Record<SlotValue["kind"], string> = {
+  field: "field",
+  custom: "customSource",
+  literal: "literal",
+  enum: "enum",
+  ref: "instanceRef",
+};
+
+const toPlanRow = (
+  instance: InstanceModel,
+  slotId: string,
+  value: SlotValue | undefined,
+  required: boolean,
+  allowedFieldTypes: string[],
+  fieldModules: Map<string, Set<string>>,
+): Record<string, string> => {
+  const serialized = value
+    ? serializeSlot(value, instance.module, fieldModules)
+    : { value: "", srcTitle: "", srcYardTag: "" };
+  return {
+    module: instance.module,
+    folder: instance.folder,
+    key: instance.key,
+    title: instance.title,
+    componentType: instance.componentType,
+    typeLabel: typeLabelOf(instance.componentType),
+    slotId,
+    slotLabel: slotLabel(slotId),
+    kind: value?.kind ?? (slotId.split(".")[0] as SlotValue["kind"]),
+    valueKind: value ? (value.pid ? "controllerRef" : VALUE_KIND_BY_FIELD_KIND[value.kind]) : "",
+    allowedFieldTypes: allowedFieldTypes.join(";"),
+    required: String(required),
+    value: serialized.value,
+    srcTitle: serialized.srcTitle,
+    srcYardTag: serialized.srcYardTag,
+    notes: "",
+  };
+};
+
+const SLOT_ORDER = ["source", "sensors", "controls", "parameters", "controllerState", "custom"];
+
+const bySlotOrder = (a: string, b: string): number => {
+  const sectionA = a.split(".")[0];
+  const sectionB = b.split(".")[0];
+  const diff = SLOT_ORDER.indexOf(sectionA) - SLOT_ORDER.indexOf(sectionB);
+  return diff !== 0 ? diff : a.localeCompare(b);
+};
+
+export const instancesToPlanRows = (
+  instances: InstanceModel[],
+  fieldModules: Map<string, Set<string>>,
+): Record<string, string>[] => {
   const rows: Record<string, string>[] = [];
   for (const instance of instances) {
-    const sorted = [...instance.slots].sort((a, b) => a.slotId.localeCompare(b.slotId));
-    for (const slot of sorted) {
-      rows.push(toFillInRow(instance, slot));
+    const slots = new Map(instance.slots.map((slot) => [slot.slotId, slot]));
+    const templateSlots = canonicalSlotsOf(instance.componentType);
+    const known = new Set(templateSlots.map((template) => template.slotId));
+    for (const template of templateSlots) {
+      rows.push(
+        toPlanRow(
+          instance,
+          template.slotId,
+          slots.get(template.slotId),
+          template.required,
+          template.fieldTypes ?? [],
+          fieldModules,
+        ),
+      );
+    }
+    for (const slot of [...slots.keys()].filter((slotId) => !known.has(slotId)).sort(bySlotOrder)) {
+      const value = slots.get(slot);
+      rows.push(
+        toPlanRow(
+          instance,
+          slot,
+          value,
+          false,
+          value?.kind === "field" ? [value.fieldType] : [],
+          fieldModules,
+        ),
+      );
     }
   }
   return rows;
 };
+
+export const controllerHeaders = [
+  "module",
+  "name",
+  "pidType",
+  "controllerField",
+  "setpointField",
+  "outputMinimumField",
+];
+
+export const toControllersRows = (modules: ModuleData[]): Record<string, string>[] =>
+  modules.flatMap((module) =>
+    module.controllers.map((controller: PidControllerDef) => ({
+      module: module.module,
+      name: controller.name,
+      pidType: controller.pidType,
+      controllerField: controller.controllerField.field,
+      setpointField: controller.setpoint?.field ?? "",
+      outputMinimumField: controller.outputMinimum?.field ?? "",
+    })),
+  );

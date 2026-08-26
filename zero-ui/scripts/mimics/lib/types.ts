@@ -1,5 +1,13 @@
 export type FieldKind = "field" | "custom" | "literal" | "enum" | "ref";
 
+export type SheetValueKind =
+  | "field"
+  | "customSource"
+  | "literal"
+  | "enum"
+  | "controllerRef"
+  | "instanceRef";
+
 export type FieldValue =
   | { kind: "field"; fieldType: string; module: string; field: string }
   | { kind: "custom"; module: string; title?: string; yardTag?: string; technicalName: string }
@@ -59,12 +67,11 @@ export interface SchemaRow {
 
 export interface TemplateSlot {
   componentType: string;
+  typeLabel: string;
   slotId: string;
   slotLabel: string;
   kind: SlotKind;
-  valueKinds: FieldKind[];
+  valueKind: SheetValueKind;
   allowedFieldTypes: string[];
   required: boolean;
-  tooltipTitle: string;
-  tooltipComponentType: string;
 }

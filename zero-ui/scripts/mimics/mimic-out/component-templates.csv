@@ -1,85 +1,89 @@
-componentType,slotId,slotLabel,kind,valueKind,allowedFieldTypes,required,tooltipTitle,tooltipComponentType
-BoilerTank,controllerState.controller,Controller › controller,controllerState,field,controller:dhwTanksController,true,,Hot water tank
-BoilerTank,custom.tankStateField,Custom › tankStateField,custom,literal,,true,,Hot water tank
-BoilerTank,parameters.enabled,parameters › enabled,parameters,field,parameter:enabled,true,,Hot water tank
-BoilerTank,parameters.maximumLevel,parameters › maximumLevel,parameters,field,parameter:level,true,,Hot water tank
-BoilerTank,parameters.maximumTemperature,parameters › maximumTemperature,parameters,field,parameter:temperature,true,,Hot water tank
-BoilerTank,parameters.minimumLevel,parameters › minimumLevel,parameters,field,parameter:level,true,,Hot water tank
-BoilerTank,parameters.minimumTemperature,parameters › minimumTemperature,parameters,field,parameter:temperature,true,,Hot water tank
-BoilerTank,sensors.boostingSupply,sensors › boostingSupply,sensors,field,sensor:temperature,true,,Hot water tank
-BoilerTank,sensors.boostReturnValve,sensors › boostReturnValve,sensors,field,sensor:valve,true,,Hot water tank
-BoilerTank,sensors.boostSupplyValve,sensors › boostSupplyValve,sensors,field,sensor:valve,true,,Hot water tank
-BoilerTank,sensors.dischargeValve,sensors › dischargeValve,sensors,field,sensor:valve,true,,Hot water tank
-BoilerTank,sensors.level,sensors › level,sensors,field,sensor:level,true,,Hot water tank
-BoilerTank,sensors.supplyValve,sensors › supplyValve,sensors,field,sensor:valve,true,,Hot water tank
-BoilerTank,sensors.temperature,sensors › temperature,sensors,field,sensor:temperature,true,,Hot water tank
-BoilerTank,source,Source,source,custom,,true,,Hot water tank
-CheckValve,source,Source,source,custom,,true,Check valve,Check valve
-ExchangeCircuit,custom.circuitName,Custom › circuitName,custom,literal,,true,,Exchange circuit
-ExchangeCircuit,sensors.deltaT,sensors › deltaT,sensors,field,sensor:deltaT,true,,Exchange circuit
-ExchangeCircuit,sensors.flow,sensors › flow,sensors,field,sensor:flow,true,,Exchange circuit
-ExchangeCircuit,sensors.heatExchanger,sensors › heatExchanger,sensors,field,sensor:heatExchanger,true,,Exchange circuit
-ExchangeCircuit,sensors.incoming,sensors › incoming,sensors,field,sensor:temperature,true,,Exchange circuit
-ExchangeCircuit,sensors.outgoing,sensors › outgoing,sensors,field,sensor:temperature,true,,Exchange circuit
-ExchangeCircuit,source,Source,source,custom,,true,,Exchange circuit
-FlowControlValve,controllerState.controller,Controller › controller,controllerState,field,pidController,false,,
-FlowControlValve,controls.valve,controls › valve,controls,field,control:valve,true,,
-FlowControlValve,custom.controller,Custom › controller,custom,ref,,false,,
-FlowControlValve,parameters.flow,parameters › flow,parameters,field,parameter:tuning,false,,
-FlowControlValve,sensors.measurement,sensors › measurement,sensors,field,sensor:flow,false,,
-FlowControlValve,source,Source,source,field,sensor:valve,true,,
-FlowSensor,controllerState.controller,Controller › controller,controllerState,field,pidController,false,Flow sensor,Flow sensor
-FlowSensor,controls.pump,controls › pump,controls,field,control:pump,true,Flow sensor,Flow sensor
-FlowSensor,parameters.flow,parameters › flow,parameters,field,parameter:flow;parameter:flowcontrol,true,Flow sensor,Flow sensor
-FlowSensor,sensors.temperature,sensors › temperature,sensors,field,sensor:temperature,true,Flow sensor,Flow sensor
-FlowSensor,source,Source,source,field,sensor:flow,true,Flow sensor,Flow sensor
-FreshwaterCircuit,sensors.flowIn,sensors › flowIn,sensors,field,sensor:flow,true,,
-FreshwaterCircuit,sensors.flowOut,sensors › flowOut,sensors,field,sensor:calculatedFlow;sensor:flow,true,,
-FreshwaterCircuit,sensors.tIn,sensors › tIn,sensors,field,sensor:temperature,true,,
-FreshwaterCircuit,sensors.tOut,sensors › tOut,sensors,field,sensor:temperature,true,,
-FreshwaterCircuit,source,Source,source,custom,,true,,
-HeatExchanger,custom.exchangeCircuit,Custom › exchangeCircuit,custom,ref,,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,custom.sideA,Custom › sideA,custom,enum,,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,custom.sideB,Custom › sideB,custom,enum,,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,sensors.flow,sensors › flow,sensors,field,sensor:flow,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,sensors.incoming,sensors › incoming,sensors,field,sensor:temperature,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,sensors.outgoing,sensors › outgoing,sensors,field,sensor:temperature,true,Heat Exchanger,Heat Exchanger
-HeatExchanger,source,Source,source,field,sensor:heatExchanger,true,Heat Exchanger,Heat Exchanger
-HeatPump,controls.heatpump,controls › heatpump,controls,field,control:heatpump,true,Heat pump,Heat pump
-HeatPump,custom.controller,Custom › controller,custom,ref,,true,Heat pump,Heat pump
-HeatPump,sensors.incoming,sensors › incoming,sensors,field,sensor:temperature,true,Heat pump,Heat pump
-HeatPump,sensors.outgoing,sensors › outgoing,sensors,field,sensor:temperature,true,Heat pump,Heat pump
-HeatPump,source,Source,source,field,sensor:heatExchanger,true,Heat pump,Heat pump
-HVAC,sensors.flow,sensors › flow,sensors,field,sensor:flow,true,HVAC,HVAC Exchanger
-HVAC,sensors.incoming,sensors › incoming,sensors,field,sensor:temperature,true,HVAC,HVAC Exchanger
-HVAC,sensors.outgoing,sensors › outgoing,sensors,field,sensor:temperature,true,HVAC,HVAC Exchanger
-HVAC,source,Source,source,field,sensor:heatExchanger,true,HVAC,HVAC Exchanger
-LevelSensor,source,Source,source,field,sensor:level,true,Tank level sensor,Tank level sensor
-LevelSwitch,source,Source,source,field,sensor:levelSwitch,true,Level switch,Level switch
-ManualValve,source,Source,source,custom,,true,Manual valve,Manual valve
-MixValve,controllerState.controller,Controller › controller,controllerState,field,pidController,true,Mix valve,Mix valve
-MixValve,controls.valve,controls › valve,controls,field,control:valve,true,Mix valve,Mix valve
-MixValve,source,Source,source,field,sensor:valve,true,Mix valve,Mix valve
-PressureGauge,source,Source,source,custom,,true,,
-PressureSensor,controls.pump,controls › pump,controls,field,control:pump,false,Pressure sensor,Pressure sensor
-PressureSensor,parameters.flow,parameters › flow,parameters,field,parameter:flow,false,Pressure sensor,Pressure sensor
-PressureSensor,sensors.flow,sensors › flow,sensors,field,sensor:flow,false,Pressure sensor,Pressure sensor
-PressureSensor,source,Source,source,field,sensor:pressure,true,Pressure sensor,Pressure sensor
-Pump,controls.pump,controls › pump,controls,field,control:pump,true,Pump,
-Pump,custom.flowController,Custom › flowController,custom,ref,,true,Pump,
-Pump,custom.temperatureController,Custom › temperatureController,custom,ref,,false,Pump,
-Pump,parameters.flow,parameters › flow,parameters,field,parameter:flow,true,Pump,
-Pump,parameters.temperature,parameters › temperature,parameters,field,parameter:temperature,true,Pump,
-Pump,source,Source,source,field,sensor:pump,true,Pump,
-SwitchValve,controls.valve,controls › valve,controls,field,control:valve,true,Switch valve,2 way valve DN 25
-SwitchValve,custom.tankController,Custom › tankController,custom,ref,,false,Switch valve,2 way valve DN 25
-SwitchValve,source,Source,source,field,sensor:valve,true,Switch valve,2 way valve DN 25
-TemperatureSensor,controllerState.controller,Controller › controller,controllerState,ref,,false,Temperature sensor,
-TemperatureSensor,controls.pump,controls › pump,controls,field,control:pump,false,Temperature sensor,
-TemperatureSensor,custom.controller,Custom › controller,custom,ref,,false,Temperature sensor,
-TemperatureSensor,parameters.temperature,parameters › temperature,parameters,field,parameter:temperature,false,Temperature sensor,
-TemperatureSensor,sensors.actuator,sensors › actuator,sensors,field,sensor:valve,false,Temperature sensor,
-TemperatureSensor,sensors.measurement,sensors › measurement,sensors,field,sensor:temperature,false,Temperature sensor,
-TemperatureSensor,source,Source,source,field,sensor:temperature,true,Temperature sensor,
-ThreeWaySwitchValve,controls.valve,controls › valve,controls,field,control:valve,true,Mix valve,Mix valve
-ThreeWaySwitchValve,source,Source,source,field,sensor:valve,true,Mix valve,Mix valve
+componentType,typeLabel,slotId,slotLabel,kind,valueKind,allowedFieldTypes,required
+BoilerTank,Boiler tank,controllerState.controller,Controller › controller,controllerState,field,controller:dhwTanksController,true
+BoilerTank,Boiler tank,custom.tankStateField,Custom › tankStateField,custom,literal,,true
+BoilerTank,Boiler tank,parameters.enabled,parameters › enabled,parameter,field,parameter:enabled,true
+BoilerTank,Boiler tank,parameters.maximumLevel,parameters › maximumLevel,parameter,field,parameter:level,true
+BoilerTank,Boiler tank,parameters.maximumTemperature,parameters › maximumTemperature,parameter,field,parameter:temperature,true
+BoilerTank,Boiler tank,parameters.minimumLevel,parameters › minimumLevel,parameter,field,parameter:level,true
+BoilerTank,Boiler tank,parameters.minimumTemperature,parameters › minimumTemperature,parameter,field,parameter:temperature,true
+BoilerTank,Boiler tank,sensors.boostingSupply,sensors › boostingSupply,sensor,field,sensor:temperature,true
+BoilerTank,Boiler tank,sensors.boostReturnValve,sensors › boostReturnValve,sensor,field,sensor:valve,true
+BoilerTank,Boiler tank,sensors.boostSupplyValve,sensors › boostSupplyValve,sensor,field,sensor:valve,true
+BoilerTank,Boiler tank,sensors.dischargeValve,sensors › dischargeValve,sensor,field,sensor:valve,true
+BoilerTank,Boiler tank,sensors.level,sensors › level,sensor,field,sensor:level,true
+BoilerTank,Boiler tank,sensors.supplyValve,sensors › supplyValve,sensor,field,sensor:valve,true
+BoilerTank,Boiler tank,sensors.temperature,sensors › temperature,sensor,field,sensor:temperature,true
+BoilerTank,Boiler tank,source,Source,source,customSource,,true
+CheckValve,Check valve,source,Source,source,customSource,,true
+ExchangeCircuit,Exchange circuit,custom.circuitName,Custom › circuitName,custom,literal,,true
+ExchangeCircuit,Exchange circuit,sensors.deltaT,sensors › deltaT,sensor,field,sensor:deltaT,true
+ExchangeCircuit,Exchange circuit,sensors.flow,sensors › flow,sensor,field,sensor:flow,true
+ExchangeCircuit,Exchange circuit,sensors.heatExchanger,sensors › heatExchanger,sensor,field,sensor:heatExchanger,true
+ExchangeCircuit,Exchange circuit,sensors.incoming,sensors › incoming,sensor,field,sensor:temperature,true
+ExchangeCircuit,Exchange circuit,sensors.outgoing,sensors › outgoing,sensor,field,sensor:temperature,true
+ExchangeCircuit,Exchange circuit,source,Source,source,customSource,,true
+FlowControlValve,Flow control valve,controllerState.controller,Controller › controller,controllerState,field,pidController,false
+FlowControlValve,Flow control valve,controls.valve,controls › valve,control,field,control:valve,true
+FlowControlValve,Flow control valve,custom.controller,Custom › controller,custom,controllerRef,,false
+FlowControlValve,Flow control valve,parameters.flow,parameters › flow,parameter,field,parameter:tuning;parameter:flow,false
+FlowControlValve,Flow control valve,sensors.measurement,sensors › measurement,sensor,field,sensor:flow,false
+FlowControlValve,Flow control valve,source,Source,source,field,sensor:valve,true
+FlowSensor,FlowSensor,controllerState.controller,Controller › controller,controllerState,field,pidController,false
+FlowSensor,FlowSensor,controls.pump,controls › pump,control,field,control:pump,false
+FlowSensor,FlowSensor,custom.controller,Custom › controller,custom,controllerRef,,false
+FlowSensor,FlowSensor,parameters.flow,parameters › flow,parameter,field,parameter:flowcontrol;parameter:flow,false
+FlowSensor,FlowSensor,sensors.measurement,sensors › measurement,sensor,field,sensor:flow;sensor:temperature,false
+FlowSensor,FlowSensor,sensors.temperature,sensors › temperature,sensor,field,sensor:temperature,false
+FlowSensor,FlowSensor,source,Source,source,field,sensor:flow,true
+FreshwaterCircuit,Connecting circuit,sensors.flowIn,sensors › flowIn,sensor,field,sensor:flow;sensor:calculatedFlow,true
+FreshwaterCircuit,Connecting circuit,sensors.flowOut,sensors › flowOut,sensor,field,sensor:flow;sensor:calculatedFlow,true
+FreshwaterCircuit,Connecting circuit,sensors.tIn,sensors › tIn,sensor,field,sensor:temperature,true
+FreshwaterCircuit,Connecting circuit,sensors.tOut,sensors › tOut,sensor,field,sensor:temperature,true
+FreshwaterCircuit,Connecting circuit,source,Source,source,customSource,,true
+HeatExchanger,Heat exchanger,custom.exchangeCircuit,Custom › exchangeCircuit,custom,instanceRef,,true
+HeatExchanger,Heat exchanger,custom.sideA,Custom › sideA,custom,enum,,true
+HeatExchanger,Heat exchanger,custom.sideB,Custom › sideB,custom,enum,,true
+HeatExchanger,Heat exchanger,sensors.flow,sensors › flow,sensor,field,sensor:flow,true
+HeatExchanger,Heat exchanger,sensors.incoming,sensors › incoming,sensor,field,sensor:temperature,true
+HeatExchanger,Heat exchanger,sensors.outgoing,sensors › outgoing,sensor,field,sensor:temperature,true
+HeatExchanger,Heat exchanger,source,Source,source,field,sensor:heatExchanger,true
+HeatPump,Heat pump,controls.heatpump,controls › heatpump,control,field,control:heatpump,true
+HeatPump,Heat pump,custom.controller,Custom › controller,custom,controllerRef,,false
+HeatPump,Heat pump,sensors.incoming,sensors › incoming,sensor,field,sensor:temperature,true
+HeatPump,Heat pump,sensors.outgoing,sensors › outgoing,sensor,field,sensor:temperature,true
+HeatPump,Heat pump,source,Source,source,field,sensor:heatExchanger,true
+HVAC,HVAC,sensors.flow,sensors › flow,sensor,field,sensor:flow,true
+HVAC,HVAC,sensors.incoming,sensors › incoming,sensor,field,sensor:temperature,true
+HVAC,HVAC,sensors.outgoing,sensors › outgoing,sensor,field,sensor:temperature,true
+HVAC,HVAC,source,Source,source,field,sensor:heatExchanger,true
+LevelSensor,Level sensor,source,Source,source,field,sensor:level,true
+LevelSwitch,Level switch,source,Source,source,field,sensor:levelSwitch,true
+ManualPump,Manual pump,source,Source,source,customSource,,true
+ManualValve,Manual valve,source,Source,source,customSource,,true
+MixValve,Mix valve,controllerState.controller,Controller › controller,controllerState,field,pidController,false
+MixValve,Mix valve,controls.valve,controls › valve,control,field,control:valve,true
+MixValve,Mix valve,source,Source,source,field,sensor:valve,true
+PressureGauge,Pressure gauge,source,Source,source,customSource,,true
+PressureSensor,Pressure sensor,controls.pump,controls › pump,control,field,control:pump,false
+PressureSensor,Pressure sensor,custom.controller,Custom › controller,custom,controllerRef,,false
+PressureSensor,Pressure sensor,parameters.flow,parameters › flow,parameter,field,parameter:flowcontrol;parameter:flow,false
+PressureSensor,Pressure sensor,sensors.flow,sensors › flow,sensor,field,sensor:flow,false
+PressureSensor,Pressure sensor,source,Source,source,field,sensor:pressure,true
+Pump,Pump,controls.pump,controls › pump,control,field,control:pump,true
+Pump,Pump,custom.flowController,Custom › flowController,custom,controllerRef,,true
+Pump,Pump,custom.temperatureController,Custom › temperatureController,custom,controllerRef,,false
+Pump,Pump,parameters.flow,parameters › flow,parameter,field,parameter:flow,false
+Pump,Pump,parameters.temperature,parameters › temperature,parameter,field,parameter:temperature,false
+Pump,Pump,source,Source,source,field,sensor:pump,true
+SwitchValve,Switch valve,controls.valve,controls › valve,control,field,control:valve,true
+SwitchValve,Switch valve,custom.tankController,Custom › tankController,custom,instanceRef,,false
+SwitchValve,Switch valve,source,Source,source,field,sensor:valve,true
+TemperatureSensor,Temperature sensor,controllerState.controller,Controller › controller,controllerState,field,pidController,false
+TemperatureSensor,Temperature sensor,controls.pump,controls › pump,control,field,control:pump,false
+TemperatureSensor,Temperature sensor,custom.controller,Custom › controller,custom,controllerRef,,false
+TemperatureSensor,Temperature sensor,parameters.temperature,parameters › temperature,parameter,field,parameter:temperature,false
+TemperatureSensor,Temperature sensor,sensors.actuator,sensors › actuator,sensor,field,sensor:valve,false
+TemperatureSensor,Temperature sensor,sensors.measurement,sensors › measurement,sensor,field,sensor:flow;sensor:temperature,false
+TemperatureSensor,Temperature sensor,source,Source,source,field,sensor:temperature,true
+ThreeWaySwitchValve,Three-way switch valve,controls.valve,controls › valve,control,field,control:valve,true
+ThreeWaySwitchValve,Three-way switch valve,source,Source,source,field,sensor:valve,true

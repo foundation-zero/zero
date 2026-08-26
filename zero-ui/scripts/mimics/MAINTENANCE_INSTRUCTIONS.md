@@ -1,105 +1,96 @@
-# Mimic Data Workflow — Maintenance Instructions
+# Mimic Content Workflow — Maintenance Instructions
 
-**Audience: an AI agent (or developer) keeping the mimic pipeline in sync.** When the schema, the
-code, the committed mimic data, or the design changes, apply the matching recipe below so the
-Google Sheet workflow and generated code stay consistent.
+**Audience: an AI agent (or developer) keeping the mimic sheet pipeline in sync.** When the
+schema, the code, or the committed mimic data changes, apply the matching recipe below.
 
-User-facing usage of the workflow is documented in [README.md](./README.md) — do not duplicate it
-here.
+User-facing usage is documented in [README.md](./README.md); instructions for implementing a
+filled plan are in [EXTENDING.md](./EXTENDING.md). Do not duplicate them here.
 
 ## Architecture
 
 ```
 schema.graphql ──┐
-existing dhw/    ─┤ scripts/mimics/generate-sheet-tabs.ts ──► scripts/mimics/mimic-out/*.csv
-thrusters data  ─┘
-filled FillIn CSV ──► scripts/mimics/generate-mimic-data.ts ──► modules/<module>/data/**/*.ts
-scripts/mimics/roundtrip-mimic.ts ──► acceptance test (must stay green)
+committed dhw/   ┤ scripts/mimics/generate-sheet-tabs.ts ──► scripts/mimics/mimic-out/*.csv
+thrusters data  ┘
+filled plan CSV ──► scripts/mimics/verify-plan.ts ──► validation (--check: diff vs committed data)
 ```
 
 | Entry point | Purpose |
 |-------------|---------|
-| `pnpm generate-sheet-tabs` | Rebuilds the 4 CSVs in `scripts/mimics/mimic-out/`. |
-| `pnpm generate-mimic-data <fillin.csv> [module] [outRoot]` | Writes `data/**` from a filled-in sheet export. |
-| `pnpm roundtrip-mimic` | Regenerates dhw/thrusters from the seed into `mimic-out/roundtrip/` and asserts semantic equality with committed code. |
+| `pnpm generate-sheet-tabs` | Rebuilds the CSVs in `scripts/mimics/mimic-out/`. |
+| `pnpm verify-plan <plan.csv> [controllers.csv]` | Validates a filled plan export. |
+| `pnpm verify-plan --check <plan.csv>` | Additionally diffs the plan against committed mimic data (replaces the old round-trip test). |
 
 Shared library in `scripts/mimics/lib/`:
 
 - `schema.ts` — parses `schema.graphql` into the datapoint catalog (`SchemaRow[]`).
-- `data-parser.ts` — reads committed/generated `data/**` back into canonical `InstanceModel`s
-  (TS compiler API; handles `shared.ts` refs, spreads, factory folders, alias imports, getters,
-  PID controllers).
-- `templates.ts` — derives per-`MimicComponentType` slot templates from instances.
-- `sheet-tabs.ts` — serialises instances into `instances.csv` / `fillin-seed.csv` formats.
-- `generate.ts` — the code generator (CSV rows → `.ts` files).
-- `csv.ts` — CSV read/write helpers.
-- `enums.ts` — mapping between schema types (`sensor:level`, …) and the generated enum
-  expressions (`SensorComponentType.*`, etc.).
+- `data-parser.ts` — reads committed `data/**` back into canonical `InstanceModel`s (TS compiler
+  API; handles `shared.ts` refs, spreads, factory folders, alias imports, getters, PID controllers).
+- `templates.ts` — **canonical slot table** (`CANONICAL_SLOTS`) per component type, plus
+  designer-facing type labels. The single place defining which slots exist per type.
+- `sheet-tabs.ts` — serialises instances/controllers into the CSV formats.
+- `csv.ts`, `enums.ts` — helpers (CSV I/O; schema-type ↔ enum-expression maps).
+
+There is no code generator anymore; implementation of filled plans is done by hand/AI per
+[EXTENDING.md](./EXTENDING.md). The invariants to protect are:
+
+1. `plan-seed.csv` regenerated from committed dhw/thrusters must validate and `--check` clean:
+   ```bash
+   pnpm generate-sheet-tabs
+   pnpm verify-plan --check scripts/mimics/mimic-out/plan-seed.csv scripts/mimics/mimic-out/controllers-seed.csv
+   ```
+2. Every slot used by committed code must exist in `CANONICAL_SLOTS` — otherwise the plan rows
+   appear as unknown-slot errors during validation.
 
 ## Recipes
 
 ### Schema changed (new/renamed/removed datapoints)
 
 1. Refresh the GraphQL schema if needed (`pnpm extract-all-schemas`, see `../README.md`).
-2. `pnpm generate-sheet-tabs`; re-import `schema-catalog.csv` into the **Schema** tab.
-3. Regenerate affected modules and run `pnpm roundtrip-mimic` + `pnpm typecheck`.
+2. `pnpm generate-sheet-tabs`; re-import `schema-catalog.csv` into the Schema tab.
+3. Run the invariant check above; fix any newly-unresolvable references.
 
 ### Committed dhw/thrusters mimic data edited by hand
 
-1. Run `pnpm roundtrip-mimic`. If it fails, the committed data no longer matches
-   `fillin-seed.csv`.
-2. Re-run `pnpm generate-sheet-tabs` so `instances.csv` / `fillin-seed.csv` match the committed
-   code; re-import them into **Instances** (and use the new seed as FillIn reference).
-3. Re-run `pnpm roundtrip-mimic` — must pass.
-
-### New instance added (e.g. a valve in an existing module)
-
-Designer-side change: they add a row to the **Instances** tab with its `slots` column filled.
-Your job is only to keep the pipeline able to express it:
-
-- If it needs a folder that has no `FOLDER_SUFFIX` entry yet, add one in
-  `lib/generate.ts` so the data constant is named consistently (e.g. `..._TANK_DATA`).
-- Verify via round-trip + typecheck after generating.
+Run the invariant check. If it fails, either the hand edit introduced content not derivable
+from the canonical slots (extend `CANONICAL_SLOTS` if legitimate), or the seed no longer matches
+the sheet — re-import `instances.csv` / `controllers-seed.csv` / `plan-seed.csv`.
 
 ### New component type added in UI code
 
-1. Ensure the UI component and its `*FieldDefinitions` entry in
-   `src/modules/thrapp/types/fields.ts` exist (that defines which slots the type requires).
-2. `lib/templates.ts` derives templates only from instances that already exist, so a brand-new
-   type appears in `component-templates.csv` only once at least one instance uses it. If needed,
-   extend `deriveTemplates()`/`fields.ts` handling so the type's slots are derived correctly.
-3. New folder → add `FOLDER_SUFFIX` entry in `lib/generate.ts`.
+1. Ensure the UI component and its entries in `src/modules/thrapp/types/fields.ts` exist.
+2. Add the type to `CANONICAL_SLOTS` and `TYPE_LABELS` in `lib/templates.ts`.
+3. Verify with the invariant check after at least one instance exists.
+
+### Slot added/changed on an existing type (design change)
+
+1. Update `src/modules/thrapp/types/fields.ts`.
+2. Mirror the change in `CANONICAL_SLOTS` (`lib/templates.ts`) — same slotId, valueKind, field
+   types, required flag.
+3. Regenerate tabs, re-import Templates into the sheet; run the invariant check.
 
 ### Whole new module added (e.g. `pcm`, `pvt`, `adsorption`)
 
-1. The schema catalog likely already contains the module's datapoints — verify in
-   `schema-catalog.csv`.
-2. Ensure `generate-sheet-tabs.ts` parses the module's data if seed instances exist for it (the
-   `modules` array in that script lists which modules are reverse-engineered).
+1. Check the module's datapoints exist in `schema-catalog.csv` (`MIMIC_MODULES` in
+   `lib/schema.ts` lists parsed modules).
+2. Add the module to `SEED_MODULES` in `generate-sheet-tabs.ts` only if committed mimic data
+   exists for it.
 3. App wiring (mimic `.vue` page, `layers/`, registration in
-   `src/modules/thrapp/views/Mimic.vue`) is NOT generated by this pipeline — do it by hand if
-   requested.
+   `src/modules/thrapp/views/Mimic.vue`) is NOT part of this workflow.
 
-### Design changed (slots, tooltips, templates)
+### Parser changed
 
-Slot definitions live in `fields.ts` (`*FieldDefinitions`) and flow through `deriveTemplates()`
-into `component-templates.csv`. Tooltip defaults come from template columns H/I. After changes:
-regenerate tabs, re-import **Templates**, regenerate modules, round-trip + typecheck. Note
-`fieldTooltip(this.source, {...})` requires the content argument — a slot must always have a
-title/componentType/technicalName or generation emits invalid code.
-
-### Generator/parser changed
-
-Run `pnpm roundtrip-mimic` — it must stay green. It compares canonical JSON of each instance
-(component type, key, tooltip, sorted slot values incl. PID defs).
+The parser feeds both seeding and `--check`. After any change run the invariant check — it must
+stay green for dhw/thrusters.
 
 ## Gotchas
 
-- The generator inlines everything (no `shared.ts`). Regenerating a folder deletes its existing
-  `shared.ts`. This is intentional and functionally equivalent.
-- Cross-component references (`custom.exchangeCircuit`, `custom.tankController`) are emitted as
-  getters to defer circular module resolution.
-- The parser and generator share a single canonical model; keep `lib/enums.ts` in sync with
-  `src/modules/thrsim/types/index.ts` and the schema type maps.
+- Plan values reference schema fields by their GraphQL name (`field` column C of the Schema
+  tab), not by technicalName. Cross-module references are written `module:field`; the seeder
+  qualifies automatically whenever a field name is ambiguous across modules.
+- `controllerState.controller` accepts two forms: a raw `pidController` datapoint or
+  `@controller:<name>`. Both are valid in plans and code.
+- Factory folders (e.g. thrusters manual valves) generate instances without individual titles;
+  missing `srcTitle` there is a warning, not an error.
 - Path constants in the entry scripts are relative to their own location (`../../src/...`,
   `mimic-out`), so moving files requires updating those paths.
