@@ -26,29 +26,27 @@ const flowSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.FlowSensor];
       />
     </FlowSensorInstance>
     <FlowSensorInstance
-      x="286.512"
+      x="280"
       y="282"
       :orientation="ComponentOrientation.Down"
       v-bind="flowSensors['1218-02']"
     >
       <FlowLabelInstance
-        :target-x="286.512"
-        :target-width="FLOW_SENSOR_WIDTH"
-        y="243"
+        x="320"
+        y="268"
         :tag-id="flowSensors['1218-02'].tooltip?.yardTag"
         :flow="flowSensors['1218-02'].source"
       />
     </FlowSensorInstance>
     <FlowSensorInstance
-      x="286.512"
+      x="280"
       y="551"
       :orientation="ComponentOrientation.Down"
       v-bind="flowSensors['1057-22']"
     >
       <FlowLabelInstance
-        :target-x="286.512"
-        :target-width="FLOW_SENSOR_WIDTH"
-        y="513"
+        x="320"
+        y="535"
         :tag-id="flowSensors['1057-22'].tooltip?.yardTag"
         :flow="flowSensors['1057-22'].source"
       />

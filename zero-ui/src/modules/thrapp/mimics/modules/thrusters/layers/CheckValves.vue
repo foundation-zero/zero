@@ -19,7 +19,7 @@ const checkValves = THRUSTERS_MIMIC_DATA[MimicComponentType.CheckValve];
       ><TagLabelInstance
         :target-x="561"
         :target-width="CHECK_VALVE_WIDTH"
-        y="517"
+        y="515"
         :tag-id="checkValves['1213-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>
@@ -31,7 +31,7 @@ const checkValves = THRUSTERS_MIMIC_DATA[MimicComponentType.CheckValve];
       ><TagLabelInstance
         :target-x="561"
         :target-width="CHECK_VALVE_WIDTH"
-        y="608"
+        y="605"
         :tag-id="checkValves['1213-02'].tooltip?.yardTag"
       />
     </CheckValveInstance>

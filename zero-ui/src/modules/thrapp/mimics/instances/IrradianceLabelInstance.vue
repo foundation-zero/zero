@@ -9,7 +9,7 @@ defineProps<MimicComponentInstanceProps & LabelProps>();
 <template>
   <Label
     v-bind="$props"
-    class="bg-transparent"
+    class="bg-inverse-muted-foreground"
   >
     {{ tagId }}
     <template #value>
