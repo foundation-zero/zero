@@ -11,18 +11,18 @@ import { ModuleField } from "../mimics/providers";
 
 export type ComponentFields<
   Type extends
-  | ControlComponentType
-  | SensorComponentType
-  | ParametersType
-  | ControllerStateComponentType,
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType,
 > = Record<MimicComponentType, Record<string, Type>>;
 
 export type ComponentTypeFields<
   Type extends
-  | ControlComponentType
-  | SensorComponentType
-  | ParametersType
-  | ControllerStateComponentType,
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType,
   Fields extends ComponentFields<Type>,
 > = Fields;
 
@@ -208,11 +208,11 @@ export type ParameterFieldDefinitions = ParameterFields<{
 
 export type PIDController<
   Type extends SensorComponentType.Temperature | SensorComponentType.Flow =
-  | SensorComponentType.Temperature
-  | SensorComponentType.Flow,
+    | SensorComponentType.Temperature
+    | SensorComponentType.Flow,
   Parameter extends ParametersType = Type extends SensorComponentType.Temperature
-  ? ParametersType.Temperature
-  : ParametersType.Flow | ParametersType.FlowControl,
+    ? ParametersType.Temperature
+    : ParametersType.Flow | ParametersType.FlowControl,
 > = {
   type: Type;
   controller: ModuleField<ControllerStateComponentType.PIDController>;
@@ -309,10 +309,10 @@ export type ExtractModuleFields<
     SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
   >,
 > = {
-    [K in keyof Fields]: Fields[K] extends undefined
+  [K in keyof Fields]: Fields[K] extends undefined
     ? ModuleField<Fields[K]> | undefined
     : ModuleField<Fields[K]>;
-  };
+};
 
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &
@@ -346,6 +346,6 @@ export type ExtractCustomFields<Type extends MimicComponentType> = {
 
 export type ExtractSourceFields<Type extends MimicComponentType> = {
   source: SourceFieldDefinitions[Type] extends undefined
-  ? ModuleField<"custom"> | undefined
-  : ModuleField<SourceFieldDefinitions[Type]>;
+    ? ModuleField<"custom"> | undefined
+    : ModuleField<SourceFieldDefinitions[Type]>;
 };
