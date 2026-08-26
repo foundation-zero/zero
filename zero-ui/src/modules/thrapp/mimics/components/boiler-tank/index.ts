@@ -1,4 +1,4 @@
-import { BoilerTankState } from "@/modules/thrs/types/index.ts";
+import { BoilerTankState } from "@/modules/thrsim/types/index.ts";
 import { MimicComponentState } from "../index.ts";
 
 export { default as BoilerTankTitle } from "../circuit-box/CircuitBoxTitle.vue";

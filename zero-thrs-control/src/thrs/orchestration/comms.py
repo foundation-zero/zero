@@ -1,11 +1,8 @@
 import logging
-from asyncio import Event, Future, ensure_future, gather, timeout
-from collections.abc import Mapping
+from asyncio import Event, Future, gather, timeout
+from collections.abc import Awaitable, Callable, Coroutine, Mapping
 from inspect import isawaitable
 from typing import (
-    Awaitable,
-    Callable,
-    Coroutine,
     Protocol,
     cast,
 )
@@ -16,13 +13,7 @@ from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-    get_topic,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
@@ -200,6 +191,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return {self._topic}
 
     def handle_message(self, topic: str, json: str | bytes):
+        awaitables: list[Awaitable] = []
         if topic == self._topic:
             self._value = cast(M, self._adapter.validate_json(json))
             if not self._future.done():
@@ -208,7 +200,8 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
             for hook in self._hooks:
                 result = hook(self._value)
                 if isawaitable(result):
-                    ensure_future(result)
+                    awaitables.append(result)
+        gather(*awaitables, return_exceptions=True)
 
     def result(self) -> M | None:
         return self._value
@@ -252,7 +245,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             name: sub_mapping(
                 module_cls,
                 topic_prefix,
-                name,
+                f"500000-thrs/{name}",
                 topic_suffix,
             )
             for name, module_cls in clss.items()
@@ -291,14 +284,15 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             self._mappings.keys()
         ):
             return cast(T, CombinedValues(values=mapping_result))
-        else:
-            return None
+        return None
 
     async def wait_for_result(self) -> T:
         results = await gather(
             *(builder.wait_for_result() for builder in self._mappings.values())
         )
-        return cast(T, CombinedValues(dict(zip(self._mappings.keys(), results))))
+        return cast(
+            T, CombinedValues(dict(zip(self._mappings.keys(), results, strict=False)))
+        )
 
 
 class ControlChannels[
@@ -318,7 +312,7 @@ class ControlChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
         )
         connector._register_listener(sensor_values_mapping)
 
@@ -352,7 +346,7 @@ class ControlChannels[
             PartialMqttMapping[C](
                 control_module.control_values_cls,
                 config.mqtt_devices_topic_prefix,
-                module_name,
+                f"500000-thrs/{module_name}",
                 config.mqtt_control_topic_suffix,
             ),
         )
@@ -404,8 +398,8 @@ class ControlChannels[
 
 
 class SimulationChannels[
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     def __init__(
         self,
@@ -454,7 +448,6 @@ class SimulationChannels[
         self.get_control_values = control_values_mapping.result
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = simulation_inputs_mapping.wait_for_result
 
 
 class ControlApiChannels[
@@ -475,14 +468,14 @@ class ControlApiChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             module_description.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
         )
         connector._register_listener(sensor_values_mapping)
 
         control_values_mapping = PartialMqttMapping[C](
             module_description.control_values_cls,
             config.mqtt_devices_topic_prefix,
-            module_name,
+            f"500000-thrs/{module_name}",
             config.mqtt_control_topic_suffix,
         )
         connector._register_listener(control_values_mapping)
@@ -560,7 +553,7 @@ class ControlApiChannels[
         self.wait_for_control_modes = control_modes_mapping.wait_for
 
 
-class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
+class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
     def __init__(
         self,
         connector: "MqttConnector",
@@ -588,9 +581,8 @@ class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
         )
 
         self.get_simulation_inputs = self.simulation_inputs_mapping.result
-        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for_result
         self.get_simulation_outputs = self.simulation_outputs_mapping.result
-        self.wait_for_simulation_inputs_where = self.simulation_inputs_mapping.wait_for
+        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for
 
 
 class DirectivesChannels:
@@ -706,7 +698,12 @@ class MqttConnector:
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
                         )
-                    mapping.handle_message(message.topic.value, message.payload)
+                    try:
+                        mapping.handle_message(message.topic.value, message.payload)
+                    except Exception:
+                        logger.exception(
+                            "Failed handling MQTT message, message ignored"
+                        )
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool

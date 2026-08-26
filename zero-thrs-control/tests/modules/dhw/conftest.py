@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
@@ -46,7 +46,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(45),
         ),
-        dhw_ht_supply=Boundary(
+        dhw_consumers_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),
         ),
@@ -72,7 +72,7 @@ def simulation(simulation_inputs):
             DhwSimulationOutputs,
             fmu,
             simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
@@ -98,6 +98,7 @@ def runner(
     simulation: Simulation[
         DhwSensorValues, DhwControlValues, DhwSimulationInputs, DhwSimulationOutputs
     ],
+    simulation_inputs: DhwSimulationInputs,
     alarms: DhwAlarms,
 ) -> SimulationTestRunner[
     DhwSensorValues,
@@ -108,7 +109,7 @@ def runner(
     DhwControlMode,
     DhwControllerState,
 ]:
-    return SimulationTestRunner(simulation, control, alarms)
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
 
 
 @fixture
@@ -125,21 +126,21 @@ def tanks_controller(parameters) -> TanksController:
             outlet=control_values.dhw_switch_tank1_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank1_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank1_boosting_return,
-            disabled=parameters.tank1_disabled,
+            enabled=parameters.tank1_enabled,
         ),
         tank2=Tank(
             inlet=control_values.dhw_switch_tank2_inlet,
             outlet=control_values.dhw_switch_tank2_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank2_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank2_boosting_return,
-            disabled=parameters.tank2_disabled,
+            enabled=parameters.tank2_enabled,
         ),
         tank3=Tank(
             inlet=control_values.dhw_switch_tank3_inlet,
             outlet=control_values.dhw_switch_tank3_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank3_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank3_boosting_return,
-            disabled=parameters.tank3_disabled,
+            enabled=parameters.tank3_enabled,
         ),
-        time_fn=lambda: datetime.now(),
+        time_fn=datetime.now,
     )

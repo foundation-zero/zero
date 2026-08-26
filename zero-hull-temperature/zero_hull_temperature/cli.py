@@ -1,9 +1,11 @@
 import asyncio
 import json
 import logging
-from datetime import timedelta
 from typing import Literal
 
+from faststream import FastStream
+from faststream.mqtt import MQTTBroker
+from faststream.specification.asyncapi import AsyncAPI
 from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
@@ -12,17 +14,18 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
+from zero_modbus_bridge.io import ModbusTopic
+from zero_modbus_bridge.publisher import MqttPublisher
+from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 
-from zero_hull_temperature.addresses import PATH, TOPIC
-from zero_hull_temperature.mqtt import Temperatures
-from zero_hull_temperature.reader import (
-    RelaySwitchingTemperatureReader,
-    TemperatureReader,
-)
-from zero_hull_temperature.settings import ModbusSettings, MqttSettings
+from zero_hull_temperature.addresses import HULL_TEMPERATURE_TOPIC, PATH, TOPIC
+from zero_hull_temperature.bridge_relay import RelaySwitchingBridge
 from zero_hull_temperature.stub import Stub
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s"
+)
 
 
 class MqttSend(CliMutuallyExclusiveGroup):
@@ -35,24 +38,28 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        async with RelaySwitchingTemperatureReader.from_settings(
-            self,
-            self,
-            self.activate_topic,
-            self.activate_json_path,
-            "hull-temperature/temperatures",
-        ) as reader:
-            temperatures = await reader.read_temperatures()
-            for reading in temperatures:
-                print(f"{reading.sensor}: {reading.temperature}")
+        async with self.make_broker() as broker:
+            bridge = RelaySwitchingBridge.from_settings(
+                self,
+                broker,
+                self.activate_topic,
+                self.activate_json_path,
+            )
+            await bridge.run_once()
+        print("Read complete — temperatures published to MQTT")
 
 
 class ReadSkipMqttCmd(ModbusSettings):
     async def cli_cmd(self) -> None:
-        async with TemperatureReader.from_settings(self) as reader:
-            temperatures = await reader.read_temperatures()
-            for reading in temperatures:
-                print(f"{reading.sensor}: {reading.temperature}")
+        modbus = self.modbus_client()
+        topics: list[ModbusTopic] = [HULL_TEMPERATURE_TOPIC]
+        reader = ModbusReader(modbus, topics)
+        modbus.open()
+        try:
+            for topic, payload in reader.read_all():
+                print(f"{topic}: {payload.model_dump(mode='json')}")
+        finally:
+            modbus.close()
 
 
 class StubCmd(ModbusSettings, MqttSettings):
@@ -75,31 +82,56 @@ class StubCmd(ModbusSettings, MqttSettings):
 class RunCmd(ModbusSettings, MqttSettings):
     activate_topic: str = TOPIC
     activate_json_path: str = PATH
-    send_topic: str
-    seconds: int
-    n: int = -1
 
-    async def cli_cmd(self) -> None:
-        async with RelaySwitchingTemperatureReader.from_settings(
-            self, self, self.activate_topic, self.activate_json_path, self.send_topic
-        ) as reader:
-            await reader.run(timedelta(seconds=self.seconds), n=self.n)
+    def cli_cmd(self) -> None:
+        import asyncio
+
+        broker = self.make_broker()
+        bridge = RelaySwitchingBridge.from_settings(
+            self,
+            broker,
+            self.activate_topic,
+            self.activate_json_path,
+        )
+        app = FastStream(broker)
+        app.after_startup(bridge.run)
+        asyncio.run(app.run())
 
 
 class SchemaCmd(BaseModel):
     async def cli_cmd(self) -> None:
-        print(json.dumps(Temperatures.model_json_schema(), indent=2))
+        from zero_hull_temperature.addresses import HullTemperature
+
+        print(HullTemperature.model_json_schema())
+
+
+class AsyncApiCmd(BaseSettings):
+    title: str = "Hull Temperature"
+    version: str = "1.0.0"
+
+    def cli_cmd(self) -> None:
+        broker = MQTTBroker("localhost:1883")
+        spec = AsyncAPI(title=self.title, version=self.version)
+        app = FastStream(broker, specification=spec)
+        MqttPublisher(broker, [HULL_TEMPERATURE_TOPIC])
+        print(json.dumps(app.schema.to_specification().to_jsonable(), indent=2))
 
 
 class ZeroHullTemperature(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", env_nested_delimiter="__"
+        cli_implicit_flags=True,
+        cli_ignore_unknown_args=True,
     )
-    read: CliSubCommand[ReadWithMqttCmd]
+
+    read_with_mqtt: CliSubCommand[ReadWithMqttCmd]
     read_skip_mqtt: CliSubCommand[ReadSkipMqttCmd]
     stub: CliSubCommand[StubCmd]
     run: CliSubCommand[RunCmd]
     print_schema: CliSubCommand[SchemaCmd]
+    print_asyncapi: CliSubCommand[AsyncApiCmd]
 
     def cli_cmd(self) -> None:
-        CliApp.run_subcommand(self)
+        try:
+            CliApp.run_subcommand(self)
+        except KeyboardInterrupt:
+            pass

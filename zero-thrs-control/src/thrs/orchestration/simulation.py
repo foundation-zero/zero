@@ -5,13 +5,11 @@ from typing import Any
 
 from thrs.input_output.base import (
     CombinedValues,
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.module import ModuleClassMap
-from thrs.simulation.fmu import Fmu
+from thrs.simulation.fmu import FmuLike
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
 
 logger = logging.getLogger(__name__)
@@ -21,7 +19,7 @@ logger = logging.getLogger(__name__)
 class SimulationResult[
     S,
     C,
-    I: SimulationInputs,
+    I: ThrsValues,
     O: ThrsValues,
 ]:
     timestamp: datetime
@@ -35,14 +33,14 @@ class SimulationResult[
 class Simulation[
     S,
     C,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     def __init__(
         self,
-        sensor_values_clss: ModuleClassMap | type[ThrsValues],
+        sensor_values_clss: ModuleClassMap | type[S],
         simulation_outputs_cls: type[O],
-        fmu: Fmu,
+        fmu: FmuLike,
         simulation_inputs: I,
         start_time: datetime,
         tick_duration: timedelta,
@@ -70,11 +68,15 @@ class Simulation[
         logging.debug("Running simulation tick")
         time = self.time()
 
-        simulation_inputs = self._simulation_inputs.get_values_at_time(time)
+        simulation_inputs = self._simulation_inputs
         fmu_inputs = self._io_mapping.generate_inputs(control_values, simulation_inputs)
         fmu_outputs = self._fmu.tick(fmu_inputs, self._tick_duration)
         sensor_values, simulation_outputs, raw = self._io_mapping.construct_outputs(
-            fmu_inputs, fmu_outputs, simulation_inputs, time + self._tick_duration
+            fmu_inputs,
+            fmu_outputs,
+            control_values,
+            simulation_inputs,
+            time + self._tick_duration,
         )
 
         self._ticks += 1
@@ -93,16 +95,16 @@ class Simulation[
 
 @dataclass
 class SimulationDescription:
-    simulation_outputs_cls: type[SimulationValues]
-    fmu: Fmu
-    simulation_inputs: SimulationInputs
+    simulation_outputs_cls: type[ThrsValues]
+    fmu: FmuLike
+    simulation_inputs: ThrsValues
 
 
 class SimulationUnit[
     S: ThrsValues | CombinedValues,
     C: ThrsValues | CombinedValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ]:
     channels: SimulationChannels[I, O]
 

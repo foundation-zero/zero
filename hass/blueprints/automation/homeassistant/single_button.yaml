@@ -1,0 +1,201 @@
+blueprint:
+  name: Single Button Light Control
+  description: Control light brightness using a single button
+  domain: automation
+  input:
+    button_section:
+      name: Button
+      icon: mdi:gesture-tap-button
+      description: These options control the behavior of the first button
+      input:
+        button:
+          name: Button
+          description: Button to control the light
+          selector:
+            entity:
+              domain: [binary_sensor, input_boolean]
+        button_short_press:
+          name: Short Press
+          description: When the button is pressed and released quickly
+          default: "script.light_toggle"
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "Toggle"
+                  value: "script.light_toggle"
+                - label: "Turn On"
+                  value: "script.light_turn_on"
+                - label: "Turn Off"
+                  value: "script.light_turn_off"
+        button_hold:
+          name: Press & Hold
+          description: When the button is held down
+          default: "script.light_smart_dim"
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "Dim Up"
+                  value: "script.light_dim_up"
+                - label: "Dim Down"
+                  value: "script.light_dim_down"
+                - label: "Smart Dim (up/down)"
+                  value: "script.light_smart_dim"
+
+    dimming:
+      name: Dimming
+      icon: mdi:brightness-6
+      description: These options control the dimming behavior of the buttons
+      input:
+        light_label:
+          name: Light Label
+          description: Label to select light outputs
+          selector:
+            label:
+        dim_level:
+          name: Dim Level
+          description: Helper to store dim level
+          selector:
+            entity:
+              domain: input_number
+        min_level:
+          name: Minimum Level
+          description: Minimum dim level
+          default: 1
+          selector:
+            number:
+              min: 1
+              max: 100
+              step: 1
+        max_level:
+          name: Maximum Level
+          description: Maximum dim level
+          default: 100
+          selector:
+            number:
+              min: 0
+              max: 100
+              step: 1
+        reverse_delay:
+          name: Reverse Delay (for Smart Dim)
+          description: Delay in seconds before reversing dim direction when hitting a boundary
+          default: 5
+          selector:
+            number:
+              min: 0
+              max: 10
+              step: 1
+
+    red_light_section:
+      name: Red Light (optional)
+      icon: mdi:lightbulb-on-outline
+      collapsed: true
+      description: These options control the behavior of the red light when night mode is active
+      input:
+        red_light_label:
+          default: []
+          name: Red Light Label
+          description: Label to select red light outputs
+          selector:
+            label:
+        night_mode:
+          default: []
+          name: Night Mode
+          description: Select a toggle to determine if night mode is active. If night mode is active, the red light will be used instead of the white light.
+          selector:
+            entity:
+              domain: [binary_sensor, input_boolean]
+
+mode: parallel
+
+variables:
+  dim_level: !input dim_level
+  night_mode: !input night_mode
+  red_light_label: !input red_light_label
+  light_label: !input light_label
+
+trigger_variables:
+  scripts:
+    "short_press:button": !input button_short_press
+    "hold:button": !input button_hold
+
+triggers:
+  - id: "short_press:button"
+    trigger: state
+    entity_id: !input button
+    to: "on"
+  - id: "hold:button"
+    trigger: state
+    entity_id: !input button
+    to: "on"
+    for:
+      milliseconds: 500
+  - id: dim_set
+    trigger: state
+    entity_id: !input dim_level
+  - id: night_mode_changed
+    trigger: state
+    entity_id: !input night_mode
+
+actions:
+  - choose:
+      - conditions:
+          - alias: Short press
+            condition: template
+            value_template: "{{ trigger.id.startswith('short_press') }}"
+        sequence:
+          - delay:
+              milliseconds: 300.0
+          - if:
+              - alias: Button no longer pressed
+                condition: template
+                value_template: "{{ is_state(trigger.entity_id, 'off') }}"
+            then:
+              - alias: Execute short press behavior
+                action: "{{ scripts.get(trigger.id) }}"
+                data:
+                  dim_level: !input dim_level
+                  button: "{{ trigger.entity_id }}"
+                  min_level: !input min_level
+                  max_level: !input max_level
+      - conditions:
+          - alias: Hold
+            condition: template
+            value_template: "{{ trigger.id.startswith('hold') }}"
+        sequence:
+          - alias: Repeat behaviour while button is held
+            action: "{{ scripts.get(trigger.id) }}"
+            data:
+              dim_level: !input dim_level
+              button: "{{ trigger.entity_id }}"
+              min_level: !input min_level
+              max_level: !input max_level
+              reverse_delay: !input reverse_delay
+      - conditions:
+          condition: or
+          conditions:
+            - alias: Dim level changed
+              condition: trigger
+              id: dim_set
+            - alias: Night mode changed
+              condition: trigger
+              id: night_mode_changed
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ not not night_mode and not not red_light_label }}"
+            then:
+              - action: light.turn_off
+                alias: Turn off other light
+                target:
+                  label_id: "{{ is_state(night_mode, 'off') | iif(red_light_label, light_label) }}"
+              - action: script.light_set_dim
+                data:
+                  dim_level: "{{ states(dim_level) | int }}"
+                  light_label: "{{ is_state(night_mode, 'on') | iif(red_light_label, light_label) }}"
+            else:
+              - action: script.light_set_dim
+                data:
+                  dim_level: "{{ states(dim_level) | int }}"
+                  light_label: !input light_label

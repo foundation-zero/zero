@@ -107,12 +107,3 @@ INSERT INTO loads.aws_ranges (aws_range) VALUES
     ('[30,40)'),
     ('[40,)');
 
--- Define load cases
-INSERT INTO loads.load_cases (awa_range_id, aws_range_id, sail_set_id)
-SELECT
-    awa_range.id AS awa_range_id,
-    aws_range.id AS aws_range_id,
-    sail_set_ids.sail_set_id AS sail_set_id
-FROM (SELECT DISTINCT sail_set_id FROM loads.sail_sets) AS sail_set_ids
-CROSS JOIN loads.awa_ranges AS awa_range
-CROSS JOIN loads.aws_ranges AS aws_range;

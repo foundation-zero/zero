@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.pvt import PvtControl, PvtParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -34,7 +35,9 @@ def simulation_inputs():
 
 @fixture
 def control(simulation):
-    return PvtControl(PvtParameters(), simulation.time)
+    return PvtControl(
+        PvtParameters(), simulation.time, MachineStateLoggingServiceNoop()
+    )
 
 
 @fixture
@@ -45,6 +48,6 @@ def simulation(simulation_inputs):
             PvtSimulationOutputs,
             fmu,
             simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )

@@ -14,7 +14,7 @@
           {
             "modbus_register": 201,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -26,7 +26,7 @@
           {
             "modbus_register": 203,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -63,7 +63,8 @@
             "field_name": "room",
             "value": "Tech room"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/02",
@@ -77,7 +78,7 @@
           {
             "modbus_register": 211,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -89,7 +90,7 @@
           {
             "modbus_register": 213,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -126,7 +127,8 @@
             "field_name": "room",
             "value": "Lounge"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/03",
@@ -140,7 +142,7 @@
           {
             "modbus_register": 221,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -152,7 +154,7 @@
           {
             "modbus_register": 223,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -189,7 +191,8 @@
             "field_name": "room",
             "value": "Guest cabin (Aft SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/04",
@@ -203,7 +206,7 @@
           {
             "modbus_register": 231,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -215,7 +218,7 @@
           {
             "modbus_register": 233,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -252,7 +255,8 @@
             "field_name": "room",
             "value": "Bathroom (Aft SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/05",
@@ -266,7 +270,7 @@
           {
             "modbus_register": 241,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -278,7 +282,7 @@
           {
             "modbus_register": 243,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -315,7 +319,8 @@
             "field_name": "room",
             "value": "Guest cabin (PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/06",
@@ -329,7 +334,7 @@
           {
             "modbus_register": 251,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -341,7 +346,7 @@
           {
             "modbus_register": 253,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -378,7 +383,8 @@
             "field_name": "room",
             "value": "Master bathroom cabin (PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/07",
@@ -392,7 +398,7 @@
           {
             "modbus_register": 261,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -404,7 +410,7 @@
           {
             "modbus_register": 263,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -441,7 +447,8 @@
             "field_name": "room",
             "value": "Master cabin (PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/08",
@@ -455,7 +462,7 @@
           {
             "modbus_register": 271,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -467,7 +474,7 @@
           {
             "modbus_register": 273,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -504,7 +511,8 @@
             "field_name": "room",
             "value": "Master cabin (SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/09",
@@ -518,7 +526,7 @@
           {
             "modbus_register": 281,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -530,7 +538,7 @@
           {
             "modbus_register": 283,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -567,7 +575,8 @@
             "field_name": "room",
             "value": "Guest cabin (SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/10",
@@ -581,7 +590,7 @@
           {
             "modbus_register": 291,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -593,7 +602,7 @@
           {
             "modbus_register": 293,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -630,7 +639,8 @@
             "field_name": "room",
             "value": "Office area (Fwd)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/11",
@@ -644,7 +654,7 @@
           {
             "modbus_register": 301,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -656,7 +666,7 @@
           {
             "modbus_register": 303,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -693,7 +703,8 @@
             "field_name": "room",
             "value": "Guest cabin (Fr.42 Mid PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/12",
@@ -707,7 +718,7 @@
           {
             "modbus_register": 311,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -719,7 +730,7 @@
           {
             "modbus_register": 313,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -756,7 +767,8 @@
             "field_name": "room",
             "value": "Mission Room"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/13",
@@ -770,7 +782,7 @@
           {
             "modbus_register": 321,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -782,7 +794,7 @@
           {
             "modbus_register": 323,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -819,7 +831,8 @@
             "field_name": "room",
             "value": "Laundry"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/14",
@@ -833,7 +846,7 @@
           {
             "modbus_register": 331,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -845,7 +858,7 @@
           {
             "modbus_register": 333,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -882,7 +895,8 @@
             "field_name": "room",
             "value": "Captain cabin"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/15",
@@ -896,7 +910,7 @@
           {
             "modbus_register": 341,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -908,7 +922,7 @@
           {
             "modbus_register": 343,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -945,7 +959,8 @@
             "field_name": "room",
             "value": "Crew area (Fwd)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/16",
@@ -959,7 +974,7 @@
           {
             "modbus_register": 351,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -971,7 +986,7 @@
           {
             "modbus_register": 353,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1008,7 +1023,8 @@
             "field_name": "room",
             "value": "Crew cabin (Fwd PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/17",
@@ -1022,7 +1038,7 @@
           {
             "modbus_register": 361,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1034,7 +1050,7 @@
           {
             "modbus_register": 363,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1071,7 +1087,8 @@
             "field_name": "room",
             "value": "Watersport storage"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/18",
@@ -1085,7 +1102,7 @@
           {
             "modbus_register": 371,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1097,7 +1114,7 @@
           {
             "modbus_register": 373,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1134,7 +1151,8 @@
             "field_name": "room",
             "value": "Galley"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/19",
@@ -1148,7 +1166,7 @@
           {
             "modbus_register": 381,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1160,7 +1178,7 @@
           {
             "modbus_register": 383,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1197,7 +1215,8 @@
             "field_name": "room",
             "value": "Crew mess"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/20",
@@ -1211,7 +1230,7 @@
           {
             "modbus_register": 391,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1223,7 +1242,7 @@
           {
             "modbus_register": 393,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1260,7 +1279,8 @@
             "field_name": "room",
             "value": "Crew cabin (Aft)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/21",
@@ -1274,7 +1294,7 @@
           {
             "modbus_register": 401,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1286,7 +1306,7 @@
           {
             "modbus_register": 403,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1323,7 +1343,8 @@
             "field_name": "room",
             "value": "Crew cabin (Mid SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/22",
@@ -1337,7 +1358,7 @@
           {
             "modbus_register": 411,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1349,7 +1370,7 @@
           {
             "modbus_register": 413,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1386,7 +1407,8 @@
             "field_name": "room",
             "value": "Crew cabin (SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/23",
@@ -1400,7 +1422,7 @@
           {
             "modbus_register": 421,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1412,7 +1434,7 @@
           {
             "modbus_register": 423,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1449,7 +1471,8 @@
             "field_name": "room",
             "value": "Main deckhouse"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/24",
@@ -1463,7 +1486,7 @@
           {
             "modbus_register": 431,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1475,7 +1498,7 @@
           {
             "modbus_register": 433,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1512,7 +1535,8 @@
             "field_name": "room",
             "value": "Aft area"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/25",
@@ -1526,7 +1550,7 @@
           {
             "modbus_register": 441,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1538,7 +1562,7 @@
           {
             "modbus_register": 443,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1575,7 +1599,8 @@
             "field_name": "room",
             "value": "Aft area (Slave)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/26",
@@ -1589,7 +1614,7 @@
           {
             "modbus_register": 451,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1601,7 +1626,7 @@
           {
             "modbus_register": 453,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1638,7 +1663,8 @@
             "field_name": "room",
             "value": "Office area (Fwd)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/27",
@@ -1652,7 +1678,7 @@
           {
             "modbus_register": 461,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1664,7 +1690,7 @@
           {
             "modbus_register": 463,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1701,7 +1727,8 @@
             "field_name": "room",
             "value": "Guest cabin (Fr.42 Mid PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/28",
@@ -1715,7 +1742,7 @@
           {
             "modbus_register": 471,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1727,7 +1754,7 @@
           {
             "modbus_register": 473,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1764,7 +1791,8 @@
             "field_name": "room",
             "value": "Guest cabin (FR.55 Aft PS)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/29",
@@ -1778,7 +1806,7 @@
           {
             "modbus_register": 481,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1790,7 +1818,7 @@
           {
             "modbus_register": 483,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1827,7 +1855,8 @@
             "field_name": "room",
             "value": "Navcom"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/30",
@@ -1841,7 +1870,7 @@
           {
             "modbus_register": 491,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1853,7 +1882,7 @@
           {
             "modbus_register": 493,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1890,7 +1919,8 @@
             "field_name": "room",
             "value": "HM10 Backup Cooling Panels"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac/31",
@@ -1904,7 +1934,7 @@
           {
             "modbus_register": 501,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
             "scale_factor": 1.0
           },
           {
@@ -1916,7 +1946,7 @@
           {
             "modbus_register": 503,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 1.0
           },
           {
@@ -1953,7 +1983,8 @@
             "field_name": "room",
             "value": "Crew cabin (Fwd SB)"
           }
-        ]
+        ],
+        "model": "air_conditioning_room"
       },
       {
         "topic": "termodinamica/ac-misc",
@@ -1979,7 +2010,7 @@
           {
             "modbus_register": 145,
             "field_name": "engine_box_t_sea_water",
-            "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
             "scale_factor": 0.01
           },
           {
@@ -2043,7 +2074,8 @@
             "scale_factor": 0.01
           }
         ],
-        "extra_fields": []
+        "extra_fields": [],
+        "model": "ac_misc"
       }
     ]
   }

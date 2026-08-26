@@ -1,15 +1,16 @@
+import logging
 from asyncio import (
     Task,
     create_task,
     get_running_loop,
 )
+
 from pyModbusTCP.server import DataBank, ModbusServer
 
 from domestic_control.services.ac.constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
 )
-import logging
 
 
 class AcDataBank(DataBank):

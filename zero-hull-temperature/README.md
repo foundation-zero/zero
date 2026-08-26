@@ -16,20 +16,24 @@ The application reads temperatures from a set of hull-mounted probes via Modbus 
 
 ## Installation
 
-With [Poetry](https://python-poetry.org/):
+With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-poetry install
+uv sync --locked
 ```
 
 ## Configuration
 
-Settings are read from environment variables or a `.env` file. Because settings belong to CLI subcommands, variables must be prefixed with the subcommand name using `__` as a delimiter (e.g. `RUN__MODBUS_HOST`).
+Settings are read from environment variables or a `.env` file. Base settings fields
+(`mqtt_host`, `mqtt_port`, `mqtt_username`, `mqtt_password`, `modbus_host`, `modbus_port`)
+map to unprefixed variables (`MQTT_HOST`, `MQTT_PORT`, `MODBUS_HOST`, ...). Fields declared
+on a subcommand itself (e.g. `run`'s `activate_topic`) must be prefixed with the subcommand
+name using `__` as a delimiter (`RUN__ACTIVATE_TOPIC`).
 
 For a full list of options for each subcommand, use `--help`:
 
 ```bash
-poetry run python -m zero_hull_temperature <command> --help
+uv run python -m zero_hull_temperature <command> --help
 ```
 
 ## Usage
@@ -39,7 +43,7 @@ poetry run python -m zero_hull_temperature <command> --help
 There is no installed CLI entry point, so run the application as a Python module:
 
 ```bash
-poetry run python -m zero_hull_temperature <command> [options]
+uv run python -m zero_hull_temperature <command> [options]
 ```
 
 ### Commands
@@ -49,33 +53,34 @@ poetry run python -m zero_hull_temperature <command> [options]
 Reads temperatures on a fixed interval and publishes them to an MQTT topic.
 
 ```bash
-poetry run python -m zero_hull_temperature run \
+uv run python -m zero_hull_temperature run \
   --modbus-host <host> --modbus-port 502 \
   --mqtt-host <host> --mqtt-port 1883 \
-  --send-topic hull-temperature/temperatures \
-  --seconds 300
+  --activate-topic marpower/450000-amcs/Command \
+  --activate-json-path '$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF'
 ```
 
 | Option | Description | Default |
 |---|---|---|
-| `--send-topic` | MQTT topic to publish readings to | — |
-| `--seconds` | Interval between readings | — |
-| `--n` | Number of readings to take (`-1` = unlimited) | `-1` |
 | `--activate-topic` | MQTT topic used to switch the relay | `marpower/450000-amcs/Command` |
 | `--activate-json-path` | JSONPath within the activate topic payload | `$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF` |
 
 #### `read` — Single one-shot read (with MQTT relay activation)
 
 ```bash
-poetry run python -m zero_hull_temperature read \
+uv run python -m zero_hull_temperature read \
   --modbus-host <host> --modbus-port 502 \
   --mqtt-host <host> --mqtt-port 1883
 ```
 
-#### `read-skip-mqtt` — Single one-shot read (no relay activation)
+#### `read-skip-mqtt` — Single one-shot read (no relay activation, no MQTT)
+
+Reads the Modbus registers once, without toggling the relay or
+connecting to MQTT, and prints the resulting temperature payload to stdout.
+Useful as an offline diagnostic when no MQTT broker is available.
 
 ```bash
-poetry run python -m zero_hull_temperature read-skip-mqtt \
+uv run python -m zero_hull_temperature read-skip-mqtt \
   --modbus-host <host> --modbus-port 502
 ```
 
@@ -84,7 +89,7 @@ poetry run python -m zero_hull_temperature read-skip-mqtt \
 Starts a Modbus TCP server pre-loaded with a fixed temperature value, and **subscribes** to MQTT for relay activation commands. The Modbus server only starts serving after it receives a truthy `KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF` message. Useful for integration testing without physical hardware.
 
 ```bash
-poetry run python -m zero_hull_temperature stub \
+uv run python -m zero_hull_temperature stub \
   --modbus-host localhost --modbus-port 502 \
   --mqtt-host <host> --mqtt-port 1883 \
   --temperature 21.5
@@ -98,7 +103,7 @@ poetry run python -m zero_hull_temperature stub \
 #### `print-schema` — Print the MQTT output JSON schema
 
 ```bash
-poetry run python -m zero_hull_temperature print-schema
+uv run python -m zero_hull_temperature print-schema
 ```
 
 ## MQTT Output Format
@@ -118,11 +123,11 @@ Temperatures are published as a JSON object:
 ## Development
 
 ```bash
-poetry install --with test       # test dependencies only
-poetry install --with dev,test   # test + linting/type-checking
-poetry run pytest
-poetry run ruff check
-poetry run pyright
+uv sync --locked --group test       # test dependencies only
+uv sync --locked --group dev --group test   # test + linting/type-checking
+uv run pytest
+uv run ruff check
+uv run pyright
 ```
 
 > Tests require a running MQTT broker on `localhost:1883`. The Modbus server is spun up in-process on port `11502`.

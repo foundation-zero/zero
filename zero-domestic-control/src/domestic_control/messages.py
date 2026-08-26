@@ -1,10 +1,11 @@
-from typing import ClassVar, Annotated
+from typing import Annotated, ClassVar
+
 from aiomqtt import Topic, Wildcard
 from pydantic import BaseModel, model_validator
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 
-class Message(BaseModel):
+class TopicMessageMixin:
     TOPIC: ClassVar[str]
     id: str
 
@@ -27,8 +28,16 @@ class Message(BaseModel):
         return values
 
 
-class Model(SQLModel, Message):
+class Message(TopicMessageMixin, BaseModel):
+    TOPIC: ClassVar[str]
+    id: str
+
+
+class Model(TopicMessageMixin, SQLModel):
     __table_args__ = {"schema": "domestic"}
+
+    TOPIC: ClassVar[str]
+    id: str
 
 
 class AirConditioning(Model, table=True):

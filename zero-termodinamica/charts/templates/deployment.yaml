@@ -27,9 +27,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroupChangePolicy: Always
-        sysctls: []
-        supplementalGroups: []
         fsGroup: 1001
       containers:
         - name: termodinamica
@@ -39,12 +36,10 @@ spec:
             capabilities:
               drop:
               - ALL
-            privileged: false
             readOnlyRootFilesystem: true
             runAsGroup: 1001
             runAsNonRoot: true
             runAsUser: 1001
-            seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

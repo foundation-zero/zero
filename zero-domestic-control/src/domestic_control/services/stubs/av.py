@@ -1,11 +1,13 @@
-from asyncio import TaskGroup, sleep
+import logging
 import re
 import time
+from asyncio import TaskGroup, sleep
 from typing import Coroutine, Literal, cast
-from aiomqtt import Client as MqttClient, Message
+
+from aiomqtt import Client as MqttClient
+from aiomqtt import Message
 
 from domestic_control.services.av import AFT_PDU, FWD_PDU, PortState, Telemetry
-import logging
 
 MQTT_CMD_REGEX = re.compile(r"de/gudesystems/epc/([^/]+)/cmdres/port/(\d+)")
 AV_STUB_TELEMETRY_INTERVAL = 0.5

@@ -1,4 +1,6 @@
 import asyncio
+import json
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -19,6 +21,12 @@ def override_messaging():
     return mock
 
 
+@pytest.fixture(autouse=True)
+async def seed_graphql_scenarios(scenario_factory):
+    await scenario_factory.seed_graphql_reference_defaults()
+    await scenario_factory.seed_mutation_target_cases()
+
+
 @pytest.mark.asyncio
 async def test_graphql(async_client: AsyncClient, override_dependency):
     with override_dependency(get_messaging, override_messaging):
@@ -27,7 +35,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-checkstay-ps-load"]) {
+                    variables(variables: ["main-sheet-load"]) {
                         id
                         reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -60,24 +68,24 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             "data": {
                 "variables": [
                     {
-                        "id": "main-checkstay-ps-load",
+                        "id": "main-sheet-load",
                         "reference": {
                             "alarmLow": None,
                             "warningLow": None,
-                            "target": 1.3,
-                            "warningHigh": 12.42,
-                            "alarmHigh": 13.8,
+                            "target": 9.6,
+                            "warningHigh": 13.5,
+                            "alarmHigh": 15.0,
                         },
                         "actual": {
-                            "id": "main-checkstay-ps-load",
+                            "id": "main-sheet-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-checkstay-ps-load",
-                            "name": "Checkstay PT",
+                            "id": "main-sheet-load",
+                            "name": "Sheet",
                             "unit": "tonne",
-                            "scaleMin": 0.0,
-                            "scaleMax": 15.0,
+                            "scaleMin": None,
+                            "scaleMax": None,
                             "scaleMinLabel": None,
                             "scaleMaxLabel": None,
                         },
@@ -182,8 +190,8 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             "id": "main-runner-sb-load",
                             "name": "Runner SB",
                             "unit": "tonne",
-                            "scaleMin": 0.0,
-                            "scaleMax": 29.0,
+                            "scaleMin": None,
+                            "scaleMax": None,
                             "scaleMinLabel": None,
                             "scaleMaxLabel": None,
                         },
@@ -208,8 +216,8 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             "id": "main-runner-ps-load",
                             "name": "Runner PT",
                             "unit": "tonne",
-                            "scaleMin": 0.0,
-                            "scaleMax": 29.0,
+                            "scaleMin": None,
+                            "scaleMax": None,
                             "scaleMinLabel": None,
                             "scaleMaxLabel": None,
                         },
@@ -348,7 +356,7 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         json={
             "query": """
             query {
-                variables(variables: ["main-checkstay-ps-load"]) {
+                variables(variables: ["main-sheet-load"]) {
                     id
                     a: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                         alarmLow
@@ -375,20 +383,20 @@ async def test_graphql_reference_duplicates(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-checkstay-ps-load",
+                    "id": "main-sheet-load",
                     "a": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 1.3,
-                        "warningHigh": 12.42,
-                        "alarmHigh": 13.8,
+                        "target": 9.6,
+                        "warningHigh": 13.5,
+                        "alarmHigh": 15.0,
                     },
                     "b": {
                         "alarmLow": None,
                         "warningLow": None,
-                        "target": 1.3,
-                        "warningHigh": 12.42,
-                        "alarmHigh": 13.8,
+                        "target": 9.6,
+                        "warningHigh": 13.5,
+                        "alarmHigh": 15.0,
                     },
                 },
             ]
@@ -452,13 +460,13 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/i_Load": 500,
             "st_Load/x_Failure": false,
             "st_Load/x_MaxLimitReached": true,
-            "st_Load/i_MaxLoad": 400,
+            "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
-            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
             "st_LoadSb/x_Failure": false,
-            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/i_MaxLoadSetting": 400,
             "st_LoadSb/x_MaxLimitReached": true
         }""",
     )
@@ -519,13 +527,13 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/i_Load": 500,
             "st_Load/x_Failure": false,
             "st_Load/x_MaxLimitReached": true,
-            "st_Load/i_MaxLoad": 400,
+            "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
-            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
             "st_LoadSb/x_Failure": false,
-            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/i_MaxLoadSetting": 400,
             "st_LoadSb/x_MaxLimitReached": true
         }""",
     )
@@ -606,20 +614,8 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
 
 @pytest.mark.asyncio
 async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
-    await mqtt_client_send.publish(
-        FiberOptic.TOPIC,
-        """{
-            "main_v1_ps": 20,
-            "main_v1_sb": 1,
-            "main_d1_ps": 2,
-            "main_d1_sb": 3,
-            "mizzen_v1_ps": 4,
-            "mizzen_v1_sb": 5,
-            "mizzen_d1_ps": 6,
-            "mizzen_d1_sb": 7,
-            "mizzen_forestay": 8
-        }""",
-    )
+    fo_payload = json.loads((Path(__file__).parent / "fo.json").read_text())
+    await mqtt_client_send.publish(FiberOptic.TOPIC, json.dumps(fo_payload))
     await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
@@ -628,6 +624,11 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
             query {
                 variables(variables: ["fiber-optic-main-v1-ps"]) {
                     id
+                    variable {
+                        id
+                        name
+                        unit
+                    }
                     actual {
                         id
                         value
@@ -644,11 +645,16 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
             "variables": [
                 {
                     "id": "fiber-optic-main-v1-ps",
+                    "variable": {
+                        "id": "fiber-optic-main-v1-ps",
+                        "name": "V1 PT",
+                        "unit": "tonne",
+                    },
                     "actual": {
                         "id": "fiber-optic-main-v1-ps",
-                        "value": 20,
+                        "value": fo_payload["mm-rigging-load-v1-port"],
                     },
-                },
+                }
             ]
         }
     }

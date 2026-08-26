@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ratioAsPercentage } from "@/modules/common/lib/utils";
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { getField } from "@/modules/thrapp/mimics/providers";
-import { ParametersType } from "@/modules/thrs/types";
+import { ParametersType } from "@/modules/thrsim/types";
 import * as Parameters from "..";
 import * as ParameterItems from "../items";
 

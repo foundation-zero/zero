@@ -26,6 +26,11 @@
       "type": "string",
       "description": "Path to the XML config file inside the container."
     },
+    "logLevel": {
+      "type": "string",
+      "description": "Value for the RUST_LOG environment variable (for example: info, debug, trace).",
+      "default": "info"
+    },
     "mqtt": {
       "type": "object",
       "required": ["host", "port"],
@@ -62,11 +67,6 @@
       "type": "object",
       "required": ["ports"],
       "properties": {
-        "serviceType": {
-          "type": "string",
-          "description": "Kubernetes service type for the UDP listener.",
-          "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
-        },
         "annotations": {
           "type": "object",
           "description": "Annotations added to the UDP service.",

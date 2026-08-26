@@ -1,9 +1,9 @@
 *
 !README.md
-!poetry.lock
+!uv.lock
 !pyproject.toml
 !src/
-!modbus_units.json
+!modbus_bridges.json
 
 # Python
 __pycache__/

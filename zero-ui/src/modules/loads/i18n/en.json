@@ -2,7 +2,58 @@
   "loads": {
     "dashboards": {
       "overview": "Overview",
-      "dynamic": "Dynamic"
+      "dynamic": "Dynamic",
+      "fiberOptics": "FO"
+    },
+    "units": {
+      "tonne": "t",
+      "t_m": "t · m",
+      "um_m": "µm/m",
+      "degC": "°C",
+      "m": "m",
+      "mm": "mm",
+      "knots": "kts",
+      "degrees": "°",
+      "ratio": "%",
+      "percent": "%",
+      "bool": ""
+    },
+    "fiberOptics": {
+      "columns": {
+        "mainMast": "Main Mast",
+        "mizzenMast": "Mizzen Mast",
+        "bendingMomentSideways": "Bending moment Sideways",
+        "bendingMomentForeAft": "Bending moment Fore-Aft",
+        "bendingStrainSideways": "Bending strain Sideways",
+        "bendingStrainForeAft": "Bending strain Fore-Aft",
+        "longitudinalLoad": "Longitudinal load",
+        "longitudinalStrain": "Longitudinal strain",
+        "fore": "Fore",
+        "pt": "PT",
+        "sb": "SB",
+        "ptAft": "PT aft",
+        "sbAft": "SB aft",
+        "sideways": "Sideways",
+        "foreAft": "Fore-Aft",
+        "loadPt": "Load PT",
+        "loadSb": "Load SB",
+        "strainPt": "Strain PT",
+        "strainSb": "Strain SB"
+      },
+      "cards": {
+        "bendingMomentStrain": "Bending Moment & Strain",
+        "sectionStrain": "Section Strain",
+        "longitudinalLoadStrain": "Longitudinal Load & Strain",
+        "mastDeflection": "Mast Deflection",
+        "spreaderDeflection": "Spreader Deflection",
+        "spreaderTemperature": "Spreader Temperature",
+        "riggingLoadStrain": "Rigging Load & Strain",
+        "riggingSumLoad": "Rigging Sum Load",
+        "riggingTemperature": "Rigging Temperature"
+      },
+      "table": {
+        "location": "Location"
+      }
     },
     "dashboard": {
       "status": "Loads status",

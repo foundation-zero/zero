@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RouterLinkWithFallback from "@/modules/common/components/RouterLinkWithFallback.vue";
-import { ThrsModules } from "@/modules/thrs/lib/consts";
+import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { useRoute } from "vue-router";
 
 defineProps<{ modules: Array<keyof ThrsModules>; activeModule?: keyof ThrsModules }>();
 
-const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw"];
+const SUPPORTED_MIMICS: Array<keyof ThrsModules> = ["dhw", "thrusters"];
 
 const currentRoute = useRoute();
 </script>

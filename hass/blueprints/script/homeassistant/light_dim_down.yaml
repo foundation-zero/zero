@@ -1,0 +1,26 @@
+blueprint:
+  name: "Lights: Dim Down"
+  description: "Dim down a light when a button is held down"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level entity"
+  button:
+    description: "Button entity controlling the dim down action"
+  min_level:
+    description: "Minimum dim level"
+
+sequence:
+  - repeat:
+      sequence:
+        - action: input_number.decrement
+          target:
+            entity_id: "{{ dim_level }}"
+        - delay:
+            milliseconds: 50.0
+      while:
+        - condition: template
+          value_template: "{{ is_state(button, 'on') }}"
+        - condition: template
+          value_template: "{{ states(dim_level) | int > min_level | int }}"

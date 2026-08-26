@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrs/types";
+import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { getField, getMimicDataProvider } from "../../../providers";
 

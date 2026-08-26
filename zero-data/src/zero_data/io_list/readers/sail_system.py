@@ -10,10 +10,9 @@ The original hardcoded SAIL_SYSTEM_TOPICS list is retained for comparison
 during migration to the XML-driven approach.
 """
 
-import xml.etree.ElementTree as ET
 import logging
+import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import List
 
 from polars import DataFrame
 
@@ -37,7 +36,7 @@ _TYPECLASS_TO_SQL: dict[str, str] = {
 
 
 class SailSystemReader(ReaderBase):
-    def read_io_list(self, paths: List[Path]) -> IOResult:
+    def read_io_list(self, paths: list[Path]) -> IOResult:
         """Parse CODESYS XML files and return IOResult with all topics."""
         all_topics = [topic for path in paths for topic in self._parse_xml(path)]
         # io_list is only used in io_metadata_marpower

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { useAutomationStore } from "@/modules/thrs/stores/automation";
+import { useAutomationStore } from "@/modules/thrsim/stores/automation";
+import { ENV } from "@/settings";
 import { RiLock2Line } from "@remixicon/vue";
 import { useCountdown } from "@vueuse/core";
 import { inject, Ref, ref } from "vue";
@@ -20,7 +21,7 @@ const cancel = () => {
 };
 
 const COOLDOWN_SECONDS = 5;
-const MATCH_PASSWORD = "zerosecurity";
+const MATCH_PASSWORD = ENV.VITE_MANUAL_MODE_PWD;
 const password = ref("");
 
 const { setAutomatedControl } = useAutomationStore();

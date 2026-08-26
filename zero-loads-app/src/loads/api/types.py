@@ -13,9 +13,11 @@ from loads.api.messaging import Messaging
 class LoadsContext(BaseContext):
     messaging: Messaging
     sessionmanager: SessionManager
-    references_loader: (
+    reference_by_case_input_loader: (
         "DataLoader[tuple[strawberry.ID, CaseInput], ReferenceValue | None]"
     )
+    reference_by_case_id_loader: "DataLoader[strawberry.ID, list[ReferenceValue]]"
+    sails_by_case_id_loader: "DataLoader[strawberry.ID, list[SailType]]"
     variables_loader: "DataLoader[str, VariableType | None]"
 
 
@@ -27,6 +29,11 @@ class Unit(Enum):
     mm = "mm"
     knots = "knots"
     degrees = "degrees"
+    um_m = "um/m"
+    m = "m"
+    deg_c = "degC"
+    t_m = "T.m"
+    percent = "%"
 
 
 @strawberry.enum
@@ -162,4 +169,26 @@ class Variable:
         info: strawberry.Info[LoadsContext],
         case: CaseInput,
     ) -> ReferenceValue | None:
-        return await info.context.references_loader.load((self.id, case))
+        return await info.context.reference_by_case_input_loader.load((self.id, case))
+
+
+@strawberry.type
+class LoadCase:
+    id: strawberry.ID
+    name: str
+    awa: float
+    aws: float
+    twa: float
+    tws: float
+    bsp: float
+    heel: float
+
+    @strawberry.field
+    async def sails(self, info: strawberry.Info[LoadsContext]) -> list[SailType]:
+        return await info.context.sails_by_case_id_loader.load(self.id)
+
+    @strawberry.field
+    async def reference_values(
+        self, info: strawberry.Info[LoadsContext]
+    ) -> list[ReferenceValue]:
+        return await info.context.reference_by_case_id_loader.load(self.id)

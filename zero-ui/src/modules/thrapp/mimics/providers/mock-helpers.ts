@@ -12,7 +12,7 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { useIntervalFn } from "@vueuse/core";
 import { computed, MaybeRef, ref, Ref, unref } from "vue";
 
@@ -23,6 +23,7 @@ export const randomizedState = <T>(possibleValues: T[]) =>
   possibleValues[Math.floor(Math.random() * possibleValues.length)];
 
 export const randomizedRatio = () => Math.random();
+export const randomizedDegree = () => Math.random() * 360;
 export const randomizedBoolean = () => Math.random() < 0.5;
 
 export const useRandomizedValue = <T>(valueFn: () => T, interval = 10_000) => {
@@ -45,6 +46,9 @@ export const useRandomizedNumber = (min: number, max: number, interval = 10_000)
 export const useRandomizedRatio = (interval = 10_000) =>
   useRandomizedValue(randomizedRatio, interval);
 
+export const useRandomizedDegree = (interval = 10_000) =>
+  useRandomizedValue(randomizedDegree, interval);
+
 export const useRandomizedBoolean = (interval = 10_000) =>
   useRandomizedValue(randomizedBoolean, interval);
 
@@ -61,6 +65,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const temperature = useRandomizedNumber(20, 100);
     return computed(() => ({ temperature: stamp(temperature) }));
   },
+  [SensorComponentType.CalculatedTemperature]: () => {
+    const temperature = useRandomizedNumber(20, 100);
+    return computed(() => ({ temperature: stamp(temperature) }));
+  },
   [SensorComponentType.Pressure]: () => {
     const pressure = useRandomizedNumber(1, 10);
     return computed(() => ({ pressure: stamp(pressure) }));
@@ -68,11 +76,20 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Flow]: () => {
     const flow = useRandomizedNumber(1, 10);
     const temperature = useRandomizedNumber(20, 100);
-    return computed(() => ({ flow: stamp(flow), temperature: stamp(temperature) }));
+    const quantity = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      flow: stamp(flow),
+      temperature: stamp(temperature),
+      quantity: stamp(quantity),
+    }));
   },
   [SensorComponentType.Level]: () => {
     const level = useRandomizedNumber(0, 100);
     return computed(() => ({ level: stamp(level) }));
+  },
+  [SensorComponentType.LevelSwitch]: () => {
+    const empty = useRandomizedBoolean();
+    return computed(() => ({ empty: stamp(empty) }));
   },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
@@ -88,13 +105,23 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     return computed(() => ({ mode: stamp(mode) }));
   },
   [SensorComponentType.Pump]: () => {
+    const dutypoint = useRandomizedRatio();
+    const on = useRandomizedBoolean();
     const flow = useRandomizedNumber(0, 10);
     const speed = useRandomizedNumber(0, 100);
     const opTime = useRandomizedNumber(0, 1000);
+    const pressure = useRandomizedNumber(1, 10);
+    const energyConsumption = useRandomizedNumber(0, 1000);
+    const powerInput = useRandomizedNumber(0, 100);
     return computed(() => ({
+      dutypoint: stamp(dutypoint),
+      on: stamp(on),
       flow: stamp(flow),
       speed: stamp(speed),
       opTime: stamp(opTime),
+      pressure: stamp(pressure),
+      energyConsumption: stamp(energyConsumption),
+      powerInput: stamp(powerInput),
     }));
   },
   [SensorComponentType.Thruster]: () => {
@@ -103,7 +130,8 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Valve]: () => {
     const positionRel = useRandomizedRatio();
-    return computed(() => ({ positionRel: stamp(positionRel) }));
+    const positionAbs = useRandomizedDegree();
+    return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
   },
   [SensorComponentType.HeatExchanger]: () => {
     const deltaT = useRandomizedNumber(-20, 20);
@@ -117,6 +145,32 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
     return computed(() => ({ flow: stamp(flow) }));
+  },
+  [SensorComponentType.AdsorptionChiller]: () => {
+    const operating = useRandomizedBoolean();
+    const noError = useRandomizedBoolean();
+    const freeCooling = useRandomizedBoolean();
+    return computed(() => ({
+      operating: stamp(operating),
+      noError: stamp(noError),
+      freeCooling: stamp(freeCooling),
+    }));
+  },
+  [SensorComponentType.Brightloop]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.Ugrid]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.PropulsionDrive]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.ShorePowerConverter]: () => {
+    const active = useRandomizedBoolean();
+    return computed(() => ({ active: stamp(active) }));
   },
 };
 
@@ -145,6 +199,12 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
     const setpoint = useRandomizedNumber(0, 100);
     return computed(() => ({
       setpoint: stamp(setpoint),
+    }));
+  },
+  [ControlComponentType.AdsorptionChiller]: () => {
+    const enable = useRandomizedBoolean();
+    return computed(() => ({
+      enable: stamp(enable),
     }));
   },
 };
@@ -192,7 +252,6 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
 };
 
 export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
-  [ParametersType.Disabled]: () => useRandomizedBoolean(),
   [ParametersType.Dutypoint]: () => useRandomizedRatio(),
   [ParametersType.Enabled]: () => useRandomizedBoolean(),
   [ParametersType.Flow]: () => useRandomizedNumber(0, 10),

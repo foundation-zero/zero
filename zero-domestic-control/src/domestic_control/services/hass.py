@@ -1,18 +1,19 @@
 import asyncio
+import logging
+import re
+from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from datetime import datetime
-import logging
 from typing import Literal, assert_never
-from homeassistant_api import Client as HassClient, WebsocketClient as HassWsClient
+
+from homeassistant_api import Client as HassClient
+from homeassistant_api import WebsocketClient as HassWsClient
 from pydantic import BaseModel
 
 from domestic_control.config import Settings
-import re
-
 from domestic_control.messages import Blind, LightingGroup
 from domestic_control.sink import Sink
 from domestic_control.util import invert_dict
-from asyncio import TaskGroup
 
 logger = logging.getLogger(__name__)
 
@@ -242,8 +243,16 @@ class HassControl:
     def _run(self, loop: asyncio.AbstractEventLoop):
         with self._hass.listen_events("state_changed") as events:
             for event in events:
-                if event.data["entity_id"].startswith("input_number."):
-                    number_change = InputNumberChanged(**event.data)
+                event_data = event.data
+                if not isinstance(event_data, dict):
+                    continue
+
+                entity_id = event_data.get("entity_id")
+                if not isinstance(entity_id, str):
+                    continue
+
+                if entity_id.startswith("input_number."):
+                    number_change = InputNumberChanged.model_validate(event_data)
                     if (
                         number_change.id in _LIGHT_GROUP_IDS.keys()
                         and number_change.id is not None
@@ -257,8 +266,8 @@ class HassControl:
                             / 100,  # hass uses 0..100 values
                         )
                         loop.create_task(self._data.send(lighting_group_msg))
-                elif event.data["entity_id"].startswith("cover."):
-                    cover_change = CoverChanged(**event.data)
+                elif entity_id.startswith("cover."):
+                    cover_change = CoverChanged.model_validate(event_data)
                     if (
                         (cover_change.id in _BLIND_IDS.keys())
                         and cover_change.id is not None

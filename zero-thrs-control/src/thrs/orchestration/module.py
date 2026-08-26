@@ -1,17 +1,26 @@
-import warnings
+import logging
+from collections.abc import Callable, Mapping
 from datetime import datetime
-from typing import TYPE_CHECKING, Callable, Mapping
+from typing import TYPE_CHECKING
 
+from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.manual import ManualControl
-from thrs.control.switching import SwitchingControl, SwitchingControlMode
+from thrs.control.switching import (
+    AutomationMode,
+    SwitchingControl,
+    SwitchingControlMode,
+)
 from thrs.input_output.base import ThrsValues
 
 if TYPE_CHECKING:
     from thrs.classes.control import Control
-    from thrs.input_output.alarms import BaseAlarms
+    from thrs.input_output.alarms import Alarm, BaseAlarms
     from thrs.orchestration.comms import ControlChannels
 
 type ModuleClassMap = Mapping[str, type[ThrsValues]]
+
+logger = logging.getLogger(__name__)
 
 
 class ModuleDescription[
@@ -28,7 +37,7 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: "Callable[[P, Callable[[], datetime]], Control[S, C, P, M, CS]]",
+        control: "Callable[[P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]]",
         control_mode_cls: type[M],
         controller_state_cls: type[CS],
         alarms: "Callable[[], BaseAlarms[S, C, P]]",
@@ -60,6 +69,11 @@ class Module[
         self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
         self._alarms = alarms
         self._channels = channels
+        self._active_alarms: dict[str, Alarm] = {}
+
+    @property
+    def control_state_logger(self) -> StateLogger:
+        return self._control.automatic_control.state_logger
 
     @property
     def name(self):
@@ -89,15 +103,23 @@ class Module[
 
         return control_values, controller_state
 
-    def _check_alarms(self, sensor_values: S, control_values: C) -> None:
-        alarms = self._alarms.check(
+    def set_automation_mode(self, mode: AutomationMode) -> None:
+        self._control.switch_mode(mode)
+
+    @StateLogger.log_alarms
+    def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
+        alarms: list[Alarm] = self._alarms.check(
             sensor_values,
             control_values,
             self._control.parameters,
         )
 
         if alarms:
-            warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
+            logger.debug(
+                "Alarms detected: %s", alarms
+            )  # TODO: properly handle alarms for AMCS
+
+        return alarms
 
     async def send_control_updates(
         self, sensor_values: S | None, control_values: C, controller_state: CS

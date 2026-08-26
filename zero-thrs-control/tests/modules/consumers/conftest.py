@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
@@ -27,7 +28,9 @@ def parameters():
 
 @fixture
 def control(parameters, simulation):
-    return ConsumersControl(parameters, simulation.time)
+    return ConsumersControl(
+        parameters, simulation.time, MachineStateLoggingServiceNoop()
+    )
 
 
 @fixture
@@ -55,6 +58,6 @@ def simulation(simulation_inputs):
             ConsumersSimulationOutputs,
             fmu,
             simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )

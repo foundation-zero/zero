@@ -1,14 +1,15 @@
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from functools import wraps
 from inspect import getmembers
-from typing import Callable
 
 
 class Severity(Enum):
     WARNING = "warning"
     ALARM = "alarm"
+    RESOLVED = "resolved"  # Severity written when a previously active alarm is no longer raised.
 
 
 @dataclass

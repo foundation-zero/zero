@@ -1,5 +1,5 @@
 import { mmath, refValue } from "@/modules/common/lib/utils";
-import { Ratio } from "@/modules/thrs/types";
+import { Ratio } from "@/modules/thrsim/types";
 import { createContext } from "reka-ui";
 import { computed, MaybeRef, Ref } from "vue";
 

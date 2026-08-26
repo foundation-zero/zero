@@ -1,39 +1,62 @@
 set dotenv-load := true
 set dotenv-required := true
 
+fmu_files := (
+    "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu " +
+    "src/thrs/simulation/models/Adsorption_ModuleV1.fmu " +
+    "src/thrs/simulation/models/Consumer_ModuleV10.fmu " +
+    "src/thrs/simulation/models/DC_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/DHW_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/Drives_ModuleV1_1.fmu " +
+    "src/thrs/simulation/models/HT_SystemV15_1.fmu " +
+    "src/thrs/simulation/models/PCM_ModuleV9_2.fmu " +
+    "src/thrs/simulation/models/PVT_ModuleV16.fmu " +
+    "src/thrs/simulation/models/Thruster_Module_V19.fmu"
+)
+
 default: run
 
 run_api:
-    poetry run fastapi dev src/thrs/graphql/asgi.py
+    uv run fastapi dev src/thrs/graphql/asgi.py
 
-run_control module='dhw':
-    poetry run python -m thrs.cli control --mode {{ module }}
+run_control module='thrs':
+    uv run python -m thrs.cli control --mode {{ module }}
 
-run_simulation module='dhw':
-    poetry run python -m thrs.cli simulation --mode {{ module }}
+run_simulation module='thrs':
+    uv run python -m thrs.cli simulation --mode {{ module }}
 
-run_lockstep module='dhw':
-    poetry run python -m thrs.cli lockstep --mode {{ module }}
+run_lockstep module='thrs':
+    uv run python -m thrs.cli lockstep --mode {{ module }}
 
 [parallel]
-run module='dhw': run_api (run_lockstep module)
+run module='thrs': run_api (run_lockstep module)
+
+[parallel]
+run_split module='thrs': run_api (run_control module) (run_simulation module)
 
 check: lint type_check test
 
 lint:
-    poetry run ruff check src tests
+    uv run ruff check src tests
+
+lint_no_fix:
+    uv run ruff check --no-fix src tests
 
 type_check:
-    poetry run pyright
+    uv run pyright
 
 test *args:
-    poetry run pytest -m "not io" {{ args }}
+    uv run pytest -m "not io" {{ args }}
 
 test_io *args:
-    poetry run pytest -m "io" {{ args }}
+    uv run pytest -m "io" {{ args }}
 
 format:
-    poetry run ruff format --check src tests
+    uv run ruff format --check src tests
+
+format_fix:
+    uv run ruff format src tests
+
 
 build_fmu_compile_container:
     docker build . --tag fmu_compile_image --target fmu_compile
@@ -43,33 +66,34 @@ compile_fmu_for_linux file: build_fmu_compile_container
     docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
     bash -c "export FILE={{ file }}; docker cp fmu_compile:/\${FILE/src/app} {{ file }}"
 
-compile_fmus_for_linux: \
-    (compile_fmu_for_linux "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Adsorption_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/DC_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/DHW_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Drives_Module.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/HT_SystemV14.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
-    (compile_fmu_for_linux "src/thrs/simulation/models/Thruster_Module_V19.fmu")
+compile_fmus_for_linux: build_fmu_compile_container
+    -docker rm -f fmu_compile
+    docker run -d --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
+
+    for file in {{ fmu_files }}; do \
+        container_file="/${file/src/app}"; \
+        docker cp "$file" "fmu_compile:$container_file"; \
+        echo "copied in $file -> $container_file"; \
+    done
+
+    docker exec fmu_compile /bin/bash -c 'export CFLAGS="-std=gnu17 -include unistd.h"; for FILE in {{ fmu_files }}; do fmpy compile "/${FILE/src/app}"; done'
+
+    for file in {{ fmu_files }}; do \
+        container_file="/${file/src/app}"; \
+        docker cp "fmu_compile:$container_file" "$file"; \
+        echo "copied $container_file -> $file"; \
+    done
+    docker rm -f fmu_compile
 
 compile_fmu file:
-    CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}
+    CFLAGS="-std=gnu17 -include unistd.h" uv run fmpy compile {{ file }}
 
-[parallel]
-compile_fmus: \
-    (compile_fmu "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Adsorption_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DC_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/DHW_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Drives_Module.fmu") \
-    (compile_fmu "src/thrs/simulation/models/HT_SystemV14.fmu") \
-    (compile_fmu "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
-    (compile_fmu "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
-    (compile_fmu "src/thrs/simulation/models/Thruster_Module_V19.fmu")
+compile_fmus:
+    for file in {{ fmu_files }}; do \
+        just compile_fmu "$file"; \
+    done
 
-generate_schema:
-    poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql
+compile_fmus_all: compile_fmus compile_fmus_for_linux
+
+export_schema:
+    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql

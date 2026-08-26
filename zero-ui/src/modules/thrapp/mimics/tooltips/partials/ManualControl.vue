@@ -4,6 +4,7 @@ import { ManualModeToggleDialog } from "@/modules/thrapp/components/manual-mode-
 import { getTooltipContext } from "@/modules/thrapp/components/tooltip";
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { useAutomaticMode } from "@/modules/thrapp/state";
+import { ENV } from "@/settings";
 import { RiCpuLine, RiSteering2Line } from "@remixicon/vue";
 import { useTranslations } from "..";
 
@@ -11,10 +12,19 @@ const { t, items, actions } = useTranslations();
 
 const { setDialog } = getTooltipContext();
 
+const shouldShowManualModeDialog = !!ENV.VITE_MANUAL_MODE_PWD;
 const automaticMode = useAutomaticMode();
 
 const enableAutomaticControl = async () => {
   automaticMode.value = true;
+};
+
+const toggleMode = async () => {
+  if (shouldShowManualModeDialog) {
+    setDialog(ManualModeToggleDialog);
+  } else {
+    automaticMode.value = false;
+  }
 };
 </script>
 
@@ -26,7 +36,7 @@ const enableAutomaticControl = async () => {
       </TooltipListItemTitle>
       <Button
         size="sm"
-        @click="setDialog(ManualModeToggleDialog)"
+        @click="toggleMode"
       >
         <RiSteering2Line />
         {{ actions("controlManually") }}

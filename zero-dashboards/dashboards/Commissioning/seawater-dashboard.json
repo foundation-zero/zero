@@ -303,7 +303,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp          AS time,\r\n\tvacuumalarm__value AS vacuumalarm\r\nFROM marpower__380000_seawater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp          AS time,\r\n\tvacuumalarm__value AS vacuumalarm\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -958,7 +958,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                 AS time,\r\n\tcool_pmp_1_remote__value  AS pmp1_remote,\r\n\tcool_pmp_1_running__value AS pmp1_running,\r\n\tcool_pmp_2_remote__value  AS pmp2_remote,\r\n\tcool_pmp_2_running__value AS pmp2_running\r\nFROM marpower__380000_seawater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                 AS time,\r\n\tcool_pmp_1_remote__value  AS pmp1_remote,\r\n\tcool_pmp_1_running__value AS pmp1_running,\r\n\tcool_pmp_2_remote__value  AS pmp2_remote,\r\n\tcool_pmp_2_running__value AS pmp2_running\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1366,7 +1366,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                   AS time,\r\n\tcool_pmp_1_startstop__value AS pmp1_startstop,\r\n\tcool_pmp_2_startstop__value AS pmp2_startstop\r\nFROM marpower__380000_seawater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                   AS time,\r\n\tcool_pmp_1_startstop__value AS pmp1_startstop,\r\n\tcool_pmp_2_startstop__value AS pmp2_startstop\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1645,7 +1645,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n\tflow__value AS flow\r\nFROM marpower__380000_seawater\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n\tflow__value AS flow\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1798,12 +1798,13 @@
             ]
           },
           "gridPos": {
-            "h": 7,
+            "h": 10,
             "w": 24,
             "x": 0,
             "y": 10
           },
           "id": 9,
+          "maxDataPoints": 500,
           "options": {
             "colWidth": 0.6,
             "legend": {
@@ -1844,7 +1845,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                   AS time,\r\n\tvacuumalarm__value          AS vacuum_alarm,\r\n\tcool_pmp_1_remote__value    AS cooling_pump_1_remavail,\r\n\tcool_pmp_1_running__value   AS cooling_pump_1_running,\r\n\tcool_pmp_2_remote__value    AS cooling_pump_2_remavail,\r\n\tcool_pmp_2_running__value   AS cooling_pump_2_running,\r\n\tcool_pmp_1_startstop__value AS cooling_pump_1_onoff,\r\n\tcool_pmp_2_startstop__value AS cooling_pump_2_onoff\r\nFROM marpower__380000_seawater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp) AS time,\r\n\tMAX(vacuumalarm__value)            AS vacuum_alarm,\r\n\tMAX(cool_pmp_1_remote__value)      AS cooling_pump_1_remavail,\r\n\tMAX(cool_pmp_1_running__value)     AS cooling_pump_1_running,\r\n\tMAX(cool_pmp_2_remote__value)      AS cooling_pump_2_remavail,\r\n\tMAX(cool_pmp_2_running__value)     AS cooling_pump_2_running,\r\n\tMAX(cool_pmp_1_startstop__value)   AS cooling_pump_1_onoff,\r\n\tMAX(cool_pmp_2_startstop__value)   AS cooling_pump_2_onoff\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1963,7 +1964,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 20
           },
           "id": 10,
           "options": {
@@ -2000,7 +2001,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp   AS time,\r\n\tflow__value AS flow\r\nFROM marpower__380000_seawater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
+              "rawSql": "SELECT\r\n\ttimestamp   AS time,\r\n\tflow__value AS flow\r\nFROM marpower__380000_sea_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2319,8 +2320,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "${datasource}"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -2332,7 +2333,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},

@@ -2,7 +2,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -28,8 +28,7 @@ export default toInstance<MimicComponentType.FlowSensor>({
   sensors: {
     temperature: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
   },
-  tooltip: tooltip({
-    yardTag: "1058-11",
-    technicalName: "dhw-flow-boosting",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

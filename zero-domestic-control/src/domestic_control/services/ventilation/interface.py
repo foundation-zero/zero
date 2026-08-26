@@ -3,6 +3,7 @@ from pyModbusTCP.client import ModbusClient
 from domestic_control.config import Settings
 from domestic_control.mqtt import ControlSend
 from domestic_control.services.modbus import ModbusRoomInterface
+
 from .constants import (
     ACTUAL_CO2_START_ADDRESS,
     CO2_SETPOINT_START_ADDRESS,

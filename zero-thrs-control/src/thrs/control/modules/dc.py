@@ -1,7 +1,8 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
     ConvertersControl,
@@ -45,7 +46,7 @@ class DcParameters(ThrsValues):
     ugrids_pump_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
     return DcControlValues(
         dc_pump_aft=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -122,14 +123,22 @@ class DcControl(
     ]
 ):
     def __init__(
-        self, parameters: DcParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: DcParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
+        self._init_controllers(parameters)
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(self, parameters: DcParameters):
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.dc_mix_exchanger.setpoint.value,
             setpoint=lambda: self._parameters.maximum_supply_temperature,
@@ -161,6 +170,7 @@ class DcControl(
                 ],
             ),
             time_fn=self._time,
+            state_logger=self.state_logger,
         )
 
         self._brightloops_fwd_control = ConvertersControl(
@@ -174,6 +184,7 @@ class DcControl(
                 ],
             ),
             time_fn=self._time,
+            state_logger=self.state_logger,
         )
 
         self._ugrids_control = ConvertersControl(
@@ -187,12 +198,14 @@ class DcControl(
                 ],
             ),
             time_fn=self._time,
+            state_logger=self.state_logger,
         )
 
     @property
     def parameters(self) -> DcParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: DcParameters):
         self._parameters = parameters
         self._brightloops_aft_control.update_parameters(
@@ -226,6 +239,7 @@ class DcControl(
     def initial(self) -> tuple[DcControlValues, DcControllerState]:
         return (_INITIAL_CONTROL_VALUES(self._time()), DcControllerState())
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: DcSensorValues
     ) -> tuple[DcControlValues, DcControllerState]:

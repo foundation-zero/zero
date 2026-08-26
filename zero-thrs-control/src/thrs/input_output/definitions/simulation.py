@@ -1,8 +1,6 @@
 from typing import Annotated
 
-from pydantic.json_schema import SkipJsonSchema
-
-from thrs.input_output.base import Stamped, StampedDf, ThrsValues, field_meta
+from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
@@ -13,55 +11,59 @@ from thrs.input_output.definitions.units import (
     Watt,
 )
 
-type Stamp[T] = Stamped[T] | SkipJsonSchema[StampedDf[T]]
-
 
 class HeatSource(ThrsValues):
-    heat_flow: Stamp[Watt]
+    heat_flow: Stamped[Watt]
 
 
 class HvacExchanger(ThrsValues):
-    heat_flow: Stamp[Watt]
-    maximum_temperature: Stamp[Celsius]
+    heat_flow: Stamped[Watt]
+    maximum_temperature: Stamped[Celsius]
 
 
 class Boundary(ThrsValues):
-    temperature: Stamp[Celsius]
-    flow: Stamp[LMin]
+    temperature: Stamped[Celsius]
+    flow: Stamped[LMin]
+
+
+class ExchangerBoundary(ThrsValues):
+    flow: Stamped[LMin]
+    temperature_supply: Stamped[Celsius]
+    temperature_return: Stamped[Celsius]
 
 
 class OverpressureTemperatureBoundary(ThrsValues):
-    temperature: Stamp[Celsius]
-    overpressure: Stamp[Overpressure]
+    temperature: Stamped[Celsius]
+    overpressure: Stamped[Overpressure]
 
 
 class TemperatureBoundary(ThrsValues):
-    temperature: Stamp[Celsius]
+    temperature: Stamped[Celsius]
 
 
 class PressureBoundary(ThrsValues):
-    pressure: Stamp[Bar]
+    pressure: Stamped[Bar]
 
 
 class FlowBoundary(ThrsValues):
-    flow: Stamp[LMin]
+    flow: Stamped[LMin]
 
 
 class Thruster(HeatSource):
-    active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
+    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
 
 
 class PropulsionDrive(HeatSource):
-    active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
+    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
 
 
 class Converter(HeatSource):
-    active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
+    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
 
 
 class Pcs(ThrsValues):
     mode: Annotated[
-        Stamp[PcsMode],
+        Stamped[PcsMode],
         field_meta(included_in_fmu=False),
     ]
 
@@ -71,10 +73,14 @@ class AdsorptionChiller(ThrsValues):
 
 
 __all__ = [
-    "HeatSource",
+    "AdsorptionChiller",
     "Boundary",
-    "TemperatureBoundary",
+    "ExchangerBoundary",
     "FlowBoundary",
-    "Thruster",
+    "HeatSource",
+    "HvacExchanger",
+    "OverpressureTemperatureBoundary",
     "Pcs",
+    "TemperatureBoundary",
+    "Thruster",
 ]

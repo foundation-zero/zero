@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { formatNumber } from "@/modules/common/lib/utils";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { Label } from "../components/label/index.ts";
-import { ModuleField } from "../providers/index.ts";
 import SensorValue from "../providers/SensorValue.vue";
+import { ModuleField } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import { MimicComponentInstanceProps } from "./index.ts";
 
@@ -19,9 +18,9 @@ defineProps<MimicComponentInstanceProps & { pump: ModuleField<SensorComponentTyp
     <template #value>
       <SensorValue
         :source="pump"
-        field="flow"
+        field="dutypoint"
       >
-        <FieldRenderer.Percentage :format="formatNumber.int" />
+        <FieldRenderer.Percentage />
       </SensorValue>
     </template>
   </Label>

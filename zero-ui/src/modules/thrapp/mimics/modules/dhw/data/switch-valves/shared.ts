@@ -1,15 +1,16 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
-import { ControllerStateComponentType } from "@/modules/thrs/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
+import { getField, ModuleField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 import { DHW_TANK_DATA } from "../boiler-tanks";
 
-export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Switch valve",
-  itemName: "2 way valve DN 25",
-  ...content,
-});
+export const tooltip = (field: ModuleField<SensorComponentType>): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Switch valve",
+    componentType: "2 way valve DN 25",
+  });
 
 export const controller = getField(
   ControllerStateComponentType.DhwTanksController,

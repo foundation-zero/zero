@@ -36,7 +36,8 @@
     "thrs": "THRS",
     "thrsim": "THRSIM",
     "domestic": "Domestic Control",
-    "grafana": "Grafana"
+    "grafana": "Grafana",
+    "sailSystem": "Sail system"
   },
   "labels": {
     "airConditioning": {
@@ -122,6 +123,10 @@
         "grafana": {
           "title": "Grafana",
           "description": "Operational dashboards and metrics visualized in Grafana."
+        },
+        "sailSystem": {
+          "title": "Sail system",
+          "description": "Vitters Sail System HMI."
         }
       }
     },
@@ -155,6 +160,11 @@
     "grafana": {
       "notConfigured": "Grafana is not configured",
       "configureEnv": "Set VITE_GRAFANA_URL in your environment to enable dashboard embedding.",
+      "backToSplash": "Back to splash"
+    },
+    "sailSystem": {
+      "notConfigured": "Sail system is not configured",
+      "configureEnv": "Set VITE_SAIL_SYSTEM_URL in your environment to enable sail system embedding.",
       "backToSplash": "Back to splash"
     }
   },

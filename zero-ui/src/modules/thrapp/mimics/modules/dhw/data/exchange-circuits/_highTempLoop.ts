@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getCustomField, getField } from "../../../../providers";
@@ -8,10 +8,13 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
   controllerState: {},
   custom: {
-    circuitName: "High Temperature",
+    circuitName: "High temperature",
   },
   parameters: {},
-  source: getCustomField("dhw", "high-temperature"),
+  source: getCustomField("dhw", {
+    title: "High temperature",
+    technicalName: "high-temperature",
+  }),
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "dhw", "consumersDelta"),
     flow: getField(SensorComponentType.Flow, "dhw", "consumersFlowDhw"),
@@ -19,8 +22,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "consumersTemperatureDhwReturn"),
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
   },
-  tooltip: tooltip({
-    title: "High Temperature",
-    technicalName: "high-temperature",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

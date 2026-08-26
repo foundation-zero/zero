@@ -1,38 +1,33 @@
-FROM python:3.13-slim-bookworm AS builder
-
-ENV POETRY_VERSION=2.2.1 \
-    POETRY_HOME=/opt/poetry \
-    POETRY_CACHE_DIR=/opt/.cache \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=on
-
-RUN pip install "poetry==${POETRY_VERSION}"
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+ENV UV_NO_DEV=1
+ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock README.md ./
-RUN poetry install --no-root
+COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
+COPY zero-hull-temperature/pyproject.toml zero-hull-temperature/uv.lock zero-hull-temperature/README.md ./zero-hull-temperature/
+COPY zero-hull-temperature/zero_hull_temperature ./zero-hull-temperature/zero_hull_temperature
+
+WORKDIR /app/zero-hull-temperature
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev --no-editable
 
 FROM python:3.13-slim-bookworm AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+  PYTHONUNBUFFERED=1
 
-ENV VIRTUAL_ENV=/app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV=/app/zero-hull-temperature/.venv
+ENV PATH="/app/zero-hull-temperature/.venv/bin:$PATH"
 
 RUN groupadd -g 1001 app && \
     useradd -r -u 1001 -g app app
 
 COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-WORKDIR /app
-
-COPY --chown=1001:1001 zero_hull_temperature/ zero_hull_temperature/
+WORKDIR /app/zero-hull-temperature
 
 USER 1001
 

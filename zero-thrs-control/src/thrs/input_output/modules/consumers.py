@@ -1,8 +1,9 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -10,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ConsumersSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     consumers_temperature_dhw_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-48", component_type="temperature_sensor"),
@@ -72,6 +79,12 @@ class ConsumersSensorValues(ThrsValues):
 
 
 class ConsumersControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     consumers_flowcontrol_adsorption: Annotated[
         control.Valve,
         component_meta(
@@ -105,13 +118,15 @@ class ConsumersControlValues(ThrsValues):
     ]
 
 
-class ConsumersSimulationInputs(SimulationInputs):
+class ConsumersSimulationInputs(ThrsValues):
     consumers_adsorption_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_pcm_supply: simulation.Boundary
 
 
-class ConsumersSimulationOutputs(SimulationValues):
+class ConsumersSimulationOutputs(ThrsValues):
+    consumers_adsorption_exchanger: simulation.ExchangerBoundary
     consumers_adsorption_return: simulation.TemperatureBoundary
+    consumers_dhw_exchanger: simulation.ExchangerBoundary
     consumers_dhw_return: simulation.TemperatureBoundary
     consumers_pcm_return: simulation.Boundary

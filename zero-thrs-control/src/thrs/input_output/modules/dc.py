@@ -1,8 +1,9 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -10,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class DcSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dc_pump_aft: Annotated[
         sensor.Pump, component_meta(yard_tag="50001020", component_type="pump")
     ]
@@ -304,6 +311,12 @@ class DcSensorValues(ThrsValues):
 
 
 class DcControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dc_pump_aft: Annotated[
         control.Pump, component_meta(yard_tag="50001020", component_type="pump")
     ]
@@ -393,7 +406,7 @@ class DcControlValues(ThrsValues):
     ]
 
 
-class DcSimulationInputs(SimulationInputs):
+class DcSimulationInputs(ThrsValues):
     dc_brightloop_fwd1: simulation.Converter
     dc_brightloop_fwd2: simulation.Converter
     dc_ugrid1: simulation.Converter
@@ -406,6 +419,7 @@ class DcSimulationInputs(SimulationInputs):
     dc_dhw_supply: simulation.Boundary
 
 
-class DcSimulationOutputs(SimulationValues):
+class DcSimulationOutputs(ThrsValues):
     dc_seawater_return: simulation.TemperatureBoundary
+    dc_dhw_exchanger: simulation.ExchangerBoundary
     dc_dhw_return: simulation.TemperatureBoundary

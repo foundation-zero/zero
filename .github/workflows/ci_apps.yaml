@@ -64,7 +64,7 @@ jobs:
         working-directory: zero-thrs-control
 
       - name: Run services
-        run: docker compose --profile loads --profile thrs up --quiet-pull --wait
+        run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait
 
       - name: Waiting for services to be ready
         run: sleep 30s
@@ -200,3 +200,14 @@ jobs:
           initial-status: success
           environment-url: ${{steps.deploy.outputs.url}}
           environment: ${{steps.deploy.outputs.environment}}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-ui/charts"

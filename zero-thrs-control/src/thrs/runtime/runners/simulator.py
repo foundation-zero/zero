@@ -1,4 +1,4 @@
-from thrs.input_output.base import CombinedValues, SimulationInputs, SimulationValues
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.base import Runner
@@ -6,8 +6,8 @@ from thrs.runtime.runners.base import Runner
 
 class SimulationRunner[
     C: CombinedValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ](Runner):
     def __init__(
         self,

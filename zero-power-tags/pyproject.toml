@@ -1,0 +1,55 @@
+[project]
+name = "zero-power-tags"
+description = "Power Tags Modbus TCP → MQTT bridge"
+readme = "README.md"
+authors = [
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }
+]
+requires-python = ">= 3.13.1,<4.0"
+dependencies = [
+    "zero-modbus-bridge",
+    "pydantic>=2.11.7,<3.0.0",
+    "pydantic-settings>=2.10.1,<3.0.0",
+    "faststream[mqtt]>=0.7.0,<1.0.0",
+]
+dynamic = ["version"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.7,<0.13",
+    "pyright>=1.1.403,<2",
+    "fastexcel>=0.20.2,<0.21",
+    "polars>=1.42.0,<2",
+]
+test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9"]
+
+[tool.uv]
+default-groups = ["dev", "test"]
+
+[tool.uv.sources]
+zero-modbus-bridge = { path = "../zero-modbus-bridge", editable = true }
+
+[tool.ruff]
+fix = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+search_parent_directories = true
+fallback_version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/zero_power_tags"]

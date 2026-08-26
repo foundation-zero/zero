@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { BoilerTankStateField } from "@/modules/thrapp/types";
-import { ControllerStateComponentType, ParametersType } from "@/modules/thrs/types";
+import { ControllerStateComponentType, ParametersType } from "@/modules/thrsim/types/index.ts";
 import * as Partials from ".";
 import { ControllerStateValue, ModuleField } from "../../providers";
 import { FieldRenderer } from "../../renderers/index.ts";
@@ -12,7 +12,7 @@ defineProps<{
   controller: ModuleField<ControllerStateComponentType.DhwTanksController>;
   source?: ModuleField;
   tankStateField: BoilerTankStateField;
-  disabledParameter: ModuleField<ParametersType.Disabled>;
+  enabledParameter: ModuleField<ParametersType.Enabled>;
 }>();
 </script>
 
@@ -35,7 +35,7 @@ defineProps<{
           v-if="source"
           :source="source"
         />
-        <FieldRenderer.Source :source="disabledParameter" />
+        <FieldRenderer.Source :source="enabledParameter" />
       </template>
       <template #value>
         <FieldRenderer.BoilerTankMode />

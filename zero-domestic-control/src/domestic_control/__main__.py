@@ -1,5 +1,6 @@
-from .cli import DomesticControl
 from pydantic_settings import CliApp
+
+from .cli import DomesticControl
 
 
 def run():

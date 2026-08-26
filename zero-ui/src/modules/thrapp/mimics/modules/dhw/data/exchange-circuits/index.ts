@@ -1,7 +1,7 @@
 import { toFieldsMap } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import _adsorption from "./_adsorption";
-import _brightloop from "./_brightloop";
+import _brightloop from "./_dc";
 import _drives from "./_drives";
 import _highTempLoop from "./_highTempLoop";
 

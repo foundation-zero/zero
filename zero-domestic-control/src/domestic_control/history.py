@@ -3,11 +3,11 @@ from datetime import datetime
 from itertools import groupby
 from typing import Annotated, Any
 
+from sqlalchemy import TextClause, func, select
+from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.sql.functions import _FunctionGenerator
 from sqlmodel import Column, Field, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy import TextClause, func, select
-from sqlalchemy.sql.functions import _FunctionGenerator
-from sqlalchemy.ext.asyncio import AsyncEngine
 
 _OPERATIONS: dict[Any, _FunctionGenerator] = {float: func.avg, bool: func.last_value}
 

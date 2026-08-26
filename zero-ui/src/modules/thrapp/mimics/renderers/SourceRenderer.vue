@@ -8,6 +8,7 @@ import {
   injectFieldValueSource,
   isParameterField,
   ModuleField,
+  serializeField,
 } from "../../mimics/providers";
 
 const props = defineProps<{
@@ -47,7 +48,7 @@ const isParameter = computed(() => isParameterField(source.value));
       v-if="tooltipContext && !noLink"
       class="cursor-pointer underline"
       :to="{
-        query: { ...$route.query, tooltip: source?.join('.') },
+        query: { ...$route.query, tooltip: serializeField(source) },
       }"
     >
       <slot>

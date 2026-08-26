@@ -36,32 +36,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.2.1
-      - run: poetry check
-        working-directory: zero-domestic-control
-      - run: poetry install --with dev,test
-        working-directory: zero-domestic-control
-      - run: poetry run ruff check src tests
-        working-directory: zero-domestic-control
-      - run: poetry run ruff format --check src tests
-        working-directory: zero-domestic-control
-      - run: poetry run pyright src
-        working-directory: zero-domestic-control
-      - name: Unit Test
-        run: poetry run pytest --run=unit
-        working-directory: zero-domestic-control
-      - name: Run services
-        run: docker compose --profile domestic up -d --quiet-pull --wait hass vernemq postgres
-      - name: Integration Test
-        run: poetry run pytest --run=integration -vv
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
         working-directory: zero-domestic-control
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-domestic-control
+      - run: uv run ruff check --no-fix src tests
+        working-directory: zero-domestic-control
+      - run: uv run ruff format --check src tests
+        working-directory: zero-domestic-control
+
+      - run: uv run pyright src
+        env:
+          PYRIGHT_PYTHON_FORCE_VERSION: latest
+        working-directory: zero-domestic-control
+      - name: Unit Test
+        run: uv run pytest --run=unit
+        working-directory: zero-domestic-control
+      - name: Run services
+        run: docker compose --profile domestic up -d --quiet-pull --wait hass vernemq postgres
+      - name: Integration Test
+        run: uv run pytest --run=integration -vv
         working-directory: zero-domestic-control
 
   docker-push:
@@ -98,3 +99,14 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-domestic-control/charts/zero-domestic-control"

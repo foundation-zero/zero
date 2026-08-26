@@ -3,7 +3,9 @@ import { HTMLAttributes } from "vue";
 import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
+import Degree from "./DegreeRenderer.vue";
 import DeltaT from "./DeltaTRenderer.vue";
+import Empty from "./EmptyRenderer.vue";
 import EnabledDisabled from "./EnabledDisabledRenderer.vue";
 import Energy from "./EnergyRenderer.vue";
 import FlowRate from "./FlowRateRenderer.vue";
@@ -15,7 +17,6 @@ import Level from "./LevelRenderer.vue";
 import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
-import PositionAbsolute from "./PositionAbsoluteRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
 import QuantityLiters from "./QuantityLitersRenderer.vue";
@@ -39,7 +40,7 @@ export const FieldRenderer = {
   ValveState,
   Percentage,
   FlowRate,
-  PositionAbsolute,
+  Degree,
   Level,
   TimeRemaining,
   Source,
@@ -54,4 +55,5 @@ export const FieldRenderer = {
   QuantityLiters,
   Auto,
   EnabledDisabled,
+  Empty,
 };

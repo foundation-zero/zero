@@ -1,4 +1,4 @@
-import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -14,8 +14,7 @@ export default toInstance<MimicComponentType.SwitchValve>({
   parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwSwitchHeatpump"),
   sensors: {},
-  tooltip: tooltip({
-    yardTag: "1067-17",
-    technicalName: "dhw-switch-heatpump",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

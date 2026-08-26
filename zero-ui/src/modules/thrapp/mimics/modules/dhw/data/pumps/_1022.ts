@@ -1,8 +1,9 @@
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 import { pumpFlowController, pumpTemperatureController } from "../controllers";
 
 export default toInstance<MimicComponentType.Pump>({
@@ -19,13 +20,11 @@ export default toInstance<MimicComponentType.Pump>({
     flow: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
     temperature: getField(ParametersType.Temperature, "dhw", "heatpumpTemperatureSetpoint"),
   },
-  sensors: {
-    pressure: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),
-  },
-  tooltip: {
-    title: "Pump",
-    itemName: "Circulation pump Hot freshwater",
-    technicalName: "dhw-pump",
-    yardTag: "1022",
+  sensors: {},
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Pump",
+      componentType: "Circulation pump boosting",
+    });
   },
 });

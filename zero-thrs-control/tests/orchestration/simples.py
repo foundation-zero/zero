@@ -1,9 +1,13 @@
-from datetime import datetime
-from typing import Callable
+from collections.abc import Callable
+from datetime import UTC, datetime
 
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
@@ -12,11 +16,11 @@ class SimpleInOut(ThrsValues):
     go_with_the: FlowSensor
 
 
-class SimpleSimulationInputs(SimulationInputs):
+class SimpleSimulationInputs(ThrsValues):
     pass
 
 
-class SimpleSimulationOutputs(SimulationValues):
+class SimpleSimulationOutputs(ThrsValues):
     pass
 
 
@@ -39,7 +43,7 @@ class SimpleSimulation(
     ]:
         self.controls.append(control_values)
         return SimulationResult(
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             sensor_values=control_values,
             control_values=control_values,
             simulation_outputs=SimpleSimulationOutputs(),
@@ -52,7 +56,7 @@ class SimpleSimulation(
         return self._start_time
 
     def time(self):
-        return datetime.now()
+        return datetime.now(UTC)
 
 
 class SimpleParameters(ThrsValues):
@@ -75,6 +79,7 @@ class SimpleControl(
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (SimpleInOut.zero(), SimpleControllerState())

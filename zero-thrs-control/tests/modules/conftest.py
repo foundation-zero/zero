@@ -4,37 +4,7 @@ import polars as pl
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
-
-
-# Known sheet-only entries for cross-module interfaces that are currently not
-# represented in the per-module Python models used by these tests.
-_SHEET_ONLY_PREFIXES = (
-    "adsorption_consumers_",
-    "adsorption_dhw_exchanger_",
-    "consumers_adsorption_exchanger_",
-    "consumers_dhw_exchanger_",
-    "dc_dhw_exchanger_",
-    "dhw_adsorption_exchanger_",
-    "dhw_consumers_",
-    "dhw_dc_exchanger_",
-    "dhw_drives_exchanger_",
-    "dhw_level_switch_tank",
-    "drives_dhw_exchanger_",
-    "pcm_pvt_supply_",
-    "pcm_thrusters_return_",
-)
-
-
-# Known Python-only entries that no longer exist in the shared sheet.
-_PYTHON_ONLY_EXACT = {
-    "adsorption_ht_supply__flow__l_min",
-    "adsorption_ht_supply__temperature__C",
-    "adsorption_ht_return__temperature__C",
-    "dhw_ht_supply__flow__l_min",
-    "dhw_ht_supply__temperature__C",
-    "dhw_ht_return__temperature__C",
-}
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=1769018304&format=csv"
 
 
 def modelica_names_from_classes(classes: list[type[ThrsValues]]) -> set[str]:
@@ -58,7 +28,7 @@ def compare_modelica_names(
     if isinstance(module_name, str):
         module_name = [module_name]
 
-    variables_raw = set(
+    variables = set(
         sheet.lazy()
         .filter(
             pl.col("Module").is_in(module_name),
@@ -71,14 +41,9 @@ def compare_modelica_names(
         .to_list()
     )
 
-    py_keys_raw = modelica_names_from_classes(
+    py_keys = modelica_names_from_classes(
         [control_values, sensor_values, simulation_inputs, simulation_outputs]
     )
-
-    variables = {
-        name for name in variables_raw if not name.startswith(_SHEET_ONLY_PREFIXES)
-    }
-    py_keys = {name for name in py_keys_raw if name not in _PYTHON_ONLY_EXACT}
 
     missing_in_py = variables - py_keys
     missing_in_sheet = py_keys - variables
@@ -89,13 +54,11 @@ def compare_modelica_names(
 def compare_fmu_to_classes(filename, classes: list[type[ThrsValues]]):
     model_description = fmpy.read_model_description(filename)
 
-    fmu_keys = set(
-        [
-            var.name
-            for var in model_description.modelVariables
-            if var.causality == "input" or var.causality == "output"
-        ]
-    )
+    fmu_keys = {
+        var.name
+        for var in model_description.modelVariables
+        if var.causality in {"input", "output"}
+    }
     py_keys = modelica_names_from_classes(classes)
 
     missing_in_py = fmu_keys - py_keys
@@ -114,19 +77,13 @@ def compare_yard_tags(
         SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
     )
 
-    sheet_tags_df = (
-        sheet.filter(
-            pl.col("Included in simulation").is_in(["yes", "optional"]),
-        )
-        .with_columns(
-            pl.when(pl.col("Sub") != "")
-            .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
-            .otherwise(pl.col("Pos"))
-            .alias("Tag"),
-            pl.col("Technical name").str.replace_all("-", "_").alias("Technical name"),
-        )
-        .select(["Technical name", "Tag"])
-    )
+    sheet_tags_df = sheet.with_columns(
+        pl.when(pl.col("Sub") != "")
+        .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
+        .otherwise(pl.col("Pos"))
+        .alias("Tag"),
+        pl.col("Technical name").str.replace_all("-", "_").alias("Technical name"),
+    ).select(["Technical name", "Tag"])
 
     duplicated_tags = (
         sheet_tags_df.group_by("Technical name")

@@ -1,4 +1,4 @@
-import { DEFINITIONS, ThrsDefinitions } from "@/modules/thrs/lib/consts";
+import { DEFINITIONS, ThrsDefinitions } from "@/modules/thrsim/lib/consts.ts";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -15,7 +15,7 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   SensorDefinitions,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types/index.ts";
 import { createContext } from "reka-ui";
 import { inject, MaybeRef, provide, ref, Ref } from "vue";
 import { MimicComponentState } from "../components/index.ts";
@@ -29,10 +29,16 @@ export { default as ParameterValue } from "./ParameterValue.vue";
 export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
+export type CustomFieldData = {
+  title?: string;
+  yardTag?: string;
+  technicalName: string;
+};
+
 export const getCustomField = <Module extends keyof ThrsDefinitions>(
   module: Module,
-  field: string,
-): ModuleField<"custom", Module> => ["custom", module, field];
+  field: CustomFieldData,
+): ModuleField<"custom", Module> => ["custom", module, field.technicalName, field];
 
 export const getField = <
   Type extends
@@ -60,7 +66,7 @@ export const getField = <
   type: Type,
   module: Module,
   field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>>,
-): ModuleField<Type, Module> => [type, module, field] as ModuleField<Type, Module>;
+): ModuleField<Type, Module> => [type, module, field, null] as ModuleField<Type, Module>;
 
 export type ModuleField<
   Type extends
@@ -77,7 +83,8 @@ export type ModuleField<
     | undefined
     | "custom",
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
-> = [type: Type, module: Module, field: string];
+  CustomData extends CustomFieldData | null = Type extends "custom" ? CustomFieldData : null,
+> = [type: Type, module: Module, field: string, customData: CustomData];
 
 export const isField = <
   Type extends
@@ -133,6 +140,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [Type in SensorComponentType]: keyof SensorDefinitionMap[Type];
 } = {
   [SensorComponentType.Temperature]: "temperature",
+  [SensorComponentType.CalculatedTemperature]: "temperature",
   [SensorComponentType.Pressure]: "pressure",
   [SensorComponentType.Flow]: "flow",
   [SensorComponentType.Pump]: "flow",
@@ -141,9 +149,15 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Pcs]: "mode",
   [SensorComponentType.Pcm]: "charged",
   [SensorComponentType.Level]: "level",
+  [SensorComponentType.LevelSwitch]: "empty",
   [SensorComponentType.DeltaT]: "deltaT",
   [SensorComponentType.HeatExchanger]: "deltaT",
   [SensorComponentType.CalculatedFlow]: "flow",
+  [SensorComponentType.AdsorptionChiller]: "operating",
+  [SensorComponentType.Brightloop]: "active",
+  [SensorComponentType.Ugrid]: "active",
+  [SensorComponentType.PropulsionDrive]: "active",
+  [SensorComponentType.ShorePowerConverter]: "active",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
@@ -153,6 +167,7 @@ export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {
   [ControlComponentType.Valve]: "setpoint",
   [ControlComponentType.Pcm]: "on",
   [ControlComponentType.Heatpump]: "on",
+  [ControlComponentType.AdsorptionChiller]: "enable",
 };
 
 export interface MimicDataProvider {
@@ -228,16 +243,18 @@ export const getFieldValue = <T>(
 ): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValue", fallback);
 
 export const getDefinition = (field: ModuleField) => {
+  const [_, module, fieldName, customData] = field;
+
   if (isSensorField(field)) {
-    return getSensorDefinition(field[1], field[2]);
+    return getSensorDefinition(module, fieldName);
   } else if (isControlField(field)) {
-    return getControlDefinition(field[1], field[2]);
+    return getControlDefinition(module, fieldName);
   } else if (isParameterField(field)) {
-    return getParameterDefinition(field[1], field[2]);
+    return getParameterDefinition(module, fieldName);
   } else if (isControllerStateField(field)) {
-    return getControllerStateDefinition(field[1], field[2]);
+    return getControllerStateDefinition(module, fieldName);
   } else if (isCustomField(field)) {
-    return undefined;
+    return customData;
   }
 };
 
@@ -289,4 +306,14 @@ export const getControllerStateDefinition = <K extends keyof ThrsDefinitions>(
   }
 
   return definition;
+};
+
+export const serializeField = (field: ModuleField | undefined): string | undefined =>
+  field?.slice(0, 3).join(".");
+
+export const deserializeField = (string: string): ModuleField | undefined => {
+  const parts = string.split(".");
+  if (parts.length !== 3) return;
+
+  return parts as ModuleField;
 };

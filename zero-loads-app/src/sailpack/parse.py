@@ -2,13 +2,25 @@ from pathlib import Path
 
 import polars as pl
 from bs4 import BeautifulSoup
+from bs4.element import NavigableString, Tag
 
 
-def parse_directory(folder: str) -> pl.DataFrame:
+def parse_directory(input_source: Path) -> pl.DataFrame:
+    if input_source.is_file():
+        raise ValueError(
+            "Expected a sailpack directory containing .htm files, "
+            f"got file: {input_source}"
+        )
+
+    if not input_source.exists():
+        raise FileNotFoundError(f"Input directory not found: {input_source}")
     frames = []
-    for file in Path(folder).glob("*.htm"):
+    for file in input_source.glob("*.htm"):
         frame = parse_sailpack(file)
         frames.append(frame)
+
+    if not frames:
+        raise ValueError(f"No .htm files found in sailpack directory: {input_source}")
 
     return pl.concat(frames, how="diagonal")
 
@@ -30,14 +42,24 @@ def parse_sailpack(file_path: Path) -> pl.DataFrame:
 
 
 def extract_notes(soup: BeautifulSoup) -> pl.DataFrame:
-    result = {}
-    notes = soup.find("b", string="NOTES")  # type: ignore
+    result: dict[str, str] = {}
+    notes = soup.find("b", string="NOTES")
+
+    if not isinstance(notes, Tag):
+        return pl.DataFrame(result).with_columns(
+            pl.lit("NOTES").alias("table_description")
+        )
 
     for tag in notes.next_siblings:
-        if tag.name == "b":
-            break
+        if isinstance(tag, Tag):
+            if tag.name == "b":
+                break
+            text = tag.get_text(strip=True)
+        elif isinstance(tag, NavigableString):
+            text = str(tag).strip()
+        else:
+            continue
 
-        text = tag.get_text(strip=True)
         if not text:
             continue
 
@@ -114,6 +136,9 @@ def parse_tables(file_path: Path, soup: BeautifulSoup) -> list[pl.DataFrame]:
             for tr in table.find_all("tr")
             if tr.find_all("td")
         ]
+
+        if not rows:
+            continue
 
         try:
             result.append(

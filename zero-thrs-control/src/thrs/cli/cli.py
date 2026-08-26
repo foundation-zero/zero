@@ -1,13 +1,24 @@
+import contextlib
 import logging
 from datetime import datetime, timedelta
 
 from aiomqtt import Client as MqttClient
-from pydantic_settings import BaseSettings, CliApp, CliSubCommand, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    CliApp,
+    CliImplicitFlag,
+    CliSubCommand,
+    SettingsConfigDict,
+)
 
+from thrs.control.switching import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
+from thrs.orchestration.module import Module
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
+from thrs.orchestration.simulation import SimulationUnit
+from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
@@ -21,46 +32,54 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 class ControlCmd(BaseSettings):
     mode: ModeName
+    machine_state_logging: CliImplicitFlag[bool] = True
 
     async def cli_cmd(self) -> None:
+        logger.debug("Starting control command: %s", self.mode)
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
 
         control_mode = lookup_mode(self.mode)
+
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            control_modules = setup_control_modules(
+            control_modules: list[Module] = setup_control_modules(
                 connector,
                 settings,
                 control_mode.control_modules,
                 datetime.now,
+                machine_state_logging_service_enabled=self.machine_state_logging,
             )
             runner = ControlRunner(control_modules, liveness_check)
             runtime = Runtime(runner, connector, timedelta(seconds=1))
 
             await runtime.loop.play(1)
             logger.info("Running control")
-            await runtime.start()
+
+            async with control_shutdown_context(control_modules):
+                await runtime.start()
 
 
 class SimulationCmd(BaseSettings):
     mode: ModeName
 
     async def cli_cmd(self) -> None:
+        logger.debug("Starting simulation command: %s", self.mode)
         settings = Config()  # type: ignore
 
         liveness_check = Liveness(settings.liveness_path)
 
         simulation_mode = lookup_mode(self.mode)
+
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
 
             if simulation_mode.simulation_description is None:
                 raise ValueError("simulation must be defined for simulation mode")
 
-            simulation_module = setup_simulation_module(
+            simulation_module: SimulationUnit = setup_simulation_module(
                 connector,
                 settings,
                 simulation_mode.control_modules,
@@ -77,28 +96,36 @@ class SimulationCmd(BaseSettings):
 
 class LockstepCmd(BaseSettings):
     mode: ModeName
+    machine_state_logging: CliImplicitFlag[bool] = True
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
+        logger.debug("Starting lockstep command: %s", self.mode)
         mode = lookup_mode(self.mode)
 
         connector = MqttConnector(mqtt_client)
 
         if mode.simulation_description is None:
-            raise ValueError("simulation must be defined for lockstep mode")
+            raise ValueError(
+                f"Simulation must be defined for lockstep mode. Chosen mode '{self.mode}' has no simulation description."
+            )
 
-        simulation_module = setup_simulation_module(
+        simulation_module: SimulationUnit = setup_simulation_module(
             connector,
             settings,
             mode.control_modules,
             mode.simulation_description,
         )
 
-        control_modules = setup_control_modules(
+        control_modules: list[Module] = setup_control_modules(
             connector,
             settings,
             mode.control_modules,
             time_fn=simulation_module.time,
+            machine_state_logging_service_enabled=self.machine_state_logging,
         )
+
+        for module in control_modules:
+            module.set_automation_mode(AutomationMode(mode="automatic"))
 
         runner = LockstepRunner(control_modules, simulation_module)
 
@@ -119,11 +146,15 @@ class LockstepCmd(BaseSettings):
     async def cli_cmd(self) -> None:
         settings = Config()  # type: ignore
 
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
+        async with (
+            MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
+        ):
             runtime = self.setup(settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")
-            await runtime.start()
+
+            async with control_shutdown_context(runtime.runner.control_modules):  # type: ignore
+                await runtime.start()
 
 
 class ThrsCli(BaseSettings, cli_kebab_case=True):
@@ -141,7 +172,5 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     def cli_cmd(self) -> None:
         setup_logging()
 
-        try:
+        with contextlib.suppress(KeyboardInterrupt):
             CliApp.run_subcommand(self)
-        except KeyboardInterrupt:
-            pass

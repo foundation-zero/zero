@@ -1991,7 +1991,7 @@
             {
               "background": {
                 "color": {
-                  "field": "rm19_wtd_closed",
+                  "field": "rm19_wtd_hor_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2047,7 +2047,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Rm 19 Water tight door - Closed",
+                  "fixed": "Rm 19 Water tight horizontal door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2063,14 +2063,14 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 306.59937888198755
+                "width": 465
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "rm19_wtd_pos_prog_switch",
+                  "field": "rm19_wtd_ver_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2102,6 +2102,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
+                "rotation": 0,
                 "top": 70,
                 "width": 25
               },
@@ -2125,7 +2126,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Rm 19 Water tight door - Pos. prog. sw. exit only active",
+                  "fixed": "Rm 19 Water tight vertical door - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2139,6 +2140,7 @@
               "placement": {
                 "height": 25,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 465
               },
@@ -2895,7 +2897,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                 AS time,\r\n\tw_tight_door_rm_19_sealinflated__value    AS rm19_wtd_seal_infl,\r\n\tw_tight_door_rm_19_door_closed__value     AS rm19_wtd_closed,\r\n\tw_tight_door_rm_19_pos_prog_switch__value AS rm19_wtd_pos_prog_switch,\r\n\tw_tight_hatch_rm_35_sealinflated__value   AS rm35_wth_seal_infl,\r\n\tw_tight_hatch_rm_35_doorclosed__value     AS rm35_wth_closed,\r\n\tw_tight_hatch_rm_35_posprogswitch__value  AS rm35_wth_pos_prog_switch,\r\n\tw_tight_hatch_rm_36_sealinflated__value   AS rm36_wth_seal_infl,\r\n\tw_tight_hatch_rm_36_doorclosed__value     AS rm36_wth_closed,\r\n\tw_tight_hatch_rm_36_posprogswitch__value  AS rm36_wth_pos_prog_switch,\r\n\t--fire_door_gall_keel_closed__value         AS fire_door_galley_keel_closed,\r\n\tfire_slide_door_gall_crew_closed__value   AS fire_door_galley_closed,\r\n\tcrew_escape_hatch_closed__value           AS crew_esc_hatch_closed\r\nFROM public.marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                        AS time,\r\n\tw_tight_door_rm_19_sealinflated__value           AS rm19_wtd_seal_infl,\r\n\tw_tight_door_rm_19_horizontal_door_closed__value AS rm19_wtd_hor_closed,\r\n\tw_tight_door_rm_19_vertical_door_closed__value   AS rm19_wtd_ver_closed,\r\n\tw_tight_hatch_rm_35_sealinflated__value          AS rm35_wth_seal_infl,\r\n\tw_tight_hatch_rm_35_doorclosed__value            AS rm35_wth_closed,\r\n\tw_tight_hatch_rm_35_posprogswitch__value         AS rm35_wth_pos_prog_switch,\r\n\tw_tight_hatch_rm_36_sealinflated__value          AS rm36_wth_seal_infl,\r\n\tw_tight_hatch_rm_36_doorclosed__value            AS rm36_wth_closed,\r\n\tw_tight_hatch_rm_36_posprogswitch__value         AS rm36_wth_pos_prog_switch,\r\n\tfire_door_galley_keel_closed__value              AS fire_door_galley_keel_closed,\r\n\tfire_slide_door_gall_crew_closed__value          AS fire_door_galley_closed,\r\n\tcrew_escape_hatch_closed__value                  AS crew_esc_hatch_closed\r\nFROM public.marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4690,7 +4692,7 @@
             {
               "background": {
                 "color": {
-                  "field": "anchor_hatch2_closed",
+                  "field": "chainlocker_hatch_sb_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4746,7 +4748,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Anchor hatch 2 - Closed",
+                  "fixed": "Chainlocker hatch SB - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4769,7 +4771,7 @@
             {
               "background": {
                 "color": {
-                  "field": "anchor_hatch1_closed",
+                  "field": "chainlocker_hatch_ps_closed",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -4826,7 +4828,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Anchor hatch 1 - Closed",
+                  "fixed": "Chainlocker hatch PS - Closed",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -5021,7 +5023,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "anchor_hatch1_closed_tag",
+                  "field": "chainlocker_hatch_ps_closed_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5060,7 +5062,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "anchor_hatch2_closed_tag",
+                  "field": "chainlocker_hatch_sb_closed_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5124,7 +5126,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_closed__value AS laz_hatch_fwd_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_fwd_closed__value AS laz_hatch_fwd_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_mid_closed__value AS laz_hatch_mid_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_mid_closed__value AS laz_hatch_mid_ps_closed,\r\n\t\t\tlaza_access_hatch_sb_aft_closed__value AS laz_hatch_aft_sb_closed,\r\n\t\t\tlaza_access_hatch_ps_aft_closed__value AS laz_hatch_aft_ps_closed,\r\n\t\t\tforeship_stor_area_acc_hatch_closed__value AS foreship_stor_hatch_closed,\r\n\t\t\tcrane_hatch_aft_closed__value AS crane_hatch_closed,\r\n\t\t\tforepeak_acc_hatch_closed__value AS forepeak_hatch_closed,\r\n\t\t\tsail_stor_hatch_closed__value AS sail_stor_hatch_closed,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_closed__value AS dinghy_stor_closed,\r\n\t\t\thatch_anchor_sensor_1_closed__value AS anchor_hatch1_closed,\r\n\t\t\thatch_anchor_sensor_2_closed__value AS anchor_hatch2_closed,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tlaza_access_hatch_sb_fwd_closed__value     AS laz_hatch_fwd_sb_closed,\r\n\tlaza_access_hatch_ps_fwd_closed__value     AS laz_hatch_fwd_ps_closed,\r\n\tlaza_access_hatch_sb_mid_closed__value     AS laz_hatch_mid_sb_closed,\r\n\tlaza_access_hatch_ps_mid_closed__value     AS laz_hatch_mid_ps_closed,\r\n\tlaza_access_hatch_sb_aft_closed__value     AS laz_hatch_aft_sb_closed,\r\n\tlaza_access_hatch_ps_aft_closed__value     AS laz_hatch_aft_ps_closed,\r\n\tforeship_stor_area_acc_hatch_closed__value AS foreship_stor_hatch_closed,\r\n\tcrane_hatch_aft_closed__value              AS crane_hatch_closed,\r\n\tforepeak_acc_hatch_closed__value           AS forepeak_hatch_closed,\r\n\tsail_stor_hatch_closed__value              AS sail_stor_hatch_closed,\r\n\tplatfrom_closed_locked__value              AS crew_platform_closed,\r\n\tdinghy_stor_acc_fwd_closed__value          AS dinghy_stor_closed,\r\n\thatch_chainlocker_sensor_1_closed__value   AS chainlocker_hatch_ps_closed,\r\n\thatch_chainlocker_sensor_2_closed__value   AS chainlocker_hatch_sb_closed,\r\n\tall_hull_valves_close__value               AS close_all_hull_valves,\r\n\twtsd_doorclose__value                      AS wtsd_close,\r\n\twtsd_dooropened__value                     AS wtsd_opened,\r\n\twtsd_doorclosed__value                     AS wtsd_closed,\r\n\twtsd_lowairpress__value                    AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5168,7 +5170,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'hatch_anchor_sensor1_closed' THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch1_closed_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'hatch_anchor_sensor2_closed' THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch2_closed_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'hatch_chainlocker_sensor1_closed' THEN '(' || yard_tag || ')' ELSE NULL END) AS chainlocker_hatch_ps_closed_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'hatch_chainlocker_sensor2_closed' THEN '(' || yard_tag || ')' ELSE NULL END) AS chainlocker_hatch_sb_closed_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -5729,8 +5731,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-singel",
-          "value": "PE746E5A5E0A52672"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -5742,7 +5744,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},

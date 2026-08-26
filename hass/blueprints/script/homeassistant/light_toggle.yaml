@@ -1,0 +1,29 @@
+blueprint:
+  name: "Lights: Toggle"
+  description: "Toggle a light when a button is pressed"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level entity"
+  min_level:
+    description: "Minimum dim level"
+
+sequence:
+  - alias: Toggle light
+    service: input_number.set_value
+    target:
+      entity_id: "{{ dim_level }}"
+    data:
+      value: "{{ states(dim_level) | int * -1 }}"
+  - if:
+      - alias: Light was off
+        condition: template
+        value_template: "{{ states(dim_level) | int > -1 and states(dim_level) | int < 1 }}"
+    then:
+      - alias: Ensure light goes on at 0
+        service: input_number.set_value
+        target:
+          entity_id: "{{ dim_level }}"
+        data:
+          value: "{{ min_level }}"

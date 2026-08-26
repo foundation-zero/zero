@@ -1,10 +1,11 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import computed_field
+from pydantic import ConfigDict, computed_field
+from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
+    Stamped,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -13,6 +14,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class PvtSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pvt_pump_main_fwd: Annotated[
         sensor.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]
@@ -89,6 +96,26 @@ class PvtSensorValues(ThrsValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
     ]
+    pvt_pressure_main_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-01",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ] = sensor.PressureSensor(  # TODO: Remove default
+        pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
+    pvt_pressure_owners_vacuum: Annotated[
+        sensor.PressureSensor,
+        component_meta(
+            yard_tag="50009059-02",
+            component_type="pressure_sensor",
+            included_in_fmu=False,
+        ),
+    ] = sensor.PressureSensor(  # TODO: Remove default
+        pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         component_meta(
@@ -485,6 +512,12 @@ class PvtSensorValues(ThrsValues):
 
 
 class PvtControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pvt_pump_main_fwd: Annotated[
         control.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]
@@ -538,7 +571,7 @@ class PvtControlValues(ThrsValues):
     ]
 
 
-class PvtSimulationInputs(SimulationInputs):
+class PvtSimulationInputs(ThrsValues):
     pvt_main_fwd: simulation.HeatSource
     pvt_main_aft: simulation.HeatSource
     pvt_owners: simulation.HeatSource
@@ -546,7 +579,7 @@ class PvtSimulationInputs(SimulationInputs):
     pvt_seawater_supply: simulation.Boundary
 
 
-class PvtSimulationOutputs(SimulationValues):
+class PvtSimulationOutputs(ThrsValues):
     pvt_pcm_return: simulation.Boundary
     pvt_pcm_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary

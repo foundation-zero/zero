@@ -15,3 +15,8 @@ data:
   MQTT_SIMULATOR_TOPIC_SUFFIX: {{ .Values.mqtt.simulatorTopicSuffix }}
   MQTT_USERNAME: {{ .Values.mqtt.username }}
   LIVENESS_PATH: {{ .Values.livenessPath }}
+  PG_HOST: {{ .Values.postgresql.host }}
+  PG_PORT: {{ .Values.postgresql.port | quote }}
+  PG_USER: {{ .Values.postgresql.user }}
+  PG_DB: {{ .Values.postgresql.db }}
+  

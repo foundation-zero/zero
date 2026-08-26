@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { VALVE_OPEN_THRESHOLD } from "@/modules/thrapp/utils/consts";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { getMimicDataProvider, ModuleField } from "../../../providers";
 

@@ -32,8 +32,8 @@ def pytest_runtest_setup(item):
 def settings():
     from loads.config import Settings
 
-    os.environ["PG_HOST"] = "localhost"
-    os.environ["MQTT_HOST"] = "localhost"
+    os.environ.setdefault("PG_HOST", "localhost")
+    os.environ.setdefault("MQTT_HOST", "localhost")
 
     return Settings()  # type: ignore
 

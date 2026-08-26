@@ -30,11 +30,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+      - uses: astral-sh/setup-uv@v8.1.0
 
       - uses: extractions/setup-just@v4
-
-      - run: pipx install poetry==2.2.1
-        working-directory: zero-thrs-control
 
       - name: Create .env file from secret in root for services
         run: |
@@ -48,13 +46,22 @@ jobs:
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
-      - run: poetry install --with dev,test
+      - run: uv sync --locked
+        working-directory: zero-thrs-control
+
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-thrs-control
 
       - run: just type_check
         working-directory: zero-thrs-control
 
-      - run: just lint
+      - run: just lint_no_fix
         working-directory: zero-thrs-control
 
       - run: just format
@@ -69,15 +76,6 @@ jobs:
         run: just test_io -v
         working-directory: zero-thrs-control
         continue-on-error: true
-
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: zero-thrs-control
 
   docker-push:
     timeout-minutes: 15
@@ -117,3 +115,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: ${{matrix.target}}
           tags: ${{ env.IMAGE_PREFIX }}${{matrix.target}}:${{ needs.test.outputs.image_tag }}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-thrs-control/charts/zero-thrs-control"

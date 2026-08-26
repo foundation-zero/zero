@@ -1,7 +1,7 @@
 import pytest
 
 from tests.modules.conftest import compare_modelica_names, compare_yard_tags
-from thrs.input_output.modules.cooling_panels import (
+from thrs.input_output.modules.cooling import (
     CoolingPanelsControlValues,
     CoolingPanelsSensorValues,
     CoolingPanelsSimulationInputs,

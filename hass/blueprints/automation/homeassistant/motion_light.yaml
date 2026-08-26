@@ -9,17 +9,12 @@ blueprint:
       name: Motion Sensor
       selector:
         entity:
-          filter:
-            - device_class: occupancy
-              domain: binary_sensor
-            - device_class: motion
-              domain: binary_sensor
+          domain: [binary_sensor, input_boolean]
     light_target:
       name: Light
+      description: Label to select light outputs
       selector:
-        target:
-          entity:
-            domain: light
+        label:
     no_motion_wait:
       name: Wait time
       description: Time to leave the light on after last motion is detected.
@@ -44,7 +39,8 @@ triggers:
 actions:
   - alias: "Turn on the light"
     action: light.turn_on
-    target: !input light_target
+    target:
+      label_id: !input light_target
   - alias: "Wait until there is no motion from device"
     wait_for_trigger:
       trigger: state
@@ -55,4 +51,5 @@ actions:
     delay: !input no_motion_wait
   - alias: "Turn off the light"
     action: light.turn_off
-    target: !input light_target
+    target:
+      label_id: !input light_target

@@ -1,9 +1,27 @@
+import logging
+import os
+import sys
+from asyncio import TaskGroup
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
-from typing import Annotated, assert_never
-from contextlib import asynccontextmanager
+from functools import partial, wraps
+from typing import Annotated, Awaitable, Callable, ParamSpec, TypeVar, assert_never
+
+import strawberry
 from aiomqtt import Client as MqttClient
+from fastapi import Depends, FastAPI, Request
+from sqlalchemy import TextClause, text
+from sqlalchemy.ext.asyncio import create_async_engine
+from strawberry.dataloader import DataLoader
+from strawberry.experimental.pydantic.conversion_types import (
+    StrawberryTypeFromPydantic,
+)
+from strawberry.fastapi import BaseContext, GraphQLRouter
+from strawberry.schema.config import StrawberryConfig
+
+from domestic_control.config import Settings
 from domestic_control.history import (
     AcLog,
     AmplifiersLog,
@@ -12,43 +30,25 @@ from domestic_control.history import (
     LightingGroupsLog,
     VentilationLog,
 )
-from fastapi import Depends, FastAPI
-from sqlalchemy import TextClause, text
-import strawberry
-from strawberry.schema.config import StrawberryConfig
-from strawberry.dataloader import DataLoader
-from asyncio import TaskGroup
-from sqlalchemy.ext.asyncio import create_async_engine
-
-from strawberry.fastapi import GraphQLRouter, BaseContext
-from fastapi import Request
-from domestic_control.services.ac import Ac
-from domestic_control.services.av import Av, Gude
-from domestic_control.services.ventilation import Ventilation
-from domestic_control.config import Settings
-from domestic_control.services.hass import Hass, id_to_room_id
-from domestic_control.mqtt import (
-    ControlSend,
-    DataCollection,
-)
-from domestic_control.sink import CompositeSink, PostgresSink, Sink
 from domestic_control.messages import (
     Blind,
     LightingGroup,
 )
-import logging
-import os
-from typing import Callable
-from functools import partial, wraps
-from typing import TypeVar, ParamSpec
-from typing import Awaitable
-
-
-from strawberry.experimental.pydantic.conversion_types import (
-    StrawberryTypeFromPydantic,
+from domestic_control.mqtt import (
+    ControlSend,
+    DataCollection,
 )
+from domestic_control.services.ac import Ac
+from domestic_control.services.av import Av, Gude
+from domestic_control.services.hass import Hass, id_to_room_id
+from domestic_control.services.ventilation import Ventilation
+from domestic_control.sink import CompositeSink, PostgresSink, Sink
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
+logging.basicConfig(
+    level=os.environ.get("LOGLEVEL", "INFO").upper(),
+    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    stream=sys.stdout,
+)
 
 settings = Settings()  # type: ignore
 logger = logging.getLogger(__name__)

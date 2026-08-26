@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.adsorption import AdsorptionControl, AdsorptionParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -36,7 +37,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(30.0)
         ),
         adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
-        adsorption_ht_supply=Boundary(
+        adsorption_consumers_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
         ),
         adsorption_dhw_supply=Boundary(
@@ -47,7 +48,9 @@ def simulation_inputs():
 
 @fixture
 def control(simulation):
-    return AdsorptionControl(AdsorptionParameters(), simulation.time)
+    return AdsorptionControl(
+        AdsorptionParameters(), simulation.time, MachineStateLoggingServiceNoop()
+    )
 
 
 @fixture
@@ -58,6 +61,6 @@ def simulation(simulation_inputs):
             AdsorptionSimulationOutputs,
             fmu,
             simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )

@@ -7,8 +7,10 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import { DHW_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/dhw/data";
 import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
+import { THRUSTERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/thrusters/data";
+import ThrustersModule from "@/modules/thrapp/mimics/modules/thrusters/ThrustersModule.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
-import { DEFINITIONS } from "@/modules/thrs/lib/consts";
+import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { computed, inject, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -16,6 +18,11 @@ const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")
 
 const demoMode = ref(false);
 const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider));
+const source = computed(() => {
+  if (currentDefinition.value === "thrusters") return THRUSTERS_MIMIC_DATA;
+
+  return DHW_MIMIC_DATA;
+});
 
 const { t } = useI18n();
 </script>
@@ -40,9 +47,13 @@ const { t } = useI18n();
         </LegendTrigger>
       </aside>
 
-      <MimicTooltipProvider :source="DHW_MIMIC_DATA">
+      <MimicTooltipProvider :source="source">
         <DhwModule
           v-if="currentDefinition === 'dhw'"
+          class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
+        />
+        <ThrustersModule
+          v-if="currentDefinition === 'thrusters'"
           class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
         />
       </MimicTooltipProvider>

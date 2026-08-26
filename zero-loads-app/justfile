@@ -1,0 +1,34 @@
+export_seed:
+    uv run loads export-seed
+
+test:
+    uv run pytest
+
+test_integration:
+    uv run pytest --run=integration
+
+test_unit:
+    uv run pytest --run=unit
+
+run_demo:
+    uv run loads api &
+    uv run loads sail-system-sensors-stub &
+    uv run loads fiber-optic-sensors-stub &
+    uv run loads at-sensors-stub &
+    wait
+
+run:
+    uv run loads api 
+
+typecheck:
+    uv run pyright
+
+format:
+    uv run ruff check --fix
+    uv run ruff format
+
+check:
+    uv run pyright
+    uv run pytest
+    uv run ruff check --no-fix
+    uv run ruff format --check

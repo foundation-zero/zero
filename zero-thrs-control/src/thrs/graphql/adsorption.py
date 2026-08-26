@@ -1,16 +1,18 @@
 import strawberry
 
-from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
+from thrs.control.modules.adsorption import (
+    AdsorptionControllerState,
+    AdsorptionControlMode,
+    AdsorptionParameters,
+)
 from thrs.graphql.base import (
-    AdsorptionMessaging,
     ControlModule,
-    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    optional_pydantic_to_graphql,
+    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.adsorption import (
@@ -24,11 +26,9 @@ AdsorptionSensorValuesType = pydantic_to_strawberry_type(
 AdsorptionControlValuesType = pydantic_to_strawberry_type(AdsorptionControlValues)
 AdsorptionParametersType = pydantic_to_strawberry_type(AdsorptionParameters)
 AdsorptionControlModeType = pydantic_to_strawberry_type(AdsorptionControlMode)
-
-
-@strawberry.type()
-class AdsorptionControllerStateType:
-    _empty: None = None
+AdsorptionControllerStateType = empty_pydantic_type_to_strawberry_type(
+    AdsorptionControllerState
+)
 
 
 AdsorptionModule = ControlModule[
@@ -38,30 +38,6 @@ AdsorptionModule = ControlModule[
     AdsorptionControlModeType,
     AdsorptionControllerStateType,
 ]
-
-
-def resolve_module(
-    module: AdsorptionMessaging,
-) -> AdsorptionModule:
-    return ControlModule(
-        sensor_values=optional_pydantic_to_graphql(
-            AdsorptionSensorValuesType, module.sensor_values
-        ),
-        control_values=optional_pydantic_to_graphql(
-            AdsorptionControlValuesType, module.control_values
-        ),
-        parameters=optional_pydantic_to_graphql(
-            AdsorptionParametersType, module.parameters
-        ),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            AdsorptionControlModeType, module.control_mode
-        )
-        if module.control_mode
-        else None,
-        controller_state=optional_pydantic_to_graphql(
-            AdsorptionControllerStateType, module.controller_state
-        ),
-    )
 
 
 def get_adsorption_messaging(context):

@@ -1,7 +1,9 @@
-import pytest
-from zero_data.io_list import read_io_list, IOResult
-from polars import DataFrame
 from pathlib import Path
+
+import pytest
+from polars import DataFrame
+
+from zero_data.io_list import IOResult, read_io_list
 
 
 @pytest.fixture

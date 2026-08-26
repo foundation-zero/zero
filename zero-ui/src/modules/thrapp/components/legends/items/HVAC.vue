@@ -20,7 +20,6 @@ const assets = DHW_MIMIC_DATA[MimicComponentType.HVAC];
     <LegendItemPreview>
       <HVACInstance
         :force-height="false"
-        tag-id="41001001"
         v-bind="assets['41001001']"
       />
     </LegendItemPreview>

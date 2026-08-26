@@ -303,7 +303,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -718,7 +718,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1251,7 +1251,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1410,6 +1410,7 @@
             "y": 8
           },
           "id": 12,
+          "maxDataPoints": 500,
           "options": {
             "colWidth": 0.6,
             "legend": {
@@ -1450,7 +1451,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp AS time,\r\n\tchlorine_unit_alarm__value                 AS fresh_water_chlorine_unit_alarm,\r\n\tdrain_vlv_y_01_pos_overboard__value        AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value        AS drain_valve2_pos_overboard,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)              AS time,\r\n\tMAX(chlorine_unit_alarm__value)                 AS fresh_water_chlorine_unit_alarm,\r\n\tMAX(drain_vlv_y_01_pos_overboard__value)        AS drain_valve1_pos_overboard,\r\n\tMAX(drain_vlv_y_02_pos_overboard__value)        AS drain_valve2_pos_overboard,\r\n\tMAX(valve_cold_air_fr_68_y_03_openclose__value) AS valve_cold_air_cool_water_y03_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_04_openclose__value) AS valve_cold_air_cool_water_y04_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_05_openclose__value) AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2364,7 +2365,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp",
+          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3230,7 +3231,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2,\r\n\ttank_1_level__value              AS tank1_level,\r\n\ttank_2_level__value              AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2,\r\n\ttank_1_level__value              AS tank1_level,\r\n\ttank_2_level__value              AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3383,7 +3384,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 26
           },
           "id": 15,
           "options": {
@@ -3420,7 +3421,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tadiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tadiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3536,7 +3537,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 34
           },
           "id": 17,
           "options": {
@@ -3573,7 +3574,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\treel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\treel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3700,7 +3701,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 42
           },
           "id": 16,
           "options": {
@@ -3737,7 +3738,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3851,7 +3852,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 42
+            "y": 50
           },
           "id": 19,
           "options": {
@@ -3888,7 +3889,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4002,7 +4003,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 50
+            "y": 58
           },
           "id": 18,
           "options": {
@@ -4039,7 +4040,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4093,8 +4094,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "${datasource}"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -4106,7 +4107,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},

@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import PressureGauge from "../components/pressure-gauge/PressureGauge.vue";
-import { getMimicDataProvider } from "../providers";
-const props = defineProps<MimicComponentInstanceProps>();
 
-const { getComponentState } = getMimicDataProvider();
-const state = getComponentState();
+const props = defineProps<
+  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.PressureGauge>
+>();
 </script>
 
 <template>
-  <PressureGauge
-    v-bind="props"
-    :state="state"
-  />
+  <MimicTooltipTrigger
+    :type="MimicComponentType.PressureGauge"
+    :data="props"
+  >
+    <PressureGauge v-bind="props" />
+    <slot />
+  </MimicTooltipTrigger>
 </template>

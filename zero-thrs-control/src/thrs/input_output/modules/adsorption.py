@@ -1,8 +1,9 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -10,17 +11,35 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class AdsorptionSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     adsorption_flowcontrol_waste: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001062-03", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001062-03", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     adsorption_mix_hot: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001046-02", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001046-02", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_mix_waste: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001047-01", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_switch_dhw: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001187-01", component_type="valve", valve_type="switch"
+        ),
     ]
     adsorption_chiller: Annotated[
         sensor.AdsorptionChiller,
@@ -91,17 +110,35 @@ class AdsorptionSensorValues(ThrsValues):
 
 
 class AdsorptionControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     adsorption_flowcontrol_waste: Annotated[
-        control.Valve, component_meta(yard_tag="50001062-03", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001062-03", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     adsorption_mix_hot: Annotated[
-        control.Valve, component_meta(yard_tag="50001046-02", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001046-02", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_mix_waste: Annotated[
-        control.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001047-01", component_type="valve", valve_type="mix"
+        ),
     ]
     adsorption_switch_dhw: Annotated[
-        control.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
+        control.Valve,
+        component_meta(
+            yard_tag="50001187-01", component_type="valve", valve_type="switch"
+        ),
     ]
     adsorption_chiller: Annotated[
         control.AdsorptionChiller,
@@ -109,7 +146,7 @@ class AdsorptionControlValues(ThrsValues):
     ]
 
 
-class AdsorptionSimulationInputs(SimulationInputs):
+class AdsorptionSimulationInputs(ThrsValues):
     adsorption_cooling_supply: simulation.TemperatureBoundary
     adsorption_seawater_supply: simulation.Boundary
     adsorption_available_hot_temperature: Annotated[
@@ -124,12 +161,14 @@ class AdsorptionSimulationInputs(SimulationInputs):
     adsorption_chiller: Annotated[
         simulation.AdsorptionChiller, component_meta(included_in_fmu=False)
     ]
-    adsorption_ht_supply: simulation.Boundary
+    adsorption_consumers_supply: simulation.Boundary
     adsorption_dhw_supply: simulation.Boundary
 
 
-class AdsorptionSimulationOutputs(SimulationValues):
+class AdsorptionSimulationOutputs(ThrsValues):
     adsorption_cooling_return: simulation.Boundary
     adsorption_seawater_return: simulation.TemperatureBoundary
+    adsorption_dhw_exchanger: simulation.ExchangerBoundary
     adsorption_dhw_return: simulation.TemperatureBoundary
-    adsorption_ht_return: simulation.TemperatureBoundary
+    adsorption_consumers_exchanger: simulation.ExchangerBoundary
+    adsorption_consumers_return: simulation.TemperatureBoundary

@@ -70,7 +70,7 @@ const { labels, actions, items, sources } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.pressure"
+        :source="source"
         field="pressure"
       >
         <Partials.ListItem no-source>
@@ -86,18 +86,28 @@ const { labels, actions, items, sources } = useTranslations();
         </Partials.ListItem>
       </SensorValue>
 
-      <Partials.ListItem>
-        {{ items("energyConsumption") }}
-        <template #renderer>
-          <FieldRenderer.Energy :value="600" />
-        </template>
-      </Partials.ListItem>
-      <Partials.ListItem>
-        {{ items("powerInput") }}
-        <template #renderer>
-          <FieldRenderer.Power :value="200" />
-        </template>
-      </Partials.ListItem>
+      <SensorValue
+        :source="source"
+        field="energyConsumption"
+      >
+        <Partials.ListItem no-source>
+          {{ items("energyConsumption") }}
+          <template #renderer>
+            <FieldRenderer.Energy />
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        :source="source"
+        field="powerInput"
+      >
+        <Partials.ListItem no-source>
+          {{ items("powerInput") }}
+          <template #renderer>
+            <FieldRenderer.Power />
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
       <SensorValue
         :source="source"
         field="speed"
@@ -114,12 +124,6 @@ const { labels, actions, items, sources } = useTranslations();
           {{ items("operationTime") }}
         </Partials.ListItem>
       </SensorValue>
-      <Partials.ListItem>
-        {{ items("totalRunningHours") }}
-        <template #renderer>
-          <FieldRenderer.TimeRemaining :value="25 * 60 + 31" />
-        </template>
-      </Partials.ListItem>
     </TooltipList>
 
     <TooltipList>
@@ -130,7 +134,10 @@ const { labels, actions, items, sources } = useTranslations();
       <Partials.PIDController v-bind="custom.flowController">
         {{ sources("pumpFlowController") }}
       </Partials.PIDController>
-      <Partials.PIDController v-bind="custom.temperatureController">
+      <Partials.PIDController
+        v-if="custom.temperatureController"
+        v-bind="custom.temperatureController"
+      >
         {{ sources("pumpTemperatureController") }}
       </Partials.PIDController>
     </TooltipList>

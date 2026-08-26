@@ -1,7 +1,13 @@
 export { default as SplashScreen } from "./SplashScreen.vue";
 
 import { INCLUDED_APPS, ZeroApps } from "@/apps.ts";
-import { RiBarChart2Line, RiLightbulbLine, RiTempHotLine, RiWindyLine } from "@remixicon/vue";
+import {
+  RiBarChart2Line,
+  RiLightbulbLine,
+  RiSailboatLine,
+  RiTempHotLine,
+  RiWindyLine,
+} from "@remixicon/vue";
 import type { Component } from "vue";
 
 export type SplashAppLink = {
@@ -84,5 +90,16 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     border: "var(--warning-dull)",
     shadow: "var(--warning-dull)",
     iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
+  },
+  {
+    id: ZeroApps.sailSystem,
+    nameKey: "views.splash.apps.sailSystem.title",
+    descriptionKey: "views.splash.apps.sailSystem.description",
+    to: "/sail-system",
+    icon: RiSailboatLine,
+    glow: "color-mix(in srgb, var(--brand-dull) 40%, transparent)",
+    border: "var(--brand-dull)",
+    shadow: "var(--brand-dull)",
+    iconBackground: "color-mix(in srgb, var(--brand) 16%, transparent)",
   },
 ].filter((app) => INCLUDED_APPS.includes(app.id));

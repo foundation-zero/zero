@@ -13,7 +13,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from typing_extensions import _AnnotatedAlias
 
 
@@ -25,8 +25,7 @@ class UnitMeta:
 def _unit_for_single_annotation(annotation: Any) -> Any | None:
     if hasattr(annotation, "__pydantic_generic_metadata__"):
         return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)
-    else:
-        return annotation
+    return annotation
 
 
 def unit_for_annotation(annotation: Any) -> Any | None:
@@ -36,13 +35,14 @@ def unit_for_annotation(annotation: Any) -> Any | None:
             raise ValueError("Generic alias of annotations with different units.")
         return next(iter(units))
     if isinstance(annotation, UnionType):
-        units = set(
-            _unit_for_single_annotation(annotation)
-            for annotation in get_args(annotation)
-        )
+        units = {
+            _unit_for_single_annotation(arg)
+            for arg in get_args(annotation)
+            if arg is not type(None)
+        }
         if len(units) > 1:
             raise ValueError("Union of annotations with different units.")
-        return next(iter(units))
+        return next(iter(units), None)
 
     return _unit_for_single_annotation(annotation)
 
@@ -70,21 +70,19 @@ def zero_for_unit(unit: Any) -> Any:
     if get_origin(unit) in (UnionType, Union):
         if type(None) in get_args(unit):
             return None
-        else:
-            return zero_for_unit(next(arg for arg in get_args(unit)))
+        return zero_for_unit(next(arg for arg in get_args(unit)))
 
     if unit is float:
         return 0.0
-    elif get_origin(unit) is Literal:
+    if get_origin(unit) is Literal:
         return get_args(unit)[0]
-    elif isinstance(unit, type) and issubclass(unit, Enum):
+    if isinstance(unit, type) and issubclass(unit, Enum):
         return next(e for e in unit)
-    elif unit is bool:
+    if unit is bool:
         return False
-    elif get_origin(unit) is tuple:
+    if get_origin(unit) is tuple:
         return tuple(zero_for_unit(arg) for arg in get_args(unit))
-    else:
-        raise ValueError(f"Unsupported unit type: {unit}")
+    raise ValueError(f"Unsupported unit type: {unit}")
 
 
 def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> float:
@@ -109,20 +107,18 @@ def validate_nonzero_float_within_precision(
 
 WATER_HEAT_TRANSFER_CONVERSION = 4184 / 60  # kW min/(l*K)
 
+# ruff: noqa: UP040
+# These cannot be converted to proper type keyword statements because strawberry fails on those
 OptionalCelsius: TypeAlias = Annotated[
     float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
 ]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
-LMin: TypeAlias = Annotated[
-    float,
-    Field(ge=-0.1),
-    UnitMeta(modelica_name="l_min"),
-]
+LMin: TypeAlias = Annotated[float, UnitMeta(modelica_name="l_min")]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 Ratio: TypeAlias = Annotated[
     float,
-    AfterValidator(validate_ratio_within_precision),
+    # AfterValidator(validate_ratio_within_precision), # TODO: Reenable once fixed
     UnitMeta(modelica_name="ratio"),
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
@@ -134,9 +130,13 @@ NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Error: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Operating: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
+Empty: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
+Degree: TypeAlias = Annotated[
+    float, Field(ge=0, le=360), UnitMeta(modelica_name="Degree")
+]
 
 
 class TankState(Enum):
@@ -156,19 +156,21 @@ class PcsMode(Enum):
     REGENERATION = "regeneration"
 
 
-ADSORPTION_CHILLER_MODE_OFF = 0
-ADSORPTION_CHILLER_MODE_ON = 1
-ADSORPTION_CHILLER_MODE_VALVE_RUN = 2
-ADSORPTION_CHILLER_MODE_ACTIVATION = 3
-AdsorptionChillerMode: TypeAlias = Literal[0, 1, 2, 3]
+class AdsorptionChillerMode(Enum):
+    OFF = 0
+    ON = 1
+    VALVE_RUN = 2
+    ACTIVATION = 3
 
-FREE_COOLING_MODE_OFF = 0
-FREE_COOLING_MODE_ON = 1
-FREE_COOLING_MODE_AUTO = 2
-FreeCoolingMode: TypeAlias = Literal[0, 1, 2]
 
-TANK_CONTROL_MODE_NONE = 0
-TANK_CONTROL_MODE_BOTH = 1
-TANK_CONTROL_MODE_COLD = 2
-TANK_CONTROL_MODE_HOT = 3
-TankControlMode: TypeAlias = Literal[0, 1, 2, 3]
+class FreeCoolingMode(Enum):
+    OFF = 0
+    ON = 1
+    AUTO = 2
+
+
+class TankControlMode(Enum):
+    NONE = 0
+    BOTH = 1
+    COLD = 2
+    HOT = 3

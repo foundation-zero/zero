@@ -30,7 +30,7 @@ class LoadsModel(BaseModel):
     TOPIC: ClassVar[str]
 
     @classmethod
-    def make_generator(cls):
+    def make_generator(cls) -> Generator:
         return JSONGenerator(
             {
                 str(
@@ -140,7 +140,7 @@ class LoadsBytesModel(LoadsModel):
     """
 
     @classmethod
-    def make_generator(cls):
+    def make_generator(cls) -> Generator:
         field_info = cls.model_fields["value"]  # Only one field is expected
         return cls._create_generator(field_info.annotation, field_info.metadata)
 

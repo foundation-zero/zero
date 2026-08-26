@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -24,8 +24,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureDcReturn"),
     flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDc"),
   },
-  tooltip: tooltip({
-    yardTag: "1008",
-    technicalName: "dhwDcExchanger",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

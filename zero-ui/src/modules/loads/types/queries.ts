@@ -7,7 +7,19 @@ export type QueryVariables<T extends keyof Variable> = {
 
 export type QueryVariableActual = QueryVariables<"actual">;
 export type QueryVariableDefinition = QueryVariables<"variable">;
-export type QueryVariableReference = QueryVariables<"reference">;
+export type QueryLoadCase = {
+  id: string;
+  name: string;
+  awa: number;
+  aws: number;
+  heel: number;
+  twa: number;
+  tws: number;
+};
+
+export type QueryVariableReference = QueryVariables<"reference"> & {
+  loadCase: QueryLoadCase | null;
+};
 
 export type QuerySails = {
   sails: Sail<SailId>[];

@@ -4,7 +4,7 @@ import { MimicComponentInstanceProps } from ".";
 import { HeatingState } from "../components";
 import { HeatExchangerPortOrientation } from "../components/heat-exchanger";
 
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import HeatExchanger from "../components/heat-exchanger/HeatExchanger.vue";
@@ -31,10 +31,10 @@ const heatExchanger = getSensorValue(props.source);
 type HeatExchangerState = [sideA: HeatingState, sideB: HeatingState];
 
 const portStates = computed<HeatExchangerState>(() => {
-  if (heatExchanger.value?.heat.value === undefined || heatExchanger.value?.heat.value === 0)
-    return [HeatingState.Idle, HeatingState.Idle];
-  else if (heatExchanger.value.heat.value > 0)
-    return [HeatingState.HeatingMedium, HeatingState.HeatingHigh];
+  const heat = heatExchanger.value?.heat?.value;
+
+  if (heat === undefined || heat === 0) return [HeatingState.Idle, HeatingState.Idle];
+  else if (heat > 0) return [HeatingState.HeatingMedium, HeatingState.HeatingHigh];
   else return [HeatingState.CoolingMedium, HeatingState.CoolingHigh];
 });
 

@@ -32,17 +32,18 @@ pnpm extract-schema-values <CONST_NAME> <TYPE_NAME>
 
 **What it does:**
 
-1. Parses the GraphQL schema file at `src/modules/thrs/graphql/schema.graphql` using the official GraphQL parser
+1. Parses the GraphQL schema file at `src/modules/thrsim/graphql/schema.graphql` using the official GraphQL parser
 2. Finds the specified GraphQL type definition using AST visitor pattern
 3. Extracts field metadata from `@jsonSchemaDirective` annotations (for controls/sensors) or infers types directly (for parameters/simulation)
 4. Infers component types (control/sensor/parameter/simulation) from field metadata and GraphQL types
 5. Generates appropriate TypeScript definition objects with proper typing
-6. Updates or creates the specified constant in `src/modules/thrs/lib/consts.generated.ts`
+6. Updates or creates the specified constant in `src/modules/thrsim/lib/consts.generated.ts`
 7. Supports union types by merging fields from each member type (first occurrence wins on conflicts)
 
 **Architecture:**
 
 The script is written in TypeScript with clear separation of concerns:
+
 - **Type-safe** - Full TypeScript types for all data structures
 - **Modular** - Functions organized by responsibility (parsing, inference, generation, I/O)
 - **Robust parsing** - Uses official GraphQL parser (handles both formatted and unformatted schemas)
@@ -50,6 +51,7 @@ The script is written in TypeScript with clear separation of concerns:
 - **Well-documented** - Inline comments explain each section's purpose
 
 **Key improvements over JavaScript version:**
+
 - TypeScript provides compile-time type checking and better IDE support
 - Uses GraphQL AST visitor pattern instead of regex parsing for robustness
 - Handles all valid GraphQL syntax (formatted or unformatted)
@@ -84,15 +86,16 @@ pnpm generate-graphql-queries <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>
 
 **What it does:**
 
-1. Reads definition constants from `src/modules/thrs/lib/consts.generated.ts`
+1. Reads definition constants from `src/modules/thrsim/lib/consts.generated.ts`
 2. Parses field definitions to extract component type information
 3. Looks up appropriate GraphQL fields for each component type from centralized mappings
 4. Generates properly formatted GraphQL query fragments with nested field structures
-5. Updates or creates the query constant in `src/modules/thrs/lib/queries.generated.ts`
+5. Updates or creates the query constant in `src/modules/thrsim/lib/queries.generated.ts`
 
 **Architecture:**
 
 The script is written in TypeScript with clear organization:
+
 - **Type-safe** - Full TypeScript interfaces for all data structures
 - **Centralized mappings** - All component field mappings in one place for easy updates
 - **Modular functions** - Separated concerns for parsing, generation, and file operations
@@ -102,12 +105,14 @@ The script is written in TypeScript with clear organization:
 **Component Field Mappings:**
 
 The script maintains a centralized mapping of which GraphQL fields to query for each component type:
+
 - **Control components** - Pump (dutypoint, on), Valve (setpoint), PCM (on)
 - **Sensor components** - Temperature, Pressure, Flow, Pump stats, Valve position, etc.
 - **Simulation components** - Heat flows, boundaries, temperatures, flows
 - **Parameters** - Flat values (no nested structure)
 
 **Key improvements over JavaScript version:**
+
 - TypeScript provides compile-time type checking and IDE support
 - Centralized field mappings make it easy to add/modify component types
 - Better error handling with descriptive messages

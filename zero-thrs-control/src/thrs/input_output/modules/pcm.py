@@ -1,8 +1,9 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -10,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class PcmSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pcm_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001017", component_type="pump")
     ]
@@ -116,6 +123,12 @@ class PcmSensorValues(ThrsValues):
 
 
 class PcmControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     pcm_pump: Annotated[
         control.Pump, component_meta(yard_tag="50001017", component_type="pump")
     ]
@@ -172,15 +185,15 @@ class PcmControlValues(ThrsValues):
     ]
 
 
-class PcmSimulationInputs(SimulationInputs):
-    # pcm_producers_supply: simulation.Boundary #TODO: make into pcm_pvt_supply
+class PcmSimulationInputs(ThrsValues):
+    pcm_pvt_supply: simulation.Boundary
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
     pcm_consumers_supply: simulation.TemperatureBoundary
 
 
-class PcmSimulationOutputs(SimulationValues):
+class PcmSimulationOutputs(ThrsValues):
     pcm_consumers_return: simulation.Boundary
-    # pcm_thrusters_return: simulation.Boundary
+    pcm_thrusters_return: simulation.Boundary
     pcm_pvt_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary

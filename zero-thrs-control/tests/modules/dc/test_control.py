@@ -1,4 +1,3 @@
-import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
@@ -14,7 +13,7 @@ def test_all_idle(
     runner: SimulationTestRunner,
     simulation_inputs_inactive: DcSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
     sensor_values, *_ = runner.run(90)
 
@@ -28,15 +27,12 @@ def test_all_idle(
             assert sensor.flow.value == approx(0.0, abs=0.01)
 
 
-@pytest.mark.skip(
-    reason="This test is currently failing due to a change in the FMU. Needs to be updated."
-)
 def test_only_brightloops_aft(
     control: DcControl,
     runner: SimulationTestRunner,
     simulation_inputs_brightloops_aft_active: DcSimulationInputs,
 ):
-    runner._simulation.update_simulation_inputs(  # type: ignore
+    runner.update_simulation_inputs(  # type: ignore
         simulation_inputs_brightloops_aft_active
     )
 
@@ -57,9 +53,6 @@ def test_only_brightloops_aft(
     )
 
 
-@pytest.mark.skip(
-    reason="This test is currently failing due to a change in the FMU. Needs to be updated."
-)
 def test_only_one_brightloop(
     control: DcControl,
     runner: SimulationTestRunner,
@@ -72,7 +65,7 @@ def test_only_one_brightloop(
             )
         }
     )
-    runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
     sensor_values, *_ = runner.run(240)
 

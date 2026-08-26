@@ -12,11 +12,11 @@ sources:
       codec: json
     topic:
       - "marpower/#"
-      - "prop-test/#"
       - "domestic/+"
       - "hull-temperature/temperatures"
       - "termodinamica/#"
       - "sail-systems/#"
+      - "power-tags/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840

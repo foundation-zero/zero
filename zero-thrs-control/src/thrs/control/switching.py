@@ -1,12 +1,16 @@
-from typing import Literal
+from typing import Literal, cast
 
 from thrs.classes.control import Control
-from thrs.control.manual import ManualControl
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingServiceNoop,
+    StateLogger,
+)
+from thrs.control.manual import EmptyParameters, ManualControl
 from thrs.input_output.base import ThrsValues
 
 
-class SwitchingControlMode[M](ThrsValues):
-    automatic_mode: M | None
+class SwitchingControlMode[Mode](ThrsValues):
+    automatic_mode: Mode | None
 
     @property
     def automatic(self) -> bool:
@@ -46,6 +50,16 @@ class SwitchingControl[
         self._manual_control = manual
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
+        self._parameters = cast(ControlParameters, EmptyParameters())
+        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+
+    @property
+    def automatic_control(self):
+        return self._automatic_control
+
+    @property
+    def manual_control(self):
+        return self._manual_control
 
     def initial(
         self,
@@ -62,8 +76,7 @@ class SwitchingControl[
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
-        else:
-            return self._automatic_control.control(sensor_values)
+        return self._automatic_control.control(sensor_values)
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode

@@ -67,7 +67,9 @@
     "labels": {
       "demoMode": "Demo mode",
       "showLegend": "Show legend",
-      "legend": "Legend"
+      "legend": "Legend",
+      "on": "On",
+      "off": "Off"
     },
     "tooltips": {
       "actions": {
@@ -88,7 +90,8 @@
         "mode": "Mode",
         "heatExchange": "Heat exchange",
         "thisCircuit": "This circuit",
-        "exchangeCircuit": "Exchange circuit"
+        "exchangeCircuit": "Exchange circuit",
+        "connectingCircuit": "Connecting circuit"
       },
       "sources": {
         "calculated": "Calculated",
@@ -132,9 +135,10 @@
         "relativePosition": "Relative position",
         "absolutePosition": "Absolute position",
         "setpoint": "Setpoint",
-        "itemName": "Item",
+        "componentType": "Component Type",
         "tankSelector": "Tank selector",
         "technicalName": "Technical name",
+        "mqttTopic": "MQTT Topic",
         "state": "State",
         "temperature": "Temperature",
         "currentTemperature": "Current temperature",
@@ -146,6 +150,7 @@
         "maxLevel": "Maximum level",
         "filling": "Filling",
         "levelSensor": "Level sensor",
+        "level": "Level",
         "fill": "Fill",
         "capacity": "Capacity",
         "estimatedFillingTime": "Est. filling time",
@@ -156,13 +161,14 @@
         "tank3": "Tank 3",
         "boostReturnValve": "Boost return valve",
         "boostSupplyValve": "Boost supply valve",
-        "supplyValve": "Supply valve",
-        "dischargeValve": "Discharge valve",
+        "supplyValve": "Inlet valve",
+        "dischargeValve": "Outlet valve",
         "automatedControl": "Automated control",
         "exchanger": "Exchanger",
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
-        "flow": "Flow"
+        "flow": "Flow",
+        "empty": "Level"
       }
     },
     "mimics": {
@@ -214,7 +220,23 @@
           "brightloopTitle": "Brightloop",
           "drivesTitle": "Drives",
           "adsorptionTitle": "Adsorption",
-          "domesticHotWaterTitle": "Fresh Water System"
+          "domesticHotWaterTitle": "Fresh water system"
+        }
+      },
+      "thrusters": {
+        "assets": {
+          "aftTitle": "Thruster AFT",
+          "fwdTitle": "Thruster FWD",
+          "labels": {
+            "status": "Status",
+            "internalTemperature": "Internal temp"
+          },
+          "modes": {
+            "off": "Off",
+            "propulsion": "Propulsion",
+            "maneuvering": "Maneuvering",
+            "regeneration": "Regeneration"
+          }
         }
       }
     },
@@ -274,6 +296,9 @@
       },
       "levelSensors": {
         "title": "Level sensor (L)"
+      },
+      "levelSwitches": {
+        "title": "Level Switch (Empty / not Empty)"
       },
       "manualFlowControlValve": {
         "title": "Manual flow control valve"

@@ -24,6 +24,8 @@ from .db import SessionManager
 from .messaging import Messaging
 from .model import (
     get_loads_reference_values,
+    get_reference_values_by_case_ids,
+    get_sails_by_case_ids,
     resolve_variable_definitions,
     resolve_variable_keys,
 )
@@ -34,6 +36,7 @@ from .types import (
     CaseInput,
     LoadsContext,
     ReferenceValue,
+    SailType,
     VariableType,
 )
 
@@ -94,7 +97,7 @@ async def get_reference_values(
             key_to_id = dict(zip(variable_keys, variable_ids))
             values = (
                 await get_loads_reference_values(
-                    variable_keys=variable_keys,
+                    variable_keys=[key for key in variable_keys if key is not None],
                     case=case,
                     session=session,
                 )
@@ -116,14 +119,44 @@ async def get_variables(
     return result
 
 
+async def get_reference_values_by_case_id(
+    load_case_ids: Sequence[strawberry.ID], context: LoadsContext
+) -> list[list[ReferenceValue]]:
+    ids = [str(load_case_id) for load_case_id in load_case_ids]
+
+    async with context.sessionmanager.session() as session:
+        by_case_id = await get_reference_values_by_case_ids(ids, session)
+
+    return [by_case_id.get(load_case_id, []) for load_case_id in ids]
+
+
+async def get_sails_by_case_id(
+    load_case_ids: Sequence[strawberry.ID], context: LoadsContext
+) -> list[list[SailType]]:
+    ids = [str(load_case_id) for load_case_id in load_case_ids]
+
+    async with context.sessionmanager.session() as session:
+        by_case_id = await get_sails_by_case_ids(ids, session)
+
+    return [by_case_id.get(load_case_id, []) for load_case_id in ids]
+
+
 async def get_context(
     messaging: Annotated[Messaging, Depends(get_messaging)],
 ) -> LoadsContext:
     context = LoadsContext(
         messaging=messaging,
         sessionmanager=sessionmanager,
-        references_loader=DataLoader(
+        reference_by_case_input_loader=DataLoader(
             load_fn=lambda keys: get_reference_values(keys, context),  # type: ignore
+            cache=False,
+        ),
+        reference_by_case_id_loader=DataLoader(
+            load_fn=lambda keys: get_reference_values_by_case_id(keys, context),  # type: ignore
+            cache=False,
+        ),
+        sails_by_case_id_loader=DataLoader(
+            load_fn=lambda keys: get_sails_by_case_id(keys, context),  # type: ignore
             cache=False,
         ),
         variables_loader=DataLoader(

@@ -17,7 +17,7 @@ const pumps = DHW_MIMIC_DATA[MimicComponentType.Pump];
     <DutypointLabelInstance
       x="220"
       y="329"
-      tag-id="1022"
+      :tag-id="pumps['1022'].tooltip?.yardTag"
       :pump="pumps['1022'].source"
     />
   </PumpInstance>

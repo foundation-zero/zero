@@ -5,7 +5,8 @@
     "required": [
         "mqtt",
         "api",
-        "control"
+        "control",
+        "postgresql"
     ],
     "properties": {
         "mqtt": {
@@ -14,6 +15,7 @@
                 "host",
                 "port",
                 "username",
+                "existingSecret",
                 "devicesTopicPrefix",
                 "controllerTopicPrefix",
                 "simulatorTopicPrefix",
@@ -25,32 +27,67 @@
                 "host": {
                     "type": [
                         "string"
-                    ]
+                    ],
+                    "description": "MQTT broker host"
                 },
                 "port": {
                     "type": "integer",
-                    "default": 1883
+                    "default": 1883,
+                    "description": "MQTT broker port"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT username"
+                },
+                "existingSecret": {
+                    "type": "string",
+                    "description": "Name of existing secret containing MQTT password"
                 },
                 "devicesTopicPrefix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic prefix for devices"
                 },
                 "controllerTopicPrefix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic prefix for controllers"
                 },
                 "simulatorTopicPrefix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic prefix for simulators"
                 },
                 "controlTopicSuffix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic suffix for control"
                 },
                 "controllerTopicSuffix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic suffix for controller"
                 },
                 "simulatorTopicSuffix": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "MQTT topic suffix for simulator"
+                }
+            }
+        },
+        "postgresql": {
+            "type": "object",
+            "required": [
+                "host",
+                "db",
+                "existingSecret"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "PostgreSQL database host"
+                },
+                "db": {
+                    "type": "string",
+                    "description": "PostgreSQL database name"
+                },
+                "existingSecret": {
+                    "type": "string",
+                    "description": "Name of existing secret containing PostgreSQL password"
                 }
             }
         },
@@ -60,6 +97,16 @@
                 "enabled": {
                     "type": "boolean",
                     "default": true
+                },
+                "service": {
+                    "type": "object",
+                    "properties": {
+                        "externalIP": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional external IP for the API service; empty means not set"
+                        }
+                    }
                 }
             }
         },
@@ -72,9 +119,48 @@
                 },
                 "types": {
                     "type": "array",
+                    "description": "Control modes to run; one Deployment per entry. Must match ModeName in src/thrs/runtime/descriptions/simulation.py.",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "thrusters",
+                            "pvt",
+                            "pcm",
+                            "consumers",
+                            "adsorption",
+                            "drives",
+                            "dc",
+                            "high_temperature",
+                            "dhw",
+                            "thrs"
+                        ]
                     }
+                }
+            }
+        },
+        "simulation": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "type": {
+                    "type": "string",
+                    "default": "thrs",
+                    "description": "Simulation mode. Must match ModeName in src/thrs/runtime/descriptions/simulation.py.",
+                    "enum": [
+                        "thrusters",
+                        "pvt",
+                        "pcm",
+                        "consumers",
+                        "adsorption",
+                        "drives",
+                        "dc",
+                        "high_temperature",
+                        "dhw",
+                        "thrs"
+                    ]
                 }
             }
         }

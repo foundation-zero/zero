@@ -27,8 +27,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
-const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrs/lib/queries.generated.ts");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
+const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrsim/lib/queries.generated.ts");
 
 // ============================================================================
 // Types
@@ -83,6 +83,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Valve: ["setpoint"],
     Pcm: ["on"],
     Heatpump: ["temperatureSetpoint", "on"],
+    AdsorptionChiller: ["enable"],
   },
 
   // Control component fields
@@ -106,17 +107,33 @@ const FIELD_MAPPINGS: AllFieldMappings = {
   // Sensor component fields
   SensorComponentType: {
     Temperature: ["temperature"],
+    CalculatedTemperature: ["temperature"],
     Pressure: ["pressure"],
-    Flow: ["flow", "temperature"],
-    Pump: ["flow", "speed", "opTime"],
-    Valve: ["positionRel"],
+    Flow: ["flow", "temperature", "quantity"],
+    Pump: [
+      "dutypoint",
+      "on",
+      "flow",
+      "speed",
+      "opTime",
+      "pressure",
+      "energyConsumption",
+      "powerInput",
+    ],
+    Valve: ["positionRel", "positionAbs"],
     Thruster: ["active"],
     Pcs: ["mode"],
     Pcm: ["charged"],
     Level: ["level"],
+    LevelSwitch: ["empty"],
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],
+    AdsorptionChiller: ["operating", "noError", "freeCooling"],
+    Brightloop: ["active"],
+    Ugrid: ["active"],
+    PropulsionDrive: ["active"],
+    ShorePowerConverter: ["active"],
   },
 
   // Simulation component fields
@@ -331,6 +348,32 @@ function updateQueriesFile(queryString: string, outputQueryName: string): void {
   fs.writeFileSync(OUTPUT_PATH, updatedContent);
 }
 
+function generateGraphqlQueries(config: Config): void {
+  console.log("🔄 Generating GraphQL query...");
+  console.log(`📋 Input: ${config.inputConstName}`);
+  console.log(`📋 Output: ${config.outputQueryName}`);
+
+  if (!fs.existsSync(CONSTS_PATH)) {
+    throw new Error(`Constants file not found: ${CONSTS_PATH}`);
+  }
+
+  const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
+  const definitions = extractDefinitions(constsContent, config.inputConstName);
+  const fieldCount = Object.keys(definitions).length;
+
+  console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
+
+  const queryString = generateQuery(definitions);
+  updateQueriesFile(queryString, config.outputQueryName);
+
+  console.log(`✅ Successfully updated ${OUTPUT_PATH}`);
+  console.log(`📊 Generated query with ${fieldCount} fields`);
+}
+
+function runGenerateGraphqlQueries(inputConstName: string, outputQueryName: string): void {
+  generateGraphqlQueries({ inputConstName, outputQueryName });
+}
+
 // ============================================================================
 // Main Execution
 // ============================================================================
@@ -338,33 +381,7 @@ function updateQueriesFile(queryString: string, outputQueryName: string): void {
 function main(): void {
   try {
     const config = parseArguments();
-
-    console.log("🔄 Generating GraphQL query...");
-    console.log(`📋 Input: ${config.inputConstName}`);
-    console.log(`📋 Output: ${config.outputQueryName}`);
-
-    // Read constants file
-    if (!fs.existsSync(CONSTS_PATH)) {
-      throw new Error(`Constants file not found: ${CONSTS_PATH}`);
-    }
-
-    const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
-
-    // Extract field definitions
-    const definitions = extractDefinitions(constsContent, config.inputConstName);
-
-    const fieldCount = Object.keys(definitions).length;
-
-    console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
-
-    // Generate query string
-    const queryString = generateQuery(definitions);
-
-    // Update queries file
-    updateQueriesFile(queryString, config.outputQueryName);
-
-    console.log(`✅ Successfully updated ${OUTPUT_PATH}`);
-    console.log(`📊 Generated query with ${fieldCount} fields`);
+    generateGraphqlQueries(config);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error: ${errorMessage}`);
@@ -381,4 +398,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // Exports (for testing)
 // ============================================================================
 
-export { extractDefinitions, generateQuery, updateQueriesFile };
+export {
+  extractDefinitions,
+  generateGraphqlQueries,
+  generateQuery,
+  runGenerateGraphqlQueries,
+  updateQueriesFile,
+};

@@ -16,7 +16,7 @@ const pump = getSensorValue(props.source);
 const state = getComponentState();
 
 const pumpState = computed(() => {
-  if (pump.value?.flow.value != undefined && pump.value?.flow.value > 0) return PumpState.Active;
+  if (pump.value?.on.value) return PumpState.Active;
   else return PumpState.Inactive;
 });
 </script>

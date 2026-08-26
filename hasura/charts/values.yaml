@@ -3,3 +3,9 @@ hasura-enterprise-stack:
     image:
       repository: europe-west1-docker.pkg.dev/common-449414/common/hasura-graphql-engine
       tag: "0.0.0" # Overwritten in CI
+
+externalService:
+  enabled: false
+  labels: {}
+  annotations: {}
+  externalIPs: []

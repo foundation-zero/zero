@@ -21,7 +21,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="360"
         y="192"
-        tag-id="1067-11"
+        :tag-id="switchValves['1067-11'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -33,7 +33,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="416"
         y="192"
-        tag-id="1067-12"
+        :tag-id="switchValves['1067-12'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -45,7 +45,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="470"
         y="192"
-        tag-id="1067-14"
+        :tag-id="switchValves['1067-14'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -57,7 +57,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="524"
         y="192"
-        tag-id="1067-13"
+        :tag-id="switchValves['1067-13'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -69,7 +69,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="713"
         y="192"
-        tag-id="1067-07"
+        :tag-id="switchValves['1067-07'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -81,7 +81,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="767"
         y="192"
-        tag-id="1067-08"
+        :tag-id="switchValves['1067-08'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -93,7 +93,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="822"
         y="192"
-        tag-id="1067-10"
+        :tag-id="switchValves['1067-10'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -105,7 +105,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="875"
         y="192"
-        tag-id="1067-09"
+        :tag-id="switchValves['1067-09'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -117,7 +117,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="1051"
         y="192"
-        tag-id="1067-03"
+        :tag-id="switchValves['1067-03'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -129,7 +129,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="1105"
         y="192"
-        tag-id="1067-04"
+        :tag-id="switchValves['1067-04'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -141,7 +141,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="1160"
         y="192"
-        tag-id="1067-06"
+        :tag-id="switchValves['1067-06'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -153,7 +153,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="1217"
         y="192"
-        tag-id="1067-05"
+        :tag-id="switchValves['1067-05'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
 
@@ -166,7 +166,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="216"
         y="598"
-        tag-id="1067-17"
+        :tag-id="switchValves['1067-17'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -178,7 +178,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="249"
         y="563"
-        tag-id="1067-16"
+        :tag-id="switchValves['1067-16'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
     <SwitchValveInstance
@@ -190,7 +190,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <TagLabelInstance
         x="145"
         y="542"
-        tag-id="1067-18"
+        :tag-id="switchValves['1067-18'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
 
@@ -203,7 +203,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <FlowControlLabelInstance
         x="1043"
         y="442"
-        tag-id="1064-03"
+        :tag-id="flowControlValves['1064-03'].tooltip?.yardTag"
         :valve="flowControlValves['1064-03'].source"
       />
     </FlowControlValveInstance>
@@ -217,7 +217,7 @@ const flowControlValves = DHW_MIMIC_DATA[MimicComponentType.FlowControlValve];
       <FlowControlLabelInstance
         x="1045"
         y="604"
-        tag-id="1064-08"
+        :tag-id="flowControlValves['1064-08'].tooltip?.yardTag"
         :valve="flowControlValves['1064-08'].source"
       />
     </FlowControlValveInstance>

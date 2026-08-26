@@ -11,7 +11,7 @@ use crate::layout::{Layout, TopicMap};
 use crate::mqtt::MqttHandler;
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
-use log::{debug, error, info};
+use log::{error, info};
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::UdpSocket;
@@ -177,7 +177,6 @@ fn spawn_udp_listener_task(
         loop {
             match socket.recv_from(&mut buf).await {
                 Ok((amt, _src)) => {
-                    debug!("Received {} bytes on port {}", amt, port_num);
                     let _ = packet_tx.send(buf[..amt].to_vec()).await;
                 }
                 Err(e) => {

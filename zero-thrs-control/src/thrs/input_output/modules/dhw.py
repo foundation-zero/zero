@@ -1,10 +1,10 @@
-from typing import Annotated, cast
+from datetime import UTC, datetime
+from typing import Annotated
 
-from pydantic import computed_field
+from pydantic import ConfigDict, computed_field
+from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     Stamped,
     ThrsValues,
     component_meta,
@@ -15,6 +15,12 @@ from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
 class DhwSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dhw_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
@@ -61,15 +67,21 @@ class DhwSensorValues(ThrsValues):
     dhw_level_tank1: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-01", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(  # TODO: Remove default
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_level_tank2: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-02", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(  # TODO: Remove default
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_level_tank3: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="level_sensor"),
-    ]
+    ] = sensor.LevelSensor(  # TODO: Remove default
+        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dhw_flow_dc: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-17", component_type="flow_sensor"),
@@ -184,6 +196,18 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
+    dhw_level_switch_tank1: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-01", component_type="level_switch"),
+    ]
+    dhw_level_switch_tank2: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-02", component_type="level_switch"),
+    ]
+    dhw_level_switch_tank3: Annotated[
+        sensor.LevelSwitch,
+        component_meta(yard_tag="50001098-03", component_type="level_switch"),
+    ]
     dhw_pressure: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
@@ -194,7 +218,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-03",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-flow-recovery",
+            topic_override="500000-thrs/drives/drives-flow-recovery",
         ),
     ]
     drives_temperature_recovery: Annotated[
@@ -203,7 +227,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-16",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-temperature-recovery-supply",
+            topic_override="500000-thrs/drives/drives-temperature-recovery",
         ),
     ]
     drives_temperature_recovery_return: Annotated[
@@ -212,7 +236,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-59",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="drives/drives-temperature-recovery-return",
+            topic_override="500000-thrs/drives/drives-temperature-recovery-return",
         ),
     ]
 
@@ -232,7 +256,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-04",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-flow-recovery",
+            topic_override="500000-thrs/dc/dc-flow-recovery",
         ),
     ]
     dc_temperature_recovery: Annotated[
@@ -241,7 +265,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-52",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-temperature-recovery-supply",
+            topic_override="500000-thrs/dc/dc-temperature-recovery",
         ),
     ]
     dc_temperature_recovery_return: Annotated[
@@ -250,7 +274,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-58",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="dc/dc-temperature-recovery-return",
+            topic_override="500000-thrs/dc/dc-temperature-recovery-return",
         ),
     ]
 
@@ -270,7 +294,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-07",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-flow-dhw",
+            topic_override="500000-thrs/consumers/consumers-flow-dhw",
         ),
     ]
     consumers_temperature_dhw_supply: Annotated[
@@ -279,7 +303,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-53",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-temperature-dhw-supply",
+            topic_override="500000-thrs/consumers/consumers-temperature-dhw-supply",
         ),
     ]
 
@@ -289,7 +313,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-48",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="consumers/consumers-temperature-dhw-return",
+            topic_override="500000-thrs/consumers/consumers-temperature-dhw-return",
         ),
     ]
 
@@ -309,7 +333,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001058-10",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-flow-dhw",
+            topic_override="500000-thrs/adsorption/adsorption-flow-dhw",
         ),
     ]
     adsorption_temperature_waste_return: Annotated[
@@ -318,7 +342,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-38",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-temperature-waste-return",
+            topic_override="500000-thrs/adsorption/adsorption-temperature-waste-return",
         ),
     ]
 
@@ -328,7 +352,7 @@ class DhwSensorValues(ThrsValues):
             yard_tag="50001038-56",
             component_type="temperature_sensor",
             included_in_fmu=False,
-            topic_override="adsorption/adsorption-temperature-dhw-return",
+            topic_override="500000-thrs/adsorption/adsorption-temperature-dhw-return",
         ),
     ]
 
@@ -344,13 +368,22 @@ class DhwSensorValues(ThrsValues):
 
     freshwater_hotwater_flow: Annotated[
         sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
-    ]
+    ] = sensor.FlowSensor(  # TODO: Remove default
+        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     freshwater_hotwater_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ]
+    ] = sensor.TemperatureSensor(  # TODO: Remove default
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
     @property
     def dhw_freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
@@ -395,8 +428,7 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatPump(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatPump(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -432,8 +464,7 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -456,9 +487,7 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_drives_exchanger(self) -> sensor.HeatExchanger:
-        if sensor.valves_open_closed(
-            open_valves=[], closed_valves=[self.dhw_switch_low_temperature]
-        ):
+        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_low_temperature]):
             return sensor.HeatExchanger.from_sensors(
                 temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
                 temperature_return=self.dhw_temperature_drives_return.temperature,
@@ -479,11 +508,16 @@ class DhwSensorValues(ThrsValues):
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        else:
-            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
+        return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
 
 class DhwControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     dhw_pump: Annotated[
         control.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
@@ -594,11 +628,11 @@ class DhwControlValues(ThrsValues):
     ]
 
 
-class DhwSimulationInputs(SimulationInputs):
+class DhwSimulationInputs(ThrsValues):
     dhw_drives_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
-    dhw_ht_supply: simulation.Boundary
+    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
@@ -608,38 +642,34 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def drives_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_drives_supply.flow),
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature),
+            flow=self.dhw_drives_supply.flow,
+            temperature=self.dhw_drives_supply.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def drives_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature)
-        )
+        return sensor.TemperatureSensor(temperature=self.dhw_drives_supply.temperature)
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_dc_supply.flow),
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature),
+            flow=self.dhw_dc_supply.flow,
+            temperature=self.dhw_dc_supply.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature)
-        )
+        return sensor.TemperatureSensor(temperature=self.dhw_dc_supply.temperature)
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_ht_supply.flow),
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature),
+            flow=self.dhw_consumers_supply.flow,
+            temperature=self.dhw_consumers_supply.temperature,
         )
 
     @computed_field(
@@ -650,7 +680,7 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def consumers_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature)
+            temperature=self.dhw_consumers_supply.temperature
         )
 
     @computed_field(
@@ -661,8 +691,8 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def adsorption_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_adsorption_supply.flow),
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature),
+            flow=self.dhw_adsorption_supply.flow,
+            temperature=self.dhw_adsorption_supply.temperature,
         )
 
     @computed_field(
@@ -673,15 +703,19 @@ class DhwSimulationInputs(SimulationInputs):
     @property
     def adsorption_temperature_waste_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature)
+            temperature=self.dhw_adsorption_supply.temperature
         )
 
 
-class DhwSimulationOutputs(SimulationValues):
+class DhwSimulationOutputs(ThrsValues):
+    dhw_drives_exchanger: simulation.ExchangerBoundary
     dhw_drives_return: simulation.TemperatureBoundary
+    dhw_dc_exchanger: simulation.ExchangerBoundary
     dhw_dc_return: simulation.TemperatureBoundary
+    dhw_adsorption_exchanger: simulation.ExchangerBoundary
     dhw_adsorption_return: simulation.TemperatureBoundary
-    dhw_ht_return: simulation.TemperatureBoundary
+    dhw_consumers_exchanger: simulation.ExchangerBoundary
+    dhw_consumers_return: simulation.TemperatureBoundary
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.Boundary
@@ -694,7 +728,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_return.temperature)
+            temperature=self.dhw_drives_exchanger.temperature_return
         )
 
     @computed_field(
@@ -705,7 +739,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_return.temperature)
+            temperature=self.dhw_dc_exchanger.temperature_return
         )
 
     @computed_field(
@@ -716,7 +750,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_return.temperature)
+            temperature=self.dhw_adsorption_exchanger.temperature_return
         )
 
     @computed_field(
@@ -727,7 +761,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_ht_return.temperature)
+            temperature=self.dhw_consumers_exchanger.temperature_return
         )
 
     @computed_field(
@@ -738,15 +772,13 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_freshwater_return.flow),
-            temperature=cast(Stamped, self.dhw_freshwater_return.temperature),
+            flow=self.dhw_freshwater_return.flow,
+            temperature=self.dhw_freshwater_return.temperature,
         )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=Stamped.stamp(
-                0
-            )  # TODO: Add hot water temperature as output to the FMU
+            temperature=self.dhw_freshwater_return.temperature
         )

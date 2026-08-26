@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -25,9 +25,8 @@ from thrs.simulation.models.fmu_paths import pvt_path
     )
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
-    request.param(inputs, -9e7)
-    return inputs
+    request.param(simulation_inputs, -9e7)
+    return simulation_inputs
 
 
 def test_pvt_simulation_inputs(incorrect_simulation_inputs, control):
@@ -37,12 +36,12 @@ def test_pvt_simulation_inputs(incorrect_simulation_inputs, control):
             PvtSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
         with pytest.raises(Exception):
-            for i in range(100):
+            for _i in range(100):
                 simulation.tick(
-                    control.initial(datetime.now()),
+                    control.initial(datetime.now(UTC)),
                 )

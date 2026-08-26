@@ -33,16 +33,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.2.1
-      - run: poetry check
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
         working-directory: zero-loads-app
-      - run: poetry install --with dev,test
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(uvx hatch version | sed 's/+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-loads-app
-      - run: poetry run ruff check src tests
+      - run: uv run ruff check --no-fix src tests
         working-directory: zero-loads-app
-      - run: poetry run ruff format --check src tests
+      - run: uv run ruff format --check src tests
         working-directory: zero-loads-app
-      - run: poetry run mypy src
+      - run: uv run pyright
         working-directory: zero-loads-app
       - name: Create .env file from secret in root for services
         run: |
@@ -52,28 +58,24 @@ jobs:
           echo "${{ secrets.ENV_LOADS_APP }}" > .env
         working-directory: zero-loads-app
       - name: Unit Test
-        run: poetry run pytest --run=unit -vv
+        run: uv run pytest --run=unit -vv
         working-directory: zero-loads-app
       - name: Run services
         run: docker compose --profile zero up -d --quiet-pull --wait postgres vernemq
         working-directory: zero-loads-app
       - name: Set up postgres schema
         run: docker compose --profile zero up -d --wait hasura
+        working-directory: zero-loads-app
       - name: Install Hasura CLI
         run: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
       - name: Seed reference values
         run: hasura seed apply --file loads_reference_values.sql --endpoint http://localhost:8080 --admin-secret myadminsecretkey --database-name zero
         working-directory: hasura
+      - name: Seed case mappings
+        run: hasura seed apply --file loads_case_mappings.sql --endpoint http://localhost:8080 --admin-secret myadminsecretkey --database-name zero
+        working-directory: hasura
       - name: Integration Test
-        run: poetry run pytest --run=integration -vv
-        working-directory: zero-loads-app
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        run: uv run pytest --run=integration -vv
         working-directory: zero-loads-app
 
   docker-push:
@@ -106,3 +108,14 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-loads-app/charts"

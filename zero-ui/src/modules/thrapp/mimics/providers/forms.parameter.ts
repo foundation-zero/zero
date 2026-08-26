@@ -1,4 +1,4 @@
-import { ParameterDefinitionMap, ParametersType } from "@/modules/thrs/types";
+import { ParameterDefinitionMap, ParametersType } from "@/modules/thrsim/types";
 import { useDebounceFn } from "@vueuse/core";
 import { computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";

@@ -28,16 +28,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.2.1
-      - run: poetry check
+      - uses: astral-sh/setup-uv@v8.1.0
+      - run: uv sync --locked
         working-directory: zero-generator
-      - run: poetry install --extras dev --extras test
+      - run: uv run ruff check --no-fix src tests
         working-directory: zero-generator
-      - run: poetry run ruff check src tests
+      - run: uv run ruff format --check src tests
         working-directory: zero-generator
-      - run: poetry run ruff format --check src tests
-        working-directory: zero-generator
-      - run: poetry run mypy src
+      - run: uv run mypy src
         working-directory: zero-generator
       - name: Create .env file from secret in root
         run: |
@@ -45,5 +43,5 @@ jobs:
       - name: Run services
         run: docker compose --profile zero up -d --quiet-pull --wait vernemq
       - name: Unit Test
-        run: poetry run pytest . -vv
+        run: uv run pytest . -vv
         working-directory: zero-generator

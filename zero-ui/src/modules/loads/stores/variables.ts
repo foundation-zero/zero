@@ -126,7 +126,7 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     writeDefaults: true,
     mergeDefaults: toSupportedValue(AWS_VALUES.map(extractId)),
   });
-  const selectedWindDirection = useLocalStorage<"port" | "starboard">(
+  const selectedTack = useLocalStorage<"port" | "starboard">(
     "loads-variable-wind-direction",
     "starboard",
     {
@@ -216,11 +216,13 @@ export const useVariablesStore = defineStore("loads-variables", () => {
       sailset: selectedSailIds.value,
       awaRange: selectedAWA.value,
       awsRange: selectedAWS.value,
-      windDirection: selectedWindDirection.value,
+      tack: selectedTack.value,
     })),
     requestPolicy: "network-only",
     context: LOADS_CONTEXT,
   });
+
+  const selectedLoadCase = computed(() => referenceValues.value?.loadCase ?? null);
 
   const variables = computed<MaybeVariable[]>(() => {
     if (!definitions.value) {
@@ -297,6 +299,7 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     availableDashboards,
     visibleDashboardGroups,
     currentVariables,
+    selectedLoadCase,
     startPolling,
     stopPolling,
     lockWindConditions,

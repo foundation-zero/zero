@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="Parameter extends ParametersType">
-import { ParametersType } from "@/modules/thrs/types";
+import { ParametersType } from "@/modules/thrsim/types";
 import { ModuleField, provideFieldValueSource } from ".";
 import { createParameterFormContext, provideParameterValueForm } from "./forms.parameter";
 

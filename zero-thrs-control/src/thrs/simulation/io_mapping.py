@@ -1,21 +1,24 @@
 import operator
 from abc import ABC, abstractmethod
 from datetime import datetime
+from enum import Enum
 from functools import reduce
 from typing import Any, cast
 
-from thrs.input_output.base import (
-    CombinedValues,
-    SimulationInputs,
-    SimulationValues,
-    ThrsValues,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import (
     build_fmu_key_mapping,
     build_outputs_from_fmu,
     extract_non_fmu_values,
 )
 from thrs.orchestration.module import ModuleClassMap
+
+
+def get_value(model, component: str, field: str) -> Any:
+    val = getattr(getattr(model, component), field).value
+    if isinstance(val, Enum):
+        return val.value
+    return val
 
 
 def flatten_model_values(
@@ -28,7 +31,7 @@ def flatten_model_values(
             {},
         )
     return {
-        fmu_key: getattr(getattr(model, component), field).value
+        fmu_key: get_value(model, component, field)
         for (component, field), fmu_key in fmu_key_mapping.items()
     }
 
@@ -44,12 +47,13 @@ class IoMapping[S, C, I, O](ABC):
         self,
         fmu_inputs: dict[str, Any],
         fmu_outputs: dict[str, Any],
+        control_values: C,
         simulation_inputs: I,
         time: datetime,
     ) -> tuple[S, O, dict[str, Any]]: ...
 
 
-class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
+class CombinedIoMapping[I: ThrsValues, O: ThrsValues](
     IoMapping[CombinedValues, CombinedValues, I, O]
 ):
     def __init__(
@@ -93,6 +97,7 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
         self,
         fmu_inputs: dict[str, Any],
         fmu_outputs: dict[str, Any],
+        control_values: CombinedValues,
         simulation_inputs: I,
         time: datetime,
     ) -> tuple[CombinedValues, O, dict[str, Any]]:
@@ -106,8 +111,12 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
         # extract non-FMU values from both simulation inputs and outputs
         non_fmu_values = {
             key: value
-            for sensor_values_cls in self._sensor_values_clss.values()
-            for source in (simulation_inputs, simulation_outputs)
+            for module_name, sensor_values_cls in self._sensor_values_clss.items()
+            for source in (
+                simulation_inputs,
+                simulation_outputs,
+                control_values.values[module_name],
+            )
             for key, value in extract_non_fmu_values(source, sensor_values_cls).items()
         }
 
@@ -119,7 +128,9 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
             non_fmu_values,
         )
         return (
-            CombinedValues(dict(zip(self._sensor_values_clss.keys(), sensor_values))),
+            CombinedValues(
+                dict(zip(self._sensor_values_clss.keys(), sensor_values, strict=False))
+            ),
             simulation_outputs,
             {**fmu_outputs, **fmu_inputs},
         )
@@ -128,8 +139,8 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
 class ThrsModelIoMapping[
     S: ThrsValues,
     C: ThrsValues,
-    I: SimulationInputs,
-    O: SimulationValues,
+    I: ThrsValues,
+    O: ThrsValues,
 ](IoMapping[S, C, I, O]):
     def __init__(
         self,
@@ -149,10 +160,15 @@ class ThrsModelIoMapping[
         self,
         fmu_inputs: dict[str, Any],
         fmu_outputs: dict[str, Any],
+        control_values: C,
         simulation_inputs: I,
         time: datetime,
     ) -> tuple[S, O, dict[str, Any]]:
         sensor_values, outputs, raw = self._sub.construct_outputs(
-            fmu_inputs, fmu_outputs, simulation_inputs, time
+            fmu_inputs,
+            fmu_outputs,
+            CombinedValues({"": control_values}),
+            simulation_inputs,
+            time,
         )
         return cast(S, sensor_values.values[""]), outputs, raw

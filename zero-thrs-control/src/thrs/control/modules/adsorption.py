@@ -1,21 +1,21 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable
 
 from pydantic import model_validator
-from transitions import Machine, State
+from transitions import State
 
 from thrs.classes.control import Control, ControlMode
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import AdsorptionChiller, Valve
 from thrs.input_output.definitions.units import (
-    ADSORPTION_CHILLER_MODE_OFF,
-    ADSORPTION_CHILLER_MODE_ON,
-    FREE_COOLING_MODE_AUTO,
-    TANK_CONTROL_MODE_BOTH,
+    AdsorptionChillerMode,
     Celsius,
+    FreeCoolingMode,
     Ratio,
+    TankControlMode,
     Tuning,
 )
 from thrs.input_output.modules.adsorption import (
@@ -53,7 +53,7 @@ class AdsorptionParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802
     return AdsorptionControlValues(
         adsorption_flowcontrol_waste=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
@@ -69,11 +69,9 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
         ),
         adsorption_chiller=AdsorptionChiller(
             enable=Stamped(value=False, timestamp=timestamp),
-            mode=Stamped(value=ADSORPTION_CHILLER_MODE_OFF, timestamp=timestamp),
+            mode=Stamped(value=AdsorptionChillerMode.OFF, timestamp=timestamp),
             cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
-            free_cooling_mode=Stamped(
-                value=FREE_COOLING_MODE_AUTO, timestamp=timestamp
-            ),
+            free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=timestamp),
             available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
@@ -81,9 +79,7 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:
             hot_minimum=Stamped(value=53.0, timestamp=timestamp),
             cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
             hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            tank_control_mode=Stamped(
-                value=TANK_CONTROL_MODE_BOTH, timestamp=timestamp
-            ),
+            tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=timestamp),
         ),
     )
 
@@ -105,65 +101,34 @@ class AdsorptionControl(
         AdsorptionControllerState,
     ]
 ):
+    state: str  # Value set by Machine transitions logic
+
     def __init__(
-        self, parameters: AdsorptionParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: AdsorptionParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
+        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[self._disable_temperature_controllers],
-            ),
-            State(
-                name="cooling",
-                on_enter=[self._enable_temperature_controllers],
-            ),
-            State(
-                name="free_cooling",
-                on_enter=[
-                    self._open_recovery_mix,
-                    self._disable_recovery_mix,
-                    self._set_free_cooling_setpoint,
-                    self._disable_hot_mix,
-                ],
-            ),
-        ]
-        # Here the idea is that the Adsorption unit triggers the state machine, and mode switches thus depend on the input parameters for adsorption, and whether it's enabled.
-        self._transitions = [
-            {
-                "trigger": "_check_adsorption_status",
-                "source": ["idle", "free_cooling"],
-                "dest": "cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and not sensor_values.adsorption_chiller.free_cooling.value,  # TODO: check if we need to add error condition
-            },
-            {
-                "trigger": "_check_adsorption_status",
-                "source": ["cooling", "free_cooling"],
-                "dest": "idle",
-                "conditions": lambda sensor_values: not sensor_values.adsorption_chiller.operating.value,  # TODO: check if we need to add error condition
-            },
-            {
-                "trigger": "_check_free_cooling",
-                "source": ["idle", "cooling"],
-                "dest": "free_cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and sensor_values.adsorption_chiller.free_cooling.value,
-            },
-        ]
+        self._init_state_machine_states()
+        self._init_state_machine_transitions()
 
-        self._state_machine = Machine(
-            model=self,
-            states=self._states,
+        self._state_machine = self.state_logger.create_logged_state_machine(
+            self,
             transitions=self._transitions,
+            states=self._states,
             initial="idle",
         )
+        self._init_controllers()
+        self.state_logger.log_parameters_initial_state(parameters)
 
+    def _init_controllers(self):
         self._hot_mix_controller = PidController[Ratio, Celsius](
             self._current_values.adsorption_mix_hot.setpoint.value,
             lambda: self._parameters.hot_supply_temperature_setpoint,
@@ -185,10 +150,63 @@ class AdsorptionControl(
             self._time,
         )
 
+    def _init_state_machine_transitions(self):
+        # Here the idea is that the Adsorption unit triggers the state machine, and mode switches thus depend on the input parameters for adsorption, and whether it's enabled.
+        self._transitions = [
+            {
+                "trigger": "_check_adsorption_status",
+                "source": ["idle", "free_cooling"],
+                "dest": "cooling",
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and not sensor_values.adsorption_chiller.free_cooling.value
+                ),  # TODO: check if we need to add error condition
+            },
+            {
+                "trigger": "_check_adsorption_status",
+                "source": ["cooling", "free_cooling"],
+                "dest": "idle",
+                "conditions": lambda sensor_values: (
+                    not sensor_values.adsorption_chiller.operating.value
+                ),  # TODO: check if we need to add error condition
+            },
+            {
+                "trigger": "_check_free_cooling",
+                "source": ["idle", "cooling"],
+                "dest": "free_cooling",
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and sensor_values.adsorption_chiller.free_cooling.value
+                ),
+            },
+        ]
+
+    def _init_state_machine_states(self):
+        self._states = [
+            State(
+                name="idle",
+                on_enter=[self._disable_temperature_controllers],
+            ),
+            State(
+                name="cooling",
+                on_enter=[self._enable_temperature_controllers],
+            ),
+            State(
+                name="free_cooling",
+                on_enter=[
+                    self._open_recovery_mix,
+                    self._disable_recovery_mix,
+                    self._set_free_cooling_setpoint,
+                    self._disable_hot_mix,
+                ],
+            ),
+        ]
+
     @property
     def parameters(self) -> AdsorptionParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 
@@ -211,6 +229,7 @@ class AdsorptionControl(
             AdsorptionControllerState(),
         )
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: AdsorptionSensorValues
     ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
@@ -279,13 +298,13 @@ class AdsorptionControl(
         )
 
         self._current_values.adsorption_chiller.mode = Stamped(
-            value=ADSORPTION_CHILLER_MODE_ON, timestamp=self._time()
+            value=AdsorptionChillerMode.ON, timestamp=self._time()
         )
 
         self._current_values.adsorption_chiller.free_cooling_mode = Stamped(
-            value=FREE_COOLING_MODE_AUTO
+            value=FreeCoolingMode.AUTO
             if self._parameters.free_cooling_enabled
-            else 0,
+            else FreeCoolingMode.OFF,
             timestamp=self._time(),
         )
 

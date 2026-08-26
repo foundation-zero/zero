@@ -1,8 +1,9 @@
 from typing import Annotated
 
+from pydantic import ConfigDict
+from pydantic.alias_generators import to_snake
+
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
     component_meta,
 )
@@ -10,6 +11,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class DrivesSensorValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     drives_pump1: Annotated[
         sensor.Pump, component_meta(yard_tag="50001028", component_type="pump")
     ]
@@ -196,6 +203,12 @@ class DrivesSensorValues(ThrsValues):
 
 
 class DrivesControlValues(ThrsValues):
+    model_config = ConfigDict(
+        alias_generator=to_snake,
+        use_enum_values=True,
+        validate_by_name=True,
+    )
+
     drives_pump1: Annotated[
         control.Pump, component_meta(yard_tag="50001028", component_type="pump")
     ]
@@ -264,7 +277,7 @@ class DrivesControlValues(ThrsValues):
     ]
 
 
-class DrivesSimulationInputs(SimulationInputs):
+class DrivesSimulationInputs(ThrsValues):
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
     drives_propdrive_aft1: simulation.PropulsionDrive
@@ -276,6 +289,7 @@ class DrivesSimulationInputs(SimulationInputs):
     drives_dhw_supply: simulation.Boundary
 
 
-class DrivesSimulationOutputs(SimulationValues):
+class DrivesSimulationOutputs(ThrsValues):
     drives_seawater_return: simulation.TemperatureBoundary
+    drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary

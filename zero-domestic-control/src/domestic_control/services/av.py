@@ -1,15 +1,17 @@
-from contextlib import asynccontextmanager
 import re
-from aiomqtt import Client as MqttClient, Message
-from domestic_control.mqtt import DataCollection
+from contextlib import asynccontextmanager
+from typing import Annotated, AsyncIterable, Coroutine, Literal
+
+from aiomqtt import Client as MqttClient
+from aiomqtt import Message
 from pydantic import AliasChoices, BaseModel, Field
-from typing import Annotated, AsyncIterable, Coroutine, List, Literal
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from domestic_control.config import Settings
 from domestic_control.messages import Amplifier
+from domestic_control.mqtt import DataCollection
 from domestic_control.sink import CompositeSink, PostgresSink, Sink
 from domestic_control.util import invert_dict
-from sqlalchemy.ext.asyncio import create_async_engine
 
 FWD_PDU = "00:00:00:00:00:00"
 AFT_PDU = "00:00:00:00:00:01"
@@ -73,7 +75,7 @@ class Telemetry(BaseModel):
         ),
     ]
     port_states: Annotated[
-        List[PortState],
+        list[PortState],
         Field(
             validation_alias=AliasChoices("portstates", "port_states"),
             serialization_alias="portstates",

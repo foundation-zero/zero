@@ -1,14 +1,14 @@
 from pathlib import Path
-from typing import List
 
-from openpyxl import load_workbook
 import polars as pl
+from openpyxl import load_workbook
 
-from ..types import IOValue, IOTopic, IOResult
 from ..base import ReaderBase
+from ..types import IOResult, IOTopic, IOValue
 
 _DATA_TYPES = {
     "Float": "REAL",
+    "Double": "REAL",
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
     "Uint16": "INTEGER",
@@ -17,6 +17,10 @@ _DATA_TYPES = {
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
+    "Int64": "BIGINT",
+    "UInt32": "BIGINT",
+    "DateTime": "TIMESTAMP",
+    "UInt16": "INTEGER",
 }
 
 
@@ -50,6 +54,17 @@ class MarpowerReader(ReaderBase):
             .filter(pl.col("system") != "SPARE")
             .filter(pl.col("tag") != "SPARE")
         )
+        missing_target_types = (
+            filter_df.select(pl.col("target_type"))
+            .unique()
+            .filter(~pl.col("target_type").is_in(list(_DATA_TYPES.keys())))
+            .to_series()
+            .to_list()
+        )
+        if missing_target_types:
+            raise ValueError(
+                f"Missing target types in _DATA_TYPES mapping: {missing_target_types}"
+            )
         typed_df = filter_df.with_columns(
             pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
         ).with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
@@ -87,19 +102,21 @@ class MarpowerReader(ReaderBase):
             }
         )
 
-    def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
+    def _get_io_topics(self, df: pl.DataFrame) -> list[IOTopic]:
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
             df.drop_nulls("mqtt_topic")
             .group_by("mqtt_topic")
-            .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
+            .agg(pl.col("mqtt_json_path"), pl.col("data_type"), pl.col("yard_tag"))
             .iter_rows(named=True)
         ):
             topic = self.determine_topic(row)
             values = [
-                IOValue.from_json_path(json_path=jp, data_type=dt)
-                for jp, dt in zip(row["mqtt_json_path"], row["data_type"])
+                IOValue.from_json_path(json_path=jp, data_type=dt, yard_tag=yt)
+                for jp, dt, yt in zip(
+                    row["mqtt_json_path"], row["data_type"], row["yard_tag"]
+                )
             ]
             result.append(IOTopic(topic, values))
         return result
@@ -131,7 +148,7 @@ class MarpowerReader(ReaderBase):
         }
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
-    def read_io_list(self, paths: List[Path]) -> IOResult:
+    def read_io_list(self, paths: list[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
         io_lists = [
             self._normalize_marpower_io_list(self._read_marpower_excel(path))

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import * as Partials from ".";
 import { useTranslations } from "..";
 import { ModuleField, SensorValue } from "../../providers";
-import { FieldRenderer } from "../../renderers";
 const { items } = useTranslations();
 
 defineProps<{ valve: ModuleField<SensorComponentType.Valve> }>();
@@ -17,10 +16,12 @@ defineProps<{ valve: ModuleField<SensorComponentType.Valve> }>();
     <Partials.ListItem no-source>
       {{ items("relativePosition") }}
     </Partials.ListItem>
-    <Partials.ListItem
-      no-source
-      :renderer="FieldRenderer.PositionAbsolute"
-    >
+  </SensorValue>
+  <SensorValue
+    :source="valve"
+    field="positionAbs"
+  >
+    <Partials.ListItem no-source>
       {{ items("absolutePosition") }}
     </Partials.ListItem>
   </SensorValue>

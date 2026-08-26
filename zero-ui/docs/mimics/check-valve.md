@@ -15,11 +15,12 @@ The original exported geometry is `24×32`. It is centered inside a `32×32` squ
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
+| Prop          | Type                   | Default                   | Description                                            |
+| ------------- | ---------------------- | ------------------------- | ------------------------------------------------------ |
 | `orientation` | `ComponentOrientation` | `ComponentOrientation.Up` | Rotation of the valve relative to its base orientation |
 
 ## Orientation Examples
+
 <div>
   <div class="flex flex-col items-center justify-center gap-2">
       <CheckValve :orientation="ComponentOrientation.Up" />
@@ -47,8 +48,8 @@ The original exported geometry is `24×32`. It is centered inside a `32×32` squ
 
 ## Semantic Token Mapping
 
-| Role | Token |
-|---|---|
-| Valve body fill | `--background-muted` |
+| Role                                      | Token           |
+| ----------------------------------------- | --------------- |
+| Valve body fill                           | `--muted`       |
 | Body frame stroke + diagonal slash stroke | `--brand-muted` |
-| Flow indicator arrow fill | `--foreground` |
+| Flow indicator arrow fill                 | `--foreground`  |

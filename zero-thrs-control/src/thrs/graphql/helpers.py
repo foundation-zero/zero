@@ -4,7 +4,7 @@ import strawberry
 from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
 
-from thrs.input_output.base import SimulationValues, Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import unit_for_annotation
 
 
@@ -15,37 +15,7 @@ class JsonSchemaDirective:
     valve_type: str | None = None
 
 
-_dedataframed_strawberries = {}
-
-
-def ensure_dedataframe(annotation):
-    """
-    Ensure a Pydantic model is converted to a Strawberry type for simulation data.
-
-    This function caches converted types to avoid duplicate conversions.
-    """
-    if existing := _dedataframed_strawberries.get(annotation, None):
-        return existing
-    else:
-        gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
-        strawberry.experimental.pydantic.type(
-            model=annotation,
-            all_fields=True,
-            json_schema_directive=JsonSchemaDirective,
-            use_pydantic_alias=False,
-        )(gql_cls)
-        _dedataframed_strawberries[annotation] = gql_cls
-        return gql_cls
-
-
-def ensure_dedataframes(cls):
-    """
-    Ensure all fields in a Pydantic model are converted to Strawberry types.
-
-    This is used for simulation input/output types that may contain complex nested types.
-    """
-    for name, field in cls.model_fields.items():
-        ensure_dedataframe(field.annotation)
+pydantic_to_strawberry_class_map: dict[type, type] = {}
 
 
 def pydantic_to_strawberry_type(
@@ -55,6 +25,8 @@ def pydantic_to_strawberry_type(
 ) -> type:
     """
     Convert a Pydantic model to a Strawberry GraphQL type.
+
+    Also supports schema directives based on json schema extra
 
     Args:
         pydantic_model: The Pydantic model class to convert
@@ -79,24 +51,85 @@ def pydantic_to_strawberry_type(
             ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
     """
     type_name = f"{pydantic_model.__name__}{suffix}"
-    graphql_class = type(type_name, (object,), {})
-    return strawberry.experimental.pydantic.type(
+
+    fields = (
+        {**pydantic_model.model_fields, **pydantic_model.model_computed_fields}
+        if include_computed
+        else pydantic_model.model_fields
+    )
+
+    graphql_class = type(
+        type_name,
+        (object,),
+        {
+            "__annotations__": dict.fromkeys(fields.keys(), strawberry.auto),
+            **{
+                key: strawberry.field(
+                    directives=[
+                        JsonSchemaDirective(
+                            yard_tag=field.json_schema_extra.get("yard_tag"),  # type: ignore
+                            component_type=field.json_schema_extra.get(  # type: ignore
+                                "component_type"
+                            ),
+                            valve_type=field.json_schema_extra.get("valve_type"),  # type: ignore
+                        )
+                    ]  # type: ignore
+                    if field.json_schema_extra
+                    else None
+                )
+                for key, field in fields.items()
+            },
+        },
+    )
+    graphql_class = strawberry.experimental.pydantic.type(
         model=pydantic_model,
-        all_fields=True,
         include_computed=include_computed,
-        json_schema_directive=JsonSchemaDirective,
         use_pydantic_alias=False,
     )(graphql_class)
+    pydantic_to_strawberry_class_map[pydantic_model] = graphql_class
+    return graphql_class
 
 
-def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
+def empty_pydantic_type_to_strawberry_type(
+    pydantic_model: type[BaseModel],
+    suffix: str = "Type",
+) -> type:
+    """
+    Create Strawberry type for empty pydantic types.
+
+    Graphql/Strawberry can't deal with empty pydantic types so we need to do some special handling.
+
+        Args:
+        pydantic_model: The Pydantic model class to convert
+        suffix: Suffix to add to the type name (default: "Type")
+
+    Returns:
+        A Strawberry GraphQL type class
+    """
+
+    type_name = f"{pydantic_model.__name__}{suffix}"
+    graphql_class = type(
+        type_name,
+        (object,),
+        {
+            "_empty": None,
+            "from_pydantic": lambda graphql_type: graphql_class(),
+            "__annotations__": {"_empty": None},
+        },
+    )
+    graphql_class = strawberry.type()(graphql_class)
+
+    pydantic_to_strawberry_class_map[pydantic_model] = graphql_class
+    return graphql_class
+
+
+def optional_pydantic_to_graphql(pydantic_value):
     """
     Convert a Pydantic value to Strawberry GraphQL type if the value exists.
 
     This simplifies resolver functions by handling the None-checking pattern.
 
     Args:
-        graphql_type: The Strawberry GraphQL type class
         pydantic_value: The Pydantic model instance (or None)
 
     Returns:
@@ -115,44 +148,13 @@ def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
     """
     if pydantic_value is None:
         return None
+
+    graphql_type = pydantic_to_strawberry_class_map.get(type(pydantic_value))
+    if graphql_type is None:
+        raise ValueError(
+            f"The graphql type for pydantic type {type(pydantic_value).__name__} is not know. Did you create it using a `*_to_strawberry_type` function?"
+        )
     return graphql_type.from_pydantic(pydantic_value)
-
-
-def dedataframed_pydantic_to_strawberry_type(cls: type[SimulationValues]) -> type:
-    """
-    Create a Strawberry GraphQL type for a simulation values class.
-
-    Handles the dedataframe boilerplate automatically. This converts simulation
-    models that may contain time-series DataFrames (StampedDf[T]) into GraphQL-
-    compatible types with only scalar values (Stamped[T]).
-
-    Args:
-        cls: The simulation Pydantic model (inputs or outputs)
-
-    Returns:
-        Strawberry GraphQL type
-
-    Example:
-        Instead of:
-            DedataframedInputs = ThrustersSimulationInputs.dedataframe()
-            ensure_dedataframes(DedataframedInputs)
-
-            @strawberry.experimental.pydantic.type(...)
-            class ThrustersSimulationInputsType:
-                pass
-
-        Use:
-            ThrustersSimInputsType = create_simulation_type(ThrustersSimulationInputs)
-            ThrustersSimOutputsType = create_simulation_type(ThrustersSimulationOutputs)
-    """
-    # Dedataframe: convert StampedDf[T] fields to Stamped[T]
-    dedataframed = cls.dedataframe()
-
-    # Ensure all nested component fields are converted to Strawberry types
-    ensure_dedataframes(dedataframed)
-
-    # Create final Strawberry GraphQL type
-    return pydantic_to_strawberry_type(dedataframed)
 
 
 class UnstampedInput(ThrsValues):
@@ -226,8 +228,7 @@ class UnstampedInput(ThrsValues):
             Instance of the original stamped model with timestamps added
         """
         values = {
-            key: Stamped.stamp(getattr(self, key))
-            for key in type(self).model_fields.keys()
+            key: Stamped.stamp(getattr(self, key)) for key in type(self).model_fields
         }
         return self._MODEL(**values)  # type: ignore
 
@@ -249,9 +250,9 @@ def ensure_input_type(annotation, unstamp: bool) -> type:
     Returns:
         A Strawberry input type class
     """
-    if existing := _input_types.get(annotation.__name__, None):
+    if existing := _input_types.get(annotation.__name__):
         return existing
-    elif unstamp:
+    if unstamp:
         input_model = UnstampedInput.generate_for_model(
             f"{annotation.__name__}InputType", annotation
         )
@@ -260,5 +261,4 @@ def ensure_input_type(annotation, unstamp: bool) -> type:
         )(type(f"{annotation.__name__}InputType", (object,), {}))
         _input_types[annotation.__name__] = input_type
         return input_type
-    else:
-        return annotation
+    return annotation

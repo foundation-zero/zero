@@ -3,8 +3,8 @@ from pathlib import Path
 
 
 class Liveness:
-    def __init__(self, liveness_path: str | None):
-        self._path = Path(liveness_path) if liveness_path else None
+    def __init__(self, liveness_path: Path | None):
+        self._path = liveness_path
 
     def signal(self):
         if self._path:

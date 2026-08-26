@@ -1,0 +1,31 @@
+blueprint:
+  name: "Lights: Turn on"
+  description: "Turn on a light to a specified dim level"
+  domain: script
+
+fields:
+  dim_level:
+    description: "Target dim level entity"
+  button:
+    description: "Button entity controlling the action"
+  min_level:
+    description: "Minimum dim level"
+
+sequence:
+  - alias: Turn on light light
+    service: input_number.set_value
+    target:
+      entity_id: "{{ dim_level }}"
+    data:
+      value: "{{ states(dim_level) | int | abs }}"
+  - if:
+      - alias: Light was off
+        condition: template
+        value_template: "{{ states(dim_level) | int > -1 and states(dim_level) | int < 1 }}"
+    then:
+      - alias: Ensure light goes on at minimum
+        service: input_number.set_value
+        target:
+          entity_id: "{{ dim_level }}"
+        data:
+          value: "{{ min_level }}"

@@ -4,11 +4,11 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@env/*": ["./src/settings/*"],
+      "@env": ["./src/settings/index.ts"],
       "@common/*": ["./src/modules/common/*"],
       "@tests/*": ["./tests/*"],
       "@components/*": ["./src/components/ui/*"],
-      "@modules/*": ["./src/components/modules/*"]
+      "@modules/*": ["./src/modules/*"]
     }
   }
 }

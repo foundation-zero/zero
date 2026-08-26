@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="K extends keyof ThrsModules">
-import { ThrsDefinitions, ThrsModules } from "@/modules/thrs/lib/consts.types";
+import { ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -9,7 +9,7 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { Ref } from "vue";
 import {
   createMimicDataProvider,

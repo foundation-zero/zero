@@ -1,13 +1,13 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated
 
 from pydantic import computed_field
 
 from thrs.input_output.base import (
-    SimulationInputs,
     Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
     field_meta,
 )
 from thrs.input_output.definitions.sensor import FlowSensor
@@ -37,7 +37,7 @@ class ExcludedFieldComponent(ThrsValues):
     included_field: Annotated[Stamped[Ratio], field_meta(included_in_fmu=True)]
 
 
-class ExcludedSimulationInputs(SimulationInputs):
+class ExcludedSimulationInputs(ThrsValues):
     excluded_component: Annotated[
         IncludedFieldComponent, component_meta(included_in_fmu=False)
     ]
@@ -54,7 +54,11 @@ class ExcludedSensorValues(ThrsValues):
 class ModelWithComputed(ThrsValues):
     flow_sensor: FlowSensor
 
-    @computed_field()
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="flow_sensor", included_in_fmu=True
+        )
+    )
     @property
     def computed_component(self) -> FlowSensor:
         return self.flow_sensor
@@ -67,24 +71,22 @@ def test_fmu_simple_inputs():
         )
     )
 
-    assert {
+    assert flatten_model_values(mini_model, build_fmu_key_mapping(MiniModel)) == {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
-    } == flatten_model_values(
-        mini_model, build_fmu_key_mapping(MiniModel, fmu_only=True)
-    )
+    }
 
     second_mini_model = SecondMiniModel(
         second_flow_sensor=FlowSensor(
             flow=Stamped.stamp(2), temperature=Stamped.stamp(3)
         )
     )
-    assert {
+    assert flatten_model_values(
+        second_mini_model, build_fmu_key_mapping(SecondMiniModel)
+    ) == {
         "second_flow_sensor__flow__l_min": 2,
         "second_flow_sensor__temperature__C": 3,
-    } == flatten_model_values(
-        second_mini_model, build_fmu_key_mapping(SecondMiniModel, fmu_only=True)
-    )
+    }
 
 
 def test_fmu_input_ignore_excluded():
@@ -96,12 +98,10 @@ def test_fmu_input_ignore_excluded():
         ),
     )
 
-    assert {
-        "excluded_field_component__included_field__ratio": 1.0
-    } == flatten_model_values(
+    assert flatten_model_values(
         excluded_simulation_inputs,
-        build_fmu_key_mapping(ExcludedSimulationInputs, fmu_only=True),
-    )
+        build_fmu_key_mapping(ExcludedSimulationInputs),
+    ) == {"excluded_field_component__included_field__ratio": 1.0}
 
 
 def test_fmu_computed_field():
@@ -111,14 +111,12 @@ def test_fmu_computed_field():
         )
     )
 
-    assert {
+    assert flatten_model_values(model, build_fmu_key_mapping(ModelWithComputed)) == {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
         "computed_component__flow__l_min": 12.12,
         "computed_component__temperature__C": 17.12,
-    } == flatten_model_values(
-        model, build_fmu_key_mapping(ModelWithComputed, fmu_only=True)
-    )
+    }
 
 
 def test_extract_excluded():
@@ -142,7 +140,7 @@ def test_extract_excluded():
 
 
 def test_fmu_roundtrip():
-    time = datetime.now()
+    time = datetime.now(UTC)
 
     control_values = MiniModel(
         flow_sensor=FlowSensor(

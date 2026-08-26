@@ -1,5 +1,6 @@
 import logging
 import sys
+from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel, Field
@@ -20,6 +21,10 @@ def setup_logging():
 class GenerateDataCmd(BaseModel):
     """Generate values"""
 
+    cache_dir: Annotated[
+        str | None, Field(description="Directory to cache IO list results")
+    ] = None
+
     exclude_io_lists: Annotated[
         list[str],
         Field(
@@ -29,14 +34,21 @@ class GenerateDataCmd(BaseModel):
     ]
 
     def cli_cmd(self):
-        generate_data(excluded_io_list_names=self.exclude_io_lists)
+        generate_data(
+            excluded_io_list_names=self.exclude_io_lists,
+            cache_dir=Path(self.cache_dir) if self.cache_dir else None,
+        )
 
 
 class GenerateVectorCmd(BaseModel):
     """Generate all vector resources"""
 
+    cache_dir: Annotated[
+        str | None, Field(description="Directory to cache IO list results")
+    ] = None
+
     def cli_cmd(self):
-        generate_vector()
+        generate_vector(Path(self.cache_dir) if self.cache_dir else None)
 
 
 class ZeroDataCli(BaseSettings, cli_kebab_case=True):

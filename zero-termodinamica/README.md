@@ -14,15 +14,15 @@ The script produces a json file (`modbus_units.json`) that can be loaded in by t
 
 - just
 - Python >= 3.13.1
-- poetry
+- uv
 - An MQTT broker
 
 ## Installation
 
-With [Poetry](https://python-poetry.org/):
+With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-poetry install
+uv sync --locked
 ```
 
 ## Configuration

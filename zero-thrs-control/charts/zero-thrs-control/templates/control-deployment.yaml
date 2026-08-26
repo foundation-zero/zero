@@ -52,6 +52,12 @@ spec:
           imagePullPolicy: {{ $root.Values.control.image.pullPolicy }}
           resources:
             {{- toYaml $root.Values.control.resources | nindent 12 }}
+          env:
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $root.Values.postgresql.existingSecret }}
+                  key: {{ $root.Values.postgresql.existingSecretPasswordKey }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-thrs-control.envvars" $root }}

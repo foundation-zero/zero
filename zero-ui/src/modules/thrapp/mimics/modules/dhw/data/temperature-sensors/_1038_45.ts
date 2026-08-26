@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -12,8 +12,7 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   parameters: {},
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureTank1"),
   sensors: {},
-  tooltip: tooltip({
-    yardTag: "1038-45",
-    technicalName: "dhw-temperature-tank-1",
-  }),
+  get tooltip() {
+    return tooltip(this.source);
+  },
 });

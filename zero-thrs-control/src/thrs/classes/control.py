@@ -1,5 +1,6 @@
 from typing import Protocol
 
+from thrs.classes.machine_state_logger import StateLogger
 from thrs.input_output.base import ThrsValues
 
 
@@ -20,13 +21,15 @@ class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerSt
 
     def update_parameters(self, parameters: Parameters): ...
 
+    state_logger: StateLogger
+
 
 class ControlMode(ThrsValues):
     def __str__(self):
         values = [
             getattr(self, field_name)
             if isinstance(getattr(self, field_name), str)
-            else f"{field_name}: {str(getattr(self, field_name))}"
+            else f"{field_name}: {getattr(self, field_name)!s}"
             for field_name, field_info in type(self).model_fields.items()
         ]
 

@@ -8,8 +8,6 @@ from aiomqtt import Client as MqttClient
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
-    SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 from thrs.orchestration.comms import (
@@ -52,11 +50,11 @@ class DemoControllerState(ThrsValues):
     state: str = "ok"
 
 
-class DemoSimulationInputs(SimulationInputs):
+class DemoSimulationInputs(ThrsValues):
     target: float = 1.0
 
 
-class DemoSimulationOutputs(SimulationValues):
+class DemoSimulationOutputs(ThrsValues):
     measured: float = 2.0
 
 
@@ -69,7 +67,7 @@ def demo_module() -> ModuleDescription:
         lambda *_args, **_kwargs: mock.Mock(),
         DemoMode,
         DemoControllerState,
-        lambda: mock.Mock(),
+        mock.Mock,
     )
 
 
@@ -83,7 +81,7 @@ def _listener_for_topic(connector: MqttConnector, topic: str):
 
 async def _wait_until(predicate, timeout_s: float = 2.0):
     async with asyncio.timeout(timeout_s):
-        while not predicate():
+        while not predicate():  # noqa: ASYNC110
             await asyncio.sleep(0.01)
 
 

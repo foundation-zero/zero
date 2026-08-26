@@ -36,8 +36,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrs/graphql/schema.graphql");
-const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
+const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrsim/graphql/schema.graphql");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
 
 // ============================================================================
 // Types
@@ -74,6 +74,7 @@ interface Config {
 
 const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorTemperatureSensorType: "Temperature",
+  SensorCalculatedTemperatureType: "CalculatedTemperature",
   SensorPressureSensorType: "Pressure",
   SensorFlowSensorType: "Flow",
   SensorPumpType: "Pump",
@@ -82,22 +83,28 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
   SensorLevelSensorType: "Level",
+  SensorLevelSwitchType: "LevelSwitch",
   SensorTemperatureDeltaType: "DeltaT",
   SensorCalculatedFlowType: "CalculatedFlow",
   SensorHeatPumpType: "HeatExchanger",
   SensorHeatExchangerType: "HeatExchanger",
   SensorHvacExchangerType: "HeatExchanger",
+  SensorAdsorptionChillerType: "AdsorptionChiller",
+  SensorBrightloopType: "Brightloop",
+  SensorUgridType: "Ugrid",
+  SensorPropulsionDriveType: "PropulsionDrive",
+  SensorShorePowerConverterType: "ShorePowerConverter",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
-  ThrusterSimulationType: "Thruster",
-  BoundarySimulationType: "Boundary",
-  TemperatureBoundarySimulationType: "Temperature",
-  OverpressureTemperatureBoundarySimulationType: "OverpressureTemperature",
-  FlowBoundarySimulationType: "Flow",
-  PcsSimulationType: "Pcs",
-  HeatSourceSimulationType: "HeatSource",
-  HvacExchangerSimulationType: "HvacExchanger",
+  SimulationThrusterType: "Thruster",
+  SimulationBoundaryType: "Boundary",
+  SimulationTemperatureBoundaryType: "Temperature",
+  SimulationOverpressureTemperatureBoundaryType: "OverpressureTemperature",
+  SimulationFlowBoundaryType: "Flow",
+  SimulationPcsType: "Pcs",
+  SimulationHeatSourceType: "HeatSource",
+  SimulationHvacExchangerType: "HvacExchanger",
 };
 
 const CONTROL_TYPE_MAP: Record<string, string> = {
@@ -105,6 +112,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
   ControlPumpType: "Pump",
   ControlValveType: "Valve",
   ControlHeatPumpType: "Heatpump",
+  ControlAdsorptionChillerType: "AdsorptionChiller",
 };
 
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
@@ -188,7 +196,10 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("flow")) return "Flow";
   if (lowerFieldName.includes("enabled")) return "Enabled";
   if (lowerFieldName.includes("ratio")) return "Ratio";
+  if (lowerFieldName.includes("coolingsetpoint")) return "Temperature";
   if (lowerFieldName.includes("dutypoint")) return "Dutypoint";
+  if (lowerFieldName.includes("hot")) return "Temperature";
+  if (lowerFieldName.includes("cold")) return "Temperature";
   if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
   if (lowerFieldName.includes("disabled")) return "Disabled";
@@ -415,9 +426,11 @@ function getWrapperFunction(definitionType: DefinitionType): string {
 function generatePropertyLines(value: ExtractedValue, definitionType: DefinitionType): string[] {
   const props: string[] = [];
 
-  // Add yardTag for control and sensor definitions
-  if (definitionType === "control" || definitionType === "sensor") {
+  // Add yardTag: always for control (required), only when present for sensors (optional)
+  if (definitionType === "control") {
     props.push(`yardTag: "${value.yardTag ?? ""}"`);
+  } else if (definitionType === "sensor" && value.yardTag) {
+    props.push(`yardTag: "${value.yardTag}"`);
   }
 
   // Add componentType based on definition type
@@ -511,6 +524,26 @@ function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config)
   console.log(`📊 Generated object with ${Object.keys(extractedValues).length} entries`);
 }
 
+function extractSchemaValues(config: Config): void {
+  console.log(`🔄 Extracting ${config.definitionType} values from GraphQL schema...`);
+  console.log(`📋 Target: ${config.constName} from ${config.typeName}`);
+
+  if (!fs.existsSync(SCHEMA_PATH)) {
+    throw new Error(`Schema file not found: ${SCHEMA_PATH}`);
+  }
+
+  const extractedValues = parseSchema(SCHEMA_PATH, config);
+  writeUpdatedConstants(extractedValues, config);
+}
+
+function runExtractSchemaValues(constName: string, typeName: string): void {
+  extractSchemaValues({
+    constName,
+    typeName,
+    definitionType: inferDefinitionType(typeName),
+  });
+}
+
 // ============================================================================
 // Main Execution
 // ============================================================================
@@ -518,16 +551,7 @@ function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config)
 function main(): void {
   try {
     const config = parseArguments();
-
-    console.log(`🔄 Extracting ${config.definitionType} values from GraphQL schema...`);
-    console.log(`📋 Target: ${config.constName} from ${config.typeName}`);
-
-    if (!fs.existsSync(SCHEMA_PATH)) {
-      throw new Error(`Schema file not found: ${SCHEMA_PATH}`);
-    }
-
-    const extractedValues = parseSchema(SCHEMA_PATH, config);
-    writeUpdatedConstants(extractedValues, config);
+    extractSchemaValues(config);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("❌ Error:", errorMessage);
@@ -544,4 +568,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // Exports (for testing)
 // ============================================================================
 
-export { generateObjectString, parseSchema, updateConstsFile };
+export {
+  extractSchemaValues,
+  generateObjectString,
+  parseSchema,
+  runExtractSchemaValues,
+  updateConstsFile,
+};

@@ -15,7 +15,7 @@ docker compose --profile data up -d
 
 1. Install dependencies:
    ```bash
-   poetry install --with dev
+   uv sync --locked
    ```
 
 2. Create a `.env` file in the root folder based on `.env.example`.
@@ -33,23 +33,23 @@ docker compose --profile data up -d
 
 Generate DBT SQL files:
 ```bash
-poetry run zero-data generate-dbt
+uv run zero-data generate-dbt
 ```
 
 Start the data mocker:
 ```bash
-poetry run zero-data generate-data
+uv run zero-data generate-data
 ```
 
 ## Testing
 
 1. Make sure the dependencies for testing are installed
    ```bash
-   poetry install --with dev,test
+   uv sync --locked
    ```
 1. Run the tests
    ```bash
-   poetry run pytest .
+   uv run pytest .
    ```
 
 ## Release Management

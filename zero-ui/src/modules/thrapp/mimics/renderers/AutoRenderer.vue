@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrs/types";
+import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField } from "../providers";
@@ -17,10 +17,14 @@ const editor = computed(() => {
       return FieldRenderer.OnOff;
     case "deltaT":
       return FieldRenderer.DeltaT;
+    case "empty":
+      return FieldRenderer.Empty;
     case "flow":
       return FieldRenderer.FlowRate;
     case "setpoint":
       return FieldRenderer.ValveState;
+    case "positionAbs":
+      return FieldRenderer.Degree;
     case "positionRel":
     case "dutypoint":
       return FieldRenderer.Percentage;
@@ -28,6 +32,8 @@ const editor = computed(() => {
       return FieldRenderer.Heat;
     case "level":
       return FieldRenderer.Level;
+    case "quantity":
+      return FieldRenderer.QuantityLiters;
     case "speed":
       return FieldRenderer.Frequency;
     case "opTime":

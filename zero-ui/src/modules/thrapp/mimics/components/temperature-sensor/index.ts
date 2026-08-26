@@ -7,6 +7,6 @@ export const TEMPERATURE_SENSOR_WIDTH = 32;
 export const TEMPERATURE_SENSOR_HEIGHT = 32;
 export const TEMPERATURE_SENSOR_BASE_ORIENTATION = ComponentOrientation.Down;
 
-export const TEMPERATURE_SENSOR_BODY_FILL = "var(--background-muted)";
+export const TEMPERATURE_SENSOR_BODY_FILL = "var(--muted)";
 export const TEMPERATURE_SENSOR_STROKE_COLOR = "var(--attention)";
 export const TEMPERATURE_SENSOR_MARK_COLOR = "var(--foreground)";

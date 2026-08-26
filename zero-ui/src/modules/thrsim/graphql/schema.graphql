@@ -1,0 +1,1755 @@
+directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
+
+input AdsorptionChillerInputType {
+  enable: Boolean!
+  mode: AdsorptionChillerMode!
+  coolingSetpoint: Float!
+  freeCoolingMode: FreeCoolingMode!
+  availableSeawaterTemperature: Float!
+  availableHotTemperature: Float!
+  availableColdTemperature: Float!
+  coldMinimum: Float!
+  hotMinimum: Float!
+  coldHysteresis: Float!
+  hotHysteresis: Float!
+  tankControlMode: TankControlMode!
+}
+
+enum AdsorptionChillerMode {
+  OFF
+  ON
+  VALVE_RUN
+  ACTIVATION
+}
+
+type AdsorptionChillerModeStampedType {
+  value: AdsorptionChillerMode!
+  timestamp: DateTime!
+}
+
+type AdsorptionControlModeType {
+  mode: String!
+}
+
+type AdsorptionControlValuesType {
+  adsorptionFlowcontrolWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
+  adsorptionMixHot: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-02", componentType: "valve", valveType: "mix")
+  adsorptionMixWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-01", componentType: "valve", valveType: "mix")
+  adsorptionSwitchDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001187-01", componentType: "valve", valveType: "switch")
+  adsorptionChiller: ControlAdsorptionChillerType! @jsonSchemaDirective(yardTag: "50001034", componentType: "adsorption_chiller", valveType: null)
+}
+
+type AdsorptionControllerStateType {
+  Empty: Void
+}
+
+type AdsorptionParametersType {
+  chillerEnabled: Boolean!
+  wasteCoolingTemperatureSetpoint: Float!
+  wasteRecoveryTemperatureSetpoint: Float!
+  hotSupplyTemperatureSetpoint: Float!
+  adsorptionCoolingSetpoint: Float!
+  adsorptionHotMinimum: Float!
+  adsorptionHotTrigger: Float!
+  adsorptionColdMinimum: Float!
+  adsorptionColdTrigger: Float!
+  hotMixTuning: [Float!]!
+  recoveryTuning: [Float!]!
+  wasteCoolingTuning: [Float!]!
+  freeCoolingEnabled: Boolean!
+}
+
+type AdsorptionSensorValuesType {
+  adsorptionFlowcontrolWaste: SensorValveType! @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
+  adsorptionMixHot: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-02", componentType: "valve", valveType: "mix")
+  adsorptionMixWaste: SensorValveType! @jsonSchemaDirective(yardTag: "50001047-01", componentType: "valve", valveType: "mix")
+  adsorptionSwitchDhw: SensorValveType! @jsonSchemaDirective(yardTag: "50001187-01", componentType: "valve", valveType: "switch")
+  adsorptionChiller: SensorAdsorptionChillerType! @jsonSchemaDirective(yardTag: "50001034", componentType: "adsorption_chiller", valveType: null)
+  adsorptionFlowHt: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-09", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowHot: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-02", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowWaste: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001059", componentType: "flow_sensor", valveType: null)
+  adsorptionFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-10", componentType: "flow_sensor", valveType: null)
+  adsorptionTemperatureHtReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-41", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHtSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-50", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHotReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-36", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureHotSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-37", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureWasteReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-38", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureWasteSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-39", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-56", componentType: "temperature_sensor", valveType: null)
+  adsorptionAvailableHotTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+  adsorptionAvailableColdTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+  adsorptionAvailableSeawaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+}
+
+type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule {
+  sensorValues: AdsorptionSensorValuesType
+  controlValues: AdsorptionControlValuesType
+  parameters: AdsorptionParametersType
+  controlMode: AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeSwitchingControlModeType
+  controllerState: AdsorptionControllerStateType
+}
+
+type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: AdsorptionControlModeType
+}
+
+type AdsorptionSimulationInputsType {
+  adsorptionCoolingSupply: SimulationTemperatureBoundaryType!
+  adsorptionSeawaterSupply: SimulationBoundaryType!
+  adsorptionAvailableHotTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableColdTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableSeawaterTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionChiller: SimulationAdsorptionChillerType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionConsumersSupply: SimulationBoundaryType!
+  adsorptionDhwSupply: SimulationBoundaryType!
+}
+
+type AdsorptionSimulationOutputsType {
+  adsorptionCoolingReturn: SimulationBoundaryType!
+  adsorptionSeawaterReturn: SimulationTemperatureBoundaryType!
+  adsorptionDhwExchanger: SimulationExchangerBoundaryType!
+  adsorptionDhwReturn: SimulationTemperatureBoundaryType!
+  adsorptionConsumersExchanger: SimulationExchangerBoundaryType!
+  adsorptionConsumersReturn: SimulationTemperatureBoundaryType!
+}
+
+type BoolStampedType {
+  value: Boolean!
+  timestamp: DateTime!
+}
+
+input BoundaryInputType {
+  temperature: Float!
+  flow: Float!
+}
+
+type ConsumersControlModeType {
+  Empty: Void
+}
+
+type ConsumersControlValuesType {
+  consumersFlowcontrolAdsorption: ControlValveType! @jsonSchemaDirective(yardTag: "50001061", componentType: "valve", valveType: "flowcontrol")
+  consumersFlowcontrolBypass: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-01", componentType: "valve", valveType: "flowcontrol")
+  consumersFlowcontrolDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001065-01", componentType: "valve", valveType: "flowcontrol")
+  consumersSwitchAdsorption: ControlValveType! @jsonSchemaDirective(yardTag: "50001066-02", componentType: "valve", valveType: "switch")
+  consumersSwitchDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
+}
+
+type ConsumersControllerStateType {
+  Empty: Void
+}
+
+type ConsumersParametersType {
+  dhwEnabled: Boolean!
+  dhwFlowRatioSetpoint: Float!
+  adsorptionEnabled: Boolean!
+  adsorptionFlowRatioSetpoint: Float!
+  dhwFlowBalanceTuning: [Float!]!
+  bypassFlowBalanceTuning: [Float!]!
+  adsorptionFlowBalanceTuning: [Float!]!
+}
+
+type ConsumersSensorValuesType {
+  consumersTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-48", componentType: "temperature_sensor", valveType: null)
+  consumersTemperatureAdsorptionReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-49", componentType: "temperature_sensor", valveType: null)
+  consumersTemperatureDhwSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-53", componentType: "temperature_sensor", valveType: null)
+  consumersTemperatureAdsorptionSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-54", componentType: "temperature_sensor", valveType: null)
+  consumersFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
+  consumersFlowAdsorption: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-08", componentType: "flow_sensor", valveType: null)
+  consumersFlowBypass: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001192", componentType: "flow_sensor", valveType: null)
+  consumersFlowcontrolAdsorption: SensorValveType! @jsonSchemaDirective(yardTag: "50001061", componentType: "valve", valveType: "flowcontrol")
+  consumersFlowcontrolBypass: SensorValveType! @jsonSchemaDirective(yardTag: "50001062-01", componentType: "valve", valveType: "flowcontrol")
+  consumersFlowcontrolDhw: SensorValveType! @jsonSchemaDirective(yardTag: "50001065-01", componentType: "valve", valveType: "flowcontrol")
+  consumersSwitchAdsorption: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-02", componentType: "valve", valveType: "switch")
+  consumersSwitchDhw: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
+}
+
+type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule {
+  sensorValues: ConsumersSensorValuesType
+  controlValues: ConsumersControlValuesType
+  parameters: ConsumersParametersType
+  controlMode: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeSwitchingControlModeType
+  controllerState: ConsumersControllerStateType
+}
+
+type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: ConsumersControlModeType
+}
+
+type ConsumersSimulationInputsType {
+  consumersAdsorptionSupply: SimulationBoundaryType!
+  consumersDhwSupply: SimulationBoundaryType!
+  consumersPcmSupply: SimulationBoundaryType!
+}
+
+type ConsumersSimulationOutputsType {
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
+}
+
+type ControlAdsorptionChillerType {
+  enable: BoolStampedType!
+  mode: AdsorptionChillerModeStampedType!
+  coolingSetpoint: FloatStampedType!
+  freeCoolingMode: FreeCoolingModeStampedType!
+  availableSeawaterTemperature: FloatStampedType!
+  availableHotTemperature: FloatStampedType!
+  availableColdTemperature: FloatStampedType!
+  coldMinimum: FloatStampedType!
+  hotMinimum: FloatStampedType!
+  coldHysteresis: FloatStampedType!
+  hotHysteresis: FloatStampedType!
+  tankControlMode: TankControlModeStampedType!
+}
+
+type ControlHeatPumpType {
+  on: BoolStampedType!
+  temperatureSetpoint: FloatStampedType!
+}
+
+type ControlModules {
+  thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeControlModule!
+  pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule!
+  pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule!
+  adsorption: AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule!
+  consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule!
+  dc: DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule!
+  dhw: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule!
+  drives: DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeControlModule!
+}
+
+type ControlPcmType {
+  on: BoolStampedType!
+}
+
+type ControlPumpType {
+  dutypoint: FloatStampedType!
+  on: BoolStampedType!
+}
+
+type ControlValveType {
+  setpoint: FloatStampedType!
+}
+
+type ControllerPidControllerValuesType {
+  setpoint: FloatStampedType!
+  measurement: FloatOptionalStampedType!
+  output: FloatOptionalStampedType!
+  error: FloatOptionalStampedType!
+  enabled: BoolStampedType!
+  tuning: FloatListStampedType!
+  components: FloatListStampedType!
+}
+
+type ControllerTanksControllerValuesType {
+  tank1State: TankStateStampedType!
+  tank2State: TankStateStampedType!
+  tank3State: TankStateStampedType!
+  timeToFill: FloatOptionalStampedType!
+}
+
+input ConverterInputType {
+  heatFlow: Float!
+  active: Boolean!
+}
+
+type ConvertersControlModeType {
+  mode: String!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type DcControlModeType {
+  brightloopsAft: ConvertersControlModeType!
+  brightloopsFwd: ConvertersControlModeType!
+  ugrids: ConvertersControlModeType!
+}
+
+type DcControlValuesType {
+  dcPumpAft: ControlPumpType! @jsonSchemaDirective(yardTag: "50001020", componentType: "pump", valveType: null)
+  dcPumpFwd: ControlPumpType! @jsonSchemaDirective(yardTag: "50001025", componentType: "pump", valveType: null)
+  dcPumpUgrid: ControlPumpType! @jsonSchemaDirective(yardTag: "50001023", componentType: "pump", valveType: null)
+  dcMixAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001043-02", componentType: "valve", valveType: "mix")
+  dcMixFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001042-03", componentType: "valve", valveType: "mix")
+  dcMixUgrid: ControlValveType! @jsonSchemaDirective(yardTag: "50001045-01", componentType: "valve", valveType: "mix")
+  dcMixRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-04", componentType: "valve", valveType: "mix")
+  dcMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-05", componentType: "valve", valveType: "mix")
+  dcSwitchAft4: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-01", componentType: "valve", valveType: "switch")
+  dcSwitchAft3: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-02", componentType: "valve", valveType: "switch")
+  dcSwitchAft2: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-03", componentType: "valve", valveType: "switch")
+  dcSwitchAft1: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-04", componentType: "valve", valveType: "switch")
+  dcSwitchFwd2: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-05", componentType: "valve", valveType: "switch")
+  dcSwitchFwd1: ControlValveType! @jsonSchemaDirective(yardTag: "50001068-06", componentType: "valve", valveType: "switch")
+  dcSwitchUgrid2: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-02", componentType: "valve", valveType: "switch")
+  dcSwitchUgrid1: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-03", componentType: "valve", valveType: "switch")
+}
+
+type DcControllerStateType {
+  Empty: Void
+}
+
+type DcParametersType {
+  maximumSupplyTemperature: Float!
+  recoveryTemperature: Float!
+  brightloopFlowSetpoint: Float!
+  ugridFlowSetpoint: Float!
+  brightloopReturnTemperature: Float!
+  ugridReturnTemperature: Float!
+  heatDumpTuning: [Float!]!
+  recoveryMixTuning: [Float!]!
+  brightloopsFwdMixTuning: [Float!]!
+  brightloopsAftMixTuning: [Float!]!
+  ugridsMixTuning: [Float!]!
+  brightloopsFwdPumpTuning: [Float!]!
+  brightloopsAftPumpTuning: [Float!]!
+  ugridsPumpTuning: [Float!]!
+}
+
+type DcSensorValuesType {
+  dcPumpAft: SensorPumpType! @jsonSchemaDirective(yardTag: "50001020", componentType: "pump", valveType: null)
+  dcPumpUgrid: SensorPumpType! @jsonSchemaDirective(yardTag: "50001023", componentType: "pump", valveType: null)
+  dcPumpFwd: SensorPumpType! @jsonSchemaDirective(yardTag: "50001025", componentType: "pump", valveType: null)
+  dcTemperatureAft4Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-05", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureAft3Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-06", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureAft2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-07", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureAft1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-08", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureUgrid2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-09", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureUgrid1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-10", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureFwd2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-12", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureFwd1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-13", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureAftSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-15", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureRecoveryMix: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-17", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-18", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureFwdReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-19", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureAftReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-20", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-52", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureRecoveryReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-58", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureFwdSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-69", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureUgridSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-70", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureUgridReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-71", componentType: "temperature_sensor", valveType: null)
+  dcMixFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001042-03", componentType: "valve", valveType: "mix")
+  dcMixAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001043-02", componentType: "valve", valveType: "mix")
+  dcMixUgrid: SensorValveType! @jsonSchemaDirective(yardTag: "50001045-01", componentType: "valve", valveType: "mix")
+  dcMixRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-04", componentType: "valve", valveType: "mix")
+  dcMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-05", componentType: "valve", valveType: "mix")
+  dcFlowAft4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-04", componentType: "flow_sensor", valveType: null)
+  dcFlowAft3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-05", componentType: "flow_sensor", valveType: null)
+  dcFlowAft2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-06", componentType: "flow_sensor", valveType: null)
+  dcFlowAft1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-07", componentType: "flow_sensor", valveType: null)
+  dcFlowUgrid2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-08", componentType: "flow_sensor", valveType: null)
+  dcFlowUgrid1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-09", componentType: "flow_sensor", valveType: null)
+  dcFlowFwd2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-11", componentType: "flow_sensor", valveType: null)
+  dcFlowFwd1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-12", componentType: "flow_sensor", valveType: null)
+  dcFlowAftReturn: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-25", componentType: "flow_sensor", valveType: null)
+  dcFlowFwdReturn: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-26", componentType: "flow_sensor", valveType: null)
+  dcFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-04", componentType: "flow_sensor", valveType: null)
+  dcFlowUgridReturn: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-06", componentType: "flow_sensor", valveType: null)
+  dcSwitchAft4: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-01", componentType: "valve", valveType: "switch")
+  dcSwitchAft3: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-02", componentType: "valve", valveType: "switch")
+  dcSwitchAft2: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-03", componentType: "valve", valveType: "switch")
+  dcSwitchAft1: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-04", componentType: "valve", valveType: "switch")
+  dcSwitchFwd2: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-05", componentType: "valve", valveType: "switch")
+  dcSwitchFwd1: SensorValveType! @jsonSchemaDirective(yardTag: "50001068-06", componentType: "valve", valveType: "switch")
+  dcSwitchUgrid2: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-02", componentType: "valve", valveType: "switch")
+  dcSwitchUgrid1: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-03", componentType: "valve", valveType: "switch")
+  dcPressureAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-07", componentType: "pressure_sensor", valveType: null)
+  dcPressureUgrid: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-08", componentType: "pressure_sensor", valveType: null)
+  dcPressureFwd: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-09", componentType: "pressure_sensor", valveType: null)
+  dcBrightloopAft1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop", valveType: null)
+  dcBrightloopAft2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop", valveType: null)
+  dcBrightloopAft3: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop", valveType: null)
+  dcBrightloopAft4: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop", valveType: null)
+  dcBrightloopFwd1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop", valveType: null)
+  dcBrightloopFwd2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop", valveType: null)
+  dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
+  dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
+}
+
+type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule {
+  sensorValues: DcSensorValuesType
+  controlValues: DcControlValuesType
+  parameters: DcParametersType
+  controlMode: DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeSwitchingControlModeType
+  controllerState: DcControllerStateType
+}
+
+type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: DcControlModeType
+}
+
+type DcSimulationInputsType {
+  dcBrightloopFwd1: SimulationHeatSourceType!
+  dcBrightloopFwd2: SimulationHeatSourceType!
+  dcUgrid1: SimulationHeatSourceType!
+  dcUgrid2: SimulationHeatSourceType!
+  dcBrightloopAft1: SimulationHeatSourceType!
+  dcBrightloopAft2: SimulationHeatSourceType!
+  dcBrightloopAft3: SimulationHeatSourceType!
+  dcBrightloopAft4: SimulationHeatSourceType!
+  dcSeawaterSupply: SimulationBoundaryType!
+  dcDhwSupply: SimulationBoundaryType!
+}
+
+type DcSimulationOutputsType {
+  dcSeawaterReturn: SimulationTemperatureBoundaryType!
+  dcDhwExchanger: SimulationExchangerBoundaryType!
+  dcDhwReturn: SimulationTemperatureBoundaryType!
+}
+
+type DhwControlModeType {
+  boostingMode: String!
+  fillingMode: String!
+}
+
+type DhwControlValuesType {
+  dhwPump: ControlPumpType! @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
+  dhwHeatpump: ControlHeatPumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
+  dhwFlowcontrolDc: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-03", componentType: "valve", valveType: "flowcontrol")
+  dhwFlowcontrolDrives: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-08", componentType: "valve", valveType: "flowcontrol")
+  dhwSwitchTank3Inlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-03", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-04", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3Outlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-05", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-06", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2Inlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-07", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-08", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2Outlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-09", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-10", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1Inlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-11", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-12", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1Outlet: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-13", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-14", componentType: "valve", valveType: "switch")
+  dhwSwitchLowTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
+  dhwSwitchHeatpump: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
+  dhwSwitchHighTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+}
+
+type DhwControllerStateType {
+  dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "tank_controller", valveType: null)
+  dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwDrivesFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwDcFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+}
+
+type DhwParametersType {
+  heatpumpBoostingEnabled: Boolean!
+  htBoostingEnabled: Boolean!
+  heatpumpFlowSetpoint: Float!
+  heatpumpTemperatureSetpoint: Float!
+  htBoostingTemperatureSetpoint: Float!
+  minimumTankTemperature: Float!
+  maximumTankTemperature: Float!
+
+  """Required delta T between boosting source and tank temperature"""
+  boostingDelta: Float!
+
+  """
+  Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement
+  """
+  drivesFlowcontrolMinimumSetpoint: Float!
+
+  """
+  Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement
+  """
+  dcFlowcontrolMinimumSetpoint: Float!
+  fillingTemperatureSetpoint: Float!
+  minimumTankLevel: Float!
+  maximumTankLevel: Float!
+  tank1Enabled: Boolean!
+  tank2Enabled: Boolean!
+  tank3Enabled: Boolean!
+  pumpTemperatureTuning: [Float!]!
+  pumpFlowTuning: [Float!]!
+  dcFlowTuning: [Float!]!
+  drivesFlowTuning: [Float!]!
+}
+
+type DhwSensorValuesType {
+  dhwPump: SensorPumpType! @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
+  dhwTemperatureHvacExchangerReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-25", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureDcReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-26", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureTank3: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-27", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureTank2: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-44", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureTank1: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-45", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureDrivesReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-46", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureFreshwaterSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-47", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureAdsorptionReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-51", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureBoostingReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-65", componentType: "temperature_sensor", valveType: null)
+  dhwTemperatureBoostingSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-66", componentType: "temperature_sensor", valveType: null)
+  dhwLevelTank1: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-01", componentType: "level_sensor", valveType: null)
+  dhwLevelTank2: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-02", componentType: "level_sensor", valveType: null)
+  dhwLevelTank3: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-03", componentType: "level_sensor", valveType: null)
+  dhwFlowDc: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-17", componentType: "flow_sensor", valveType: null)
+  dhwFlowDrives: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-24", componentType: "flow_sensor", valveType: null)
+  dhwFlowBoosting: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-11", componentType: "flow_sensor", valveType: null)
+  dhwFlowcontrolDc: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-03", componentType: "valve", valveType: "flowcontrol")
+  dhwFlowcontrolDrives: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-08", componentType: "valve", valveType: "flowcontrol")
+  dhwSwitchTank3Inlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-03", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-04", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3Outlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-05", componentType: "valve", valveType: "switch")
+  dhwSwitchTank3BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-06", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2Inlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-07", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-08", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2Outlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-09", componentType: "valve", valveType: "switch")
+  dhwSwitchTank2BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-10", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1Inlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-11", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-12", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1Outlet: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-13", componentType: "valve", valveType: "switch")
+  dhwSwitchTank1BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-14", componentType: "valve", valveType: "switch")
+  dhwSwitchLowTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
+  dhwSwitchHeatpump: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
+  dhwSwitchHighTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+  dhwLevelSwitchTank1: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-01", componentType: "level_switch", valveType: null)
+  dhwLevelSwitchTank2: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-02", componentType: "level_switch", valveType: null)
+  dhwLevelSwitchTank3: SensorLevelSwitchType! @jsonSchemaDirective(yardTag: "50001098-03", componentType: "level_switch", valveType: null)
+  dhwPressure: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-11", componentType: "pressure_sensor", valveType: null)
+  drivesFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-03", componentType: "flow_sensor", valveType: null)
+  drivesTemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-16", componentType: "temperature_sensor", valveType: null)
+  drivesTemperatureRecoveryReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-59", componentType: "temperature_sensor", valveType: null)
+  dcFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-04", componentType: "flow_sensor", valveType: null)
+  dcTemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-52", componentType: "temperature_sensor", valveType: null)
+  dcTemperatureRecoveryReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-58", componentType: "temperature_sensor", valveType: null)
+  consumersFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
+  consumersTemperatureDhwSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-53", componentType: "temperature_sensor", valveType: null)
+  consumersTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-48", componentType: "temperature_sensor", valveType: null)
+  adsorptionFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-10", componentType: "flow_sensor", valveType: null)
+  adsorptionTemperatureWasteReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-38", componentType: "temperature_sensor", valveType: null)
+  adsorptionTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-56", componentType: "temperature_sensor", valveType: null)
+  freshwaterHotwaterFlow: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "25001123-1", componentType: null, valveType: null)
+  freshwaterHotwaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-1", componentType: null, valveType: null)
+  drivesDelta: SensorTemperatureDeltaType! @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+  dcDelta: SensorTemperatureDeltaType! @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+  consumersDelta: SensorTemperatureDeltaType! @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+  adsorptionDelta: SensorTemperatureDeltaType! @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
+  dhwFreshwaterFlowSupply: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  dhwHvacExchanger: SensorHvacExchangerType! @jsonSchemaDirective(yardTag: "41001001", componentType: "hvac_exchanger", valveType: null)
+  dhwHeatpump: SensorHeatPumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
+  dhwAdsorptionExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001004", componentType: "heat_exchanger", valveType: null)
+  dhwConsumersExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001007", componentType: "heat_exchanger", valveType: null)
+  dhwDcExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_exchanger", valveType: null)
+  dhwDrivesExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001009", componentType: "heat_exchanger", valveType: null)
+}
+
+type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule {
+  sensorValues: DhwSensorValuesType
+  controlValues: DhwControlValuesType
+  parameters: DhwParametersType
+  controlMode: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeSwitchingControlModeType
+  controllerState: DhwControllerStateType
+}
+
+type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: DhwControlModeType
+}
+
+type DhwSimulationInputsType {
+  dhwDrivesSupply: SimulationBoundaryType!
+  dhwDcSupply: SimulationBoundaryType!
+  dhwAdsorptionSupply: SimulationBoundaryType!
+  dhwConsumersSupply: SimulationBoundaryType!
+  dhwFreshwaterSupply: SimulationOverpressureTemperatureBoundaryType!
+  dhwHvacExchanger: SimulationHvacExchangerType!
+  dhwSeawaterSupply: SimulationTemperatureBoundaryType!
+  dhwHotwaterDemand: SimulationFlowBoundaryType!
+}
+
+type DhwSimulationOutputsType {
+  dhwDrivesExchanger: SimulationExchangerBoundaryType!
+  dhwDrivesReturn: SimulationTemperatureBoundaryType!
+  dhwDcExchanger: SimulationExchangerBoundaryType!
+  dhwDcReturn: SimulationTemperatureBoundaryType!
+  dhwAdsorptionExchanger: SimulationExchangerBoundaryType!
+  dhwAdsorptionReturn: SimulationTemperatureBoundaryType!
+  dhwConsumersExchanger: SimulationExchangerBoundaryType!
+  dhwConsumersReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterSupply: SimulationFlowBoundaryType!
+  dhwFreshwaterReturn: SimulationBoundaryType!
+}
+
+type DrivesControlModeType {
+  mode: String!
+}
+
+type DrivesControlValuesType {
+  drivesPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "50001028", componentType: "pump", valveType: null)
+  drivesPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "50001029", componentType: "pump", valveType: null)
+  drivesMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-01", componentType: "valve", valveType: "mix")
+  drivesMixRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-03", componentType: "valve", valveType: "mix")
+  drivesFlowcontrolPropdriveAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001065-02", componentType: "valve", valveType: "flowcontrol")
+  drivesFlowcontrolPropdriveFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001065-03", componentType: "valve", valveType: "flowcontrol")
+  drivesSwitchShorepowerSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-04", componentType: "valve", valveType: "switch")
+  drivesSwitchShorepowerReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-05", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveAft1: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-06", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveAft2: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-09", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveFwd1: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-07", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveFwd2: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-08", componentType: "valve", valveType: "switch")
+}
+
+type DrivesControllerStateType {
+  Empty: Void
+}
+
+type DrivesParametersType {
+  shorepowerMaximumSupplyTemperature: Float!
+  propulsionMaximumSupplyTemperature: Float!
+  recoveryTemperature: Float!
+  shorepowerFlowSetpoint: Float!
+  propulsionDrivesFlowSetpoint: Float!
+  pumpTuning: [Float!]!
+  recoveryMixTuning: [Float!]!
+  heatDumpTuning: [Float!]!
+  aftFlowBalanceTuning: [Float!]!
+  fwdFlowBalanceTuning: [Float!]!
+}
+
+type DrivesSensorValuesType {
+  drivesPump1: SensorPumpType! @jsonSchemaDirective(yardTag: "50001028", componentType: "pump", valveType: null)
+  drivesPump2: SensorPumpType! @jsonSchemaDirective(yardTag: "50001029", componentType: "pump", valveType: null)
+  drivesTemperatureShorepowerReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-11", componentType: "temperature_sensor", valveType: null)
+  drivesTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-14", componentType: "temperature_sensor", valveType: null)
+  drivesTemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-16", componentType: "temperature_sensor", valveType: null)
+  drivesTemperatureRecoveryMix: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-57", componentType: "temperature_sensor", valveType: null)
+  drivesTemperatureRecoveryReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-59", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdriveAft1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-32", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdriveFwd1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-61", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdrivesFwdSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-62", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdrivesAftSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-63", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdriveAft2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-64", componentType: "temperature_sensor", valveType: null)
+  drivesTemperaturePropdriveFwd2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-72", componentType: "temperature_sensor", valveType: null)
+  drivesMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-01", componentType: "valve", valveType: "mix")
+  drivesMixRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001046-03", componentType: "valve", valveType: "mix")
+  drivesFlowShorepower: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-10", componentType: "flow_sensor", valveType: null)
+  drivesFlowPropdriveAft1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-13", componentType: "flow_sensor", valveType: null)
+  drivesFlowPropdriveFwd2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-14", componentType: "flow_sensor", valveType: null)
+  drivesFlowPropdriveFwd1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-15", componentType: "flow_sensor", valveType: null)
+  drivesFlowPropdriveAft2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-16", componentType: "flow_sensor", valveType: null)
+  drivesFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-03", componentType: "flow_sensor", valveType: null)
+  drivesFlowcontrolPropdriveAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001065-02", componentType: "valve", valveType: "flowcontrol")
+  drivesFlowcontrolPropdriveFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001065-03", componentType: "valve", valveType: "flowcontrol")
+  drivesSwitchShorepowerSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-04", componentType: "valve", valveType: "switch")
+  drivesSwitchShorepowerReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-05", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveAft1: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-06", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveAft2: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-09", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveFwd1: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-07", componentType: "valve", valveType: "switch")
+  drivesSwitchPropdriveFwd2: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-08", componentType: "valve", valveType: "switch")
+  drivesPressure: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-10", componentType: "pressure_sensor", valveType: null)
+  drivesPropdriveAft1: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002079", componentType: "propulsion_drive", valveType: null)
+  drivesPropdriveAft2: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002079", componentType: "propulsion_drive", valveType: null)
+  drivesPropdriveFwd1: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
+  drivesPropdriveFwd2: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
+  drivesShorepower: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+}
+
+type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeControlModule {
+  sensorValues: DrivesSensorValuesType
+  controlValues: DrivesControlValuesType
+  parameters: DrivesParametersType
+  controlMode: DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeSwitchingControlModeType
+  controllerState: DrivesControllerStateType
+}
+
+type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: DrivesControlModeType
+}
+
+type DrivesSimulationInputsType {
+  drivesOilCoolerAft: SimulationHeatSourceType!
+  drivesOilCoolerFwd: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationHeatSourceType!
+  drivesPropdriveAft2: SimulationHeatSourceType!
+  drivesPropdriveFwd1: SimulationHeatSourceType!
+  drivesPropdriveFwd2: SimulationHeatSourceType!
+  drivesShorepower: SimulationHeatSourceType!
+  drivesSeawaterSupply: SimulationBoundaryType!
+  drivesDhwSupply: SimulationBoundaryType!
+}
+
+type DrivesSimulationOutputsType {
+  drivesSeawaterReturn: SimulationTemperatureBoundaryType!
+  drivesDhwExchanger: SimulationExchangerBoundaryType!
+  drivesDhwReturn: SimulationTemperatureBoundaryType!
+}
+
+type FloatListStampedType {
+  value: [Float!]!
+  timestamp: DateTime!
+}
+
+type FloatOptionalStampedType {
+  value: Float
+  timestamp: DateTime!
+}
+
+type FloatStampedType {
+  value: Float!
+  timestamp: DateTime!
+}
+
+input FlowBoundaryInputType {
+  flow: Float!
+}
+
+enum FreeCoolingMode {
+  OFF
+  ON
+  AUTO
+}
+
+type FreeCoolingModeStampedType {
+  value: FreeCoolingMode!
+  timestamp: DateTime!
+}
+
+input HeatPumpInputType {
+  on: Boolean!
+  temperatureSetpoint: Float!
+}
+
+input HeatSourceInputType {
+  heatFlow: Float!
+}
+
+type HighTemperatureSimulationInputsType {
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcs: SimulationPcsType!
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtSeawaterSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  consumersDhwSupply: SimulationBoundaryType!
+  consumersAdsorptionSupply: SimulationBoundaryType!
+}
+
+type HighTemperatureSimulationOutputsType {
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
+}
+
+input HvacExchangerInputType {
+  heatFlow: Float!
+  maximumTemperature: Float!
+}
+
+type Mutation {
+  thrustersSetAutomationMode(automatic: Boolean!): Boolean!
+  thrustersParameterSetMaximumSupplyTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetCoolingTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetCoolingFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetRecoveryTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetWarmupTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetThrustersMinimumFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetThrustersMaximumFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetPumpTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetWarmupMixTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetHeatDumpTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetAftFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersControlSetThrustersPump1(value: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersPump2(value: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixRecovery(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixExchanger(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolAft(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolFwd(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchRecovery(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchAft(value: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchFwd(value: ValveInputType!): ThrustersControlValuesType!
+  pvtSetAutomationMode(automatic: Boolean!): Boolean!
+  pvtParameterSetMaximumSupplyTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetRecoveryTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetWarmupTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetRecoveryActivationStringTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetMinimumReturnTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetMainFwdMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetMainAftMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetOwnersMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetHeatDumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainFwdMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainAftMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetOwnersMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainFwdPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainAftPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetOwnersPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtControlSetPvtPumpMainFwd(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpMainAft(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpOwners(value: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainFwd(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainAft(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixOwners(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainFwd(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainAft(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchOwners(value: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixExchanger(value: ValveInputType!): PvtControlValuesType!
+  pcmSetAutomationMode(automatic: Boolean!): Boolean!
+  pcmParameterSetPcmDischargeFlow(value: Float!): PcmParametersType!
+  pcmParameterSetPcmChargeFlow(value: Float!): PcmParametersType!
+  pcmParameterSetMinimumChargingDt(value: Float!): PcmParametersType!
+  pcmParameterSetMinimumChargingTemperature(value: Float!): PcmParametersType!
+  pcmParameterSetPumpTuning(value: [Float!]!): PcmParametersType!
+  pcmParameterSetSupplyingEnabled(value: Boolean!): PcmParametersType!
+  pcmParameterSetChargingEnabled(value: Boolean!): PcmParametersType!
+  pcmParameterSetModule1FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  pcmParameterSetModule2FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  pcmParameterSetModule3FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  pcmParameterSetModule4FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  pcmControlSetPcmPump(value: PumpInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchChargingReturn(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule1(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule2(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule3(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmFlowcontrolModule4(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchDischarging(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchChargingSupply(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmSwitchConsumers(value: ValveInputType!): PcmControlValuesType!
+  pcmControlSetPcmModule1(value: PcmInputType!): PcmControlValuesType!
+  adsorptionSetAutomationMode(automatic: Boolean!): Boolean!
+  adsorptionParameterSetChillerEnabled(value: Boolean!): AdsorptionParametersType!
+  adsorptionParameterSetWasteCoolingTemperatureSetpoint(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetWasteRecoveryTemperatureSetpoint(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetHotSupplyTemperatureSetpoint(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetAdsorptionCoolingSetpoint(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetAdsorptionHotMinimum(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetAdsorptionHotTrigger(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetAdsorptionColdMinimum(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetAdsorptionColdTrigger(value: Float!): AdsorptionParametersType!
+  adsorptionParameterSetHotMixTuning(value: [Float!]!): AdsorptionParametersType!
+  adsorptionParameterSetRecoveryTuning(value: [Float!]!): AdsorptionParametersType!
+  adsorptionParameterSetWasteCoolingTuning(value: [Float!]!): AdsorptionParametersType!
+  adsorptionParameterSetFreeCoolingEnabled(value: Boolean!): AdsorptionParametersType!
+  adsorptionControlSetAdsorptionFlowcontrolWaste(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionMixHot(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionMixWaste(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionSwitchDhw(value: ValveInputType!): AdsorptionControlValuesType!
+  adsorptionControlSetAdsorptionChiller(value: AdsorptionChillerInputType!): AdsorptionControlValuesType!
+  consumersSetAutomationMode(automatic: Boolean!): Boolean!
+  consumersParameterSetDhwEnabled(value: Boolean!): ConsumersParametersType!
+  consumersParameterSetDhwFlowRatioSetpoint(value: Float!): ConsumersParametersType!
+  consumersParameterSetAdsorptionEnabled(value: Boolean!): ConsumersParametersType!
+  consumersParameterSetAdsorptionFlowRatioSetpoint(value: Float!): ConsumersParametersType!
+  consumersParameterSetDhwFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  consumersParameterSetBypassFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  consumersParameterSetAdsorptionFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  consumersControlSetConsumersFlowcontrolAdsorption(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersFlowcontrolBypass(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersFlowcontrolDhw(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersSwitchAdsorption(value: ValveInputType!): ConsumersControlValuesType!
+  consumersControlSetConsumersSwitchDhw(value: ValveInputType!): ConsumersControlValuesType!
+  dcSetAutomationMode(automatic: Boolean!): Boolean!
+  dcParameterSetMaximumSupplyTemperature(value: Float!): DcParametersType!
+  dcParameterSetRecoveryTemperature(value: Float!): DcParametersType!
+  dcParameterSetBrightloopFlowSetpoint(value: Float!): DcParametersType!
+  dcParameterSetUgridFlowSetpoint(value: Float!): DcParametersType!
+  dcParameterSetBrightloopReturnTemperature(value: Float!): DcParametersType!
+  dcParameterSetUgridReturnTemperature(value: Float!): DcParametersType!
+  dcParameterSetHeatDumpTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetRecoveryMixTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetBrightloopsFwdMixTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetBrightloopsAftMixTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetUgridsMixTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetBrightloopsFwdPumpTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetBrightloopsAftPumpTuning(value: [Float!]!): DcParametersType!
+  dcParameterSetUgridsPumpTuning(value: [Float!]!): DcParametersType!
+  dcControlSetDcPumpAft(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcPumpFwd(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcPumpUgrid(value: PumpInputType!): DcControlValuesType!
+  dcControlSetDcMixAft(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixFwd(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixUgrid(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixRecovery(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcMixExchanger(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft4(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft3(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchAft1(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchFwd2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchFwd1(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchUgrid2(value: ValveInputType!): DcControlValuesType!
+  dcControlSetDcSwitchUgrid1(value: ValveInputType!): DcControlValuesType!
+  dhwSetAutomationMode(automatic: Boolean!): Boolean!
+  dhwParameterSetHeatpumpBoostingEnabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetHtBoostingEnabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetHeatpumpFlowSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetHeatpumpTemperatureSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetHtBoostingTemperatureSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetMinimumTankTemperature(value: Float!): DhwParametersType!
+  dhwParameterSetMaximumTankTemperature(value: Float!): DhwParametersType!
+  dhwParameterSetBoostingDelta(value: Float!): DhwParametersType!
+  dhwParameterSetDrivesFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetDcFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetFillingTemperatureSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetMinimumTankLevel(value: Float!): DhwParametersType!
+  dhwParameterSetMaximumTankLevel(value: Float!): DhwParametersType!
+  dhwParameterSetTank1Enabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetTank2Enabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetTank3Enabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetPumpTemperatureTuning(value: [Float!]!): DhwParametersType!
+  dhwParameterSetPumpFlowTuning(value: [Float!]!): DhwParametersType!
+  dhwParameterSetDcFlowTuning(value: [Float!]!): DhwParametersType!
+  dhwParameterSetDrivesFlowTuning(value: [Float!]!): DhwParametersType!
+  dhwControlSetDhwPump(value: PumpInputType!): DhwControlValuesType!
+  dhwControlSetDhwHeatpump(value: HeatPumpInputType!): DhwControlValuesType!
+  dhwControlSetDhwFlowcontrolDc(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwFlowcontrolDrives(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank3BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank2BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1Inlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1BoostingReturn(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1Outlet(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchTank1BoostingSupply(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchLowTemperature(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchHeatpump(value: ValveInputType!): DhwControlValuesType!
+  dhwControlSetDhwSwitchHighTemperature(value: ValveInputType!): DhwControlValuesType!
+  drivesSetAutomationMode(automatic: Boolean!): Boolean!
+  drivesParameterSetShorepowerMaximumSupplyTemperature(value: Float!): DrivesParametersType!
+  drivesParameterSetPropulsionMaximumSupplyTemperature(value: Float!): DrivesParametersType!
+  drivesParameterSetRecoveryTemperature(value: Float!): DrivesParametersType!
+  drivesParameterSetShorepowerFlowSetpoint(value: Float!): DrivesParametersType!
+  drivesParameterSetPropulsionDrivesFlowSetpoint(value: Float!): DrivesParametersType!
+  drivesParameterSetPumpTuning(value: [Float!]!): DrivesParametersType!
+  drivesParameterSetRecoveryMixTuning(value: [Float!]!): DrivesParametersType!
+  drivesParameterSetHeatDumpTuning(value: [Float!]!): DrivesParametersType!
+  drivesParameterSetAftFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
+  drivesParameterSetFwdFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
+  drivesControlSetDrivesPump1(value: PumpInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesPump2(value: PumpInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesMixExchanger(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesMixRecovery(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesFlowcontrolPropdriveAft(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesFlowcontrolPropdriveFwd(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchShorepowerSupply(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchShorepowerReturn(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveAft1(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveAft2(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveFwd1(value: ValveInputType!): DrivesControlValuesType!
+  drivesControlSetDrivesSwitchPropdriveFwd2(value: ValveInputType!): DrivesControlValuesType!
+  thrsSimulationSetThrustersThrusterAft(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetThrustersPcs(value: PcsInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtMainAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtOwners(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionCoolingSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableHotTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableColdTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionAvailableSeawaterTemperature(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetAdsorptionChiller(value: AdsorptionChillerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwFreshwaterSupply(value: OverpressureTemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesShorepower(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
+  highTemperatureSimulationSetThrustersThrusterAft(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetThrustersPcs(value: PcsInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtMainFwd(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtMainAft(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtOwners(value: HeatSourceInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetConsumersDhwSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  highTemperatureSimulationSetConsumersAdsorptionSupply(value: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  dhwSimulationSetDhwDrivesSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwDcSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwAdsorptionSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwConsumersSupply(value: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwFreshwaterSupply(value: OverpressureTemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): DhwSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcSeawaterSupply(value: BoundaryInputType!): DcSimulationInputsType!
+  dcSimulationSetDcDhwSupply(value: BoundaryInputType!): DcSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesShorepower(value: ConverterInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesDhwSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
+  adsorptionSimulationSetAdsorptionCoolingSupply(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionSeawaterSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableHotTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableColdTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableSeawaterTemperature(value: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionChiller(value: AdsorptionChillerInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionConsumersSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionDhwSupply(value: BoundaryInputType!): AdsorptionSimulationInputsType!
+  consumersSimulationSetConsumersAdsorptionSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersDhwSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersPcmSupply(value: BoundaryInputType!): ConsumersSimulationInputsType!
+  pcmSimulationSetPcmPvtSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmThrustersSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): PcmSimulationInputsType!
+  pcmSimulationSetPcmConsumersSupply(value: TemperatureBoundaryInputType!): PcmSimulationInputsType!
+  pvtSimulationSetPvtMainFwd(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtMainAft(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtOwners(value: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtPcmSupply(value: TemperatureBoundaryInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): PvtSimulationInputsType!
+  thrustersSimulationSetThrustersThrusterAft(value: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersThrusterFwd(value: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersSeawaterSupply(value: BoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersPcmSupply(value: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersPcs(value: PcsInputType!): ThrustersSimulationInputsType!
+  simulationPlay(playbackRate: Float! = 1): Void
+  simulationPause: Void
+  simulationStep(seconds: Float!): Void
+}
+
+input OverpressureTemperatureBoundaryInputType {
+  temperature: Float!
+  overpressure: Float!
+}
+
+type PcmControlModeType {
+  mode: String!
+}
+
+type PcmControlValuesType {
+  pcmPump: ControlPumpType! @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
+  pcmSwitchChargingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-02", componentType: "valve", valveType: "switch")
+  pcmFlowcontrolModule1: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-04", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule2: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-05", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule3: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-06", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule4: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-07", componentType: "valve", valveType: "flowcontrol")
+  pcmSwitchDischarging: ControlValveType! @jsonSchemaDirective(yardTag: "50001066-01", componentType: "valve", valveType: "switch")
+  pcmSwitchChargingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001190-01", componentType: "valve", valveType: "switch")
+  pcmSwitchConsumers: ControlValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
+  pcmModule1: ControlPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
+}
+
+type PcmControllerStateType {
+  Empty: Void
+}
+
+input PcmInputType {
+  on: Boolean!
+}
+
+type PcmParametersType {
+  pcmDischargeFlow: Float!
+  pcmChargeFlow: Float!
+  minimumChargingDt: Float!
+  minimumChargingTemperature: Float!
+  pumpTuning: [Float!]!
+  supplyingEnabled: Boolean!
+  chargingEnabled: Boolean!
+  module1FlowBalanceTuning: [Float!]!
+  module2FlowBalanceTuning: [Float!]!
+  module3FlowBalanceTuning: [Float!]!
+  module4FlowBalanceTuning: [Float!]!
+}
+
+type PcmSensorValuesType {
+  pcmPump: SensorPumpType! @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
+  pcmTemperatureProducersReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-31", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureProducersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-55", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureModule1: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-60", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureModule2: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-33", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureModule3: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-34", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureModule4: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-35", componentType: "temperature_sensor", valveType: null)
+  pcmModule1: SensorPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
+  pcmModule2: SensorPcmType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
+  pcmModule3: SensorPcmType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)
+  pcmModule4: SensorPcmType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm", valveType: null)
+  pcmFlowModule1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-18", componentType: "flow_sensor", valveType: null)
+  pcmFlowModule2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-19", componentType: "flow_sensor", valveType: null)
+  pcmFlowModule3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-20", componentType: "flow_sensor", valveType: null)
+  pcmFlowModule4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-21", componentType: "flow_sensor", valveType: null)
+  pcmSwitchChargingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001062-02", componentType: "valve", valveType: "switch")
+  pcmFlowcontrolModule1: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-04", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule2: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-05", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule3: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-06", componentType: "valve", valveType: "flowcontrol")
+  pcmFlowcontrolModule4: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-07", componentType: "valve", valveType: "flowcontrol")
+  pcmSwitchDischarging: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-01", componentType: "valve", valveType: "switch")
+  pcmSwitchChargingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001190-01", componentType: "valve", valveType: "switch")
+  pcmSwitchConsumers: SensorValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
+}
+
+type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule {
+  sensorValues: PcmSensorValuesType
+  controlValues: PcmControlValuesType
+  parameters: PcmParametersType
+  controlMode: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeSwitchingControlModeType
+  controllerState: PcmControllerStateType
+}
+
+type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: PcmControlModeType
+}
+
+type PcmSimulationInputsType {
+  pcmPvtSupply: SimulationBoundaryType!
+  pcmThrustersSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  pcmConsumersSupply: SimulationTemperatureBoundaryType!
+}
+
+type PcmSimulationOutputsType {
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
+}
+
+input PcsInputType {
+  mode: PcsMode!
+}
+
+enum PcsMode {
+  OFF
+  MANEUVERING
+  PROPULSION
+  REGENERATION
+}
+
+type PcsModeStampedType {
+  value: PcsMode!
+  timestamp: DateTime!
+}
+
+input PropulsionDriveInputType {
+  heatFlow: Float!
+  active: Boolean!
+}
+
+input PumpInputType {
+  dutypoint: Float!
+  on: Boolean!
+}
+
+type PvtControlModeType {
+  aft: PvtGroupControlModeType!
+  fwd: PvtGroupControlModeType!
+  owners: PvtGroupControlModeType!
+}
+
+type PvtControlValuesType {
+  pvtPumpMainFwd: ControlPumpType! @jsonSchemaDirective(yardTag: "50001018", componentType: "pump", valveType: null)
+  pvtPumpMainAft: ControlPumpType! @jsonSchemaDirective(yardTag: "50001019", componentType: "pump", valveType: null)
+  pvtPumpOwners: ControlPumpType! @jsonSchemaDirective(yardTag: "50001021", componentType: "pump", valveType: null)
+  pvtMixMainFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001044-01", componentType: "valve", valveType: "mix")
+  pvtMixMainAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001044-02", componentType: "valve", valveType: "mix")
+  pvtMixOwners: ControlValveType! @jsonSchemaDirective(yardTag: "50001043-01", componentType: "valve", valveType: "mix")
+  pvtSwitchMainFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-01", componentType: "valve", valveType: "switch")
+  pvtSwitchMainAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: "valve", valveType: "switch")
+  pvtSwitchOwners: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: "valve", valveType: "switch")
+  pvtMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: "valve", valveType: "mix")
+}
+
+type PvtControllerStateType {
+  Empty: Void
+}
+
+type PvtGroupControlModeType {
+  mode: String!
+}
+
+type PvtParametersType {
+  maximumSupplyTemperature: Float!
+  recoveryTemperature: Float!
+  warmupTemperature: Float!
+  recoveryActivationStringTemperature: Float!
+  minimumReturnTemperature: Float!
+  mainFwdMinimumPumpDutypoint: Float!
+  mainAftMinimumPumpDutypoint: Float!
+  ownersMinimumPumpDutypoint: Float!
+  heatDumpTuning: [Float!]!
+  mainFwdMixTuning: [Float!]!
+  mainAftMixTuning: [Float!]!
+  ownersMixTuning: [Float!]!
+  mainFwdPumpTuning: [Float!]!
+  mainAftPumpTuning: [Float!]!
+  ownersPumpTuning: [Float!]!
+}
+
+type PvtSensorValuesType {
+  pvtPumpMainFwd: SensorPumpType! @jsonSchemaDirective(yardTag: "50001018", componentType: "pump", valveType: null)
+  pvtPumpMainAft: SensorPumpType! @jsonSchemaDirective(yardTag: "50001019", componentType: "pump", valveType: null)
+  pvtPumpOwners: SensorPumpType! @jsonSchemaDirective(yardTag: "50001021", componentType: "pump", valveType: null)
+  pvtTemperatureMainFwdReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-03", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainFwdSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-23", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainAftReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-73", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainAftSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-22", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-21", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-04", componentType: "temperature_sensor", valveType: null)
+  pvtMixMainFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001044-01", componentType: "valve", valveType: "mix")
+  pvtMixMainAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001044-02", componentType: null, valveType: "mix")
+  pvtMixOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001043-01", componentType: "valve", valveType: "mix")
+  pvtFlowMainFwdRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-12", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainAftRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-13", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-03", componentType: "flow_sensor", valveType: null)
+  pvtPressureMainFwd: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-03", componentType: "pressure_sensor", valveType: null)
+  pvtPressureMainAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-04", componentType: "pressure_sensor", valveType: null)
+  pvtPressureOwners: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-05", componentType: "pressure_sensor", valveType: null)
+  pvtPressureSystem: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-06", componentType: "pressure_sensor", valveType: null)
+  pvtPressureMainVacuum: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50009059-01", componentType: "pressure_sensor", valveType: null)
+  pvtPressureOwnersVacuum: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50009059-02", componentType: "pressure_sensor", valveType: null)
+  pvtSwitchMainFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-01", componentType: "valve", valveType: "switch")
+  pvtSwitchMainAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: "valve", valveType: "switch")
+  pvtSwitchOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: "valve", valveType: "switch")
+  pvtMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: "valve", valveType: "mix")
+  pvtTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-24", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString11Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-01", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString12Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-19", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString21Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-03", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString22Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-04", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString3Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-05", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString4Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-06", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString51Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-07", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString52Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-08", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString61Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-09", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString62Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-10", componentType: "temperature_sensor", valveType: null)
+  pvtFlowMainString11: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-01", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString12: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-05", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString21: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-03", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString22: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-04", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-01", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-02", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString51: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-05", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString52: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-06", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString61: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-07", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString62: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-08", componentType: "flow_sensor", valveType: null)
+  pvtTemperatureMainString1Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-26", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString2Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-25", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString3Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-24", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString4Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-23", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString5Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-22", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-21", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString71Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-11", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString72Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-12", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString81Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-13", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString82Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-14", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString9Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-15", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString10Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-16", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString111Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-17", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString112Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-18", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString13Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-20", componentType: "temperature_sensor", valveType: null)
+  pvtFlowMainString71: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-09", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString72: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-10", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString81: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-11", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString82: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-12", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString9: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-03", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString10: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-04", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString111: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-13", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString112: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-14", componentType: "flow_sensor", valveType: null)
+  pvtFlowMainString13: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-06", componentType: "flow_sensor", valveType: null)
+  pvtTemperatureMainString7Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-27", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString8Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-28", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString9Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-29", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString10Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-30", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString11Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-31", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString12Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-32", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureMainString13Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-33", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-34", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-35", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString3Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-36", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString4Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-37", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString5Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-38", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString6Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-39", componentType: "temperature_sensor", valveType: null)
+  pvtFlowOwnersString1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-07", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersString2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-08", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersString3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-09", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersString4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-10", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersString5: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-11", componentType: "flow_sensor", valveType: null)
+  pvtFlowOwnersString6: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-12", componentType: "flow_sensor", valveType: null)
+  pvtTemperatureOwnersString1Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-40", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString2Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-41", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString3Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-42", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString4Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-43", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString5Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-44", componentType: "temperature_sensor", valveType: null)
+  pvtTemperatureOwnersString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-45", componentType: "temperature_sensor", valveType: null)
+  pvtMaxTemperatureMainFwdStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtMaxTemperatureMainAftStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtMaxTemperatureOwnersStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+}
+
+type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule {
+  sensorValues: PvtSensorValuesType
+  controlValues: PvtControlValuesType
+  parameters: PvtParametersType
+  controlMode: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeSwitchingControlModeType
+  controllerState: PvtControllerStateType
+}
+
+type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: PvtControlModeType
+}
+
+type PvtSimulationInputsType {
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtPcmSupply: SimulationTemperatureBoundaryType!
+  pvtSeawaterSupply: SimulationBoundaryType!
+}
+
+type PvtSimulationOutputsType {
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
+}
+
+type Query {
+  modules: ControlModules!
+  simulation: SimulationState
+}
+
+type SensorAdsorptionChillerType {
+  operating: BoolStampedType!
+  noError: BoolStampedType!
+  freeCooling: BoolStampedType!
+  temperatureHotIn: FloatStampedType!
+  temperatureHotOut: FloatStampedType!
+  temperatureWasteIn: FloatStampedType!
+  temperatureWasteOut: FloatStampedType!
+  temperatureColdIn: FloatStampedType!
+  temperatureColdOut: FloatStampedType!
+  pumpSpeedHot: FloatStampedType!
+  pumpSpeedCold: FloatStampedType!
+  pumpSpeedWaste: FloatStampedType!
+}
+
+type SensorBrightloopType {
+  active: BoolStampedType!
+}
+
+type SensorCalculatedFlowType {
+  flow: FloatStampedType!
+}
+
+type SensorCalculatedTemperatureType {
+  temperature: FloatOptionalStampedType!
+}
+
+type SensorFlowSensorType {
+  flow: FloatStampedType!
+  temperature: FloatStampedType!
+  quantity: FloatStampedType!
+}
+
+type SensorHeatExchangerType {
+  deltaT: FloatStampedType!
+  heat: FloatStampedType!
+}
+
+type SensorHeatPumpType {
+  deltaT: FloatStampedType!
+  heat: FloatStampedType!
+}
+
+type SensorHvacExchangerType {
+  deltaT: FloatStampedType!
+  heat: FloatStampedType!
+}
+
+type SensorLevelSensorType {
+  level: FloatStampedType!
+}
+
+type SensorLevelSwitchType {
+  empty: BoolStampedType!
+}
+
+type SensorPcmType {
+  charged: BoolStampedType!
+}
+
+type SensorPcsType {
+  mode: PcsModeStampedType!
+}
+
+type SensorPressureSensorType {
+  pressure: FloatStampedType!
+}
+
+type SensorPropulsionDriveType {
+  active: BoolStampedType!
+}
+
+type SensorPumpType {
+  dutypoint: FloatStampedType!
+  on: BoolStampedType!
+  speed: FloatStampedType!
+  opTime: FloatStampedType!
+  flow: FloatStampedType!
+  pressure: FloatStampedType!
+  energyConsumption: FloatStampedType!
+  powerInput: FloatStampedType!
+}
+
+type SensorShorePowerConverterType {
+  active: BoolStampedType!
+}
+
+type SensorTemperatureDeltaType {
+  deltaT: FloatStampedType!
+}
+
+type SensorTemperatureSensorType {
+  temperature: FloatStampedType!
+}
+
+type SensorThrusterType {
+  active: BoolStampedType!
+}
+
+type SensorUgridType {
+  active: BoolStampedType!
+}
+
+type SensorValveType {
+  positionRel: FloatStampedType!
+  positionAbs: FloatStampedType!
+}
+
+type SimulationAdsorptionChillerType {
+  freeCooling: BoolStampedType!
+}
+
+type SimulationBoundaryType {
+  temperature: FloatStampedType!
+  flow: FloatStampedType!
+}
+
+type SimulationExchangerBoundaryType {
+  flow: FloatStampedType!
+  temperatureSupply: FloatStampedType!
+  temperatureReturn: FloatStampedType!
+}
+
+type SimulationFlowBoundaryType {
+  flow: FloatStampedType!
+}
+
+type SimulationHeatSourceType {
+  heatFlow: FloatStampedType!
+}
+
+type SimulationHvacExchangerType {
+  heatFlow: FloatStampedType!
+  maximumTemperature: FloatStampedType!
+}
+
+union SimulationInputsType = AdsorptionSimulationInputsType | ConsumersSimulationInputsType | PcmSimulationInputsType | DhwSimulationInputsType | DrivesSimulationInputsType | ThrustersSimulationInputsType | ThrsSimulationInputsType | HighTemperatureSimulationInputsType | PvtSimulationInputsType | DcSimulationInputsType
+
+union SimulationOutputsType = ThrsSimulationOutputsType | ConsumersSimulationOutputsType | PvtSimulationOutputsType | DrivesSimulationOutputsType | PcmSimulationOutputsType | AdsorptionSimulationOutputsType | DhwSimulationOutputsType | ThrustersSimulationOutputsType | HighTemperatureSimulationOutputsType | DcSimulationOutputsType
+
+type SimulationOverpressureTemperatureBoundaryType {
+  temperature: FloatStampedType!
+  overpressure: FloatStampedType!
+}
+
+type SimulationPcsType {
+  mode: PcsModeStampedType!
+}
+
+type SimulationState {
+  time: DateTime!
+  status: String!
+  inputs: SimulationInputsType
+  outputs: SimulationOutputsType
+}
+
+type SimulationTemperatureBoundaryType {
+  temperature: FloatStampedType!
+}
+
+type SimulationThrusterType {
+  heatFlow: FloatStampedType!
+  active: BoolStampedType!
+}
+
+enum TankControlMode {
+  NONE
+  BOTH
+  COLD
+  HOT
+}
+
+type TankControlModeStampedType {
+  value: TankControlMode!
+  timestamp: DateTime!
+}
+
+enum TankState {
+  IN_USE
+  FILLING
+  BOOSTING
+  DISABLED
+  NEEDS_BOOST
+  NEEDS_FILL
+  STANDBY
+}
+
+type TankStateStampedType {
+  value: TankState!
+  timestamp: DateTime!
+}
+
+input TemperatureBoundaryInputType {
+  temperature: Float!
+}
+
+type ThrsSimulationInputsType {
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcs: SimulationPcsType!
+  pvtMainFwd: SimulationHeatSourceType!
+  pvtMainAft: SimulationHeatSourceType!
+  pvtOwners: SimulationHeatSourceType!
+  pvtSeawaterSupply: SimulationBoundaryType!
+  pcmFreshwaterSupply: SimulationBoundaryType!
+  adsorptionCoolingSupply: SimulationTemperatureBoundaryType!
+  adsorptionSeawaterSupply: SimulationBoundaryType!
+  adsorptionAvailableHotTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableColdTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableSeawaterTemperature: SimulationTemperatureBoundaryType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionChiller: SimulationAdsorptionChillerType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dhwFreshwaterSupply: SimulationOverpressureTemperatureBoundaryType!
+  dhwHvacExchanger: SimulationHvacExchangerType!
+  dhwSeawaterSupply: SimulationTemperatureBoundaryType!
+  dhwHotwaterDemand: SimulationFlowBoundaryType!
+  dcBrightloopFwd1: SimulationHeatSourceType!
+  dcBrightloopFwd2: SimulationHeatSourceType!
+  dcUgrid1: SimulationHeatSourceType!
+  dcUgrid2: SimulationHeatSourceType!
+  dcBrightloopAft1: SimulationHeatSourceType!
+  dcBrightloopAft2: SimulationHeatSourceType!
+  dcBrightloopAft3: SimulationHeatSourceType!
+  dcBrightloopAft4: SimulationHeatSourceType!
+  dcSeawaterSupply: SimulationBoundaryType!
+  drivesOilCoolerAft: SimulationHeatSourceType!
+  drivesOilCoolerFwd: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationHeatSourceType!
+  drivesPropdriveAft2: SimulationHeatSourceType!
+  drivesPropdriveFwd1: SimulationHeatSourceType!
+  drivesPropdriveFwd2: SimulationHeatSourceType!
+  drivesShorepower: SimulationHeatSourceType!
+  drivesSeawaterSupply: SimulationBoundaryType!
+}
+
+type ThrsSimulationOutputsType {
+  drivesSeawaterReturn: SimulationTemperatureBoundaryType!
+  drivesDhwExchanger: SimulationExchangerBoundaryType!
+  drivesDhwReturn: SimulationTemperatureBoundaryType!
+  dcSeawaterReturn: SimulationTemperatureBoundaryType!
+  dcDhwExchanger: SimulationExchangerBoundaryType!
+  dcDhwReturn: SimulationTemperatureBoundaryType!
+  dhwDrivesExchanger: SimulationExchangerBoundaryType!
+  dhwDrivesReturn: SimulationTemperatureBoundaryType!
+  dhwDcExchanger: SimulationExchangerBoundaryType!
+  dhwDcReturn: SimulationTemperatureBoundaryType!
+  dhwAdsorptionExchanger: SimulationExchangerBoundaryType!
+  dhwAdsorptionReturn: SimulationTemperatureBoundaryType!
+  dhwConsumersExchanger: SimulationExchangerBoundaryType!
+  dhwConsumersReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterReturn: SimulationTemperatureBoundaryType!
+  dhwSeawaterSupply: SimulationFlowBoundaryType!
+  dhwFreshwaterReturn: SimulationBoundaryType!
+  adsorptionCoolingReturn: SimulationBoundaryType!
+  adsorptionSeawaterReturn: SimulationTemperatureBoundaryType!
+  adsorptionDhwExchanger: SimulationExchangerBoundaryType!
+  adsorptionDhwReturn: SimulationTemperatureBoundaryType!
+  adsorptionConsumersExchanger: SimulationExchangerBoundaryType!
+  adsorptionConsumersReturn: SimulationTemperatureBoundaryType!
+  consumersAdsorptionExchanger: SimulationExchangerBoundaryType!
+  consumersAdsorptionReturn: SimulationTemperatureBoundaryType!
+  consumersDhwExchanger: SimulationExchangerBoundaryType!
+  consumersDhwReturn: SimulationTemperatureBoundaryType!
+  consumersPcmReturn: SimulationBoundaryType!
+  pcmConsumersReturn: SimulationBoundaryType!
+  pcmThrustersReturn: SimulationBoundaryType!
+  pcmPvtReturn: SimulationBoundaryType!
+  pcmFreshwaterReturn: SimulationBoundaryType!
+  pvtPcmReturn: SimulationBoundaryType!
+  pvtPcmSupply: SimulationFlowBoundaryType!
+  pvtSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
+}
+
+input ThrusterInputType {
+  heatFlow: Float!
+  active: Boolean!
+}
+
+type ThrustersControlModeType {
+  mode: String!
+}
+
+type ThrustersControlValuesType {
+  thrustersPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
+  thrustersPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "50001195", componentType: "pump", valveType: null)
+  thrustersMixRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001074", componentType: "valve", valveType: "mix")
+  thrustersMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001214-01", componentType: "valve", valveType: "mix")
+  thrustersFlowcontrolAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001215", componentType: "valve", valveType: "flowcontrol")
+  thrustersFlowcontrolFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-02", componentType: "valve", valveType: "flowcontrol")
+  thrustersSwitchRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001066-03", componentType: "valve", valveType: "switch")
+  thrustersSwitchAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-01", componentType: "valve", valveType: "switch")
+  thrustersSwitchFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-02", componentType: "valve", valveType: "switch")
+}
+
+type ThrustersControllerStateType {
+  thrustersHeatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersAftRecoveryTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersFwdRecoveryTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersAftFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  thrustersFwdFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+}
+
+type ThrustersParametersType {
+  maximumSupplyTemperature: Float!
+  coolingTemperature: Float!
+  coolingFlow: Float!
+  recoveryTemperature: Float!
+  warmupTemperature: Float!
+  thrustersMinimumFlow: Float!
+  thrustersMaximumFlow: Float!
+  pumpTuning: [Float!]!
+  warmupMixTuning: [Float!]!
+  heatDumpTuning: [Float!]!
+  aftFlowBalanceTuning: [Float!]!
+  fwdFlowBalanceTuning: [Float!]!
+  aftTemperatureTuning: [Float!]!
+  fwdTemperatureTuning: [Float!]!
+}
+
+type ThrustersSensorValuesType {
+  thrustersPump1: SensorPumpType! @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
+  thrustersPump2: SensorPumpType! @jsonSchemaDirective(yardTag: "50001195", componentType: "pump", valveType: null)
+  thrustersTemperatureAft: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-01", componentType: "temperature_sensor", valveType: null)
+  thrustersTemperatureFwd: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-02", componentType: "temperature_sensor", valveType: null)
+  thrustersTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-28", componentType: "temperature_sensor", valveType: null)
+  thrustersTemperatureRecoveryMix: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-30", componentType: "temperature_sensor", valveType: null)
+  thrustersMixRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001074", componentType: "valve", valveType: "mix")
+  thrustersMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001214-01", componentType: "valve", valveType: "mix")
+  thrustersFlowFwd: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-22", componentType: "flow_sensor", valveType: null)
+  thrustersFlowAft: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001218-02", componentType: "flow_sensor", valveType: null)
+  thrustersFlowcontrolAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001215", componentType: "valve", valveType: "flowcontrol")
+  thrustersFlowcontrolFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-02", componentType: "valve", valveType: "flowcontrol")
+  thrustersSwitchRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-03", componentType: "valve", valveType: "switch")
+  thrustersSwitchAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001091-01", componentType: "valve", valveType: "switch")
+  thrustersSwitchFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001091-02", componentType: "valve", valveType: "switch")
+  thrustersFlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001218-01", componentType: "flow_sensor", valveType: null)
+  thrustersPressureDischarge: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-01", componentType: "pressure_sensor", valveType: null)
+  thrustersPressureSystem: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-02", componentType: "pressure_sensor", valveType: null)
+  thrustersThrusterAft: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001001", componentType: "thruster", valveType: null)
+  thrustersThrusterFwd: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001002", componentType: "thruster", valveType: null)
+  thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
+
+  """The average temperature after thrusters before optional mix with pcm."""
+  thrustersTemperatureRecovery: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+
+  """
+  The temperature after the thrusters and mix with pcm.
+  
+  If this was an actual sensor it would have been located just before the inlet to the seawater exchanger.
+  """
+  thrustersTemperaturePreCooler: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  thrustersFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  thrustersSeawaterExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001001", componentType: "heat_exchanger", valveType: null)
+}
+
+type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeControlModule {
+  sensorValues: ThrustersSensorValuesType
+  controlValues: ThrustersControlValuesType
+  parameters: ThrustersParametersType
+  controlMode: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeSwitchingControlModeType
+  controllerState: ThrustersControllerStateType
+}
+
+type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeSwitchingControlModeType {
+  automatic: Boolean!
+  automaticMode: ThrustersControlModeType
+}
+
+type ThrustersSimulationInputsType {
+  thrustersThrusterAft: SimulationThrusterType!
+  thrustersThrusterFwd: SimulationThrusterType!
+  thrustersSeawaterSupply: SimulationBoundaryType!
+  thrustersPcmSupply: SimulationTemperatureBoundaryType!
+  thrustersPcs: SimulationPcsType!
+}
+
+type ThrustersSimulationOutputsType {
+  thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
+  thrustersPcmSupply: SimulationFlowBoundaryType!
+  thrustersPcmReturn: SimulationBoundaryType!
+}
+
+input ValveInputType {
+  setpoint: Float!
+}
+
+"""Represents NULL values"""
+scalar Void

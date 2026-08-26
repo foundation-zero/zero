@@ -71,5 +71,6 @@ dbt/target/*
 
 # Output
 output/**
+.iolist-cache
 
 ~$*.xlsx

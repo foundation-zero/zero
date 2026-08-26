@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, cast
+from typing import cast
 
 from simple_pid import PID
 
@@ -108,6 +109,18 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
             components=Stamped(value=self._pid.components, timestamp=timestamp),
         )
 
+    @classmethod
+    def zero(cls, timestamp: datetime) -> PidControllerValues:
+        return PidControllerValues(
+            setpoint=Stamped(value=0.0, timestamp=timestamp),
+            measurement=Stamped(value=None, timestamp=timestamp),
+            output=Stamped(value=None, timestamp=timestamp),
+            error=Stamped(value=None, timestamp=timestamp),
+            enabled=Stamped(value=False, timestamp=timestamp),
+            tuning=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
+            components=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
+        )
+
 
 class FlowBalanceController:
     def __init__(
@@ -145,7 +158,7 @@ class FlowBalanceController:
     def set_active_valves(self, actives: list[bool]):
         if len(actives) != len(self._valve_controllers):
             raise ValueError("Actives length must match valves length")
-        for controller, active in zip(self._valve_controllers, actives):
+        for controller, active in zip(self._valve_controllers, actives, strict=False):
             if not controller.enabled() and active:
                 controller.enable()
             elif controller.enabled() and not active:
@@ -165,7 +178,9 @@ class FlowBalanceController:
         if len(setpoints) != len(self._valve_controllers):
             raise ValueError("Setpoints length must match valves length")
 
-        for controller, setpoint in zip(self._valve_controllers, setpoints):
+        for controller, setpoint in zip(
+            self._valve_controllers, setpoints, strict=False
+        ):
             controller.setpoint = setpoint
 
     def get_setpoints(self) -> list[LMin]:
@@ -179,11 +194,13 @@ class FlowBalanceController:
             raise ValueError("Measurements length must match valves length")
         controller_values = [
             controller(measurement)
-            for controller, measurement in zip(self._valve_controllers, measurements)
+            for controller, measurement in zip(
+                self._valve_controllers, measurements, strict=False
+            )
         ]
         offset = 1 - max(*controller_values)
         for value, controller, valve in zip(
-            controller_values, self._valve_controllers, self._valves
+            controller_values, self._valve_controllers, self._valves, strict=False
         ):
             if controller.enabled():
                 valve.setpoint = Stamped(value=value + offset, timestamp=self._time())
@@ -194,7 +211,7 @@ class FlowBalanceController:
                 [
                     setpoint * active
                     for setpoint, active in zip(
-                        self.get_setpoints(), self.get_active_valves()
+                        self.get_setpoints(), self.get_active_valves(), strict=False
                     )
                 ]
             )
@@ -230,7 +247,9 @@ class FlowDistributionController:
             (
                 True
                 for ratio, active in zip(
-                    self._ratios, self._flow_balance_controller.get_active_valves()
+                    self._ratios,
+                    self._flow_balance_controller.get_active_valves(),
+                    strict=False,
                 )
                 if (ratio is None and active) or (ratio is not None and not active)
             )
@@ -246,7 +265,9 @@ class FlowDistributionController:
                 total_flow * ratio if ratio is not None else 0.0
             )  # 0s for inactive to comply with PID typing
             for ratio, active in zip(
-                self._ratios, self._flow_balance_controller.get_active_valves()
+                self._ratios,
+                self._flow_balance_controller.get_active_valves(),
+                strict=False,
             )
         ]
         self._flow_balance_controller.set_setpoints(setpoints)

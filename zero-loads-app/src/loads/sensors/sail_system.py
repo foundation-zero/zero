@@ -104,7 +104,11 @@ class PrimaryWinchPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Primary PT", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Primary PT",
+            applies_to_tack="port",
+            variable_key="primary-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -116,7 +120,11 @@ class PrimaryWinchSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Primary SB", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Primary SB",
+            applies_to_tack="starboard",
+            variable_key="primary-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -128,7 +136,11 @@ class AftWinchPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=9),
-        VariableMeta(display_name="Aft Winch PT", scale_min=0, scale_max=9),
+        VariableMeta(
+            display_name="Aft Winch PT",
+            applies_to_tack="port",
+            variable_key="aft-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -140,7 +152,11 @@ class AftWinchSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=9),
-        VariableMeta(display_name="Aft Winch SB", scale_min=0, scale_max=9),
+        VariableMeta(
+            display_name="Aft Winch SB",
+            applies_to_tack="starboard",
+            variable_key="aft-winch-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -180,9 +196,7 @@ class BladeCunningham(LoadsModel, ABC):
     max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
-        Field(
-            validation_alias="st_positionPs/i_Position_permille"
-        ),  # TODO: taking ps as default, t avg pos should be added
+        Field(validation_alias="i_PositionAvg_permille"),
         VariableMeta(
             display_name="Cunningham",
             scale_min_label="out",
@@ -196,7 +210,11 @@ class BladeSheetFeederPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=20),
-        VariableMeta(display_name="Sheet PT", scale_min=0, scale_max=20),
+        VariableMeta(
+            display_name="Sheet PT",
+            applies_to_tack="port",
+            variable_key="blade-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -208,7 +226,11 @@ class BladeSheetFeederSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=20),
-        VariableMeta(display_name="Sheet SB", scale_min=0, scale_max=20),
+        VariableMeta(
+            display_name="Sheet SB",
+            applies_to_tack="starboard",
+            variable_key="blade-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -220,7 +242,11 @@ class BladeTweakerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Tweaker PT", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Tweaker PT",
+            applies_to_tack="port",
+            variable_key="blade-tweaker-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -231,6 +257,8 @@ class BladeTweakerPs(LoadsModel, ABC):
             display_name="Tweaker PT",
             scale_min_label="out",
             scale_max_label="in",
+            applies_to_tack="port",
+            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -242,7 +270,11 @@ class BladeTweakerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15),
-        VariableMeta(display_name="Tweaker SB", scale_min=0, scale_max=15),
+        VariableMeta(
+            display_name="Tweaker SB",
+            applies_to_tack="starboard",
+            variable_key="blade-tweaker-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -253,6 +285,8 @@ class BladeTweakerSb(LoadsModel, ABC):
             display_name="Tweaker SB",
             scale_min_label="out",
             scale_max_label="in",
+            applies_to_tack="starboard",
+            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -264,16 +298,14 @@ class CodeZeroTack(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=33),
-        VariableMeta(display_name="Tack", scale_min=0, scale_max=33),
+        VariableMeta(display_name="Tack"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
-        Field(
-            validation_alias="st_positionPs/i_Position_permille"
-        ),  # TODO: taking ps as default, but avg pos should be added
+        Field(validation_alias="i_PositionAvg_permille"),
         VariableMeta(
             display_name="Cunningham",
             scale_min_label="out",
@@ -295,7 +327,7 @@ class MainHeadstayCombined(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=66),
-        VariableMeta(display_name="Headstay Combined", scale_min=0, scale_max=66),
+        VariableMeta(display_name="Headstay Comb"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -458,9 +490,7 @@ class Mast(LoadsModel, ABC):
     storm_jib_load: Annotated[
         Load,
         Field(ge=0, le=30, validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(
-            name="storm_jib_load", display_name="Tack", scale_min=0, scale_max=30
-        ),
+        VariableMeta(name="storm_jib_load", display_name="Tack"),
     ]
     storm_jib_load_failure: Annotated[
         LoadFailure,
@@ -501,9 +531,7 @@ class MainCheckstay(LoadsModel, ABC):
     deflector_load: Annotated[
         Load,
         Field(ge=0, le=8),
-        VariableMeta(
-            name="deflector-load", display_name="Deflector", scale_min=0, scale_max=8
-        ),
+        VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
     deflector_load_failure: Annotated[
         LoadFailure,
@@ -525,12 +553,9 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_max_load: Annotated[
         MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoad", ge=0, le=8),
         VariableMeta(
             name="deflector-max-load",
             display_name="Checkstay Deflector Max Load",
-            scale_min=0,
-            scale_max=8,
             threshold_for="deflector_load_alarm",
         ),
     ]
@@ -539,7 +564,10 @@ class MainCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadPs/i_Load", ge=0, le=15),
         VariableMeta(
-            name="ps-load", display_name="Checkstay PT", scale_min=0, scale_max=15
+            name="ps-load",
+            display_name="Checkstay PT",
+            applies_to_tack="port",
+            variable_key="main-checkstay-load",
         ),
     ]
     load_sb_failure: Annotated[
@@ -553,12 +581,9 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     max_load_ps: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadPs/i_MaxLoad", ge=0, le=15),
         VariableMeta(
             name="max-ps-load",
             display_name="Checkstay PT Max Load",
-            scale_min=0,
-            scale_max=15,
             threshold_for="load_ps_alarm",
         ),
     ]
@@ -575,17 +600,17 @@ class MainCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadSb/i_Load", ge=0, le=15),
         VariableMeta(
-            name="sb-load", display_name="Checkstay SB", scale_min=0, scale_max=15
+            name="sb-load",
+            display_name="Checkstay SB",
+            applies_to_tack="starboard",
+            variable_key="main-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadSb/i_MaxLoad", ge=0, le=15),
         VariableMeta(
             name="max-sb-load",
             display_name="Checkstay SB Max Load",
-            scale_min=0,
-            scale_max=15,
             threshold_for="load_sb_alarm",
         ),
     ]
@@ -605,7 +630,7 @@ class MainCunningham(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=10),
-        VariableMeta(display_name="Cunningham", scale_min=0, scale_max=10),
+        VariableMeta(display_name="Cunningham"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -624,7 +649,7 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207-main-halyard-captive-winch"
-    load: Load
+    load: Annotated[Load, VariableMeta(display_name="Halyard")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -635,7 +660,7 @@ class MainOuthaul(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=25),
-        VariableMeta(display_name="Outhaul", scale_min=0, scale_max=25),
+        VariableMeta(display_name="Outhaul"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -655,7 +680,7 @@ class MainPreventer(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=23),
-        VariableMeta(display_name="Preventer", scale_min=0, scale_max=23),
+        VariableMeta(display_name="Preventer"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -679,8 +704,6 @@ class MainRunnerPs(LoadsModel, ABC):
         Field(ge=0, le=29),
         VariableMeta(
             display_name="Runner PT",
-            scale_min=0,
-            scale_max=29,
             applies_to_tack="port",
             variable_key="main-runner-load",
         ),
@@ -697,8 +720,6 @@ class MainRunnerSb(LoadsModel, ABC):
         Field(ge=0, le=29),
         VariableMeta(
             display_name="Runner SB",
-            scale_min=0,
-            scale_max=29,
             applies_to_tack="starboard",
             variable_key="main-runner-load",
         ),
@@ -713,7 +734,7 @@ class MainSheet(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=17),
-        VariableMeta(display_name="Sheet", scale_min=0, scale_max=17),
+        VariableMeta(display_name="Sheet"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -727,8 +748,6 @@ class MainVang(LoadsModel, ABC):
         Field(ge=-32, le=67, validation_alias="i_Load"),
         VariableMeta(
             display_name="Vang",
-            scale_min=-32,
-            scale_max=67,
             scale_min_label="push",
             scale_max_label="pull",
         ),
@@ -749,22 +768,23 @@ class MainVang(LoadsModel, ABC):
 
 class MainTraveller(LoadsModel, ABC):
     TOPIC = "sail-systems/fe405-main-sheet-traveller-winch"
-    load: Load
+    load: Annotated[Load, VariableMeta(display_name="Traveller")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
+        Field(
+            validation_alias="i_PositionPermille"
+        ),  # TODO: inconsistent key (st_position/i_Position_permille) is what we expect
         VariableMeta(
             display_name="Traveller",
-            scale_min=-1,
-            scale_max=1,
             scale_min_label="ps",
             scale_max_label="sb",
         ),
     ]
-    max_position_alarm: MaxPositionAlarm
-    min_position_alarm: MinPositionAlarm
+    # max_position_alarm: MaxPositionAlarm #TODO: these don't appear in the schema
+    # min_position_alarm: MinPositionAlarm
 
 
 class MizzenCheckstay(LoadsModel, ABC):
@@ -800,9 +820,7 @@ class MizzenCheckstay(LoadsModel, ABC):
     deflector_load: Annotated[
         Load,
         Field(ge=0, le=1),
-        VariableMeta(
-            name="deflector-load", display_name="Deflector", scale_min=0, scale_max=1
-        ),
+        VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
     deflector_load_failure: Annotated[
         LoadFailure,
@@ -828,8 +846,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="deflector-max-load",
             display_name="Deflector Max Load",
-            scale_min=0,
-            scale_max=8,
             threshold_for="load_alarm",
         ),
     ]
@@ -838,7 +854,10 @@ class MizzenCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadPs/i_Load", ge=0, le=2.7),
         VariableMeta(
-            name="ps-load", display_name="Checkstay PT", scale_min=0, scale_max=2.7
+            name="ps-load",
+            display_name="Checkstay PT",
+            applies_to_tack="port",
+            variable_key="mizzen-checkstay-load",
         ),
     ]
     load_sb_failure: Annotated[
@@ -856,8 +875,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="max-ps-load",
             display_name="Checkstay PT Max Load",
-            scale_min=0,
-            scale_max=2.7,
             threshold_for="load_ps_alarm",
         ),
     ]
@@ -874,7 +891,10 @@ class MizzenCheckstay(LoadsModel, ABC):
         Load,
         Field(validation_alias="st_LoadSb/i_Load", ge=0, le=2.7),
         VariableMeta(
-            name="sb-load", display_name="Checkstay SB", scale_min=0, scale_max=2.7
+            name="sb-load",
+            display_name="Checkstay SB",
+            applies_to_tack="starboard",
+            variable_key="mizzen-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -883,8 +903,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="max-sb-load",
             display_name="Checkstay SB Max Load",
-            scale_min=0,
-            scale_max=2.7,
             threshold_for="load_sb_alarm",
         ),
     ]
@@ -904,7 +922,7 @@ class MizzenCunningham(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=6.7),
-        VariableMeta(display_name="Cunningham", scale_min=0, scale_max=6.7),
+        VariableMeta(display_name="Cunningham"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -932,7 +950,7 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=22),
-        VariableMeta(display_name="Adjuster", scale_min=0, scale_max=22),
+        VariableMeta(display_name="Adjuster"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -954,7 +972,7 @@ class MizzenOuthaul(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=17),
-        VariableMeta(display_name="Outhaul", scale_min=0, scale_max=17),
+        VariableMeta(display_name="Outhaul"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -974,7 +992,7 @@ class MizzenPreventer(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=15.5),
-        VariableMeta(display_name="Preventer", scale_min=0, scale_max=15.5),
+        VariableMeta(display_name="Preventer"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -998,8 +1016,6 @@ class MizzenRunnerPs(LoadsModel, ABC):
         Field(ge=0, le=12.6),
         VariableMeta(
             display_name="Runner PT",
-            scale_min=0,
-            scale_max=12.6,
             applies_to_tack="port",
             variable_key="mizzen-runner-load",
         ),
@@ -1016,8 +1032,6 @@ class MizzenRunnerSb(LoadsModel, ABC):
         Field(ge=0, le=12.6),
         VariableMeta(
             display_name="Runner SB",
-            scale_min=0,
-            scale_max=12.6,
             applies_to_tack="starboard",
             variable_key="mizzen-runner-load",
         ),
@@ -1032,7 +1046,7 @@ class MizzenSheet(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=8.8),
-        VariableMeta(display_name="Sheet", scale_min=0, scale_max=8.8),
+        VariableMeta(display_name="Sheet"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -1046,8 +1060,6 @@ class MizzenVang(LoadsModel, ABC):
         Field(ge=-24.2, le=36.3, validation_alias="i_Load"),
         VariableMeta(
             display_name="Vang",
-            scale_min=-24.2,
-            scale_max=36.3,
             scale_min_label="push",
             scale_max_label="pull",
         ),
@@ -1071,7 +1083,11 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=16.5),
-        VariableMeta(display_name="Sheet PT", scale_min=0, scale_max=16.5),
+        VariableMeta(
+            display_name="Sheet PT",
+            applies_to_tack="port",
+            variable_key="staysail-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -1083,7 +1099,11 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=16.5),
-        VariableMeta(display_name="Sheet SB", scale_min=0, scale_max=16.5),
+        VariableMeta(
+            display_name="Sheet SB",
+            applies_to_tack="starboard",
+            variable_key="staysail-sheet-feeder-load",
+        ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm

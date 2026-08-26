@@ -1,11 +1,9 @@
 import strawberry
+from strawberry.annotation import StrawberryAnnotation
+from strawberry.types.union import StrawberryUnion
 
 from thrs.graphql.base import add_simulation_input_mutations
-from thrs.graphql.helpers import (
-    dedataframed_pydantic_to_strawberry_type,
-    optional_pydantic_to_graphql,
-)
-from thrs.graphql.messaging import SimulationMessaging
+from thrs.graphql.helpers import pydantic_to_strawberry_type
 from thrs.input_output.modules.adsorption import (
     AdsorptionSimulationInputs,
     AdsorptionSimulationOutputs,
@@ -29,6 +27,7 @@ from thrs.input_output.modules.high_temperature import (
 )
 from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
 from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
+from thrs.input_output.modules.thrs import ThrsSimulationInputs, ThrsSimulationOutputs
 from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
@@ -47,63 +46,29 @@ io_mapping = {
         HighTemperatureSimulationInputs,
         HighTemperatureSimulationOutputs,
     ),
+    "thrs": (ThrsSimulationInputs, ThrsSimulationOutputs),
 }
 
 inputs_strawberry_type_mapping = {
-    name: dedataframed_pydantic_to_strawberry_type(inputs)
+    name: pydantic_to_strawberry_type(inputs)
     for name, (inputs, _) in io_mapping.items()
 }
 
 outputs_strawberry_type_mapping = {
-    name: dedataframed_pydantic_to_strawberry_type(outputs)
+    name: pydantic_to_strawberry_type(outputs)
     for name, (_, outputs) in io_mapping.items()
 }
 
-inputs_strawberry_type_by_cls = {
-    inputs_cls: inputs_strawberry_type_mapping[name]
-    for name, (inputs_cls, _) in io_mapping.items()
-}
 
-outputs_strawberry_type_by_cls = {
-    outputs_cls: outputs_strawberry_type_mapping[name]
-    for name, (_, outputs_cls) in io_mapping.items()
-}
-
-SimulationInputsType = strawberry.union(
-    "SimulationInputsType", tuple(inputs_strawberry_type_mapping.values())
+SimulationInputsType = StrawberryUnion(
+    "SimulationInputsType",
+    tuple(StrawberryAnnotation(t) for t in inputs_strawberry_type_mapping.values()),  # type: ignore
 )
 
-SimulationOutputsType = strawberry.union(
-    "SimulationOutputsType", tuple(outputs_strawberry_type_mapping.values())
+SimulationOutputsType = StrawberryUnion(
+    "SimulationOutputsType",
+    tuple(StrawberryAnnotation(t) for t in outputs_strawberry_type_mapping.values()),  # type: ignore
 )
-
-
-def resolve_inputs(
-    simulation: SimulationMessaging,
-) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    inputs = simulation.simulation_inputs
-    if inputs is None:
-        return None
-
-    graphql_type = inputs_strawberry_type_by_cls.get(type(inputs))
-    if graphql_type is None:
-        raise ValueError(f"Unsupported simulation inputs type: {type(inputs)}")
-
-    return optional_pydantic_to_graphql(graphql_type, inputs)
-
-
-def resolve_outputs(
-    simulation: SimulationMessaging,
-) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    outputs = simulation.simulation_outputs
-    if outputs is None:
-        return None
-
-    graphql_type = outputs_strawberry_type_by_cls.get(type(outputs))
-    if graphql_type is None:
-        raise ValueError(f"Unsupported simulation outputs type: {type(outputs)}")
-
-    return optional_pydantic_to_graphql(graphql_type, outputs)
 
 
 @strawberry.type
@@ -157,6 +122,12 @@ def resolve_outputs(
 )
 @add_simulation_input_mutations(
     "high_temperature",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
+@add_simulation_input_mutations(
+    "thrs",
     io_mapping,
     inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,

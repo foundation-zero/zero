@@ -1,9 +1,9 @@
-import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
+import { fieldTooltip } from "../../../shared";
 import { pumpFlowController } from "../controllers";
-import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HeatPump>({
   controls: {
@@ -17,9 +17,10 @@ export default toInstance<MimicComponentType.HeatPump>({
     incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
   },
-  tooltip: tooltip({
-    title: "Heat Pump",
-    yardTag: "1035",
-    technicalName: "dhw-heatpump",
-  }),
+  get tooltip() {
+    return fieldTooltip(this.source, {
+      title: "Heat pump",
+      componentType: "Heat pump",
+    });
+  },
 });

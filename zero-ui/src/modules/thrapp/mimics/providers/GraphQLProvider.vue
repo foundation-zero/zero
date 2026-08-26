@@ -1,8 +1,8 @@
 <script setup lang="ts" generic="K extends keyof THRS['modules']">
 import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { QUERIES } from "@/modules/thrs/lib/consts";
-import { THRS, ThrsDefinitions, ThrsModules } from "@/modules/thrs/lib/consts.types";
-import { useThrsHistory } from "@/modules/thrs/stores/history";
+import { QUERIES } from "@/modules/thrsim/lib/consts";
+import { THRS, ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
+import { useThrsHistory } from "@/modules/thrsim/stores/history";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -13,7 +13,7 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
-} from "@/modules/thrs/types";
+} from "@/modules/thrsim/types";
 import { gql } from "@urql/vue";
 import { computed, Ref, toRefs, unref } from "vue";
 import { createMimicDataProvider, ModuleField } from ".";
@@ -71,7 +71,6 @@ const getControllerState = <
   );
 
 const PARAMETER_INPUT_TYPES: Partial<Record<ParametersType, string>> = {
-  [ParametersType.Disabled]: "Boolean!",
   [ParametersType.Enabled]: "Boolean!",
   [ParametersType.Flow]: "Float!",
   [ParametersType.FlowControl]: "Float!",
@@ -132,7 +131,7 @@ const setControlValue = async <
 
   const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
   const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(component: $input) {
+          ${mutation}(value: $input) {
             ${QUERIES[source[1]].controlValues}
           }
       }`;

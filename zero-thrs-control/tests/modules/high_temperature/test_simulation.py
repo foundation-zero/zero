@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from pytest import fixture
@@ -23,9 +23,8 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
     )
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
-    request.param(inputs, -9e7)
-    return inputs
+    request.param(simulation_inputs, -9e7)
+    return simulation_inputs
 
 
 def test_high_temperature_simulation_inputs(
@@ -42,12 +41,12 @@ def test_high_temperature_simulation_inputs(
             HighTemperatureSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
-            datetime.now(),
+            datetime.now(UTC),
             timedelta(seconds=1),
         )
 
         with pytest.raises(Exception):
-            for i in range(300):
+            for _i in range(300):
                 simulation.tick(
                     {
                         module_name: module.control(

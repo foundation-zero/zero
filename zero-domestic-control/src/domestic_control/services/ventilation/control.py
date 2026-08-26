@@ -1,25 +1,26 @@
-from asyncio import TaskGroup, sleep
 import asyncio
+import logging
+from asyncio import TaskGroup, sleep
 from functools import partial
 from typing import Callable, Coroutine, Generator, assert_never
 
 from domestic_control.messages import (
-    Ventilation,
     RoomCo2Setpoint,
+    Ventilation,
 )
 from domestic_control.mqtt import (
     ControlReceive,
 )
 from domestic_control.sink import Sink
+
+from .constants import ROOM_INDICES
 from .interface import VentilationInterface
 from .properties import (
-    VentilationUpdate,
-    VentilationProperty,
     ActualCo2,
     Co2Setpoint,
+    VentilationProperty,
+    VentilationUpdate,
 )
-from .constants import ROOM_INDICES
-import logging
 
 VENTILATION_CONTROL_BUS_INTERVAL_SEC = 0.1  # 100 ms
 

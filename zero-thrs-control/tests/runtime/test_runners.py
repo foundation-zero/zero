@@ -1,14 +1,124 @@
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
 
+from tests.helpers.collector import PolarsCollector
+from tests.helpers.simulation_runner import SimulationTestRunner
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
+from thrs.control.modules.thrusters import (
+    ThrustersAlarms,
+    ThrustersControl,
+    ThrustersControllerState,
+    ThrustersParameters,
+)
 from thrs.control.switching import AutomationMode
 from thrs.input_output.base import CombinedValues
+from thrs.input_output.fmu_mapping import build_fmu_key_mapping
+from thrs.input_output.modules.thrusters import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
 from thrs.orchestration.module import Module
-from thrs.orchestration.simulation import SimulationUnit
+from thrs.orchestration.simulation import Simulation, SimulationUnit
+from thrs.runtime.descriptions.simulation import SIMULATION_INPUTS
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
+from thrs.simulation.models.fmu_paths import thrusters_path
+
+
+def test_simulation_test_runner():
+    simulation_inputs = SIMULATION_INPUTS["thrusters"]
+
+    with Fmu(thrusters_path) as fmu:
+        simulation = Simulation(
+            ThrustersSensorValues,
+            ThrustersSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(UTC),
+            timedelta(seconds=1),
+        )
+
+        control = ThrustersControl(
+            ThrustersParameters(),
+            simulation.time,
+            MachineStateLoggingServiceNoop(),
+        )
+        alarms = ThrustersAlarms()
+
+        io_mapping = ThrsModelIoMapping(
+            ThrustersSensorValues, ThrustersSimulationOutputs
+        )
+        collector = PolarsCollector()
+        runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
+        runner.run(20, collector)
+        frame = collector.result()
+        inputs = io_mapping.generate_inputs(
+            ThrustersControlValues.zero(), simulation_inputs
+        )
+        outputs = fmu.tick(
+            inputs,
+            timedelta(seconds=1),
+        )
+        mock_fmu_outputs = io_mapping.construct_outputs(
+            inputs,
+            outputs,
+            ThrustersControlValues.zero(),
+            simulation_inputs,
+            datetime.now(UTC),
+        )[2]
+
+        assert frame is not None
+        assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
+
+        not_in_fmu = set(
+            {
+                **flatten_model_values(
+                    ThrustersSensorValues.zero(),
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersSensorValues, fmu_only=False
+                    ),
+                ),
+                **flatten_model_values(
+                    ThrustersControllerState.zero(),
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersControllerState, fmu_only=False
+                    ),
+                ),
+                **flatten_model_values(
+                    simulation_inputs,
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersSimulationInputs, fmu_only=False
+                    ),
+                ),
+            }
+        ) - set(
+            {
+                **flatten_model_values(
+                    ThrustersSensorValues.zero(),
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersSensorValues, fmu_only=True
+                    ),
+                ),
+                **flatten_model_values(
+                    simulation_inputs,
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersSimulationInputs, fmu_only=True
+                    ),
+                ),
+            }
+        )
+
+        assert (
+            set(frame.columns)
+            == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | not_in_fmu
+        )
 
 
 async def test_lockstep_runner_ticks_and_publishes_channels():
@@ -55,7 +165,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     alarms.check.return_value = []
 
     module = Module("module", control, alarms, control_channels)
-    module._control.switch_mode(AutomationMode(mode="automatic"))
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     simulation_module = SimulationUnit(simulation, simulation_channels)
     runner = LockstepRunner([module], simulation_module)
@@ -172,7 +282,7 @@ async def test_control_runner_ticks_and_uses_channels():
     alarms.check.return_value = []
 
     module = Module("module", control, alarms, channels)
-    module._control.switch_mode(AutomationMode(mode="automatic"))
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     runner = ControlRunner([module], mock_liveness)
 

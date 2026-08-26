@@ -1,17 +1,16 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Annotated
+
 from pydantic import Field, computed_field
-from typing import Annotated, List, Tuple
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from zero_data.io_list.types import Source
 
-
-io_lists: List[Tuple[Source, List[str]]] = [
+io_lists: list[tuple[Source, list[str]]] = [
     (
         "marpower",
         [
             "ZERO mocked IO-List.xlsx",
-            "52422003_3210_AMCS IO-List R2.33-fixed.xlsx",
-            "52422003_3211_PMS IO-List R2.16-fixed.xlsx",
+            "io-list ~ help ~ totals.xlsx",
         ],
     ),
     ("sail_system", ["3094_SailPLC.PLC_MAIN.Application.xml"]),

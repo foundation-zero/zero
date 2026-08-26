@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
-import { BoilerTankState } from "@/modules/thrs/types";
+import { BoilerTankState } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { DHW_TANK_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";

@@ -1,9 +1,9 @@
-import { ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import { ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getCustomField, getField } from "../../../../providers";
-import { boostingSupply, controller, parameters } from "./shared";
+import { boostingSupply, controller, parameters, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.BoilerTank>({
   custom: {
@@ -15,9 +15,13 @@ export default toInstance<MimicComponentType.BoilerTank>({
   },
   parameters: {
     ...parameters,
-    disabled: getField(ParametersType.Disabled, "dhw", "tank3Disabled"),
+    enabled: getField(ParametersType.Enabled, "dhw", "tank3Enabled"),
   },
-  source: getCustomField("dhw", "tank3"),
+  source: getCustomField("dhw", {
+    title: "Tank 3",
+    yardTag: "1055",
+    technicalName: "hot-water-tank-3",
+  }),
   sensors: {
     boostingSupply,
     level: getField(SensorComponentType.Level, "dhw", "dhwLevelTank3"),
@@ -27,10 +31,7 @@ export default toInstance<MimicComponentType.BoilerTank>({
     supplyValve: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank3Inlet"),
     dischargeValve: getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank3Outlet"),
   },
-  tooltip: {
-    title: "Tank 3",
-    itemName: "Hot water tank",
-    technicalName: "hot-water-tank-3",
-    yardTag: "1055",
+  get tooltip() {
+    return tooltip(this.source);
   },
 });

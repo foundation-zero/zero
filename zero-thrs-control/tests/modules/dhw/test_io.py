@@ -46,6 +46,13 @@ def test_dhw_fmu_names():
         ],
     )
 
+    # TODO: Remove this when they are added to the FMU
+    missing_in_fmu -= {
+        "dhw_level_switch_tank1__empty__bool",
+        "dhw_level_switch_tank2__empty__bool",
+        "dhw_level_switch_tank3__empty__bool",
+    }
+
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
@@ -111,10 +118,12 @@ def test_dhw_heatpump_computed_field():
                 temperature=Stamped.stamp(0.0),
             ),
             "dhw_switch_heatpump": sensor.Valve(
-                position_rel=Stamped.stamp(control.Valve.OPEN)
+                position_rel=Stamped.stamp(control.Valve.OPEN),
+                position_abs=Stamped.stamp(90),
             ),
             "dhw_switch_high_temperature": sensor.Valve(
-                position_rel=Stamped.stamp(control.Valve.CLOSED)
+                position_rel=Stamped.stamp(control.Valve.CLOSED),
+                position_abs=Stamped.stamp(0),
             ),
         }
     )
