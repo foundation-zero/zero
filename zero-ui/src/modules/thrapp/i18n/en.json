@@ -218,7 +218,7 @@
         },
         "circuitBoxes": {
           "highTempLoopTitle": "High temp loop",
-          "brightloopTitle": "Brightloop",
+          "dcConvertersTitle": "DC converters",
           "drivesTitle": "Drives",
           "adsorptionTitle": "Adsorption",
           "domesticHotWaterTitle": "Fresh water system"

@@ -86,7 +86,7 @@ export type SensorFieldDefinitions = SensorFields<{
     deltaT: SensorComponentType.DeltaT;
     heatExchanger: SensorComponentType.HeatExchanger;
   };
-  [MimicComponentType.FreshwaterCircuit]: {
+  [MimicComponentType.ConnectingCircuit]: {
     flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     tIn: SensorComponentType.Temperature;
@@ -134,7 +134,7 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
-  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
     valve: ControlComponentType.Valve;
   };
@@ -163,7 +163,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
-  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 
@@ -176,7 +176,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
     enabled: ParametersType.Enabled;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
-  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
@@ -234,7 +234,7 @@ export type CustomFieldDefinitions = CustomFields<{
     forceHeight?: boolean;
     circuitName: string;
   };
-  [MimicComponentType.FreshwaterCircuit]: {
+  [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
   };
@@ -286,7 +286,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: undefined;
-  [MimicComponentType.FreshwaterCircuit]: undefined;
+  [MimicComponentType.ConnectingCircuit]: undefined;
 }>;
 
 export type Defined<P, T extends P | undefined> = T extends P ? T : P;
