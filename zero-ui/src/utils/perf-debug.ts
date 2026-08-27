@@ -3,9 +3,10 @@
  *
  * Format-afspraak (voor overzicht):
  *  - Directe waarschuwingen (long task / trage GraphQL call / trage storage write)
- *    komen altijd als ÉÉN ingeklapte console.group met hetzelfde icoon-schema.
- *  - Het periodieke rapport (elke 2s) is ook ÉÉN group met precies twee tabellen:
- *    "Vitals" (altijd) en "Aandachtspunten" (alleen als er iets afwijkt).
+ *    komen altijd als ÉÉN uitgeklapte console.group met hetzelfde icoon-schema.
+ *  - Het periodieke rapport (elke 2s) is ook ÉÉN group met meerdere tabellen:
+ *    Vitals, Event listeners per type, Traagste componenten, GraphQL calls,
+ *    localStorage writes.
  *  - Niets wordt los ge-console.log't buiten deze twee formats.
  */
 
@@ -34,6 +35,7 @@ declare global {
     __activeIntervals: number;
     __activeTimeouts: number;
     __activeListeners: number;
+    __listenersByType: Record<string, number>;
     __wsOpenCount: number;
     __wsMessagesSinceLastReport: number;
     __recentVueMeasures: VueMeasure[];
@@ -41,13 +43,27 @@ declare global {
     __graphqlCalls: GraphqlCall[];
     __storageWrites: StorageWrite[];
     __eventLoopLagMs: number;
+    __sessionStats: SessionStats;
   }
 }
 
-const PERF_DEBUG_VERSION = "1.9";
+type SessionStats = {
+  sessionStartTime: number;
+  longTaskCount: number;
+  longTaskWorstMs: number;
+  blockedMsTotal: number;
+  fpsWorst: number;
+  heapMaxMB: number | null;
+  listenersMaxCount: number;
+  gqlCallCount: number;
+  gqlWorst: { operation: string; duration: number } | null;
+  componentWorst: { name: string; duration: number } | null;
+  storageWorst: { key: string; duration: number } | null;
+};
+
+const PERF_DEBUG_VERSION = "2.4";
 const SLOW_THRESHOLD_MS = 100;
 const REPORT_INTERVAL_MS = 2000;
-const LONGTASK_MS = 50;
 const GQL_SLOW_MS = 200;
 const STORAGE_SLOW_MS = 10;
 
@@ -69,13 +85,17 @@ function describeElement(el: Element | null): string {
   return `${tag}${id}${cls}${text ? ` "${text}"` : ""}`;
 }
 
-/** Eén vast format voor een directe waarschuwing — altijd ingeklapt, altijd dezelfde opbouw. */
+/** Eén vast format voor een directe waarschuwing — altijd dezelfde opbouw. */
 function logAlert(icon: string, title: string, rows: [string, string][]) {
+  console.log(" ");
+  console.log("%c----- WAARSCHUWING START -----", "color:#e11");
   console.group(`%c${icon} ${title}`, "color:#e11; font-weight:bold");
   for (const [label, value] of rows) {
     console.log(`%c${label}:%c ${value}`, "font-weight:bold", "font-weight:normal");
   }
   console.groupEnd();
+  console.log("%c------ WAARSCHUWING EIND ------", "color:#e11");
+  console.log(" ");
 }
 
 // ---------------------------------------------------------------------------
@@ -90,6 +110,7 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
   window.__activeIntervals = 0;
   window.__activeTimeouts = 0;
   window.__activeListeners = 0;
+  window.__listenersByType = {};
   window.__wsOpenCount = 0;
   window.__wsMessagesSinceLastReport = 0;
   window.__recentVueMeasures = [];
@@ -97,6 +118,19 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
   window.__graphqlCalls = [];
   window.__storageWrites = [];
   window.__eventLoopLagMs = 0;
+  window.__sessionStats = {
+    sessionStartTime: performance.now(),
+    longTaskCount: 0,
+    longTaskWorstMs: 0,
+    blockedMsTotal: 0,
+    fpsWorst: 60,
+    heapMaxMB: null,
+    listenersMaxCount: 0,
+    gqlCallCount: 0,
+    gqlWorst: null,
+    componentWorst: null,
+    storageWorst: null,
+  };
 
   // --- fetch: in-flight teller + GraphQL operation naam/duur/omvang (incl. body download+parse) ---
   const originalFetch = window.fetch;
@@ -130,6 +164,11 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
           const sizeKB = Math.round((text.length / 1024) * 10) / 10;
           window.__graphqlCalls.push({ operation, duration, sizeKB, time: performance.now() });
           if (window.__graphqlCalls.length > 100) window.__graphqlCalls.shift();
+
+          window.__sessionStats.gqlCallCount++;
+          if (!window.__sessionStats.gqlWorst || duration > window.__sessionStats.gqlWorst.duration) {
+            window.__sessionStats.gqlWorst = { operation, duration };
+          }
 
           if (duration > GQL_SLOW_MS || sizeKB > 100) {
             logAlert("🐌", `GraphQL call traag/groot: ${operation}`, [
@@ -174,16 +213,21 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     return originalClearTimeout(id);
   }) as typeof clearTimeout;
 
-  // --- event listener teller (leak-indicator) ---
+  // --- event listener teller, uitgesplitst per event-type (leak-indicator + pointer naar bron) ---
   const originalAddEventListener = EventTarget.prototype.addEventListener;
   const originalRemoveEventListener = EventTarget.prototype.removeEventListener;
-  EventTarget.prototype.addEventListener = function (...args) {
+  EventTarget.prototype.addEventListener = function (type: string, ...rest) {
     window.__activeListeners++;
-    return originalAddEventListener.apply(this, args);
+    window.__listenersByType[type] = (window.__listenersByType[type] ?? 0) + 1;
+    if (window.__activeListeners > window.__sessionStats.listenersMaxCount) {
+      window.__sessionStats.listenersMaxCount = window.__activeListeners;
+    }
+    return originalAddEventListener.call(this, type, ...(rest as [EventListenerOrEventListenerObject, (boolean | AddEventListenerOptions)?]));
   };
-  EventTarget.prototype.removeEventListener = function (...args) {
+  EventTarget.prototype.removeEventListener = function (type: string, ...rest) {
     window.__activeListeners = Math.max(0, window.__activeListeners - 1);
-    return originalRemoveEventListener.apply(this, args);
+    window.__listenersByType[type] = Math.max(0, (window.__listenersByType[type] ?? 0) - 1);
+    return originalRemoveEventListener.call(this, type, ...(rest as [EventListenerOrEventListenerObject, (boolean | EventListenerOptions)?]));
   };
 
   // --- WebSocket activiteit (graphql-ws subscriptions) ---
@@ -207,6 +251,10 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     const sizeKB = Math.round((value.length / 1024) * 10) / 10;
     window.__storageWrites.push({ key, duration, sizeKB, time: performance.now() });
     if (window.__storageWrites.length > 100) window.__storageWrites.shift();
+
+    if (!window.__sessionStats.storageWorst || duration > window.__sessionStats.storageWorst.duration) {
+      window.__sessionStats.storageWorst = { key, duration };
+    }
 
     if (duration > STORAGE_SLOW_MS || sizeKB > 200) {
       logAlert("💾", `localStorage write traag/groot: "${key}"`, [
@@ -249,6 +297,11 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
           startTime: Math.round(entry.startTime),
         });
       }
+      for (const entry of list.getEntries()) {
+        if (!window.__sessionStats.componentWorst || entry.duration > window.__sessionStats.componentWorst.duration) {
+          window.__sessionStats.componentWorst = { name: entry.name, duration: Math.round(entry.duration * 10) / 10 };
+        }
+      }
       const cutoff = performance.now() - 5000;
       window.__recentVueMeasures = window.__recentVueMeasures.filter((m) => m.startTime > cutoff);
     });
@@ -266,6 +319,10 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
         const start = Math.round(entry.startTime);
         longTasks.push({ duration, start });
 
+        window.__sessionStats.longTaskCount++;
+        window.__sessionStats.blockedMsTotal += duration;
+        if (duration > window.__sessionStats.longTaskWorstMs) window.__sessionStats.longTaskWorstMs = duration;
+
         const overlapping = window.__recentVueMeasures
           .filter((m) => m.startTime >= start - 20 && m.startTime <= start + duration + 20)
           .sort((a, b) => b.duration - a.duration)
@@ -278,12 +335,13 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
             "Laatste actie ervoor",
             lastInteraction
               ? `${lastInteraction.type} op ${lastInteraction.target} (${Math.round(start - lastInteraction.time)}ms eerder)`
-              : "geen — waarschijnlijk achtergrondproces (polling/websocket)",
+              : "geen — waarschijnlijk achtergrondproces (polling/websocket/GC)",
           ],
           [
             "Traagste component(en) tijdens blok",
-            overlapping.length ? overlapping.map((m) => `${m.name} (${m.duration}ms)`).join(", ") : "geen — check GraphQL/storage in het 2s-rapport",
+            overlapping.length ? overlapping.map((m) => `${m.name} (${m.duration}ms)`).join(", ") : "geen — check GraphQL/storage/listeners in het 2s-rapport",
           ],
+          ["Listeners op dit moment", `${window.__activeListeners} totaal`],
         ]);
       }
     });
@@ -365,12 +423,29 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     const slowComponents = [...window.__recentVueMeasures].sort((a, b) => b.duration - a.duration).slice(0, 10);
     const slowTabs = window.tabMetrics.filter((m) => m.slow);
     const slowWrites = [...window.__storageWrites].sort((a, b) => b.duration - a.duration).slice(0, 5);
+    const topListenerTypes = Object.entries(window.__listenersByType)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
 
     const lines = [
+      "=============== PERF REPORT START ===============",
+      "",
       `Perf report v${PERF_DEBUG_VERSION} — ${new Date().toLocaleString()}`,
       `User agent: ${navigator.userAgent}`,
       `JS Heap: ${heapMB ?? "n/a"}MB | DOM nodes: ${document.getElementsByTagName("*").length}`,
       `Actieve intervals: ${window.__activeIntervals} | timeouts: ${window.__activeTimeouts} | listeners: ${window.__activeListeners} | open sockets: ${window.__wsOpenCount}`,
+      "",
+      `--- Sessie-totalen (sinds start, ${Math.round((performance.now() - window.__sessionStats.sessionStartTime) / 1000)}s geleden) ---`,
+      `Ergste FPS ooit: ${window.__sessionStats.fpsWorst}`,
+      `Ergste long task ooit: ${window.__sessionStats.longTaskWorstMs}ms (totaal ${window.__sessionStats.longTaskCount}x, ${window.__sessionStats.blockedMsTotal}ms geblokkeerd)`,
+      `Hoogste JS Heap ooit: ${window.__sessionStats.heapMaxMB ?? "n/a"}MB`,
+      `Hoogste aantal listeners ooit: ${window.__sessionStats.listenersMaxCount}`,
+      `Traagste GraphQL call ooit: ${window.__sessionStats.gqlWorst ? `${window.__sessionStats.gqlWorst.duration}ms — ${window.__sessionStats.gqlWorst.operation}` : "n/a"} (totaal ${window.__sessionStats.gqlCallCount} calls)`,
+      `Traagste component ooit: ${window.__sessionStats.componentWorst ? `${window.__sessionStats.componentWorst.duration}ms — ${window.__sessionStats.componentWorst.name}` : "n/a"}`,
+      `Traagste localStorage write ooit: ${window.__sessionStats.storageWorst ? `${window.__sessionStats.storageWorst.duration}ms — ${window.__sessionStats.storageWorst.key}` : "n/a"}`,
+      "",
+      "--- Listeners per type (top 10) ---",
+      ...(topListenerTypes.length ? topListenerTypes.map(([type, count]) => `${count}x — ${type}`) : ["(geen data)"]),
       "",
       "--- Traagste GraphQL calls ---",
       ...(slowGql.length ? slowGql.map((c) => `${c.duration}ms, ${c.sizeKB}KB — ${c.operation}`) : ["(nog geen calls gemeten)"]),
@@ -383,6 +458,8 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       "",
       "--- Trage tab-switches ---",
       ...(slowTabs.length ? slowTabs.map((m) => `${m.duration}ms — ${m.name} (netwerk actief: ${m.inFlightRequests})`) : ["(geen trage tab-switches)"]),
+      "",
+      "================ PERF REPORT END ================",
     ];
 
     const text = lines.join("\n");
@@ -397,7 +474,7 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
   };
 
   // ---------------------------------------------------------------------
-  // Periodiek rapport — één group, twee tabellen, klaar
+  // Periodiek rapport
   // ---------------------------------------------------------------------
 
   const startHeap = getHeapMB();
@@ -412,19 +489,44 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     const worstLongTask = longTasks.length ? Math.max(...longTasks.map((t) => t.duration)) : 0;
     const totalBlockedMs = longTasks.reduce((sum, t) => sum + t.duration, 0);
 
+    // Sessie-brede aggregaten bijwerken (los van dit 2s-venster)
+    if (fps < window.__sessionStats.fpsWorst) window.__sessionStats.fpsWorst = fps;
+    if (heapMB !== null && (window.__sessionStats.heapMaxMB === null || heapMB > window.__sessionStats.heapMaxMB)) {
+      window.__sessionStats.heapMaxMB = heapMB;
+    }
+
     const cutoff = performance.now() - REPORT_INTERVAL_MS;
-    const vueCutoff = performance.now() - 5000; // vue measures worden al op 5s bijgehouden
+    const vueCutoff = performance.now() - 5000;
     const recentGql = window.__graphqlCalls.filter((c) => c.time > cutoff);
     const recentWrites = window.__storageWrites.filter((w) => w.time > cutoff);
     const recentComponents = window.__recentVueMeasures.filter((m) => m.startTime > vueCutoff - performance.timeOrigin);
 
+    console.log(" ");
+    console.log("%c=========== RAPPORT START ===========", "color:#06c");
     console.group(
       `%c⏱ Perf rapport ${new Date().toLocaleTimeString()}%c — uptime ${uptimeSec}s`,
       "color:#06c; font-weight:bold",
       "color:inherit; font-weight:normal",
     );
 
-    // Tabel 1: vitals — altijd getoond, vast format
+    // Tabel 0: sessie-totalen SINDS START — altijd getoond, vangt pieken die je gemist hebt
+    const sessionUptimeSec = Math.round((performance.now() - window.__sessionStats.sessionStartTime) / 1000);
+    console.log(`%cSessie-totalen (sinds start, ${sessionUptimeSec}s geleden):`, "font-weight:bold");
+    console.table([
+      { Meting: "Ergste FPS ooit", Waarde: window.__sessionStats.fpsWorst, Alarm: window.__sessionStats.fpsWorst < 20 ? "⚠️" : "" },
+      { Meting: "Ergste long task ooit", Waarde: `${window.__sessionStats.longTaskWorstMs}ms`, Alarm: window.__sessionStats.longTaskWorstMs > 500 ? "⚠️" : "" },
+      { Meting: "Long tasks totaal", Waarde: window.__sessionStats.longTaskCount },
+      { Meting: "Main thread geblokkeerd totaal", Waarde: `${window.__sessionStats.blockedMsTotal}ms` },
+      { Meting: "Hoogste JS Heap ooit", Waarde: window.__sessionStats.heapMaxMB !== null ? `${window.__sessionStats.heapMaxMB}MB` : "n/a" },
+      { Meting: "Hoogste aantal listeners ooit", Waarde: window.__sessionStats.listenersMaxCount, Alarm: window.__sessionStats.listenersMaxCount > 500 ? "⚠️" : "" },
+      { Meting: "Trage GraphQL call, ergste", Waarde: window.__sessionStats.gqlWorst ? `${window.__sessionStats.gqlWorst.duration}ms — ${window.__sessionStats.gqlWorst.operation}` : "n/a", Alarm: window.__sessionStats.gqlWorst && window.__sessionStats.gqlWorst.duration > GQL_SLOW_MS ? "⚠️" : "" },
+      { Meting: "GraphQL calls totaal", Waarde: window.__sessionStats.gqlCallCount },
+      { Meting: "Traagste component ooit", Waarde: window.__sessionStats.componentWorst ? `${window.__sessionStats.componentWorst.duration}ms — ${window.__sessionStats.componentWorst.name}` : "n/a" },
+      { Meting: "Traagste localStorage write ooit", Waarde: window.__sessionStats.storageWorst ? `${window.__sessionStats.storageWorst.duration}ms — ${window.__sessionStats.storageWorst.key}` : "n/a" },
+    ]);
+
+    // Tabel 1: vitals (dit venster van 2s) — altijd getoond, vast format
+    console.log("%cDit venster (laatste 2s):", "font-weight:bold");
     console.table([
       { Meting: "FPS", Waarde: fps, Alarm: fps < 30 ? "⚠️ laag" : "" },
       { Meting: "Traagste frame", Waarde: `${worstFrameMs.toFixed(0)}ms`, Alarm: worstFrameMs > 100 ? "⚠️" : "" },
@@ -433,10 +535,21 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       { Meting: "Event loop lag", Waarde: `${window.__eventLoopLagMs}ms`, Alarm: window.__eventLoopLagMs > 30 ? "⚠️ druk" : "" },
       { Meting: "JS Heap", Waarde: heapMB !== null ? `${heapMB}MB` : "n/a", Alarm: heapGrowth !== null && heapGrowth > 5 ? `⚠️ +${heapGrowth}MB sinds start` : "" },
       { Meting: "DOM nodes", Waarde: domNodes },
-      { Meting: "Netwerk / intervals / timeouts / listeners / sockets", Waarde: `${window.__activeRequests} / ${window.__activeIntervals} / ${window.__activeTimeouts} / ${window.__activeListeners} / ${window.__wsOpenCount}` },
+      { Meting: "Netwerk / intervals / timeouts / listeners / sockets", Waarde: `${window.__activeRequests} / ${window.__activeIntervals} / ${window.__activeTimeouts} / ${window.__activeListeners} / ${window.__wsOpenCount}`, Alarm: window.__activeListeners > 500 ? "⚠️ veel listeners" : "" },
     ]);
 
-    // Tabel 2: alle componenten (laatste 5s), zoals in v1.6 — niet alleen de traagste 5
+    // Tabel 2: listeners per type — alleen tonen als het aantal hoog is of oploopt, top 8
+    const listenerRows = Object.entries(window.__listenersByType)
+      .filter(([, count]) => count > 5)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([type, count]) => ({ Type: type, Aantal: count }));
+    if (listenerRows.length) {
+      console.log(`%cEvent listeners per type (top ${listenerRows.length}, totaal ${window.__activeListeners}):`, "font-weight:bold");
+      console.table(listenerRows);
+    }
+
+    // Tabel 3: alle componenten (laatste 5s)
     const componentRows = recentComponents
       .filter((m) => m.duration > 4)
       .sort((a, b) => b.duration - a.duration)
@@ -446,7 +559,7 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       console.table(componentRows);
     }
 
-    // Tabel 3: alle GraphQL calls in dit venster, niet alleen de trage
+    // Tabel 4: alle GraphQL calls in dit venster
     if (recentGql.length) {
       console.log(`%cGraphQL calls (laatste 2s, ${recentGql.length}x):`, "font-weight:bold");
       console.table(
@@ -456,7 +569,7 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       );
     }
 
-    // Tabel 4: alle localStorage writes in dit venster
+    // Tabel 5: alle localStorage writes in dit venster
     if (recentWrites.length) {
       console.log(`%clocalStorage writes (laatste 2s, ${recentWrites.length}x):`, "font-weight:bold");
       console.table(
@@ -467,6 +580,8 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     }
 
     console.groupEnd();
+    console.log("%c============ RAPPORT EIND ============", "color:#06c");
+    console.log(" ");
 
     // Reset per-venster tellers
     frameCount = 0;
@@ -482,7 +597,7 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
   };
 
   console.log(
-    `%c✓ Perf monitor v${PERF_DEBUG_VERSION} actief%c — elke 2s één rapport (groep, klik om te openen). getTabReport() / exportPerfReport() / stopPerfMonitor() beschikbaar.`,
+    `%c✓ Perf monitor v${PERF_DEBUG_VERSION} actief%c — elke 2s een rapport. getTabReport() / exportPerfReport() / stopPerfMonitor() beschikbaar.`,
     "color: green; font-weight: bold",
     "color: inherit; font-weight: normal",
   );
