@@ -6,8 +6,6 @@ blueprint:
 fields:
   dim_level:
     description: "Target dim level entity"
-  button:
-    description: "Button entity controlling the action"
   min_level:
     description: "Minimum dim level"
 

@@ -13,7 +13,7 @@ blueprint:
           description: Up button
           selector:
             entity:
-              domain: [binary_sensor, input_boolean]
+              domain: [binary_sensor, input_boolean, input_button]
         button_up_short_press:
           name: Short Press
           description: When the up button is pressed and released quickly
@@ -54,7 +54,7 @@ blueprint:
           description: Down button
           selector:
             entity:
-              domain: [binary_sensor, input_boolean]
+              domain: [binary_sensor, input_boolean, input_button]
         button_down_short_press:
           name: Short Press
           description: When the down button is pressed and released quickly
@@ -127,33 +127,33 @@ blueprint:
               max: 10
               step: 1
 
-    red_light_section:
-      name: Red Light (optional)
+    night_mode_section:
+      name: Night Mode (optional)
       icon: mdi:lightbulb-on-outline
       collapsed: true
-      description: These options control the behavior of the red light when night mode is active
+      description: These options control the behavior of the light when night mode is active
       input:
-        red_light_label:
-          default: []
-          name: Red Light Label
-          description: Label to select red light outputs
-          selector:
-            label:
         night_mode:
           default: []
           name: Night Mode
-          description: Select a toggle to determine if night mode is active. If night mode is active, the red light will be used instead of the white light.
+          description: Select a toggle to determine if night mode is active. If night mode is active, this light will be turned off.
           selector:
             entity:
               domain: [binary_sensor, input_boolean]
+        enable_night_controls:
+          default: true
+          name: Enable Night Controls
+          description: Enable light control when in night mode. If this option is disabled, the buttons do not control the light when night mode is active.
+          selector:
+            boolean:
 
 mode: parallel
 
 variables:
   dim_level: !input dim_level
-  night_mode: !input night_mode
-  red_light_label: !input red_light_label
   light_label: !input light_label
+  night_mode: !input night_mode
+  enable_night_controls: !input enable_night_controls
 
 trigger_variables:
   scripts:
@@ -195,7 +195,7 @@ actions:
       - conditions:
           - alias: Short press
             condition: template
-            value_template: "{{ trigger.id.startswith('short_press') }}"
+            value_template: "{{ trigger.id.startswith('short_press') and (enable_night_controls or (not night_mode) or is_state(night_mode, 'off')) }}"
         sequence:
           - delay:
               milliseconds: 300.0
@@ -214,7 +214,7 @@ actions:
       - conditions:
           - alias: Hold
             condition: template
-            value_template: "{{ trigger.id.startswith('hold') }}"
+            value_template: "{{ trigger.id.startswith('hold') and (enable_night_controls or (not night_mode) or is_state(night_mode, 'off')) }}"
         sequence:
           - alias: Repeat behaviour while button is held
             action: "{{ scripts.get(trigger.id) }}"
@@ -225,29 +225,28 @@ actions:
               max_level: !input max_level
               reverse_delay: !input reverse_delay
       - conditions:
-          condition: or
-          conditions:
-            - alias: Dim level changed
-              condition: trigger
-              id: dim_set
-            - alias: Night mode changed
-              condition: trigger
-              id: night_mode_changed
+          - alias: Night mode changed
+            condition: trigger
+            id: night_mode_changed
         sequence:
           - if:
               - condition: template
-                value_template: "{{ not not night_mode and not not red_light_label }}"
+                value_template: "{{ is_state(night_mode, 'on') }}"
             then:
-              - action: light.turn_off
-                alias: Turn off other light
-                target:
-                  label_id: "{{ is_state(night_mode, 'off') | iif(red_light_label, light_label) }}"
-              - action: script.light_set_dim
+              - action: script.light_turn_off
                 data:
-                  dim_level: "{{ states(dim_level) | int }}"
-                  light_label: "{{ is_state(night_mode, 'on') | iif(red_light_label, light_label) }}"
+                  dim_level: !input dim_level
             else:
-              - action: script.light_set_dim
+              - action: script.light_turn_on
                 data:
-                  dim_level: "{{ states(dim_level) | int }}"
-                  light_label: !input light_label
+                  dim_level: !input dim_level
+                  min_level: !input min_level
+      - conditions:
+          - alias: Dim level changed
+            condition: trigger
+            id: dim_set
+        sequence:
+          - action: script.light_set_dim
+            data:
+              dim_level: "{{ states(dim_level) | int }}"
+              light_label: !input light_label

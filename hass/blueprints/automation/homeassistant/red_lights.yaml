@@ -1,0 +1,57 @@
+blueprint:
+  name: Red/night lights
+  description: Turn on red lights when night mode is active, and turn them off when night mode is inactive. This blueprint is intended to be used with the single_button and dual_button blueprints, but can be used on its own as well.
+  domain: automation
+  input:
+    lights_section:
+      name: Lights
+      icon: mdi:lightbulb-on-outline
+      description: The lights that need to be controlled
+      input:
+        lights:
+          name: Lights
+          description: Lights to control
+          selector:
+            label:
+              multiple: true
+        night_mode:
+          default: []
+          name: Night Mode
+          description: Select a toggle to determine if night mode is active.
+          selector:
+            entity:
+              domain: [binary_sensor, input_boolean]
+
+mode: parallel
+
+variables:
+  lights: !input lights
+  night_mode: !input night_mode
+
+triggers:
+  - id: night_mode_changed
+    trigger: state
+    entity_id: !input night_mode
+
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ is_state(night_mode, 'on') }}"
+    then:
+      - repeat:
+          for_each: !input lights
+          sequence:
+            - alias: Turn on all lights
+              action: light.turn_on
+              data:
+                brightness_pct: 100
+              target:
+                label_id: "{{ repeat.item }}"
+    else:
+      - repeat:
+          for_each: !input lights
+          sequence:
+            - alias: Turn off all lights
+              action: light.turn_off
+              target:
+                label_id: "{{ repeat.item }}"
