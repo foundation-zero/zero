@@ -76,8 +76,8 @@ class ConsumersSensorValues(AmcsModeSensorValues):
         ),
     ]
     consumers_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False)
-    ] = Field(alias="mode")
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
 
     @property
     def mode(self) -> AmcsControlMode:

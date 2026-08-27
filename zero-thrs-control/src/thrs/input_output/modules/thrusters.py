@@ -247,8 +247,8 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
 
     thrusters_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False)
-    ] = Field(alias="mode")
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
 
     @property
     def mode(self) -> AmcsControlMode:

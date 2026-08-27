@@ -107,8 +107,8 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
         ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
     ]
     adsorption_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False)
-    ] = Field(alias="mode")
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
 
     @property
     def mode(self) -> AmcsControlMode:

@@ -18,7 +18,7 @@ class AmcsControlMode(ThrsValues):
         return cls(mode=Stamped.stamp(value=ControlMode.EXTERNAL))
 
     @property
-    def is_advisory(self):
+    def is_advisory(self) -> bool:
         return self.mode.value == ControlMode.EXTERNAL.value
 
 

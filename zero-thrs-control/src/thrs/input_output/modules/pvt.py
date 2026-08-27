@@ -7,9 +7,10 @@ from pydantic.alias_generators import to_snake
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
-class PvtSensorValues(ThrsValues):
+class PvtSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -506,9 +507,9 @@ class PvtSensorValues(ThrsValues):
             ]
         )
 
-    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = Field(
-        alias="mode"
-    )
+    pvt_mode: Annotated[
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
 
     @property
     def mode(self) -> AmcsControlMode:

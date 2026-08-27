@@ -6,9 +6,10 @@ from pydantic.alias_generators import to_snake
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
-class DcSensorValues(ThrsValues):
+class DcSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -306,9 +307,9 @@ class DcSensorValues(ThrsValues):
             topic_override="dummy-pms/ugrid2-active",
         ),
     ]
-    dc_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = Field(
-        alias="mode"
-    )
+    dc_mode: Annotated[
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
 
     @property
     def mode(self) -> AmcsControlMode:
