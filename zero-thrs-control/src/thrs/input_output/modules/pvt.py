@@ -717,7 +717,7 @@ class PvtSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            component_type="calculated_temperature", included_in_fmu=False
+            component_type="calculated_flow", included_in_fmu=False
         )
     )
     @property
