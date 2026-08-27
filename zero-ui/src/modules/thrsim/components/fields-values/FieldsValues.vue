@@ -1,33 +1,23 @@
-<script
-  setup
-  lang="ts"
-  generic="
-    K extends HistoryRootKey,
-    Definitions extends SchemaDefinitions<SchemaDefinition<unknown>>
-  "
->
-import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrsim/types/index.ts";
-
+<script setup lang="ts">
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
-import { HistoryRootKey, useThrsHistory } from "../../stores/history.ts";
+import { ComponentRecord, ThrsModules } from "../../lib/consts";
+import { useThrsHistory } from "../../stores/history.ts";
 import FieldValues from "./FieldValues.vue";
 import { FieldSeries, provideContext } from "./index.ts";
 
 const props = defineProps<{
-  module: K;
-  definitions: Definitions[];
+  module: keyof ThrsModules | "simulation";
+  data: (Record<string, ComponentRecord> | undefined)[];
   fields: string[];
 }>();
 
-const { useHistory } = useThrsHistory();
+const { getHistory } = useThrsHistory();
 
 const series = computed(() =>
   props.fields.map<FieldSeries>((field) => [
     field,
-    props.definitions
-      .flatMap((definition) => useHistory(props.module, field, definition).value)
-      .filter((serie, index, series) => index === series.findIndex((s) => s.name === serie.name)),
+    props.data.flatMap((data) => getHistory(data, field)),
   ]),
 );
 
