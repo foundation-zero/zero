@@ -61,7 +61,7 @@ type SessionStats = {
   storageWorst: { key: string; duration: number } | null;
 };
 
-const PERF_DEBUG_VERSION = "2.4";
+const PERF_DEBUG_VERSION = "2.5";
 const SLOW_THRESHOLD_MS = 100;
 const REPORT_INTERVAL_MS = 2000;
 const GQL_SLOW_MS = 200;
@@ -490,7 +490,9 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     const totalBlockedMs = longTasks.reduce((sum, t) => sum + t.duration, 0);
 
     // Sessie-brede aggregaten bijwerken (los van dit 2s-venster)
-    if (fps < window.__sessionStats.fpsWorst) window.__sessionStats.fpsWorst = fps;
+    // fps=0 vlak na page-load is meestal een meet-artefact (rAF nog niet op gang).
+    // Na de eerste ~3s telt fps=0 wel mee — dat is dan een echte freeze (main thread >2s vast).
+    if (uptimeSec > 3 && fps < window.__sessionStats.fpsWorst) window.__sessionStats.fpsWorst = fps;
     if (heapMB !== null && (window.__sessionStats.heapMaxMB === null || heapMB > window.__sessionStats.heapMaxMB)) {
       window.__sessionStats.heapMaxMB = heapMB;
     }
