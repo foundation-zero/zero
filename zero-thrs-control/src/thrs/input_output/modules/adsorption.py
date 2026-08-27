@@ -1,16 +1,15 @@
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import (
-    ThrsValues,
-    component_meta,
-)
+from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
-class AdsorptionSensorValues(ThrsValues):
+class AdsorptionSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -107,6 +106,13 @@ class AdsorptionSensorValues(ThrsValues):
             component_type="external_sensor", included_in_fmu=False
         ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
     ]
+    adsorption_mode: Annotated[
+        AmcsControlMode, component_meta(included_in_fmu=False)
+    ] = Field(alias="mode")
+
+    @property
+    def mode(self) -> AmcsControlMode:
+        return self.adsorption_mode
 
 
 class AdsorptionControlValues(ThrsValues):
@@ -163,6 +169,7 @@ class AdsorptionSimulationInputs(ThrsValues):
     ]
     adsorption_consumers_supply: simulation.Boundary
     adsorption_dhw_supply: simulation.Boundary
+    adsorption_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class AdsorptionSimulationOutputs(ThrsValues):

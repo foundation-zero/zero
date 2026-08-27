@@ -39,6 +39,7 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
     Thruster,
 )
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.adsorption import (
     AdsorptionSensorValues,
@@ -150,6 +151,14 @@ def simulation_inputs() -> ThrsSimulationInputs:
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
         ),
+        adsorption_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        dc_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        dhw_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        drives_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

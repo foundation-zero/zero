@@ -2,6 +2,7 @@ from typing import Annotated
 
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions import simulation
+from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
@@ -117,6 +118,14 @@ class ThrsSimulationInputs(ThrsValues):
     drives_propdrive_fwd2: simulation.PropulsionDrive
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
+    adsorption_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    consumers_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    dc_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    dhw_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    drives_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    pcm_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    thrusters_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class ThrsSimulationOutputs(

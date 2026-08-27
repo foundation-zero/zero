@@ -61,7 +61,8 @@
         "description": "Enter password to unlock",
         "confirm": "OK",
         "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
-        "password": "Password"
+        "password": "Password",
+        "advisoryDisabled": "Attention: Circuit is not in advisory mode. There are no controls active from the THRS. You are unable to request manual control."
       }
     },
     "labels": {

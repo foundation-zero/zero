@@ -13,6 +13,13 @@ export type Degree = number;
 
 export type SchemaDefinitions<T extends SchemaDefinition<unknown>> = Record<string, T>;
 
+export const enum AmcsControlMode {
+  Local = "LOCAL",
+  Manual = "MANUAL",
+  Auto = "AUTO",
+  External = "EXTERNAL",
+}
+
 export const enum BoilerTankState {
   InUse = "IN_USE",
   Filling = "FILLING",
@@ -199,6 +206,10 @@ export type AdsorptionChillerSensor = {
   freeCooling: Stamped<boolean>;
 };
 
+export type AmcsControlModeSensor = {
+  mode: Stamped<AmcsControlMode>;
+};
+
 export type SensorType =
   | PumpSensor
   | TemperatureSensor
@@ -359,6 +370,7 @@ export const enum SensorComponentType {
   Ugrid = "sensor:ugrid",
   PropulsionDrive = "sensor:propulsionDrive",
   ShorePowerConverter = "sensor:shorePowerConverter",
+  AmcsControlMode = "system:amcsControlMode",
 }
 
 export const SENSOR_COMPONENT_TYPES = [
@@ -443,6 +455,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
+  [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };
 
 export type ExtractValues<
@@ -571,6 +584,10 @@ export type HvacExchangerSimulation = {
   maximumTemperature: Stamped<number>;
 };
 
+export type AmcsControlModeSimulation = {
+  mode: Stamped<AmcsControlMode>;
+};
+
 export type PcsSimulation = ModeSelector<ThrusterMode>;
 
 export const enum SimulationComponentType {
@@ -582,6 +599,7 @@ export const enum SimulationComponentType {
   Pcs = "pcs",
   HeatSource = "heatSource",
   HvacExchanger = "hvacExchanger",
+  AmcsControlMode = "amcsControlMode",
 }
 
 export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =

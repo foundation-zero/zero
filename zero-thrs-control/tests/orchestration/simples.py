@@ -7,13 +7,19 @@ from thrs.classes.machine_state_logger import (
     StateLogger,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
-class SimpleInOut(ThrsValues):
+class SimpleInOut(AmcsModeSensorValues):
     go_with_the: FlowSensor
+
+    @property
+    def mode(self) -> AmcsControlMode:
+        return AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
 
 
 class SimpleSimulationInputs(ThrsValues):

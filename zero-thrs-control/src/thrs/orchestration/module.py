@@ -12,6 +12,7 @@ from thrs.control.switching import (
     SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 if TYPE_CHECKING:
     from thrs.classes.control import Control
@@ -52,7 +53,7 @@ class ModuleDescription[
 
 
 class Module[
-    S: ThrsValues,
+    S: AmcsModeSensorValues,
     C: ThrsValues,
     P: ThrsValues,
     M: ThrsValues,
