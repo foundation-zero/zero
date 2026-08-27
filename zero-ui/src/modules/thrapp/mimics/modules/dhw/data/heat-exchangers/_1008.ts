@@ -14,7 +14,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
     get exchangeCircuit() {
-      return DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].brightloop.sensors;
+      return DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].dcConverters.sensors;
     },
   },
   parameters: {},
