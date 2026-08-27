@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import TypeGuard
 
@@ -10,11 +11,20 @@ TABLES = {
     "switch": "valves",
     "flowcontrol": "valves",
     "pump": "pumps",
+    "pump1": "pumps",
+    "pump2": "pumps",
     "temperature": "temperatures",
     "flow": "flows",
     "pressure": "pressures",
     "power": "rh33s",
+    "pyranometer": "pyranometers",
+    "level-switch": "level_switches",
+    "level": "level_sensors",
 }
+
+# Sort table keys by length in descending order to match the longest key first
+table_keys = sorted(TABLES.keys(), key=len, reverse=True)
+pattern = re.compile(r"^.*?-(.*)")
 
 
 def extract_parts(topic: IOTopic) -> tuple[str, str] | None:
@@ -26,13 +36,16 @@ def extract_parts(topic: IOTopic) -> tuple[str, str] | None:
     if len(parts) < 4:
         return None
     technical_name = parts[3]
-    parts = technical_name.split("-")
-    if len(parts) < 2:
+    match = pattern.match(technical_name)
+    if not match:
         return None
-    _module, component, *_ = parts
-    if component not in TABLES:
-        return None
-    return TABLES[component], technical_name
+    component_string = match.group(1)
+    for table_key in table_keys:
+        if component_string == table_key or component_string.startswith(
+            table_key + "-"
+        ):
+            return TABLES[table_key], technical_name
+    return None
 
 
 @dataclass

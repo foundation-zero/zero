@@ -82,6 +82,11 @@ thrs_tables = {
     "yard_tag": null,
     "technical_name": "adsorption-mix-waste"
   },
+  "marpower/500000-thrs/adsorption/adsorption-switch-dhw": {
+    "table": "marpower__thrs__valves",
+    "yard_tag": "50001187-01",
+    "technical_name": "adsorption-switch-dhw"
+  },
   "marpower/500000-thrs/adsorption/adsorption-temperature-dhw-return": {
     "table": "marpower__thrs__temperatures",
     "yard_tag": "50001038-56",
@@ -737,6 +742,36 @@ thrs_tables = {
     "yard_tag": null,
     "technical_name": "dhw-flowcontrol-drives"
   },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank1": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001053",
+    "technical_name": "dhw-level-switch-tank1"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank2": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001054",
+    "technical_name": "dhw-level-switch-tank2"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-switch-tank3": {
+    "table": "marpower__thrs__level_switches",
+    "yard_tag": "50001055",
+    "technical_name": "dhw-level-switch-tank3"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank1": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_1",
+    "technical_name": "dhw-level-tank1"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank2": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_2",
+    "technical_name": "dhw-level-tank2"
+  },
+  "marpower/500000-thrs/dhw/dhw-level-tank3": {
+    "table": "marpower__thrs__level_sensors",
+    "yard_tag": "50001056_3",
+    "technical_name": "dhw-level-tank3"
+  },
   "marpower/500000-thrs/dhw/dhw-pressure": {
     "table": "marpower__thrs__pressures",
     "yard_tag": null,
@@ -926,6 +961,16 @@ thrs_tables = {
     "table": "marpower__thrs__pressures",
     "yard_tag": null,
     "technical_name": "drives-pressure"
+  },
+  "marpower/500000-thrs/drives/drives-pump1": {
+    "table": "marpower__thrs__pumps",
+    "yard_tag": null,
+    "technical_name": "drives-pump1"
+  },
+  "marpower/500000-thrs/drives/drives-pump2": {
+    "table": "marpower__thrs__pumps",
+    "yard_tag": null,
+    "technical_name": "drives-pump2"
   },
   "marpower/500000-thrs/drives/drives-switch-propdrive-aft1": {
     "table": "marpower__thrs__valves",
@@ -1317,6 +1362,16 @@ thrs_tables = {
     "yard_tag": null,
     "technical_name": "pvt-pump-owners"
   },
+  "marpower/500000-thrs/pvt/pvt-pyranometer-ps": {
+    "table": "marpower__thrs__pyranometers",
+    "yard_tag": null,
+    "technical_name": "pvt-pyranometer-ps"
+  },
+  "marpower/500000-thrs/pvt/pvt-pyranometer-sb": {
+    "table": "marpower__thrs__pyranometers",
+    "yard_tag": null,
+    "technical_name": "pvt-pyranometer-sb"
+  },
   "marpower/500000-thrs/pvt/pvt-switch-main-aft": {
     "table": "marpower__thrs__valves",
     "yard_tag": null,
@@ -1636,6 +1691,16 @@ thrs_tables = {
     "table": "marpower__thrs__pressures",
     "yard_tag": null,
     "technical_name": "thrusters-pressure-system"
+  },
+  "marpower/500000-thrs/thrusters/thrusters-pump1": {
+    "table": "marpower__thrs__pumps",
+    "yard_tag": null,
+    "technical_name": "thrusters-pump1"
+  },
+  "marpower/500000-thrs/thrusters/thrusters-pump2": {
+    "table": "marpower__thrs__pumps",
+    "yard_tag": null,
+    "technical_name": "thrusters-pump2"
   },
   "marpower/500000-thrs/thrusters/thrusters-switch-aft": {
     "table": "marpower__thrs__valves",
