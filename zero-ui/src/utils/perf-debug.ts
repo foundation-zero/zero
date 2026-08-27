@@ -44,8 +44,12 @@ declare global {
     __storageWrites: StorageWrite[];
     __eventLoopLagMs: number;
     __sessionStats: SessionStats;
+    __longTaskHistory: LongTaskRecord[];
+    __listenersBySource: Record<string, { added: number; removed: number }>;
   }
 }
+
+type LongTaskRecord = { duration: number; time: string; interaction: string; component: string };
 
 type SessionStats = {
   sessionStartTime: number;
@@ -61,7 +65,7 @@ type SessionStats = {
   storageWorst: { key: string; duration: number } | null;
 };
 
-const PERF_DEBUG_VERSION = "2.5";
+const PERF_DEBUG_VERSION = "2.7";
 const SLOW_THRESHOLD_MS = 100;
 const REPORT_INTERVAL_MS = 2000;
 const GQL_SLOW_MS = 200;
@@ -118,6 +122,24 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
   window.__graphqlCalls = [];
   window.__storageWrites = [];
   window.__eventLoopLagMs = 0;
+  window.__longTaskHistory = [];
+  window.__listenersBySource = {};
+
+  /** Haal het eerste stack-frame uit onze eigen src/ op (skip vue-internals/node_modules). */
+  function getCallSite(): string {
+    const stack = new Error().stack;
+    if (!stack) return "onbekend";
+    const lines = stack.split("\n");
+    for (const line of lines) {
+      if (line.includes("/src/") && !line.includes("perf-debug.ts")) {
+        const match = line.match(/(src\/[^)\s]+)/);
+        if (match) return match[1];
+      }
+    }
+    // Fallback: eerste regel na de patch zelf (bv. een node_modules library die de listener toevoegt)
+    const fallback = lines.find((l) => !l.includes("perf-debug.ts") && !l.includes("Error"));
+    return fallback ? fallback.trim().replace(/^at\s+/, "").slice(0, 80) : "onbekend";
+  }
   window.__sessionStats = {
     sessionStartTime: performance.now(),
     longTaskCount: 0,
@@ -222,11 +244,21 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     if (window.__activeListeners > window.__sessionStats.listenersMaxCount) {
       window.__sessionStats.listenersMaxCount = window.__activeListeners;
     }
+
+    const source = getCallSite();
+    const entry = (window.__listenersBySource[source] ??= { added: 0, removed: 0 });
+    entry.added++;
+
     return originalAddEventListener.call(this, type, ...(rest as [EventListenerOrEventListenerObject, (boolean | AddEventListenerOptions)?]));
   };
   EventTarget.prototype.removeEventListener = function (type: string, ...rest) {
     window.__activeListeners = Math.max(0, window.__activeListeners - 1);
     window.__listenersByType[type] = Math.max(0, (window.__listenersByType[type] ?? 0) - 1);
+
+    const source = getCallSite();
+    const entry = (window.__listenersBySource[source] ??= { added: 0, removed: 0 });
+    entry.removed++;
+
     return originalRemoveEventListener.call(this, type, ...(rest as [EventListenerOrEventListenerObject, (boolean | EventListenerOptions)?]));
   };
 
@@ -343,6 +375,16 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
           ],
           ["Listeners op dit moment", `${window.__activeListeners} totaal`],
         ]);
+
+        // Bewaar in de sessie-historie zodat dit ook in elk 2s-rapport zichtbaar blijft
+        // (niet alleen als eenmalige melding op het moment zelf).
+        window.__longTaskHistory.push({
+          duration,
+          time: new Date().toLocaleTimeString(),
+          interaction: lastInteraction ? `${lastInteraction.type} op ${lastInteraction.target}` : "onbekend (achtergrondproces)",
+          component: overlapping.length ? overlapping[0].name : "onbekend",
+        });
+        if (window.__longTaskHistory.length > 300) window.__longTaskHistory.shift();
       }
     });
     obs.observe({ entryTypes: ["longtask"] });
@@ -444,8 +486,26 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       `Traagste component ooit: ${window.__sessionStats.componentWorst ? `${window.__sessionStats.componentWorst.duration}ms — ${window.__sessionStats.componentWorst.name}` : "n/a"}`,
       `Traagste localStorage write ooit: ${window.__sessionStats.storageWorst ? `${window.__sessionStats.storageWorst.duration}ms — ${window.__sessionStats.storageWorst.key}` : "n/a"}`,
       "",
+      `--- Top 10 traagste long tasks (sessie, ${window.__longTaskHistory.length} totaal) ---`,
+      ...(window.__longTaskHistory.length
+        ? [...window.__longTaskHistory]
+            .sort((a, b) => b.duration - a.duration)
+            .slice(0, 10)
+            .map((t) => `${t.duration}ms om ${t.time} — actie: ${t.interaction}, component: ${t.component}`)
+        : ["(nog geen long tasks gemeten)"]),
+      "",
       "--- Listeners per type (top 10) ---",
       ...(topListenerTypes.length ? topListenerTypes.map(([type, count]) => `${count}x — ${type}`) : ["(geen data)"]),
+      "",
+      "--- Listener-bronnen met netto-toename (mogelijke lek) ---",
+      ...(() => {
+        const rows = Object.entries(window.__listenersBySource)
+          .map(([source, { added, removed }]) => ({ source, added, removed, net: added - removed }))
+          .filter((r) => r.net > 3)
+          .sort((a, b) => b.net - a.net)
+          .slice(0, 10);
+        return rows.length ? rows.map((r) => `netto +${r.net} (${r.added} toegevoegd, ${r.removed} verwijderd) — ${r.source}`) : ["(geen bronnen met duidelijke netto-toename)"];
+      })(),
       "",
       "--- Traagste GraphQL calls ---",
       ...(slowGql.length ? slowGql.map((c) => `${c.duration}ms, ${c.sizeKB}KB — ${c.operation}`) : ["(nog geen calls gemeten)"]),
@@ -527,6 +587,21 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
       { Meting: "Traagste localStorage write ooit", Waarde: window.__sessionStats.storageWorst ? `${window.__sessionStats.storageWorst.duration}ms — ${window.__sessionStats.storageWorst.key}` : "n/a" },
     ]);
 
+    // Top 10 ergste long tasks van de hele sessie — altijd zichtbaar, ook als je de
+    // eenmalige melding op het moment zelf hebt gemist.
+    if (window.__longTaskHistory.length) {
+      const top10 = [...window.__longTaskHistory].sort((a, b) => b.duration - a.duration).slice(0, 10);
+      console.log(`%cTop 10 traagste long tasks (sessie, ${window.__longTaskHistory.length} totaal):`, "font-weight:bold");
+      console.table(
+        top10.map((t) => ({
+          "Duur (ms)": t.duration,
+          Tijdstip: t.time,
+          "Laatste actie": t.interaction,
+          Component: t.component,
+        })),
+      );
+    }
+
     // Tabel 1: vitals (dit venster van 2s) — altijd getoond, vast format
     console.log("%cDit venster (laatste 2s):", "font-weight:bold");
     console.table([
@@ -549,6 +624,17 @@ if (typeof window !== "undefined" && !(window as unknown as { __perfDebugInstall
     if (listenerRows.length) {
       console.log(`%cEvent listeners per type (top ${listenerRows.length}, totaal ${window.__activeListeners}):`, "font-weight:bold");
       console.table(listenerRows);
+    }
+
+    // Tabel 2b: bron van de listeners — welk bestand/component voegt toe zonder op te ruimen (lek-pointer)
+    const sourceRows = Object.entries(window.__listenersBySource)
+      .map(([source, { added, removed }]) => ({ Bron: source, Toegevoegd: added, Verwijderd: removed, Netto: added - removed }))
+      .filter((r) => r.Netto > 3)
+      .sort((a, b) => b.Netto - a.Netto)
+      .slice(0, 10);
+    if (sourceRows.length) {
+      console.log("%cListener-bronnen met netto-toename (mogelijke lek):", "font-weight:bold");
+      console.table(sourceRows);
     }
 
     // Tabel 3: alle componenten (laatste 5s)
