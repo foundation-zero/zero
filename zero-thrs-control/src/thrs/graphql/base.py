@@ -38,7 +38,13 @@ from thrs.graphql.messaging import (
     SimulationMessaging,
 )
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions import control, controllers, sensor, simulation
+from thrs.input_output.definitions import (
+    control,
+    controllers,
+    sensor,
+    simulation,
+    system,
+)
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
@@ -159,6 +165,7 @@ convert_module(sensor, "Sensor")
 convert_module(control, "Control")
 convert_module(controllers, "Controller")
 convert_module(simulation, "Simulation")
+convert_module(system, "System")
 
 
 @strawberry.experimental.pydantic.type(

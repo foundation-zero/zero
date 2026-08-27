@@ -23,6 +23,7 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
     Thruster,
 )
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.adsorption import (
     AdsorptionSimulationInputs,
@@ -83,6 +84,7 @@ SIMULATION_INPUTS = {
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
+        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "pvt": PvtSimulationInputs(
         pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
@@ -92,6 +94,7 @@ SIMULATION_INPUTS = {
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(50)
         ),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "pcm": PcmSimulationInputs(
         pcm_thrusters_supply=Boundary(
@@ -102,6 +105,7 @@ SIMULATION_INPUTS = {
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "consumers": ConsumersSimulationInputs(
         consumers_dhw_supply=Boundary(
@@ -115,6 +119,7 @@ SIMULATION_INPUTS = {
         consumers_pcm_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
         ),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "adsorption": AdsorptionSimulationInputs(
         adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
@@ -137,6 +142,7 @@ SIMULATION_INPUTS = {
         adsorption_dhw_supply=Boundary(
             temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
         ),
+        adsorption_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "high_temperature": HighTemperatureSimulationInputs(
         thrusters_thruster_aft=Thruster(
@@ -168,6 +174,10 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(30.0),
             flow=Stamped.stamp(0.0),
         ),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "dhw": DhwSimulationInputs(
         dhw_drives_supply=Boundary(
@@ -197,6 +207,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(30)),
+        dhw_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "drives": DrivesSimulationInputs(
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
@@ -223,6 +234,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(50),
             flow=Stamped.stamp(35),  # TODO: Validate if initials are correct
         ),
+        drives_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "dc": DcSimulationInputs(
         dc_brightloop_fwd1=Converter(
@@ -252,6 +264,7 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),  # TODO: Validate if initials are correct
         ),
+        dc_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "thrs": ThrsSimulationInputs(
         thrusters_thruster_aft=Thruster(
@@ -340,6 +353,14 @@ SIMULATION_INPUTS = {
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
+        adsorption_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        dc_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        dhw_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        drives_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
 }
 

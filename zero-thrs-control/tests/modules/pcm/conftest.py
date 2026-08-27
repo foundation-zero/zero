@@ -6,6 +6,7 @@ from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.pcm import PcmControl, PcmParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.pcm import (
     PcmSensorValues,
     PcmSimulationInputs,
@@ -34,6 +35,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
         pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(70)),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

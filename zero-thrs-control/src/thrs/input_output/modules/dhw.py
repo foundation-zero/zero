@@ -1,20 +1,17 @@
 from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict, computed_field
+from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import (
-    Stamped,
-    ThrsValues,
-    component_meta,
-    computed_meta,
-)
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
-class DhwSensorValues(ThrsValues):
+class DhwSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -510,6 +507,14 @@ class DhwSensorValues(ThrsValues):
             )
         return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
+    dhw_mode: Annotated[
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
+
+    @property
+    def mode(self) -> AmcsControlMode:
+        return self.dhw_mode
+
 
 class DhwControlValues(ThrsValues):
     model_config = ConfigDict(
@@ -637,6 +642,7 @@ class DhwSimulationInputs(ThrsValues):
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
+    dhw_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

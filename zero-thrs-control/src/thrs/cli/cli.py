@@ -97,6 +97,7 @@ class SimulationCmd(BaseSettings):
 class LockstepCmd(BaseSettings):
     mode: ModeName
     machine_state_logging: CliImplicitFlag[bool] = True
+    play: CliImplicitFlag[bool] = False
 
     def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -152,6 +153,9 @@ class LockstepCmd(BaseSettings):
             runtime = self.setup(settings, mqtt_client)
             await runtime.clear_previous()
             logger.info("Running lockstep")
+
+            if self.play:
+                await runtime.loop.play(1)
 
             async with control_shutdown_context(runtime.runner.control_modules):  # type: ignore
                 await runtime.start()

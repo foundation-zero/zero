@@ -67,6 +67,8 @@
         }
       },
       "controlActions": {
+        "advisoryDisabled": "Advisory mode disabled",
+        "advisoryDisabledTooltip": "Advisory mode can be enabled through the AMCS. Until it is enabled, this screen is read-only.",
         "automatedControl": "Automated control",
         "manualControl": "Manual control",
         "off": "Off",

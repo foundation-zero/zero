@@ -10,6 +10,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { AmcsControlModeSensor } from "../types";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };
@@ -59,6 +60,7 @@ export type ControlStatus = {
   modules: {
     [K in keyof ControlModes]: {
       controlMode: ControlMode<ControlModes[K]>;
+      sensorValues: Record<`${K}Mode`, AmcsControlModeSensor>;
     };
   };
 };
@@ -71,6 +73,13 @@ export const CONTROL_QUERY = gql`
           automatic
           automaticMode {
             mode
+          }
+        }
+        sensorValues {
+          thrustersMode {
+            mode {
+              value
+            }
           }
         }
       }
@@ -89,12 +98,26 @@ export const CONTROL_QUERY = gql`
             }
           }
         }
+        sensorValues {
+          pvtMode {
+            mode {
+              value
+            }
+          }
+        }
       }
       pcm {
         controlMode {
           automatic
           automaticMode {
             mode
+          }
+        }
+        sensorValues {
+          pcmMode {
+            mode {
+              value
+            }
           }
         }
       }
@@ -105,10 +128,24 @@ export const CONTROL_QUERY = gql`
             mode
           }
         }
+        sensorValues {
+          adsorptionMode {
+            mode {
+              value
+            }
+          }
+        }
       }
       consumers {
         controlMode {
           automatic
+        }
+        sensorValues {
+          consumersMode {
+            mode {
+              value
+            }
+          }
         }
       }
       dc {
@@ -126,6 +163,13 @@ export const CONTROL_QUERY = gql`
             }
           }
         }
+        sensorValues {
+          dcMode {
+            mode {
+              value
+            }
+          }
+        }
       }
       dhw {
         controlMode {
@@ -135,12 +179,26 @@ export const CONTROL_QUERY = gql`
             fillingMode
           }
         }
+        sensorValues {
+          dhwMode {
+            mode {
+              value
+            }
+          }
+        }
       }
       drives {
         controlMode {
           automatic
           automaticMode {
             mode
+          }
+        }
+        sensorValues {
+          drivesMode {
+            mode {
+              value
+            }
           }
         }
       }
@@ -152,7 +210,7 @@ export const useAutomationStore = defineStore("automation", () => {
   // For some reason the injected client does not come from the component in the outer scope.
   // This means we need to manually provide the context to each query and mutation.
   const { client } = useClientHandle();
-  // TODO: make set automated control module dependent
+  // TODO: make set automated control module dependent (as an arg instead of a separate mutation)
   const setAutomatedControl = (module: string) =>
     mutationWithValue(`${module}SetAutomationMode`, "automatic", "Boolean!");
   const isProcessing = ref(false);

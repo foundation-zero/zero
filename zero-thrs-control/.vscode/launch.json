@@ -17,6 +17,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "envFile": "${workspaceFolder}/.env",
       "env": {
         "LOG_LEVEL": "DEBUG"
       },
@@ -33,6 +34,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "thrs.cli",
+      "envFile": "${workspaceFolder}/.env",
       "env": {
         "LOG_LEVEL": "DEBUG"
       },
@@ -49,6 +51,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "fastapi",
+      "envFile": "${workspaceFolder}/.env",
       "args": [
         "dev",
         "src/thrs/graphql/asgi.py"

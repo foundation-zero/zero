@@ -1,6 +1,7 @@
 import { stamp } from "@/modules/common/lib/utils";
 import { Stamped } from "@/modules/common/types";
 import {
+  AmcsControlMode,
   BoilerTankState,
   ControlComponentType,
   ControlDefinitionMap,
@@ -171,6 +172,9 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.ShorePowerConverter]: () => {
     const active = useRandomizedBoolean();
     return computed(() => ({ active: stamp(active) }));
+  },
+  [SensorComponentType.AmcsControlMode]: () => {
+    return computed(() => ({ mode: stamp(AmcsControlMode.External) }));
   },
 };
 

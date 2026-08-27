@@ -13,7 +13,8 @@ from thrs.control.modules.thrusters import (
     ThrustersParameters,
 )
 from thrs.control.switching import AutomationMode
-from thrs.input_output.base import CombinedValues
+from thrs.input_output.base import CombinedValues, Stamped
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -125,7 +126,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_values = mock.sentinel.control
     controller_state = {}
     parameters = {}
-    sensor_values = mock.sentinel.sensor
+    sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     combined_sensor_values = CombinedValues(values={"module": sensor_values})  # type: ignore
     combined_control_values = CombinedValues(values={"module": control_values})  # type: ignore
@@ -255,7 +256,7 @@ async def test_control_runner_ticks_and_uses_channels():
     control_values = mock.sentinel.control
     controller_state = {}
     parameters = {}
-    sensor_values = {"something": True}
+    sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     mock_liveness = Mock()
 

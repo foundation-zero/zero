@@ -108,6 +108,9 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
+  adsorptionMode {
+    mode { value timestamp }
+  }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
@@ -134,6 +137,9 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
   adsorptionDhwSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  adsorptionMode {
+    mode { value timestamp }
   }
 `;
 
@@ -233,6 +239,9 @@ export const CONSUMERS_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
+  consumersMode {
+    mode { value timestamp }
+  }
 `;
 
 export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
@@ -247,6 +256,9 @@ export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
   consumersPcmSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  consumersMode {
+    mode { value timestamp }
   }
 `;
 
@@ -568,6 +580,9 @@ export const DC_SENSOR_QUERY = `
   dcUgrid2 {
     active { value timestamp }
   }
+  dcMode {
+    mode { value timestamp }
+  }
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
@@ -602,6 +617,9 @@ export const DC_SIMULATION_INPUTS_QUERY = `
   dcDhwSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  dcMode {
+    mode { value timestamp }
   }
 `;
 
@@ -941,6 +959,9 @@ export const DHW_SENSOR_QUERY = `
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
   }
+  dhwMode {
+    mode { value timestamp }
+  }
   drivesDelta {
     deltaT { value timestamp }
   }
@@ -1012,6 +1033,9 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
   }
   dhwHotwaterDemand {
     flow { value timestamp }
+  }
+  dhwMode {
+    mode { value timestamp }
   }
 `;
 
@@ -1240,6 +1264,9 @@ export const DRIVES_SENSOR_QUERY = `
   drivesShorepower {
     active { value timestamp }
   }
+  drivesMode {
+    mode { value timestamp }
+  }
 `;
 
 export const DRIVES_SIMULATION_INPUTS_QUERY = `
@@ -1271,6 +1298,9 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
   drivesDhwSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  drivesMode {
+    mode { value timestamp }
   }
 `;
 
@@ -1323,6 +1353,18 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
   consumersAdsorptionSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  consumersMode {
+    mode { value timestamp }
+  }
+  pvtMode {
+    mode { value timestamp }
+  }
+  pcmMode {
+    mode { value timestamp }
+  }
+  thrustersMode {
+    mode { value timestamp }
   }
 `;
 
@@ -1520,6 +1562,9 @@ export const PCM_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
+  pcmMode {
+    mode { value timestamp }
+  }
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
@@ -1537,6 +1582,9 @@ export const PCM_SIMULATION_INPUTS_QUERY = `
   }
   pcmConsumersSupply {
     temperature { value timestamp }
+  }
+  pcmMode {
+    mode { value timestamp }
   }
 `;
 
@@ -1987,6 +2035,9 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureOwnersString6Supply {
     temperature { value timestamp }
   }
+  pvtMode {
+    mode { value timestamp }
+  }
   pvtMaxTemperatureMainFwdStrings {
     temperature { value timestamp }
   }
@@ -2014,6 +2065,9 @@ export const PVT_SIMULATION_INPUTS_QUERY = `
   pvtSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  pvtMode {
+    mode { value timestamp }
   }
 `;
 
@@ -2411,6 +2465,9 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
+  thrustersMode {
+    mode { value timestamp }
+  }
   thrustersTemperatureRecovery {
     temperature { value timestamp }
   }
@@ -2443,6 +2500,9 @@ export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
   }
   thrustersPcs {
+    mode { value timestamp }
+  }
+  thrustersMode {
     mode { value timestamp }
   }
 `;

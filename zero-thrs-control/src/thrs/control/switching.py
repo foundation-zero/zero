@@ -7,6 +7,7 @@ from thrs.classes.machine_state_logger import (
 )
 from thrs.control.manual import EmptyParameters, ManualControl
 from thrs.input_output.base import ThrsValues
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
 class SwitchingControlMode[Mode](ThrsValues):
@@ -22,7 +23,7 @@ class AutomationMode(ThrsValues):
 
 
 class SwitchingControl[
-    SensorValues: ThrsValues,
+    SensorValues: AmcsModeSensorValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
     ControlMode,
@@ -72,6 +73,9 @@ class SwitchingControl[
     def control(
         self, sensor_values: SensorValues
     ) -> tuple[ControlValues, ControllerState]:
+        if not sensor_values.mode.is_advisory:
+            return self.initial()
+
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()

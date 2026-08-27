@@ -1,10 +1,11 @@
 from thrs.input_output.base import ThrsValues
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 from thrs.orchestration.module import Module
 from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.base import Runner
 
 
-class ControlRunner[S: ThrsValues](Runner):
+class ControlRunner[S: AmcsModeSensorValues](Runner):
     def __init__(
         self,
         control_modules: list[

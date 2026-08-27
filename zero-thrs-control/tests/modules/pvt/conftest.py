@@ -10,6 +10,7 @@ from thrs.input_output.definitions.simulation import (
     HeatSource,
     TemperatureBoundary,
 )
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.pvt import (
     PvtSensorValues,
     PvtSimulationInputs,
@@ -30,6 +31,7 @@ def simulation_inputs():
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 
