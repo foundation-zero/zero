@@ -7,23 +7,8 @@ import { DocumentInput, useQuery } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
 import { ComponentRecord, QUERY_ALL, THRS } from "../lib/consts";
 
-export type TypelessRecord<T extends Record<string, unknown>> = Omit<T, "__typename">;
-
-export const toTypelessRecord = <T extends Record<string, unknown>>(
-  record: T | null,
-): TypelessRecord<T> => {
-  if (record === null) return {} as TypelessRecord<T>;
-
-  const { __typename, ...rest } = record;
-  return rest;
-};
-
 export const useThrsHistory = defineStore("thrsHistory", () => {
   const lastUpdate = useLocalStorage<number | null>("thrs-history-last-update", null);
-
-  const clear = () => {
-    lastUpdate.value = null;
-  };
 
   const { data, executeQuery: update } = useQuery<THRS>({
     query: QUERY_ALL,
@@ -63,7 +48,6 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   return {
     data,
     lastUpdate,
-    clear,
     refresh,
     pause,
     resume,
