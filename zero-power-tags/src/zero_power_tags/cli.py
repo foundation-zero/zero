@@ -63,12 +63,23 @@ class BridgeEndpoint(BaseModel):
     port: int
 
 
+def _parse_port(panel: str, port_raw: str) -> int:
+    """Parse and range-check a configured port; raises on anything outside 1..65535."""
+    port = int(port_raw)
+    if not 1 <= port <= 65535:
+        raise ValueError(
+            f"Invalid port {port} for panel {panel} ({_panel_field_key(panel, 'port')}): "
+            "must be between 1 and 65535"
+        )
+    return port
+
+
 def configured_modbus_ports(
     settings: PowerTagsSettings, specs: list[BridgeSpec]
 ) -> dict[str, int | None]:
-    """Per-panel port override from `MODBUS_PORT_<PANEL>`; None when unset."""
+    """Per-panel port override from `MODBUS_PANELS__port_<panel>`; None when unset."""
     return {
-        spec.panel: int(port_raw)
+        spec.panel: _parse_port(spec.panel, port_raw)
         if (port_raw := settings.field_for(spec.panel, "port"))
         else None
         for spec in specs
