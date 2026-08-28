@@ -17,15 +17,14 @@ cleanup() {
     set +e
     echo "Received termination signal. Shutting down kiosk..."
 
-    # Terminate Cage/Chromium and wayvnc
+    # Terminate Cage/Chromium and wayvnc gracefully first
     CAGE_PIDS=$(pgrep -x cage)
     VNC_PIDS=$(pgrep -x wayvnc)
-    if [ -n "$CAGE_PIDS" ]; then
-        echo "Stopping Cage/Chromium (PID $CAGE_PIDS)..."
-        kill -KILL $CAGE_PIDS $VNC_PIDS
-
-        # Wait briefly for them to die
-        wait $CAGE_PIDS $VNC_PIDS
+    if [ -n "$CAGE_PIDS" ] || [ -n "$VNC_PIDS" ]; then
+        echo "Stopping Cage and wayvnc..."
+        kill -TERM $CAGE_PIDS $VNC_PIDS 2>/dev/null
+        sleep 1
+        kill -KILL $CAGE_PIDS $VNC_PIDS 2>/dev/null
     fi
 
     echo "Kiosk cleanup complete. Exiting cleanly."
@@ -42,14 +41,12 @@ start_vnc() {
         sleep 0.5
     done
 
+    # Give Cage a moment to bind protocols after creating socket
+    sleep 1
+
     echo "Wayland socket detected. Starting VNC Server on port 5900..."
-    # Bind wayvnc to all interfaces (0.0.0.0) so it's accessible externally
     export WAYLAND_DISPLAY=wayland-0
 
-    # wlroots hardcodes the headless output to 1280x720. Resize it to a
-    # representative resolution before wayvnc starts capturing, so VNC serves
-    # that size from the first frame. No-op with a real display (empty var),
-    # which keeps its native mode; a resize failure just leaves 1280x720.
     if [ -n "${HEADLESS_RESOLUTION:-}" ]; then
         echo "Setting headless output to $HEADLESS_RESOLUTION..."
         wlr-randr --output HEADLESS-1 --custom-mode "$HEADLESS_RESOLUTION" \
@@ -101,9 +98,9 @@ start_cage_chromium() {
     cage -- chromium $CHROME_FLAGS "$URL" 2> >(grep -vE "google_apis/gcm|dbus/bus.cc|dbus/object_proxy.cc")
 }
 
-# make sure udev events in the container are fired
-/lib/systemd/systemd-udevd --daemon
-udevadm trigger --action=add
+# Make sure udev events in the container are fired
+/lib/systemd/systemd-udevd --daemon 2>/dev/null || true
+udevadm trigger --action=add 2>/dev/null || true
 
 # With a monitor attached, use cage's default DRM/KMS backend to drive the
 # real screen (prod: zero). With none attached (singel/subzero), that backend
@@ -117,11 +114,11 @@ udevadm trigger --action=add
 if grep -qxs connected /sys/class/drm/*/status; then
     echo "Physical display connected; using cage's default DRM backend."
 else
-    echo "No physical display connected; using wlroots headless backend."
+    echo "No physical display connected; using wlroots headless backend with Pixman rendering."
+    export WLR_BACKEND=headless
     export WLR_BACKENDS=headless
-    # Force hardware GLES2 on the render node rather than silently falling
-    # back to software (pixman) rendering.
-    export WLR_RENDERER=gles2
+    export WLR_RENDERER=pixman
+    export LIBGL_ALWAYS_SOFTWARE=1
     HEADLESS_RESOLUTION="1920x1080"
 fi
 
