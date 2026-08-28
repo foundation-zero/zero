@@ -1,14 +1,11 @@
-"""Seam 2 (the top seam): `(local Greptime loaded with the snapshot DDL) -> dbt build green`.
+"""Top seam: (snapshot-seeded local Greptime) -> `dbt build` green.
 
-Loads the committed snapshot into a real local Greptime, runs `dbt build`, and asserts the
-source tests, the proof view, and the model test all pass — then that the view is queryable
-with its explicit columns across the `views` -> `public` database boundary. This is the
-highest-value seam: it exercises the view SQL, the explicit-column contract, the
-Greptime-specific macro overrides, and cross-database resolution end to end.
-
-No database mocking; the local Greptime is assumed running (as in CI and docker-compose).
+Loads the committed snapshot, runs `dbt build`, and asserts the source tests, the proof
+view, the model test, and the view's cross-database queryability all pass. No mocking;
+local Greptime is assumed running (as in CI and docker-compose).
 """
 
+import json
 import os
 import subprocess
 
@@ -23,12 +20,29 @@ PROOF_VIEW = "stg_marpower__150000_propulsion__pcs_fwd"
 def _dbt_build() -> subprocess.CompletedProcess[str]:
     env = {**os.environ, "DBT_PROFILES_DIR": str(DBT_DIR)}
     return subprocess.run(
-        ["uv", "run", "--project", "..", "dbt", "build"],
+        ["uv", "run", "--project", "..", "dbt", "build", "--log-format", "json"],
         cwd=DBT_DIR,
         env=env,
         capture_output=True,
         text=True,
     )
+
+
+def _dbt_events(output: str) -> dict[str, list[str]]:
+    """Map dbt JSON-log event name -> list of its message strings.
+
+    `--log-format json` emits one {info: {name, msg}} object per line; keying on the
+    event name keeps the assertions tied to a dbt log event rather than an ambiguous
+    substring in the rendered human output.
+    """
+    events: dict[str, list[str]] = {}
+    for line in output.splitlines():
+        try:
+            info = json.loads(line)["info"]
+        except (json.JSONDecodeError, KeyError):
+            continue
+        events.setdefault(info.get("name", ""), []).append(info.get("msg", ""))
+    return events
 
 
 def test_dbt_build_is_green_against_snapshot_seeded_greptime(
@@ -41,15 +55,26 @@ def test_dbt_build_is_green_against_snapshot_seeded_greptime(
     assert result.returncode == 0, (
         f"dbt build failed:\n{result.stdout}\n{result.stderr}"
     )
-    output = result.stdout
-    assert "Completed successfully" in output
-    assert "ERROR=0" in output  # the run summary reports zero errors
-    # the source test, the view model, and the model test each report success
-    assert (
-        "source_not_null_raw_marpower__150000_propulsion__pcs_fwd_timestamp" in output
+    events = _dbt_events(result.stdout)
+    # the run summary reports zero errors
+    assert any("ERROR=0" in msg for msg in events.get("StatsLine", []))
+    assert any(
+        "Completed successfully" in msg for msg in events.get("EndOfRunSummary", [])
     )
-    assert f"view model views.{PROOF_VIEW}" in output
-    assert f"not_null_{PROOF_VIEW}_ts" in output
+    # each success is asserted by dbt log event type, not a text substring
+    assert any(
+        "source_not_null_raw_marpower__150000_propulsion__pcs_fwd_timestamp" in msg
+        and "PASS" in msg
+        for msg in events.get("LogTestResult", [])
+    )
+    assert any(
+        f"views.{PROOF_VIEW}" in msg and "created" in msg
+        for msg in events.get("LogModelResult", [])
+    )
+    assert any(
+        f"not_null_{PROOF_VIEW}_ts" in msg and "PASS" in msg
+        for msg in events.get("LogTestResult", [])
+    )
 
 
 def test_proof_view_is_queryable_with_explicit_columns(

@@ -1,9 +1,8 @@
-"""Shared fixtures for the integration tests.
+"""Shared fixtures for the Greptime integration tests.
 
-Every test runs against a real local GreptimeDB (from `docker-compose.yml`, PG endpoint
-:4003) — there is no database mocking, because the whole project is database glue and
-mocking it would test nothing. The tests assume that Greptime is already up and reachable
-via the `GREPTIME_*` env (defaulting to `127.0.0.1:4003`), exactly as CI provides it.
+Tests run against a real local GreptimeDB (repo-root docker-compose, PG endpoint :4003) —
+the project is database glue, so mocking would test nothing. Greptime must already be up
+and reachable via `GREPTIME_*` env (default `127.0.0.1:4003`), as CI provides it.
 """
 
 from collections.abc import Iterator

@@ -1,11 +1,7 @@
 {#
-  Greptime stores views as encoded logical plans and cannot rename a view, so
-  dbt-postgres's stock `view` materialization — which builds a `__dbt_tmp` view and then
-  `ALTER ... RENAME`s it onto the target — fails. Greptime's own re-bind mechanism is
-  `CREATE OR REPLACE VIEW`, which is idempotent and rebinds the view to the current schema
-  after drift. The two macros below map dbt's `view` materialization onto it.
-
-  See docs/greptime-views-viability-check.md for the full spike findings.
+  Greptime cannot rename views (they're stored as encoded logical plans), so dbt's stock
+  `view` materialization (tmp view + ALTER RENAME) fails. Map it onto Greptime's idempotent
+  `CREATE OR REPLACE VIEW` instead. See docs/greptime-views-viability-check.md.
 #}
 
 {% macro postgres__create_view_as(relation, sql) -%}

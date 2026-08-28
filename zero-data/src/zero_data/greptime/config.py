@@ -2,16 +2,14 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Layout: zero-data/src/zero_data/greptime/config.py -> zero-data. The dbt project,
-# snapshot and docker-compose that this tooling drives live at the zero-data root.
+# zero-data root is three parents up; the dbt project and snapshot live there.
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 # Committed DDL snapshot of the curated raw tables, and the curated table list that drives it.
 SNAPSHOT_DIR = PROJECT_ROOT / "snapshot"
 CURATED_TABLES_FILE = SNAPSHOT_DIR / "tables.txt"
 
-# Databases dbt needs beyond the raw `public`: the `greptime`-named landing database the dbt
-# connection points at (see docs/greptime-views-viability-check.md) and the `views` target.
+# dbt also needs the `greptime` landing db (the connection target) and the `views` db.
 DBT_DATABASES = ("greptime", "views")
 
 

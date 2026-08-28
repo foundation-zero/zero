@@ -61,8 +61,10 @@ schema (`SHOW CREATE TABLE` → `snapshot/*.sql`) is replayed into a local Grept
 models can be developed and tested fully offline.
 
 ```bash
-docker compose up -d --wait                 # local GreptimeDB (docker-compose.yml)
+# Local GreptimeDB, from the repo root (uses the repo-root docker-compose.yml):
+docker compose --profile data-collection up -d greptimedb
 
+# From this zero-data/ directory:
 # Recreate prod's table shapes (empty) locally from the committed snapshot, and create the
 # `greptime` and `views` databases dbt needs.
 uv run zero-data greptime load
@@ -75,7 +77,7 @@ Refresh the committed schema from a live tier (over Tailscale), then review the 
 
 ```bash
 # add the table to snapshot/tables.txt first, then:
-uv run zero-data greptime snapshot --host greptime-subzero.tail0b4840.ts.net
+uv run zero-data greptime snapshot --host greptime-zero.tail0b4840.ts.net
 git diff snapshot/
 ```
 

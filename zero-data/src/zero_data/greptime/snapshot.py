@@ -1,10 +1,8 @@
-"""Snapshot the DDL of curated raw Greptime tables to committed `.sql`, and replay it.
+"""Snapshot curated raw Greptime table DDL to committed `.sql` files, and replay it.
 
-The dev/CI Greptime instances have no live MQTT data, so they never grow the dynamically
-inferred tables/columns that prod grew organically. This module bridges that gap: it dumps
-the DDL of a curated set of prod tables via `SHOW CREATE TABLE` into committed files, and
-replays those files into a fresh local Greptime to recreate prod's table shapes (empty) so
-dbt models can be developed and tested offline.
+Dev/CI Greptime has no live MQTT data, so it lacks the tables prod grew organically: dump
+prod's DDL via `SHOW CREATE TABLE` into committed files, then replay them into a fresh
+local Greptime to recreate prod's table shapes (empty) for offline dbt development.
 """
 
 import logging
@@ -12,7 +10,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
-import psycopg2
+import psycopg
 
 from zero_data.greptime.config import (
     DBT_DATABASES,
@@ -26,9 +24,9 @@ logger = logging.getLogger(__name__)
 @contextmanager
 def connect(
     connection: GreptimeConnection,
-) -> Iterator["psycopg2.extensions.connection"]:
+) -> Iterator["psycopg.Connection"]:
     """A Greptime connection over the Postgres wire endpoint, auto-committing DDL."""
-    handle = psycopg2.connect(
+    handle = psycopg.connect(
         host=connection.host,
         port=connection.pg_port,
         user=connection.user,
@@ -42,7 +40,7 @@ def connect(
         handle.close()
 
 
-def dump_table_ddl(handle: "psycopg2.extensions.connection", table: str) -> str:
+def dump_table_ddl(handle: "psycopg.Connection", table: str) -> str:
     """The replayable `CREATE TABLE` DDL for one raw table, via `SHOW CREATE TABLE`.
 
     Greptime returns two columns (table name, create statement); we keep the statement.
@@ -74,7 +72,7 @@ def write_snapshot(
 
 
 def ensure_databases(
-    handle: "psycopg2.extensions.connection",
+    handle: "psycopg.Connection",
     databases: tuple[str, ...] = DBT_DATABASES,
 ) -> None:
     """Create the databases dbt needs (`greptime` landing db, `views` target) if absent."""

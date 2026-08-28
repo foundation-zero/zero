@@ -46,19 +46,19 @@ jobs:
         working-directory: zero-data
       - run: uv run mypy src tests/greptime
         working-directory: zero-data
-      # Local GreptimeDB for the dbt/Greptime integration tests (tests/greptime). Entirely
-      # offline: the tests load the committed snapshot and run `dbt build` against it, with
-      # no live MQTT data.
+      # Local GreptimeDB for tests/greptime; offline — tests load the committed snapshot and run dbt build.
       - name: Start local GreptimeDB
-        run: docker compose up -d --wait
+        run: docker compose --profile data-collection up -d --wait greptimedb
+      # Seed the `greptime`/`views` databases from the committed snapshot.
+      - name: Seed local Greptime from the committed snapshot
+        run: uv run zero-data greptime load
         working-directory: zero-data
       - name: Unit Test
         run: uv run pytest .
         working-directory: zero-data
       - name: Stop local GreptimeDB
         if: always()
-        run: docker compose down -v
-        working-directory: zero-data
+        run: docker compose --profile data-collection down -v
 
   docker-push:
     timeout-minutes: 10

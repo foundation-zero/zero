@@ -1,11 +1,9 @@
 {{ config(materialized='view') }}
 
--- Proof view. The raw Marpower table is ~320 columns: every measure arrives as a clump of
--- four inferred fields (`__value`, `__is_valid`, `__has_value`, `__timestamp`). This view
--- picks a curated set of `__value` measures with explicit columns (no SELECT *), renames
--- the ingest `timestamp` to `ts`, and drops the validity/transport noise — presenting a
--- stable, typed surface. An unexpected new column or a shifted inferred type surfaces as a
--- reviewable snapshot diff and/or a failing test rather than propagating downstream.
+-- Proof view. The raw table is ~320 columns: each measure lands as a clump of four inferred
+-- fields (`__value`, `__is_valid`, `__has_value`, `__timestamp`). Here we pick a curated
+-- set of `__value` measures with explicit columns, rename `timestamp` to `ts`, and drop the
+-- validity/transport noise. Schema drift surfaces as a snapshot diff or failing test.
 select
     "timestamp" as ts,
     device_state__value as device_state,

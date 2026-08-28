@@ -11,8 +11,7 @@ clean-targets: ["target", "dbt_packages"]
 
 require-dbt-version: [">=1.10.0", "<2.0.0"]
 
-# Models are logical views over the raw `public` tables, materialized into the dedicated
-# `views` database. See docs/greptime-views-viability-check.md for why every model is a view.
+# Models are views over raw `public` tables, materialized into the `views` database.
 models:
   zero_data_greptime:
     staging:

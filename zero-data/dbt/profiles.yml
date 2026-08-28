@@ -1,15 +1,10 @@
 # dbt connects over Greptime's Postgres wire endpoint (:4003).
 #
-# `dbname` is `greptime` on purpose: Greptime's only catalog is `greptime`, and
-# dbt-postgres uses the connection database as the leading catalog token in every
-# rendered relation name (and enforces it with a Python-level cross-db guard). Pointing
-# the connection at a database literally named `greptime` makes every name render as the
-# Greptime-valid `"greptime"."<schema>"."<table>"`. See docs/greptime-views-viability-check.md.
-#
-# `schema` is `views`: models materialize there, leaving `public` as raw-ingest only.
-# Fully-qualified names still target `public`/`views` regardless of the connected schema.
-#
-# The tiers differ only by host, so the shared connection settings live in one anchor.
+# Greptime's only catalog is `greptime`, and dbt-postgres uses the connected dbname as the
+# leading catalog token of every rendered relation name — so we connect to a database
+# literally named `greptime`, making all names render as `"greptime"."<schema>"."<table>"`.
+# Models materialize into `views`, leaving `public` raw-ingest only. Tiers differ only by
+# host, so the shared settings live in one anchor. See docs/greptime-views-viability-check.md.
 zero_data_greptime:
   target: local
   outputs:
