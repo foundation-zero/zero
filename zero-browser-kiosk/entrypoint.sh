@@ -114,11 +114,15 @@ udevadm trigger --action=add 2>/dev/null || true
 if grep -qxs connected /sys/class/drm/*/status; then
     echo "Physical display connected; using cage's default DRM backend."
 else
-    echo "No physical display connected; using wlroots headless backend with Pixman rendering."
-    export WLR_BACKEND=headless
+    echo "No physical display connected; using wlroots headless backend (GPU / GLES2)."
     export WLR_BACKENDS=headless
-    export WLR_RENDERER=pixman
-    export LIBGL_ALWAYS_SOFTWARE=1
+    # GPU compositing on the DRM render node. Software (pixman + LIBGL_ALWAYS_
+    # SOFTWARE) works but composites every frame on the CPU (~630m observed);
+    # gles2 is what gets headless CPU near a node with a real display (~126m).
+    # The wayvnc frame-capture segfault is a zero-size-output damage bug (it
+    # also hits displays running gles2), so we address it by sizing the output
+    # to $HEADLESS_RESOLUTION before wayvnc attaches, not by dropping the GPU.
+    export WLR_RENDERER=gles2
     HEADLESS_RESOLUTION="1920x1080"
 fi
 
