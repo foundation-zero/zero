@@ -1,0 +1,4 @@
+# Curated list of raw `public` tables to snapshot, one per line.
+# Keep this small — snapshot diffs should stay focused on tables we actually model.
+# Refresh the committed DDL with: `zero-greptime-data snapshot --host <tier>`.
+domestic__lighting_groups

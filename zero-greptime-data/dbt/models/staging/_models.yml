@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_domestic__lighting_groups
+    description: >
+      Cleaned lighting-group readings: stable column names, Vector transport metadata
+      dropped. Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest time index (renamed from the raw `timestamp`)."
+        tests:
+          - not_null
+      - name: id
+        description: "Lighting group identifier."
+      - name: level
+        description: "Dimming level."
+      - name: room_id
+        description: "Room the lighting group belongs to."

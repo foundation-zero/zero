@@ -1,0 +1,19 @@
+name: "zero_greptime_data"
+version: "1.0.0"
+config-version: 2
+
+profile: "zero_greptime_data"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+require-dbt-version: [">=1.9.0", "<1.10.0"]
+
+# Models are logical views over the raw `public` tables, materialized into the
+# dedicated `views` database. See docs/viability-check.md for why every model is a view.
+models:
+  zero_greptime_data:
+    staging:
+      +materialized: view

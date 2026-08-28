@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      Raw telemetry tables in Greptime's `public` database. Vector infers the table name
+      from the MQTT payload and Greptime infers the columns and types from the flattened,
+      snakecased JSON — so these schemas are dynamically generated, not declared. Their
+      shapes are pinned locally by the committed snapshot under `snapshot/`.
+    database: greptime
+    schema: public
+    tables:
+      - name: domestic__lighting_groups
+        description: "Per-lighting-group level readings from the domestic control system."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: id
+            description: "Lighting group identifier."
+          - name: level
+            description: "Dimming level."
+          - name: room_id
+            description: "Room the lighting group belongs to."

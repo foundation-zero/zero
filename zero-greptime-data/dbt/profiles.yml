@@ -1,0 +1,41 @@
+# dbt connects over Greptime's Postgres wire endpoint (:4003).
+#
+# `dbname` is `greptime` on purpose: Greptime's only catalog is `greptime`, and
+# dbt-postgres uses the connection database as the leading catalog token in every
+# rendered relation name (and enforces it with a Python-level cross-db guard). Pointing
+# the connection at a database literally named `greptime` makes every name render as the
+# Greptime-valid `"greptime"."<schema>"."<table>"`. See docs/viability-check.md.
+#
+# `schema` is `views`: models materialize there, leaving `public` as raw-ingest only.
+# Fully-qualified names still target `public`/`views` regardless of the connected schema.
+#
+# The tiers differ only by host, so the shared connection settings live in one anchor.
+zero_greptime_data:
+  target: local
+  outputs:
+    # Local Greptime from docker-compose, seeded from the committed snapshot. Offline.
+    local:
+      <<: &greptime
+        type: postgres
+        port: "{{ env_var('GREPTIME_PG_PORT', '4003') | int }}"
+        user: "{{ env_var('GREPTIME_USER', 'app') }}"
+        password: "{{ env_var('GREPTIME_PASSWORD', '') }}"
+        dbname: greptime
+        schema: views
+        threads: 4
+        connect_timeout: 10
+      host: "{{ env_var('GREPTIME_HOST', '127.0.0.1') }}"
+
+    # ---- Greptime tiers over Tailscale (deploy is a follow-up ticket) ----
+    greptime-subzero:
+      <<: *greptime
+      host: greptime-subzero.tail0b4840.ts.net
+
+    greptime-singel:
+      <<: *greptime
+      host: greptime-singel.tail0b4840.ts.net
+
+    # Prod / source-of-truth. Deploy is gated on prod PG credentials (follow-up).
+    greptime-zero:
+      <<: *greptime
+      host: greptime-zero.tail0b4840.ts.net
