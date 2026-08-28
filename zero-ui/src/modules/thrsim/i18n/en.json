@@ -150,6 +150,32 @@
         "label": "Disabled",
         "unit": ""
       },
+      "flow": {
+        "label": "Flow",
+        "unit": "l/min"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      },
+      "overpressure": {
+        "label": "Overpressure",
+        "unit": "bar"
+      },
+      "heatFlow": {
+        "label": "Heat Flow",
+        "unit": "W"
+      },
+      "maximumTemperature": {
+        "label": "Maximum Temperature",
+        "unit": "°C"
+      },
+      "thruster": {
+        "label": "Thruster"
+      },
+      "mode": {
+        "label": "Mode"
+      },
       "pid": {
         "p": "P",
         "i": "I",
