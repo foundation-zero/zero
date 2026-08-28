@@ -210,8 +210,8 @@ Use `@property` or a named getter.
 
 - Comments explain *why*, not *what*.
 - Skip comments that restate the code — a reader knows what `apt-get install` does.
-- Avoid Long comments.
-- Avoid Comments with irrelevant design decisions.
+- Avoid long comments.
+- Avoid comments with irrelevant design decisions.
 - If a comment raises more questions than it answers, rewrite or remove it.
 - `# TODO:` is the convention for deferred work. Other markers (`FIXME`, `HACK`,
   `XXX`) are not used.
