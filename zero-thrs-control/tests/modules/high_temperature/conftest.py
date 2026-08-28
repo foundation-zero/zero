@@ -17,6 +17,7 @@ from thrs.input_output.definitions.simulation import (
     Pcs,
     Thruster,
 )
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.consumers import ConsumersSensorValues
 from thrs.input_output.modules.high_temperature import (
@@ -62,6 +63,10 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

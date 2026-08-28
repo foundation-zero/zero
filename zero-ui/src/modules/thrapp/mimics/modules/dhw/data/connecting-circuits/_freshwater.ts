@@ -4,7 +4,7 @@ import { MimicComponentType } from "../../../../../types";
 import { getCustomField, getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
-export default toInstance<MimicComponentType.FreshwaterCircuit>({
+export default toInstance<MimicComponentType.ConnectingCircuit>({
   controls: {},
   controllerState: {},
   custom: {},
@@ -19,7 +19,6 @@ export default toInstance<MimicComponentType.FreshwaterCircuit>({
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Fresh water",
-      technicalName: "fresh-water",
     });
   },
 });

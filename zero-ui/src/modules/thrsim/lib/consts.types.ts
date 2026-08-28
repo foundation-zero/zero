@@ -1,4 +1,4 @@
-import { RecordIndex, StringKeyOf } from "@/modules/common/types";
+import { ChartDataType, RecordIndex, Stamped, StringKeyOf } from "@/modules/common/types";
 import {
   ExtractSimulationValues,
   ModuleDefinition,
@@ -16,12 +16,13 @@ export type ThrsModules<
   [K in keyof TDefinitions]: THRSModule<TDefinitions[K]>;
 };
 
-export type GraphQLRecord<
-  K extends RecordIndex = RecordIndex,
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = {
-  __typename: K;
-} & T;
+export type GraphQLRecord<K extends RecordIndex = RecordIndex> = {
+  __typename?: K;
+};
+
+export type ComponentRecord<
+  T extends Record<string, Stamped<ChartDataType>> = Record<string, Stamped<ChartDataType>>,
+> = T;
 
 export type SimulationInputsType<K extends string> = `${Capitalize<K>}SimulationInputsType`;
 export type SimulationOutputsType<K extends string> = `${Capitalize<K>}SimulationOutputsType`;
@@ -30,16 +31,12 @@ export type SimulationOutputsType<K extends string> = `${Capitalize<K>}Simulatio
 // https://www.totaltypescript.com/tips/derive-a-union-type-from-an-object
 export type ThrsSimulation<TDefinitions extends SimulationInputsOutputs = typeof SIMULATION> = {
   inputs: {
-    [K in StringKeyOf<TDefinitions["inputs"]>]: GraphQLRecord<
-      SimulationInputsType<K>,
-      ExtractSimulationValues<TDefinitions["inputs"][K]>
-    >;
+    [K in StringKeyOf<TDefinitions["inputs"]>]: GraphQLRecord<SimulationInputsType<K>> &
+      ComponentRecord<ExtractSimulationValues<TDefinitions["inputs"][K]>>;
   }[StringKeyOf<TDefinitions["inputs"]>];
   outputs: {
-    [K in StringKeyOf<TDefinitions["outputs"]>]: GraphQLRecord<
-      SimulationOutputsType<K>,
-      ExtractSimulationValues<TDefinitions["outputs"][K]>
-    >;
+    [K in StringKeyOf<TDefinitions["outputs"]>]: GraphQLRecord<SimulationOutputsType<K>> &
+      ComponentRecord<ExtractSimulationValues<TDefinitions["outputs"][K]>>;
   }[StringKeyOf<TDefinitions["outputs"]>];
 };
 

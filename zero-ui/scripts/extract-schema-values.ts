@@ -95,6 +95,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SystemAmcsControlModeType: "AmcsControlMode",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -106,6 +107,7 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SimulationPcsType: "Pcs",
   SimulationHeatSourceType: "HeatSource",
   SimulationHvacExchangerType: "HvacExchanger",
+  SystemAmcsControlModeType: "AmcsControlMode",
 };
 
 const CONTROL_TYPE_MAP: Record<string, string> = {

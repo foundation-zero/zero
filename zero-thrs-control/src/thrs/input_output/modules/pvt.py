@@ -1,20 +1,17 @@
 from datetime import UTC, datetime
 from typing import Annotated, cast
 
-from pydantic import ConfigDict, computed_field
+from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import (
-    Stamped,
-    ThrsValues,
-    component_meta,
-    computed_meta,
-)
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION, Celsius
+from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
-class PvtSensorValues(ThrsValues):
+class PvtSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -894,6 +891,14 @@ class PvtSensorValues(ThrsValues):
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
         )
 
+    pvt_mode: Annotated[
+        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
+    ]
+
+    @property
+    def mode(self) -> AmcsControlMode:
+        return self.pvt_mode
+
 
 class PvtControlValues(ThrsValues):
     model_config = ConfigDict(
@@ -961,6 +966,7 @@ class PvtSimulationInputs(ThrsValues):
     pvt_owners: simulation.HeatSource
     pvt_pcm_supply: simulation.TemperatureBoundary
     pvt_seawater_supply: simulation.Boundary
+    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class PvtSimulationOutputs(ThrsValues):

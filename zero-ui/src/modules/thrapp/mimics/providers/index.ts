@@ -161,6 +161,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
   [SensorComponentType.Irradiance]: "irradiance",
+  [SensorComponentType.AmcsControlMode]: "mode",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {

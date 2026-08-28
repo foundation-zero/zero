@@ -17,7 +17,7 @@ import {
 import { gql } from "@urql/vue";
 import { computed, Ref, toRefs, unref } from "vue";
 import { createMimicDataProvider, ModuleField } from ".";
-import { useAutomaticMode } from "../../state";
+import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { MimicComponentState } from "../components";
 
 const { data } = toRefs(useThrsHistory());
@@ -148,6 +148,7 @@ const setControlValue = async <
 };
 
 const isAutomaticMode = useAutomaticMode();
+const isAdvisoryEnabled = useAdvisoryEnabled();
 
 createMimicDataProvider({
   getSensorValue,
@@ -158,7 +159,9 @@ createMimicDataProvider({
   setControlValue,
   getComponentState: (state) =>
     computed(() => {
-      if (!isAutomaticMode.value) {
+      if (!isAdvisoryEnabled.value) {
+        return MimicComponentState.Normal;
+      } else if (!isAutomaticMode.value) {
         return MimicComponentState.Manual;
       } else {
         return unref(state) ?? MimicComponentState.Normal;

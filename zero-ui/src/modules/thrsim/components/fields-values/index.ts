@@ -3,7 +3,6 @@ import { createContext } from "reka-ui";
 import { Ref } from "vue";
 
 export { default as FieldCurrent } from "./FieldCurrent.vue";
-export { default as FieldHistory } from "./FieldHistory.vue";
 export { default as FieldsFilter } from "./FieldsFilter.vue";
 
 export { default as FieldHeader } from "./FieldHeader.vue";

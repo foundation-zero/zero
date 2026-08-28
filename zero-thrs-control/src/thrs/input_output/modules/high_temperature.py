@@ -1,5 +1,8 @@
-from thrs.input_output.base import ThrsValues
+from typing import Annotated
+
+from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions import simulation
+from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationOutputs,
 )
@@ -26,6 +29,10 @@ class HighTemperatureSimulationInputs(ThrsValues):
     pcm_freshwater_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_adsorption_supply: simulation.Boundary
+    consumers_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    pcm_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    thrusters_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class HighTemperatureSimulationOutputs(

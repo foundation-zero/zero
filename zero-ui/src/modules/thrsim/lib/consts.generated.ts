@@ -167,6 +167,9 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SensorComponentType.Temperature,
   },
+  adsorptionMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
 });
 
 export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
@@ -190,6 +193,9 @@ export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
   },
   adsorptionDhwSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  adsorptionMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -316,6 +322,9 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  consumersMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
 });
 
 export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
@@ -327,6 +336,9 @@ export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
   },
   consumersPcmSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  consumersMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -711,6 +723,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
   },
+  dcMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
 });
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
@@ -743,6 +758,9 @@ export const DC_SIMULATION_INPUTS = toSimulationDefinition({
   },
   dcDhwSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  dcMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -1158,6 +1176,9 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "25001038-1",
     componentType: SensorComponentType.Temperature,
   },
+  dhwMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
   drivesDelta: {
     componentType: SensorComponentType.DeltaT,
   },
@@ -1223,6 +1244,9 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
   },
   dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
+  },
+  dhwMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -1497,6 +1521,9 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
   },
+  drivesMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
 });
 
 export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
@@ -1526,6 +1553,9 @@ export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
   },
   drivesDhwSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  drivesMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -1571,6 +1601,18 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
   },
   consumersAdsorptionSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  consumersMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
+  },
+  pvtMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
+  },
+  pcmMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
+  },
+  thrustersMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -1806,6 +1848,9 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  pcmMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
 });
 
 export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
@@ -1820,6 +1865,9 @@ export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
   },
   pcmConsumersSupply: {
     componentType: SimulationComponentType.Temperature,
+  },
+  pcmMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -2343,6 +2391,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-55",
     componentType: SensorComponentType.Temperature,
   },
+  pvtMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
   pvtMaxTemperatureMainFwdStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
@@ -2421,6 +2472,9 @@ export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
   },
   pvtSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  pvtMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 
@@ -2799,6 +2853,9 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "1500",
     componentType: SensorComponentType.Pcs,
   },
+  thrustersMode: {
+    componentType: SensorComponentType.AmcsControlMode,
+  },
   thrustersTemperatureRecovery: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
@@ -2829,6 +2886,9 @@ export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
   },
   thrustersPcs: {
     componentType: SimulationComponentType.Pcs,
+  },
+  thrustersMode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 

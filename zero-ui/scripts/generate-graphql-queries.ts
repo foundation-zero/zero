@@ -135,6 +135,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Ugrid: ["active"],
     PropulsionDrive: ["active"],
     ShorePowerConverter: ["active"],
+    AmcsControlMode: ["mode"],
   },
 
   // Simulation component fields
@@ -147,6 +148,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Pcs: ["mode"],
     HeatSource: ["heatFlow"],
     HvacExchanger: ["heatFlow", "maximumTemperature"],
+    AmcsControlMode: ["mode"],
   },
 
   // Parameter fields (parameters are flat values, no nested fields)

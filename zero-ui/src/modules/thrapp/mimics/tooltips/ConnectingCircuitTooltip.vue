@@ -8,10 +8,10 @@ import {
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import FreshwaterCircuitInstance from "../instances/FreshwaterCircuitInstance.vue";
+import ConnectingCircuitInstance from "../instances/ConnectingCircuitInstance.vue";
 import { SensorValue } from "../providers";
 import * as Partials from "./partials";
-const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
+const props = defineProps<TooltipComponentContext<MimicComponentType.ConnectingCircuit>>();
 
 const { items, labels } = useTranslations();
 </script>
@@ -20,7 +20,7 @@ const { items, labels } = useTranslations();
   <MimicTooltip>
     <div class="flex items-center gap-2">
       <NoopTooltipProvider>
-        <FreshwaterCircuitInstance
+        <ConnectingCircuitInstance
           v-bind="props"
           height="243"
           force-height

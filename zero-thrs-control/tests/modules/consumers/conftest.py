@@ -6,6 +6,7 @@ from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
     ConsumersSimulationInputs,
@@ -47,6 +48,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
+        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

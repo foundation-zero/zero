@@ -16,7 +16,7 @@ import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps &
-    TooltipComponentContext<MimicComponentType.FreshwaterCircuit> & {
+    TooltipComponentContext<MimicComponentType.ConnectingCircuit> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
@@ -31,7 +31,7 @@ const t = tScoped("labels");
 
 <template>
   <MimicTooltipTrigger
-    :type="MimicComponentType.FreshwaterCircuit"
+    :type="MimicComponentType.ConnectingCircuit"
     :data="props"
   >
     <CircuitBox

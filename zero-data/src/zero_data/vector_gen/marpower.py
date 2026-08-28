@@ -45,7 +45,11 @@ class MarpowerVectorGenerator:
         mapping = {
             thrs_topic.topic.topic: ThrsTopicMapping(
                 table=f"marpower__thrs__{thrs_topic.component}",
-                yard_tag=thrs_topic.topic.yard_tag,
+                yard_tag=(
+                    thrs_topic.topic.yard_tag.strip()
+                    if thrs_topic.topic.yard_tag is not None
+                    else None
+                ),
                 technical_name=thrs_topic.technical_name,
             )
             for thrs_topic in sorted(thrs_topics, key=lambda t: t.topic.topic)

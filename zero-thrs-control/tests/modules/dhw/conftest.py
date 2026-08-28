@@ -20,6 +20,7 @@ from thrs.input_output.definitions.simulation import (
     OverpressureTemperatureBoundary,
     TemperatureBoundary,
 )
+from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.dhw import (
     DhwControlValues,
     DhwSensorValues,
@@ -59,6 +60,7 @@ def simulation_inputs():
         ),
         dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
+        dhw_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 
