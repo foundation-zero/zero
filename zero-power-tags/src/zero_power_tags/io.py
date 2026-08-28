@@ -249,5 +249,7 @@ def build_asyncapi(title: str = "Power Tags", version: str = "1.0.0") -> dict[st
     specs = read_modbus_bridge_specs()
     broker = MQTTBroker("localhost:1883")
     publisher = create_publisher(broker, specs)
-    doc = AsyncAPI(broker, title=title, version=version).to_specification().to_jsonable()
+    doc = (
+        AsyncAPI(broker, title=title, version=version).to_specification().to_jsonable()
+    )
     return finalize_parametrized_spec(doc, publisher.parameters)

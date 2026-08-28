@@ -87,7 +87,9 @@ class TuiCmd(ModbusSettings):
     temperature: float = 20
 
     def cli_cmd(self) -> None:
-        from zero_modbus_bridge.tui import run_tui  # heavy TUI-only dep, import on demand
+        from zero_modbus_bridge.tui import (
+            run_tui,
+        )  # heavy TUI-only dep, import on demand
 
         run_tui(
             [([HULL_TEMPERATURE_TOPIC], self.modbus_port)],

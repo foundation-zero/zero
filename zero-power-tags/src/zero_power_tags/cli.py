@@ -191,7 +191,9 @@ class TuiCmd(BaseSettings):
     default_value: float = 0.0
 
     def cli_cmd(self) -> None:
-        from zero_modbus_bridge.tui import run_tui  # heavy TUI-only dep, import on demand
+        from zero_modbus_bridge.tui import (
+            run_tui,
+        )  # heavy TUI-only dep, import on demand
 
         specs = read_modbus_bridge_specs()
         run_tui(
