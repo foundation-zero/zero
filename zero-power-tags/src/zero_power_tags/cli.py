@@ -16,7 +16,6 @@ from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.settings import MqttSettings
 from zero_modbus_bridge.stub import Stub
-from zero_modbus_bridge.tui import run_tui
 
 from zero_power_tags.io import (
     BridgeSpec,
@@ -192,6 +191,8 @@ class TuiCmd(BaseSettings):
     default_value: float = 0.0
 
     def cli_cmd(self) -> None:
+        from zero_modbus_bridge.tui import run_tui  # heavy TUI-only dep, import on demand
+
         specs = read_modbus_bridge_specs()
         run_tui(
             local_topic_groups(PowerTagsSettings(), specs, self.modbus_port),

@@ -17,7 +17,6 @@ from pydantic_settings import (
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
-from zero_modbus_bridge.tui import run_tui
 
 from zero_hull_temperature.addresses import (
     HULL_TEMPERATURE_TOPIC,
@@ -88,6 +87,8 @@ class TuiCmd(ModbusSettings):
     temperature: float = 20
 
     def cli_cmd(self) -> None:
+        from zero_modbus_bridge.tui import run_tui  # heavy TUI-only dep, import on demand
+
         run_tui(
             [([HULL_TEMPERATURE_TOPIC], self.modbus_port)],
             bind_host=self.modbus_host,
