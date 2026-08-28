@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
 from zero_data.data_gen import generate_data
+from zero_data.greptime.cli import GreptimeCmd
 from zero_data.vector_gen import generate_vector
 
 
@@ -64,6 +65,7 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
 
     generate_data: CliSubCommand[GenerateDataCmd]
     generate_vector: CliSubCommand[GenerateVectorCmd]
+    greptime: CliSubCommand[GreptimeCmd]
 
     def cli_cmd(self):
         CliApp.run_subcommand(self)

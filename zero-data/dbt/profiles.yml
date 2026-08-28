@@ -4,13 +4,13 @@
 # dbt-postgres uses the connection database as the leading catalog token in every
 # rendered relation name (and enforces it with a Python-level cross-db guard). Pointing
 # the connection at a database literally named `greptime` makes every name render as the
-# Greptime-valid `"greptime"."<schema>"."<table>"`. See docs/viability-check.md.
+# Greptime-valid `"greptime"."<schema>"."<table>"`. See docs/greptime-views-viability-check.md.
 #
 # `schema` is `views`: models materialize there, leaving `public` as raw-ingest only.
 # Fully-qualified names still target `public`/`views` regardless of the connected schema.
 #
 # The tiers differ only by host, so the shared connection settings live in one anchor.
-zero_greptime_data:
+zero_data_greptime:
   target: local
   outputs:
     # Local Greptime from docker-compose, seeded from the committed snapshot. Offline.

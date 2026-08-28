@@ -10,16 +10,18 @@ sources:
     database: greptime
     schema: public
     tables:
-      - name: domestic__lighting_groups
-        description: "Per-lighting-group level readings from the domestic control system."
+      - name: marpower__150000_propulsion__pcs_fwd
+        description: "Forward propulsion control system (PCS) telemetry from Marpower."
         columns:
           - name: timestamp
             description: "Ingest time index. Always present; the raw-schema assumption we rely on."
             tests:
               - not_null
-          - name: id
-            description: "Lighting group identifier."
-          - name: level
-            description: "Dimming level."
-          - name: room_id
-            description: "Room the lighting group belongs to."
+          - name: device_state__value
+            description: "Device state measure (value field of the inferred clump)."
+          - name: drive_thermal_state__value
+            description: "Drive thermal state measure."
+          - name: command_register__value
+            description: "Command register measure."
+          - name: azimuth_setpoint_not_reached__value
+            description: "Azimuth setpoint-not-reached flag."

@@ -5,7 +5,7 @@
   `CREATE OR REPLACE VIEW`, which is idempotent and rebinds the view to the current schema
   after drift. The two macros below map dbt's `view` materialization onto it.
 
-  See docs/viability-check.md for the full spike findings.
+  See docs/greptime-views-viability-check.md for the full spike findings.
 #}
 
 {% macro postgres__create_view_as(relation, sql) -%}

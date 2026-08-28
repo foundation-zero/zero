@@ -13,7 +13,7 @@ its Postgres endpoint (`:4003`, user `app`, no password).
 - **`dbt debug`** connects over the PG endpoint.
 - **`SHOW CREATE TABLE`** returns replayable DDL (including `ENGINE=mito` / `WITH(...)`);
   loading it into a fresh Greptime recreates the table shape empty. Verified with a real
-  prod table (`domestic__lighting_groups` from `greptime-subzero`).
+  prod table (`marpower__150000_propulsion__pcs_fwd` from `greptime-subzero`).
 - **`information_schema.columns`** and `information_schema.tables` return usable schema info.
 - **Cross-database views** work: a view in `views` can `SELECT` from a table in `public`.
 - **`CREATE OR REPLACE VIEW`**, `information_schema.views`, `SHOW CREATE VIEW` all work.

@@ -12,12 +12,12 @@ No database mocking; the local Greptime is assumed running (as in CI and docker-
 import os
 import subprocess
 
-from tests.conftest import Greptime
-from zero_greptime_data.config import PROJECT_ROOT, SNAPSHOT_DIR, GreptimeConnection
-from zero_greptime_data.snapshot import load_snapshot
+from tests.greptime.conftest import Greptime
+from zero_data.greptime.config import PROJECT_ROOT, SNAPSHOT_DIR, GreptimeConnection
+from zero_data.greptime.snapshot import load_snapshot
 
 DBT_DIR = PROJECT_ROOT / "dbt"
-PROOF_VIEW = "stg_domestic__lighting_groups"
+PROOF_VIEW = "stg_marpower__150000_propulsion__pcs_fwd"
 
 
 def _dbt_build() -> subprocess.CompletedProcess[str]:
@@ -45,7 +45,9 @@ def test_dbt_build_is_green_against_snapshot_seeded_greptime(
     assert "Completed successfully" in output
     assert "ERROR=0" in output  # the run summary reports zero errors
     # the source test, the view model, and the model test each report success
-    assert "source_not_null_raw_domestic__lighting_groups_timestamp" in output
+    assert (
+        "source_not_null_raw_marpower__150000_propulsion__pcs_fwd_timestamp" in output
+    )
     assert f"view model views.{PROOF_VIEW}" in output
     assert f"not_null_{PROOF_VIEW}_ts" in output
 
@@ -57,10 +59,19 @@ def test_proof_view_is_queryable_with_explicit_columns(
     load_snapshot(connection, SNAPSHOT_DIR)
     assert _dbt_build().returncode == 0
 
+    explicit_columns = [
+        "ts",
+        "device_state",
+        "drive_thermal_state",
+        "command_register",
+        "azimuth_setpoint_not_reached",
+    ]
     views = Greptime(connection, "views")
     # Selecting the exact explicit columns proves the contract and cross-db resolution.
-    rows = views.fetch(f"select ts, id, level, room_id from {PROOF_VIEW} limit 1")
+    rows = views.fetch(
+        f"select {', '.join(explicit_columns)} from {PROOF_VIEW} limit 1"
+    )
     assert rows == []  # snapshot tables are empty; the query resolving is the assertion
 
     view_columns = views.column_names(f"select * from {PROOF_VIEW} limit 0")
-    assert view_columns == ["ts", "id", "level", "room_id"]
+    assert view_columns == explicit_columns

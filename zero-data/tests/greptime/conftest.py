@@ -11,8 +11,8 @@ from typing import Any
 
 import pytest
 
-from zero_greptime_data.config import GreptimeConnection
-from zero_greptime_data.snapshot import connect
+from zero_data.greptime.config import GreptimeConnection
+from zero_data.greptime.snapshot import connect
 
 
 @pytest.fixture

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import psycopg2
 
-from zero_greptime_data.config import (
+from zero_data.greptime.config import (
     DBT_DATABASES,
     GreptimeConnection,
     read_curated_tables,

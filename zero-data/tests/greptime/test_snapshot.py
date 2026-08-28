@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from tests.conftest import Greptime
-from zero_greptime_data.config import GreptimeConnection
-from zero_greptime_data.snapshot import connect, dump_table_ddl, write_snapshot
+from tests.greptime.conftest import Greptime
+from zero_data.greptime.config import GreptimeConnection
+from zero_data.greptime.snapshot import connect, dump_table_ddl, write_snapshot
 
 CREATE_KNOWN_TABLE = """
 CREATE TABLE IF NOT EXISTS "{table}" (
