@@ -65,10 +65,10 @@ spec:
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
             {{- range $key, $panel := .Values.modbus.panels }}
-            - name: MODBUS_HOST_{{ $key | upper }}
+            - name: MODBUS_PANELS__host_{{ $key | lower }}
               value: {{ $panel.host | quote }}
             {{- if $panel.port }}
-            - name: MODBUS_PORT_{{ $key | upper }}
+            - name: MODBUS_PANELS__port_{{ $key | lower }}
               value: {{ $panel.port | quote }}
             {{- end }}
             {{- end }}
