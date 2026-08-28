@@ -405,12 +405,20 @@ services:
     profiles:
       - data-collection
     environment:
-      MODBUS_HOST: power-tags-stub
-      MODBUS_PORT: "502"
       MODBUS_PROBE_INTERVAL: "10"
       MQTT_HOST: vernemq
       MQTT_PORT: "1883"
       MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
+      MODBUS_PANELS__host_10p0_1: power-tags-stub
+      MODBUS_PANELS__port_10p0_1: "502"
+      MODBUS_PANELS__host_10p0_3: power-tags-stub
+      MODBUS_PANELS__port_10p0_3: "503"
+      MODBUS_PANELS__host_10p1: power-tags-stub
+      MODBUS_PANELS__port_10p1: "504"
+      MODBUS_PANELS__host_10p2: power-tags-stub
+      MODBUS_PANELS__port_10p2: "505"
+      MODBUS_PANELS__host_10p3: power-tags-stub
+      MODBUS_PANELS__port_10p3: "506"
     depends_on:
       vernemq:
         condition: service_healthy
@@ -425,6 +433,7 @@ services:
     environment:
       MODBUS_HOST: "0.0.0.0"
       MODBUS_PORT: "502"
+      MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
 
 volumes:
   db_data:

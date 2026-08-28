@@ -2,7 +2,7 @@
 
 from typing import Any, Callable, Literal, get_type_hints
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 
 RawModbusValue = int | float | bool | None
 RegisterValue = tuple[int | None, RawModbusValue]
@@ -18,7 +18,6 @@ class ModbusField:
 
     register: int | None = None
     offset: int | None = None
-    count: int = 1
     data_type: Literal["uint16", "float32", "bool"] = "uint16"
     modbus_type: Literal["holding", "coil"] = "holding"
     scale_factor: float = 1.0
@@ -29,7 +28,6 @@ class ModbusField:
         *,
         register: int | None = None,
         offset: int | None = None,
-        count: int = 1,
         data_type: Literal["uint16", "float32", "bool"] = "uint16",
         modbus_type: Literal["holding", "coil"] = "holding",
         scale_factor: float = 1.0,
@@ -39,11 +37,17 @@ class ModbusField:
             raise ValueError("Provide either `register` or `offset`, not both.")
         self.register = register
         self.offset = offset
-        self.count = count
         self.data_type = data_type
         self.modbus_type = modbus_type
         self.scale_factor = scale_factor
         self.validator = validator
+
+    @property
+    def count(self) -> int:
+        """Number of Modbus registers occupied by this field."""
+        if self.data_type == "float32":
+            return 2
+        return 1
 
 
 class ModbusTopic[T: BaseModel](BaseModel):
@@ -68,35 +72,55 @@ class ModbusTopic[T: BaseModel](BaseModel):
     model: type[T]
     start_register: int = 0
     unit_id: int = 1
-    fields: list[ModbusField] | None = None
+    fields: list[ModbusField] = Field(default_factory=list)
     extra_fields: dict[str, Any] = Field(default_factory=dict)
-    converter: TopicConverter[T] | None = None
+
+    _converter: TopicConverter[T] | None = PrivateAttr(default=None)
+
+    @property
+    def converter(self) -> TopicConverter[T]:
+        """Payload converter; must be provided by subclasses."""
+        raise NotImplementedError("converter must be implemented by subclasses")
 
 
 class AnnotationModbusTopic[T: BaseModel](ModbusTopic[T]):
     """Annotation-driven topic: fields and converter derive from ``model``."""
 
     def model_post_init(self, __context: Any) -> None:
-        annotations = extract_modbus_fields(self.model)
-        annotation_items = list(annotations.items())
+        annotation_items = list(extract_modbus_fields(self.model).items())
 
-        if self.fields is None and annotation_items:
+        if annotation_items:
             self.fields = [field for _, field in annotation_items]
-
-        if self.converter is None and annotation_items:
-            self.converter = build_annotation_converter(
+            self._converter = build_annotation_converter(
                 self.model,
                 annotation_items,
                 self.extra_fields,
             )
 
+    @property
+    def converter(self) -> TopicConverter[T]:
+        if self._converter is None:
+            raise ValueError(
+                f"Model {self.model.__name__} has no annotated ModbusFields"
+            )
+        return self._converter
+
 
 class ConverterModbusTopic[T: BaseModel](ModbusTopic[T]):
     """Converter-driven topic: caller provides ``fields`` and ``converter``."""
 
-    def model_post_init(self, __context: Any) -> None:
-        if self.fields is None or self.converter is None:
+    def __init__(self, **data: Any) -> None:
+        converter = data.pop("converter", None)
+        super().__init__(**data)
+        if converter is None:
             raise ValueError("ConverterModbusTopic requires fields and converter")
+        self._converter = converter
+
+    @property
+    def converter(self) -> TopicConverter[T]:
+        if self._converter is None:  # unreachable: enforced in __init__
+            raise ValueError("ConverterModbusTopic requires fields and converter")
+        return self._converter
 
 
 def _find_modbus_field(hint) -> ModbusField | None:

@@ -60,12 +60,18 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
-            - name: MODBUS_HOST
-              value: {{ .Values.modbus.host | quote }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
+            {{- range $key, $panel := .Values.modbus.panels }}
+            - name: MODBUS_PANELS__host_{{ $key | lower }}
+              value: {{ $panel.host | quote }}
+            {{- if $panel.port }}
+            - name: MODBUS_PANELS__port_{{ $key | lower }}
+              value: {{ $panel.port | quote }}
+            {{- end }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

@@ -5,7 +5,6 @@ from typing import Any, Iterator
 
 from pydantic import BaseModel
 from pyModbusTCP.client import ModbusClient
-from tenacity import retry, stop_after_attempt, wait_fixed
 
 from zero_modbus_bridge.bit_ops import lsw_registers_to_float
 from zero_modbus_bridge.io import ModbusField, ModbusTopic
@@ -25,8 +24,19 @@ class ModbusReader:
         self._modbus = modbus
         self._topics = topics
 
+    def ensure_open(self) -> bool:
+        """Open the underlying Modbus connection if needed.
+
+        Returns ``True`` when the connection is (already) open.
+        """
+        if self._modbus.is_open:
+            return True
+        return bool(self._modbus.open())
+
     def read_all(self) -> Iterator[tuple[str, Any]]:
         """Read every topic once and yield ``(topic_name, payload)``."""
+        if not self._modbus.is_open:
+            raise ValueError("Modbus connection is not open")
         for topic in self._topics:
             self._modbus.unit_id = topic.unit_id
             try:
@@ -36,15 +46,7 @@ class ModbusReader:
             except Exception:
                 logger.exception("Failed to read topic %s", topic.topic)
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
-    def read_topic[T: BaseModel](self, topic: ModbusTopic[T]) -> T | None:
-        if topic.converter is None:
-            logger.warning("No converter configured for topic %s", topic.topic)
-            return None
-        if not topic.fields:
-            logger.warning("No fields configured for topic %s", topic.topic)
-            return None
-
+    def read_topic[T: BaseModel](self, topic: ModbusTopic[T]) -> T:
         reads = self._read_normalized(topic, topic.fields)
         values = [(reg, raw) for reg, raw in reads]
         return topic.converter(values)

@@ -20,6 +20,7 @@ dev = [
     "pyright>=1.1.403,<2",
     "fastexcel>=0.20.2,<0.21",
     "polars>=1.42.0,<2",
+    "zero-modbus-bridge[tui]",
 ]
 test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9"]
 

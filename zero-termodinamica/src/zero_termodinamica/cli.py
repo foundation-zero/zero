@@ -25,7 +25,6 @@ class RunCmd(ModbusSettings, MqttSettings):
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
         topics = read_modbus_topics()
-        MqttPublisher(broker, topics)
         bridge = ModbusBridge.from_settings(self, broker, topics)
         app = FastStream(broker)
         app.after_startup(bridge.run)
