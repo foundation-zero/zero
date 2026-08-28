@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Annotated
 from unittest.mock import AsyncMock, MagicMock
 
@@ -9,7 +10,7 @@ from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.reader import ModbusReader
 
 
-def _make_bridge(mock_modbus: MagicMock, topics: list[ModbusTopic]):
+def _make_bridge(mock_modbus: MagicMock, topics: Sequence[ModbusTopic]):
     mock_pub = MagicMock()
     mock_pub.publish = AsyncMock()
     mock_broker = MagicMock()
