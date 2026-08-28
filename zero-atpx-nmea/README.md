@@ -18,6 +18,4 @@ around that function: it uses two separate brokers, since in production
 `ATPX_MQTT_HOST` (A+T's onboard broker, unauthenticated) differs from
 `MQTT_HOST` (our own broker); locally both resolve to the same `vernemq`.
 
-See `PLAN.md` (one directory up) for the full spec.
-
 Otherwise this follows standard project conventions.

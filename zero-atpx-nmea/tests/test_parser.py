@@ -2,7 +2,7 @@
 
 Each case is `topic -> raw sentence`, all under `atpx/nmea0183/<sender>/<TYPE>`.
 Expected dicts were determined empirically by running pynmea2 against each
-sentence (see PLAN.md) and pinned here so the schema per sentence type is
+sentence and pinned here so the schema per sentence type is
 locked and regressions are caught.
 """
 
@@ -313,7 +313,7 @@ def test_genuinely_unknown_sentence_type_is_dropped() -> None:
 def test_alr_custom_sentence() -> None:
     # $SDALR was previously dropped: pynmea2 has no built-in ALR support.
     # zero_atpx_nmea.custom_sentences registers a custom ALR class (see
-    # PLAN.md / IEC 61162-1 §8.3.15 "Set alarm state"), so it now flows
+    # IEC 61162-1 §8.3.15 "Set alarm state"), so it now flows
     # through the same generic envelope as any other sentence.
     raw = "$SDALR,,,V,V,*64"
     envelope = parse(raw, "atpx/nmea0183/3141/ALR")

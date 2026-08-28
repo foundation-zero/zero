@@ -62,6 +62,8 @@ def parse(raw_sentence: str, topic: str) -> dict[str, Any] | None:
     the caller is responsible for logging the drop.
     """
     parts = topic.split("/")
+    if len(parts) < 4 or parts[0] != "atpx" or parts[1] != "nmea0183":
+        return None
     sender, sentence_type = parts[-2], parts[-1]
     envelope_type = sentence_type.lower()
 
@@ -74,7 +76,13 @@ def parse(raw_sentence: str, topic: str) -> dict[str, Any] | None:
 
     for name, idx in type(msg).name_to_idx.items():
         raw_value = msg.data[idx] if idx < len(msg.data) else ""
-        value = None if raw_value == "" else getattr(msg, name)
+        if raw_value == "":
+            value: Any = None
+        else:
+            try:
+                value = getattr(msg, name)
+            except (ValueError, TypeError):
+                value = None
         envelope[_envelope_key(name)] = _jsonable(value)
 
     if hasattr(msg, "latitude"):
