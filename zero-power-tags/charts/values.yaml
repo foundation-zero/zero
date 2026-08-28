@@ -13,9 +13,16 @@ mqtt:
   existingSecretPasswordKey: password
 
 modbus:
-  host: ""
   port: 502
   probe_interval: 10
+  # One gateway per panel; keys are sanitized panel names (panel 10P0.1 → key
+  # 10P0_1) rendered as MODBUS_HOST_<key> / MODBUS_PORT_<key> env vars. The
+  # addresses themselves live in the deployment repository.
+  panels: {}
+  # panels:
+  #   10P0_1:
+  #     host: "192.168.0.10"
+  #     port: 502
 
 resources: {}
 

@@ -16,8 +16,12 @@ dependencies = [
 dynamic = ["version"]
 
 [dependency-groups]
-dev = ["ruff>=0.12.7,<0.13", "pyright>=1.1.403,<2"]
-test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9"]
+dev = [
+    "ruff>=0.12.7,<0.13",
+    "pyright>=1.1.403,<2",
+    "zero-modbus-bridge[tui]",
+]
+test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9", "requests>=2.32.0,<3"]
 
 [tool.ruff]
 fix = true

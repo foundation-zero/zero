@@ -34,15 +34,11 @@
     },
     "modbus": {
       "type": "object",
-      "required": ["host", "port"],
+      "required": ["port"],
       "properties": {
-        "host": {
-          "type": "string",
-          "description": "Modbus server hostname."
-        },
         "port": {
           "type": "integer",
-          "description": "Modbus TCP port.",
+          "description": "Default Modbus TCP port for gateways without a per-panel override.",
           "minimum": 1,
           "maximum": 65535
         },
@@ -50,6 +46,27 @@
           "type": "integer",
           "description": "Seconds between Modbus reads.",
           "minimum": 1
+        },
+        "panels": {
+          "type": "object",
+          "description": "Gateway per panel. Keys are sanitized panel names (panel 10P0.1 → key 10P0_1) rendered as MODBUS_HOST_<key> / MODBUS_PORT_<key> environment variables.",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["host"],
+            "properties": {
+              "host": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Gateway hostname or IP address."
+              },
+              "port": {
+                "type": "integer",
+                "description": "Gateway Modbus TCP port; defaults to the global modbus.port.",
+                "minimum": 1,
+                "maximum": 65535
+              }
+            }
+          }
         }
       }
     },

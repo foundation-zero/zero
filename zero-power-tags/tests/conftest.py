@@ -6,22 +6,11 @@ import pytest
 
 SAMPLE_BRIDGES: list[dict[str, Any]] = [
     {
-        "unit_id": 1,
+        "panel": "10P0.1",
         "topics": [
             {
-                "topic": "power-tags/10P0.1/test-device",
-                "modbus_fields": [
-                    {
-                        "modbus_register": 3000,
-                        "field_name": "current_a",
-                        "description": "RMS current phase A",
-                        "scale_factor": 1.0,
-                        "register_count": 2,
-                        "data_type": "float32",
-                        "modbus_type": "holding",
-                        "unit": "A",
-                    }
-                ],
+                "unit_id": 1,
+                "name": "test-device",
                 "extra_fields": [
                     {"field_name": "component", "value": "TEST01"},
                     {"field_name": "panel", "value": "10P0.1"},
@@ -30,22 +19,11 @@ SAMPLE_BRIDGES: list[dict[str, Any]] = [
         ],
     },
     {
-        "unit_id": 2,
+        "panel": "10P0.2",
         "topics": [
             {
-                "topic": "power-tags/10P0.2/test-device",
-                "modbus_fields": [
-                    {
-                        "modbus_register": 4000,
-                        "field_name": "current_a",
-                        "description": "RMS current phase A",
-                        "scale_factor": 1.0,
-                        "register_count": 2,
-                        "data_type": "float32",
-                        "modbus_type": "holding",
-                        "unit": "A",
-                    }
-                ],
+                "unit_id": 2,
+                "name": "test-device",
                 "extra_fields": {"component": "TEST02", "panel": "10P0.2"},
             }
         ],

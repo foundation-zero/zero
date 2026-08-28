@@ -3,7 +3,10 @@
 
 Each .xlsm = one panel workbook.
 Each sheet lists breakers (CODE + CONSUMER columns).
-MQTT topic: power-tags/{panel}/{consumer-slug} with code suffix on collisions.
+Breakers are emitted as `(panel, name)` pairs plus their static attributes;
+the full `power-tags/{panel}/{name}` topic, the register layout and the
+engineering units are all documented by the `PowerTag` pydantic model at
+runtime, so they are not duplicated here.
 """
 
 import json
@@ -16,27 +19,6 @@ import polars as pl
 
 SCRIPTS_FOLDER = Path(__file__).parent
 DOCS_FOLDER = SCRIPTS_FOLDER / "../docs"
-
-REGISTERS: list[tuple[int, str, str, str]] = [
-    (3000, "current_a", "A", "RMS current phase A"),
-    (3002, "current_b", "A", "RMS current phase B"),
-    (3004, "current_c", "A", "RMS current phase C"),
-    (3006, "current_n", "A", "RMS current Neutral"),
-    (3028, "voltage_an", "V", "RMS voltage A-N"),
-    (3030, "voltage_bn", "V", "RMS voltage B-N"),
-    (3032, "voltage_cn", "V", "RMS voltage C-N"),
-    (3054, "active_power_a", "W", "Active power phase A"),
-    (3056, "active_power_b", "W", "Active power phase B"),
-    (3058, "active_power_c", "W", "Active power phase C"),
-    (3060, "active_power_total", "W", "Total active power"),
-    (3078, "power_factor_a", "", "Power factor phase A"),
-    (3080, "power_factor_b", "", "Power factor phase B"),
-    (3082, "power_factor_c", "", "Power factor phase C"),
-    (3084, "power_factor_total", "", "Total power factor"),
-]
-
-# NaN sentinel decoded from float32 0xFFC00000 is rejected at read time by
-# each field's ``is_finite_float`` validator (see zero_modbus_bridge.bit_ops)
 
 
 def slugify(text: str, code: str) -> str:
@@ -53,19 +35,6 @@ def slugify(text: str, code: str) -> str:
         s = s[:60].rstrip("-")
     return s
 
-
-def build_address_dicts() -> list[dict]:
-    return [
-        {
-            "modbus_register": reg,
-            "field_name": name,
-            "description": desc,
-            "register_count": 2,
-            "data_type": "float32",
-            "modbus_type": "holding",
-        }
-        for reg, name, unit, desc in REGISTERS
-    ]
 
 def load_patches(patches_path: Path | None) -> dict[str, dict[str, object]]:
     if patches_path is None or not patches_path.exists():
@@ -85,7 +54,10 @@ def _parse_args() -> tuple[Path | None, list[Path]]:
     if args:
         excel_files = [Path(a) for a in args]
     else:
-        excel_files = sorted(DOCS_FOLDER.glob("*.xlsm"))
+        # Skip Office lock files (e.g. ~$book.xlsm) left by an open workbook.
+        excel_files = sorted(
+            p for p in DOCS_FOLDER.glob("*.xlsm") if not p.name.startswith("~$")
+        )
 
     if not excel_files:
         print("No Excel files found in docs/", file=sys.stderr)
@@ -96,83 +68,92 @@ def _parse_args() -> tuple[Path | None, list[Path]]:
 
 def _read_breakers(
     df: pl.DataFrame, panel: str, patches: dict
-) -> list[tuple[str, str, str, str]]:
+) -> list[tuple[str, str, str]]:
     """Extract raw breaker rows from a DataFrame, applying consumer patches."""
     cols = df.columns
     code_col = cols[1]
     consumer_col = cols[2]
 
-    raw: list[tuple[str, str, str, str]] = []
-    for i in range(3, df.height):
-        code = df[code_col][i]
+    def parse_row(index: int) -> tuple[str, str, str] | None:
+        code = df[code_col][index]
         if not code or str(code).strip() == "CODE":
-            continue
+            return None
         code = str(code).strip()
-        consumer = str(df[consumer_col][i]).strip() if df[consumer_col][i] else ""
-        patch_key = f"{panel}/{code}"
-        patched = patches.get(patch_key, {}).get("_consumer") or patches.get(code, {}).get("_consumer")
+        consumer = str(df[consumer_col][index]).strip() if df[consumer_col][index] else ""
+        patched = patches.get(f"{panel}/{code}", {}).get("_consumer") or patches.get(
+            code, {}
+        ).get("_consumer")
         if patched:
             consumer = patched
-        slug = slugify(consumer, code)
-        raw.append((code, consumer, slug, consumer))
-    return raw
+        return code, consumer, slugify(consumer, code)
+
+    return [
+        row for index in range(3, df.height) if (row := parse_row(index)) is not None
+    ]
 
 
 def _deduplicate_slugs(
-    raw: list[tuple[str, str, str, str]],
+    raw: list[tuple[str, str, str]],
 ) -> list[tuple[str, str, str]]:
     """Append code suffix to duplicate slugs."""
     slug_counts: defaultdict[str, int] = defaultdict(int)
-    for _, _, slug, _ in raw:
+    for _, _, slug in raw:
         slug_counts[slug] += 1
 
-    final: list[tuple[str, str, str]] = []
-    for code, consumer, slug, desc in raw:
-        unique_slug = f"{slug}-{code.lower()}" if slug_counts[slug] > 1 else slug
-        final.append((unique_slug, code, desc))
-    return final
+    return [
+        (
+            f"{slug}-{code.lower()}" if slug_counts[slug] > 1 else slug,
+            code,
+            consumer,
+        )
+        for code, consumer, slug in raw
+    ]
 
 
-def _apply_breaker_patches(
-    base_fields: list[dict], code: str, patches: dict
-) -> list[dict]:
-    """Apply per-breaker patches (scale_factor overrides) to base fields."""
-    breaker_patches = patches.get(code, {})
-    fields = [dict(f) for f in base_fields]
-    for f in fields:
-        if f["field_name"] in breaker_patches:
-            override = breaker_patches[f["field_name"]]
-            if isinstance(override, dict):
-                f.update(override)
-            else:
-                f["scale_factor"] = float(override)
-    return fields
+def _breaker_unit_id(panel: str, code: str, fallback: int, patches: dict) -> int:
+    """Slave id for one breaker: `_unit_id` patch when pinned, else sequential."""
+    patched = patches.get(f"{panel}/{code}", {}).get("_unit_id") or patches.get(
+        code, {}
+    ).get("_unit_id")
+    return int(patched) if patched else fallback
 
 
 def _build_panel_topics(
     final: list[tuple[str, str, str]],
     panel: str,
     patches: dict,
-    base_fields: list[dict],
 ) -> list[dict]:
-    """Build topic dicts for one panel's breakers."""
-    topics: list[dict] = []
-    for slug, code, desc in final:
-        fields = _apply_breaker_patches(base_fields, code, patches)
-        topics.append({
-            "topic": f"power-tags/{panel}/{slug}",
-            "modbus_fields": fields,
+    """Build breaker dicts for one panel's breakers.
+
+    Each breaker is its own Modbus slave behind the gateway, so topics carry
+    per-breaker slave ids (sequential unless pinned via a `_unit_id` patch);
+    identical register layouts per breaker never alias.
+    """
+    topics = [
+        {
+            "unit_id": _breaker_unit_id(panel, code, index, patches),
+            "name": slug,
             "extra_fields": [
                 {"field_name": "component", "value": code},
                 {"field_name": "panel", "value": panel},
+                {"field_name": "consumer", "value": consumer},
             ],
-        })
+        }
+        for index, (slug, code, consumer) in enumerate(final, start=1)
+    ]
+
+    unit_ids = [t["unit_id"] for t in topics]
+    duplicates = sorted({uid for uid in unit_ids if unit_ids.count(uid) > 1})
+    if duplicates:
+        raise ValueError(
+            f"duplicate Modbus slave ids on panel {panel}: {duplicates} "
+            "(sequential fallback collided with a pinned `_unit_id` patch; "
+            "pin every conflicting breaker)"
+        )
     return topics
 
 
-def _process_excel_file(
-    xlsx_path: Path, patches: dict, base_fields: list[dict]
-) -> dict | None:
+def _process_excel_file(xlsx_path: Path, patches: dict) -> dict | None:
     """Process one Excel file into a unit dict, or None on failure."""
     sheets = pl.read_excel(xlsx_path, sheet_id=0)
     if not sheets:
@@ -184,27 +165,28 @@ def _process_excel_file(
 
     raw = _read_breakers(df, panel, patches)
     final = _deduplicate_slugs(raw)
-    topics = _build_panel_topics(final, panel, patches, base_fields)
+    topics = _build_panel_topics(final, panel, patches)
 
     print(f"{xlsx_path.name} → {panel}: {len(topics)} breakers")
-    return {"unit_id": 1, "topics": topics}
+    return {"panel": panel, "topics": topics}
 
 
 def main() -> None:
     patches_path, excel_files = _parse_args()
     patches = load_patches(patches_path)
-    base_fields = build_address_dicts()
 
-    units: list[dict] = []
-    for xlsx_path in excel_files:
-        unit = _process_excel_file(xlsx_path, patches, base_fields)
-        if unit:
-            units.append(unit)
+    units = [
+        unit
+        for xlsx_path in excel_files
+        if (unit := _process_excel_file(xlsx_path, patches)) is not None
+    ]
 
     output_path = SCRIPTS_FOLDER / "../modbus_bridges.json"
     output_path.write_text(json.dumps(units, indent=2, ensure_ascii=False))
     total = sum(len(u["topics"]) for u in units)
-    print(f"Wrote {len(units)} ModbusUnit(s), {total} breaker(s) to {output_path.resolve()}")
+    print(
+        f"Wrote {len(units)} ModbusUnit(s), {total} breaker(s) to {output_path.resolve()}"
+    )
 
 
 if __name__ == "__main__":

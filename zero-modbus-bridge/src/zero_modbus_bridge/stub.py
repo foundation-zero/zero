@@ -1,10 +1,11 @@
 import logging
 import time
+from collections.abc import Sequence
 
 from pyModbusTCP.constants import EXP_NONE, EXP_SLAVE_DEVICE_FAILURE
 from pyModbusTCP.server import DataHandler, ModbusServer
 
-from zero_modbus_bridge.bit_ops import float_to_lsw_registers
+from zero_modbus_bridge.bit_ops import float_to_lsw_registers, lsw_registers_to_float
 from zero_modbus_bridge.io import ModbusField, ModbusTopic, extract_modbus_fields
 from zero_modbus_bridge.settings import ModbusSettings
 
@@ -76,6 +77,42 @@ class MultiUnitDataHandler(DataHandler):
             else:
                 self.data[uid][reg] = default_value
 
+    def read_register(self, unit_id: int, address: int) -> int:
+        """Return the raw uint16 value stored at ``address`` for ``unit_id``."""
+        if unit_id not in self.data or address not in self.data[unit_id]:
+            raise ValueError(f"Register {address} not defined for unit {unit_id}")
+        return self.data[unit_id][address]
+
+    def read_float(self, unit_id: int, address: int) -> float:
+        """Return the float32 value stored at ``address`` for ``unit_id``."""
+        if (
+            unit_id not in self._float_registers
+            or address not in self._float_registers[unit_id]
+        ):
+            raise ValueError(f"Float register {address} not defined for unit {unit_id}")
+        return lsw_registers_to_float(self._float_registers[unit_id][address])
+
+    def set_register(self, unit_id: int, address: int, value: int) -> None:
+        """Store a raw uint16 value at ``address`` for ``unit_id``."""
+        if unit_id not in self.data or address not in self.data[unit_id]:
+            raise ValueError(f"Register {address} not defined for unit {unit_id}")
+        self.data[unit_id][address] = value
+
+    def set_float(self, unit_id: int, address: int, value: float) -> None:
+        """Store a float32 value at ``address`` for ``unit_id``.
+
+        ``address`` is the first of the two registers backing the float.
+        """
+        if (
+            unit_id not in self._float_registers
+            or address not in self._float_registers[unit_id]
+        ):
+            raise ValueError(f"Float register {address} not defined for unit {unit_id}")
+        low, high = float_to_lsw_registers(value)
+        self._float_registers[unit_id][address] = [low, high]
+        self.data[unit_id][address] = low
+        self.data[unit_id][address + 1] = high
+
     def read_h_regs(self, address: int, count: int, srv_info):
         unit_id = srv_info.recv_frame.mbap.unit_id
         if unit_id not in self.data:
@@ -96,7 +133,9 @@ class MultiUnitDataHandler(DataHandler):
             None,
         )
         if missing_register is not None:
-            logging.warning("Address %s not found for unit %s", missing_register, unit_id)
+            logging.warning(
+                "Address %s not found for unit %s", missing_register, unit_id
+            )
             return DataHandler.Return(exp_code=EXP_SLAVE_DEVICE_FAILURE)
 
         values = [unit_registers[register] for register in registers]
@@ -128,8 +167,8 @@ class MultiUnitDataHandler(DataHandler):
 
 
 class Stub:
-    def __init__(self, modbus: ModbusServer):
-        self._modbus = modbus
+    def __init__(self, modbus_servers: list[ModbusServer]):
+        self.servers = modbus_servers
 
     @staticmethod
     def from_settings(
@@ -138,10 +177,41 @@ class Stub:
         default_value: int = 0,
         float_default: float | None = None,
     ) -> "Stub":
-        data_handler = MultiUnitDataHandler(modbus_data, default_value, float_default)
-        return Stub(modbus_settings.modbus_server(data_handler))
+        return Stub.from_topic_groups(
+            [(modbus_data, modbus_settings.modbus_port)],
+            bind_host=modbus_settings.modbus_host,
+            default_value=default_value,
+            float_default=float_default,
+        )
+
+    @staticmethod
+    def from_topic_groups(
+        topic_groups: Sequence[tuple[Sequence[ModbusTopic], int]],
+        bind_host: str = "0.0.0.0",
+        default_value: int = 0,
+        float_default: float | None = None,
+    ) -> "Stub":
+        """One server per ``(topics, port)`` group.
+
+        Serves setups with several gateways that each expose their own topic
+        group; every group gets a private register space, mirroring physically
+        separate devices.
+        """
+        servers = [
+            ModbusServer(
+                bind_host,
+                port,
+                no_block=True,
+                data_hdl=MultiUnitDataHandler(
+                    list(topics), default_value, float_default
+                ),
+            )
+            for topics, port in topic_groups
+        ]
+        return Stub(servers)
 
     def run(self) -> None:
-        self._modbus.start()
+        for server in self.servers:
+            server.start()
         while True:
             time.sleep(1)

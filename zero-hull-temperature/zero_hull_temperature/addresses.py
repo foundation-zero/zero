@@ -1,533 +1,290 @@
 """Hull temperature sensor addresses and bridge configuration."""
 
-from pydantic import BaseModel
+from typing import Annotated
+
+from faststream.mqtt import MQTTBroker
+from pydantic import BaseModel, ConfigDict, Field
 from zero_modbus_bridge.bit_ops import is_finite_float
-from zero_modbus_bridge.io import ConverterModbusTopic, ModbusField
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField
+from zero_modbus_bridge.publisher import MappingPublisher, MqttPublisher
 
 TOPIC = "marpower/450000-amcs/Command"
 PATH = "$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF"
 
-HULL_TEMP_SENSORS = {
-    "LOOP 1": [
-        {
-            "Transmitter": "94455003-13",
-            "s/n": "231783930",
-            "Channel": 1,
-            "Sensor": "94455001-26",
-            "Polling Address": "DV1",
-            "Modbus Register": 9203,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-13",
-            "s/n": "231783930",
-            "Channel": 2,
-            "Sensor": "94455001-27",
-            "Polling Address": "DV2",
-            "Modbus Register": 9205,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-14",
-            "s/n": "231783631",
-            "Channel": 1,
-            "Sensor": "94455001-28",
-            "Polling Address": "DV3",
-            "Modbus Register": 9207,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-14",
-            "s/n": "231783631",
-            "Channel": 2,
-            "Sensor": "94455001-29",
-            "Polling Address": "DV4",
-            "Modbus Register": 9209,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455002-2",
-            "s/n": "221545153",
-            "Channel": 1,
-            "Sensor": "94455001-34",
-            "Polling Address": "DV5",
-            "Modbus Register": 9211,
-            "Config Date": "29-3-2024",
-        },
-        {
-            "Transmitter": "94455002-3",
-            "s/n": "231710002",
-            "Channel": 1,
-            "Sensor": "94455001-35",
-            "Polling Address": "DV6",
-            "Modbus Register": 9213,
-            "Config Date": "29-3-2024",
-        },
-        {
-            "Transmitter": "94455003-15",
-            "s/n": "231783630",
-            "Channel": 1,
-            "Sensor": "94455001-30",
-            "Polling Address": "DV7",
-            "Modbus Register": 9215,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-15",
-            "s/n": "231783630",
-            "Channel": 2,
-            "Sensor": "94455001-31",
-            "Polling Address": "DV8",
-            "Modbus Register": 9217,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-16",
-            "s/n": "231783632",
-            "Channel": 1,
-            "Sensor": "94455001-32",
-            "Polling Address": "DV9",
-            "Modbus Register": 9219,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-16",
-            "s/n": "231783632",
-            "Channel": 2,
-            "Sensor": "94455001-33",
-            "Polling Address": "DV10",
-            "Modbus Register": 9221,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-12",
-            "s/n": "231783931",
-            "Channel": 1,
-            "Sensor": "94455001-24",
-            "Polling Address": "DV11",
-            "Modbus Register": 9223,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-12",
-            "s/n": "231783931",
-            "Channel": 2,
-            "Sensor": "94455001-25",
-            "Polling Address": "DV12",
-            "Modbus Register": 9225,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455003-17",
-            "s/n": "231783628",
-            "Channel": 1,
-            "Sensor": "94455001-36",
-            "Polling Address": "DV13",
-            "Modbus Register": 9227,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-17",
-            "s/n": "231783628",
-            "Channel": 2,
-            "Sensor": "94455001-37",
-            "Polling Address": "DV14",
-            "Modbus Register": 9229,
-            "Config Date": "19-4-2024",
-        },
-    ],
-    "LOOP 2": [
-        {
-            "Transmitter": "94455003-3",
-            "s/n": "231783933",
-            "Channel": 1,
-            "Sensor": "94455001-6",
-            "Polling Address": "DV17",
-            "Modbus Register": 9235,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-3",
-            "s/n": "231783933",
-            "Channel": 2,
-            "Sensor": "94455001-7",
-            "Polling Address": "DV18",
-            "Modbus Register": 9237,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-4",
-            "s/n": "241049001",
-            "Channel": 1,
-            "Sensor": "94455001-8",
-            "Polling Address": "DV19",
-            "Modbus Register": 9239,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-4",
-            "s/n": "241049001",
-            "Channel": 2,
-            "Sensor": "94455001-9",
-            "Polling Address": "DV20",
-            "Modbus Register": 9241,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-5",
-            "s/n": "221350569",
-            "Channel": 1,
-            "Sensor": "94455001-10",
-            "Polling Address": "DV21",
-            "Modbus Register": 9243,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-5",
-            "s/n": "221350569",
-            "Channel": 2,
-            "Sensor": "94455001-11",
-            "Polling Address": "DV22",
-            "Modbus Register": 9245,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-8",
-            "s/n": "231783629",
-            "Channel": 1,
-            "Sensor": "94455001-16",
-            "Polling Address": "DV23",
-            "Modbus Register": 9247,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-8",
-            "s/n": "231783629",
-            "Channel": 2,
-            "Sensor": "94455001-17",
-            "Polling Address": "DV24",
-            "Modbus Register": 9249,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-9",
-            "s/n": "231783626",
-            "Channel": 1,
-            "Sensor": "94455001-18",
-            "Polling Address": "DV25",
-            "Modbus Register": 9251,
-            "Config Date": "12-4-2024",
-        },
-        {
-            "Transmitter": "94455003-9",
-            "s/n": "231783626",
-            "Channel": 2,
-            "Sensor": "94455001-19",
-            "Polling Address": "DV26",
-            "Modbus Register": 9253,
-            "Config Date": "12-4-2024",
-        },
-    ],
-    "LOOP 3": [
-        {
-            "Transmitter": "94455003-10",
-            "s/n": "231922015",
-            "Channel": 1,
-            "Sensor": "94455001-20",
-            "Polling Address": "DV33",
-            "Modbus Register": 9267,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-10",
-            "s/n": "231922015",
-            "Channel": 2,
-            "Sensor": "94455001-21",
-            "Polling Address": "DV34",
-            "Modbus Register": 9269,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-11",
-            "s/n": "221350126",
-            "Channel": 1,
-            "Sensor": "94455001-22",
-            "Polling Address": "DV35",
-            "Modbus Register": 9271,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-11",
-            "s/n": "221350126",
-            "Channel": 2,
-            "Sensor": "94455001-23",
-            "Polling Address": "DV36",
-            "Modbus Register": 9273,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-6",
-            "s/n": "231783932",
-            "Channel": 1,
-            "Sensor": "94455001-12",
-            "Polling Address": "DV37",
-            "Modbus Register": 9275,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-6",
-            "s/n": "231783932",
-            "Channel": 2,
-            "Sensor": "94455001-13",
-            "Polling Address": "DV38",
-            "Modbus Register": 9277,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-7",
-            "s/n": "231783627",
-            "Channel": 1,
-            "Sensor": "94455001-14",
-            "Polling Address": "DV39",
-            "Modbus Register": 9279,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-7",
-            "s/n": "231783627",
-            "Channel": 2,
-            "Sensor": "94455001-15",
-            "Polling Address": "DV40",
-            "Modbus Register": 9281,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-1",
-            "s/n": "231783934",
-            "Channel": 1,
-            "Sensor": "94455001-2",
-            "Polling Address": "DV41",
-            "Modbus Register": 9283,
-            "Config Date": "29-3-2024",
-        },
-        {
-            "Transmitter": "94455003-1",
-            "s/n": "231783934",
-            "Channel": 2,
-            "Sensor": "94455001-3",
-            "Polling Address": "DV42",
-            "Modbus Register": 9285,
-            "Config Date": "29-3-2024",
-        },
-        {
-            "Transmitter": "94455002-1",
-            "s/n": "231862006",
-            "Channel": 1,
-            "Sensor": "94455001-1",
-            "Polling Address": "DV43",
-            "Modbus Register": 9287,
-            "Config Date": "29-3-2024",
-        },
-        {
-            "Transmitter": "94455003-2",
-            "s/n": "231922335",
-            "Channel": 1,
-            "Sensor": "94455001-4",
-            "Polling Address": "DV44",
-            "Modbus Register": 9289,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455003-2",
-            "s/n": "231922335",
-            "Channel": 2,
-            "Sensor": "94455001-5",
-            "Polling Address": "DV45",
-            "Modbus Register": 9291,
-            "Config Date": "19-4-2024",
-        },
-    ],
-    "LOOP 4": [
-        {
-            "Transmitter": "94455002-4",
-            "s/n": "231862541",
-            "Channel": 1,
-            "Sensor": "94455001-38",
-            "Polling Address": "DV49",
-            "Modbus Register": 9299,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-5",
-            "s/n": "232027011",
-            "Channel": 1,
-            "Sensor": "94455001-39",
-            "Polling Address": "DV50",
-            "Modbus Register": 9301,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-6",
-            "s/n": "232027010",
-            "Channel": 1,
-            "Sensor": "94455001-40",
-            "Polling Address": "DV51",
-            "Modbus Register": 9303,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-7",
-            "s/n": "232027007",
-            "Channel": 1,
-            "Sensor": "94455001-41",
-            "Polling Address": "DV52",
-            "Modbus Register": 9305,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-8",
-            "s/n": "232027018",
-            "Channel": 1,
-            "Sensor": "94455001-42",
-            "Polling Address": "DV53",
-            "Modbus Register": 9307,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-9",
-            "s/n": "211346769",
-            "Channel": 1,
-            "Sensor": "94455001-43",
-            "Polling Address": "DV54",
-            "Modbus Register": 9309,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455002-10",
-            "s/n": "231862542",
-            "Channel": 1,
-            "Sensor": "94455001-44",
-            "Polling Address": "DV55",
-            "Modbus Register": 9311,
-            "Config Date": "3-4-2024",
-        },
-        {
-            "Transmitter": "94455002-11",
-            "s/n": "211346913",
-            "Channel": 1,
-            "Sensor": "94455001-45",
-            "Polling Address": "DV56",
-            "Modbus Register": 9313,
-            "Config Date": "19-4-2024",
-        },
-        {
-            "Transmitter": "94455002-12",
-            "s/n": "231862543",
-            "Channel": 1,
-            "Sensor": "94455001-46",
-            "Polling Address": "DV57",
-            "Modbus Register": 9315,
-            "Config Date": "19-4-2024",
-        },
-    ],
-    "Diagnostics": [
-        {
-            "Loop": 1,
-            "Description": "Number of slaves configured",
-            "HES": "DV65",
-            "Modbus Register": 9331,
-        },
-        {
-            "Loop": 1,
-            "Description": "Number of slaves communicating",
-            "HES": "DV66",
-            "Modbus Register": 9333,
-        },
-        {
-            "Loop": 2,
-            "Description": "Number of slaves configured",
-            "HES": "DV67",
-            "Modbus Register": 9335,
-        },
-        {
-            "Loop": 2,
-            "Description": "Number of slaves communicating",
-            "HES": "DV68",
-            "Modbus Register": 9337,
-        },
-        {
-            "Loop": 3,
-            "Description": "Number of slaves configured",
-            "HES": "DV69",
-            "Modbus Register": 9339,
-        },
-        {
-            "Loop": 3,
-            "Description": "Number of slaves communicating",
-            "HES": "DV70",
-            "Modbus Register": 9341,
-        },
-        {
-            "Loop": 4,
-            "Description": "Number of slaves configured",
-            "HES": "DV71",
-            "Modbus Register": 9343,
-        },
-        {
-            "Loop": 4,
-            "Description": "Number of slaves communicating",
-            "HES": "DV72",
-            "Modbus Register": 9345,
-        },
-        {
-            "Loop": "All",
-            "Description": "Total number of slaves configured",
-            "HES": "DV73",
-            "Modbus Register": 9347,
-        },
-        {
-            "Loop": "All",
-            "Description": "Total number of slaves communicating",
-            "HES": "DV74",
-            "Modbus Register": 9349,
-        },
-    ],
-}
+
+class HullTemperaturesModel(BaseModel):
+    """Flat sensor readings with Modbus metadata and serial-number aliases.
+
+    Each field is one physical probe. Python name is ``s_<serial with _>``
+    (valid identifier), wire name is the original ``94455001-26`` serial via
+    ``alias``.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    # LOOP 1 — 14 probes
+    s_94455001_26: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-26"),
+        ModbusField(register=9203, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_27: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-27"),
+        ModbusField(register=9205, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_28: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-28"),
+        ModbusField(register=9207, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_29: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-29"),
+        ModbusField(register=9209, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_34: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-34"),
+        ModbusField(register=9211, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_35: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-35"),
+        ModbusField(register=9213, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_30: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-30"),
+        ModbusField(register=9215, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_31: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-31"),
+        ModbusField(register=9217, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_32: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-32"),
+        ModbusField(register=9219, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_33: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-33"),
+        ModbusField(register=9221, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_24: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-24"),
+        ModbusField(register=9223, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_25: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-25"),
+        ModbusField(register=9225, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_36: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-36"),
+        ModbusField(register=9227, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_37: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-37"),
+        ModbusField(register=9229, data_type="float32", validator=is_finite_float),
+    ] = None
+
+    # LOOP 2 — 10 probes
+    s_94455001_6: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-6"),
+        ModbusField(register=9235, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_7: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-7"),
+        ModbusField(register=9237, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_8: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-8"),
+        ModbusField(register=9239, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_9: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-9"),
+        ModbusField(register=9241, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_10: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-10"),
+        ModbusField(register=9243, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_11: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-11"),
+        ModbusField(register=9245, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_16: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-16"),
+        ModbusField(register=9247, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_17: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-17"),
+        ModbusField(register=9249, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_18: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-18"),
+        ModbusField(register=9251, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_19: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-19"),
+        ModbusField(register=9253, data_type="float32", validator=is_finite_float),
+    ] = None
+
+    # LOOP 3 — 13 probes
+    s_94455001_20: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-20"),
+        ModbusField(register=9267, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_21: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-21"),
+        ModbusField(register=9269, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_22: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-22"),
+        ModbusField(register=9271, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_23: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-23"),
+        ModbusField(register=9273, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_12: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-12"),
+        ModbusField(register=9275, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_13: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-13"),
+        ModbusField(register=9277, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_14: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-14"),
+        ModbusField(register=9279, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_15: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-15"),
+        ModbusField(register=9281, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_2: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-2"),
+        ModbusField(register=9283, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_3: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-3"),
+        ModbusField(register=9285, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_1: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-1"),
+        ModbusField(register=9287, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_4: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-4"),
+        ModbusField(register=9289, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_5: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-5"),
+        ModbusField(register=9291, data_type="float32", validator=is_finite_float),
+    ] = None
+
+    # LOOP 4 — 9 probes
+    s_94455001_38: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-38"),
+        ModbusField(register=9299, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_39: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-39"),
+        ModbusField(register=9301, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_40: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-40"),
+        ModbusField(register=9303, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_41: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-41"),
+        ModbusField(register=9305, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_42: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-42"),
+        ModbusField(register=9307, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_43: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-43"),
+        ModbusField(register=9309, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_44: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-44"),
+        ModbusField(register=9311, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_45: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-45"),
+        ModbusField(register=9313, data_type="float32", validator=is_finite_float),
+    ] = None
+    s_94455001_46: Annotated[
+        float | None,
+        Field(default=None, alias="94455001-46"),
+        ModbusField(register=9315, data_type="float32", validator=is_finite_float),
+    ] = None
 
 
 class HullTemperature(BaseModel):
-    temperatures: dict[str, float | None]
+    """MQTT payload - single ``temperatures`` object.
+
+    This is the publisher schema.
+    """
+
+    temperatures: HullTemperaturesModel = Field(default_factory=HullTemperaturesModel)
 
 
-def hull_temp_converter(
-    values: list[tuple[int | None, int | float | bool | None]],
-) -> HullTemperature:
-    """Map raw register values to sensor names and build HullTemperature."""
-    reg_map = {reg: val for reg, val in values if reg is not None and val is not None}
-    temperatures = {
-        probe["Sensor"]: reg_map.get(probe["Modbus Register"])
-        for name, loop in HULL_TEMP_SENSORS.items()
-        if name != "Diagnostics"
-        for probe in loop
-    }
-    return HullTemperature(temperatures=temperatures)
-
-
-HULL_TEMPERATURE_FIELDS = [
-    ModbusField(
-        register=probe["Modbus Register"],
-        count=2,
-        data_type="float32",
-        validator=is_finite_float,
-    )
-    for loop_name, loop_data in HULL_TEMP_SENSORS.items()
-    if loop_name != "Diagnostics"
-    for probe in loop_data
-]
-
-HULL_TEMPERATURE_TOPIC = ConverterModbusTopic(
+# Modbus reading is strictly the flat model; publishing wraps it to maintain MQTT compatibility
+HULL_TEMPERATURE_TOPIC = AnnotationModbusTopic(
     topic="hull-temperature/temperatures",
-    model=HullTemperature,
-    fields=HULL_TEMPERATURE_FIELDS,
-    converter=hull_temp_converter,
+    model=HullTemperaturesModel,
 )
+
+
+def _to_mqtt_payload(read: HullTemperaturesModel) -> HullTemperature:
+    return HullTemperature(temperatures=read)
+
+
+def create_publisher(broker: MQTTBroker) -> MappingPublisher:
+    inner = MqttPublisher(
+        broker,
+        [HULL_TEMPERATURE_TOPIC],
+        schemas={HULL_TEMPERATURE_TOPIC.topic: HullTemperature},
+    )
+    return MappingPublisher(inner, _to_mqtt_payload)

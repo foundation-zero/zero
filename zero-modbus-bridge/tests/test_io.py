@@ -24,7 +24,7 @@ def test_modbus_field_register_only():
 
 
 def test_modbus_field_offset_only():
-    f = ModbusField(offset=0, count=2, data_type="float32")
+    f = ModbusField(offset=0, data_type="float32")
     assert f.offset == 0
     assert f.register is None
     assert f.count == 2
@@ -49,9 +49,7 @@ def test_apply_modbus_field_validator_rejects():
 
 
 class _TestModel(BaseModel):
-    current_a: Annotated[
-        float | None, ModbusField(offset=0, count=2, data_type="float32")
-    ]
+    current_a: Annotated[float | None, ModbusField(offset=0, data_type="float32")]
     power: Annotated[int | None, ModbusField(register=100, scale_factor=0.01)]
     flag: Annotated[
         bool | None, ModbusField(register=200, modbus_type="coil", data_type="bool")

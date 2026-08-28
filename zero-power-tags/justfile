@@ -17,4 +17,4 @@ format:
     uv run ruff format --check src tests
 
 refresh_io:
-    uv run python ./scripts/excel_to_json.py
+    uv run python ./scripts/excel_to_json.py --patches patches.json
