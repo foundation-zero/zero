@@ -13,7 +13,7 @@ if length(parts) != 3 {
 field_id = parts[1]
 source, source_err = to_int(parts[2])
 if source_err != null || source == null {
-  log("Invalid ATPX source id: " + parts[2] + " on " + topic, level: "warn")
+  log("Invalid ATPX source id on " + topic, level: "warn")
   abort
 }
 sender_id = floor(source / 256)
