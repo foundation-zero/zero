@@ -45,6 +45,17 @@ start_vnc() {
     echo "Wayland socket detected. Starting VNC Server on port 5900..."
     # Bind wayvnc to all interfaces (0.0.0.0) so it's accessible externally
     export WAYLAND_DISPLAY=wayland-0
+
+    # wlroots hardcodes the headless output to 1280x720. Resize it to a
+    # representative resolution before wayvnc starts capturing, so VNC serves
+    # that size from the first frame. No-op with a real display (empty var),
+    # which keeps its native mode; a resize failure just leaves 1280x720.
+    if [ -n "${HEADLESS_RESOLUTION:-}" ]; then
+        echo "Setting headless output to $HEADLESS_RESOLUTION..."
+        wlr-randr --output HEADLESS-1 --custom-mode "$HEADLESS_RESOLUTION" \
+            || echo "Warning: failed to set headless resolution; using default."
+    fi
+
     wayvnc --disable-input 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
@@ -57,26 +68,6 @@ start_cage_chromium() {
     export GOOGLE_DEFAULT_CLIENT_ID="no"
     export GOOGLE_DEFAULT_CLIENT_SECRET="no"
     export DBUS_SESSION_BUS_ADDRESS="/dev/null"
-
-    # With a monitor attached, use cage's default DRM/KMS backend to drive the
-    # real screen (prod: zero). With none attached (singel/subzero), that
-    # backend can't find a CRTC and cage spins at ~100% CPU while wayvnc
-    # crashes on the zero-size output; fall back to wlroots' headless backend
-    # (a virtual 1280x720 output, still GPU-composited and served over VNC).
-    #
-    # Detected at startup from DRM connector state: -x avoids matching
-    # "disconnected", -s stays quiet on an empty glob. Uncertain -> headless
-    # (low-CPU + VNC, not a crash loop). Plug a monitor into a headless node
-    # and restart the pod to drive it physically.
-    if grep -qxs connected /sys/class/drm/*/status; then
-        echo "Physical display connected; using cage's default DRM backend."
-    else
-        echo "No physical display connected; using wlroots headless backend."
-        export WLR_BACKENDS=headless
-        # Force hardware GLES2 on the render node rather than silently falling
-        # back to software (pixman) rendering.
-        export WLR_RENDERER=gles2
-    fi
 
     CHROME_FLAGS="--ozone-platform=wayland \
                 --kiosk \
@@ -113,6 +104,26 @@ start_cage_chromium() {
 # make sure udev events in the container are fired
 /lib/systemd/systemd-udevd --daemon
 udevadm trigger --action=add
+
+# With a monitor attached, use cage's default DRM/KMS backend to drive the
+# real screen (prod: zero). With none attached (singel/subzero), that backend
+# can't find a CRTC and cage spins at ~100% CPU while wayvnc crashes on the
+# zero-size output; fall back to wlroots' headless backend (a virtual output,
+# still GPU-composited and served over VNC), sized to $HEADLESS_RESOLUTION.
+#
+# Detected from DRM connector state: -x avoids matching "disconnected", -s
+# stays quiet on an empty glob. Uncertain -> headless (low-CPU + VNC, not a
+# crash loop). Plug a monitor into a headless node and restart to drive it.
+if grep -qxs connected /sys/class/drm/*/status; then
+    echo "Physical display connected; using cage's default DRM backend."
+else
+    echo "No physical display connected; using wlroots headless backend."
+    export WLR_BACKENDS=headless
+    # Force hardware GLES2 on the render node rather than silently falling
+    # back to software (pixman) rendering.
+    export WLR_RENDERER=gles2
+    HEADLESS_RESOLUTION="1920x1080"
+fi
 
 start_vnc &
 VNC_PID=$!
