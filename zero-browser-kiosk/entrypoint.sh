@@ -58,6 +58,26 @@ start_cage_chromium() {
     export GOOGLE_DEFAULT_CLIENT_SECRET="no"
     export DBUS_SESSION_BUS_ADDRESS="/dev/null"
 
+    # With a monitor attached, use cage's default DRM/KMS backend to drive the
+    # real screen (prod: zero). With none attached (singel/subzero), that
+    # backend can't find a CRTC and cage spins at ~100% CPU while wayvnc
+    # crashes on the zero-size output; fall back to wlroots' headless backend
+    # (a virtual 1280x720 output, still GPU-composited and served over VNC).
+    #
+    # Detected at startup from DRM connector state: -x avoids matching
+    # "disconnected", -s stays quiet on an empty glob. Uncertain -> headless
+    # (low-CPU + VNC, not a crash loop). Plug a monitor into a headless node
+    # and restart the pod to drive it physically.
+    if grep -qxs connected /sys/class/drm/*/status; then
+        echo "Physical display connected; using cage's default DRM backend."
+    else
+        echo "No physical display connected; using wlroots headless backend."
+        export WLR_BACKENDS=headless
+        # Force hardware GLES2 on the render node rather than silently falling
+        # back to software (pixman) rendering.
+        export WLR_RENDERER=gles2
+    fi
+
     CHROME_FLAGS="--ozone-platform=wayland \
                 --kiosk \
                 --no-sandbox \
