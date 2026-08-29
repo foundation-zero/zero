@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import { formatNumber } from "@/modules/common/lib/utils";
+import { formatUnit } from "@/modules/common/lib/utils";
 import { FieldRenderer, FieldRendererProps } from ".";
-import { useTranslations } from "../tooltips";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
-  format: formatNumber.default,
+  format: formatUnit("liter-per-minute"),
 });
-
-const { units } = useTranslations();
 </script>
 
 <template>
   <FieldRenderer.Number
     v-bind="props"
-    :unit="units('lpm')"
     class="gap-1"
-  >
-  </FieldRenderer.Number>
+  />
 </template>
