@@ -328,9 +328,12 @@ export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").
 export const toCapitalized = (str: string) =>
   `${str.charAt(0).toLocaleUpperCase()}${str.slice(1).toLocaleLowerCase()}`;
 
-export const tScoped = (scope: string) => (key: string, value?: NamedValue) => {
+export const tScoped = (scope: string) => {
   const { t } = useI18n();
-  return value ? t(`${scope}.${key}`, value) : t(`${scope}.${key}`);
+
+  return (key: string, value?: NamedValue) => {
+    return value ? t(`${scope}.${key}`, value) : t(`${scope}.${key}`);
+  };
 };
 
 export const objectFilter = <T extends Record<string, unknown>, K extends keyof T>(
