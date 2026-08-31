@@ -1,0 +1,16 @@
+{{- if .Values.stub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zero-termodinamica.stub" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: modbus
+    port: {{ .Values.modbus.port }}
+    targetPort: {{ .Values.modbus.port }}
+    protocol: TCP
+  selector:
+    {{- include "zero-termodinamica.stubSelectorLabels" . | nindent 4 }}
+{{- end }}

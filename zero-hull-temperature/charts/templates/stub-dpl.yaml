@@ -1,36 +1,27 @@
+{{- if .Values.stub.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-termodinamica.name" . }}
+  name: {{ include "zero-hull-temperature.stub" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "zero-termodinamica.labels" . | nindent 4 }}
+    {{- include "zero-hull-temperature.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      {{- include "zero-termodinamica.selectorLabels" . | nindent 6 }}
+      {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "zero-termodinamica.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       securityContext:
         fsGroup: 1001
       containers:
-        - name: termodinamica
-          args: ["run"]
+        - name: hull-temperature-stub
+          command: ["python", "-m", "zero_hull_temperature", "stub"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -60,27 +51,16 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
-            {{- if .Values.stub.enabled }}
             - name: MODBUS_HOST
-              value: {{ include "zero-termodinamica.stub" . | quote }}
-            {{- else }}
-            - name: MODBUS_HOST
-              value: {{ .Values.modbus.host | quote }}
-            {{- end }}
+              value: {{ .Values.stub.host | quote }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: MODBUS_PROBE_INTERVAL
-              value: {{ .Values.modbus.probe_interval | quote }}
-            - name: MODBUS_BRIDGES_PATH
-              value: {{ .Values.modbus.bridgesPath | quote }}
+            - name: TEMPERATURE
+              value: {{ .Values.stub.temperature | quote }}
+            - name: SECONDS
+              value: {{ .Values.stub.seconds | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - mountPath: /tmp
-              name: tmp
-      volumes:
-        - emptyDir: {}
-          name: tmp
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -93,3 +73,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

@@ -1,0 +1,64 @@
+{{- if .Values.stub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-power-tags.stub" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-power-tags.stubSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "zero-power-tags.stubSelectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: power-tags-stub
+          args: ["stub"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MODBUS_PORT
+              value: {{ .Values.modbus.port | quote }}
+            - name: DEFAULT_VALUE
+              value: {{ .Values.stub.defaultValue | quote }}
+            - name: MODBUS_BRIDGES_PATH
+              value: {{ .Values.modbus.bridgesPath | quote }}
+            {{- $base := int .Values.modbus.port }}
+            {{- range $index, $panel := .Values.stub.panels }}
+            - name: MODBUS_PANELS__port_{{ $panel | lower }}
+              value: {{ add $base $index | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

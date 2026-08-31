@@ -16,6 +16,16 @@ modbus:
   host: ""
   port: 502
   probe_interval: 10
+  # Path to modbus_bridges.json inside the container; set because the package
+  # is installed non-editable and cannot resolve it relative to its modules.
+  bridgesPath: /app/zero-termodinamica/modbus_bridges.json
+
+stub:
+  enabled: false
+  defaultValue: 20
+  # When enabled the bridge dials the stub service on `modbus.port` instead of
+  # the external gateway; the stub binds `0.0.0.0` on that same port.
+  host: "0.0.0.0"
 
 resources: {}
 

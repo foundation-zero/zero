@@ -15,6 +15,9 @@ mqtt:
 modbus:
   port: 502
   probe_interval: 10
+  # Path to modbus_bridges.json inside the container; set because the package
+  # is installed non-editable and cannot resolve it relative to its modules.
+  bridgesPath: /app/zero-power-tags/modbus_bridges.json
   # One gateway per panel; keys are sanitized panel names (panel 10P0.1 → key
   # 10p0_1) rendered as MODBUS_PANELS__host_<key> / MODBUS_PANELS__port_<key>
   # env vars. The addresses themselves live in the deployment repository.
@@ -23,6 +26,20 @@ modbus:
   #   10P0_1:
   #     host: "192.168.0.10"
   #     port: 502
+
+stub:
+  enabled: false
+  defaultValue: 0.0
+  # One panel per gateway, ordered as in modbus_bridges.json. When enabled the
+  # stub serves a dedicated Modbus server per panel on `modbus.port + index`,
+  # and the bridge pod dials those panels through the stub service instead of
+  # `modbus.panels`.
+  panels:
+    - 10p0_1
+    - 10p0_3
+    - 10p1
+    - 10p2
+    - 10p3
 
 resources: {}
 

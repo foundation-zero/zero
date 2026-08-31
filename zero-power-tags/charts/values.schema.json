@@ -47,6 +47,10 @@
           "description": "Seconds between Modbus reads.",
           "minimum": 1
         },
+        "bridgesPath": {
+          "type": "string",
+          "description": "Path to modbus_bridges.json inside the container."
+        },
         "panels": {
           "type": "object",
           "description": "Gateway per panel. Keys are sanitized panel names (panel 10P0.1 → key 10p0_1) rendered as MODBUS_PANELS__host_<key> / MODBUS_PANELS__port_<key> environment variables.",
@@ -66,6 +70,26 @@
                 "maximum": 65535
               }
             }
+          }
+        }
+      }
+    },
+    "stub": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Deploy an in-cluster stub Modbus server per panel and point the bridge at it."
+        },
+        "defaultValue": {
+          "type": "number",
+          "description": "Float value the stub serves for float32 registers."
+        },
+        "panels": {
+          "type": "array",
+          "description": "Panel keys in gateway order; one stub Modbus server per panel.",
+          "items": {
+            "type": "string"
           }
         }
       }

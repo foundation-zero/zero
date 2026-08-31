@@ -1,0 +1,19 @@
+{{- if .Values.stub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zero-power-tags.stub" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+  {{- $base := int .Values.modbus.port }}
+  {{- range $index, $panel := .Values.stub.panels }}
+  - name: modbus-{{ $index }}
+    port: {{ add $base $index }}
+    targetPort: {{ add $base $index }}
+    protocol: TCP
+  {{- end }}
+  selector:
+    {{- include "zero-power-tags.stubSelectorLabels" . | nindent 4 }}
+{{- end }}
