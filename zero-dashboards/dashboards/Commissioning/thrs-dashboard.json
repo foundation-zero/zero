@@ -169,10 +169,12 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "dataset": "dev",
-          "editorMode": "code",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
-          "format": 0,
+          "format": 1,
           "hide": false,
           "meta": {
             "builderOptions": {
@@ -186,27 +188,9 @@
             }
           },
           "pluginVersion": "2.1.4",
-          "queryType": "timeseries",
-          "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\tthrs_data.timestamp                                AS time,\r\n\t\tconcat('[', meta.yard_tag, '] ', thrs_data.device) AS device_name,\r\n\t\tthrs_data.temperature__value                       AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.marpower__thrs__temperatures\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t) AS thrs_data\r\n  JOIN public.marpower__io_metadata AS meta ON thrs_data.topic = meta.mqtt_topic AND meta.mqtt_json_path = '$.Temperature'\r\n\tWHERE thrs_data.\"section\" IN (${section:sqlstring})\r\n\tORDER BY thrs_data.device, time ASC",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "queryType": "table",
+          "rawSql": "  SELECT\r\n\t\tthrs_data.timestamp          AS time,\r\n    metadata.device              AS device,\r\n\t\tthrs_data.temperature__value AS temperature\r\n\tFROM public.marpower__thrs__temperatures AS thrs_data\r\n  JOIN (\r\n\t\tSELECT\r\n      mqtt_topic,\r\n\t\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n      concat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\t\tFROM public.marpower__io_metadata\r\n    WHERE mqtt_json_path = '$.Temperature'\r\n\t) AS metadata\r\n  ON thrs_data.topic = metadata.mqtt_topic\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND metadata.\"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A"
         }
       ],
       "title": "",
@@ -3541,10 +3525,10 @@
         "allowCustomValue": false,
         "current": {
           "text": [
-            "$__all"
+            "dhw"
           ],
           "value": [
-            "$__all"
+            "dhw"
           ]
         },
         "includeAll": true,
@@ -3573,7 +3557,7 @@
             "value": "dc"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "dhw",
             "value": "dhw"
           },
