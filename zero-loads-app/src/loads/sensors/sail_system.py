@@ -189,14 +189,14 @@ class AftWinchSb(LoadsModel, ABC):
 
 class BladeAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0103-blade-adjuster"
-    load: Annotated[Load, VariableMeta(display_name="Adjuster")]
+    load: Annotated[Load, VariableMeta(display_name="RTA")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="RTA",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -403,12 +403,12 @@ class Mast(LoadsModel, ABC):
     lock_storm_jib: Annotated[
         Lock,
         Field(validation_alias="ix_StormJibLck"),
-        VariableMeta(name="lock_storm_jib", display_name="Storm Jib"),
+        VariableMeta(name="lock_storm_jib", display_name="Stormjib"),
     ]
     overhoist_storm_jib: Annotated[
         Lock,
         Field(validation_alias="ix_StormJibOvrhst"),
-        VariableMeta(name="overhoist_storm_jib", display_name="Storm Jib"),
+        VariableMeta(name="overhoist_storm_jib", display_name="Stormjib"),
     ]
 
     lock_mizzen_headsail: Annotated[
@@ -425,37 +425,37 @@ class Mast(LoadsModel, ABC):
     lock_main_1: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck1"),
-        VariableMeta(name="lock_main_1", display_name="Haly Reef 1"),
+        VariableMeta(name="lock_main_1", display_name="Reef 1"),
     ]
     lock_main_2: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck2"),
-        VariableMeta(name="lock_main_2", display_name="Haly Reef 2"),
+        VariableMeta(name="lock_main_2", display_name="Reef 2"),
     ]
     lock_main_3: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck3"),
-        VariableMeta(name="lock_main_3", display_name="Haly Reef 3"),
+        VariableMeta(name="lock_main_3", display_name="Reef 3"),
     ]
     lock_main_headboard: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLckFh"),
-        VariableMeta(name="lock_main_headboard", display_name="Haly Headboard"),
+        VariableMeta(name="lock_main_headboard", display_name="Headboard"),
     ]
     overhoist_main_1: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck1Ovrhst"),
-        VariableMeta(name="overhoist_main_1", display_name="Haly Reef 1"),
+        VariableMeta(name="overhoist_main_1", display_name="Reef 1"),
     ]
     overhoist_main_2: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck2Ovrhst"),
-        VariableMeta(name="overhoist_main_2", display_name="Haly Reef 2"),
+        VariableMeta(name="overhoist_main_2", display_name="Reef 2"),
     ]
     overhoist_main_3: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck3Ovrhst"),
-        VariableMeta(name="overhoist_main_3", display_name="Haly Reef 3"),
+        VariableMeta(name="overhoist_main_3", display_name="Reef 3"),
     ]
     overhoist_main_headboard: Annotated[
         Lock,
@@ -481,32 +481,32 @@ class Mast(LoadsModel, ABC):
     lock_mizzen_1: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck1"),
-        VariableMeta(name="lock_mizzen_1", display_name="Haly Reef 1"),
+        VariableMeta(name="lock_mizzen_1", display_name="Reef 1"),
     ]
     lock_mizzen_2: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck2"),
-        VariableMeta(name="lock_mizzen_2", display_name="Haly Reef 2"),
+        VariableMeta(name="lock_mizzen_2", display_name="Reef 2"),
     ]
     lock_mizzen_headboard: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLckFh"),
-        VariableMeta(name="lock_mizzen_headboard", display_name="Haly Headboard"),
+        VariableMeta(name="lock_mizzen_headboard", display_name="Headboard"),
     ]
     overhoist_mizzen_1: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck1Ovrhst"),
-        VariableMeta(name="overhoist_mizzen_1", display_name="Haly Reef 1"),
+        VariableMeta(name="overhoist_mizzen_1", display_name="Reef 1"),
     ]
     overhoist_mizzen_2: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck2Ovrhst"),
-        VariableMeta(name="overhoist_mizzen_2", display_name="Haly Reef 2"),
+        VariableMeta(name="overhoist_mizzen_2", display_name="Reef 2"),
     ]
     overhoist_mizzen_headboard: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLckFhOvrhst"),
-        VariableMeta(name="overhoist_mizzen_headboard", display_name="Haly Headboard"),
+        VariableMeta(name="overhoist_mizzen_headboard", display_name="Headboard"),
     ]
     lock_mizzen_boom_1: Annotated[
         Lock,
@@ -644,7 +644,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
-            display_name="Main Checkstay SB",
+            display_name="Checkstay SB",
             applies_to_tack="starboard",
             variable_key="main-checkstay-load",
         ),
@@ -851,7 +851,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_position/x_MaxLimitReached"),
         VariableMeta(
             name="deflector-max-position-alarm",
-            display_name="Mizzen Checkstay Deflector Max Position Alarm",
+            display_name="Mizzen Deflector Max Position Alarm",
             alarm_for="deflector_relative_position",
         ),
     ]
@@ -860,7 +860,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_position/x_MinLimitReached"),
         VariableMeta(
             name="deflector-min-position-alarm",
-            display_name="Mizzen Checkstay Deflector Min Position Alarm",
+            display_name="Mizzen Deflector Min Position Alarm",
             alarm_for="deflector_relative_position",
         ),
     ]
@@ -910,7 +910,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/i_Load"),
         VariableMeta(
             name="ps-load",
-            display_name="Mizzen Checkstay PT",
+            display_name="Checkstay PT",
             applies_to_tack="port",
             variable_key="mizzen-checkstay-load",
         ),
@@ -947,7 +947,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
-            display_name="Mizzen Checkstay SB",
+            display_name="Checkstay SB",
             applies_to_tack="starboard",
             variable_key="mizzen-checkstay-load",
         ),
@@ -1005,7 +1005,7 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0402-mizzen-headsail-tack-adjuster"
     load: Annotated[
         Load,
-        VariableMeta(display_name="Adjuster"),
+        VariableMeta(display_name="Tack"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -1013,7 +1013,7 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="Tack",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -1170,7 +1170,7 @@ class StaysailStayAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0104-staysail-stay-adjuster"
     load: Annotated[
         Load,
-        VariableMeta(display_name="Adjuster"),
+        VariableMeta(display_name="RTA"),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
@@ -1178,7 +1178,7 @@ class StaysailStayAdjuster(LoadsModel, ABC):
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="RTA",
             scale_min_label="out",
             scale_max_label="in",
         ),
