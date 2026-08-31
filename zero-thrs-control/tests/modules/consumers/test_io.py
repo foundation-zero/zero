@@ -45,4 +45,8 @@ def test_consumers_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(ConsumersSensorValues, ConsumersControlValues)
+    compare_yard_tags(
+        ConsumersSensorValues,
+        ConsumersControlValues,
+        exclude={"consumers_mode"},
+    )

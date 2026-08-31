@@ -49,6 +49,7 @@ def test_yard_tags():
         AdsorptionSensorValues,
         AdsorptionControlValues,
         exclude={
+            "adsorption_mode",
             "adsorption_available_hot_temperature",
             "adsorption_available_cold_temperature",
             "adsorption_available_seawater_temperature",

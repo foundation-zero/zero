@@ -1,5 +1,7 @@
+import json
 import logging
 from asyncio import Event, Future, gather, timeout
+from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Mapping
 from inspect import isawaitable
 from typing import (
@@ -14,6 +16,11 @@ from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
+from thrs.input_output.definitions.wire_context import (
+    AMCS_RECEIVE_CONTEXT,
+    AMCS_WRITE_CONTEXT,
+    WireContext,
+)
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
@@ -75,12 +82,14 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         topic_suffix: str | None = None,
         *,
         only_computed_fields: bool = False,
+        context: WireContext | None = None,
     ):
         self._cls = message_type
         self._topic_prefix = topic_prefix
         self._module_prefix = module_name
         self._topic_suffix_str = f"/{topic_suffix}" if topic_suffix else ""
         self._only_computed_fields = only_computed_fields
+        self._context = context
         self._subscribe_topics = {
             self._topic("+", field): field_name
             for field_name, field in message_type.model_fields.items()
@@ -89,7 +98,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             self._topic(field_name, field): field_name
             for field_name, field in message_type.model_fields.items()
         }
-        self._builder = PartialModelBuilder(self._cls)
+        self._builder = PartialModelBuilder(self._cls, context)
         self._update_event = Event()
 
     @staticmethod
@@ -114,7 +123,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             else self._cls.model_fields
         )
         return {
-            self._topic(key, field): getattr(model, key).model_dump_json(by_alias=True)
+            self._topic(key, field): getattr(model, key).model_dump_json(
+                by_alias=True, context=self._context
+            )
             for key, field in fields.items()
         }
 
@@ -295,6 +306,64 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         )
 
 
+class MergedModuleMqttMapping(
+    MqttSendMapping[tuple[CombinedValues | None, CombinedValues | None]]
+):
+    """Publish-only mapping that merges sensor values and actuated control
+    values into a single JSON payload per component topic. (like the AMCS does)
+    """
+
+    def __init__(
+        self,
+        sensor_values_clss: ModuleClassMap,
+        control_values_clss: ModuleClassMap,
+        topic_prefix: str,
+    ):
+        self._sensor_values: CombinedValues | None = None
+        self._control_values: CombinedValues | None = None
+        self._sensor_values_mappings = {
+            name: PartialMqttMapping(cls, topic_prefix, f"500000-thrs/{name}")
+            for name, cls in sensor_values_clss.items()
+        }
+        self._control_values_mappings = {
+            name: PartialMqttMapping(
+                cls,
+                topic_prefix,
+                f"500000-thrs/{name}",
+                context=AMCS_RECEIVE_CONTEXT,
+            )
+            for name, cls in control_values_clss.items()
+        }
+
+    def split_to_topics(
+        self, model: tuple[CombinedValues | None, CombinedValues | None]
+    ) -> dict[str, str]:
+        sensor_values, control_values = model
+        self._sensor_values = sensor_values or self._sensor_values
+        self._control_values = control_values or self._control_values
+        if self._sensor_values is None or self._control_values is None:
+            return {}
+        merged: dict[str, dict[str, object]] = defaultdict(dict)
+        self._merge_payloads(merged, self._sensor_values, self._sensor_values_mappings)
+        self._merge_payloads(
+            merged, self._control_values, self._control_values_mappings
+        )
+        return {topic: json.dumps(payload) for topic, payload in merged.items()}
+
+    def _merge_payloads(
+        self,
+        merged: dict[str, dict[str, object]],
+        values: CombinedValues,
+        mappings: Mapping[str, PartialMqttMapping],
+    ) -> None:
+        for module_name, mapping in mappings.items():
+            module = values.values.get(module_name)
+            if module is None:
+                continue
+            for topic, payload in mapping.split_to_topics(module).items():
+                merged[topic].update(json.loads(payload))
+
+
 class ControlChannels[
     S: ThrsValues,
     C: ThrsValues,
@@ -348,8 +417,16 @@ class ControlChannels[
                 config.mqtt_devices_topic_prefix,
                 f"500000-thrs/{module_name}",
                 config.mqtt_control_topic_suffix,
+                context=AMCS_WRITE_CONTEXT,
             ),
         )
+        actuated_control_values_mapping = PartialMqttMapping[C](
+            control_module.control_values_cls,
+            config.mqtt_devices_topic_prefix,
+            f"500000-thrs/{module_name}",
+            context=AMCS_RECEIVE_CONTEXT,
+        )
+        connector._register_listener(actuated_control_values_mapping)
         self.send_computed_values = connector._create_publisher(
             PartialMqttMapping[S](
                 control_module.sensor_values_cls,
@@ -395,6 +472,7 @@ class ControlChannels[
         self.get_parameters = parameters_mapping.result
         self.get_automation_modes = manual_mode_mapping.result
         self.get_manual_controls = manual_controls_mapping.result
+        self.get_actuated_control_values = actuated_control_values_mapping.result
 
 
 class SimulationChannels[
@@ -430,14 +508,13 @@ class SimulationChannels[
             config.mqtt_simulator_topic_suffix,
         )
         connector._register_listener(simulation_inputs_mapping)
-        self.send_sensor_values = connector._create_publisher(
-            ModuleMqttMapping(
-                sensor_values_clss,
-                PartialMqttMapping,
-                config.mqtt_devices_topic_prefix,
-            )
-        )
 
+        self._merged_mapping = MergedModuleMqttMapping(
+            sensor_values_clss,
+            control_values_clss,
+            config.mqtt_devices_topic_prefix,
+        )
+        self._publish_merged = connector._create_publisher(self._merged_mapping)
         self.send_simulation_inputs = connector._create_publisher(
             DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic)
         )
@@ -448,6 +525,14 @@ class SimulationChannels[
         self.get_control_values = control_values_mapping.result
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
+
+    async def send_sensor_values(self, sensor_values: CombinedValues) -> None:
+        await self._publish_merged((sensor_values, None))
+
+    async def send_actuated_control_values(
+        self, control_values: CombinedValues
+    ) -> None:
+        await self._publish_merged((None, control_values))
 
 
 class ControlApiChannels[
@@ -472,13 +557,13 @@ class ControlApiChannels[
         )
         connector._register_listener(sensor_values_mapping)
 
-        control_values_mapping = PartialMqttMapping[C](
+        actuated_control_values_mapping = PartialMqttMapping[C](
             module_description.control_values_cls,
             config.mqtt_devices_topic_prefix,
             f"500000-thrs/{module_name}",
-            config.mqtt_control_topic_suffix,
+            context=AMCS_RECEIVE_CONTEXT,
         )
-        connector._register_listener(control_values_mapping)
+        connector._register_listener(actuated_control_values_mapping)
 
         manual_values_mapping = DirectMqttMapping[C].for_module(
             module_description.control_values_cls,
@@ -543,7 +628,7 @@ class ControlApiChannels[
         )
 
         self.get_sensor_values = sensor_values_mapping.result
-        self.get_control_values = control_values_mapping.result
+        self.get_actuated_control_values = actuated_control_values_mapping.result
         self.get_manual_values = manual_values_mapping.result
         self.get_control_modes = control_modes_mapping.result
         self.get_parameters = parameters_mapping.result

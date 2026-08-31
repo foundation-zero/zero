@@ -96,7 +96,17 @@ class Module[
         return self._channels.get_sensor_values()
 
     def execute_control(self, sensor_values: S) -> tuple[C, CS]:
-        """Execute a control tick, send control values and evaluate alarms."""
+        """Execute a control tick, send control values and evaluate alarms.
+
+        When the AMCS is not in advisory mode it is in control itself: we keep
+        the manual controls tracking what it actually actuated and force manual mode, so the
+        module cannot stay "automatic" while it is not the acting controller.
+        """
+        if not sensor_values.mode.is_advisory:
+            actuated_control_values = self._channels.get_actuated_control_values()
+            if actuated_control_values is not None:
+                self._control.update_manual_controls(actuated_control_values)
+            self.set_automation_mode(AutomationMode(mode="manual"))
 
         control_values, controller_state = self._control.control(sensor_values)
 

@@ -1,4 +1,6 @@
-from typing import Annotated, ClassVar
+from typing import Annotated, Any, ClassVar
+
+from pydantic import field_validator, model_serializer, model_validator
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
@@ -10,11 +12,48 @@ from thrs.input_output.definitions.units import (
     Ratio,
     TankControlMode,
 )
+from thrs.input_output.definitions.wire_context import is_actuated, is_commanded
 
 
 class Pump(ThrsValues):
+    @model_validator(mode="wrap")
+    @classmethod
+    def _read_actuated(cls, values: Any, handler, info):
+        if not isinstance(values, dict):
+            return handler(values)
+
+        if is_actuated(info.context):
+            if "CC_Dutypoint" in values:
+                values["Dutypoint"] = values.pop("CC_Dutypoint")
+            elif "Dutypoint" in values:
+                # Remove plain Dutypoint when reading actuated (it's the dutypoint request, not the actual dutypoint)
+                values.pop("Dutypoint")
+        elif is_commanded(info.context) and "CC_Dutypoint" in values:
+            raise ValueError("CC_Dutypoint is not valid for commanded values")
+
+        return handler(values)
+
+    @model_serializer(mode="wrap")
+    def _write_actuated(self, handler, info):
+        data = handler(self)
+        if is_actuated(info.context):
+            for key in ("Dutypoint", "dutypoint"):
+                if key in data:
+                    data["CC_Dutypoint"] = data.pop(key)
+                    break
+        return data
+
     dutypoint: Stamped[Ratio]
     on: Stamped[OnOff]
+
+    # TODO: Remove once marpower fixes this on their side
+    @field_validator("dutypoint")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
+        if value.value > 1.0:
+            value.value /= 100
+
+        return value
 
 
 class Valve(ThrsValues):
@@ -42,6 +81,43 @@ class Valve(ThrsValues):
             - 0: Flow from B to AB
             - 1: Flow from A to AB
     """
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def _read_actuated(cls, values: Any, handler, info):
+        if not isinstance(values, dict):
+            return handler(values)
+
+        if is_actuated(info.context):
+            if "CC_Setpoint" in values:
+                values["Setpoint"] = values.pop("CC_Setpoint")
+            elif "Setpoint" in values:
+                # Remove plain Setpoint when reading actuated (it's the setpoint request, not the actual setpoint)
+                values.pop("Setpoint")
+        elif is_commanded(info.context) and "CC_Setpoint" in values:
+            # Actuated keys belong to the AMCS receive flow, not to commands.
+            raise ValueError("CC_Setpoint is not valid for commanded values")
+
+        return handler(values)
+
+    @model_serializer(mode="wrap")
+    def _write_actuated(self, handler, info):
+        data = handler(self)
+        if is_actuated(info.context):
+            for key in ("Setpoint", "setpoint"):
+                if key in data:
+                    data["CC_Setpoint"] = data.pop(key)
+                    break
+        return data
+
+    # TODO: Remove once marpower fixes this on their side
+    @field_validator("setpoint")
+    @classmethod
+    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
+        if value.value > 1.0:
+            value.value /= 100
+
+        return value
 
 
 class Pcm(ThrsValues):

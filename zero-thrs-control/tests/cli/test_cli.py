@@ -9,6 +9,7 @@ from aiomqtt import Client
 
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.control.switching import AutomationMode
+from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -480,7 +481,9 @@ async def test_simulation_controls_automated_control(
 
         assert paused is not None
 
-        control_builder = PartialModelBuilder(ThrustersControlValues)
+        control_builder = PartialModelBuilder(
+            ThrustersControlValues, validation_context=AMCS_WRITE_CONTEXT
+        )
         while len(test_client.messages) != 0:
             logger.info("Waiting on message")
             msg = await anext(test_client.messages)

@@ -14,9 +14,15 @@ from thrs.input_output.base import (
     component_meta,
     computed_meta,
 )
-from thrs.input_output.definitions.sensor import FlowSensor, TemperatureDelta
+from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.sensor import (
+    FlowSensor,
+    TemperatureDelta,
+    TemperatureSensor,
+)
 from thrs.orchestration.comms import (
     DirectMqttMapping,
+    MergedModuleMqttMapping,
     ModuleMqttMapping,
     MqttConnector,
     PartialMqttMapping,
@@ -36,6 +42,46 @@ class ValuesWithTopics(ThrsValues):
             temperature_supply=self.go_with_the.temperature,
             temperature_return=self.go_with_the_topic.temperature,
         )
+
+
+class MergeSensorValues(ThrsValues):
+    pump: FlowSensor
+    temperature: TemperatureSensor
+
+
+class MergeControlValues(ThrsValues):
+    pump: Pump
+    valve: Valve
+
+
+def merged_sensor_values() -> CombinedValues:
+    return CombinedValues(
+        {
+            "module": MergeSensorValues(
+                pump=FlowSensor(
+                    flow=Stamped.stamp(10.0), temperature=Stamped.stamp(20.0)
+                ),
+                temperature=TemperatureSensor(temperature=Stamped.stamp(30.0)),
+            )
+        }
+    )
+
+
+def merged_control_values() -> CombinedValues:
+    return CombinedValues(
+        {
+            "module": MergeControlValues(
+                pump=Pump(dutypoint=Stamped.stamp(0.4), on=Stamped.stamp(True)),
+                valve=Valve(setpoint=Stamped.stamp(0.6)),
+            )
+        }
+    )
+
+
+def merged_mapping() -> MergedModuleMqttMapping:
+    return MergedModuleMqttMapping(
+        {"module": MergeSensorValues}, {"module": MergeControlValues}, "base"
+    )
 
 
 class TestPartialMqttMapping:
@@ -310,3 +356,54 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
         "Temperature": {"Value": 4, "TimeStamp": mock.ANY},
         "Quantity": {"Value": 0.0, "TimeStamp": "1970-01-01T00:00:00Z"},
     }
+
+
+class TestMergedModuleMqttMapping:
+    def test_split_to_topics_merges_sensor_and_control_per_component(self):
+        topics = merged_mapping().split_to_topics(
+            (merged_sensor_values(), merged_control_values())
+        )
+
+        assert set(topics) == {
+            "base/500000-thrs/module/pump",
+            "base/500000-thrs/module/temperature",
+            "base/500000-thrs/module/valve",
+        }
+
+        pump_payload = json.loads(topics["base/500000-thrs/module/pump"])
+        # sensor keys merged with the actuated CC_ key on one topic
+        assert pump_payload["CC_Dutypoint"]["Value"] == 0.4
+        assert pump_payload["On"]["Value"] is True
+        assert pump_payload["Flow"]["Value"] == 10.0
+        assert pump_payload["Temperature"]["Value"] == 20.0
+        assert "Quantity" in pump_payload
+
+        # control-only components keep their actuated payload
+        valve_payload = json.loads(topics["base/500000-thrs/module/valve"])
+        assert valve_payload == {"CC_Setpoint": mock.ANY}
+        # sensor-only components keep their plain payload
+        temperature_payload = json.loads(topics["base/500000-thrs/module/temperature"])
+        assert set(temperature_payload) == {"Temperature"}
+
+    def test_split_to_topics_corrects_marpower_dutypoint(self):
+        control_values = CombinedValues(
+            {
+                "module": MergeControlValues(
+                    pump=Pump(dutypoint=Stamped.stamp(40.0), on=Stamped.stamp(True)),
+                    valve=Valve(setpoint=Stamped.stamp(0.6)),
+                )
+            }
+        )
+        mapping = merged_mapping()
+        mapping.split_to_topics((merged_sensor_values(), None))
+        topics = mapping.split_to_topics((None, control_values))
+
+        pump_payload = json.loads(topics["base/500000-thrs/module/pump"])
+        assert pump_payload["CC_Dutypoint"]["Value"] == 0.4
+
+    def test_split_to_topics_handles_absent_sides(self):
+        sensor_only = merged_mapping().split_to_topics((merged_sensor_values(), None))
+        assert sensor_only == {}
+
+        control_only = merged_mapping().split_to_topics((None, merged_control_values()))
+        assert control_only == {}

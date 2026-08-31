@@ -73,14 +73,17 @@ class SwitchingControl[
     def control(
         self, sensor_values: SensorValues
     ) -> tuple[ControlValues, ControllerState]:
-        if not sensor_values.mode.is_advisory:
-            return self.initial()
-
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
-        return self._automatic_control.control(sensor_values)
+        control_values, controller_state = self._automatic_control.control(
+            sensor_values
+        )
+
+        # Keep the manual controls tracking the control output, so switching doesn't jump controls
+        self._manual_control.update_controls(control_values)
+        return control_values, controller_state
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode

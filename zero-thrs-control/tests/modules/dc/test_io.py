@@ -45,4 +45,8 @@ def test_dc_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(DcSensorValues, DcControlValues)
+    compare_yard_tags(
+        DcSensorValues,
+        DcControlValues,
+        exclude={"dc_mode"},
+    )

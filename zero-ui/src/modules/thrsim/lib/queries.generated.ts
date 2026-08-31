@@ -352,8 +352,6 @@ export const DC_PARAMETERS_QUERY = `
 
 export const DC_SENSOR_QUERY = `
   dcPumpAft {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -362,8 +360,6 @@ export const DC_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   dcPumpUgrid {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -372,8 +368,6 @@ export const DC_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   dcPumpFwd {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -764,8 +758,6 @@ export const DHW_PARAMETERS_QUERY = `
 
 export const DHW_SENSOR_QUERY = `
   dhwPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1124,8 +1116,6 @@ export const DRIVES_PARAMETERS_QUERY = `
 
 export const DRIVES_SENSOR_QUERY = `
   drivesPump1 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1134,8 +1124,6 @@ export const DRIVES_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   drivesPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1471,8 +1459,6 @@ export const PCM_PARAMETERS_QUERY = `
 
 export const PCM_SENSOR_QUERY = `
   pcmPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1667,8 +1653,6 @@ export const PVT_PARAMETERS_QUERY = `
 
 export const PVT_SENSOR_QUERY = `
   pvtPumpMainFwd {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1677,8 +1661,6 @@ export const PVT_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   pvtPumpMainAft {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1687,8 +1669,6 @@ export const PVT_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   pvtPumpOwners {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -2376,8 +2356,6 @@ export const THRUSTERS_PARAMETERS_QUERY = `
 
 export const THRUSTERS_SENSOR_QUERY = `
   thrustersPump1 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -2386,8 +2364,6 @@ export const THRUSTERS_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   thrustersPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
