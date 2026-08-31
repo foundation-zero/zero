@@ -17,15 +17,14 @@ cleanup() {
     set +e
     echo "Received termination signal. Shutting down kiosk..."
 
-    # Terminate Cage/Chromium and wayvnc
+    # Terminate Cage/Chromium and wayvnc gracefully first
     CAGE_PIDS=$(pgrep -x cage)
     VNC_PIDS=$(pgrep -x wayvnc)
-    if [ -n "$CAGE_PIDS" ]; then
-        echo "Stopping Cage/Chromium (PID $CAGE_PIDS)..."
-        kill -KILL $CAGE_PIDS $VNC_PIDS
-
-        # Wait briefly for them to die
-        wait $CAGE_PIDS $VNC_PIDS
+    if [ -n "$CAGE_PIDS" ] || [ -n "$VNC_PIDS" ]; then
+        echo "Stopping Cage and wayvnc..."
+        kill -TERM $CAGE_PIDS $VNC_PIDS 2>/dev/null
+        sleep 1
+        kill -KILL $CAGE_PIDS $VNC_PIDS 2>/dev/null
     fi
 
     echo "Kiosk cleanup complete. Exiting cleanly."
@@ -42,9 +41,18 @@ start_vnc() {
         sleep 0.5
     done
 
+    # Give Cage a moment to bind protocols after creating socket
+    sleep 1
+
     echo "Wayland socket detected. Starting VNC Server on port 5900..."
-    # Bind wayvnc to all interfaces (0.0.0.0) so it's accessible externally
     export WAYLAND_DISPLAY=wayland-0
+
+    if [ -n "${HEADLESS_RESOLUTION:-}" ]; then
+        echo "Setting headless output to $HEADLESS_RESOLUTION..."
+        wlr-randr --output HEADLESS-1 --custom-mode "$HEADLESS_RESOLUTION" \
+            || echo "Warning: failed to set headless resolution; using default."
+    fi
+
     wayvnc --disable-input 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
@@ -90,9 +98,33 @@ start_cage_chromium() {
     cage -- chromium $CHROME_FLAGS "$URL" 2> >(grep -vE "google_apis/gcm|dbus/bus.cc|dbus/object_proxy.cc")
 }
 
-# make sure udev events in the container are fired
-/lib/systemd/systemd-udevd --daemon
-udevadm trigger --action=add
+# Make sure udev events in the container are fired
+/lib/systemd/systemd-udevd --daemon 2>/dev/null || true
+udevadm trigger --action=add 2>/dev/null || true
+
+# With a monitor attached, use cage's default DRM/KMS backend to drive the
+# real screen (prod: zero). With none attached (singel/subzero), that backend
+# can't find a CRTC and cage spins at ~100% CPU while wayvnc crashes on the
+# zero-size output; fall back to wlroots' headless backend (a virtual output,
+# still GPU-composited and served over VNC), sized to $HEADLESS_RESOLUTION.
+#
+# Detected from DRM connector state: -x avoids matching "disconnected", -s
+# stays quiet on an empty glob. Uncertain -> headless (low-CPU + VNC, not a
+# crash loop). Plug a monitor into a headless node and restart to drive it.
+if grep -qxs connected /sys/class/drm/*/status; then
+    echo "Physical display connected; using cage's default DRM backend."
+else
+    echo "No physical display connected; using wlroots headless backend (GPU / GLES2)."
+    export WLR_BACKENDS=headless
+    # GPU compositing on the DRM render node. Software (pixman + LIBGL_ALWAYS_
+    # SOFTWARE) works but composites every frame on the CPU (~630m observed);
+    # gles2 is what gets headless CPU near a node with a real display (~126m).
+    # The wayvnc frame-capture segfault is a zero-size-output damage bug (it
+    # also hits displays running gles2), so we address it by sizing the output
+    # to $HEADLESS_RESOLUTION before wayvnc attaches, not by dropping the GPU.
+    export WLR_RENDERER=gles2
+    HEADLESS_RESOLUTION="1920x1080"
+fi
 
 start_vnc &
 VNC_PID=$!
