@@ -23,6 +23,7 @@ import {
   VariableGroup,
 } from "../lib/consts.dashboards";
 import { POSITIONS_WITH_SAILS, SailId, SAILS } from "../lib/consts.sails";
+import { VARIABLE_IDS } from "../lib/consts.variables";
 import { findInRange, unique } from "../lib/utils";
 import {
   AWA,
@@ -185,12 +186,23 @@ export const useVariablesStore = defineStore("loads-variables", () => {
 
   /*** VARIABLES ***/
 
-  const currentVariables = computed(() =>
+  const currentVariables = computed(() => {
     // Always query for AWA and AWS
-    selectedDashboard.value.groups
+    const base = selectedDashboard.value.groups
       .flatMap((g) => g.variables.map(([id]) => id))
-      .concat(["awa", "aws"]),
-  );
+      .concat(["awa", "aws"]);
+
+    // Also fetch overhoist counterparts for mast locks so
+    // VariableGridItem can resolve overhoist without hiding
+    // valid overhoists. Boom locks have no counterpart and are
+    // filtered out via VARIABLE_IDS.
+    const overhoistIds = base
+      .filter((id) => id.startsWith("mast-lock"))
+      .map((id) => id.replace("lock", "overhoist") as (typeof VARIABLE_IDS)[number])
+      .filter((id) => (VARIABLE_IDS as readonly string[]).includes(id));
+
+    return unique([...base, ...overhoistIds]);
+  });
 
   const getVariableById = <T extends number | boolean>(id: string) =>
     computed(() => variables.value.find((variable) => variable.id === id) as Variable<T>);
