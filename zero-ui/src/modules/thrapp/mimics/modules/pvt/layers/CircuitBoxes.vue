@@ -3,11 +3,11 @@ import { tScoped } from "@/modules/common/lib/utils";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowRightLine } from "@remixicon/vue";
 import { LoopCircuitInstance } from "../../../instances";
-import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
+import HotWaterCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
 
 const circuits = PVT_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
+const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
 
 const t = tScoped("labels");
 </script>
