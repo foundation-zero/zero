@@ -43,6 +43,8 @@ import {
   TEMPERATURE_THRESHOLDS,
 } from "../../domestic/lib/consts";
 
+export * from "./numbers";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -137,38 +139,6 @@ export const writeProtected = <T>(value: Ref<T>, writeAllowed: Ref<boolean>) =>
       }
     },
   });
-
-export type NumberFormatter = (value: number, locale?: string) => string;
-
-export const formatNumber =
-  (digits: number): NumberFormatter =>
-  (value: number, locale: string = "en-US") => {
-    return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    }).format(value);
-  };
-
-formatNumber.default = formatNumber(1);
-formatNumber.int = formatNumber(0);
-
-export const getNumberSign = (value: number) => (value >= 0 ? "+" : "");
-
-export const formatRatio =
-  (digits: number): NumberFormatter =>
-  (value: number, locale: string = "en-US") =>
-    formatNumber(digits)(value * 100, locale);
-
-formatRatio.default = formatRatio(0);
-
-export const formatInt = formatNumber(0);
-export const formatFixed = (digits: number, value: number, locale: string = "en-US") =>
-  formatNumber(digits)(value, locale);
-
-export const toSignedNumber =
-  (formatFn: NumberFormatter): NumberFormatter =>
-  (value: number, locale?: string) =>
-    `${getNumberSign(value)}${formatFn(value, locale)}`;
 
 export const generateRandomValues = (amount: number, min: number = 0, max: number = 1000) =>
   new Array(amount).fill(0).map(() => Math.random() * (max - min + 1) + min);
