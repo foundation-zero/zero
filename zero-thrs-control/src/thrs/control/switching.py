@@ -22,21 +22,13 @@ class AutomationMode(ThrsValues):
     mode: Literal["manual", "automatic"]
 
 
-class SwitchingControl[
+class Switching[
     SensorValues: AmcsModeSensorValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
     ControlMode,
     ControllerState: ThrsValues,
-](
-    Control[
-        SensorValues,
-        ControlValues,
-        ControlParameters,
-        SwitchingControlMode[ControlMode],
-        ControllerState,
-    ]
-):
+]:
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],
@@ -71,8 +63,18 @@ class SwitchingControl[
         )
 
     def control(
-        self, sensor_values: SensorValues
+        self,
+        sensor_values: SensorValues,
+        actuated_control_values: ControlValues | None = None,
     ) -> tuple[ControlValues, ControllerState]:
+        # When the AMCS is not in advisory mode it is in control itself: we keep the
+        # manual controls tracking what it actually actuated and force manual mode, so
+        # we cannot stay "automatic" while not the acting controller.
+        if not sensor_values.mode.is_advisory:
+            if actuated_control_values is not None:
+                self._manual_control.update_controls(actuated_control_values)
+            self._mode = "manual"
+
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()

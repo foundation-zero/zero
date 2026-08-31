@@ -8,7 +8,7 @@ from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
-    SwitchingControl,
+    Switching,
     SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
@@ -67,7 +67,7 @@ class Module[
         channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
     ):
         self._name = name
-        self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
+        self._control = Switching(ManualControl(control.initial()[0]), control)
         self._alarms = alarms
         self._channels = channels
         self._active_alarms: dict[str, Alarm] = {}
@@ -96,19 +96,10 @@ class Module[
         return self._channels.get_sensor_values()
 
     def execute_control(self, sensor_values: S) -> tuple[C, CS]:
-        """Execute a control tick, send control values and evaluate alarms.
-
-        When the AMCS is not in advisory mode it is in control itself: we keep
-        the manual controls tracking what it actually actuated and force manual mode, so the
-        module cannot stay "automatic" while it is not the acting controller.
-        """
-        if not sensor_values.mode.is_advisory:
-            actuated_control_values = self._channels.get_actuated_control_values()
-            if actuated_control_values is not None:
-                self._control.update_manual_controls(actuated_control_values)
-            self.set_automation_mode(AutomationMode(mode="manual"))
-
-        control_values, controller_state = self._control.control(sensor_values)
+        """Execute a control tick, send control values and evaluate alarms."""
+        control_values, controller_state = self._control.control(
+            sensor_values, self._channels.get_actuated_control_values()
+        )
 
         self._check_alarms(sensor_values, control_values)
 
