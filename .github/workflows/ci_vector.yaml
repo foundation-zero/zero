@@ -18,9 +18,15 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: "0"
       - name: Run Vector test
         working-directory: vector
         run: bash test.sh
+      - name: Run Vector ATPX test
+        working-directory: vector
+        run: bash test-atpx.sh
+      - name: Run Vector ATPX NMEA test
+        working-directory: vector
+        run: bash test-atpx-nmea.sh

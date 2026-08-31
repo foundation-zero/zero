@@ -21,7 +21,7 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
         :target-width="PUMP_WIDTH"
         y="480"
         :tag-id="pumps['1194'].tooltip?.yardTag"
-        :pump="pumps['1194'].source"
+        :pump="pumps['1194'].controls.pump"
       />
     </PumpInstance>
     <PumpInstance
@@ -35,7 +35,7 @@ const pumps = THRUSTERS_MIMIC_DATA[MimicComponentType.Pump];
         :target-width="PUMP_WIDTH"
         y="570"
         :tag-id="pumps['1195'].tooltip?.yardTag"
-        :pump="pumps['1195'].source"
+        :pump="pumps['1195'].controls.pump"
       />
     </PumpInstance>
   </g>

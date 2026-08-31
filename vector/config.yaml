@@ -20,6 +20,31 @@ sources:
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840
+  # A+T (ATPX) instrument bus: one raw float per message on
+  # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
+  # ATPX_MQTT_TOPIC is atpx_raw/# locally, defaulting to A+T's atpx/# in prod.
+  atpx_mqtt:
+    type: mqtt
+    host: "${ATPX_MQTT_HOST}"
+    port: ${ATPX_MQTT_PORT}
+    client_id: vector-atpx
+    topic:
+      - "${ATPX_MQTT_TOPIC:-atpx/#}"
+    decoding:
+      codec: bytes
+  # A+T (ATPX) NMEA 0183 stream, already parsed to JSON and republished on our
+  # own broker by the standalone zero-atpx-nmea service. See ZERO-1660.
+  atpx_nmea_mqtt:
+    type: mqtt
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
+    client_id: vector-atpx-nmea
+    topic:
+      - "atpx/processed/nmea/#"
+    decoding:
+      codec: json
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
 transforms:
   process:
     type: remap
@@ -31,13 +56,52 @@ transforms:
       - "/etc/vector/3_timestamp.vrl"
       - "/etc/vector/4_spell_fix.vrl"
       - "/etc/vector/5_snakecase.vrl"
+  # Resolves each single-value ATPX message into one `atpx_raw` row (topic,
+  # human-readable sender and field names, value).
+  atpx_parse:
+    type: remap
+    inputs: ["atpx_mqtt"]
+    files:
+      - "/etc/vector/atpx_0_consts.vrl"
+      - "/etc/vector/atpx_1_parse.vrl"
+  # Derives the Greptime table name from the parser's `type` field and stamps
+  # ingestion time as the uniform time index. Each NMEA sentence is an
+  # independent row - no reduce/merge step (ATPX lands raw, see atpx_parse).
+  atpx_nmea_route:
+    type: remap
+    inputs: ["atpx_nmea_mqtt"]
+    files:
+      - "/etc/vector/atpx_nmea_route.vrl"
 
 sinks:
   greptimedb:
     type: greptimedb_logs
-    inputs: ["process"]
+    inputs: ["process", "atpx_nmea_route"]
     endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
     dbname: "public"
     table: "{{ table }}"
     extra_params:
       custom_time_index: "timestamp;datestr;%+"
+  # All ATPX messages land in a single table; a pivot view produces the
+  # per-domain wide shapes later.
+  greptimedb_atpx:
+    type: greptimedb_logs
+    inputs: ["atpx_parse"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "atpx_raw"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"
+  # Republishes each row to our own broker; the topic rides in metadata so it
+  # isn't duplicated inside the JSON payload.
+  atpx_mqtt_publish:
+    type: mqtt
+    inputs: ["atpx_parse"]
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
+    client_id: vector-atpx-publish
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
+    topic: "{{ %mqtt_topic }}"
+    encoding:
+      codec: json

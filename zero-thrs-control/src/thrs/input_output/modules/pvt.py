@@ -966,7 +966,7 @@ class PvtSimulationInputs(ThrsValues):
     pvt_owners: simulation.HeatSource
     pvt_pcm_supply: simulation.TemperatureBoundary
     pvt_seawater_supply: simulation.Boundary
-    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class PvtSimulationOutputs(ThrsValues):

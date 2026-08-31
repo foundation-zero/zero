@@ -28,7 +28,7 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
         :target-width="32"
         y="170"
         :tag-id="pumps['1018'].tooltip?.yardTag"
-        :pump="pumps['1018'].source"
+        :pump="pumps['1018'].controls.pump"
       />
     </PumpInstance>
     <PumpInstance
@@ -44,7 +44,7 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
         :target-width="32"
         y="365"
         :tag-id="pumps['1019'].tooltip?.yardTag"
-        :pump="pumps['1019'].source"
+        :pump="pumps['1019'].controls.pump"
       />
     </PumpInstance>
     <PumpInstance
@@ -60,7 +60,7 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
         :target-width="32"
         y="590"
         :tag-id="pumps['1020'].tooltip?.yardTag"
-        :pump="pumps['1020'].source"
+        :pump="pumps['1020'].controls.pump"
       />
     </PumpInstance>
     <ManualPumpInstance

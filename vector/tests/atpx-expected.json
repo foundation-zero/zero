@@ -1,0 +1,8 @@
+{"field":"app_wind_angle","sender":"atprocessor_0","topic":"atpx/4866/3840","value":84.5004}
+{"field":"app_wind_angle","sender":"atprocessor_0","topic":"atpx/4866/3840","value":99.9}
+{"field":"app_wind_angle","sender":"wind_board_1","topic":"atpx/4866/1281","value":80.0}
+{"field":"app_wind_speed_kts","sender":"atprocessor_0","topic":"atpx/4864/3840","value":12.3}
+{"field":"app_wind_speed_kts","sender":"wind_board_1","topic":"atpx/4864/1281","value":10.1}
+{"field":"depth_metres","sender":"atprocessor_0","topic":"atpx/1025/3840","value":45.2}
+{"field":"depth_with_datum_m","sender":"atprocessor_0","topic":"atpx/5121/3840","value":44.8}
+{"field":"vmg_kts","sender":"atprocessor_0","topic":"atpx/4885/3840","value":5.6}

@@ -9,11 +9,9 @@ import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { client } from "@/modules/thrsim/graphql/client.ts";
 import { ThrsModules } from "@/modules/thrsim/lib/consts.types.ts";
-import { RiSeparator } from "@remixicon/vue";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
-import ClearChartHistory from "../components/ClearChartHistory.vue";
 import ControlActions from "../components/ControlActions.vue";
 import SimulationTabs from "../components/SimulationTabs.vue";
 import SubNavTabs from "../components/SubNavTabs.vue";
@@ -62,14 +60,16 @@ provide("currentModule", currentModuleKey);
       </template>
 
       <template #right-content>
-        <ClearChartHistory />
-        <RiSeparator class="text-disabled-foreground" />
         <RouterLink
           :to="{ name: 'thrsim/simulation' }"
           class="flex items-center"
         >
           <span
-            class="hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-md px-3 py-2 text-sm font-medium"
+            class="hover:text-foreground text-disabled-foreground font-headers cursor-pointer rounded-none px-3 py-2 text-sm font-medium uppercase"
+            :class="{
+              'text-foreground border-attention border-b':
+                currentRoute.name === 'thrsim/simulation',
+            }"
           >
             {{ t("thrs.views.simulation.title") }}
           </span>

@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     udev \
     procps\
     wayvnc \
+    wlr-randr \
     && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh

@@ -1,0 +1,35 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-atpx-nmea
+  pullPolicy: IfNotPresent
+  tag: ""
+
+# Our own MQTT broker (output).
+mqtt:
+  host: ""
+  port: 1883
+  username: atpx-nmea
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+# A+T's onboard MQTT broker (input, unauthenticated).
+atpxMqtt:
+  host: ""
+  port: 1883
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -45,4 +45,8 @@ def test_pvt_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(PvtSensorValues, PvtControlValues)
+    compare_yard_tags(
+        PvtSensorValues,
+        PvtControlValues,
+        exclude={"pvt_mode"},
+    )

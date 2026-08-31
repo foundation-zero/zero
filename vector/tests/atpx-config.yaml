@@ -1,0 +1,42 @@
+sources:
+  input:
+    type: exec
+    command:
+      - "cat"
+      - "tests/atpx-test-cases.json"
+    mode: streaming
+    decoding:
+      codec: json
+    streaming:
+      respawn_on_exit: false
+
+transforms:
+  take_msg:
+    type: remap
+    inputs: ["input"]
+    source: |
+      del(.command)
+      del(.host)
+      del(.pid)
+      del(.source_type)
+      del(.stream)
+  atpx_parse:
+    type: remap
+    inputs: ["take_msg"]
+    files:
+      - "./processing/atpx_0_consts.vrl"
+      - "./processing/atpx_1_parse.vrl"
+  # .timestamp is set to now() in atpx_1_parse.vrl, so it's non-deterministic;
+  # strip it here so the test can do an exact diff against expected output.
+  strip_timestamp:
+    type: remap
+    inputs: ["atpx_parse"]
+    source: |
+      del(.timestamp)
+
+sinks:
+  output:
+    type: console
+    inputs: ["strip_timestamp"]
+    encoding:
+      codec: json

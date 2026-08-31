@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Values",
+  "type": "object",
+  "required": ["atpxMqtt", "mqtt"],
+  "properties": {
+    "atpxMqtt": {
+      "type": "object",
+      "required": ["host", "port"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "A+T's onboard MQTT broker hostname (input, unauthenticated)."
+        },
+        "port": {
+          "type": "integer",
+          "description": "A+T's onboard MQTT broker port.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "mqtt": {
+      "type": "object",
+      "required": ["host", "port"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "Our own MQTT broker hostname (output)."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Our own MQTT broker port.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "username": {
+          "type": "string",
+          "description": "MQTT username for our own broker."
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Kubernetes Secret containing the MQTT password."
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MQTT password."
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Container image repository."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "description": "Image pull policy.",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        },
+        "tag": {
+          "type": "string",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Container resource requests and limits."
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "description": "Secrets for pulling images from a private registry.",
+      "items": {
+        "type": "object"
+      }
+    },
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "Override the full name."
+    }
+  }
+}

@@ -73,18 +73,25 @@
         "manualControl": "Manual control",
         "off": "Off",
         "modes": {
-          "thrusters": "{mode}",
+          "thrusters": {
+            "idle": "Idle",
+            "recovery": "Recovery",
+            "cooldown": "Cooldown",
+            "cooling": "Cooling"
+          },
           "pcm": "{mode}",
           "consumers": "{mode}",
-          "pvt": "aft: {aftMode} / fwd: {fwdMode} / owners: {ownersMode}",
-          "dhw": "boosting: {boostingMode} / filling: {fillingMode}"
+          "pvt": {
+            "idle": "Aft: Idle | Fwd: Idle | Owners: Idle",
+            "recovery": "Aft: Recovery | Fwd: Recovery | Owners: Recovery"
+          },
+          "dhw": {
+            "boosting_high_temperature": "Boosting HT",
+            "boosting_low_temperature": "Boosting LT",
+            "boosting_heatpump": "Boosting HP",
+            "idle": "Idle"
+          }
         }
-      },
-      "clearChartHistory": {
-        "title": "Clear Chart History",
-        "description": "Are you sure you want to clear the chart history? This action cannot be undone.",
-        "confirmButton": "Clear Cache",
-        "cancelButton": "Cancel"
       }
     },
     "labels": {
@@ -149,6 +156,32 @@
       "parameter:disabled": {
         "label": "Disabled",
         "unit": ""
+      },
+      "flow": {
+        "label": "Flow",
+        "unit": "l/min"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      },
+      "overpressure": {
+        "label": "Overpressure",
+        "unit": "bar"
+      },
+      "heatFlow": {
+        "label": "Heat Flow",
+        "unit": "W"
+      },
+      "maximumTemperature": {
+        "label": "Maximum Temperature",
+        "unit": "°C"
+      },
+      "thruster": {
+        "label": "Thruster"
+      },
+      "mode": {
+        "label": "Mode"
       },
       "pid": {
         "p": "P",

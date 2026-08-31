@@ -11,8 +11,8 @@ const props = defineProps<
   MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.Pump> & PumpProps
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
-const pump = getSensorValue(props.source);
+const { getControlValue, getComponentState } = getMimicDataProvider();
+const pump = getControlValue(props.controls.pump);
 const state = getComponentState();
 
 const pumpState = computed(() => {

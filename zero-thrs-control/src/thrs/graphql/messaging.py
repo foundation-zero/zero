@@ -84,7 +84,7 @@ class ControlMessaging[
 
     @property
     def control_values(self) -> ControlValues | None:
-        return self._channels.get_control_values() or self._channels.get_manual_values()
+        return self._channels.get_actuated_control_values()
 
     @property
     def controller_state(self) -> ControllerState | None:

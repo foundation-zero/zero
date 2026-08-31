@@ -49,7 +49,11 @@ def test_thrusters_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(ThrustersSensorValues, ThrustersControlValues, {"thrusters_pcs"})
+    compare_yard_tags(
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        {"thrusters_mode", "thrusters_pcs"},
+    )
 
 
 def test_set_module_temperature(

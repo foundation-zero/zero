@@ -37,6 +37,9 @@ export const ADSORPTION_PARAMETERS_QUERY = `
 `;
 
 export const ADSORPTION_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   adsorptionFlowcontrolWaste {
     positionRel { value timestamp }
     positionAbs { value timestamp }
@@ -108,9 +111,6 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
-  adsorptionMode {
-    mode { value timestamp }
-  }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
@@ -138,7 +138,7 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  adsorptionMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -192,6 +192,9 @@ export const CONSUMERS_PARAMETERS_QUERY = `
 `;
 
 export const CONSUMERS_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   consumersTemperatureDhwReturn {
     temperature { value timestamp }
   }
@@ -239,9 +242,6 @@ export const CONSUMERS_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
-  consumersMode {
-    mode { value timestamp }
-  }
 `;
 
 export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
@@ -257,7 +257,7 @@ export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  consumersMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -351,9 +351,10 @@ export const DC_PARAMETERS_QUERY = `
 `;
 
 export const DC_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   dcPumpAft {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -362,8 +363,6 @@ export const DC_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   dcPumpUgrid {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -372,8 +371,6 @@ export const DC_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   dcPumpFwd {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -580,9 +577,6 @@ export const DC_SENSOR_QUERY = `
   dcUgrid2 {
     active { value timestamp }
   }
-  dcMode {
-    mode { value timestamp }
-  }
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
@@ -618,7 +612,7 @@ export const DC_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  dcMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -763,9 +757,10 @@ export const DHW_PARAMETERS_QUERY = `
 `;
 
 export const DHW_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   dhwPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -959,9 +954,6 @@ export const DHW_SENSOR_QUERY = `
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
   }
-  dhwMode {
-    mode { value timestamp }
-  }
   drivesDelta {
     deltaT { value timestamp }
   }
@@ -1034,7 +1026,7 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
   dhwHotwaterDemand {
     flow { value timestamp }
   }
-  dhwMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -1123,9 +1115,10 @@ export const DRIVES_PARAMETERS_QUERY = `
 `;
 
 export const DRIVES_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   drivesPump1 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1134,8 +1127,6 @@ export const DRIVES_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   drivesPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1264,9 +1255,6 @@ export const DRIVES_SENSOR_QUERY = `
   drivesShorepower {
     active { value timestamp }
   }
-  drivesMode {
-    mode { value timestamp }
-  }
 `;
 
 export const DRIVES_SIMULATION_INPUTS_QUERY = `
@@ -1299,7 +1287,7 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  drivesMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -1354,16 +1342,7 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  consumersMode {
-    mode { value timestamp }
-  }
-  pvtMode {
-    mode { value timestamp }
-  }
-  pcmMode {
-    mode { value timestamp }
-  }
-  thrustersMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -1470,9 +1449,10 @@ export const PCM_PARAMETERS_QUERY = `
 `;
 
 export const PCM_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   pcmPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1562,9 +1542,6 @@ export const PCM_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
-  pcmMode {
-    mode { value timestamp }
-  }
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
@@ -1583,7 +1560,7 @@ export const PCM_SIMULATION_INPUTS_QUERY = `
   pcmConsumersSupply {
     temperature { value timestamp }
   }
-  pcmMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -1683,9 +1660,10 @@ export const PVT_PARAMETERS_QUERY = `
 `;
 
 export const PVT_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   pvtPumpMainFwd {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1694,8 +1672,6 @@ export const PVT_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   pvtPumpMainAft {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -1704,8 +1680,6 @@ export const PVT_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   pvtPumpOwners {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -2138,7 +2112,7 @@ export const PVT_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pvtMode {
+  mode {
     mode { value timestamp }
   }
 `;
@@ -2447,9 +2421,10 @@ export const THRUSTERS_PARAMETERS_QUERY = `
 `;
 
 export const THRUSTERS_SENSOR_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
   thrustersPump1 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -2458,8 +2433,6 @@ export const THRUSTERS_SENSOR_QUERY = `
     powerInput { value timestamp }
   }
   thrustersPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
@@ -2537,9 +2510,6 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
-  thrustersMode {
-    mode { value timestamp }
-  }
   thrustersTemperatureRecovery {
     temperature { value timestamp }
   }
@@ -2574,7 +2544,7 @@ export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
-  thrustersMode {
+  mode {
     mode { value timestamp }
   }
 `;

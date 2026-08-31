@@ -11,16 +11,18 @@ from zero_data.io_list.types import IOTopic, IOValue
 logger = logging.getLogger(__name__)
 
 
-class Generator:
-    def __init__(
-        self,
-        interval: int | float,
-        mqtt_config: MQTTConfig,
-        topics: list[IOTopic],
-    ):
+class BaseGenerator:
+    """Connect/loop plumbing shared by every generator.
+
+    Owns the outer interval loop and the MQTT connection; subclasses only
+    implement `send_messages`. Makes no assumption about the message model,
+    so it fits both the topic-based generators and the single-value-per-topic
+    ATPX generator.
+    """
+
+    def __init__(self, interval: int | float, mqtt_config: MQTTConfig):
         self.interval: int | float = interval
         self.mqtt_config: MQTTConfig = mqtt_config
-        self.topics: list[IOTopic] = topics
 
     async def run(self):
         """Run the generator, sending messages at regular intervals."""
@@ -30,6 +32,20 @@ class Generator:
                 send_task = self.send_messages(client)
 
                 await asyncio.gather(send_task, sleep_task)
+
+    @abstractmethod
+    async def send_messages(self, client: Client): ...
+
+
+class Generator(BaseGenerator):
+    def __init__(
+        self,
+        interval: int | float,
+        mqtt_config: MQTTConfig,
+        topics: list[IOTopic],
+    ):
+        super().__init__(interval, mqtt_config)
+        self.topics: list[IOTopic] = topics
 
     def get_topic(self, topic: IOTopic):
         return topic.topic

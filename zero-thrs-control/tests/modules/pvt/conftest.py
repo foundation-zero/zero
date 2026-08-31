@@ -31,7 +31,7 @@ def simulation_inputs():
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
-        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

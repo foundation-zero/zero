@@ -130,6 +130,7 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
+      ATPX_RAW_TOPIC_PREFIX: atpx_raw
     depends_on:
       vernemq:
         condition: service_healthy
@@ -157,6 +158,10 @@ services:
       MQTT_PORT: 1883
       MQTT_USER: mqtt
       MQTT_PASSWORD: mqtt
+      ATPX_MQTT_HOST: ${ATPX_MQTT_HOST:-vernemq}
+      ATPX_MQTT_PORT: ${ATPX_MQTT_PORT:-1883}
+      # Local raw feed is on atpx_raw/#; unset in prod -> A+T's real atpx/# bus.
+      ATPX_MQTT_TOPIC: ${ATPX_MQTT_TOPIC:-atpx_raw/#}
       GREPTIMEDB_HOST: greptimedb
       GREPTIMEDB_PORT: 4000
     volumes:
@@ -167,6 +172,10 @@ services:
         condition: service_healthy
       greptimedb:
         condition: service_healthy
+      # Bridges raw atpx/nmea0183/# sentences to the atpx/processed/nmea/# rows
+      # vector ingests, so the one-command local e2e starts it too.
+      zero-atpx-nmea:
+        condition: service_started
 
   greptimedb:
     image: greptime/greptimedb:v1.1.3
@@ -405,12 +414,20 @@ services:
     profiles:
       - data-collection
     environment:
-      MODBUS_HOST: power-tags-stub
-      MODBUS_PORT: "502"
       MODBUS_PROBE_INTERVAL: "10"
       MQTT_HOST: vernemq
       MQTT_PORT: "1883"
       MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
+      MODBUS_PANELS__host_10p0_1: power-tags-stub
+      MODBUS_PANELS__port_10p0_1: "502"
+      MODBUS_PANELS__host_10p0_3: power-tags-stub
+      MODBUS_PANELS__port_10p0_3: "503"
+      MODBUS_PANELS__host_10p1: power-tags-stub
+      MODBUS_PANELS__port_10p1: "504"
+      MODBUS_PANELS__host_10p2: power-tags-stub
+      MODBUS_PANELS__port_10p2: "505"
+      MODBUS_PANELS__host_10p3: power-tags-stub
+      MODBUS_PANELS__port_10p3: "506"
     depends_on:
       vernemq:
         condition: service_healthy
@@ -425,6 +442,26 @@ services:
     environment:
       MODBUS_HOST: "0.0.0.0"
       MODBUS_PORT: "502"
+      MODBUS_BRIDGES_PATH: /app/zero-power-tags/modbus_bridges.json
+
+  # ---- data collection (atpx nmea) ----
+  zero-atpx-nmea:
+    build:
+      context: .
+      dockerfile: zero-atpx-nmea/Dockerfile
+    profiles:
+      - data-collection
+    environment:
+      # loads-at-sensors-stub publishes mocked ATPX data (including NMEA
+      # sentences) to vernemq locally; in production ATPX_MQTT_HOST points at
+      # A+T's onboard MQTT broker instead.
+      ATPX_MQTT_HOST: vernemq
+      ATPX_MQTT_PORT: "1883"
+      MQTT_HOST: vernemq
+      MQTT_PORT: "1883"
+    depends_on:
+      vernemq:
+        condition: service_healthy
 
 volumes:
   db_data:

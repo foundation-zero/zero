@@ -24,7 +24,7 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Set up in https://github.com/foundation-zero/gcp-common
       - name: Determine image tag
         id: image_tag
@@ -43,7 +43,7 @@ jobs:
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
       - id: auth
         name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           token_format: access_token
           project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
@@ -52,9 +52,9 @@ jobs:
           access_token_lifetime: 600s
       - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: zero-browser-kiosk
           push: true

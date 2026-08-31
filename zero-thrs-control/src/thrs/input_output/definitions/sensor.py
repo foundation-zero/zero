@@ -39,8 +39,6 @@ class FlowSensor(ThrsValues):
 
 
 class Pump(ThrsValues):
-    dutypoint: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
-    on: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
@@ -62,15 +60,6 @@ class Pump(ThrsValues):
             value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
         )
     )
-
-    # TODO: Remove once marpower fixes this on their side
-    @field_validator("dutypoint")
-    @classmethod
-    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        if value.value > 1.0:
-            value.value /= 100
-
-        return value
 
 
 class TemperatureSensor(ThrsValues):

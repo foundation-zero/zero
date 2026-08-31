@@ -76,6 +76,7 @@ async def test_reader_annotated_scaling():
 async def test_reader_annotated_invalid_value_sentinel():
     mock_modbus = MagicMock()
     mock_modbus.read_holding_registers.return_value = [0xFFFF]
+    mock_modbus.read_coils.return_value = [1]
 
     topic = AnnotationModbusTopic(topic="test/u", model=UintModel)
     reader = ModbusReader(mock_modbus, [topic])
@@ -134,7 +135,7 @@ async def test_reader_converter_single():
 @pytest.mark.asyncio
 async def test_reader_extra_fields_merged():
     mock_modbus = MagicMock()
-    mock_modbus.read_holding_registers.return_value = [25]
+    mock_modbus.read_holding_registers.return_value = [0x4248, 0x0000]
 
     topic = AnnotationModbusTopic(
         topic="test/e",

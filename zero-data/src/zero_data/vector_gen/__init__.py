@@ -3,12 +3,14 @@ from pathlib import Path
 
 from zero_data.config import io_lists
 from zero_data.io_list import Source, read_io_list
+from zero_data.vector_gen.atpx import AtpxVectorGenerator
 from zero_data.vector_gen.marpower import MarpowerVectorGenerator
 
 logger = logging.getLogger(__name__)
 
 _GENERATORS: dict[Source, type] = {
     "marpower": MarpowerVectorGenerator,
+    "atpx": AtpxVectorGenerator,
 }
 
 
@@ -27,6 +29,6 @@ def generate_vector(cache_dir: Path | None = None):
             continue
 
         generator = vector_generator_class(vector_path)
-        generator.generate(io_result.topics)
+        generator.generate(io_result)
 
     logging.info("Vector generation complete")

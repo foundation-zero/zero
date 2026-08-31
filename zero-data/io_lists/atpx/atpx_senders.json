@@ -1,0 +1,20 @@
+[
+  { "id": 10, "source": "Analogue Board" },
+  { "id": 13, "source": "CANbus" },
+  { "id": 17, "source": "DLA2 Board" },
+  { "id": 38, "source": "DLA3 Board" },
+  { "id": 36, "source": "BLE Interface" },
+  { "id": 18, "source": "Expedition" },
+  { "id": 11, "source": "Fastnet" },
+  { "id": 14, "source": "Main Interface Board" },
+  { "id": 34, "source": "Modbus" },
+  { "id": 12, "source": "NMEA0183" },
+  { "id": 48, "source": "Node-RED" },
+  { "id": 15, "source": "ATProcessor" },
+  { "id": 1, "source": "Speed Board" },
+  { "id": 2, "source": "Speed/Depth Board" },
+  { "id": 5, "source": "Wind Board" },
+  { "id": 31, "source": "Autopilot" },
+  { "id": 35, "source": "CANbus Loadcell" },
+  { "id": 37, "source": "NMEA Interface" }
+]

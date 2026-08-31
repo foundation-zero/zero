@@ -9,7 +9,7 @@ from zero_modbus_bridge.io import ModbusField
 class FloatModel(BaseModel):
     value: Annotated[
         float | None,
-        ModbusField(offset=0, count=2, data_type="float32", validator=is_finite_float),
+        ModbusField(offset=0, data_type="float32", validator=is_finite_float),
     ]
     room: str | None = None
 

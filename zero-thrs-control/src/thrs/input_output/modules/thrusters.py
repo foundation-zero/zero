@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Annotated, cast
 
-from pydantic import ConfigDict, Field, computed_field
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
@@ -246,14 +246,6 @@ class ThrustersSensorValues(AmcsModeSensorValues):
 
         return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
 
-    thrusters_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.thrusters_mode
-
 
 class ThrustersControlValues(ThrsValues):
     model_config = ConfigDict(
@@ -316,7 +308,7 @@ class ThrustersSimulationInputs(ThrsValues):
     thrusters_seawater_supply: simulation.Boundary
     thrusters_pcm_supply: simulation.TemperatureBoundary
     thrusters_pcs: simulation.Pcs
-    thrusters_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class ThrustersSimulationOutputs(ThrsValues):

@@ -69,6 +69,8 @@ type AdsorptionParametersType {
 }
 
 type AdsorptionSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   adsorptionFlowcontrolWaste: SensorValveType!
     @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
   adsorptionMixHot: SensorValveType!
@@ -135,8 +137,6 @@ type AdsorptionSensorValuesType {
     @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
   adsorptionAvailableSeawaterTemperature: SensorTemperatureSensorType!
     @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
-  adsorptionMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule {
@@ -165,7 +165,7 @@ type AdsorptionSimulationInputsType {
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   adsorptionConsumersSupply: SimulationBoundaryType!
   adsorptionDhwSupply: SimulationBoundaryType!
-  adsorptionMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -224,6 +224,8 @@ type ConsumersParametersType {
 }
 
 type ConsumersSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   consumersTemperatureDhwReturn: SensorTemperatureSensorType!
     @jsonSchemaDirective(
       yardTag: "50001038-48"
@@ -264,8 +266,6 @@ type ConsumersSensorValuesType {
     @jsonSchemaDirective(yardTag: "50001066-02", componentType: "valve", valveType: "switch")
   consumersSwitchDhw: SensorValveType!
     @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
-  consumersMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule {
@@ -285,7 +285,7 @@ type ConsumersSimulationInputsType {
   consumersAdsorptionSupply: SimulationBoundaryType!
   consumersDhwSupply: SimulationBoundaryType!
   consumersPcmSupply: SimulationBoundaryType!
-  consumersMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -451,6 +451,8 @@ type DcParametersType {
 }
 
 type DcSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcPumpAft: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001020", componentType: "pump", valveType: null)
   dcPumpUgrid: SensorPumpType!
@@ -637,8 +639,6 @@ type DcSensorValuesType {
     @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
   dcUgrid2: SensorUgridType!
     @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
-  dcMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule {
@@ -665,7 +665,7 @@ type DcSimulationInputsType {
   dcBrightloopAft4: SimulationHeatSourceType!
   dcSeawaterSupply: SimulationBoundaryType!
   dcDhwSupply: SimulationBoundaryType!
-  dcMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -770,6 +770,8 @@ type DhwParametersType {
 }
 
 type DhwSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwPump: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
   dhwTemperatureHvacExchangerReturn: SensorTemperatureSensorType!
@@ -946,8 +948,6 @@ type DhwSensorValuesType {
     @jsonSchemaDirective(yardTag: "25001123-1", componentType: null, valveType: null)
   freshwaterHotwaterTemperature: SensorTemperatureSensorType!
     @jsonSchemaDirective(yardTag: "25001038-1", componentType: null, valveType: null)
-  dhwMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   drivesDelta: SensorTemperatureDeltaType!
     @jsonSchemaDirective(yardTag: "", componentType: "delta_t", valveType: null)
   dcDelta: SensorTemperatureDeltaType!
@@ -994,7 +994,7 @@ type DhwSimulationInputsType {
   dhwHvacExchanger: SimulationHvacExchangerType!
   dhwSeawaterSupply: SimulationTemperatureBoundaryType!
   dhwHotwaterDemand: SimulationFlowBoundaryType!
-  dhwMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -1061,6 +1061,8 @@ type DrivesParametersType {
 }
 
 type DrivesSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   drivesPump1: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001028", componentType: "pump", valveType: null)
   drivesPump2: SensorPumpType!
@@ -1179,8 +1181,6 @@ type DrivesSensorValuesType {
       componentType: "shore_power_converter"
       valveType: null
     )
-  drivesMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeControlModule {
@@ -1206,7 +1206,7 @@ type DrivesSimulationInputsType {
   drivesShorepower: SimulationHeatSourceType!
   drivesSeawaterSupply: SimulationBoundaryType!
   drivesDhwSupply: SimulationBoundaryType!
-  drivesMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -1267,13 +1267,7 @@ type HighTemperatureSimulationInputsType {
   pcmFreshwaterSupply: SimulationBoundaryType!
   consumersDhwSupply: SimulationBoundaryType!
   consumersAdsorptionSupply: SimulationBoundaryType!
-  consumersMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  pvtMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  pcmMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  thrustersMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -1553,14 +1547,7 @@ type Mutation {
   thrsSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesShorepower(value: ConverterInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetAdsorptionMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetConsumersMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDhwMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDrivesMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetPcmMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetPvtMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetThrustersMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterAft(
     value: ThrusterInputType!
   ): HighTemperatureSimulationInputsType!
@@ -1594,16 +1581,7 @@ type Mutation {
   highTemperatureSimulationSetConsumersAdsorptionSupply(
     value: BoundaryInputType!
   ): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetConsumersMode(
-    value: AmcsControlModeInputType!
-  ): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPvtMode(
-    value: AmcsControlModeInputType!
-  ): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetPcmMode(
-    value: AmcsControlModeInputType!
-  ): HighTemperatureSimulationInputsType!
-  highTemperatureSimulationSetThrustersMode(
+  highTemperatureSimulationSetMode(
     value: AmcsControlModeInputType!
   ): HighTemperatureSimulationInputsType!
   dhwSimulationSetDhwDrivesSupply(value: BoundaryInputType!): DhwSimulationInputsType!
@@ -1616,7 +1594,7 @@ type Mutation {
   dhwSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): DhwSimulationInputsType!
   dhwSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): DhwSimulationInputsType!
   dhwSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwMode(value: AmcsControlModeInputType!): DhwSimulationInputsType!
+  dhwSimulationSetMode(value: AmcsControlModeInputType!): DhwSimulationInputsType!
   dcSimulationSetDcBrightloopFwd1(value: ConverterInputType!): DcSimulationInputsType!
   dcSimulationSetDcBrightloopFwd2(value: ConverterInputType!): DcSimulationInputsType!
   dcSimulationSetDcUgrid1(value: ConverterInputType!): DcSimulationInputsType!
@@ -1627,7 +1605,7 @@ type Mutation {
   dcSimulationSetDcBrightloopAft4(value: ConverterInputType!): DcSimulationInputsType!
   dcSimulationSetDcSeawaterSupply(value: BoundaryInputType!): DcSimulationInputsType!
   dcSimulationSetDcDhwSupply(value: BoundaryInputType!): DcSimulationInputsType!
-  dcSimulationSetDcMode(value: AmcsControlModeInputType!): DcSimulationInputsType!
+  dcSimulationSetMode(value: AmcsControlModeInputType!): DcSimulationInputsType!
   drivesSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesPropdriveAft1(
@@ -1645,7 +1623,7 @@ type Mutation {
   drivesSimulationSetDrivesShorepower(value: ConverterInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesDhwSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesMode(value: AmcsControlModeInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetMode(value: AmcsControlModeInputType!): DrivesSimulationInputsType!
   adsorptionSimulationSetAdsorptionCoolingSupply(
     value: TemperatureBoundaryInputType!
   ): AdsorptionSimulationInputsType!
@@ -1670,9 +1648,7 @@ type Mutation {
   adsorptionSimulationSetAdsorptionDhwSupply(
     value: BoundaryInputType!
   ): AdsorptionSimulationInputsType!
-  adsorptionSimulationSetAdsorptionMode(
-    value: AmcsControlModeInputType!
-  ): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetMode(value: AmcsControlModeInputType!): AdsorptionSimulationInputsType!
   consumersSimulationSetConsumersAdsorptionSupply(
     value: BoundaryInputType!
   ): ConsumersSimulationInputsType!
@@ -1682,20 +1658,18 @@ type Mutation {
   consumersSimulationSetConsumersPcmSupply(
     value: BoundaryInputType!
   ): ConsumersSimulationInputsType!
-  consumersSimulationSetConsumersMode(
-    value: AmcsControlModeInputType!
-  ): ConsumersSimulationInputsType!
+  consumersSimulationSetMode(value: AmcsControlModeInputType!): ConsumersSimulationInputsType!
   pcmSimulationSetPcmPvtSupply(value: BoundaryInputType!): PcmSimulationInputsType!
   pcmSimulationSetPcmThrustersSupply(value: BoundaryInputType!): PcmSimulationInputsType!
   pcmSimulationSetPcmFreshwaterSupply(value: BoundaryInputType!): PcmSimulationInputsType!
   pcmSimulationSetPcmConsumersSupply(value: TemperatureBoundaryInputType!): PcmSimulationInputsType!
-  pcmSimulationSetPcmMode(value: AmcsControlModeInputType!): PcmSimulationInputsType!
+  pcmSimulationSetMode(value: AmcsControlModeInputType!): PcmSimulationInputsType!
   pvtSimulationSetPvtMainFwd(value: HeatSourceInputType!): PvtSimulationInputsType!
   pvtSimulationSetPvtMainAft(value: HeatSourceInputType!): PvtSimulationInputsType!
   pvtSimulationSetPvtOwners(value: HeatSourceInputType!): PvtSimulationInputsType!
   pvtSimulationSetPvtPcmSupply(value: TemperatureBoundaryInputType!): PvtSimulationInputsType!
   pvtSimulationSetPvtSeawaterSupply(value: BoundaryInputType!): PvtSimulationInputsType!
-  pvtSimulationSetPvtMode(value: AmcsControlModeInputType!): PvtSimulationInputsType!
+  pvtSimulationSetMode(value: AmcsControlModeInputType!): PvtSimulationInputsType!
   thrustersSimulationSetThrustersThrusterAft(
     value: ThrusterInputType!
   ): ThrustersSimulationInputsType!
@@ -1709,9 +1683,7 @@ type Mutation {
     value: TemperatureBoundaryInputType!
   ): ThrustersSimulationInputsType!
   thrustersSimulationSetThrustersPcs(value: PcsInputType!): ThrustersSimulationInputsType!
-  thrustersSimulationSetThrustersMode(
-    value: AmcsControlModeInputType!
-  ): ThrustersSimulationInputsType!
+  thrustersSimulationSetMode(value: AmcsControlModeInputType!): ThrustersSimulationInputsType!
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void
@@ -1772,6 +1744,8 @@ type PcmParametersType {
 }
 
 type PcmSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   pcmPump: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
   pcmTemperatureProducersReturn: SensorTemperatureSensorType!
@@ -1842,8 +1816,6 @@ type PcmSensorValuesType {
     @jsonSchemaDirective(yardTag: "50001190-01", componentType: "valve", valveType: "switch")
   pcmSwitchConsumers: SensorValveType!
     @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
-  pcmMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule {
@@ -1864,7 +1836,7 @@ type PcmSimulationInputsType {
   pcmThrustersSupply: SimulationBoundaryType!
   pcmFreshwaterSupply: SimulationBoundaryType!
   pcmConsumersSupply: SimulationTemperatureBoundaryType!
-  pcmMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -1974,6 +1946,8 @@ type PvtParametersType {
 }
 
 type PvtSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   pvtPumpMainFwd: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001018", componentType: "pump", valveType: null)
   pvtPumpMainAft: SensorPumpType!
@@ -2368,52 +2342,12 @@ type PvtSensorValuesType {
       componentType: "temperature_sensor"
       valveType: null
     )
-  pcmTemperatureProducersSupply: SensorTemperatureSensorType!
-    @jsonSchemaDirective(
-      yardTag: "50001038-55"
-      componentType: "temperature_sensor"
-      valveType: null
-    )
-  pvtMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   pvtMaxTemperatureMainFwdStrings: SensorCalculatedTemperatureType!
     @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureMainAftStrings: SensorCalculatedTemperatureType!
     @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureOwnersStrings: SensorCalculatedTemperatureType!
     @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureMainFwdStringsSupply: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureMainAftStringsSupply: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureOwnersStringsSupply: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureMainFwdStringsReturn: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureMainAftStringsReturn: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTemperatureOwnersStringsReturn: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtFlowMainFwdStrings: SensorCalculatedFlowType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtFlowMainAftStrings: SensorCalculatedFlowType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtFlowOwnersStrings: SensorCalculatedFlowType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtPvtMainFwd: SensorPvtType!
-    @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_exchanger", valveType: null)
-  pvtPvtMainAft: SensorPvtType!
-    @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_exchanger", valveType: null)
-  pvtPvtOwners: SensorPvtType!
-    @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_exchanger", valveType: null)
-  pvtReturnTemperature: SensorCalculatedTemperatureType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
-  pvtTotalFlow: SensorCalculatedFlowType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtSeawaterExchangerFlow: SensorCalculatedFlowType!
-    @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtSeawaterExchanger: SensorHeatExchangerType!
-    @jsonSchemaDirective(yardTag: "50001002", componentType: "heat_exchanger", valveType: null)
 }
 
 type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule {
@@ -2435,7 +2369,7 @@ type PvtSimulationInputsType {
   pvtOwners: SimulationHeatSourceType!
   pvtPcmSupply: SimulationTemperatureBoundaryType!
   pvtSeawaterSupply: SimulationBoundaryType!
-  pvtMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -2523,8 +2457,6 @@ type SensorPropulsionDriveType {
 }
 
 type SensorPumpType {
-  dutypoint: FloatStampedType!
-  on: BoolStampedType!
   speed: FloatStampedType!
   opTime: FloatStampedType!
   flow: FloatStampedType!
@@ -2716,21 +2648,7 @@ type ThrsSimulationInputsType {
   drivesPropdriveFwd2: SimulationHeatSourceType!
   drivesShorepower: SimulationHeatSourceType!
   drivesSeawaterSupply: SimulationBoundaryType!
-  adsorptionMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  consumersMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  drivesMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  pcmMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  pvtMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  thrustersMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
@@ -2840,6 +2758,8 @@ type ThrustersParametersType {
 }
 
 type ThrustersSensorValuesType {
+  mode: SystemAmcsControlModeType!
+    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   thrustersPump1: SensorPumpType!
     @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
   thrustersPump2: SensorPumpType!
@@ -2898,8 +2818,6 @@ type ThrustersSensorValuesType {
     @jsonSchemaDirective(yardTag: "15001002", componentType: "thruster", valveType: null)
   thrustersPcs: SensorPcsType!
     @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
-  thrustersMode: SystemAmcsControlModeType!
-    @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 
   """
   The average temperature after thrusters before optional mix with pcm.
@@ -2939,7 +2857,7 @@ type ThrustersSimulationInputsType {
   thrustersSeawaterSupply: SimulationBoundaryType!
   thrustersPcmSupply: SimulationTemperatureBoundaryType!
   thrustersPcs: SimulationPcsType!
-  thrustersMode: SystemAmcsControlModeType!
+  mode: SystemAmcsControlModeType!
     @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 

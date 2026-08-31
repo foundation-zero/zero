@@ -7,9 +7,16 @@ from faststream.mqtt import MQTTBroker, QoS
 from jsonpath_ng import parse
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
+from zero_modbus_bridge.publisher import TopicPublisher
+from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings
 
-from zero_hull_temperature.addresses import HULL_TEMPERATURE_TOPIC, PATH, TOPIC
+from zero_hull_temperature.addresses import (
+    HULL_TEMPERATURE_TOPIC,
+    PATH,
+    TOPIC,
+    create_publisher,
+)
 from zero_hull_temperature.mqtt import MqttValue
 
 logger = logging.getLogger(__name__)
@@ -20,7 +27,8 @@ class RelaySwitchingBridge(ModbusBridge):
 
     def __init__(
         self,
-        modbus,
+        reader: ModbusReader,
+        publisher: TopicPublisher,
         broker: MQTTBroker,
         topics: list[ModbusTopic],
         probe_interval: float = 10.0,
@@ -28,7 +36,8 @@ class RelaySwitchingBridge(ModbusBridge):
         activate_topic: str = TOPIC,
         activate_json_path: str = PATH,
     ):
-        super().__init__(modbus, broker, topics, probe_interval)
+        super().__init__(reader, publisher, topics, probe_interval)
+        self._relay_broker = broker
         self._activate_topic = activate_topic
         self._activate_json_path = parse(activate_json_path)
 
@@ -39,10 +48,12 @@ class RelaySwitchingBridge(ModbusBridge):
         activate_topic: str = TOPIC,
         activate_json_path: str = PATH,
     ) -> "RelaySwitchingBridge":
+        topics: list[ModbusTopic] = [HULL_TEMPERATURE_TOPIC]
         return RelaySwitchingBridge(
-            modbus_settings.modbus_client(),
+            ModbusReader(modbus_settings.modbus_client(), topics),
+            create_publisher(broker),
             broker,
-            [HULL_TEMPERATURE_TOPIC],
+            topics,
             modbus_settings.modbus_probe_interval,
             activate_topic=activate_topic,
             activate_json_path=activate_json_path,
@@ -56,6 +67,6 @@ class RelaySwitchingBridge(ModbusBridge):
         payload = self._activate_json_path.update_or_create(
             {}, MqttValue.model_construct(value=activate).model_dump(by_alias=True)
         )
-        await self._broker.publish(
+        await self._relay_broker.publish(
             json.dumps(payload), self._activate_topic, qos=QoS.AT_LEAST_ONCE
         )

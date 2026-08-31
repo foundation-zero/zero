@@ -141,6 +141,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     simulation = Mock()
     simulation.tick.return_value = SimpleNamespace(
         sensor_values=combined_sensor_values,
+        control_values=combined_control_values,
         simulation_inputs=SimpleNamespace(),
         simulation_outputs=SimpleNamespace(),
     )
@@ -159,6 +160,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     simulation_channels = Mock()
     simulation_channels.get_simulation_inputs.return_value = None
     simulation_channels.send_sensor_values = AsyncMock()
+    simulation_channels.send_actuated_control_values = AsyncMock()
     simulation_channels.send_simulation_inputs = AsyncMock()
     simulation_channels.send_simulation_outputs = AsyncMock()
 
@@ -176,6 +178,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
 
     assert control_channels.send_control_values.await_count == 3
     assert simulation_channels.send_sensor_values.await_count == 3
+    assert simulation_channels.send_actuated_control_values.await_count == 3
     assert control_channels.send_controller_state.await_count == 3
     assert control_channels.send_computed_values.await_count == 3
     assert simulation_channels.send_simulation_inputs.await_count == 3
@@ -229,6 +232,13 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
             call(combined_sensor_values),
             call(combined_sensor_values),
             call(combined_sensor_values),
+        ]
+    )
+    simulation_channels.send_actuated_control_values.assert_has_awaits(
+        [
+            call(combined_control_values),
+            call(combined_control_values),
+            call(combined_control_values),
         ]
     )
 
@@ -298,7 +308,8 @@ async def test_control_runner_ticks_and_uses_channels():
     assert alarms.check.call_count == 2
 
     assert control.update_parameters.call_count == 2
-    assert module._control._manual_control._control_values == mock.sentinel.control_new
+    # Manual controls track the automatic output so switching to manual is bumpless
+    assert module._control._manual_control._control_values == control_values
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2
@@ -317,7 +328,8 @@ async def test_control_runner_ticks_and_uses_channels():
     )
     channels.send_parameters.assert_has_awaits([call(parameters), call(parameters)])
     channels.send_manual_control.assert_has_awaits(
-        [call(mock.sentinel.control_new), call(mock.sentinel.control_new)]
+        # Manual controls track the automatic output so switching is bumpless
+        [call(control_values), call(control_values)]
     )
 
 
@@ -332,6 +344,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     simulation = Mock()
     simulation.tick.return_value = SimpleNamespace(
         sensor_values=sensor_values,
+        control_values=control_values,
         simulation_inputs=simulation_inputs,
         simulation_outputs=simulation_outputs,
     )
@@ -341,6 +354,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels.get_simulation_inputs.return_value = simulation_inputs
     channels.wait_for_control_values = AsyncMock()
     channels.send_sensor_values = AsyncMock()
+    channels.send_actuated_control_values = AsyncMock()
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
 
@@ -359,6 +373,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     assert simulation.tick.call_count == 4
 
     assert channels.send_sensor_values.await_count == 4
+    assert channels.send_actuated_control_values.await_count == 4
     assert channels.send_simulation_inputs.await_count == 4
     assert channels.send_simulation_outputs.await_count == 4
 
@@ -376,6 +391,14 @@ async def test_simulation_runner_ticks_and_uses_inputs():
             call(sensor_values),
             call(sensor_values),
             call(sensor_values),
+        ]
+    )
+    channels.send_actuated_control_values.assert_has_awaits(
+        [
+            call(control_values),
+            call(control_values),
+            call(control_values),
+            call(control_values),
         ]
     )
     channels.send_simulation_inputs.assert_has_awaits(

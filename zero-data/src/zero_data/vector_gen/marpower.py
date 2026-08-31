@@ -4,7 +4,7 @@ from pathlib import Path
 from pydantic import BaseModel, TypeAdapter
 
 from zero_data.io_list.thrs import extract_thrs_topics
-from zero_data.io_list.types import IOTopic
+from zero_data.io_list.types import IOResult
 from zero_data.io_list.utils import detect_same_format
 
 EXTRA_GROUPED_TOPICS = [
@@ -36,8 +36,9 @@ class MarpowerVectorGenerator:
     def __init__(self, vector_path: Path):
         self._vector_path = vector_path / "processing/0_consts.vrl"
 
-    def generate(self, topics: list[IOTopic]):
+    def generate(self, io_result: IOResult):
         """Generate the VRL file for the given topics."""
+        topics = io_result.topics
         thrs_topics, invalid_thrs_topic, other_topics = extract_thrs_topics(topics)
         for topic in invalid_thrs_topic:
             logger.warning(f"Invalid THRS topic: {topic.topic}")
