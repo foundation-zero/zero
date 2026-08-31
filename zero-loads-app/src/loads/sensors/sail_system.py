@@ -388,103 +388,101 @@ class Mast(LoadsModel, ABC):
         VariableMeta(name="overhoist_mizzen_headsail", display_name="Mizzen Headsail"),
     ]
 
-    main_lock_1: Annotated[
+    lock_main_1: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck1"),
-        VariableMeta(name="main_lock_1", display_name="Main Halyard Reef 1"),
+        VariableMeta(name="lock_main_1", display_name="Haly Reef 1"),
     ]
-    main_lock_2: Annotated[
+    lock_main_2: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck2"),
-        VariableMeta(name="main_lock_2", display_name="Main Halyard Reef 2"),
+        VariableMeta(name="lock_main_2", display_name="Haly Reef 2"),
     ]
-    main_lock_3: Annotated[
+    lock_main_3: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck3"),
-        VariableMeta(name="main_lock_3", display_name="Main Halyard Reef 3"),
+        VariableMeta(name="lock_main_3", display_name="Haly Reef 3"),
     ]
-    main_lock_full: Annotated[
+    lock_main_headboard: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLckFh"),
-        VariableMeta(name="main_lock_full", display_name="Main Halyard Masthead"),
+        VariableMeta(name="lock_main_headboard", display_name="Haly Headboard"),
     ]
-    main_overhoist_1: Annotated[
+    overhoist_main_1: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck1Ovrhst"),
-        VariableMeta(name="main_overhoist_1", display_name="Main Halyard Reef 1"),
+        VariableMeta(name="overhoist_main_1", display_name="Haly Reef 1"),
     ]
-    main_overhoist_2: Annotated[
+    overhoist_main_2: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck2Ovrhst"),
-        VariableMeta(name="main_overhoist_2", display_name="Main Halyard Reef 2"),
+        VariableMeta(name="overhoist_main_2", display_name="Haly Reef 2"),
     ]
-    main_overhoist_3: Annotated[
+    overhoist_main_3: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLck3Ovrhst"),
-        VariableMeta(name="main_overhoist_3", display_name="Main Halyard Reef 3"),
+        VariableMeta(name="overhoist_main_3", display_name="Haly Reef 3"),
     ]
-    main_overhoist_full: Annotated[
+    overhoist_main_headboard: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrHlyrdLckFhOvrhst"),
-        VariableMeta(name="main_overhoist_full", display_name="Main Halyard Masthead"),
+        VariableMeta(name="overhoist_main_headboard", display_name="Headboard"),
     ]
-    main_boom_lock_1: Annotated[
+    lock_main_boom_1: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck1"),
-        VariableMeta(name="main_boom_lock_1", display_name="Main Boom 1"),
+        VariableMeta(name="lock_main_boom_1", display_name="Boom Reef 1"),
     ]
-    main_boom_lock_2: Annotated[
+    lock_main_boom_2: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck2"),
-        VariableMeta(name="main_boom_lock_2", display_name="Main Boom 2"),
+        VariableMeta(name="lock_main_boom_2", display_name="Boom Reef 2"),
     ]
-    main_boom_lock_3: Annotated[
+    lock_main_boom_3: Annotated[
         Lock,
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck3"),
-        VariableMeta(name="main_boom_lock_3", display_name="Main Boom 3"),
+        VariableMeta(name="lock_main_boom_3", display_name="Boom Reef 3"),
     ]
 
-    mizzen_lock_1: Annotated[
+    lock_mizzen_1: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck1"),
-        VariableMeta(name="mizzen_lock_1", display_name="Mizzen Halyard Reef 1"),
+        VariableMeta(name="lock_mizzen_1", display_name="Haly Reef 1"),
     ]
-    mizzen_lock_2: Annotated[
+    lock_mizzen_2: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck2"),
-        VariableMeta(name="mizzen_lock_2", display_name="Mizzen Halyard Reef 2"),
+        VariableMeta(name="lock_mizzen_2", display_name="Haly Reef 2"),
     ]
-    mizzen_lock_full: Annotated[
+    lock_mizzen_headboard: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLckFh"),
-        VariableMeta(name="mizzen_lock_full", display_name="Mizzen Halyard Masthead"),
+        VariableMeta(name="lock_mizzen_headboard", display_name="Haly Headboard"),
     ]
-    mizzen_overhoist_1: Annotated[
+    overhoist_mizzen_1: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck1Ovrhst"),
-        VariableMeta(name="mizzen_overhoist_1", display_name="Mizzen Halyard Reef 1"),
+        VariableMeta(name="overhoist_mizzen_1", display_name="Haly Reef 1"),
     ]
-    mizzen_overhoist_2: Annotated[
+    overhoist_mizzen_2: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLck2Ovrhst"),
-        VariableMeta(name="mizzen_overhoist_2", display_name="Mizzen Halyard Reef 2"),
+        VariableMeta(name="overhoist_mizzen_2", display_name="Haly Reef 2"),
     ]
-    mizzen_overhoist_full: Annotated[
+    overhoist_mizzen_headboard: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrHlyrdLckFhOvrhst"),
-        VariableMeta(
-            name="mizzen_overhoist_full", display_name="Mizzen Halyard Masthead"
-        ),
+        VariableMeta(name="overhoist_mizzen_headboard", display_name="Haly Headboard"),
     ]
-    mizzen_boom_lock_1: Annotated[
+    lock_mizzen_boom_1: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrBmRfLck1"),
-        VariableMeta(name="mizzen_boom_lock_1", display_name="Mizzen Boom 1"),
+        VariableMeta(name="lock_mizzen_boom_1", display_name="Boom Reef 1"),
     ]
-    mizzen_boom_lock_2: Annotated[
+    lock_mizzen_boom_2: Annotated[
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrBmRfLck2"),
-        VariableMeta(name="mizzen_boom_lock_2", display_name="Mizzen Boom 2"),
+        VariableMeta(name="lock_mizzen_boom_2", display_name="Boom Reef 2"),
     ]
 
     stormjib_load: Annotated[
@@ -771,8 +769,7 @@ class MainTraveller(LoadsModel, ABC):
         RelativePosition,
         Field(
             validation_alias="i_PositionPermille"
-        ),  # No underscore, no st_position prefix) — inconsistent
-        # with st_position/i_Position_permille used elsewhere
+        ),  # No underscore, no st_position prefix — inconsistent with st_position/i_Position_permille used elsewhere
         VariableMeta(
             display_name="Traveller",
             scale_min_label="ps",

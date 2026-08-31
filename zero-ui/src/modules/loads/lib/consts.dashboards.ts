@@ -98,13 +98,13 @@ export const MAIN_SAIL_GROUP = group(
 export const MAIN_LOCKS_GROUP = group(
   "Locks",
   PositionId.Main,
-  "mast-main-lock-full",
-  "mast-main-lock-1",
-  "mast-main-lock-2",
-  "mast-main-lock-3",
-  "mast-main-boom-lock-1",
-  "mast-main-boom-lock-2",
-  "mast-main-boom-lock-3",
+  "mast-lock-main-headboard",
+  "mast-lock-main-1",
+  "mast-lock-main-2",
+  "mast-lock-main-3",
+  "mast-lock-main-boom-1",
+  "mast-lock-main-boom-2",
+  "mast-lock-main-boom-3",
 );
 
 export const MIZZEN_MAST_GROUP = group(
@@ -139,11 +139,11 @@ export const MIZZEN_SAIL_GROUP = group(
 export const MIZZEN_LOCKS_GROUP = group(
   "Locks",
   PositionId.Mizzen,
-  "mast-mizzen-lock-full",
-  "mast-mizzen-lock-1",
-  "mast-mizzen-lock-2",
-  "mast-mizzen-boom-lock-1",
-  "mast-mizzen-boom-lock-2",
+  "mast-lock-mizzen-headboard",
+  "mast-lock-mizzen-1",
+  "mast-lock-mizzen-2",
+  "mast-lock-mizzen-boom-1",
+  "mast-lock-mizzen-boom-2",
 );
 
 export const MIZZEN_JIB_GROUP = group(
@@ -184,8 +184,8 @@ export const TRISAIL_GROUP = group(
 export const TRISAIL_LOCKS_GROUP = group(
   "Locks",
   PositionId.Main,
-  "mast-main-lock-3",
-  "mast-main-boom-lock-3",
+  "mast-lock-main-3",
+  "mast-lock-main-boom-3",
 );
 
 export const BLADE_GROUP = group(
