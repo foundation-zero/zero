@@ -20,5 +20,9 @@ def read_io_list(
         from .readers.sail_system import SailSystemReader
 
         return cache(SailSystemReader()).read_io_list(paths)
+    elif type == "atpx":
+        from .readers.atpx import AtpxReader
+
+        return cache(AtpxReader()).read_io_list(paths)
     else:
         raise ValueError(f"Unsupported IOSource type: {type}")

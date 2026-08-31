@@ -157,6 +157,8 @@ services:
       MQTT_PORT: 1883
       MQTT_USER: mqtt
       MQTT_PASSWORD: mqtt
+      ATPX_MQTT_HOST: ${ATPX_MQTT_HOST:-vernemq}
+      ATPX_MQTT_PORT: ${ATPX_MQTT_PORT:-1883}
       GREPTIMEDB_HOST: greptimedb
       GREPTIMEDB_PORT: 4000
     volumes:

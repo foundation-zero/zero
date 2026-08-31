@@ -3,7 +3,7 @@ from typing import Literal
 
 from polars import DataFrame
 
-type Source = Literal["marpower", "sail_system"]
+type Source = Literal["marpower", "sail_system", "atpx"]
 
 
 @dataclass(frozen=True, eq=True)

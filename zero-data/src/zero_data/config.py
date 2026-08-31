@@ -14,6 +14,7 @@ io_lists: list[tuple[Source, list[str]]] = [
         ],
     ),
     ("sail_system", ["3094_SailPLC.PLC_MAIN.Application.xml"]),
+    ("atpx", ["atpx/atpx_fields.json", "atpx/atpx_extra.json"]),
 ]
 
 

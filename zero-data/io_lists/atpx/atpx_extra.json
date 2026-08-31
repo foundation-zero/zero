@@ -1,0 +1,1365 @@
+{
+  "_comment": "Our own ATPX additions, kept out of A+T's atpx_fields.json / atpx_senders.json. Found by inspecting the live bus against A+T's diagnostics UI (10.1.40.10). fields: the Fastnet 'User Data' block (0x7000+N -> user_data_n), user-configurable channels absent from A+T's docs; plus a few uncatalogued 0x51xx ids from the display heads kept as field_<id>. senders: ids A+T's web UI (fields.js) defines but atpx_senders.json omits (MFD/BFD/PHD were live but unnamed).",
+  "fields": [
+    {
+      "id": 28672,
+      "description": "User Data 0",
+      "export": true
+    },
+    {
+      "id": 28673,
+      "description": "User Data 1",
+      "export": true
+    },
+    {
+      "id": 28674,
+      "description": "User Data 2",
+      "export": true
+    },
+    {
+      "id": 28675,
+      "description": "User Data 3",
+      "export": true
+    },
+    {
+      "id": 28676,
+      "description": "User Data 4",
+      "export": true
+    },
+    {
+      "id": 28677,
+      "description": "User Data 5",
+      "export": true
+    },
+    {
+      "id": 28678,
+      "description": "User Data 6",
+      "export": true
+    },
+    {
+      "id": 28679,
+      "description": "User Data 7",
+      "export": true
+    },
+    {
+      "id": 28680,
+      "description": "User Data 8",
+      "export": true
+    },
+    {
+      "id": 28681,
+      "description": "User Data 9",
+      "export": true
+    },
+    {
+      "id": 28682,
+      "description": "User Data 10",
+      "export": true
+    },
+    {
+      "id": 28683,
+      "description": "User Data 11",
+      "export": true
+    },
+    {
+      "id": 28684,
+      "description": "User Data 12",
+      "export": true
+    },
+    {
+      "id": 28685,
+      "description": "User Data 13",
+      "export": true
+    },
+    {
+      "id": 28686,
+      "description": "User Data 14",
+      "export": true
+    },
+    {
+      "id": 28687,
+      "description": "User Data 15",
+      "export": true
+    },
+    {
+      "id": 28688,
+      "description": "User Data 16",
+      "export": true
+    },
+    {
+      "id": 28689,
+      "description": "User Data 17",
+      "export": true
+    },
+    {
+      "id": 28690,
+      "description": "User Data 18",
+      "export": true
+    },
+    {
+      "id": 28691,
+      "description": "User Data 19",
+      "export": true
+    },
+    {
+      "id": 28692,
+      "description": "User Data 20",
+      "export": true
+    },
+    {
+      "id": 28693,
+      "description": "User Data 21",
+      "export": true
+    },
+    {
+      "id": 28694,
+      "description": "User Data 22",
+      "export": true
+    },
+    {
+      "id": 28695,
+      "description": "User Data 23",
+      "export": true
+    },
+    {
+      "id": 28696,
+      "description": "User Data 24",
+      "export": true
+    },
+    {
+      "id": 28697,
+      "description": "User Data 25",
+      "export": true
+    },
+    {
+      "id": 28698,
+      "description": "User Data 26",
+      "export": true
+    },
+    {
+      "id": 28699,
+      "description": "User Data 27",
+      "export": true
+    },
+    {
+      "id": 28700,
+      "description": "User Data 28",
+      "export": true
+    },
+    {
+      "id": 28701,
+      "description": "User Data 29",
+      "export": true
+    },
+    {
+      "id": 28702,
+      "description": "User Data 30",
+      "export": true
+    },
+    {
+      "id": 28703,
+      "description": "User Data 31",
+      "export": true
+    },
+    {
+      "id": 28704,
+      "description": "User Data 32",
+      "export": true
+    },
+    {
+      "id": 28705,
+      "description": "User Data 33",
+      "export": true
+    },
+    {
+      "id": 28706,
+      "description": "User Data 34",
+      "export": true
+    },
+    {
+      "id": 28707,
+      "description": "User Data 35",
+      "export": true
+    },
+    {
+      "id": 28708,
+      "description": "User Data 36",
+      "export": true
+    },
+    {
+      "id": 28709,
+      "description": "User Data 37",
+      "export": true
+    },
+    {
+      "id": 28710,
+      "description": "User Data 38",
+      "export": true
+    },
+    {
+      "id": 28711,
+      "description": "User Data 39",
+      "export": true
+    },
+    {
+      "id": 28712,
+      "description": "User Data 40",
+      "export": true
+    },
+    {
+      "id": 28713,
+      "description": "User Data 41",
+      "export": true
+    },
+    {
+      "id": 28714,
+      "description": "User Data 42",
+      "export": true
+    },
+    {
+      "id": 28715,
+      "description": "User Data 43",
+      "export": true
+    },
+    {
+      "id": 28716,
+      "description": "User Data 44",
+      "export": true
+    },
+    {
+      "id": 28717,
+      "description": "User Data 45",
+      "export": true
+    },
+    {
+      "id": 28718,
+      "description": "User Data 46",
+      "export": true
+    },
+    {
+      "id": 28719,
+      "description": "User Data 47",
+      "export": true
+    },
+    {
+      "id": 28720,
+      "description": "User Data 48",
+      "export": true
+    },
+    {
+      "id": 28721,
+      "description": "User Data 49",
+      "export": true
+    },
+    {
+      "id": 28722,
+      "description": "User Data 50",
+      "export": true
+    },
+    {
+      "id": 28723,
+      "description": "User Data 51",
+      "export": true
+    },
+    {
+      "id": 28724,
+      "description": "User Data 52",
+      "export": true
+    },
+    {
+      "id": 28725,
+      "description": "User Data 53",
+      "export": true
+    },
+    {
+      "id": 28726,
+      "description": "User Data 54",
+      "export": true
+    },
+    {
+      "id": 28727,
+      "description": "User Data 55",
+      "export": true
+    },
+    {
+      "id": 28728,
+      "description": "User Data 56",
+      "export": true
+    },
+    {
+      "id": 28729,
+      "description": "User Data 57",
+      "export": true
+    },
+    {
+      "id": 28730,
+      "description": "User Data 58",
+      "export": true
+    },
+    {
+      "id": 28731,
+      "description": "User Data 59",
+      "export": true
+    },
+    {
+      "id": 28732,
+      "description": "User Data 60",
+      "export": true
+    },
+    {
+      "id": 28733,
+      "description": "User Data 61",
+      "export": true
+    },
+    {
+      "id": 28734,
+      "description": "User Data 62",
+      "export": true
+    },
+    {
+      "id": 28735,
+      "description": "User Data 63",
+      "export": true
+    },
+    {
+      "id": 28736,
+      "description": "User Data 64",
+      "export": true
+    },
+    {
+      "id": 28737,
+      "description": "User Data 65",
+      "export": true
+    },
+    {
+      "id": 28738,
+      "description": "User Data 66",
+      "export": true
+    },
+    {
+      "id": 28739,
+      "description": "User Data 67",
+      "export": true
+    },
+    {
+      "id": 28740,
+      "description": "User Data 68",
+      "export": true
+    },
+    {
+      "id": 28741,
+      "description": "User Data 69",
+      "export": true
+    },
+    {
+      "id": 28742,
+      "description": "User Data 70",
+      "export": true
+    },
+    {
+      "id": 28743,
+      "description": "User Data 71",
+      "export": true
+    },
+    {
+      "id": 28744,
+      "description": "User Data 72",
+      "export": true
+    },
+    {
+      "id": 28745,
+      "description": "User Data 73",
+      "export": true
+    },
+    {
+      "id": 28746,
+      "description": "User Data 74",
+      "export": true
+    },
+    {
+      "id": 28747,
+      "description": "User Data 75",
+      "export": true
+    },
+    {
+      "id": 28748,
+      "description": "User Data 76",
+      "export": true
+    },
+    {
+      "id": 28749,
+      "description": "User Data 77",
+      "export": true
+    },
+    {
+      "id": 28750,
+      "description": "User Data 78",
+      "export": true
+    },
+    {
+      "id": 28751,
+      "description": "User Data 79",
+      "export": true
+    },
+    {
+      "id": 28752,
+      "description": "User Data 80",
+      "export": true
+    },
+    {
+      "id": 28753,
+      "description": "User Data 81",
+      "export": true
+    },
+    {
+      "id": 28754,
+      "description": "User Data 82",
+      "export": true
+    },
+    {
+      "id": 28755,
+      "description": "User Data 83",
+      "export": true
+    },
+    {
+      "id": 28756,
+      "description": "User Data 84",
+      "export": true
+    },
+    {
+      "id": 28757,
+      "description": "User Data 85",
+      "export": true
+    },
+    {
+      "id": 28758,
+      "description": "User Data 86",
+      "export": true
+    },
+    {
+      "id": 28759,
+      "description": "User Data 87",
+      "export": true
+    },
+    {
+      "id": 28760,
+      "description": "User Data 88",
+      "export": true
+    },
+    {
+      "id": 28761,
+      "description": "User Data 89",
+      "export": true
+    },
+    {
+      "id": 28762,
+      "description": "User Data 90",
+      "export": true
+    },
+    {
+      "id": 28763,
+      "description": "User Data 91",
+      "export": true
+    },
+    {
+      "id": 28764,
+      "description": "User Data 92",
+      "export": true
+    },
+    {
+      "id": 28765,
+      "description": "User Data 93",
+      "export": true
+    },
+    {
+      "id": 28766,
+      "description": "User Data 94",
+      "export": true
+    },
+    {
+      "id": 28767,
+      "description": "User Data 95",
+      "export": true
+    },
+    {
+      "id": 28768,
+      "description": "User Data 96",
+      "export": true
+    },
+    {
+      "id": 28769,
+      "description": "User Data 97",
+      "export": true
+    },
+    {
+      "id": 28770,
+      "description": "User Data 98",
+      "export": true
+    },
+    {
+      "id": 28771,
+      "description": "User Data 99",
+      "export": true
+    },
+    {
+      "id": 28772,
+      "description": "User Data 100",
+      "export": true
+    },
+    {
+      "id": 28773,
+      "description": "User Data 101",
+      "export": true
+    },
+    {
+      "id": 28774,
+      "description": "User Data 102",
+      "export": true
+    },
+    {
+      "id": 28775,
+      "description": "User Data 103",
+      "export": true
+    },
+    {
+      "id": 28776,
+      "description": "User Data 104",
+      "export": true
+    },
+    {
+      "id": 28777,
+      "description": "User Data 105",
+      "export": true
+    },
+    {
+      "id": 28778,
+      "description": "User Data 106",
+      "export": true
+    },
+    {
+      "id": 28779,
+      "description": "User Data 107",
+      "export": true
+    },
+    {
+      "id": 28780,
+      "description": "User Data 108",
+      "export": true
+    },
+    {
+      "id": 28781,
+      "description": "User Data 109",
+      "export": true
+    },
+    {
+      "id": 28782,
+      "description": "User Data 110",
+      "export": true
+    },
+    {
+      "id": 28783,
+      "description": "User Data 111",
+      "export": true
+    },
+    {
+      "id": 28784,
+      "description": "User Data 112",
+      "export": true
+    },
+    {
+      "id": 28785,
+      "description": "User Data 113",
+      "export": true
+    },
+    {
+      "id": 28786,
+      "description": "User Data 114",
+      "export": true
+    },
+    {
+      "id": 28787,
+      "description": "User Data 115",
+      "export": true
+    },
+    {
+      "id": 28788,
+      "description": "User Data 116",
+      "export": true
+    },
+    {
+      "id": 28789,
+      "description": "User Data 117",
+      "export": true
+    },
+    {
+      "id": 28790,
+      "description": "User Data 118",
+      "export": true
+    },
+    {
+      "id": 28791,
+      "description": "User Data 119",
+      "export": true
+    },
+    {
+      "id": 28792,
+      "description": "User Data 120",
+      "export": true
+    },
+    {
+      "id": 28793,
+      "description": "User Data 121",
+      "export": true
+    },
+    {
+      "id": 28794,
+      "description": "User Data 122",
+      "export": true
+    },
+    {
+      "id": 28795,
+      "description": "User Data 123",
+      "export": true
+    },
+    {
+      "id": 28796,
+      "description": "User Data 124",
+      "export": true
+    },
+    {
+      "id": 28797,
+      "description": "User Data 125",
+      "export": true
+    },
+    {
+      "id": 28798,
+      "description": "User Data 126",
+      "export": true
+    },
+    {
+      "id": 28799,
+      "description": "User Data 127",
+      "export": true
+    },
+    {
+      "id": 28800,
+      "description": "User Data 128",
+      "export": true
+    },
+    {
+      "id": 28801,
+      "description": "User Data 129",
+      "export": true
+    },
+    {
+      "id": 28802,
+      "description": "User Data 130",
+      "export": true
+    },
+    {
+      "id": 28803,
+      "description": "User Data 131",
+      "export": true
+    },
+    {
+      "id": 28804,
+      "description": "User Data 132",
+      "export": true
+    },
+    {
+      "id": 28805,
+      "description": "User Data 133",
+      "export": true
+    },
+    {
+      "id": 28806,
+      "description": "User Data 134",
+      "export": true
+    },
+    {
+      "id": 28807,
+      "description": "User Data 135",
+      "export": true
+    },
+    {
+      "id": 28808,
+      "description": "User Data 136",
+      "export": true
+    },
+    {
+      "id": 28809,
+      "description": "User Data 137",
+      "export": true
+    },
+    {
+      "id": 28810,
+      "description": "User Data 138",
+      "export": true
+    },
+    {
+      "id": 28811,
+      "description": "User Data 139",
+      "export": true
+    },
+    {
+      "id": 28812,
+      "description": "User Data 140",
+      "export": true
+    },
+    {
+      "id": 28813,
+      "description": "User Data 141",
+      "export": true
+    },
+    {
+      "id": 28814,
+      "description": "User Data 142",
+      "export": true
+    },
+    {
+      "id": 28815,
+      "description": "User Data 143",
+      "export": true
+    },
+    {
+      "id": 28816,
+      "description": "User Data 144",
+      "export": true
+    },
+    {
+      "id": 28817,
+      "description": "User Data 145",
+      "export": true
+    },
+    {
+      "id": 28818,
+      "description": "User Data 146",
+      "export": true
+    },
+    {
+      "id": 28819,
+      "description": "User Data 147",
+      "export": true
+    },
+    {
+      "id": 28820,
+      "description": "User Data 148",
+      "export": true
+    },
+    {
+      "id": 28821,
+      "description": "User Data 149",
+      "export": true
+    },
+    {
+      "id": 28822,
+      "description": "User Data 150",
+      "export": true
+    },
+    {
+      "id": 28823,
+      "description": "User Data 151",
+      "export": true
+    },
+    {
+      "id": 28824,
+      "description": "User Data 152",
+      "export": true
+    },
+    {
+      "id": 28825,
+      "description": "User Data 153",
+      "export": true
+    },
+    {
+      "id": 28826,
+      "description": "User Data 154",
+      "export": true
+    },
+    {
+      "id": 28827,
+      "description": "User Data 155",
+      "export": true
+    },
+    {
+      "id": 28828,
+      "description": "User Data 156",
+      "export": true
+    },
+    {
+      "id": 28829,
+      "description": "User Data 157",
+      "export": true
+    },
+    {
+      "id": 28830,
+      "description": "User Data 158",
+      "export": true
+    },
+    {
+      "id": 28831,
+      "description": "User Data 159",
+      "export": true
+    },
+    {
+      "id": 28832,
+      "description": "User Data 160",
+      "export": true
+    },
+    {
+      "id": 28833,
+      "description": "User Data 161",
+      "export": true
+    },
+    {
+      "id": 28834,
+      "description": "User Data 162",
+      "export": true
+    },
+    {
+      "id": 28835,
+      "description": "User Data 163",
+      "export": true
+    },
+    {
+      "id": 28836,
+      "description": "User Data 164",
+      "export": true
+    },
+    {
+      "id": 28837,
+      "description": "User Data 165",
+      "export": true
+    },
+    {
+      "id": 28838,
+      "description": "User Data 166",
+      "export": true
+    },
+    {
+      "id": 28839,
+      "description": "User Data 167",
+      "export": true
+    },
+    {
+      "id": 28840,
+      "description": "User Data 168",
+      "export": true
+    },
+    {
+      "id": 28841,
+      "description": "User Data 169",
+      "export": true
+    },
+    {
+      "id": 28842,
+      "description": "User Data 170",
+      "export": true
+    },
+    {
+      "id": 28843,
+      "description": "User Data 171",
+      "export": true
+    },
+    {
+      "id": 28844,
+      "description": "User Data 172",
+      "export": true
+    },
+    {
+      "id": 28845,
+      "description": "User Data 173",
+      "export": true
+    },
+    {
+      "id": 28846,
+      "description": "User Data 174",
+      "export": true
+    },
+    {
+      "id": 28847,
+      "description": "User Data 175",
+      "export": true
+    },
+    {
+      "id": 28848,
+      "description": "User Data 176",
+      "export": true
+    },
+    {
+      "id": 28849,
+      "description": "User Data 177",
+      "export": true
+    },
+    {
+      "id": 28850,
+      "description": "User Data 178",
+      "export": true
+    },
+    {
+      "id": 28851,
+      "description": "User Data 179",
+      "export": true
+    },
+    {
+      "id": 28852,
+      "description": "User Data 180",
+      "export": true
+    },
+    {
+      "id": 28853,
+      "description": "User Data 181",
+      "export": true
+    },
+    {
+      "id": 28854,
+      "description": "User Data 182",
+      "export": true
+    },
+    {
+      "id": 28855,
+      "description": "User Data 183",
+      "export": true
+    },
+    {
+      "id": 28856,
+      "description": "User Data 184",
+      "export": true
+    },
+    {
+      "id": 28857,
+      "description": "User Data 185",
+      "export": true
+    },
+    {
+      "id": 28858,
+      "description": "User Data 186",
+      "export": true
+    },
+    {
+      "id": 28859,
+      "description": "User Data 187",
+      "export": true
+    },
+    {
+      "id": 28860,
+      "description": "User Data 188",
+      "export": true
+    },
+    {
+      "id": 28861,
+      "description": "User Data 189",
+      "export": true
+    },
+    {
+      "id": 28862,
+      "description": "User Data 190",
+      "export": true
+    },
+    {
+      "id": 28863,
+      "description": "User Data 191",
+      "export": true
+    },
+    {
+      "id": 28864,
+      "description": "User Data 192",
+      "export": true
+    },
+    {
+      "id": 28865,
+      "description": "User Data 193",
+      "export": true
+    },
+    {
+      "id": 28866,
+      "description": "User Data 194",
+      "export": true
+    },
+    {
+      "id": 28867,
+      "description": "User Data 195",
+      "export": true
+    },
+    {
+      "id": 28868,
+      "description": "User Data 196",
+      "export": true
+    },
+    {
+      "id": 28869,
+      "description": "User Data 197",
+      "export": true
+    },
+    {
+      "id": 28870,
+      "description": "User Data 198",
+      "export": true
+    },
+    {
+      "id": 28871,
+      "description": "User Data 199",
+      "export": true
+    },
+    {
+      "id": 28872,
+      "description": "User Data 200",
+      "export": true
+    },
+    {
+      "id": 28873,
+      "description": "User Data 201",
+      "export": true
+    },
+    {
+      "id": 28874,
+      "description": "User Data 202",
+      "export": true
+    },
+    {
+      "id": 28875,
+      "description": "User Data 203",
+      "export": true
+    },
+    {
+      "id": 28876,
+      "description": "User Data 204",
+      "export": true
+    },
+    {
+      "id": 28877,
+      "description": "User Data 205",
+      "export": true
+    },
+    {
+      "id": 28878,
+      "description": "User Data 206",
+      "export": true
+    },
+    {
+      "id": 28879,
+      "description": "User Data 207",
+      "export": true
+    },
+    {
+      "id": 28880,
+      "description": "User Data 208",
+      "export": true
+    },
+    {
+      "id": 28881,
+      "description": "User Data 209",
+      "export": true
+    },
+    {
+      "id": 28882,
+      "description": "User Data 210",
+      "export": true
+    },
+    {
+      "id": 28883,
+      "description": "User Data 211",
+      "export": true
+    },
+    {
+      "id": 28884,
+      "description": "User Data 212",
+      "export": true
+    },
+    {
+      "id": 28885,
+      "description": "User Data 213",
+      "export": true
+    },
+    {
+      "id": 28886,
+      "description": "User Data 214",
+      "export": true
+    },
+    {
+      "id": 28887,
+      "description": "User Data 215",
+      "export": true
+    },
+    {
+      "id": 28888,
+      "description": "User Data 216",
+      "export": true
+    },
+    {
+      "id": 28889,
+      "description": "User Data 217",
+      "export": true
+    },
+    {
+      "id": 28890,
+      "description": "User Data 218",
+      "export": true
+    },
+    {
+      "id": 28891,
+      "description": "User Data 219",
+      "export": true
+    },
+    {
+      "id": 28892,
+      "description": "User Data 220",
+      "export": true
+    },
+    {
+      "id": 28893,
+      "description": "User Data 221",
+      "export": true
+    },
+    {
+      "id": 28894,
+      "description": "User Data 222",
+      "export": true
+    },
+    {
+      "id": 28895,
+      "description": "User Data 223",
+      "export": true
+    },
+    {
+      "id": 28896,
+      "description": "User Data 224",
+      "export": true
+    },
+    {
+      "id": 28897,
+      "description": "User Data 225",
+      "export": true
+    },
+    {
+      "id": 28898,
+      "description": "User Data 226",
+      "export": true
+    },
+    {
+      "id": 28899,
+      "description": "User Data 227",
+      "export": true
+    },
+    {
+      "id": 28900,
+      "description": "User Data 228",
+      "export": true
+    },
+    {
+      "id": 28901,
+      "description": "User Data 229",
+      "export": true
+    },
+    {
+      "id": 28902,
+      "description": "User Data 230",
+      "export": true
+    },
+    {
+      "id": 28903,
+      "description": "User Data 231",
+      "export": true
+    },
+    {
+      "id": 28904,
+      "description": "User Data 232",
+      "export": true
+    },
+    {
+      "id": 28905,
+      "description": "User Data 233",
+      "export": true
+    },
+    {
+      "id": 28906,
+      "description": "User Data 234",
+      "export": true
+    },
+    {
+      "id": 28907,
+      "description": "User Data 235",
+      "export": true
+    },
+    {
+      "id": 28908,
+      "description": "User Data 236",
+      "export": true
+    },
+    {
+      "id": 28909,
+      "description": "User Data 237",
+      "export": true
+    },
+    {
+      "id": 28910,
+      "description": "User Data 238",
+      "export": true
+    },
+    {
+      "id": 28911,
+      "description": "User Data 239",
+      "export": true
+    },
+    {
+      "id": 28912,
+      "description": "User Data 240",
+      "export": true
+    },
+    {
+      "id": 28913,
+      "description": "User Data 241",
+      "export": true
+    },
+    {
+      "id": 28914,
+      "description": "User Data 242",
+      "export": true
+    },
+    {
+      "id": 28915,
+      "description": "User Data 243",
+      "export": true
+    },
+    {
+      "id": 28916,
+      "description": "User Data 244",
+      "export": true
+    },
+    {
+      "id": 28917,
+      "description": "User Data 245",
+      "export": true
+    },
+    {
+      "id": 28918,
+      "description": "User Data 246",
+      "export": true
+    },
+    {
+      "id": 28919,
+      "description": "User Data 247",
+      "export": true
+    },
+    {
+      "id": 28920,
+      "description": "User Data 248",
+      "export": true
+    },
+    {
+      "id": 28921,
+      "description": "User Data 249",
+      "export": true
+    },
+    {
+      "id": 28922,
+      "description": "User Data 250",
+      "export": true
+    },
+    {
+      "id": 28923,
+      "description": "User Data 251",
+      "export": true
+    },
+    {
+      "id": 28924,
+      "description": "User Data 252",
+      "export": true
+    },
+    {
+      "id": 28925,
+      "description": "User Data 253",
+      "export": true
+    },
+    {
+      "id": 28926,
+      "description": "User Data 254",
+      "export": true
+    },
+    {
+      "id": 28927,
+      "description": "User Data 255",
+      "export": true
+    },
+    {
+      "id": 20768,
+      "description": "Field 20768",
+      "export": true
+    },
+    {
+      "id": 20769,
+      "description": "Field 20769",
+      "export": true
+    },
+    {
+      "id": 20770,
+      "description": "Field 20770",
+      "export": true
+    },
+    {
+      "id": 20771,
+      "description": "Field 20771",
+      "export": true
+    },
+    {
+      "id": 20786,
+      "description": "Field 20786",
+      "export": true
+    },
+    {
+      "id": 20787,
+      "description": "Field 20787",
+      "export": true
+    }
+  ],
+  "senders": [
+    {
+      "id": 6,
+      "source": "Sender 6"
+    },
+    {
+      "id": 7,
+      "source": "3020"
+    },
+    {
+      "id": 8,
+      "source": "MFD"
+    },
+    {
+      "id": 9,
+      "source": "Timestamp"
+    },
+    {
+      "id": 19,
+      "source": "Loader"
+    },
+    {
+      "id": 21,
+      "source": "Baro"
+    },
+    {
+      "id": 22,
+      "source": "BFD"
+    },
+    {
+      "id": 32,
+      "source": "PHD"
+    },
+    {
+      "id": 33,
+      "source": "DCell"
+    },
+    {
+      "id": 39,
+      "source": "QBD"
+    },
+    {
+      "id": 40,
+      "source": "HFD"
+    },
+    {
+      "id": 271,
+      "source": "Damped Processor"
+    }
+  ]
+}
