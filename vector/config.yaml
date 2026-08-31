@@ -22,13 +22,14 @@ sources:
     max_packet_size: 163840
   # A+T (ATPX) instrument bus: one raw float per message on
   # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
+  # ATPX_MQTT_TOPIC is atpx_raw/# locally, defaulting to A+T's atpx/# in prod.
   atpx_mqtt:
     type: mqtt
     host: "${ATPX_MQTT_HOST}"
     port: ${ATPX_MQTT_PORT}
     client_id: vector-atpx
     topic:
-      - "atpx/#"
+      - "${ATPX_MQTT_TOPIC:-atpx/#}"
     decoding:
       codec: bytes
   # A+T (ATPX) NMEA 0183 stream, already parsed to JSON and republished on our
