@@ -11,20 +11,6 @@ WITH load_case_payload AS (
     SELECT *
     FROM jsonb_to_recordset($$[
   {
-    "id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "name": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "tws": 35.0,
-    "twa": -90.0,
-    "aws": 37.35,
-    "awa": 66.4,
-    "bsp": 15.0,
-    "heel": 12.0,
-    "sail_abbreviations": [
-      "M3R",
-      "SJ"
-    ]
-  },
-  {
     "id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "name": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "tws": 27.0,
@@ -37,268 +23,6 @@ WITH load_case_payload AS (
       "M2R",
       "MZ2R",
       "SS"
-    ]
-  },
-  {
-    "id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "name": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "tws": 24.0,
-    "twa": -40.3,
-    "aws": 33.89,
-    "awa": 24.9,
-    "bsp": 12.5,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "M1R",
-      "MZ2R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "name": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "tws": 35.0,
-    "twa": -45.5,
-    "aws": 44.42,
-    "awa": 32.4,
-    "bsp": 13.0,
-    "heel": 12.0,
-    "sail_abbreviations": [
-      "M3R",
-      "SJ"
-    ]
-  },
-  {
-    "id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "name": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "tws": 20.0,
-    "twa": -86.0,
-    "aws": 24.19,
-    "awa": 55.2,
-    "bsp": 12.4,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "FM",
-      "FMZ"
-    ]
-  },
-  {
-    "id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "name": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "tws": 30.0,
-    "twa": -52.0,
-    "aws": 38.73,
-    "awa": 35.3,
-    "bsp": 13.2,
-    "heel": 15.0,
-    "sail_abbreviations": [
-      "M2R",
-      "SJ"
-    ]
-  },
-  {
-    "id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "name": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "tws": 19.0,
-    "twa": -41.5,
-    "aws": 28.97,
-    "awa": 23.0,
-    "bsp": 12.5,
-    "heel": 22.0,
-    "sail_abbreviations": [
-      "B",
-      "M1R",
-      "MZ1R"
-    ]
-  },
-  {
-    "id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "name": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "tws": 16.0,
-    "twa": -42.5,
-    "aws": 26.43,
-    "awa": 21.7,
-    "bsp": 12.8,
-    "heel": 22.0,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "MZ1R"
-    ]
-  },
-  {
-    "id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "name": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "tws": 25.0,
-    "twa": -70.0,
-    "aws": 35.21,
-    "awa": 40.3,
-    "bsp": 18.3,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "M1R",
-      "MZ2R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "name": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "tws": 27.0,
-    "twa": -43.1,
-    "aws": 36.97,
-    "awa": 27.9,
-    "bsp": 13.0,
-    "heel": 15.0,
-    "sail_abbreviations": [
-      "M2R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "name": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "tws": 15.0,
-    "twa": -91.6,
-    "aws": 22.3,
-    "awa": 40.8,
-    "bsp": 17.3,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "A3",
-      "FM",
-      "FMZ"
-    ]
-  },
-  {
-    "id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "name": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "tws": 14.0,
-    "twa": -87.0,
-    "aws": 22.38,
-    "awa": 36.8,
-    "bsp": 17.2,
-    "heel": 17.5,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "FMZ",
-      "MZSS"
-    ]
-  },
-  {
-    "id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "name": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "tws": 14.0,
-    "twa": -42.8,
-    "aws": 23.82,
-    "awa": 21.0,
-    "bsp": 12.0,
-    "heel": 22.0,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "FMZ"
-    ]
-  },
-  {
-    "id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "name": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "tws": 28.0,
-    "twa": -69.3,
-    "aws": 37.83,
-    "awa": 42.5,
-    "bsp": 18.0,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "M2R",
-      "MZ2R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "name": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "tws": 23.0,
-    "twa": -82.8,
-    "aws": 30.85,
-    "awa": 46.7,
-    "bsp": 18.3,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "M1R",
-      "MZ1R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "name": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "tws": 24.0,
-    "twa": -43.9,
-    "aws": 34.28,
-    "awa": 26.7,
-    "bsp": 13.4,
-    "heel": 18.0,
-    "sail_abbreviations": [
-      "M1R",
-      "SS"
-    ]
-  },
-  {
-    "id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "name": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "tws": 20.0,
-    "twa": -83.0,
-    "aws": 28.04,
-    "awa": 44.1,
-    "bsp": 17.7,
-    "heel": 22.0,
-    "sail_abbreviations": [
-      "B",
-      "FM",
-      "FMZ"
-    ]
-  },
-  {
-    "id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "name": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "tws": 22.0,
-    "twa": -40.7,
-    "aws": 31.92,
-    "awa": 24.2,
-    "bsp": 12.5,
-    "heel": 20.0,
-    "sail_abbreviations": [
-      "B",
-      "M1R",
-      "MZ2R"
-    ]
-  },
-  {
-    "id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "name": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "tws": 40.0,
-    "twa": -54.4,
-    "aws": 47.78,
-    "awa": 40.7,
-    "bsp": 13.0,
-    "heel": 12.0,
-    "sail_abbreviations": [
-      "M3R"
-    ]
-  },
-  {
-    "id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "name": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "tws": 45.0,
-    "twa": -47.7,
-    "aws": 53.36,
-    "awa": 36.8,
-    "bsp": 12.5,
-    "heel": 10.0,
-    "sail_abbreviations": [
-      "SJ"
     ]
   },
   {
@@ -318,17 +42,91 @@ WITH load_case_payload AS (
     ]
   },
   {
-    "id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "name": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "tws": 18.0,
-    "twa": -42.8,
-    "aws": 28.02,
-    "awa": 23.6,
-    "bsp": 12.5,
-    "heel": 22.0,
+    "id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "name": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "tws": 23.0,
+    "twa": -82.8,
+    "aws": 30.85,
+    "awa": 46.7,
+    "bsp": 18.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "name": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "tws": 28.0,
+    "twa": -69.3,
+    "aws": 37.83,
+    "awa": 42.5,
+    "bsp": 18.0,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "name": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "tws": 25.0,
+    "twa": -70.0,
+    "aws": 35.21,
+    "awa": 40.3,
+    "bsp": 18.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "name": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "tws": 14.0,
+    "twa": -87.0,
+    "aws": 22.38,
+    "awa": 36.8,
+    "bsp": 17.2,
+    "heel": 17.5,
     "sail_abbreviations": [
       "B",
-      "FM"
+      "FM",
+      "FMZ",
+      "MZSS"
+    ]
+  },
+  {
+    "id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "name": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "tws": 24.0,
+    "twa": -43.9,
+    "aws": 34.28,
+    "awa": 26.7,
+    "bsp": 13.4,
+    "heel": 18.0,
+    "sail_abbreviations": [
+      "M1R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "name": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "tws": 40.0,
+    "twa": -54.4,
+    "aws": 47.78,
+    "awa": 40.7,
+    "bsp": 13.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R"
     ]
   },
   {
@@ -344,6 +142,208 @@ WITH load_case_payload AS (
       "C0",
       "FM",
       "FMZ"
+    ]
+  },
+  {
+    "id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "name": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "tws": 19.0,
+    "twa": -41.5,
+    "aws": 28.97,
+    "awa": 23.0,
+    "bsp": 12.5,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "M1R",
+      "MZ1R"
+    ]
+  },
+  {
+    "id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "name": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "tws": 22.0,
+    "twa": -40.7,
+    "aws": 31.92,
+    "awa": 24.2,
+    "bsp": 12.5,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "B",
+      "M1R",
+      "MZ2R"
+    ]
+  },
+  {
+    "id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "name": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "tws": 18.0,
+    "twa": -42.8,
+    "aws": 28.02,
+    "awa": 23.6,
+    "bsp": 12.5,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM"
+    ]
+  },
+  {
+    "id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "name": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "tws": 35.0,
+    "twa": -45.5,
+    "aws": 44.42,
+    "awa": 32.4,
+    "bsp": 13.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "name": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "tws": 24.0,
+    "twa": -40.3,
+    "aws": 33.89,
+    "awa": 24.9,
+    "bsp": 12.5,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "name": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "tws": 20.0,
+    "twa": -83.0,
+    "aws": 28.04,
+    "awa": 44.1,
+    "bsp": 17.7,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "name": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "tws": 16.0,
+    "twa": -42.5,
+    "aws": 26.43,
+    "awa": 21.7,
+    "bsp": 12.8,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "MZ1R"
+    ]
+  },
+  {
+    "id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "name": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "tws": 27.0,
+    "twa": -43.1,
+    "aws": 36.97,
+    "awa": 27.9,
+    "bsp": 13.0,
+    "heel": 15.0,
+    "sail_abbreviations": [
+      "M2R",
+      "SS"
+    ]
+  },
+  {
+    "id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "name": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "tws": 14.0,
+    "twa": -42.8,
+    "aws": 23.82,
+    "awa": 21.0,
+    "bsp": 12.0,
+    "heel": 22.0,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "name": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "tws": 20.0,
+    "twa": -86.0,
+    "aws": 24.19,
+    "awa": 55.2,
+    "bsp": 12.4,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "name": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "tws": 15.0,
+    "twa": -91.6,
+    "aws": 22.3,
+    "awa": 40.8,
+    "bsp": 17.3,
+    "heel": 20.0,
+    "sail_abbreviations": [
+      "A3",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "name": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "tws": 45.0,
+    "twa": -47.7,
+    "aws": 53.36,
+    "awa": 36.8,
+    "bsp": 12.5,
+    "heel": 10.0,
+    "sail_abbreviations": [
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "name": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "tws": 35.0,
+    "twa": -90.0,
+    "aws": 37.35,
+    "awa": 66.4,
+    "bsp": 15.0,
+    "heel": 12.0,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "name": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "tws": 30.0,
+    "twa": -52.0,
+    "aws": 38.73,
+    "awa": 35.3,
+    "bsp": 13.2,
+    "heel": 15.0,
+    "sail_abbreviations": [
+      "M2R",
+      "SJ"
     ]
   }
 ]$$::jsonb) AS t(
