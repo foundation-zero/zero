@@ -23,7 +23,7 @@ jobs:
     outputs:
       image_tag: ${{ steps.image_tag.outputs.image_tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: "0"
       - name: Create .env file from secret in root for services
@@ -33,10 +33,10 @@ jobs:
         run: |
           echo "${{ secrets.ENV }}" > .env
         working-directory: zero-domestic-control
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.13
-      - uses: astral-sh/setup-uv@v8.1.0
+      - uses: astral-sh/setup-uv@v10.0.1
       - run: uv sync --locked
         working-directory: zero-domestic-control
       - name: Determine image tag
@@ -73,11 +73,11 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           token_format: access_token
           project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
@@ -85,15 +85,15 @@ jobs:
           service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s
       - name: Login to Artifact Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: europe-west1-docker.pkg.dev
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: zero-domestic-control
           push: true
