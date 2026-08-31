@@ -83,12 +83,10 @@ def decakilogram_to_tonne(value: int) -> float:
 
 RelativePosition: TypeAlias = Annotated[
     float,
-    Field(ge=0, le=1),
     VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="actual"),
 ]
 Position: TypeAlias = Annotated[
     int,
-    Field(ge=0),
     VariableMeta(unit="mm", scale_min=0, type="actual"),
 ]
 

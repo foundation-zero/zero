@@ -42,7 +42,7 @@ Load: TypeAlias = Annotated[  # Needed to be able to override Field constraints 
 
 MaxLoad: TypeAlias = Annotated[
     BaseMaxLoad,
-    Field(ge=0, validation_alias="st_Load/i_MaxLoadSetting"),
+    Field(validation_alias="st_Load/i_MaxLoadSetting"),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
         conversion=decakilogram_to_tonne,
@@ -103,7 +103,6 @@ class PrimaryWinchPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe212-primary-deck-winch-ps"
     load: Annotated[
         Load,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="Primary PT",
             applies_to_tack="port",
@@ -119,7 +118,6 @@ class PrimaryWinchSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe308-primary-deck-winch-sb"
     load: Annotated[
         Load,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="Primary SB",
             applies_to_tack="starboard",
@@ -135,7 +133,6 @@ class AftWinchPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe408-aft-deck-deck-winch-ps"
     load: Annotated[
         Load,
-        Field(ge=0, le=9),
         VariableMeta(
             display_name="Aft Winch PT",
             applies_to_tack="port",
@@ -151,7 +148,6 @@ class AftWinchSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe508-aft-deck-deck-winch-sb"
     load: Annotated[
         Load,
-        Field(ge=0, le=9),
         VariableMeta(
             display_name="Aft Winch SB",
             applies_to_tack="starboard",
@@ -209,7 +205,6 @@ class BladeSheetFeederPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe202-blade-sheet-ps-feeder"
     load: Annotated[
         Load,
-        Field(ge=0, le=20),
         VariableMeta(
             display_name="Sheet PT",
             applies_to_tack="port",
@@ -225,7 +220,6 @@ class BladeSheetFeederSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe302-blade-sheet-sb-feeder"
     load: Annotated[
         Load,
-        Field(ge=0, le=20),
         VariableMeta(
             display_name="Sheet SB",
             applies_to_tack="starboard",
@@ -241,7 +235,6 @@ class BladeTweakerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/f0206-blade-tweaker-ps"
     load: Annotated[
         Load,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="Tweaker PT",
             applies_to_tack="port",
@@ -269,7 +262,6 @@ class BladeTweakerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/f0207-blade-tweaker-sb"
     load: Annotated[
         Load,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="Tweaker SB",
             applies_to_tack="starboard",
@@ -297,7 +289,6 @@ class CodeZeroTack(LoadsModel, ABC):
     TOPIC = "sail-systems/f0102-code-sail-tack"
     load: Annotated[
         Load,
-        Field(ge=0, le=33),
         VariableMeta(display_name="Tack"),
     ]
     load_failure: LoadFailure
@@ -326,7 +317,6 @@ class MainHeadstayCombined(LoadsModel, ABC):
     TOPIC = "sail-systems/combined-headstay-placeholder"
     load: Annotated[
         Load,
-        Field(ge=0, le=66),
         VariableMeta(display_name="Headstay Comb"),
     ]
     load_failure: LoadFailure
@@ -356,16 +346,6 @@ class Mast(LoadsModel, ABC):
         Field(validation_alias="ix_SnsrA3C0LckOvrhst"),
         VariableMeta(name="overhoist_a3c0", display_name="A3/C0"),
     ]
-    lock_stormjib: Annotated[
-        Lock,
-        Field(validation_alias="ix_SnsrSrmJpLck"),
-        VariableMeta(name="lock_stormjib", display_name="Storm Jib"),
-    ]
-    overhoist_stormjib: Annotated[
-        Lock,
-        Field(validation_alias="ix_SnsrSrmJpLckOvrhst"),
-        VariableMeta(name="overhoist_stormjib", display_name="Storm Jib"),
-    ]
     lock_staysail: Annotated[
         Lock,
         Field(validation_alias="ix_SnsrStyslLck"),
@@ -375,6 +355,26 @@ class Mast(LoadsModel, ABC):
         Lock,
         Field(validation_alias="ix_SnsrStyslLckOvrhst"),
         VariableMeta(name="overhoist_staysail", display_name="Staysail"),
+    ]
+    lock_trysail: Annotated[
+        Lock,
+        Field(validation_alias="ix_TrysailLck"),
+        VariableMeta(name="lock_trysail", display_name="Trysail"),
+    ]
+    overhoist_trysail: Annotated[
+        Lock,
+        Field(validation_alias="ix_TrysailOvrhst"),
+        VariableMeta(name="overhoist_trysail", display_name="Trysail"),
+    ]
+    lock_stormjib: Annotated[
+        Lock,
+        Field(validation_alias="ix_StormJibLck"),
+        VariableMeta(name="lock_stormjib", display_name="Storm Jib"),
+    ]
+    overhoist_stormjib: Annotated[
+        Lock,
+        Field(validation_alias="ix_StormJibOvrhst"),
+        VariableMeta(name="overhoist_stormjib", display_name="Storm Jib"),
     ]
 
     lock_mizzen_headsail: Annotated[
@@ -487,25 +487,25 @@ class Mast(LoadsModel, ABC):
         VariableMeta(name="mizzen_boom_lock_2", display_name="Mizzen Boom 2"),
     ]
 
-    storm_jib_load: Annotated[
+    stormjib_load: Annotated[
         Load,
-        Field(ge=0, le=30, validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(name="storm_jib_load", display_name="Tack"),
+        Field(validation_alias="StormSailFurlerLoad/i_Load"),
+        VariableMeta(name="stormjib_load", display_name="Tack"),
     ]
-    storm_jib_load_failure: Annotated[
+    stormjib_load_failure: Annotated[
         LoadFailure,
         Field(validation_alias="StormSailFurlerLoad/x_Failure"),
-        VariableMeta(display_name="Tack Load Failure", alarm_for="storm_jib_load"),
+        VariableMeta(display_name="Tack Load Failure", alarm_for="stormjib_load"),
     ]
-    storm_jib_load_alarm: Annotated[
+    stormjib_load_alarm: Annotated[
         LoadAlarm,
         Field(validation_alias="StormSailFurlerLoad/x_MaxLimitReached"),
-        VariableMeta(alarm_for="storm_jib_load"),
+        VariableMeta(alarm_for="stormjib_load"),
     ]
-    storm_jib_max_load: Annotated[
+    stormjib_max_load: Annotated[
         MaxLoad,
         Field(validation_alias="StormSailFurlerLoad/i_MaxLoadSetting"),
-        VariableMeta(threshold_for="storm_jib_load_alarm"),
+        VariableMeta(threshold_for="stormjib_load_alarm"),
     ]
 
 
@@ -530,7 +530,6 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_load: Annotated[
         Load,
-        Field(ge=0, le=8),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
     deflector_load_failure: Annotated[
@@ -562,7 +561,7 @@ class MainCheckstay(LoadsModel, ABC):
 
     load_ps: Annotated[
         Load,
-        Field(validation_alias="st_LoadPs/i_Load", ge=0, le=15),
+        Field(validation_alias="st_LoadPs/i_Load"),
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
@@ -598,7 +597,7 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     load_sb: Annotated[
         Load,
-        Field(validation_alias="st_LoadSb/i_Load", ge=0, le=15),
+        Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
@@ -629,7 +628,6 @@ class MainCunningham(LoadsModel, ABC):
     TOPIC = "sail-systems/f0205-main-cunningham"
     load: Annotated[
         Load,
-        Field(ge=0, le=10),
         VariableMeta(display_name="Cunningham"),
     ]
     load_failure: LoadFailure
@@ -659,7 +657,6 @@ class MainOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0201-main-outhaul"
     load: Annotated[
         Load,
-        Field(ge=0, le=25),
         VariableMeta(display_name="Outhaul"),
     ]
     load_failure: LoadFailure
@@ -679,7 +676,6 @@ class MainPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0204-main-boom-preventer"
     load: Annotated[
         Load,
-        Field(ge=0, le=23),
         VariableMeta(display_name="Preventer"),
     ]
     load_failure: LoadFailure
@@ -701,7 +697,6 @@ class MainRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe401-main-runner-captive-winch-ps"
     load: Annotated[
         Load,
-        Field(ge=0, le=29),
         VariableMeta(
             display_name="Runner PT",
             applies_to_tack="port",
@@ -717,7 +712,7 @@ class MainRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe501-main-runner-captive-winch-sb"
     load: Annotated[
         Load,
-        Field(ge=0, le=29),
+        Field(),
         VariableMeta(
             display_name="Runner SB",
             applies_to_tack="starboard",
@@ -733,7 +728,7 @@ class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205-main-sheet-captive-winch"
     load: Annotated[
         Load,
-        Field(ge=0, le=17),
+        Field(),
         VariableMeta(display_name="Sheet"),
     ]
     load_failure: LoadFailure
@@ -745,7 +740,9 @@ class MainVang(LoadsModel, ABC):
     TOPIC = "sail-systems/f0202-main-vang"
     load: Annotated[
         Load,
-        Field(ge=-32, le=67, validation_alias="i_Load"),
+        Field(
+            validation_alias="i_Load"
+        ),  # Top-level i_Load assumed to be the effective load. st_LoadLc/i_Load is an alternative. Threshold (MaxLoadSetting) not exposed on this topic for ox_LoadAlarm — left open pending clarification.
         VariableMeta(
             display_name="Vang",
             scale_min_label="push",
@@ -754,9 +751,7 @@ class MainVang(LoadsModel, ABC):
     ]
     load_alarm: Annotated[
         LoadAlarm,
-        Field(
-            validation_alias="ox_LoadAlarm"
-        ),  # TODO: check if this is proper alarm to take
+        Field(validation_alias="ox_LoadAlarm"),
     ]
     relative_position: Annotated[
         RelativePosition,
@@ -776,15 +771,17 @@ class MainTraveller(LoadsModel, ABC):
         RelativePosition,
         Field(
             validation_alias="i_PositionPermille"
-        ),  # TODO: inconsistent key (st_position/i_Position_permille) is what we expect
+        ),  # No underscore, no st_position prefix) — inconsistent
+        # with st_position/i_Position_permille used elsewhere
         VariableMeta(
             display_name="Traveller",
             scale_min_label="ps",
             scale_max_label="sb",
         ),
     ]
-    # max_position_alarm: MaxPositionAlarm #TODO: these don't appear in the schema
-    # min_position_alarm: MinPositionAlarm
+    # TODO: Add position alarms/thresholds (MaxPosition field not found)
+    max_position_alarm: MaxPositionAlarm
+    min_position_alarm: MinPositionAlarm
 
 
 class MizzenCheckstay(LoadsModel, ABC):
@@ -819,7 +816,6 @@ class MizzenCheckstay(LoadsModel, ABC):
 
     deflector_load: Annotated[
         Load,
-        Field(ge=0, le=1),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
     deflector_load_failure: Annotated[
@@ -842,7 +838,7 @@ class MizzenCheckstay(LoadsModel, ABC):
     ]
     deflector_max_load: Annotated[
         MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoadSetting", ge=0, le=8),
+        Field(validation_alias="st_Load/i_MaxLoadSetting"),
         VariableMeta(
             name="deflector-max-load",
             display_name="Deflector Max Load",
@@ -852,7 +848,7 @@ class MizzenCheckstay(LoadsModel, ABC):
 
     load_ps: Annotated[
         Load,
-        Field(validation_alias="st_LoadPs/i_Load", ge=0, le=2.7),
+        Field(validation_alias="st_LoadPs/i_Load"),
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
@@ -871,7 +867,7 @@ class MizzenCheckstay(LoadsModel, ABC):
     ]
     max_load_ps: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadPs/i_MaxLoadSetting", ge=0, le=2.7),
+        Field(validation_alias="st_LoadPs/i_MaxLoadSetting"),
         VariableMeta(
             name="max-ps-load",
             display_name="Checkstay PT Max Load",
@@ -889,7 +885,7 @@ class MizzenCheckstay(LoadsModel, ABC):
     ]
     load_sb: Annotated[
         Load,
-        Field(validation_alias="st_LoadSb/i_Load", ge=0, le=2.7),
+        Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
@@ -899,7 +895,7 @@ class MizzenCheckstay(LoadsModel, ABC):
     ]
     max_load_sb: Annotated[
         MaxLoad,
-        Field(validation_alias="st_LoadSb/i_MaxLoadSetting", ge=0, le=2.7),
+        Field(validation_alias="st_LoadSb/i_MaxLoadSetting"),
         VariableMeta(
             name="max-sb-load",
             display_name="Checkstay SB Max Load",
@@ -921,7 +917,6 @@ class MizzenCunningham(LoadsModel, ABC):
     TOPIC = "sail-systems/f0504-mizzen-cunningham"
     load: Annotated[
         Load,
-        Field(ge=0, le=6.7),
         VariableMeta(display_name="Cunningham"),
     ]
     load_failure: LoadFailure
@@ -949,7 +944,6 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0402-mizzen-headsail-tack-adjuster"
     load: Annotated[
         Load,
-        Field(ge=0, le=22),
         VariableMeta(display_name="Adjuster"),
     ]
     load_failure: LoadFailure
@@ -971,7 +965,6 @@ class MizzenOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0501-mizzen-outhaul"
     load: Annotated[
         Load,
-        Field(ge=0, le=17),
         VariableMeta(display_name="Outhaul"),
     ]
     load_failure: LoadFailure
@@ -991,7 +984,6 @@ class MizzenPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0506-mizzen-boom-preventer"
     load: Annotated[
         Load,
-        Field(ge=0, le=15.5),
         VariableMeta(display_name="Preventer"),
     ]
     load_failure: LoadFailure
@@ -1013,7 +1005,6 @@ class MizzenRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe402-mizzen-runner-captive-winch-ps"
     load: Annotated[
         Load,
-        Field(ge=0, le=12.6),
         VariableMeta(
             display_name="Runner PT",
             applies_to_tack="port",
@@ -1029,7 +1020,6 @@ class MizzenRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe502-mizzen-runner-captive-winch-sb"
     load: Annotated[
         Load,
-        Field(ge=0, le=12.6),
         VariableMeta(
             display_name="Runner SB",
             applies_to_tack="starboard",
@@ -1045,7 +1035,6 @@ class MizzenSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe504-mizzen-sheet-captive-winch"
     load: Annotated[
         Load,
-        Field(ge=0, le=8.8),
         VariableMeta(display_name="Sheet"),
     ]
     load_failure: LoadFailure
@@ -1057,7 +1046,9 @@ class MizzenVang(LoadsModel, ABC):
     TOPIC = "sail-systems/f0502-mizzen-vang"
     load: Annotated[
         Load,
-        Field(ge=-24.2, le=36.3, validation_alias="i_Load"),
+        Field(
+            validation_alias="i_Load"
+        ),  # Top-level i_Load assumed to be the effective load. st_LoadLc/i_Load is an alternative. Threshold (MaxLoadSetting) not exposed on this topic for ox_LoadAlarm — left open pending clarification.
         VariableMeta(
             display_name="Vang",
             scale_min_label="push",
@@ -1066,9 +1057,7 @@ class MizzenVang(LoadsModel, ABC):
     ]
     load_alarm: Annotated[
         LoadAlarm,
-        Field(
-            validation_alias="ox_LoadAlarm"
-        ),  # TODO: check if this is proper alarm to take
+        Field(validation_alias="ox_LoadAlarm"),
     ]
     relative_position: Annotated[
         RelativePosition,
@@ -1082,7 +1071,6 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe204-staysail-sheet-ps-feeder"
     load: Annotated[
         Load,
-        Field(ge=0, le=16.5),
         VariableMeta(
             display_name="Sheet PT",
             applies_to_tack="port",
@@ -1098,7 +1086,6 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe304-staysail-sheet-sb-feeder"
     load: Annotated[
         Load,
-        Field(ge=0, le=16.5),
         VariableMeta(
             display_name="Sheet SB",
             applies_to_tack="starboard",
