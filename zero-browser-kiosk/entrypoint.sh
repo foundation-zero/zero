@@ -67,6 +67,8 @@ start_cage_chromium() {
     export DBUS_SESSION_BUS_ADDRESS="/dev/null"
 
     CHROME_FLAGS="--ozone-platform=wayland \
+                --touch-events=enabled \
+                --enable-touch-drag-drop \
                 --kiosk \
                 --no-sandbox \
                 --no-first-run \
