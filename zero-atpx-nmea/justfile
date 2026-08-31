@@ -15,3 +15,10 @@ test *args:
 
 format:
     uv run ruff format --check src tests
+
+regenerate-spec:
+    uv run python -m zero_atpx_nmea asyncapi > asyncapi.json
+
+# Generate AsyncAPI HTML docs from the committed spec
+docs:
+    which asyncapi >/dev/null 2>&1 && asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template -o docs/ --force-write 2>&1 | grep -v "^WARNING" || npx --yes @asyncapi/cli generate fromTemplate asyncapi.json @asyncapi/html-template -o docs/ --force-write 2>&1 | grep -v "^WARNING"

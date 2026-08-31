@@ -41,9 +41,32 @@ jobs:
         working-directory: zero-atpx-nmea
       - run: uv run ruff check --no-fix
         working-directory: zero-atpx-nmea
+      - run: uv run ruff format --check src tests
+        working-directory: zero-atpx-nmea
       - run: uv run pyright
         working-directory: zero-atpx-nmea
       - run: uv run pytest
+        working-directory: zero-atpx-nmea
+      - name: AsyncAPI drift check
+        run: |
+          uv run python -m zero_atpx_nmea asyncapi > /tmp/asyncapi_generated.json
+          diff -u asyncapi.json /tmp/asyncapi_generated.json || \
+            (echo "ERROR: asyncapi.json is out of date. Run 'just regenerate' to refresh it." && exit 1)
+        working-directory: zero-atpx-nmea
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install -g @asyncapi/cli
+        working-directory: zero-atpx-nmea
+      - name: AsyncAPI CLI validation
+        run: asyncapi validate asyncapi.json
+        working-directory: zero-atpx-nmea
+      - name: AsyncAPI HTML docs drift check
+        run: |
+          rm -rf /tmp/docs/
+          SUPPRESS_NO_CONFIG_WARNING=true asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template -o /tmp/docs/ --force-write
+          diff -r docs/ /tmp/docs/ || \
+            (echo "ERROR: docs/ are out of date. Run 'just docs' to regenerate them." && exit 1)
         working-directory: zero-atpx-nmea
 
   docker-push:

@@ -1,0 +1,1702 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "Zero ATPX NMEA",
+    "version": "0.1.0",
+    "description": "Zero ATPX NMEA bridges A+T's raw NMEA 0183 stream onto our own MQTT broker. It subscribes to `atpx/nmea0183/<sender>/<TYPE>` on **A+T's onboard broker** (the ATPX MQTT host), parses each sentence with pynmea2 into a JSON envelope, and republishes it to `atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** (the output MQTT host). Vector then ingests `atpx/processed/nmea/#` into Greptime tables named `atpx__nmea_<type>`.\n\n**Known-type scope.** The documented type set below is the known/supported subset for which this service has been tested with real A+T data. The service subscribes to `atpx/nmea0183/#` and will parse any well-formed NMEA 0183 sentence it receives, including types not listed here \u2014 the envelope for an undocumented type will simply carry whatever fields pynmea2 produces for it rather than a curated schema. Adding a new documented type is a one-line corpus addition plus a spec regeneration."
+  },
+  "channels": {
+    "atpx/nmea0183/{sender}/{TYPE}": {
+      "address": "atpx/nmea0183/{sender}/{TYPE}",
+      "title": "Raw NMEA 0183 input from A+T broker",
+      "description": "Raw NMEA 0183 sentences published by A+T's onboard systems. ``{sender}`` identifies the A+T device (e.g. ``3143``, ``3145``), ``{TYPE}`` is the uppercase NMEA 0183 sentence type (e.g. ``ROT``, ``GGA``).",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145, 3141, 3142)",
+          "location": "$message.header#/topic/parts/2"
+        },
+        "TYPE": {
+          "description": "Uppercase NMEA 0183 sentence type (e.g. ROT, GGA, RMC)",
+          "location": "$message.header#/topic/parts/3"
+        }
+      },
+      "messages": {
+        "raw_nmea_sentence": {
+          "$ref": "#/components/messages/raw_nmea_sentence"
+        }
+      }
+    },
+    "atpx/processed/nmea/rot/{sender}": {
+      "address": "atpx/processed/nmea/rot/{sender}",
+      "title": "ROT processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 ROT sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "rot_envelope": {
+          "$ref": "#/components/messages/rot_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/hdt/{sender}": {
+      "address": "atpx/processed/nmea/hdt/{sender}",
+      "title": "HDT processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 HDT sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "hdt_envelope": {
+          "$ref": "#/components/messages/hdt_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/fec/{sender}": {
+      "address": "atpx/processed/nmea/fec/{sender}",
+      "title": "FEC processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 FEC sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "fec_envelope": {
+          "$ref": "#/components/messages/fec_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/gga/{sender}": {
+      "address": "atpx/processed/nmea/gga/{sender}",
+      "title": "GGA processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 GGA sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "gga_envelope": {
+          "$ref": "#/components/messages/gga_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/dbt/{sender}": {
+      "address": "atpx/processed/nmea/dbt/{sender}",
+      "title": "DBT processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 DBT sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "dbt_envelope": {
+          "$ref": "#/components/messages/dbt_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/dpt/{sender}": {
+      "address": "atpx/processed/nmea/dpt/{sender}",
+      "title": "DPT processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 DPT sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "dpt_envelope": {
+          "$ref": "#/components/messages/dpt_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/gll/{sender}": {
+      "address": "atpx/processed/nmea/gll/{sender}",
+      "title": "GLL processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 GLL sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "gll_envelope": {
+          "$ref": "#/components/messages/gll_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/vtg/{sender}": {
+      "address": "atpx/processed/nmea/vtg/{sender}",
+      "title": "VTG processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 VTG sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "vtg_envelope": {
+          "$ref": "#/components/messages/vtg_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/vbw/{sender}": {
+      "address": "atpx/processed/nmea/vbw/{sender}",
+      "title": "VBW processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 VBW sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "vbw_envelope": {
+          "$ref": "#/components/messages/vbw_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/zda/{sender}": {
+      "address": "atpx/processed/nmea/zda/{sender}",
+      "title": "ZDA processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 ZDA sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "zda_envelope": {
+          "$ref": "#/components/messages/zda_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/vhw/{sender}": {
+      "address": "atpx/processed/nmea/vhw/{sender}",
+      "title": "VHW processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 VHW sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "vhw_envelope": {
+          "$ref": "#/components/messages/vhw_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/vlw/{sender}": {
+      "address": "atpx/processed/nmea/vlw/{sender}",
+      "title": "VLW processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 VLW sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "vlw_envelope": {
+          "$ref": "#/components/messages/vlw_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/rmc/{sender}": {
+      "address": "atpx/processed/nmea/rmc/{sender}",
+      "title": "RMC processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 RMC sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "rmc_envelope": {
+          "$ref": "#/components/messages/rmc_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/alr/{sender}": {
+      "address": "atpx/processed/nmea/alr/{sender}",
+      "title": "ALR processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 ALR sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "alr_envelope": {
+          "$ref": "#/components/messages/alr_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/alc/{sender}": {
+      "address": "atpx/processed/nmea/alc/{sender}",
+      "title": "ALC processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 ALC sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "alc_envelope": {
+          "$ref": "#/components/messages/alc_envelope"
+        }
+      }
+    },
+    "atpx/processed/nmea/pos/{sender}": {
+      "address": "atpx/processed/nmea/pos/{sender}",
+      "title": "POS processed envelope",
+      "description": "Parsed JSON envelope for NMEA 0183 POS sentences. ``{sender}`` identifies the originating A+T device.",
+      "parameters": {
+        "sender": {
+          "description": "A+T device identifier (e.g. 3143, 3145)",
+          "location": "$message.header#/topic/parts/4"
+        }
+      },
+      "messages": {
+        "pos_envelope": {
+          "$ref": "#/components/messages/pos_envelope"
+        }
+      }
+    }
+  },
+  "operations": {
+    "receive_raw_nmea": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/atpx~1nmea0183~1%7Bsender%7D~1%7BTYPE%7D"
+      }
+    },
+    "send_rot_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1rot~1%7Bsender%7D"
+      }
+    },
+    "send_hdt_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1hdt~1%7Bsender%7D"
+      }
+    },
+    "send_fec_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1fec~1%7Bsender%7D"
+      }
+    },
+    "send_gga_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1gga~1%7Bsender%7D"
+      }
+    },
+    "send_dbt_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1dbt~1%7Bsender%7D"
+      }
+    },
+    "send_dpt_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1dpt~1%7Bsender%7D"
+      }
+    },
+    "send_gll_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1gll~1%7Bsender%7D"
+      }
+    },
+    "send_vtg_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1vtg~1%7Bsender%7D"
+      }
+    },
+    "send_vbw_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1vbw~1%7Bsender%7D"
+      }
+    },
+    "send_zda_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1zda~1%7Bsender%7D"
+      }
+    },
+    "send_vhw_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1vhw~1%7Bsender%7D"
+      }
+    },
+    "send_vlw_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1vlw~1%7Bsender%7D"
+      }
+    },
+    "send_rmc_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1rmc~1%7Bsender%7D"
+      }
+    },
+    "send_alr_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1alr~1%7Bsender%7D"
+      }
+    },
+    "send_alc_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1alc~1%7Bsender%7D"
+      }
+    },
+    "send_pos_envelope": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/atpx~1processed~1nmea~1pos~1%7Bsender%7D"
+      }
+    }
+  },
+  "components": {
+    "messages": {
+      "raw_nmea_sentence": {
+        "name": "raw_nmea_sentence",
+        "title": "Raw NMEA 0183 sentence",
+        "description": "A single raw NMEA 0183 sentence as received from A+T",
+        "contentType": "text/plain",
+        "payload": {
+          "type": "string",
+          "description": "Raw NMEA 0183 sentence string, e.g. ``$GPGGA,...*hh``"
+        }
+      },
+      "rot_envelope": {
+        "name": "rot_envelope",
+        "title": "ROT envelope",
+        "description": "Parsed payload for NMEA 0183 ROT sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "rate_of_turn": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "hdt_envelope": {
+        "name": "hdt_envelope",
+        "title": "HDT envelope",
+        "description": "Parsed payload for NMEA 0183 HDT sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "hdg_true": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "fec_envelope": {
+        "name": "fec_envelope",
+        "title": "FEC envelope",
+        "description": "Parsed payload for NMEA 0183 FEC sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "manufacturer": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "data": {
+              "type": [
+                "array",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "gga_envelope": {
+        "name": "gga_envelope",
+        "title": "GGA envelope",
+        "description": "Parsed payload for NMEA 0183 GGA sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "nmea_time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lat": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lat_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "gps_qual": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "num_sats": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "horizontal_dil": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "altitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "altitude_units": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "geo_sep": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "geo_sep_units": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "age_gps_data": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ref_station_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "latitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "longitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "dbt_envelope": {
+        "name": "dbt_envelope",
+        "title": "DBT envelope",
+        "description": "Parsed payload for NMEA 0183 DBT sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "depth_feet": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "unit_feet": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "depth_meters": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "unit_meters": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "depth_fathoms": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "unit_fathoms": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "dpt_envelope": {
+        "name": "dpt_envelope",
+        "title": "DPT envelope",
+        "description": "Parsed payload for NMEA 0183 DPT sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "depth": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "offset": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "gll_envelope": {
+        "name": "gll_envelope",
+        "title": "GLL envelope",
+        "description": "Parsed payload for NMEA 0183 GLL sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lat_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "nmea_time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "faa_mode": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "latitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "longitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "vtg_envelope": {
+        "name": "vtg_envelope",
+        "title": "VTG envelope",
+        "description": "Parsed payload for NMEA 0183 VTG sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "true_track": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "true_track_sym": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "mag_track": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "mag_track_sym": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "spd_over_grnd_kts": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "spd_over_grnd_kts_sym": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "spd_over_grnd_kmph": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "spd_over_grnd_kmph_sym": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "faa_mode": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "vbw_envelope": {
+        "name": "vbw_envelope",
+        "title": "VBW envelope",
+        "description": "Parsed payload for NMEA 0183 VBW sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "lon_water_spd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "trans_water_spd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "data_validity_water_spd": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon_grnd_spd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "trans_grnd_spd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "data_validity_grnd_spd": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "zda_envelope": {
+        "name": "zda_envelope",
+        "title": "ZDA envelope",
+        "description": "Parsed payload for NMEA 0183 ZDA sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "nmea_time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "day": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "month": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "year": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "local_zone": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "local_zone_minutes": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "vhw_envelope": {
+        "name": "vhw_envelope",
+        "title": "VHW envelope",
+        "description": "Parsed payload for NMEA 0183 VHW sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "heading_true": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "true": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "heading_magnetic": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "magnetic": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "water_speed_knots": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "knots": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "water_speed_km": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "kilometers": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "vlw_envelope": {
+        "name": "vlw_envelope",
+        "title": "VLW envelope",
+        "description": "Parsed payload for NMEA 0183 VLW sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "trip_distance": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "trip_distance_miles": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "trip_distance_reset": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "trip_distance_reset_miles": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "rmc_envelope": {
+        "name": "rmc_envelope",
+        "title": "RMC envelope",
+        "description": "Parsed payload for NMEA 0183 RMC sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "nmea_time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lat": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lat_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lon_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "spd_over_grnd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "true_course": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "datestamp": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "mag_variation": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "mag_var_dir": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "mode_indicator": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "nav_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "latitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "longitude": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "alr_envelope": {
+        "name": "alr_envelope",
+        "title": "ALR envelope",
+        "description": "Parsed payload for NMEA 0183 ALR sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "nmea_time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "alarm_number": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "alarm_condition": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "alarm_ack_state": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "alarm_text": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "alc_envelope": {
+        "name": "alc_envelope",
+        "title": "ALC envelope",
+        "description": "Parsed payload for NMEA 0183 ALC sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "total_sentences": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "sentence_number": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "sequence_id": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "num_alerts": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      },
+      "pos_envelope": {
+        "name": "pos_envelope",
+        "title": "POS envelope",
+        "description": "Parsed payload for NMEA 0183 POS sentence type",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "device_talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "equipment_number": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "x_offset": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "y_offset": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "z_offset": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "position_valid": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "length": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "beam": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "sentence_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "sender": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "talker": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "sender",
+            "talker",
+            "raw"
+          ]
+        }
+      }
+    }
+  }
+}

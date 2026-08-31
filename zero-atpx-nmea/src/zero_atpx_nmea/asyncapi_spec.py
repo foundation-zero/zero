@@ -1,0 +1,296 @@
+"""AsyncAPI 3.0.0 specification builder for zero-atpx-nmea.
+
+This is the primary seam of the feature: a pure function ``build_spec() -> dict``
+that returns a complete AsyncAPI 3.0.0 document describing the service's MQTT
+interface. No I/O; deterministic.
+
+Per-type message schemas are derived from the real ``parse()`` function — the
+parser is the oracle. Each curated example sentence is parsed to obtain the
+authoritative set of envelope keys for that type, and per-field JSON types are
+enriched from pynmea2's declared field converters where available.
+"""
+
+from decimal import Decimal
+from typing import Any
+
+import pynmea2
+
+import zero_atpx_nmea.custom_sentences  # noqa: F401 — registers custom sentence classes
+from zero_atpx_nmea.corpus import documented_types, sender_for, sentence_for
+from zero_atpx_nmea.parser import parse
+
+# Envelope keys that are always added by parser.py itself (not from pynmea2
+# field declarations), mapped to their JSON Schema types.
+_SPECIAL_FIELD_TYPES: dict[str, str] = {
+    "type": "string",
+    "sender": "string",
+    "talker": "string",
+    "raw": "string",
+    "latitude": "number",
+    "longitude": "number",
+    "manufacturer": "string",
+    "data": "array",
+    "nmea_time": "string",
+}
+
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
+
+
+def _json_type_from_converter(converter: Any) -> str:
+    """Map a pynmea2 field converter to its AsyncAPI JSON Schema type.
+
+    pynmea2 field tuples are ``(description, name)`` or ``(description, name, converter)``.
+    ``converter`` is typically ``int``, ``float``, ``Decimal``, a function like
+    ``timestamp``/``datestamp``, or absent.
+    """
+    if converter is None:
+        return "string"
+    if converter is int:
+        return "integer"
+    if converter is float or converter is Decimal:
+        return "number"
+    # Functions like timestamp/datestamp return datetime objects that the parser
+    # converts to ISO-format strings.
+    return "string"
+
+
+def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
+    """Look up the pynmea2-declared converter for *field_name* and return its
+    JSON Schema type, or ``None`` if no converter is declared.
+
+    ``field_name`` is the **original** pynmea2 field name (not the envelope
+    key — the parser may rename it).
+    """
+    if not hasattr(msg_type, "name_to_idx"):
+        return None
+    for fields_entry in msg_type.fields:
+        desc, name, *rest = fields_entry
+        if name == field_name:
+            converter = rest[0] if rest else None
+            return _json_type_from_converter(converter)
+    return None
+
+
+def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]]:
+    """Parse the example sentence and return (field_types, field_order).
+
+    ``field_types`` maps envelope key → AsyncAPI JSON Schema type name.
+    ``field_order`` lists keys in insertion order.
+
+    The parser is the oracle: we run the real ``parse()`` to get the authoritative
+    envelope, then enrich types from pynmea2's declared converters.
+    """
+    sender = sender_for(nmea_type)
+    raw = sentence_for(nmea_type)
+    topic = f"atpx/nmea0183/{sender}/{nmea_type.upper()}"
+    envelope = parse(raw, topic)
+    assert envelope is not None, f"Example sentence for {nmea_type} should parse"
+
+    msg = pynmea2.parse(raw, check=True)
+    msg_type = type(msg)
+
+    # Build a mapping from envelope key → original pynmea2 field name so we
+    # can look up the declared converter for fields the parser renamed.
+    orig_name_by_env_key: dict[str, str] = {}
+    for fields_entry in msg_type.fields:
+        desc, name, *rest = fields_entry  # noqa: F841 (desc unused)
+        orig_name_by_env_key[name] = name
+        # parser.py renames some fields; register the emitted key so we can
+        # still find the original field's converter.
+        if name == "timestamp":
+            orig_name_by_env_key["nmea_time"] = name
+        if name in {"type", "sender", "talker", "raw", "table"}:
+            orig_name_by_env_key[f"nmea_{name}"] = name
+
+    field_types: dict[str, str] = {}
+    for env_key in envelope:
+        special = _SPECIAL_FIELD_TYPES.get(env_key)
+        if special is not None:
+            field_types[env_key] = special
+        else:
+            orig = orig_name_by_env_key.get(env_key)
+            conv_type = _converter_type_for_field(orig, msg_type) if orig else None
+            field_types[env_key] = conv_type or "string"
+
+    field_order = list(envelope.keys())
+    return field_types, field_order
+
+
+def _json_pointer_ref(channel_id: str) -> str:
+    """Build a JSON Pointer ``$ref`` for a channel, encoding special characters.
+
+    JSON Pointer (RFC 6901) requires ``/`` in path segments to be encoded as
+    ``~1`` and ``~`` as ``~0``.  Curly braces ``{``/``}`` are not special in
+    JSON Pointer but some AsyncAPI tools treat them specially in resolved
+    documents, so they are percent-encoded as ``%7B``/``%7D``.
+
+    Only the path segment (the channel ID within ``channels/``) is encoded;
+    the ``#/channels/`` prefix is left as-is.
+    """
+    segment = channel_id.replace("~", "~0").replace("/", "~1")
+    segment = segment.replace("{", "%7B").replace("}", "%7D")
+    return f"#/channels/{segment}"
+
+
+# ── Schema builders ─────────────────────────────────────────────────────────────
+
+
+def _build_properties(
+    field_types: dict[str, str], field_order: list[str]
+) -> dict[str, Any]:
+    """Build the ``properties`` dict for an object schema.
+
+    Every property is nullable (since empty NMEA fields become ``null``).
+    The AsyncAPI 3.0 meta-schema expects ``description`` to be a string or
+    absent (never ``null``), so it is omitted when there is no description.
+    """
+    props: dict[str, Any] = {}
+    for key in field_order:
+        prop: dict[str, Any] = {}
+        # Use JSON Schema draft-2020-12 style: type: [T, "null"] rather than
+        # the draft-4 ``nullable`` keyword, which the AsyncAPI 3.0 validator
+        # rejects on the ``payload`` schema.
+        prop["type"] = [field_types[key], "null"]
+        props[key] = prop
+    return props
+
+
+def _build_message_schema(
+    nmea_type: str, field_types: dict[str, str], field_order: list[str]
+) -> dict[str, Any]:
+    """Build a per-type message schema."""
+    return {
+        "name": f"{nmea_type}_envelope",
+        "title": f"{nmea_type.upper()} envelope",
+        "description": f"Parsed payload for NMEA 0183 {nmea_type.upper()} sentence type",
+        "contentType": "application/json",
+        "payload": {
+            "type": "object",
+            "properties": _build_properties(field_types, field_order),
+            "required": ["type", "sender", "talker", "raw"],
+        },
+    }
+
+
+# ── Public seam ─────────────────────────────────────────────────────────────────
+
+
+def build_spec() -> dict[str, Any]:
+    """Build a complete AsyncAPI 3.0.0 document for zero-atpx-nmea's MQTT interface.
+
+    Returns a dict ready to serialise as JSON. No I/O, deterministic.
+    """
+    # Static, not the hatch-vcs package version: that changes every commit and
+    # would churn asyncapi.json on every push. Bump when the documented
+    # interface (channels, schemas) changes.
+    version = "0.1.0"
+
+    spec: dict[str, Any] = {
+        "asyncapi": "3.0.0",
+        "info": {
+            "title": "Zero ATPX NMEA",
+            "version": version,
+            "description": (
+                "Zero ATPX NMEA bridges A+T's raw NMEA 0183 stream onto our own MQTT "
+                "broker. It subscribes to `atpx/nmea0183/<sender>/<TYPE>` on "
+                "**A+T's onboard broker** (the ATPX MQTT host), parses each sentence "
+                "with pynmea2 into a JSON envelope, and republishes it to "
+                "`atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** "
+                "(the output MQTT host). Vector then ingests "
+                "`atpx/processed/nmea/#` into Greptime tables named "
+                "`atpx__nmea_<type>`.\n\n"
+                "**Known-type scope.** The documented type set below is the "
+                "known/supported subset for which this service has been tested with "
+                "real A+T data. The service subscribes to `atpx/nmea0183/#` and will "
+                "parse any well-formed NMEA 0183 sentence it receives, including "
+                "types not listed here \u2014 the envelope for an undocumented type will "
+                "simply carry whatever fields pynmea2 produces for it rather than a "
+                "curated schema. Adding a new documented type is a one-line corpus "
+                "addition plus a spec regeneration."
+            ),
+        },
+        "channels": {},
+        "operations": {},
+        "components": {
+            "messages": {},
+        },
+    }
+
+    # ── Input channel ───────────────────────────────────────────────────────────
+    input_channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+    spec["channels"][input_channel_id] = {
+        "address": "atpx/nmea0183/{sender}/{TYPE}",
+        "title": "Raw NMEA 0183 input from A+T broker",
+        "description": (
+            "Raw NMEA 0183 sentences published by A+T's onboard systems. "
+            "``{sender}`` identifies the A+T device (e.g. ``3143``, ``3145``), "
+            "``{TYPE}`` is the uppercase NMEA 0183 sentence type "
+            "(e.g. ``ROT``, ``GGA``)."
+        ),
+        "parameters": {
+            "sender": {
+                "description": "A+T device identifier (e.g. 3143, 3145, 3141, 3142)",
+                "location": "$message.header#/topic/parts/2",
+            },
+            "TYPE": {
+                "description": "Uppercase NMEA 0183 sentence type (e.g. ROT, GGA, RMC)",
+                "location": "$message.header#/topic/parts/3",
+            },
+        },
+        "messages": {
+            "raw_nmea_sentence": {
+                "$ref": "#/components/messages/raw_nmea_sentence",
+            },
+        },
+    }
+    spec["components"]["messages"]["raw_nmea_sentence"] = {
+        "name": "raw_nmea_sentence",
+        "title": "Raw NMEA 0183 sentence",
+        "description": "A single raw NMEA 0183 sentence as received from A+T",
+        "contentType": "text/plain",
+        "payload": {
+            "type": "string",
+            "description": "Raw NMEA 0183 sentence string, e.g. ``$GPGGA,...*hh``",
+        },
+    }
+    spec["operations"]["receive_raw_nmea"] = {
+        "action": "receive",
+        "channel": {
+            "$ref": _json_pointer_ref(input_channel_id),
+        },
+    }
+
+    # ── Output channels (one per documented type) ────────────────────────────────
+    for nmea_type in documented_types():
+        field_types, field_order = _gather_envelope_for_type(nmea_type)
+        message_id = f"{nmea_type}_envelope"
+        channel_address = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+        channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+
+        spec["channels"][channel_id] = {
+            "address": channel_address,
+            "title": f"{nmea_type.upper()} processed envelope",
+            "description": (
+                f"Parsed JSON envelope for NMEA 0183 {nmea_type.upper()} sentences. "
+                "``{sender}`` identifies the originating A+T device."
+            ),
+            "parameters": {
+                "sender": {
+                    "description": "A+T device identifier (e.g. 3143, 3145)",
+                    "location": "$message.header#/topic/parts/4",
+                },
+            },
+            "messages": {
+                message_id: {"$ref": f"#/components/messages/{message_id}"},
+            },
+        }
+        spec["components"]["messages"][message_id] = _build_message_schema(
+            nmea_type, field_types, field_order
+        )
+        spec["operations"][f"send_{nmea_type}_envelope"] = {
+            "action": "send",
+            "channel": {"$ref": _json_pointer_ref(channel_id)},
+        }
+
+    return spec

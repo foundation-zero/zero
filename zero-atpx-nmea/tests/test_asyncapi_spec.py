@@ -1,0 +1,273 @@
+"""Tests for the AsyncAPI 3.0.0 spec builder.
+
+Tests the primary seam (``build_spec()``) and the self-validating corpus, not
+the internal wiring of the builder. Follows the same pure-function, assert-on-output
+style as ``test_parser.py``.
+"""
+
+import json
+from typing import Any
+
+from zero_atpx_nmea.asyncapi_spec import build_spec
+from zero_atpx_nmea.corpus import documented_types, sender_for, sentence_for
+from zero_atpx_nmea.parser import parse
+
+# ── Corpus self-validation ─────────────────────────────────────────────────────
+
+
+def _parse_example(nmea_type: str) -> dict[str, Any] | None:
+    """Run a documented type's corpus example through the real parser."""
+    topic = f"atpx/nmea0183/{sender_for(nmea_type)}/{nmea_type.upper()}"
+    return parse(sentence_for(nmea_type), topic)
+
+
+def test_every_example_parses_successfully() -> None:
+    """Every example sentence in the curated corpus must parse without error."""
+    for nmea_type in documented_types():
+        assert _parse_example(nmea_type) is not None, (
+            f"Example for {nmea_type} failed to parse"
+        )
+
+
+def test_every_parsed_type_matches_corpus_type() -> None:
+    """Each example's parsed ``type`` must match the type it's filed under."""
+    for nmea_type in documented_types():
+        envelope = _parse_example(nmea_type)
+        assert envelope is not None
+        assert envelope["type"] == nmea_type, (
+            f"Expected type={nmea_type}, got {envelope['type']}"
+        )
+
+
+def test_documented_keys_match_parsed_keys() -> None:
+    """The documented keys for each type must match what ``parse()`` actually emits.
+
+    This guarantees the spec never describes fields the parser doesn't produce,
+    or vice-versa.
+    """
+    spec = build_spec()
+
+    for nmea_type in documented_types():
+        envelope = _parse_example(nmea_type)
+        assert envelope is not None
+
+        # Get the spec's property keys for this type.
+        msg = spec["components"]["messages"][f"{nmea_type}_envelope"]
+        spec_props = set(msg["payload"]["properties"].keys())
+
+        parsed_keys = set(envelope.keys())
+        assert spec_props == parsed_keys, (
+            f"Mismatch for {nmea_type}: spec has {spec_props - parsed_keys} "
+            f"not in parse output, parse has {parsed_keys - spec_props} not in spec"
+        )
+
+
+# ── Spec structure ─────────────────────────────────────────────────────────────
+
+
+class TestSpecTopLevel:
+    """Top-level AsyncAPI document shape."""
+
+    def test_asyncapi_version(self) -> None:
+        spec = build_spec()
+        assert spec["asyncapi"] == "3.0.0"
+
+    def test_info_title(self) -> None:
+        spec = build_spec()
+        assert spec["info"]["title"] == "Zero ATPX NMEA"
+
+    def test_info_version_is_string(self) -> None:
+        spec = build_spec()
+        version = spec["info"]["version"]
+        assert isinstance(version, str) and len(version) > 0
+
+    def test_info_description_mentions_broker_roles(self) -> None:
+        spec = build_spec()
+        desc = spec["info"]["description"]
+        assert "A+T's onboard broker" in desc
+        assert "our own MQTT broker" in desc
+
+    def test_info_description_mentions_known_type_scope(self) -> None:
+        spec = build_spec()
+        desc = spec["info"]["description"]
+        assert "known/supported subset" in desc
+
+
+class TestInputChannel:
+    """The single input channel."""
+
+    def test_input_channel_exists(self) -> None:
+        spec = build_spec()
+        channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+        assert channel_id in spec["channels"]
+
+    def test_input_channel_has_string_payload(self) -> None:
+        spec = build_spec()
+        msg = spec["components"]["messages"]["raw_nmea_sentence"]
+        assert msg["payload"]["type"] == "string"
+        assert msg["contentType"] == "text/plain"
+
+    def test_input_channel_has_sender_and_type_parameters(self) -> None:
+        spec = build_spec()
+        channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+        ch = spec["channels"][channel_id]
+        assert "sender" in ch["parameters"]
+        assert "TYPE" in ch["parameters"]
+
+    def test_input_operation_is_receive(self) -> None:
+        spec = build_spec()
+        op = spec["operations"]["receive_raw_nmea"]
+        assert op["action"] == "receive"
+
+
+class TestOutputChannels:
+    """One output channel per documented type."""
+
+    def test_one_channel_per_documented_type(self) -> None:
+        spec = build_spec()
+        types = documented_types()
+        # +1 for the input channel
+        assert len(spec["channels"]) == len(types) + 1
+
+    def test_every_output_channel_has_correct_address(self) -> None:
+        spec = build_spec()
+        for nmea_type in documented_types():
+            channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+            assert channel_id in spec["channels"]
+            expected_address = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+            assert spec["channels"][channel_id]["address"] == expected_address
+
+    def test_every_output_has_send_operation(self) -> None:
+        spec = build_spec()
+        for nmea_type in documented_types():
+            op_id = f"send_{nmea_type}_envelope"
+            assert op_id in spec["operations"]
+            assert spec["operations"][op_id]["action"] == "send"
+
+
+class TestPerTypeSchemas:
+    """Per-type message schema properties."""
+
+    def test_always_present_envelope_keys(self) -> None:
+        """Every per-type message must advertise ``type``/``sender``/``talker``/``raw``."""
+        spec = build_spec()
+        for nmea_type in documented_types():
+            msg = spec["components"]["messages"][f"{nmea_type}_envelope"]
+            props = msg["payload"]["properties"]
+            for key in ("type", "sender", "talker", "raw"):
+                assert key in props, f"{nmea_type} missing required key {key}"
+                assert props[key]["type"] == ["string", "null"]
+
+    def test_position_types_have_latitude_longitude(self) -> None:
+        """GGA, GLL, and RMC must advertise ``latitude``/``longitude``."""
+        spec = build_spec()
+        for nmea_type in ("gga", "gll", "rmc"):
+            msg = spec["components"]["messages"][f"{nmea_type}_envelope"]
+            props = msg["payload"]["properties"]
+            assert "latitude" in props, f"{nmea_type} missing latitude"
+            assert "longitude" in props, f"{nmea_type} missing longitude"
+            assert props["latitude"]["type"] == ["number", "null"]
+            assert props["longitude"]["type"] == ["number", "null"]
+
+    def test_position_types_have_nmea_time_not_timestamp(self) -> None:
+        """Position types must use the renamed ``nmea_time`` key, never ``timestamp``."""
+        spec = build_spec()
+        for nmea_type in ("gga", "gll", "rmc", "zda", "alr"):
+            msg = spec["components"]["messages"][f"{nmea_type}_envelope"]
+            props = msg["payload"]["properties"]
+            assert "nmea_time" in props, f"{nmea_type} missing nmea_time"
+            assert "timestamp" not in props, (
+                f"{nmea_type} still has raw 'timestamp' key (should be nmea_time)"
+            )
+
+    def test_proprietary_type_has_manufacturer_and_data(self) -> None:
+        """The proprietary FEC type must advertise ``manufacturer`` and ``data``."""
+        spec = build_spec()
+        msg = spec["components"]["messages"]["fec_envelope"]
+        props = msg["payload"]["properties"]
+        assert "manufacturer" in props
+        assert props["manufacturer"]["type"] == ["string", "null"]
+        assert "data" in props
+        assert props["data"]["type"] == ["array", "null"]
+
+
+class TestFieldTypes:
+    """Spot-check that numeric fields have correct JSON types."""
+
+    def _assert_type(self, props: dict, key: str, expected_type: str) -> None:
+        """Assert a property's type is ``[expected_type, \"null\"]``."""
+        assert key in props, f"Missing key {key}"
+        assert props[key]["type"] == [expected_type, "null"], (
+            f"Expected {key}.type to be [{expected_type}, null], "
+            f"got {props[key]['type']}"
+        )
+
+    def test_gga_gps_qual_is_integer(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["gga_envelope"]["payload"]["properties"]
+        self._assert_type(props, "gps_qual", "integer")
+
+    def test_gga_altitude_is_number(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["gga_envelope"]["payload"]["properties"]
+        self._assert_type(props, "altitude", "number")
+
+    def test_zda_year_is_integer(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["zda_envelope"]["payload"]["properties"]
+        self._assert_type(props, "year", "integer")
+
+    def test_alc_total_sentences_is_integer(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["alc_envelope"]["payload"]["properties"]
+        self._assert_type(props, "total_sentences", "integer")
+
+    def test_pos_x_offset_is_number(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["pos_envelope"]["payload"]["properties"]
+        self._assert_type(props, "x_offset", "number")
+
+    def test_vbw_lon_water_spd_is_number(self) -> None:
+        spec = build_spec()
+        props = spec["components"]["messages"]["vbw_envelope"]["payload"]["properties"]
+        self._assert_type(props, "lon_water_spd", "number")
+
+    def test_all_fields_are_nullable(self) -> None:
+        """Every property in every per-type schema must be nullable (NMEA fields can be empty → null).
+
+        Nullability is expressed as ``type: [T, \"null\"]`` (draft-2020-12 style)
+        rather than a separate ``nullable`` keyword.
+        """
+        spec = build_spec()
+        for nmea_type in documented_types():
+            msg = spec["components"]["messages"][f"{nmea_type}_envelope"]
+            props = msg["payload"]["properties"]
+            for key, prop in props.items():
+                type_val = prop.get("type")
+                assert isinstance(type_val, list), (
+                    f"{nmea_type}.{key}.type should be a list (nullable), got {type_val!r}"
+                )
+                assert "null" in type_val, (
+                    f"{nmea_type}.{key}.type {type_val} does not include null"
+                )
+
+
+def test_spec_serializes_to_json() -> None:
+    """The spec must be JSON-serializable without error."""
+    spec = build_spec()
+    json.dumps(spec)
+
+
+def test_committed_spec_matches_generated() -> None:
+    """The committed asyncapi.json must match what build_spec() produces right now.
+
+    This is the drift guard: if the committed file is stale (doesn't match
+    the current builder and parser), this test fails. The ``just regenerate-spec``
+    command updates the file, and CI runs this as a check.
+    """
+    with open("asyncapi.json") as f:
+        committed = json.load(f)
+    generated = build_spec()
+    assert committed == generated, (
+        "asyncapi.json is out of date. Run 'just regenerate-spec' to refresh it."
+    )
