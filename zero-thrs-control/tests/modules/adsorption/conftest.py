@@ -44,7 +44,7 @@ def simulation_inputs():
         adsorption_dhw_supply=Boundary(
             temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
         ),
-        adsorption_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

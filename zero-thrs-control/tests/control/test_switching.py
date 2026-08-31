@@ -27,7 +27,9 @@ def test_switching_control():
     assert control_values.go_with_the.flow.value == 42.0
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
-    control_values, controller_state = switching_control.control(SimpleInOut.zero())
+    control_values, controller_state = switching_control.control(
+        SimpleInOut(go_with_the=SimpleInOut.zero().go_with_the)
+    )
 
     assert switching_control.automatic
     assert controller_state

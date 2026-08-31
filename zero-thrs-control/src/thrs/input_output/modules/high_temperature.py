@@ -29,10 +29,7 @@ class HighTemperatureSimulationInputs(ThrsValues):
     pcm_freshwater_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_adsorption_supply: simulation.Boundary
-    consumers_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
-    pvt_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
-    pcm_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
-    thrusters_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class HighTemperatureSimulationOutputs(

@@ -60,7 +60,7 @@ export type ControlStatus = {
   modules: {
     [K in keyof ControlModes]: {
       controlMode: ControlMode<ControlModes[K]>;
-      sensorValues: Record<`${K}Mode`, AmcsControlModeSensor>;
+      sensorValues: Record<`mode`, AmcsControlModeSensor>;
     };
   };
 };
@@ -76,7 +76,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          thrustersMode {
+          mode {
             mode {
               value
             }
@@ -99,7 +99,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          pvtMode {
+          mode {
             mode {
               value
             }
@@ -114,7 +114,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          pcmMode {
+          mode {
             mode {
               value
             }
@@ -129,7 +129,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          adsorptionMode {
+          mode {
             mode {
               value
             }
@@ -141,7 +141,7 @@ export const CONTROL_QUERY = gql`
           automatic
         }
         sensorValues {
-          consumersMode {
+          mode {
             mode {
               value
             }
@@ -164,7 +164,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          dcMode {
+          mode {
             mode {
               value
             }
@@ -180,7 +180,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          dhwMode {
+          mode {
             mode {
               value
             }
@@ -195,7 +195,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          drivesMode {
+          mode {
             mode {
               value
             }

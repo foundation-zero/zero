@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import ThrsValues, component_meta
@@ -307,13 +307,6 @@ class DcSensorValues(AmcsModeSensorValues):
             topic_override="dummy-pms/ugrid2-active",
         ),
     ]
-    dc_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.dc_mode
 
 
 class DcControlValues(ThrsValues):
@@ -423,7 +416,7 @@ class DcSimulationInputs(ThrsValues):
     dc_brightloop_aft4: simulation.Converter
     dc_seawater_supply: simulation.Boundary
     dc_dhw_supply: simulation.Boundary
-    dc_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class DcSimulationOutputs(ThrsValues):
