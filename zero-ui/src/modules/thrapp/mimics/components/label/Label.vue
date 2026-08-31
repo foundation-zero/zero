@@ -10,7 +10,6 @@ const props = withDefaults(
     } & LabelProps
   >(),
   {
-    offsetY: -7.5,
     x: 0,
     width: 140,
     height: 60,
