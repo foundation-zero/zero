@@ -20,5 +20,6 @@ regenerate-spec:
     uv run python -m zero_atpx_nmea asyncapi > asyncapi.json
 
 # Generate AsyncAPI HTML docs from the committed spec
+# Pinned @asyncapi/cli@6.0.2 + @asyncapi/html-template@3.5.6 to match CI.
 docs:
-    which asyncapi >/dev/null 2>&1 && asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template -o docs/ --force-write 2>&1 | grep -v "^WARNING" || npx --yes @asyncapi/cli generate fromTemplate asyncapi.json @asyncapi/html-template -o docs/ --force-write 2>&1 | grep -v "^WARNING"
+    which asyncapi >/dev/null 2>&1 && asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o docs/ --force-write 2>&1 | grep -v "^WARNING" || npx --yes @asyncapi/cli@6.0.2 generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o docs/ --force-write 2>&1 | grep -v "^WARNING"

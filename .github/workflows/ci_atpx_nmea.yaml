@@ -56,7 +56,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm install -g @asyncapi/cli
+      - run: npm install -g @asyncapi/cli@6.0.2
         working-directory: zero-atpx-nmea
       - name: AsyncAPI CLI validation
         run: asyncapi validate asyncapi.json
@@ -64,7 +64,7 @@ jobs:
       - name: AsyncAPI HTML docs drift check
         run: |
           rm -rf /tmp/docs/
-          SUPPRESS_NO_CONFIG_WARNING=true asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template -o /tmp/docs/ --force-write
+          SUPPRESS_NO_CONFIG_WARNING=true asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o /tmp/docs/ --force-write
           diff -r docs/ /tmp/docs/ || \
             (echo "ERROR: docs/ are out of date. Run 'just docs' to regenerate them." && exit 1)
         working-directory: zero-atpx-nmea
