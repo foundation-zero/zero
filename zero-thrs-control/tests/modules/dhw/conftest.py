@@ -60,7 +60,7 @@ def simulation_inputs():
         ),
         dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
-        dhw_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

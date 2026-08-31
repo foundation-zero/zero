@@ -1,6 +1,6 @@
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { useAutomationStore } from "@/modules/thrsim/stores/automation";
-import { AmcsControlMode, AmcsControlModeSensor } from "@/modules/thrsim/types";
+import { AmcsControlMode } from "@/modules/thrsim/types";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export const useAutomaticMode = () => {
@@ -30,8 +30,6 @@ export const useAdvisoryEnabled = () => {
     const module = control.value.modules[key as keyof typeof control.value.modules];
     if (!module?.sensorValues) return null;
 
-    const sensorValues = module.sensorValues as Record<string, AmcsControlModeSensor>;
-
-    return sensorValues[`${key}Mode`]?.mode.value === AmcsControlMode.External;
+    return module.sensorValues["mode"]?.mode.value === AmcsControlMode.External;
   });
 };

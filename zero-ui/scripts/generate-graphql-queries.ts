@@ -52,7 +52,7 @@ interface Definitions {
 }
 
 interface ComponentFieldMappings {
-  [componentType: string]: string[];
+  [componentType: string]: string[] | null;
 }
 
 interface AllFieldMappings {

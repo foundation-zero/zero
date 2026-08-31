@@ -16,7 +16,7 @@ from thrs.simulation.models.fmu_paths import dc_path
 
 
 @fixture(
-    params=list(simulator_input_field_setters(DcSimulationInputs, ignore=["dc_mode"]))
+    params=list(simulator_input_field_setters(DcSimulationInputs, ignore=["mode"]))
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
     request.param(simulation_inputs, -9e7)

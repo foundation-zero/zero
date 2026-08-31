@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from datetime import UTC, datetime
+from typing import Annotated
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
@@ -7,7 +8,7 @@ from thrs.classes.machine_state_logger import (
     StateLogger,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.sensor_values import AmcsModeSensorValues
@@ -17,9 +18,9 @@ from thrs.orchestration.simulation import Simulation, SimulationResult
 class SimpleInOut(AmcsModeSensorValues):
     go_with_the: FlowSensor
 
-    @property
-    def mode(self) -> AmcsControlMode:
-        return AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = (
+        AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
+    )
 
 
 class SimpleSimulationInputs(ThrsValues):
