@@ -4,7 +4,7 @@ from tests.orchestration.simples import SimpleControl, SimpleInOut, SimpleParame
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
-    SwitchingControl,
+    Switching,
     SwitchingControlMode,
 )
 
@@ -14,7 +14,7 @@ def test_switching_control():
     manual_control_values.go_with_the.flow.value = 42.0
     manual_control = ManualControl(manual_control_values)
     automated_control = SimpleControl(SimpleParameters.zero(), datetime.now)
-    switching_control = SwitchingControl(manual_control, automated_control)
+    switching_control = Switching(manual_control, automated_control)
 
     control_values, controller_state = switching_control.initial()
 

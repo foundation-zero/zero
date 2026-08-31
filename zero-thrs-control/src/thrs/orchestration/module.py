@@ -8,7 +8,7 @@ from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
-    SwitchingControl,
+    Switching,
     SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
@@ -67,7 +67,7 @@ class Module[
         channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
     ):
         self._name = name
-        self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
+        self._control = Switching(ManualControl(control.initial()[0]), control)
         self._alarms = alarms
         self._channels = channels
         self._active_alarms: dict[str, Alarm] = {}
@@ -97,8 +97,9 @@ class Module[
 
     def execute_control(self, sensor_values: S) -> tuple[C, CS]:
         """Execute a control tick, send control values and evaluate alarms."""
-
-        control_values, controller_state = self._control.control(sensor_values)
+        control_values, controller_state = self._control.control(
+            sensor_values, self._channels.get_actuated_control_values()
+        )
 
         self._check_alarms(sensor_values, control_values)
 

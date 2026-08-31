@@ -45,4 +45,8 @@ def test_drives_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(DrivesSensorValues, DrivesControlValues)
+    compare_yard_tags(
+        DrivesSensorValues,
+        DrivesControlValues,
+        exclude={"drives_mode"},
+    )
