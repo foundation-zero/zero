@@ -486,10 +486,13 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "dataset": "dev",
-          "editorMode": "code",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
-          "format": 0,
+          "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -502,27 +505,9 @@
             }
           },
           "pluginVersion": "2.1.4",
-          "queryType": "timeseries",
-          "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp          AS time,\r\n\t\tdevice,\r\n\t\ttemperature__value AS temperature\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\ttemperature__value\r\n\t\tFROM public.marpower__thrs__flows\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "queryType": "table",
+          "rawSql": "  SELECT\r\n\t\tthrs_data.timestamp          AS time,\r\n    metadata.device              AS device,\r\n\t\tthrs_data.temperature__value AS temperature\r\n\tFROM public.marpower__thrs__flows AS thrs_data\r\n  JOIN (\r\n\t\tSELECT\r\n      mqtt_topic,\r\n\t\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n      concat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\t\tFROM public.marpower__io_metadata\r\n    WHERE mqtt_json_path = '$.Temperature'\r\n\t) AS metadata\r\n  ON thrs_data.topic = metadata.mqtt_topic\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND metadata.\"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A"
         }
       ],
       "title": "Temperature",
@@ -652,10 +637,13 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "dataset": "dev",
-          "editorMode": "code",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
-          "format": 0,
+          "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -668,27 +656,9 @@
             }
           },
           "pluginVersion": "2.1.4",
-          "queryType": "timeseries",
-          "rawQuery": true,
-          "rawSql": "  SELECT\r\n\t\ttimestamp       AS time,\r\n\t\tdevice,\r\n\t\tquantity__value AS quantity\r\n\tFROM (\r\n\t\tSELECT\r\n\t\t\ttimestamp,\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1') AS \"section\",\r\n\t\t\tregexp_replace(topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1') AS device,\r\n\t\t\ttopic,\r\n\t\t\tquantity__value\r\n\t\tFROM public.marpower__thrs__flows\r\n\t\tWHERE $__timeFilter(timestamp)\r\n\t)\r\n\tWHERE \"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "queryType": "table",
+          "rawSql": "  SELECT\r\n\t\tthrs_data.timestamp       AS time,\r\n    metadata.device           AS device,\r\n\t\tthrs_data.quantity__value AS quantity\r\n\tFROM public.marpower__thrs__flows AS thrs_data\r\n  JOIN (\r\n\t\tSELECT\r\n      mqtt_topic,\r\n\t\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n      concat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\t\tFROM public.marpower__io_metadata\r\n    WHERE mqtt_json_path = '$.Temperature'\r\n\t) AS metadata\r\n  ON thrs_data.topic = metadata.mqtt_topic\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND metadata.\"section\" IN (${section:sqlstring})\r\n\tORDER BY device, time ASC",
+          "refId": "A"
         }
       ],
       "title": "Quantity",
