@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zero-atpx-nmea-chart
+description: A+T (ATPX) NMEA 0183 to JSON MQTT bridge service.
+type: application
+version: 0.0.0
+appVersion: 0.0.0

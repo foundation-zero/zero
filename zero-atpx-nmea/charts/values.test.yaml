@@ -1,0 +1,16 @@
+# run docker build . -t zero-atpx-nmea:latest
+# Push image to kind (through ui)
+image:
+  repository: localhost/zero-atpx-nmea
+  tag: latest
+
+# Point both brokers at a locally reachable MQTT broker.
+atpxMqtt:
+  host: "host.docker.internal"
+  port: 1883
+
+mqtt:
+  host: "host.docker.internal"
+  port: 1883
+  username: ""
+  existingSecret: ""
