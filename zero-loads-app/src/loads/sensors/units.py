@@ -98,6 +98,14 @@ MaxLoad: TypeAlias = Annotated[
     float,
     VariableMeta(unit="tonne", type="alarm_threshold"),
 ]
+MaxPosition: TypeAlias = Annotated[
+    float,
+    VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="alarm_threshold"),
+]
+MinPosition: TypeAlias = Annotated[
+    float,
+    VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="alarm_threshold"),
+]
 Alarm: TypeAlias = Annotated[bool, VariableMeta(type="alarm")]
 Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool", type="actual")]
 Speed: TypeAlias = Annotated[

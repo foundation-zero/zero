@@ -258,7 +258,7 @@ export const STORM_JIB_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const STORM_JIB_LOCKS_GROUP = group("Locks", PositionId.ForeInner, "mast-lock-stormjib");
+export const STORM_JIB_LOCKS_GROUP = group("Locks", PositionId.ForeInner, "mast-lock-storm-jib");
 
 export const OVERVIEW = dashboard(
   DashboardType.Static,

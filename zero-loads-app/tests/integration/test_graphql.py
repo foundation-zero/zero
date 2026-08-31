@@ -500,7 +500,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "alarms": [
                 {
                     "id": "main-checkstay-deflector-load-alarm",
-                    "name": "Checkstay Deflector Load Alarm",
+                    "name": "Main Deflector Load Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 5.0,

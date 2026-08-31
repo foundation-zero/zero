@@ -23,6 +23,12 @@ from .units import (
     MaxLoad as BaseMaxLoad,
 )
 from .units import (
+    MaxPosition as BaseMaxPosition,
+)
+from .units import (
+    MinPosition as BaseMinPosition,
+)
+from .units import (
     Position as BasePosition,
 )
 from .units import (
@@ -96,6 +102,28 @@ MinPositionAlarm: TypeAlias = Annotated[
     VariableMeta(
         name="min-position-alarm", type="alarm", alarm_for="relative_position"
     ),
+]
+
+MaxPosition: TypeAlias = Annotated[
+    BaseMaxPosition,
+    Field(default=None, validation_alias="st_position/i_MaxPosition"),
+    BeforeValidator(per_mille_to_ratio),
+    ScalingMeta(
+        conversion=per_mille_to_ratio,
+        inverse_conversion=ratio_to_per_mille,
+    ),
+    VariableMeta(threshold_for="max_position_alarm"),
+]
+
+MinPosition: TypeAlias = Annotated[
+    BaseMinPosition,
+    Field(default=None, validation_alias="st_position/i_MinPosition"),
+    BeforeValidator(per_mille_to_ratio),
+    ScalingMeta(
+        conversion=per_mille_to_ratio,
+        inverse_conversion=ratio_to_per_mille,
+    ),
+    VariableMeta(threshold_for="min_position_alarm"),
 ]
 
 
@@ -175,6 +203,8 @@ class BladeAdjuster(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class BladeCunningham(LoadsModel, ABC):
@@ -256,6 +286,8 @@ class BladeTweakerPs(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class BladeTweakerSb(LoadsModel, ABC):
@@ -283,6 +315,8 @@ class BladeTweakerSb(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class CodeZeroTack(LoadsModel, ABC):
@@ -366,15 +400,15 @@ class Mast(LoadsModel, ABC):
         Field(validation_alias="ix_TrysailOvrhst"),
         VariableMeta(name="overhoist_trysail", display_name="Trysail"),
     ]
-    lock_stormjib: Annotated[
+    lock_storm_jib: Annotated[
         Lock,
         Field(validation_alias="ix_StormJibLck"),
-        VariableMeta(name="lock_stormjib", display_name="Storm Jib"),
+        VariableMeta(name="lock_storm_jib", display_name="Storm Jib"),
     ]
-    overhoist_stormjib: Annotated[
+    overhoist_storm_jib: Annotated[
         Lock,
         Field(validation_alias="ix_StormJibOvrhst"),
-        VariableMeta(name="overhoist_stormjib", display_name="Storm Jib"),
+        VariableMeta(name="overhoist_storm_jib", display_name="Storm Jib"),
     ]
 
     lock_mizzen_headsail: Annotated[
@@ -485,25 +519,25 @@ class Mast(LoadsModel, ABC):
         VariableMeta(name="lock_mizzen_boom_2", display_name="Boom Reef 2"),
     ]
 
-    stormjib_load: Annotated[
+    storm_jib_load: Annotated[
         Load,
         Field(validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(name="stormjib_load", display_name="Tack"),
+        VariableMeta(name="storm_jib_load", display_name="Tack"),
     ]
-    stormjib_load_failure: Annotated[
+    storm_jib_load_failure: Annotated[
         LoadFailure,
         Field(validation_alias="StormSailFurlerLoad/x_Failure"),
-        VariableMeta(display_name="Tack Load Failure", alarm_for="stormjib_load"),
+        VariableMeta(display_name="Tack Load Failure", alarm_for="storm_jib_load"),
     ]
-    stormjib_load_alarm: Annotated[
+    storm_jib_load_alarm: Annotated[
         LoadAlarm,
         Field(validation_alias="StormSailFurlerLoad/x_MaxLimitReached"),
-        VariableMeta(alarm_for="stormjib_load"),
+        VariableMeta(alarm_for="storm_jib_load"),
     ]
-    stormjib_max_load: Annotated[
+    storm_jib_max_load: Annotated[
         MaxLoad,
         Field(validation_alias="StormSailFurlerLoad/i_MaxLoadSetting"),
-        VariableMeta(threshold_for="stormjib_load_alarm"),
+        VariableMeta(threshold_for="storm_jib_load_alarm"),
     ]
 
 
@@ -520,11 +554,23 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
-        VariableMeta(alarm_for="deflector_relative_position"),
+        VariableMeta(
+            name="deflector-max-position-alarm", alarm_for="deflector_relative_position"
+        ),
     ]
     deflector_min_position_alarm: Annotated[
         MinPositionAlarm,
-        VariableMeta(alarm_for="deflector_relative_position"),
+        VariableMeta(
+            name="deflector-min-position-alarm", alarm_for="deflector_relative_position"
+        ),
+    ]
+    deflector_max_position: Annotated[
+        MaxPosition,
+        VariableMeta(threshold_for="deflector_max_position_alarm"),
+    ]
+    deflector_min_position: Annotated[
+        MinPosition,
+        VariableMeta(threshold_for="deflector_min_position_alarm"),
     ]
     deflector_load: Annotated[
         Load,
@@ -535,7 +581,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_Load/x_Failure"),
         VariableMeta(
             name="deflector-load-failure",
-            display_name="Checkstay Deflector Load Failure",
+            display_name="Main Deflector Load Failure",
             alarm_for="deflector_load",
         ),
     ]
@@ -544,7 +590,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_Load/x_MaxLimitReached"),
         VariableMeta(
             name="deflector-load-alarm",
-            display_name="Checkstay Deflector Load Alarm",
+            display_name="Main Deflector Load Alarm",
             alarm_for="deflector_load",
         ),
     ]
@@ -552,7 +598,7 @@ class MainCheckstay(LoadsModel, ABC):
         MaxLoad,
         VariableMeta(
             name="deflector-max-load",
-            display_name="Checkstay Deflector Max Load",
+            display_name="Main Deflector Max Load",
             threshold_for="deflector_load_alarm",
         ),
     ]
@@ -572,7 +618,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/x_Failure"),
         VariableMeta(
             name="sb-load-failure",
-            display_name="Checkstay SB Load Failure",
+            display_name="Main Checkstay SB Load Failure",
             alarm_for="sb_load",
         ),
     ]
@@ -580,7 +626,7 @@ class MainCheckstay(LoadsModel, ABC):
         MaxLoad,
         VariableMeta(
             name="max-ps-load",
-            display_name="Checkstay PT Max Load",
+            display_name="Main Checkstay PT Max Load",
             threshold_for="load_ps_alarm",
         ),
     ]
@@ -589,7 +635,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/x_MaxLimitReached"),
         VariableMeta(
             name="ps-load-alarm",
-            display_name="Checkstay PT Load Alarm",
+            display_name="Main Checkstay PT Load Alarm",
             alarm_for="ps_load",
         ),
     ]
@@ -598,7 +644,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
-            display_name="Checkstay SB",
+            display_name="Main Checkstay SB",
             applies_to_tack="starboard",
             variable_key="main-checkstay-load",
         ),
@@ -607,7 +653,7 @@ class MainCheckstay(LoadsModel, ABC):
         MaxLoad,
         VariableMeta(
             name="max-sb-load",
-            display_name="Checkstay SB Max Load",
+            display_name="Main Checkstay SB Max Load",
             threshold_for="load_sb_alarm",
         ),
     ]
@@ -616,7 +662,7 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/x_MaxLimitReached"),
         VariableMeta(
             name="sb-load-alarm",
-            display_name="Checkstay SB Load Alarm",
+            display_name="Main Checkstay SB Load Alarm",
             alarm_for="sb_load",
         ),
     ]
@@ -641,6 +687,8 @@ class MainCunningham(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MainHalyard(LoadsModel, ABC):
@@ -668,6 +716,8 @@ class MainOuthaul(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MainPreventer(LoadsModel, ABC):
@@ -689,6 +739,8 @@ class MainPreventer(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MainRunnerPs(LoadsModel, ABC):
@@ -757,6 +809,8 @@ class MainVang(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MainTraveller(LoadsModel, ABC):
@@ -797,7 +851,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_position/x_MaxLimitReached"),
         VariableMeta(
             name="deflector-max-position-alarm",
-            display_name="Deflector Max Position Alarm",
+            display_name="Mizzen Checkstay Deflector Max Position Alarm",
             alarm_for="deflector_relative_position",
         ),
     ]
@@ -806,9 +860,17 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_position/x_MinLimitReached"),
         VariableMeta(
             name="deflector-min-position-alarm",
-            display_name="Deflector Min Position Alarm",
+            display_name="Mizzen Checkstay Deflector Min Position Alarm",
             alarm_for="deflector_relative_position",
         ),
+    ]
+    deflector_max_position: Annotated[
+        MaxPosition,
+        VariableMeta(threshold_for="deflector_max_position_alarm"),
+    ]
+    deflector_min_position: Annotated[
+        MinPosition,
+        VariableMeta(threshold_for="deflector_min_position_alarm"),
     ]
 
     deflector_load: Annotated[
@@ -820,7 +882,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_Load/x_Failure"),
         VariableMeta(
             name="deflector-load-failure",
-            display_name="Deflector Load Failure",
+            display_name="Mizzen Deflector Load Failure",
             alarm_for="deflector_load",
         ),
     ]
@@ -829,7 +891,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_Load/x_MaxLimitReached"),
         VariableMeta(
             name="deflector-load-alarm",
-            display_name="Deflector Load Alarm",
+            display_name="Mizzen Deflector Load Alarm",
             alarm_for="deflector_load",
         ),
     ]
@@ -838,8 +900,8 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_Load/i_MaxLoadSetting"),
         VariableMeta(
             name="deflector-max-load",
-            display_name="Deflector Max Load",
-            threshold_for="load_alarm",
+            display_name="Mizzen Deflector Max Load",
+            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -848,7 +910,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/i_Load"),
         VariableMeta(
             name="ps-load",
-            display_name="Checkstay PT",
+            display_name="Mizzen Checkstay PT",
             applies_to_tack="port",
             variable_key="mizzen-checkstay-load",
         ),
@@ -858,7 +920,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/x_Failure"),
         VariableMeta(
             name="sb-load-failure",
-            display_name="Checkstay SB Load Failure",
+            display_name="Mizzen Checkstay SB Load Failure",
             alarm_for="sb_load",
         ),
     ]
@@ -867,7 +929,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/i_MaxLoadSetting"),
         VariableMeta(
             name="max-ps-load",
-            display_name="Checkstay PT Max Load",
+            display_name="Mizzen Checkstay PT Max Load",
             threshold_for="load_ps_alarm",
         ),
     ]
@@ -876,7 +938,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadPs/x_MaxLimitReached"),
         VariableMeta(
             name="ps-load-alarm",
-            display_name="Checkstay PT Load Alarm",
+            display_name="Mizzen Checkstay PT Load Alarm",
             alarm_for="ps_load",
         ),
     ]
@@ -885,7 +947,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/i_Load"),
         VariableMeta(
             name="sb-load",
-            display_name="Checkstay SB",
+            display_name="Mizzen Checkstay SB",
             applies_to_tack="starboard",
             variable_key="mizzen-checkstay-load",
         ),
@@ -895,7 +957,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/i_MaxLoadSetting"),
         VariableMeta(
             name="max-sb-load",
-            display_name="Checkstay SB Max Load",
+            display_name="Mizzen Checkstay SB Max Load",
             threshold_for="load_sb_alarm",
         ),
     ]
@@ -904,7 +966,7 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="st_LoadSb/x_MaxLimitReached"),
         VariableMeta(
             name="sb-load-alarm",
-            display_name="Checkstay SB Load Alarm",
+            display_name="Mizzen Checkstay SB Load Alarm",
             alarm_for="sb_load",
         ),
     ]
@@ -927,6 +989,8 @@ class MizzenCunningham(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MizzenHalyard(LoadsModel, ABC):
@@ -956,6 +1020,8 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MizzenOuthaul(LoadsModel, ABC):
@@ -975,6 +1041,8 @@ class MizzenOuthaul(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MizzenPreventer(LoadsModel, ABC):
@@ -996,6 +1064,8 @@ class MizzenPreventer(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class MizzenRunnerPs(LoadsModel, ABC):
@@ -1062,6 +1132,8 @@ class MizzenVang(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
 
 
 class StaysailSheetFeederPs(LoadsModel, ABC):
@@ -1113,3 +1185,5 @@ class StaysailStayAdjuster(LoadsModel, ABC):
     ]
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
+    max_position: MaxPosition
+    min_position: MinPosition
