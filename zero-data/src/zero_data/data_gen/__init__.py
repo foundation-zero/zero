@@ -24,7 +24,7 @@ __all__ = [
     "generate_data",
 ]
 
-_INTERVAL = 10
+_PUBLISH_INTERVAL_SECONDS = 10
 
 # Builds a runnable generator from a source's io_list. Each source maps to one
 # builder so generator selection lives in a single dispatch, not a special case.
@@ -32,7 +32,9 @@ GeneratorBuilder = Callable[[float, MQTTConfig, IOResult], BaseGenerator]
 
 
 def _topic_generator(generator_class: type[Generator]) -> GeneratorBuilder:
-    def build(interval: float, mqtt_config: MQTTConfig, io_result: IOResult):
+    def build(
+        interval: float, mqtt_config: MQTTConfig, io_result: IOResult
+    ) -> BaseGenerator:
         return generator_class(interval, mqtt_config, io_result.topics)
 
     return build
@@ -65,7 +67,7 @@ async def _run_all_generators(
         # NMEA is a fixed corpus, not io_list-driven, so it's started here
         # rather than dispatched via `_GENERATORS`.
         logger.info("Starting atpx_nmea generator")
-        tg.create_task(AtpxNmeaGenerator(_INTERVAL, mqtt_config).run())
+        tg.create_task(AtpxNmeaGenerator(_PUBLISH_INTERVAL_SECONDS, mqtt_config).run())
 
         for source, file_names in io_lists:
             if source in excluded_set:
@@ -82,7 +84,9 @@ async def _run_all_generators(
 
             io_result = read_io_list(paths, source, cache_dir=cache_dir)
             logger.info(f"Starting {source} generator")
-            tg.create_task(build(_INTERVAL, mqtt_config, io_result).run())
+            tg.create_task(
+                build(_PUBLISH_INTERVAL_SECONDS, mqtt_config, io_result).run()
+            )
 
 
 def generate_data(
