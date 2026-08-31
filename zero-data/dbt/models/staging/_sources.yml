@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      Raw telemetry tables in Greptime's `public` database. Vector infers the table name
+      from the MQTT payload and Greptime infers the columns and types from the flattened,
+      snakecased JSON — so these schemas are dynamically generated, not declared. Their
+      shapes are pinned locally by the committed snapshot under `snapshot/`.
+    database: greptime
+    schema: public
+    tables:
+      - name: marpower__150000_propulsion__pcs_fwd
+        description: "Forward propulsion control system (PCS) telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: device_state__value
+            description: "Device state measure (value field of the inferred clump)."
+          - name: drive_thermal_state__value
+            description: "Drive thermal state measure."
+          - name: command_register__value
+            description: "Command register measure."
+          - name: azimuth_setpoint_not_reached__value
+            description: "Azimuth setpoint-not-reached flag."
