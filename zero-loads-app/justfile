@@ -1,6 +1,9 @@
 export_seed:
     uv run loads export-seed
 
+check_seed:
+    uv run loads check-seed
+
 test:
     uv run pytest
 

@@ -1,4 +1,6 @@
 import logging
+import sys
+import tempfile
 from pathlib import Path
 
 import requests
@@ -110,7 +112,7 @@ class SensorsStubCmd(GeneratorSettings):
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
 
 
-class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
+class SeedPaths(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -127,6 +129,8 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
         "../hasura/seeds/zero/loads_case_mappings.sql"
     )
 
+
+class ExportSeedCmd(SeedPaths):
     async def cli_cmd(self) -> None:
         from sailpack.export_load_case_mapping_seed import (
             export_load_case_mapping_seed_sql,
@@ -166,6 +170,49 @@ class ExportSeedCmd(BaseSettings, cli_kebab_case=True):
         )
 
 
+class CheckSeedCmd(SeedPaths):
+    async def cli_cmd(self) -> None:
+        from sailpack.export_load_case_mapping_seed import (
+            export_load_case_mapping_seed_sql,
+        )
+        from sailpack.export_reference_values_seed import (
+            export_reference_values_seed_sql,
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            generated_reference_values = temp_path / self.reference_values_output.name
+            generated_case_mappings = temp_path / self.load_case_mapping_output.name
+
+            export_reference_values_seed_sql(
+                input_source=self.input,
+                mapping_path=self.sailpack_mapping,
+                output_sql=generated_reference_values,
+            )
+            export_load_case_mapping_seed_sql(
+                input_source=self.input, output_sql=generated_case_mappings
+            )
+
+            stale = [
+                committed
+                for committed, generated in (
+                    (self.reference_values_output, generated_reference_values),
+                    (self.load_case_mapping_output, generated_case_mappings),
+                )
+                if committed.read_bytes() != generated.read_bytes()
+            ]
+
+        if stale:
+            for path in stale:
+                logger.error(f"Seed file is out of date: {path}")
+            logger.error(
+                "Run 'uv run loads export-seed' from zero-loads-app to regenerate the seed files."
+            )
+            sys.exit(1)
+
+        logger.info("Seed files are consistent with the sailpack export.")
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -183,6 +230,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
     sensors_stub: CliSubCommand[SensorsStubCmd]
     export_seed: CliSubCommand[ExportSeedCmd]
+    check_seed: CliSubCommand[CheckSeedCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

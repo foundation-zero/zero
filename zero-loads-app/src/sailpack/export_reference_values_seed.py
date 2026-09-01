@@ -38,6 +38,13 @@ def build_reference_records(
 def render_sql(
     load_case_records: list[dict[str, Any]], reference_records: list[dict[str, Any]]
 ) -> str:
+    # Sort for byte-deterministic output; the seed check compares exports byte-for-byte.
+    load_case_records = sorted(load_case_records, key=lambda record: record["id"])
+    reference_records = sorted(
+        reference_records,
+        key=lambda record: (record["load_case_id"], record["variable_key"]),
+    )
+
     load_cases_json = escape_dollar_quoted_json(json.dumps(load_case_records, indent=2))
     reference_json = escape_dollar_quoted_json(json.dumps(reference_records, indent=2))
 
