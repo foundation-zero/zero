@@ -81,7 +81,7 @@
           "type": "boolean",
           "description": "Deploy an in-cluster stub Modbus server per panel and point the bridge at it."
         },
-        "defaultValue": {
+        "defaultRegisterValue": {
           "type": "number",
           "description": "Float value the stub serves for float32 registers."
         },

@@ -37,11 +37,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MODBUS_HOST
-              value: {{ .Values.stub.host | quote }}
+              value: "0.0.0.0"
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: DEFAULT_VALUE
-              value: {{ .Values.stub.defaultValue | quote }}
+            - name: DEFAULT_REGISTER_VALUE
+              value: {{ .Values.stub.defaultRegisterValue | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
           resources:

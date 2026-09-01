@@ -55,7 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Stub deployment/service name.
 */}}
 {{- define "zero-power-tags.stub" -}}
-    {{- printf "%s-stub" (include "zero-power-tags.name" .) -}}
+{{- printf "%s-stub" (include "zero-power-tags.name" .) -}}
 {{- end -}}
 
 {{/*

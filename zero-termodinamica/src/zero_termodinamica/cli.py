@@ -32,10 +32,10 @@ class RunCmd(ModbusSettings, MqttSettings):
 
 
 class StubCmd(ModbusSettings):
-    default_value: int = 20
+    default_register_value: int = 20
 
     def cli_cmd(self) -> None:
-        stub = Stub.from_settings(self, read_modbus_topics(), self.default_value)
+        stub = Stub.from_settings(self, read_modbus_topics(), self.default_register_value)
         stub.run()
 
 

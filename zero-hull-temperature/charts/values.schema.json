@@ -62,10 +62,6 @@
         "seconds": {
           "type": "integer",
           "description": "Seconds to run the stub before exiting; -1 runs forever."
-        },
-        "host": {
-          "type": "string",
-          "description": "Address the stub Modbus server binds."
         }
       }
     },

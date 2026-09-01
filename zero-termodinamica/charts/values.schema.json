@@ -64,13 +64,9 @@
           "type": "boolean",
           "description": "Deploy an in-cluster stub Modbus server and point the bridge at it."
         },
-        "defaultValue": {
+        "defaultRegisterValue": {
           "type": "number",
           "description": "Value the stub serves for registers."
-        },
-        "host": {
-          "type": "string",
-          "description": "Address the stub Modbus server binds."
         }
       }
     },

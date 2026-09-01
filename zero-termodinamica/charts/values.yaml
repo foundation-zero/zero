@@ -22,10 +22,9 @@ modbus:
 
 stub:
   enabled: false
-  defaultValue: 20
+  defaultRegisterValue: 20
   # When enabled the bridge dials the stub service on `modbus.port` instead of
   # the external gateway; the stub binds `0.0.0.0` on that same port.
-  host: "0.0.0.0"
 
 resources: {}
 

@@ -55,7 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Stub deployment/service name.
 */}}
 {{- define "zero-hull-temperature.stub" -}}
-  {{- printf "%s-stub" (include "zero-hull-temperature.name" .) -}}
+{{- printf "%s-stub" (include "zero-hull-temperature.name" .) -}}
 {{- end -}}
 
 {{/*

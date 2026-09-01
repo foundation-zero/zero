@@ -55,7 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Stub deployment/service name.
 */}}
 {{- define "zero-termodinamica.stub" -}}
-    {{- printf "%s-stub" (include "zero-termodinamica.name" .) -}}
+{{- printf "%s-stub" (include "zero-termodinamica.name" .) -}}
 {{- end -}}
 
 {{/*

@@ -38,8 +38,8 @@ spec:
           env:
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: DEFAULT_VALUE
-              value: {{ .Values.stub.defaultValue | quote }}
+            - name: DEFAULT_REGISTER_VALUE
+              value: {{ .Values.stub.defaultRegisterValue | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
             {{- $base := int .Values.modbus.port }}

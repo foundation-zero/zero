@@ -29,7 +29,7 @@ modbus:
 
 stub:
   enabled: false
-  defaultValue: 0.0
+  defaultRegisterValue: 0.0
   # One panel per gateway, ordered as in modbus_bridges.json. When enabled the
   # stub serves a dedicated Modbus server per panel on `modbus.port + index`,
   # and the bridge pod dials those panels through the stub service instead of

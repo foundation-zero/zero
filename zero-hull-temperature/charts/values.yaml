@@ -23,7 +23,6 @@ stub:
   # When enabled the bridge dials the stub service on `modbus.port` instead of
   # the external gateway. The stub binds `0.0.0.0` and only serves Modbus
   # after receiving the activate command on `hullTemperature.activateTopic`.
-  host: "0.0.0.0"
 
 hullTemperature:
   activateTopic: marpower/450000-amcs/Command

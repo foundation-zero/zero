@@ -30,7 +30,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: hull-temperature
-          command: ["python", "-m", "zero_hull_temperature", "run"]
+          args: ["run"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

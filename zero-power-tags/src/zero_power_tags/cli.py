@@ -181,14 +181,14 @@ class StubCmd(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     modbus_port: int = 502
-    default_value: float = 0.0
+    default_register_value: float = 0.0
 
     def cli_cmd(self) -> None:
         specs = read_modbus_bridge_specs()
         stub = Stub.from_topic_groups(
             local_topic_groups(PowerTagsSettings(), specs, self.modbus_port),
             default_value=0,
-            float_default=self.default_value,
+            float_default=self.default_register_value,
         )
         for server in stub.servers:
             logger.info("Stub serving on %s:%d", server.host, server.port)
@@ -199,7 +199,7 @@ class TuiCmd(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     modbus_port: int = 502
-    default_value: float = 0.0
+    default_register_value: float = 0.0
 
     def cli_cmd(self) -> None:
         from zero_modbus_bridge.tui import (
@@ -210,7 +210,7 @@ class TuiCmd(BaseSettings):
         run_tui(
             local_topic_groups(PowerTagsSettings(), specs, self.modbus_port),
             default_value=0,
-            float_default=self.default_value,
+            float_default=self.default_register_value,
         )
 
 
