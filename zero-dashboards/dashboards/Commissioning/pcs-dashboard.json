@@ -7694,7 +7694,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 12,
         "x": 0,
         "y": 26
@@ -7719,88 +7719,6 @@
             "vertical": "top"
           },
           "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "hydr_pump_freq_drive_enable",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "start_command",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Hydraulic pump frequency drive enabled",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "start_command label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 322
-              },
-              "type": "text"
-            },
             {
               "background": {
                 "color": {
@@ -7838,7 +7756,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 40,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -7876,8 +7794,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 40,
+                "top": 10,
                 "width": 322
               },
               "type": "text"
@@ -7918,8 +7835,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
-                "rotation": 0,
-                "top": 70,
+                "top": 40,
                 "width": 25
               },
               "type": "ellipse"
@@ -7957,8 +7873,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 70,
+                "top": 40,
                 "width": 322
               },
               "type": "text"
@@ -8228,12 +8143,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 12,
         "x": 12,
         "y": 26
       },
-      "id": 32,
+      "id": 36,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -8253,88 +8168,6 @@
             "vertical": "top"
           },
           "elements": [
-            {
-              "background": {
-                "color": {
-                  "field": "hydr_pump_freq_drive_enable",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "start_command",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Hydraulic pump frequency drive enabled",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "start_command label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 10,
-                "width": 322
-              },
-              "type": "text"
-            },
             {
               "background": {
                 "color": {
@@ -8372,7 +8205,7 @@
                 "height": 25,
                 "left": 15,
                 "rotation": 0,
-                "top": 40,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -8410,8 +8243,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 40,
+                "top": 10,
                 "width": 322
               },
               "type": "text"
@@ -8452,8 +8284,7 @@
               "placement": {
                 "height": 25,
                 "left": 15,
-                "rotation": 0,
-                "top": 70,
+                "top": 40,
                 "width": 25
               },
               "type": "ellipse"
@@ -8491,8 +8322,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
-                "top": 70,
+                "top": 40,
                 "width": 322
               },
               "type": "text"
@@ -8754,7 +8584,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 30
+        "y": 29
       },
       "id": 2,
       "options": {
@@ -9115,7 +8945,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 30
+        "y": 29
       },
       "id": 33,
       "options": {
@@ -9476,7 +9306,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 30
+        "y": 29
       },
       "id": 34,
       "options": {
@@ -9837,7 +9667,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 30
+        "y": 29
       },
       "id": 35,
       "options": {
@@ -10176,7 +10006,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 33
       },
       "id": 24,
       "panels": [],
@@ -10207,10 +10037,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 34
       },
       "id": 17,
       "options": {
@@ -10293,7 +10123,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Motor heating - On",
+                  "fixed": "Motor heating on",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -10309,6 +10139,168 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
+                "width": 401
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "flush_valve",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 3",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Flush valve",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 4",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 40,
+                "width": 401
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_enable",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 5",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 70,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive enable",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 6",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 70,
                 "width": 401
               },
               "type": "text"
@@ -10357,7 +10349,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  aft_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  heatingonoff__value                AS heating_on_off,\r\n  flush_valve__value                 AS flush_valve,\r\n  hydr_pump_freq_drive_enable__value AS hydr_pump_freq_drive_enable\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -10378,7 +10370,7 @@
           }
         }
       ],
-      "title": "Control signals - AFT",
+      "title": "AFT",
       "type": "canvas"
     },
     {
@@ -10405,12 +10397,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 34
       },
-      "id": 18,
+      "id": 37,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -10491,7 +10483,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Motor heating - On",
+                  "fixed": "Motor heating on",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -10507,6 +10499,168 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
+                "width": 401
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "flush_valve",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 3",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Flush valve",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 4",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 40,
+                "width": 401
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_enable",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 5",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 70,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive enable",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 6",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 70,
                 "width": 401
               },
               "type": "text"
@@ -10555,7 +10709,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  fwd_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  heatingonoff__value                AS heating_on_off,\r\n  flush_valve__value                 AS flush_valve,\r\n  hydr_pump_freq_drive_enable__value AS hydr_pump_freq_drive_enable\r\nFROM public.marpower__150000_propulsion__pcs_fwd\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -10576,7 +10730,7 @@
           }
         }
       ],
-      "title": "Control signals - FWD",
+      "title": "FWD",
       "type": "canvas"
     },
     {
