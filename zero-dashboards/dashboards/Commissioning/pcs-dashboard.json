@@ -7669,6 +7669,1074 @@
             "fixedColor": "green",
             "mode": "continuous-greens"
           },
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 31,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_enable",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "start_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive enabled",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "start_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 10,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_rdy",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "stop_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive ready",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "stop_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 40,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_tank_level_low",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "reset_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 70,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic tank level low",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "reset_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 70,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "shaft_brake_actuator_engage",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 13",
+              "placement": {
+                "height": 25,
+                "left": 400,
+                "rotation": 0,
+                "top": 10,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Shaft brak actuator engaged",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 14",
+              "placement": {
+                "height": 26,
+                "left": 435,
+                "rotation": 0,
+                "top": 10,
+                "width": 235
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "shaft_brake_actuator_disengage",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 15",
+              "placement": {
+                "height": 25,
+                "left": 400,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Shaft brak actuator disengaged",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 16",
+              "placement": {
+                "height": 26,
+                "left": 435,
+                "rotation": 0,
+                "top": 40,
+                "width": 273
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1767698352074",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp,\r\n  hydr_pump_freq_drive_enable__value    AS hydr_pump_freq_drive_enable,\r\n  hydr_pump_freq_drive_rdy__value       AS hydr_pump_freq_drive_rdy,\r\n  hydr_tank_level_low__value            AS hydr_tank_level_low,\r\n  shaft_brake_actuator_engage__value    AS shaft_brake_actuator_engage,\r\n  shaft_brake_actuator_disengage__value AS shaft_brake_actuator_disengage\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "AFT",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "continuous-greens"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 32,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_enable",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "start_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive enabled",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "start_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 10,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_pump_freq_drive_rdy",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "stop_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic pump frequency drive ready",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "stop_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 40,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydr_tank_level_low",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "reset_command",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 70,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Hydraulic tank level low",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "reset_command label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 70,
+                "width": 322
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "shaft_brake_actuator_engage",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 13",
+              "placement": {
+                "height": 25,
+                "left": 400,
+                "rotation": 0,
+                "top": 10,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Shaft brak actuator engaged",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 14",
+              "placement": {
+                "height": 26,
+                "left": 435,
+                "rotation": 0,
+                "top": 10,
+                "width": 235
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "shaft_brake_actuator_disengage",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 15",
+              "placement": {
+                "height": 25,
+                "left": 400,
+                "rotation": 0,
+                "top": 40,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Shaft brak actuator disengaged",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 16",
+              "placement": {
+                "height": 26,
+                "left": 435,
+                "rotation": 0,
+                "top": 40,
+                "width": 273
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1767698352074",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp,\r\n  hydr_pump_freq_drive_enable__value    AS hydr_pump_freq_drive_enable,\r\n  hydr_pump_freq_drive_rdy__value       AS hydr_pump_freq_drive_rdy,\r\n  hydr_tank_level_low__value            AS hydr_tank_level_low,\r\n  shaft_brake_actuator_engage__value    AS shaft_brake_actuator_engage,\r\n  shaft_brake_actuator_disengage__value AS shaft_brake_actuator_disengage\r\nFROM public.marpower__150000_propulsion__pcs_fwd\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "FWD",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "continuous-greens"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -7683,10 +8751,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 4,
         "w": 6,
         "x": 0,
-        "y": 26
+        "y": 30
       },
       "id": 2,
       "options": {
@@ -7711,7 +8779,7 @@
             {
               "background": {
                 "color": {
-                  "field": "start_command",
+                  "field": "vp_enable",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -7770,7 +8838,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Start command",
+                  "fixed": "VP enabled",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -7784,6 +8852,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 235
               },
@@ -7792,7 +8861,7 @@
             {
               "background": {
                 "color": {
-                  "field": "stop_command",
+                  "field": "not_ready_for_use",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -7850,7 +8919,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stop command",
+                  "fixed": "Not ready for use",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -7864,6 +8933,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 235
               },
@@ -7872,7 +8942,7 @@
             {
               "background": {
                 "color": {
-                  "field": "reset_command",
+                  "field": "speed_or_torque_setpoint",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -7930,7 +9000,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Reset command",
+                  "fixed": "Speed or torque setpoint",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -7944,250 +9014,9 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 234.9414264264264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_active",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 100,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop active",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 100,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "secundary_throttle_signal_selected",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 131,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Secundary throttle selected",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 130,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "shaft_brake_engaged",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Shaft brake engaged",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 235
               },
               "type": "text"
             }
@@ -8234,7 +9063,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  vp_enable__value                AS vp_enable,\r\n  not_ready_for_use__value        AS not_ready_for_use,\r\n  speed_or_torque_setpoint__value AS speed_or_torque_setpoint\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara1\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8255,7 +9084,7 @@
           }
         }
       ],
-      "title": "Status - AFT - Aradex 1",
+      "title": "AFT - Aradex 1",
       "type": "canvas"
     },
     {
@@ -8283,12 +9112,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 4,
         "w": 6,
         "x": 6,
-        "y": 26
+        "y": 30
       },
-      "id": 14,
+      "id": 33,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -8311,7 +9140,7 @@
             {
               "background": {
                 "color": {
-                  "field": "start_command",
+                  "field": "vp_enable",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -8370,7 +9199,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Start command",
+                  "fixed": "VP enabled",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -8384,6 +9213,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 235
               },
@@ -8392,7 +9222,7 @@
             {
               "background": {
                 "color": {
-                  "field": "stop_command",
+                  "field": "not_ready_for_use",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -8450,7 +9280,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stop command",
+                  "fixed": "Not ready for use",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -8464,6 +9294,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 235
               },
@@ -8472,7 +9303,7 @@
             {
               "background": {
                 "color": {
-                  "field": "reset_command",
+                  "field": "speed_or_torque_setpoint",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -8530,7 +9361,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Reset command",
+                  "fixed": "Speed or torque setpoint",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -8544,250 +9375,9 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 234.9414264264264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_active",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 100,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop active",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 100,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "secundary_throttle_signal_selected",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 131,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Secundary throttle selected",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 130,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "shaft_brake_engaged",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Shaft brake engaged",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 235
               },
               "type": "text"
             }
@@ -8834,7 +9424,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  vp_enable__value                AS vp_enable,\r\n  not_ready_for_use__value        AS not_ready_for_use,\r\n  speed_or_torque_setpoint__value AS speed_or_torque_setpoint\r\nFROM public.marpower__150000_propulsion__pcs_aft_ara2\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8855,7 +9445,7 @@
           }
         }
       ],
-      "title": "Status - AFT - Aradex 2",
+      "title": "AFT - Aradex 2",
       "type": "canvas"
     },
     {
@@ -8883,12 +9473,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 4,
         "w": 6,
         "x": 12,
-        "y": 26
+        "y": 30
       },
-      "id": 16,
+      "id": 34,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -8911,7 +9501,7 @@
             {
               "background": {
                 "color": {
-                  "field": "start_command",
+                  "field": "vp_enable",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -8970,7 +9560,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Start command",
+                  "fixed": "VP enabled",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -8984,6 +9574,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 235
               },
@@ -8992,7 +9583,7 @@
             {
               "background": {
                 "color": {
-                  "field": "stop_command",
+                  "field": "not_ready_for_use",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -9050,7 +9641,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stop command",
+                  "fixed": "Not ready for use",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -9064,6 +9655,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 235
               },
@@ -9072,7 +9664,7 @@
             {
               "background": {
                 "color": {
-                  "field": "reset_command",
+                  "field": "speed_or_torque_setpoint",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -9130,7 +9722,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Reset command",
+                  "fixed": "Speed or torque setpoint",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -9144,250 +9736,9 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 234.9414264264264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_active",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 100,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop active",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 100,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "secundary_throttle_signal_selected",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 131,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Secundary throttle selected",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 130,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "shaft_brake_engaged",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Shaft brake engaged",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 235
               },
               "type": "text"
             }
@@ -9434,7 +9785,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  vp_enable__value                AS vp_enable,\r\n  not_ready_for_use__value        AS not_ready_for_use,\r\n  speed_or_torque_setpoint__value AS speed_or_torque_setpoint\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara1\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9455,7 +9806,7 @@
           }
         }
       ],
-      "title": "Status - FWD - Aradex 1",
+      "title": "FWD - Aradex 1",
       "type": "canvas"
     },
     {
@@ -9483,12 +9834,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 4,
         "w": 6,
         "x": 18,
-        "y": 26
+        "y": 30
       },
-      "id": 15,
+      "id": 35,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -9511,7 +9862,7 @@
             {
               "background": {
                 "color": {
-                  "field": "start_command",
+                  "field": "vp_enable",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -9570,7 +9921,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Start command",
+                  "fixed": "VP enabled",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -9584,6 +9935,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 10,
                 "width": 235
               },
@@ -9592,7 +9944,7 @@
             {
               "background": {
                 "color": {
-                  "field": "stop_command",
+                  "field": "not_ready_for_use",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -9650,7 +10002,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stop command",
+                  "fixed": "Not ready for use",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -9664,6 +10016,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 40,
                 "width": 235
               },
@@ -9672,7 +10025,7 @@
             {
               "background": {
                 "color": {
-                  "field": "reset_command",
+                  "field": "speed_or_torque_setpoint",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -9730,7 +10083,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Reset command",
+                  "fixed": "Speed or torque setpoint",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -9744,250 +10097,9 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 70,
                 "width": 234.9414264264264
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_active",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 100,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop active",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_active label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 100,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "secundary_throttle_signal_selected",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 131,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Secundary throttle selected",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "secundary_throttle_signal_selected label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 130,
-                "width": 235
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "shaft_brake_engaged",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Shaft brake engaged",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "shaft_brake_engaged label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 235
               },
               "type": "text"
             }
@@ -10034,7 +10146,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  vp_enable__value                AS vp_enable,\r\n  not_ready_for_use__value        AS not_ready_for_use,\r\n  speed_or_torque_setpoint__value AS speed_or_torque_setpoint\r\nFROM public.marpower__150000_propulsion__pcs_fwd_ara2\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10055,7 +10167,7 @@
           }
         }
       ],
-      "title": "Status - FWD - Aradex 2",
+      "title": "FWD - Aradex 2",
       "type": "canvas"
     },
     {
@@ -10064,7 +10176,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 34
       },
       "id": 24,
       "panels": [],
@@ -10098,7 +10210,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 35
       },
       "id": 17,
       "options": {
@@ -10296,7 +10408,7 @@
         "h": 3,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 35
       },
       "id": 18,
       "options": {
@@ -10494,7 +10606,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 37
+        "y": 38
       },
       "id": 3,
       "options": {
@@ -11016,7 +11128,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 37
+        "y": 38
       },
       "id": 19,
       "options": {
@@ -11538,7 +11650,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 37
+        "y": 38
       },
       "id": 21,
       "options": {
@@ -12060,7 +12172,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 37
+        "y": 38
       },
       "id": 20,
       "options": {
@@ -12561,7 +12673,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 44
       },
       "id": 27,
       "panels": [],
@@ -12622,7 +12734,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 45
       },
       "id": 4,
       "options": {
@@ -13515,7 +13627,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 44
+        "y": 45
       },
       "id": 13,
       "options": {
