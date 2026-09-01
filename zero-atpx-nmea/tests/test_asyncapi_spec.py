@@ -265,8 +265,11 @@ def test_committed_spec_matches_generated() -> None:
     the current builder and parser), this test fails. The ``just regenerate-spec``
     command updates the file, and CI runs this as a check.
     """
-    with open("asyncapi.json") as f:
-        committed = json.load(f)
+    from pathlib import Path
+
+    committed = json.loads(
+        (Path(__file__).resolve().parents[1] / "asyncapi.json").read_text()
+    )
     generated = build_spec()
     assert committed == generated, (
         "asyncapi.json is out of date. Run 'just regenerate-spec' to refresh it."

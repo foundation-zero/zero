@@ -51,7 +51,7 @@ jobs:
         run: |
           uv run python -m zero_atpx_nmea asyncapi > /tmp/asyncapi_generated.json
           diff -u asyncapi.json /tmp/asyncapi_generated.json || \
-            (echo "ERROR: asyncapi.json is out of date. Run 'just regenerate' to refresh it." && exit 1)
+            (echo "ERROR: asyncapi.json is out of date. Run 'just regenerate-spec' to refresh it." && exit 1)
         working-directory: zero-atpx-nmea
       - uses: actions/setup-node@v4
         with:
