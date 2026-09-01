@@ -19,14 +19,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+      - name: Git describe
+        id: ghd
+        uses: proudust/gh-describe@v2
+        with:
+          match: "v*.*.*" # Only tags with patch versions
       - name: Update Chart Versions
         id: chart_info
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
         env:
           VERSION_UPDATES: ${{ inputs.version_updates }}
         run: |
           # v1.2.3
-          export GIT_REF=${{github.ref_name}}
+          export GIT_REF=${{steps.ghd.outputs.describe}}
           # 1.2.3
           export VERSION=${GIT_REF#v}
           yq e -i '.version = strenv(VERSION)' ${{ inputs.helm_chart }}/Chart.yaml

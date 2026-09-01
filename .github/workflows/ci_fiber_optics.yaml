@@ -30,7 +30,7 @@ jobs:
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: stable 
+          toolchain: stable
           components: clippy, rustfmt
 
       - name: Run tests
@@ -96,7 +96,7 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
 
   helm-push:
-    if: ${{ github.event_name == 'release' }}
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
