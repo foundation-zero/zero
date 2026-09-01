@@ -32,6 +32,8 @@ sources:
       - "${ATPX_MQTT_TOPIC:-atpx/#}"
     decoding:
       codec: bytes
+    user: "${ATPX_MQTT_USER:-}"
+    password: "${ATPX_MQTT_PASSWORD:-}"
   # A+T (ATPX) NMEA 0183 stream, already parsed to JSON and republished on our
   # own broker by the standalone zero-atpx-nmea service. See ZERO-1660.
   atpx_nmea_mqtt:
@@ -43,8 +45,8 @@ sources:
       - "atpx/processed/nmea/#"
     decoding:
       codec: json
-    user: "${MQTT_USER}"
-    password: "${MQTT_PASSWORD}"
+    user: "${ATPX_MQTT_USER:-}"
+    password: "${ATPX_MQTT_PASSWORD:-}"
 transforms:
   process:
     type: remap
