@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.units import PumpControlMode
 from thrs.input_output.definitions.wire_context import (
     AMCS_RECEIVE_CONTEXT,
     AMCS_WRITE_CONTEXT,
@@ -47,7 +48,7 @@ def _control_value(model_cls, field_name: str, value: float):
         return Pump(
             dutypoint=Stamped.stamp(value),
             on=Stamped.stamp(True),
-            control_mode=Stamped.stamp(1),
+            control_mode=Stamped.stamp(PumpControlMode.CONSTANT_SPEED),
         )
     return Valve(setpoint=Stamped.stamp(value))
 
@@ -60,6 +61,36 @@ def test_amcs_receive_serialization_omits_missing_pump_control_mode():
     )
 
     assert "CC_ControlMode" not in payload
+
+
+@pytest.mark.parametrize("value", [1, 3, 4])
+def test_amcs_receive_validation_reads_supported_pump_control_modes(value: int):
+    model = Pump.model_validate_json(
+        json.dumps(
+            {
+                "CC_Dutypoint": _stamped(0.4),
+                "CC_OnOff": _stamped(True),
+                "CC_ControlMode": _stamped(value),
+            }
+        ),
+        context=AMCS_RECEIVE_CONTEXT,
+    )
+
+    assert model.control_mode.value == value
+
+
+def test_amcs_receive_validation_rejects_unsupported_pump_control_mode():
+    with pytest.raises(ValidationError):
+        Pump.model_validate_json(
+            json.dumps(
+                {
+                    "CC_Dutypoint": _stamped(0.4),
+                    "CC_OnOff": _stamped(True),
+                    "CC_ControlMode": _stamped(2),
+                }
+            ),
+            context=AMCS_RECEIVE_CONTEXT,
+        )
 
 
 @pytest.mark.parametrize(

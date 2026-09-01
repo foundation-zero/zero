@@ -10,6 +10,7 @@ from thrs.input_output.definitions.units import (
     DeltaT,
     FreeCoolingMode,
     OnOff,
+    PumpControlMode,
     Ratio,
     TankControlMode,
 )
@@ -57,9 +58,9 @@ class Pump(ThrsValues):
 
     dutypoint: Stamped[Ratio]
     on: Stamped[OnOff]
-    control_mode: Annotated[Stamped[int | None], field_meta(included_in_fmu=False)] = (
-        Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    control_mode: Annotated[
+        Stamped[PumpControlMode | None], field_meta(included_in_fmu=False)
+    ] = Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
 
     # TODO: Remove once marpower fixes this on their side
     @field_validator("dutypoint")
