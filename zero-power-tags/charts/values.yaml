@@ -26,6 +26,8 @@ modbus:
   #   10P0_1:
   #     host: "192.168.0.10"
   #     port: 502
+  stub:
+    enabled: false
 
 stub:
   enabled: false

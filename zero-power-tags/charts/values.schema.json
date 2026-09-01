@@ -71,6 +71,16 @@
               }
             }
           }
+        },
+        "stub": {
+          "type": "object",
+          "description": "Serve dummy Modbus data from a local stub deployment (no hardware dependency).",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Render an extra stub Deployment running the `stub` subcommand plus a Service; point modbus.panels hosts at the stub Service with per-panel ports."
+            }
+          }
         }
       }
     },
