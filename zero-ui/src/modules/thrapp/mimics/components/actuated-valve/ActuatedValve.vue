@@ -20,6 +20,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :orientation="orientation"
     :rotation="rotation"
     :state="state"
+    class="overflow-visible"
     data-slot="actuated-valve"
   >
     <template #default="{ stateColor, state }">

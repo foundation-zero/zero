@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { ACTUATED_VALVE_WIDTH } from "../../../components/actuated-valve";
+import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
 import { MixValveInstance, SwitchValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowControlValveInstance from "../../../instances/FlowControlValveInstance.vue";
@@ -23,6 +23,11 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       y="193"
       :orientation="ComponentOrientation.Up"
       v-bind="threeWaySwitchValves['1091-01']"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.B,
+        [ValveLeg.Bottom]: ValvePortName.A,
+      }"
     >
       <TagLabelInstance
         :target-x="414"
@@ -35,6 +40,11 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       x="414"
       y="449.5"
       :orientation="ComponentOrientation.Down"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.B,
+        [ValveLeg.Right]: ValvePortName.AB,
+        [ValveLeg.Bottom]: ValvePortName.A,
+      }"
       v-bind="threeWaySwitchValves['1091-02']"
     >
       <TagLabelInstance
@@ -90,6 +100,11 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       x="759.5"
       y="242"
       :orientation="ComponentOrientation.Down"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.A,
+        [ValveLeg.Bottom]: ValvePortName.B,
+      }"
       v-bind="mixValves['1214-01']"
     >
       <ThreeWayValveLabelInstance
@@ -105,6 +120,11 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       y="346"
       :orientation="ComponentOrientation.Up"
       v-bind="mixValves['1074']"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.A,
+        [ValveLeg.Bottom]: ValvePortName.B,
+      }"
     >
       <ThreeWayValveLabelInstance
         :target-x="693.5"

@@ -8,6 +8,7 @@ import MixValve from '@/modules/thrapp/mimics/components/actuated-valve/MixValve
 import SwitchValve from '@/modules/thrapp/mimics/components/actuated-valve/SwitchValve.vue'
 import ThreeWayValve from '@/modules/thrapp/mimics/components/actuated-valve/ThreeWayValve.vue'
 import TwoWayValve from '@/modules/thrapp/mimics/components/actuated-valve/TwoWayValve.vue'
+import { ValveLeg, ValvePortName } from '@/modules/thrapp/mimics/components/actuated-valve'
 import { ComponentOrientation, MimicComponentState } from '@/modules/thrapp/mimics/components'
 </script>
 
@@ -93,8 +94,16 @@ This matches how runtime instances are composed in THRAPP:
 ### Three-Way Mix Valve
 
 <div class="my-6 flex flex-col items-center justify-center gap-2">
-  <div class="rounded-md bg-muted p-4">
+  <div class="rounded-md bg-muted p-4 flex gap-6">
     <ActuatedValve>
+      <MixValve />
+      <ThreeWayValve :flow="0.7" />
+    </ActuatedValve>
+    <ActuatedValve :orientation="ComponentOrientation.Right">
+      <MixValve />
+      <ThreeWayValve :flow="0.7" />
+    </ActuatedValve>
+    <ActuatedValve :orientation="ComponentOrientation.Down">
       <MixValve />
       <ThreeWayValve :flow="0.7" />
     </ActuatedValve>
@@ -115,6 +124,58 @@ This matches how runtime instances are composed in THRAPP:
 - `rotation` is an extra quarter-turn style offset used by instances to reflect actuator position.
 - The switch instance pattern uses `:rotation="1 - valve.positionRel"`, so the marker turns opposite to opening ratio.
 
+## Three-Way Leg Labels
+
+`ThreeWayValve` labels its legs with the port names `A`, `B`, and `AB`. Which port sits on which leg is fixed by the schematic, so it is configured up front through the `legs` prop and never derived from flow:
+
+```ts
+type ThreeWayValveLegs = Record<ValveLeg, ValvePortName>;
+
+// Default
+const THREE_WAY_VALVE_DEFAULT_LEGS = {
+  [ValveLeg.Left]: ValvePortName.A,
+  [ValveLeg.Right]: ValvePortName.AB,
+  [ValveLeg.Bottom]: ValvePortName.B,
+};
+```
+
+Fill follows the port, not the leg:
+
+- `AB` is the common port and is always 100% filled.
+- `A` carries `flow`, `B` carries `1 - flow`.
+
+Label anchors are derived from the leg and the port's text width, so any port can sit on any leg. The anchors rotate with the valve body, but each glyph is counter-rotated by the same angle so the text always reads upright. Anchors sit just outside the 36x36 viewBox, so `ActuatedValve` renders with `overflow-visible`.
+
+`MixValveInstance` passes the raw `positionRel`, so `A` and `B` share the flow between them. `ThreeWaySwitchValveInstance` rounds `positionRel`, so exactly one of `A` or `B` is fully open.
+
+<div class="my-6 flex flex-col items-center justify-center gap-2">
+  <div class="rounded-md bg-muted p-4 flex gap-6">
+    <ActuatedValve>
+      <MixValve />
+      <ThreeWayValve :flow="0.7" />
+    </ActuatedValve>
+    <ActuatedValve>
+      <MixValve />
+      <ThreeWayValve :flow="0.7" :legs="{ [ValveLeg.Left]: ValvePortName.AB, [ValveLeg.Right]: ValvePortName.B, [ValveLeg.Bottom]: ValvePortName.A }" />
+    </ActuatedValve>
+  </div>
+  <span class="text-sm font-mono">default legs vs. custom legs</span>
+</div>
+
+```vue
+<ActuatedValve>
+  <MixValve />
+  <ThreeWayValve
+    :flow="0.7"
+    :legs="{
+      [ValveLeg.Left]: ValvePortName.AB,
+      [ValveLeg.Right]: ValvePortName.B,
+      [ValveLeg.Bottom]: ValvePortName.A,
+    }"
+  />
+</ActuatedValve>
+```
+
 ## API
 
 ### ActuatedValve Props
@@ -132,7 +193,7 @@ This matches how runtime instances are composed in THRAPP:
 | `SwitchValve` | default slot text (optional) | Circular marker with optional label (`E` by default) |
 | `MixValve` | — | Diagonal arrow marker for flow-control and mixing valves |
 | `TwoWayValve` | `flow: Ratio` | Two triangular ports (left/right) with shared flow fill |
-| `ThreeWayValve` | `flow: Ratio` | Three-way ports: right is fixed open; bottom uses `1 - flow` |
+| `ThreeWayValve` | `flow: Ratio`, `legs?: ThreeWayValveLegs` | Three-way ports labelled `A` / `B` / `AB`: `A` uses `flow`, `B` uses `1 - flow`, `AB` is fixed open |
 
 ## Semantic Token Mapping
 
@@ -145,6 +206,8 @@ This matches how runtime instances are composed in THRAPP:
 | Port active overlay | `var(--attention)` |
 | Marker fill | `var(--muted)` |
 | Marker text | `var(--foreground)` |
+| Leg label knockout | `var(--background)` |
+| Leg label text | `var(--foreground)` |
 
 ## Notes
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { ACTUATED_VALVE_WIDTH } from "../../../components/actuated-valve";
+import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
 import {
   MixValveInstance,
   SwitchValveInstance,
@@ -100,6 +100,11 @@ const mixValves = PVT_MIMIC_DATA[MimicComponentType.MixValve];
       y="515"
       :orientation="ComponentOrientation.Left"
       v-bind="mixValves['1047-02']"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.A,
+        [ValveLeg.Bottom]: ValvePortName.B,
+      }"
     >
       <ThreeWayValveLabelInstance
         x="990"
