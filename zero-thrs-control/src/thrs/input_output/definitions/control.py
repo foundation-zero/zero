@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Annotated, Any, ClassVar
 
 from pydantic import field_validator, model_serializer, model_validator
@@ -23,13 +24,19 @@ class Pump(ThrsValues):
             return handler(values)
 
         if is_actuated(info.context):
-            if "CC_Dutypoint" in values:
-                values["Dutypoint"] = values.pop("CC_Dutypoint")
-            elif "Dutypoint" in values:
-                # Remove plain Dutypoint when reading actuated (it's the dutypoint request, not the actual dutypoint)
-                values.pop("Dutypoint")
-        elif is_commanded(info.context) and "CC_Dutypoint" in values:
-            raise ValueError("CC_Dutypoint is not valid for commanded values")
+            for field, actuated_key in (
+                ("Dutypoint", "CC_Dutypoint"),
+                ("On", "CC_OnOff"),
+                ("ControlMode", "CC_ControlMode"),
+            ):
+                if actuated_key in values:
+                    values[field] = values.pop(actuated_key)
+                elif field in values:
+                    values.pop(field)
+        elif is_commanded(info.context) and any(
+            key in values for key in ("CC_Dutypoint", "CC_OnOff", "CC_ControlMode")
+        ):
+            raise ValueError("CC_ keys are not valid for commanded values")
 
         return handler(values)
 
@@ -37,14 +44,22 @@ class Pump(ThrsValues):
     def _write_actuated(self, handler, info):
         data = handler(self)
         if is_actuated(info.context):
-            for key in ("Dutypoint", "dutypoint"):
+            for key, actuated_key in (
+                ("Dutypoint", "CC_Dutypoint"),
+                ("On", "CC_OnOff"),
+                ("ControlMode", "CC_ControlMode"),
+            ):
                 if key in data:
-                    data["CC_Dutypoint"] = data.pop(key)
-                    break
+                    value = data.pop(key)
+                    if value["Value"] is not None:
+                        data[actuated_key] = value
         return data
 
     dutypoint: Stamped[Ratio]
     on: Stamped[OnOff]
+    control_mode: Annotated[Stamped[int | None], field_meta(included_in_fmu=False)] = (
+        Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
+    )
 
     # TODO: Remove once marpower fixes this on their side
     @field_validator("dutypoint")

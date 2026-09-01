@@ -208,10 +208,17 @@ class UnstampedInput(ThrsValues):
         def _unstamped_type(unit):
             return get_args(unit)[0] if get_origin(unit) is Annotated else unit
 
+        def _unstamped_default(field):
+            if field.is_required():
+                return Field()
+            if isinstance(field.default, Stamped):
+                return Field(default=field.default.value)
+            return Field(default=field.default)
+
         fields = {
             key: Annotated[
                 _unstamped_type(unit),
-                Field(),
+                _unstamped_default(field),
             ]
             for key, field in model.model_fields.items()
             if (unit := unit_for_annotation(field.annotation))

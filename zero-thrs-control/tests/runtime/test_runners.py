@@ -87,6 +87,12 @@ def test_simulation_test_runner():
                     ),
                 ),
                 **flatten_model_values(
+                    ThrustersControlValues.zero(),
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersControlValues, fmu_only=False
+                    ),
+                ),
+                **flatten_model_values(
                     ThrustersControllerState.zero(),
                     fmu_key_mapping=build_fmu_key_mapping(
                         ThrustersControllerState, fmu_only=False
@@ -105,6 +111,12 @@ def test_simulation_test_runner():
                     ThrustersSensorValues.zero(),
                     fmu_key_mapping=build_fmu_key_mapping(
                         ThrustersSensorValues, fmu_only=True
+                    ),
+                ),
+                **flatten_model_values(
+                    ThrustersControlValues.zero(),
+                    fmu_key_mapping=build_fmu_key_mapping(
+                        ThrustersControlValues, fmu_only=True
                     ),
                 ),
                 **flatten_model_values(

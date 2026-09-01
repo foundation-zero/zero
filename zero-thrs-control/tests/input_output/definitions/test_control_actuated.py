@@ -20,8 +20,16 @@ ACTUATED_CASES = [
     pytest.param(
         Pump,
         "dutypoint",
-        {"Dutypoint": _stamped(0.4), "On": _stamped(True)},
-        {"CC_Dutypoint": _stamped(0.4), "On": _stamped(True)},
+        {
+            "Dutypoint": _stamped(0.4),
+            "On": _stamped(True),
+            "ControlMode": _stamped(1),
+        },
+        {
+            "CC_Dutypoint": _stamped(0.4),
+            "CC_OnOff": _stamped(True),
+            "CC_ControlMode": _stamped(1),
+        },
         id="pump",
     ),
     pytest.param(
@@ -36,8 +44,22 @@ ACTUATED_CASES = [
 
 def _control_value(model_cls, field_name: str, value: float):
     if model_cls is Pump:
-        return Pump(dutypoint=Stamped.stamp(value), on=Stamped.stamp(True))
+        return Pump(
+            dutypoint=Stamped.stamp(value),
+            on=Stamped.stamp(True),
+            control_mode=Stamped.stamp(1),
+        )
     return Valve(setpoint=Stamped.stamp(value))
+
+
+def test_amcs_receive_serialization_omits_missing_pump_control_mode():
+    payload = json.loads(
+        Pump(dutypoint=Stamped.stamp(0.5), on=Stamped.stamp(True)).model_dump_json(
+            by_alias=True, context=AMCS_RECEIVE_CONTEXT
+        )
+    )
+
+    assert "CC_ControlMode" not in payload
 
 
 @pytest.mark.parametrize(

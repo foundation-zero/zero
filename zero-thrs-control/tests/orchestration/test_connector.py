@@ -373,7 +373,7 @@ class TestMergedModuleMqttMapping:
         pump_payload = json.loads(topics["base/500000-thrs/module/pump"])
         # sensor keys merged with the actuated CC_ key on one topic
         assert pump_payload["CC_Dutypoint"]["Value"] == 0.4
-        assert pump_payload["On"]["Value"] is True
+        assert pump_payload["CC_OnOff"]["Value"] is True
         assert pump_payload["Flow"]["Value"] == 10.0
         assert pump_payload["Temperature"]["Value"] == 20.0
         assert "Quantity" in pump_payload
