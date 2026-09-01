@@ -72,7 +72,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -90,7 +101,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 2
@@ -357,7 +368,7 @@
             {
               "background": {
                 "color": {
-                  "field": "power_distr_insul_alarm",
+                  "field": "em_stop_main_power_failure",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -415,7 +426,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Power distribution insulation alarm",
+                  "fixed": "Emergency stop main power failure",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -429,6 +440,7 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 100,
                 "width": 306.29285714285714
               },
@@ -437,7 +449,7 @@
             {
               "background": {
                 "color": {
-                  "field": "hydraulic_pressure_alarm",
+                  "field": "level_alarm_gravity_tank_shaftseal_system",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -496,7 +508,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Hydraulic pressure alarm",
+                  "fixed": "Level alarm gravity tank shaftseal system",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -510,255 +522,16 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 130,
-                "width": 313
+                "width": 340
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "seal_tank_oil_level_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "seal_tank_oil_level_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Seal tank oil level alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "seal_tank_oil_level_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 313
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "gear_oil_level_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_level_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Gear oil level alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_level_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 190,
-                "width": 313
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "gear_oil_temp_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_temp_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Gear oil temperature alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_temp_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 220,
-                "width": 313
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "overspeed_alarm",
+                  "field": "hydr_aft_return_press_filter_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -816,7 +589,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Overspeed alarm",
+                  "fixed": "Hydraulic AFT return pressure filter alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -830,15 +603,16 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 9,
-                "width": 307.26666259765625
+                "width": 353
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "overload_alarm",
+                  "field": "hydr_filter_water_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -871,6 +645,7 @@
               "placement": {
                 "height": 25,
                 "left": 400,
+                "rotation": 0,
                 "top": 39,
                 "width": 25
               },
@@ -895,7 +670,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Overload alarm",
+                  "fixed": "Hydraulic filter water alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -909,6 +684,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 39,
                 "width": 307.26666259765625
               },
@@ -917,7 +693,7 @@
             {
               "background": {
                 "color": {
-                  "field": "azimuth_follow_up_alarm",
+                  "field": "hydr_pump_freq_drive_temp_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -950,6 +726,7 @@
               "placement": {
                 "height": 25,
                 "left": 400,
+                "rotation": 0,
                 "top": 69,
                 "width": 25
               },
@@ -974,7 +751,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Azimuth follow up alarm",
+                  "fixed": "Hydraulic pump frequency drive temp. alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -988,15 +765,16 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 69,
-                "width": 307.26666259765625
+                "width": 416
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "pitch_follow_up_alarm",
+                  "field": "hydr_tank_temp_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -1054,7 +832,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Pitch follow up alarm",
+                  "fixed": "Hydraulic tank temperature alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1068,6 +846,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 99,
                 "width": 314
               },
@@ -1151,166 +930,6 @@
                 "width": 314
               },
               "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_namur_fault_aradex_1",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_1",
-              "placement": {
-                "height": 25,
-                "left": 400,
-                "top": 159,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop Circuit Namur Fault - Aradex 1",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_1 label",
-              "placement": {
-                "height": 26,
-                "left": 435,
-                "top": 159,
-                "width": 314
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_namur_fault_aradex_2",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_2",
-              "placement": {
-                "height": 25,
-                "left": 400,
-                "top": 189,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop Circuit Namur Fault - Aradex 2",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_2 label",
-              "placement": {
-                "height": 26,
-                "left": 435,
-                "top": 189,
-                "width": 314
-              },
-              "type": "text"
             }
           ],
           "name": "Element 1767698352074",
@@ -1356,139 +975,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  cb_10_comalarm__value              AS communication_alarm,\r\n  cb_10_24_vdcservfail__value        AS \"24v_service_failure\",\r\n  cb_10_24_vdcemergfail__value       AS \"24v_emergency_failure\",\r\n  cb_10_powerdistrins__value         AS power_distr_insul_alarm,\r\n  cb_10_hydrpressalarm__value        AS hydraulic_pressure_alarm,\r\n  cb_10_oillevalarmsealtank__value   AS seal_tank_oil_level_alarm,\r\n  cb_10_gearoillevalarm__value       AS gear_oil_level_alarm,\r\n  cb_10_gearoiltempalarm__value      AS gear_oil_temp_alarm,\r\n  cb_10_overspeedalarm__value        AS overspeed_alarm,\r\n  cb_10_overloadalarm__value         AS overload_alarm,\r\n  cb_10_azifollupfailalarm__value    AS azimuth_follow_up_alarm,\r\n  cb_10_pitchfollupfailalarm__value  AS pitch_follow_up_alarm\r\nFROM public.marpower__150000_pcs\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  comalarm__value                                  AS communication_alarm,\r\n  \"24_vdcservfail__value\"                          AS \"24v_service_failure\",\r\n  \"24_vdcemergfail__value\"                         AS \"24v_emergency_failure\",\r\n  waterleakalarm__value                            AS water_leak_alarm,\r\n  em_stop_main_power_fail__value                   AS em_stop_main_power_failure,\r\n  hydr_aft_return_press_filter_alarm__value        AS hydr_aft_return_press_filter_alarm,\r\n  hydr_filter_water_alarm__value                   AS hydr_filter_water_alarm,\r\n  hydr_pump_freq_drive_temp_alarm__value           AS hydr_pump_freq_drive_temp_alarm,\r\n  hydr_tank_temp_alarm__value                      AS hydr_tank_temp_alarm,\r\n  level_alarm_gravity_tank_shaftseal_system__value AS level_alarm_gravity_tank_shaftseal_system\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp\r\nDESC LIMIT 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  aft_thruster_waterleakalarm__value AS water_leak_alarm\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_1\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "C",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_2\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "D",
           "sql": {
             "columns": [
               {
@@ -1521,7 +1009,18 @@
           "color": {
             "mode": "continuous-reds"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1539,12 +1038,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 12,
         "y": 2
       },
-      "id": 10,
+      "id": 22,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -1637,7 +1136,7 @@
                 "height": 26,
                 "left": 50,
                 "top": 10,
-                "width": 308.25
+                "width": 306.29285714285714
               },
               "type": "text"
             },
@@ -1718,7 +1217,7 @@
                 "height": 26,
                 "left": 50,
                 "top": 40,
-                "width": 308.25
+                "width": 306.29285714285714
               },
               "type": "text"
             },
@@ -1799,14 +1298,14 @@
                 "height": 26,
                 "left": 50,
                 "top": 70,
-                "width": 308.25
+                "width": 306.29285714285714
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "power_distr_insul_alarm",
+                  "field": "em_stop_main_power_failure",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -1864,7 +1363,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Power distribution insulation alarm",
+                  "fixed": "Emergency stop main power failure",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1878,15 +1377,16 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 100,
-                "width": 308.25
+                "width": 306.29285714285714
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "hydraulic_pressure_alarm",
+                  "field": "level_alarm_gravity_tank_shaftseal_system",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -1945,7 +1445,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Hydraulic pressure alarm",
+                  "fixed": "Level alarm gravity tank shaftseal system",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1959,255 +1459,16 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "rotation": 0,
                 "top": 130,
-                "width": 315
+                "width": 340
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "seal_tank_oil_level_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "seal_tank_oil_level_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Seal tank oil level alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "seal_tank_oil_level_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 160,
-                "width": 315
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "gear_oil_level_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_level_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Gear oil level alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_level_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 190,
-                "width": 315
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "gear_oil_temp_alarm",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_temp_alarm",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Gear oil temperature alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "gear_oil_temp_alarm label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "top": 220,
-                "width": 315
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "overspeed_alarm",
+                  "field": "hydr_aft_return_press_filter_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2241,7 +1502,7 @@
                 "height": 25,
                 "left": 400,
                 "rotation": 0,
-                "top": 10,
+                "top": 9,
                 "width": 25
               },
               "type": "ellipse"
@@ -2265,7 +1526,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Overspeed alarm",
+                  "fixed": "Hydraulic AFT return pressure filter alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2279,15 +1540,16 @@
               "placement": {
                 "height": 26,
                 "left": 435,
-                "top": 10,
-                "width": 307.26666259765625
+                "rotation": 0,
+                "top": 9,
+                "width": 353
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "overload_alarm",
+                  "field": "hydr_filter_water_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2320,7 +1582,8 @@
               "placement": {
                 "height": 25,
                 "left": 400,
-                "top": 40,
+                "rotation": 0,
+                "top": 39,
                 "width": 25
               },
               "type": "ellipse"
@@ -2344,7 +1607,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Overload alarm",
+                  "fixed": "Hydraulic filter water alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2358,7 +1621,8 @@
               "placement": {
                 "height": 26,
                 "left": 435,
-                "top": 40,
+                "rotation": 0,
+                "top": 39,
                 "width": 307.26666259765625
               },
               "type": "text"
@@ -2366,7 +1630,7 @@
             {
               "background": {
                 "color": {
-                  "field": "azimuth_follow_up_alarm",
+                  "field": "hydr_pump_freq_drive_temp_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2399,7 +1663,8 @@
               "placement": {
                 "height": 25,
                 "left": 400,
-                "top": 70,
+                "rotation": 0,
+                "top": 69,
                 "width": 25
               },
               "type": "ellipse"
@@ -2423,7 +1688,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Azimuth follow up alarm",
+                  "fixed": "Hydraulic pump frequency drive temp. alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2437,15 +1702,16 @@
               "placement": {
                 "height": 26,
                 "left": 435,
-                "top": 70,
-                "width": 307.26666259765625
+                "rotation": 0,
+                "top": 69,
+                "width": 416
               },
               "type": "text"
             },
             {
               "background": {
                 "color": {
-                  "field": "pitch_follow_up_alarm",
+                  "field": "hydr_tank_temp_alarm",
                   "fixed": "#D9D9D9"
                 },
                 "image": {
@@ -2479,7 +1745,7 @@
                 "height": 25,
                 "left": 400,
                 "rotation": 0,
-                "top": 100,
+                "top": 99,
                 "width": 25
               },
               "type": "ellipse"
@@ -2503,7 +1769,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Pitch follow up alarm",
+                  "fixed": "Hydraulic tank temperature alarm",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2517,7 +1783,8 @@
               "placement": {
                 "height": 26,
                 "left": 435,
-                "top": 100,
+                "rotation": 0,
+                "top": 99,
                 "width": 314
               },
               "type": "text"
@@ -2558,7 +1825,7 @@
               "placement": {
                 "height": 25,
                 "left": 400,
-                "top": 130,
+                "top": 129,
                 "width": 25
               },
               "type": "ellipse"
@@ -2596,167 +1863,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
-                "top": 130,
-                "width": 314
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_namur_fault_aradex_1",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_1",
-              "placement": {
-                "height": 25,
-                "left": 400,
-                "top": 160,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop Circuit Namur Fault - Aradex 1",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_1 label",
-              "placement": {
-                "height": 26,
-                "left": 435,
-                "top": 160,
-                "width": 314
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "e_stop_namur_fault_aradex_2",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_2",
-              "placement": {
-                "height": 25,
-                "left": 400,
-                "top": 190,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "E-Stop Circuit Namur Fault - Aradex 2",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "e_stop_namur_fault_aradex_2 label",
-              "placement": {
-                "height": 26,
-                "left": 435,
-                "top": 190,
+                "top": 129,
                 "width": 314
               },
               "type": "text"
@@ -2805,139 +1912,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  cb_11_comalarm__value              AS communication_alarm,\r\n  cb_11_24_vdcservfail__value        AS \"24v_service_failure\",\r\n  cb_11_24_vdcemergfail__value       AS \"24v_emergency_failure\",\r\n  cb_11_powerdistrins__value         AS power_distr_insul_alarm,\r\n  cb_11_hydrpressalarm__value        AS hydraulic_pressure_alarm,\r\n  cb_11_oillevalarmsealtank__value   AS seal_tank_oil_level_alarm,\r\n  cb_11_gearoillevalarm__value       AS gear_oil_level_alarm,\r\n  cb_11_gearoiltempalarm__value      AS gear_oil_temp_alarm,\r\n  cb_11_overspalarm__value           AS overspeed_alarm,\r\n  cb_11_overlalarm__value            AS overload_alarm,\r\n  cb_11_azifollupfailalarm__value    AS azimuth_follow_up_alarm,\r\n  cb_11_pitchfollupfailalarm__value  AS pitch_follow_up_alarm\r\nFROM public.marpower__150000_pcs\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp,\r\n  comalarm__value                                  AS communication_alarm,\r\n  \"24_vdcservfail__value\"                          AS \"24v_service_failure\",\r\n  \"24_vdcemergfail__value\"                         AS \"24v_emergency_failure\",\r\n  waterleakalarm__value                            AS water_leak_alarm,\r\n  em_stop_main_power_fail__value                   AS em_stop_main_power_failure,\r\n  hydr_aft_return_press_filter_alarm__value        AS hydr_aft_return_press_filter_alarm,\r\n  hydr_filter_water_alarm__value                   AS hydr_filter_water_alarm,\r\n  hydr_pump_freq_drive_temp_alarm__value           AS hydr_pump_freq_drive_temp_alarm,\r\n  hydr_tank_temp_alarm__value                      AS hydr_tank_temp_alarm,\r\n  level_alarm_gravity_tank_shaftseal_system__value AS level_alarm_gravity_tank_shaftseal_system\r\nFROM public.marpower__150000_propulsion__pcs_fwd\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp\r\nDESC LIMIT 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  fwd_thruster_waterleakalarm__value AS water_leak_alarm\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_1\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "C",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_2\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "D",
           "sql": {
             "columns": [
               {
@@ -2988,7 +1964,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 10
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -3588,7 +2564,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 10
+        "y": 8
       },
       "id": 14,
       "options": {
@@ -4188,7 +3164,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 10
+        "y": 8
       },
       "id": 16,
       "options": {
@@ -4788,7 +3764,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 10
+        "y": 8
       },
       "id": 15,
       "options": {
@@ -5387,7 +4363,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 15
       },
       "id": 17,
       "options": {
@@ -5585,7 +4561,7 @@
         "h": 3,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 15
       },
       "id": 18,
       "options": {
@@ -5783,7 +4759,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 20
+        "y": 18
       },
       "id": 3,
       "options": {
@@ -6305,7 +5281,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 20
+        "y": 18
       },
       "id": 19,
       "options": {
@@ -6827,7 +5803,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 20
+        "y": 18
       },
       "id": 21,
       "options": {
@@ -7349,7 +6325,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 20
+        "y": 18
       },
       "id": 20,
       "options": {
@@ -7898,7 +6874,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 24
       },
       "id": 4,
       "options": {
@@ -8791,7 +7767,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 24
       },
       "id": 13,
       "options": {
