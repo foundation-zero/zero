@@ -61,6 +61,12 @@ spec:
               value: {{ .Values.stub.seconds | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -65,7 +65,7 @@
           "description": "Deploy an in-cluster stub Modbus server and point the bridge at it."
         },
         "defaultRegisterValue": {
-          "type": "number",
+          "type": "integer",
           "description": "Value the stub serves for registers."
         }
       }
