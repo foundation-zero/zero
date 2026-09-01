@@ -2397,28 +2397,25 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtMaxTemperatureMainAftStrings: {
-    componentType: SensorComponentType.CalculatedTemperature,
-  },
   pvtMaxTemperatureMainFwdStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainAftStringsSupply: {
+  pvtMaxTemperatureOwnersStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureMainAftStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainAftStringsSupply: {
+  pvtTemperatureMainFwdStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureOwnersStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureMainAftStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainAftStringsReturn: {
-    componentType: SensorComponentType.CalculatedTemperature,
-  },
-  pvtTemperatureMainAftStringsReturn: {
+  pvtTemperatureMainFwdStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureOwnersStringsReturn: {

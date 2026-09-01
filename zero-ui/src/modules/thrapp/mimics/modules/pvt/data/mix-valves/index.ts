@@ -23,7 +23,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
       controls: {
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixMainFwd"),
       },
-      controllerState: { controller: pvtMainFwdWarmupMixController.controller },
+      controllerState: {},
       custom: { controller: pvtMainFwdWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixMainFwd"),
@@ -37,7 +37,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
       controls: {
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixMainAft"),
       },
-      controllerState: { controller: pvtMainAftWarmupMixController.controller },
+      controllerState: {},
       custom: { controller: pvtMainAftWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixMainAft"),
@@ -51,7 +51,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
       controls: {
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixOwners"),
       },
-      controllerState: { controller: pvtOwnersWarmupMixController.controller },
+      controllerState: {},
       custom: { controller: pvtOwnersWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixOwners"),
@@ -65,7 +65,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
       controls: {
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixExchanger"),
       },
-      controllerState: { controller: pvtHeatDumpController.controller },
+      controllerState: {},
       custom: { controller: pvtHeatDumpController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixExchanger"),

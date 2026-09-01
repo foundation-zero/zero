@@ -2080,10 +2080,22 @@ export const PVT_SENSOR_QUERY = `
   pvtMaxTemperatureMainFwdStrings {
     temperature { value timestamp }
   }
+  pvtMaxTemperatureOwnersStrings {
+    temperature { value timestamp }
+  }
   pvtTemperatureMainAftStringsSupply {
     temperature { value timestamp }
   }
+  pvtTemperatureMainFwdStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsSupply {
+    temperature { value timestamp }
+  }
   pvtTemperatureMainAftStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsReturn {
     temperature { value timestamp }
   }
   pvtTemperatureOwnersStringsReturn {

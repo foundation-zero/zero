@@ -60,7 +60,7 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
         :target-width="32"
         y="590"
         :tag-id="pumps['1021'].tooltip?.yardTag"
-        :pump="pumps['1021'].source"
+        :pump="pumps['1021'].controls.pump"
       />
     </PumpInstance>
     <ManualPumpInstance
