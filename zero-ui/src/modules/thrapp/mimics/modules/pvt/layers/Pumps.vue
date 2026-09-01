@@ -53,14 +53,14 @@ const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
       :width="32"
       :height="32"
       :orientation="ComponentOrientation.Left"
-      v-bind="pumps['1020']"
+      v-bind="pumps['1021']"
     >
       <DutypointLabelInstance
         :target-x="542"
         :target-width="32"
         y="590"
-        :tag-id="pumps['1020'].tooltip?.yardTag"
-        :pump="pumps['1020'].controls.pump"
+        :tag-id="pumps['1021'].tooltip?.yardTag"
+        :pump="pumps['1021'].source"
       />
     </PumpInstance>
     <ManualPumpInstance

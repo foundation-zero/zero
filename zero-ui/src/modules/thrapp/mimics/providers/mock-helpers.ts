@@ -10,7 +10,6 @@ import {
   ParameterDefinitionMap,
   ParametersType,
   PID,
-  PvtMode,
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
@@ -256,14 +255,6 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
       enabled: stamp(enabled),
       tuning: stamp(tuning),
       components: stamp(components),
-    }));
-  },
-  [ControllerStateComponentType.PvtController]: () => {
-    const states = [PvtMode.Idle, PvtMode.Harvesting];
-    const mode = useRandomizedState(states);
-
-    return computed(() => ({
-      mode: stamp(mode),
     }));
   },
 };

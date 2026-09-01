@@ -549,14 +549,59 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            pvtMainAftController {
-                                mode { value }
+                            pvtMainAftWarmupMixController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
                             }
-                            pvtMainFwdController {
-                                mode { value }
+                            pvtMainAftPumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
                             }
-                            pvtOwnersController {
-                                mode { value }
+                            pvtMainFwdWarmupMixController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            pvtMainFwdPumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            pvtOwnersWarmupMixController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
+                            }
+                            pvtOwnersPumpController {
+                                setpoint { value }
+                                measurement { value }
+                                output { value }
+                                error { value }
+                                enabled { value }
+                                tuning { value }
+                                components { value }
                             }
                         }
                     }
@@ -876,19 +921,190 @@ async def test_query_controller_state(app, test_client):
                                 ],
                             },
                         },
-                        "pvtMainAftController": {
-                            "mode": {
-                                "value": "IDLE",
+                        "pvtMainAftPumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
                             },
                         },
-                        "pvtMainFwdController": {
-                            "mode": {
-                                "value": "IDLE",
+                        "pvtMainAftWarmupMixController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
                             },
                         },
-                        "pvtOwnersController": {
-                            "mode": {
-                                "value": "IDLE",
+                        "pvtMainFwdPumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "pvtMainFwdWarmupMixController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "pvtOwnersPumpController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                        },
+                        "pvtOwnersWarmupMixController": {
+                            "components": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
+                            },
+                            "enabled": {
+                                "value": False,
+                            },
+                            "error": {
+                                "value": None,
+                            },
+                            "measurement": {
+                                "value": None,
+                            },
+                            "output": {
+                                "value": None,
+                            },
+                            "setpoint": {
+                                "value": 0.0,
+                            },
+                            "tuning": {
+                                "value": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                ],
                             },
                         },
                     },

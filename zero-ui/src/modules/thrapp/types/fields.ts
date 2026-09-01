@@ -8,6 +8,7 @@ import { BoilerTankStateField, MimicComponentType } from ".";
 import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
+import type { PvtGroup } from "../state";
 
 export type ComponentFields<
   Type extends
@@ -171,9 +172,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
-  [MimicComponentType.Pvt]: {
-    controller: ControllerStateComponentType.PvtController;
-  };
+  [MimicComponentType.Pvt]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -230,7 +229,7 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.Pump]: {
     flowController?: PIDController<SensorComponentType.Flow>;
-    temperatureController?: PIDController<SensorComponentType.Flow>;
+    temperatureController?: PIDController<SensorComponentType.Temperature>;
   };
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {
@@ -261,7 +260,9 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.LevelSensor]: EmptyObject;
   [MimicComponentType.LevelSwitch]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.MixValve]: EmptyObject;
+  [MimicComponentType.MixValve]: {
+    controller?: PIDController<SensorComponentType.Temperature>;
+  };
   [MimicComponentType.CheckValve]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
@@ -274,7 +275,9 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.FlowControlValve]: {
     controller?: PIDController;
   };
-  [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Pvt]: {
+    group: PvtGroup;
+  };
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{

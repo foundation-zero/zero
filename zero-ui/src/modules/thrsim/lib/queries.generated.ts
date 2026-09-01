@@ -1630,14 +1630,59 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  pvtMainAftController {
-    mode { value timestamp }
+  pvtMainAftWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
   }
-  pvtMainFwdController {
-    mode { value timestamp }
+  pvtMainAftPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
   }
-  pvtOwnersController {
-    mode { value timestamp }
+  pvtMainFwdWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pvtMainFwdPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pvtOwnersWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pvtOwnersPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
   }
 `;
 
@@ -2028,6 +2073,9 @@ export const PVT_SENSOR_QUERY = `
   }
   pcmTemperatureProducersSupply {
     temperature { value timestamp }
+  }
+  pvtMode {
+    mode { value timestamp }
   }
   pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }

@@ -1931,14 +1931,23 @@ export const PVT_CONTROLLER_STATE = toControllerStateDefinition({
   pvtHeatDumpController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  pvtMainAftController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainAftWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
-  pvtMainFwdController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainAftPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
-  pvtOwnersController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainFwdWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtMainFwdPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtOwnersWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtOwnersPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
 });
 
@@ -2388,25 +2397,28 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtMaxTemperatureMainFwdStrings: {
+  pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtMaxTemperatureOwnersStrings: {
+  pvtMaxTemperatureMainFwdStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureMainAftStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainFwdStringsSupply: {
+  pvtTemperatureMainAftStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureOwnersStringsSupply: {
+  pvtTemperatureMainAftStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureMainAftStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainFwdStringsReturn: {
+  pvtTemperatureMainAftStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainAftStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureOwnersStringsReturn: {

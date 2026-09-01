@@ -18,7 +18,7 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import Pump, Valve
-from thrs.input_output.definitions.units import Celsius, PvtMode, Ratio, Tuning
+from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 from thrs.orchestration.module import ModuleDescription
 
@@ -34,18 +34,29 @@ class PvtControllerState(ThrsValues):
         controllers.PidControllerValues,
         component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-
-    pvt_main_aft_controller: Annotated[
-        controllers.PvtControllerValues,
-        component_meta(component_type="pvt_controller", included_in_fmu=False),
+    pvt_main_aft_warmup_mix_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    pvt_main_fwd_controller: Annotated[
-        controllers.PvtControllerValues,
-        component_meta(component_type="pvt_controller", included_in_fmu=False),
+    pvt_main_aft_pump_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
-    pvt_owners_controller: Annotated[
-        controllers.PvtControllerValues,
-        component_meta(component_type="pvt_controller", included_in_fmu=False),
+    pvt_main_fwd_warmup_mix_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    pvt_main_fwd_pump_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    pvt_owners_warmup_mix_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    pvt_owners_pump_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
     ]
 
 
@@ -135,15 +146,12 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PvtControllerState:  # noqa: N802
     return PvtControllerState(
         pvt_heat_dump_controller=PidController.zero(timestamp),
-        pvt_main_aft_controller=controllers.PvtControllerValues(
-            mode=Stamped(value=PvtMode.IDLE, timestamp=timestamp)
-        ),
-        pvt_main_fwd_controller=controllers.PvtControllerValues(
-            mode=Stamped(value=PvtMode.IDLE, timestamp=timestamp)
-        ),
-        pvt_owners_controller=controllers.PvtControllerValues(
-            mode=Stamped(value=PvtMode.IDLE, timestamp=timestamp)
-        ),
+        pvt_main_fwd_warmup_mix_controller=PidController.zero(timestamp),
+        pvt_main_fwd_pump_controller=PidController.zero(timestamp),
+        pvt_main_aft_warmup_mix_controller=PidController.zero(timestamp),
+        pvt_main_aft_pump_controller=PidController.zero(timestamp),
+        pvt_owners_warmup_mix_controller=PidController.zero(timestamp),
+        pvt_owners_pump_controller=PidController.zero(timestamp),
     )
 
 
@@ -354,36 +362,12 @@ class PvtControl(
 
         controller_state = PvtControllerState(
             pvt_heat_dump_controller=self._heat_dump_controller.values(),
-            pvt_main_aft_controller=controllers.PvtControllerValues(
-                mode=(
-                    Stamped(
-                        value=PvtMode.IDLE
-                        if self._main_aft_control.state == "idle"
-                        else PvtMode.HARVESTING,
-                        timestamp=self._time(),
-                    )
-                )
-            ),
-            pvt_main_fwd_controller=controllers.PvtControllerValues(
-                mode=(
-                    Stamped(
-                        value=PvtMode.IDLE
-                        if self._main_fwd_control.state == "idle"
-                        else PvtMode.HARVESTING,
-                        timestamp=self._time(),
-                    )
-                )
-            ),
-            pvt_owners_controller=controllers.PvtControllerValues(
-                mode=(
-                    Stamped(
-                        value=PvtMode.IDLE
-                        if self._owners_control.state == "idle"
-                        else PvtMode.HARVESTING,
-                        timestamp=self._time(),
-                    )
-                )
-            ),
+            pvt_main_fwd_warmup_mix_controller=self._main_fwd_control._warmup_mix_controller.values(),
+            pvt_main_fwd_pump_controller=self._main_fwd_control._pump_controller.values(),
+            pvt_main_aft_warmup_mix_controller=self._main_aft_control._warmup_mix_controller.values(),
+            pvt_main_aft_pump_controller=self._main_aft_control._pump_controller.values(),
+            pvt_owners_warmup_mix_controller=self._owners_control._warmup_mix_controller.values(),
+            pvt_owners_pump_controller=self._owners_control._pump_controller.values(),
         )
 
         return (self._current_values, controller_state)

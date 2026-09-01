@@ -1,7 +1,17 @@
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
-import { useAutomationStore } from "@/modules/thrsim/stores/automation";
+import { type PvtAutomaticMode, useAutomationStore } from "@/modules/thrsim/stores/automation";
 import { AmcsControlMode } from "@/modules/thrsim/types";
 import { computed, inject, Ref, toRefs } from "vue";
+
+export type PvtGroup = keyof PvtAutomaticMode;
+
+export const usePvtMode = (group: PvtGroup) => {
+  const { control } = toRefs(useAutomationStore());
+
+  return computed(
+    () => control.value?.modules?.pvt.controlMode.automaticMode?.[group].mode ?? PvtMode.Idle,
+  );
+};
 
 export const useAutomaticMode = () => {
   const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;

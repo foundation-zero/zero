@@ -251,7 +251,7 @@
             "temperature": "Temp"
           },
           "modes": {
-            "harvesting": "Harvesting",
+            "recovery": "Recovery",
             "idle": "Idle",
             "manual": "Manual"
           }

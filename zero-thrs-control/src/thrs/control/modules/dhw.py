@@ -655,7 +655,7 @@ class DhwControl(
 
         self._pump_temperature_controller = PidController[Ratio, Celsius](
             self._current_values.dhw_pump.dutypoint.value,
-            0,
+            self.parameters.ht_boosting_temperature_setpoint,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
             (0.05, 1),
