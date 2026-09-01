@@ -204,8 +204,6 @@
             "renameByName": {
               "device": "Device",
               "device_name": "Device",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
               "temperature": " ",
               "time": ""
             }
@@ -369,9 +367,6 @@
             "renameByName": {
               "device": "Device",
               "flow": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -520,8 +515,6 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
               "temperature": " ",
               "time": ""
             }
@@ -672,9 +665,6 @@
             "renameByName": {
               "device": "Device",
               "quantity": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -837,9 +827,6 @@
             "renameByName": {
               "device": "Device",
               "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -1002,9 +989,6 @@
             "renameByName": {
               "device": "Device",
               "flow": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -1168,8 +1152,6 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
               "temperature": " ",
               "time": ""
             }
@@ -1334,8 +1316,6 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
               "temperature": " ",
               "time": ""
             }
@@ -1486,9 +1466,6 @@
             "renameByName": {
               "delta_temperature": " ",
               "device": "Device",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": "",
               "time": ""
             }
           }
@@ -1651,10 +1628,6 @@
             "renameByName": {
               "device": "Device",
               "level": " ",
-              "pressure": "",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -1817,11 +1790,6 @@
             "renameByName": {
               "device": "Device",
               "irradiance": " ",
-              "level": "",
-              "pressure": "",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -1983,11 +1951,7 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "pressure": " ",
               "speed": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -2151,10 +2115,7 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
+              "flow": " ",
               "time": ""
             }
           }
@@ -2319,9 +2280,6 @@
             "renameByName": {
               "device": "Device",
               "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -2486,10 +2444,6 @@
             "renameByName": {
               "device": "Device",
               "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -2654,11 +2608,6 @@
             "renameByName": {
               "device": "Device",
               "energy_consumption": " ",
-              "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -2810,13 +2759,7 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "energy_consumption": " ",
               "operation_time": " ",
-              "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -2968,13 +2911,6 @@
             "renameByName": {
               "device": "Device",
               "duty_point": " ",
-              "energy_consumption": " ",
-              "operation_time": "",
-              "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -3129,14 +3065,6 @@
             "renameByName": {
               "control_mode": " ",
               "device": "Device",
-              "duty_point": "",
-              "energy_consumption": " ",
-              "operation_time": "",
-              "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -3304,17 +3232,8 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "control_mode": "",
               "device": "Device",
-              "duty_point": "",
-              "energy_consumption": " ",
               "on_off": " ",
-              "operation_time": "",
-              "power_input": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -3492,10 +3411,6 @@
             "renameByName": {
               "device": "Device",
               "position": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -3659,10 +3574,6 @@
             "renameByName": {
               "device": "Device",
               "position": " ",
-              "pressure": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
@@ -3825,12 +3736,7 @@
             "indexByName": {},
             "renameByName": {
               "device": "Device",
-              "position": " ",
-              "pressure": " ",
               "setpoint": " ",
-              "tank1_level": "Fresh water - Tank 1",
-              "tank2_level": "Fresh water - Tank 2",
-              "temperature": " ",
               "time": ""
             }
           }
