@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Annotated, cast
 
-from pydantic import ConfigDict, Field, computed_field
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
@@ -890,14 +890,6 @@ class PvtSensorValues(AmcsModeSensorValues):
             flow=self.pvt_seawater_exchanger_flow.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
         )
-
-    pvt_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.pvt_mode
 
 
 class PvtControlValues(ThrsValues):
