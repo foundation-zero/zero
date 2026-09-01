@@ -23,6 +23,7 @@ from loads.api.schema import (
     SailSetsCombined,
 )
 from loads.config import Settings
+from loads.registry import at_sensors, fiber_optic_sensors, sail_system_sensors
 
 _INTEGRATION_SETTINGS = Settings()  # type: ignore[call-arg]
 
@@ -350,7 +351,19 @@ def scenario_factory(sessionmanager: SessionManager) -> ScenarioFactory:
 
 
 @fixture
-async def async_client():
+async def clear_retained_sensor_topics(settings: Settings):
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
+        topics = {
+            *at_sensors.topics,
+            *fiber_optic_sensors.topics,
+            *sail_system_sensors.topics,
+        }
+        for topic in topics:
+            await client.publish(topic, b"", retain=True)
+
+
+@fixture
+async def async_client(clear_retained_sensor_topics):
     if api_dependencies.sessionmanager._engine is not None:
         await api_dependencies.sessionmanager.close()
 

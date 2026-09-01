@@ -455,6 +455,8 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
+            "st_position/i_MaxPosition": 1000,
+            "st_position/i_MinPosition": 0,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "st_Load/i_Load": 500,
@@ -522,6 +524,8 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
+            "st_position/i_MaxPosition": 1000,
+            "st_position/i_MinPosition": 0,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "st_Load/i_Load": 500,
