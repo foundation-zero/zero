@@ -3072,8 +3072,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
         "overrides": [
           {
@@ -3240,8 +3239,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
         "overrides": [
           {
@@ -3298,7 +3296,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "timeseries",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tthrs_data.timestamp           AS time,\r\n\tmetadata.device               AS device,\r\n\tthrs_data.setpoint__value * 100 AS setpoint\r\nFROM public.marpower__thrs__valves AS thrs_data\r\nJOIN (\r\n\tSELECT\r\n\t\tmqtt_topic,\r\n\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n\t\tconcat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\tFROM public.marpower__io_metadata\r\n\tWHERE mqtt_json_path = '$.Setpoint'\r\n) AS metadata\r\nON thrs_data.topic = metadata.mqtt_topic\r\nWHERE $__timeFilter(timestamp)\r\nAND metadata.\"section\" IN (${section:sqlstring})\r\nORDER BY device, time ASC",
+          "rawSql": "SELECT\r\n\tthrs_data.timestamp          AS time,\r\n\tmetadata.device              AS device,\r\n\tthrs_data.cc_setpoint__value AS setpoint\r\nFROM public.marpower__thrs__valves AS thrs_data\r\nJOIN (\r\n\tSELECT\r\n\t\tmqtt_topic,\r\n\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n\t\tconcat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\tFROM public.marpower__io_metadata\r\n\tWHERE mqtt_json_path = '$.Setpoint'\r\n) AS metadata\r\nON thrs_data.topic = metadata.mqtt_topic\r\nWHERE $__timeFilter(timestamp)\r\nAND metadata.\"section\" IN (${section:sqlstring})\r\nORDER BY device, time ASC",
           "refId": "A",
           "sql": {
             "columns": [
