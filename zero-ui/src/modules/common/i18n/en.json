@@ -29,7 +29,8 @@
     "level": "Level",
     "estimatedTime": "Est. time",
     "degrees": "°",
-    "hertz": "Hz"
+    "hertz": "Hz",
+    "irradiance": "W/m²"
   },
   "apps": {
     "loads": "Loads",
@@ -94,7 +95,9 @@
       "upperdeck": "Upper Deck"
     },
     "to": "To",
-    "from": "From"
+    "from": "From",
+    "in": "In",
+    "out": "Out"
   },
   "views": {
     "splash": {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { ManualValveType } from "../../../components/manual-valve";
+import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
@@ -19,7 +19,8 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1212-01']"
     >
       <TagLabelInstance
-        x="610"
+        :target-x="610"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="180"
         :tag-id="manualValves['1212-01'].tooltip?.yardTag"
       />
@@ -32,60 +33,65 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1212-02']"
     >
       <TagLabelInstance
-        x="735"
+        :target-x="732"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="180"
         :tag-id="manualValves['1212-02'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="615.042"
+      x="630"
       y="522"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-03']"
     >
       <TagLabelInstance
-        x="614.055"
-        y="510.724"
+        :target-x="630"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="515"
         :tag-id="manualValves['1212-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="744.057"
+      x="755"
       y="522"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-04']"
     >
       <TagLabelInstance
-        x="743.07"
-        y="510.724"
+        :target-x="755"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="515"
         :tag-id="manualValves['1212-04'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="615.042"
+      x="630"
       y="613"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-05']"
     >
       <TagLabelInstance
-        x="613.068"
-        y="610.72"
+        :target-x="630"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="605"
         :tag-id="manualValves['1212-05'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="742.224"
+      x="755"
       y="613"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-06']"
     >
       <TagLabelInstance
-        x="740.25"
-        y="610.72"
+        :target-x="755"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="605"
         :tag-id="manualValves['1212-06'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -97,21 +103,23 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1212-07']"
     >
       <TagLabelInstance
-        x="214.722"
+        :target-x="214"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="290"
         :tag-id="manualValves['1212-07'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="1025.775"
+      x="1045"
       y="190.5"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1084-01']"
     >
       <TagLabelInstance
-        x="1025.775"
-        y="185"
+        :target-x="1045"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="219"
         :tag-id="manualValves['1084-01'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -123,21 +131,23 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
       v-bind="manualValves['1087-03']"
     >
       <TagLabelInstance
-        x="214.722"
+        :target-x="214"
+        :target-width="MANUAL_VALVE_WIDTH"
         y="560.724"
         :tag-id="manualValves['1087-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
-      x="1025.775"
+      x="1045"
       y="140.5"
       :type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-08']"
     >
       <TagLabelInstance
-        x="1025.775"
-        y="136"
+        :target-x="1045"
+        :target-width="MANUAL_VALVE_WIDTH"
+        y="170"
         :tag-id="manualValves['1087-08'].tooltip?.yardTag"
       />
     </ManualValveInstance>

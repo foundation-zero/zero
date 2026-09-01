@@ -1927,7 +1927,20 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const PVT_CONTROLLER_STATE = toControllerStateDefinition({});
+export const PVT_CONTROLLER_STATE = toControllerStateDefinition({
+  pvtHeatDumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtMainAftController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
+  pvtMainFwdController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
+  pvtOwnersController: {
+    componentType: ControllerStateComponentType.PvtController,
+  },
+});
 
 export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
   maximumSupplyTemperature: {
@@ -2368,14 +2381,70 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009005-45",
     componentType: SensorComponentType.Temperature,
   },
-  pvtMaxTemperatureMainFwdStrings: {
-    componentType: SensorComponentType.CalculatedTemperature,
+  pcmTemperatureProducersSupply: {
+    yardTag: "50001038-55",
+    componentType: SensorComponentType.Temperature,
   },
   pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
+  pvtMaxTemperatureMainFwdStrings: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
   pvtMaxTemperatureOwnersStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainAftStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainFwdStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureOwnersStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainAftStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainFwdStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureOwnersStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtFlowMainAftStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtFlowMainFwdStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtFlowOwnersStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtPvtMainFwd: {
+    yardTag: "50009001-01",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  pvtPvtMainAft: {
+    yardTag: "50009002-01",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  pvtPvtOwners: {
+    yardTag: "50009001-03",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  pvtReturnTemperature: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTotalFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtSeawaterExchangerFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  pvtSeawaterExchanger: {
+    yardTag: "50001002",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 

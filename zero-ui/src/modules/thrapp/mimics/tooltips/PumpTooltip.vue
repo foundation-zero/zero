@@ -131,7 +131,10 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ actions("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Partials.PIDController v-bind="custom.flowController">
+      <Partials.PIDController
+        v-if="custom.flowController"
+        v-bind="custom.flowController"
+      >
         {{ sources("pumpFlowController") }}
       </Partials.PIDController>
       <Partials.PIDController

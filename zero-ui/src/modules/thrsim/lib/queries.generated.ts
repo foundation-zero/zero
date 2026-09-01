@@ -1621,7 +1621,24 @@ export const PVT_CONTROL_QUERY = `
 `;
 
 export const PVT_CONTROLLER_STATE_QUERY = `
-
+  pvtHeatDumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pvtMainAftController {
+    mode { value timestamp }
+  }
+  pvtMainFwdController {
+    mode { value timestamp }
+  }
+  pvtOwnersController {
+    mode { value timestamp }
+  }
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -2009,14 +2026,69 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureOwnersString6Supply {
     temperature { value timestamp }
   }
-  pvtMaxTemperatureMainFwdStrings {
+  pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
   pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }
   }
+  pvtMaxTemperatureMainFwdStrings {
+    temperature { value timestamp }
+  }
   pvtMaxTemperatureOwnersStrings {
     temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtFlowMainAftStrings {
+    flow { value timestamp }
+  }
+  pvtFlowMainFwdStrings {
+    flow { value timestamp }
+  }
+  pvtFlowOwnersStrings {
+    flow { value timestamp }
+  }
+  pvtPvtMainFwd {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtMainAft {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtOwners {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtReturnTemperature {
+    temperature { value timestamp }
+  }
+  pvtTotalFlow {
+    flow { value timestamp }
+  }
+  pvtSeawaterExchangerFlow {
+    flow { value timestamp }
+  }
+  pvtSeawaterExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 

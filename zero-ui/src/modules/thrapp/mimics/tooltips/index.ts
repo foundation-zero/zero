@@ -40,6 +40,7 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.ExchangeCircuit]: defineAsyncComponent(
     () => import("./ExchangeCircuitTooltip.vue"),
   ),
+  [MimicComponentType.Pvt]: defineAsyncComponent(() => import("./PvtTooltip.vue")),
 };
 
 export const useTranslations = () => ({

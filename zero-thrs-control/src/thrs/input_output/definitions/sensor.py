@@ -106,6 +106,18 @@ class CalculatedFlow(ThrsValues):
     flow: Stamped[LMin]
 
     @classmethod
+    def from_sensors(cls, sensors: list[FlowSensor]):
+        flows = [sensor.flow for sensor in sensors]
+        total_flow = sum(flow.value for flow in flows)
+
+        return CalculatedFlow(
+            flow=Stamped.combine(
+                *flows,
+                value=total_flow,
+            )
+        )
+
+    @classmethod
     def from_weighted_sensors(
         cls,
         weights: Sequence[Stamped[Ratio | LMin]],
@@ -156,15 +168,17 @@ class HeatTransferDevice(ThrsValues):
     @classmethod
     def from_sensors(
         cls,
-        temperature_supply: Stamped[Celsius],
-        temperature_return: Stamped[Celsius],
+        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
+        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
         flow: Stamped[LMin],
         heat_transfer_conversion: float,
     ) -> Self:
         delta_t = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=temperature_return.value - temperature_supply.value,
+            value=0.0
+            if temperature_supply.value is None or temperature_return.value is None
+            else temperature_return.value - temperature_supply.value,
         )
         heat = Stamped.combine(
             delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
@@ -181,6 +195,10 @@ class HeatPump(HeatTransferDevice):
 
 
 class HeatExchanger(HeatTransferDevice):
+    pass
+
+
+class Pvt(HeatTransferDevice):
     pass
 
 
@@ -371,6 +389,7 @@ __all__ = [
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
+    "Pvt",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

@@ -18,7 +18,7 @@ const manualPressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureGauge];
     >
       <TagLabelInstance
         x="236"
-        y="432"
+        y="425"
         :tag-id="manualPressureSensors['1095-14'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>

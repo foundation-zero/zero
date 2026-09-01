@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
 import { MimicComponentInstanceProps } from ".";
-import { Label } from "../components/label";
+import { Label, LabelProps } from "../components/label";
 import { ModuleField } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 
 defineProps<
-  MimicComponentInstanceProps & { temperature: ModuleField<SensorComponentType.Temperature> }
+  MimicComponentInstanceProps &
+    LabelProps & { temperature: ModuleField<SensorComponentType.Temperature> }
 >();
 </script>
 
 <template>
-  <Label
-    :x="x"
-    :y="y"
-  >
+  <Label v-bind="$props">
     {{ tagId }}
     <template #value>
       <SensorValue

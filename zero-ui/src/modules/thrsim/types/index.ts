@@ -47,6 +47,15 @@ export type PIDController = {
   components: Stamped<PID>;
 };
 
+export const enum PvtMode {
+  Idle = "IDLE",
+  Harvesting = "HARVESTING",
+}
+
+export type PvtController = {
+  mode: Stamped<PvtMode>;
+};
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;
@@ -195,6 +204,9 @@ export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
 export type PropulsionDriveSensor = Toggle;
 export type ShorePowerConverterSensor = Toggle;
+export type IrradianceSensor = {
+  irradiance: Stamped<number>;
+};
 
 export type PcsSensor = ModeSelector<string>;
 
@@ -223,7 +235,8 @@ export type SensorType =
   | BrightloopSensor
   | UgridSensor
   | PropulsionDriveSensor
-  | ShorePowerConverterSensor;
+  | ShorePowerConverterSensor
+  | IrradianceSensor;
 
 export type ControlType =
   | PumpControl
@@ -323,6 +336,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
+  PvtController = "pvtController",
 }
 
 export type ControllerStateDefinition<
@@ -333,14 +347,17 @@ export type DhwTankControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.DhwTanksController>;
 export type PIDControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.PIDController>;
+export type PvtControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.PvtController>;
 
 export type ControllerStateDefinitions = SchemaDefinitions<
-  DhwTankControllerDefinition | PIDControllerDefinition
+  DhwTankControllerDefinition | PIDControllerDefinition | PvtControllerDefinition
 >;
 
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
+  [ControllerStateComponentType.PvtController]: PvtController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<
@@ -352,6 +369,7 @@ export const enum SensorComponentType {
   Temperature = "sensor:temperature",
   CalculatedTemperature = "sensor:calculatedTemperature",
   Pressure = "sensor:pressure",
+  Irradiance = "sensor:irradiance",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
   Valve = "sensor:valve",
@@ -390,6 +408,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
+  SensorComponentType.Irradiance,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -453,6 +472,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
+  [SensorComponentType.Irradiance]: IrradianceSensor;
   [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };
 

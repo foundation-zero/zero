@@ -169,7 +169,8 @@
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
-        "empty": "Level"
+        "empty": "Level",
+        "pvt": "Pvt"
       }
     },
     "mimics": {
@@ -237,6 +238,22 @@
             "propulsion": "Propulsion",
             "maneuvering": "Maneuvering",
             "regeneration": "Regeneration"
+          }
+        }
+      },
+      "pvt": {
+        "assets": {
+          "fwdTitle": "PVT FWD",
+          "aftTitle": "PVT AFT",
+          "ownersTitle": "PVT OWNERS",
+          "labels": {
+            "power": "Power",
+            "temperature": "Temp"
+          },
+          "modes": {
+            "harvesting": "Harvesting",
+            "idle": "Idle",
+            "manual": "Manual"
           }
         }
       }

@@ -1,5 +1,5 @@
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.units import Seconds, TankState
+from thrs.input_output.definitions.units import PvtMode, Seconds, TankState
 
 
 class PidControllerValues(
@@ -21,4 +21,8 @@ class TanksControllerValues(ThrsValues):
     time_to_fill: Stamped[Seconds | None]
 
 
-__all__ = ["PidControllerValues", "TanksControllerValues"]
+class PvtControllerValues(ThrsValues):
+    mode: Stamped[PvtMode]
+
+
+__all__ = ["PidControllerValues", "PvtControllerValues", "TanksControllerValues"]

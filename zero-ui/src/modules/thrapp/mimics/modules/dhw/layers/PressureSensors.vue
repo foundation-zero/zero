@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
 import { PressureLabelInstance, PressureSensorInstance } from "../../../instances";
 import { DHW_MIMIC_DATA } from "../data";
 
@@ -16,7 +17,8 @@ const pressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <PressureLabelInstance
-        x="277"
+        :target-x="289"
+        :target-width="PRESSURE_SENSOR_WIDTH"
         y="186"
         :tag-id="pressureSensors['1097-11'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-11'].source"

@@ -13,12 +13,14 @@ import Frequency from "./FrequencyRenderer.vue";
 import HeatExchangerMode from "./HeatExchangerModeRenderer.vue";
 import HeatPumpMode from "./HeatPumpModeRenderer.vue";
 import Heat from "./HeatRenderer.vue";
+import Irradiance from "./IrradianceRenderer.vue";
 import Level from "./LevelRenderer.vue";
 import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
+import PvtMode from "./PvtModeRenderer.vue";
 import QuantityLiters from "./QuantityLitersRenderer.vue";
 import Source from "./SourceRenderer.vue";
 import Temperature from "./TemperatureRenderer.vue";
@@ -56,4 +58,6 @@ export const FieldRenderer = {
   Auto,
   EnabledDisabled,
   Empty,
+  PvtMode,
+  Irradiance,
 };

@@ -17,7 +17,7 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSwitch];
     >
       <TagLabelInstance
         x="598"
-        y="19"
+        y="12"
         :tag-id="levelSensors['1098-01'].tooltip?.yardTag"
       />
     </LevelSwitchInstance>
@@ -29,7 +29,7 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSwitch];
     >
       <TagLabelInstance
         x="956"
-        y="19"
+        y="12"
         :tag-id="levelSensors['1098-02'].tooltip?.yardTag"
       />
     </LevelSwitchInstance>
@@ -41,7 +41,7 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSwitch];
     >
       <TagLabelInstance
         x="1295"
-        y="19"
+        y="12"
         :tag-id="levelSensors['1098-03'].tooltip?.yardTag"
       />
     </LevelSwitchInstance>

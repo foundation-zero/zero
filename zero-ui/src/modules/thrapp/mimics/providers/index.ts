@@ -29,7 +29,7 @@ export { default as ParameterValue } from "./ParameterValue.vue";
 export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
-export type CustomFieldData = {
+export type SchemaDirectiveData = {
   title?: string;
   yardTag?: string;
   technicalName: string;
@@ -37,8 +37,8 @@ export type CustomFieldData = {
 
 export const getCustomField = <Module extends keyof ThrsDefinitions>(
   module: Module,
-  field: CustomFieldData,
-): ModuleField<"custom", Module> => ["custom", module, field.technicalName, field];
+  data: SchemaDirectiveData,
+): ModuleField<"custom", Module> => ["custom", module, data.technicalName, data];
 
 export const getField = <
   Type extends
@@ -83,7 +83,9 @@ export type ModuleField<
     | undefined
     | "custom",
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
-  CustomData extends CustomFieldData | null = Type extends "custom" ? CustomFieldData : null,
+  CustomData extends SchemaDirectiveData | null = Type extends "custom"
+    ? SchemaDirectiveData
+    : null,
 > = [type: Type, module: Module, field: string, customData: CustomData];
 
 export const isField = <
@@ -158,6 +160,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
+  [SensorComponentType.Irradiance]: "irradiance",
   [SensorComponentType.AmcsControlMode]: "mode",
 };
 

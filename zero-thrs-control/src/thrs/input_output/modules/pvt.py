@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated
+from typing import Annotated, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -7,6 +7,7 @@ from pydantic.alias_generators import to_snake
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION, Celsius
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
@@ -426,13 +427,23 @@ class PvtSensorValues(AmcsModeSensorValues):
         component_meta(yard_tag="50009005-45", component_type="temperature_sensor"),
     ]
 
+    pcm_temperature_producers_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-55",
+            component_type="temperature_sensor",
+            topic_override="500000-thrs/pcm/pcm-temperature-producers-supply",
+            included_in_fmu=False,
+        ),
+    ]
+
     @computed_field(
         json_schema_extra=computed_meta(
             component_type="calculated_temperature", included_in_fmu=False
         )
     )
     @property
-    def pvt_max_temperature_main_fwd_strings(self) -> sensor.CalculatedTemperature:
+    def pvt_max_temperature_main_aft_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string1_1_return,
@@ -460,7 +471,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_max_temperature_main_aft_strings(self) -> sensor.CalculatedTemperature:
+    def pvt_max_temperature_main_fwd_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string7_1_return,
@@ -505,6 +516,379 @@ class PvtSensorValues(AmcsModeSensorValues):
                 self.pvt_temperature_owners_string5_supply,
                 self.pvt_temperature_owners_string6_supply,
             ]
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_aft_strings_supply(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string1_1.flow,
+                self.pvt_flow_main_string1_2.flow,
+                self.pvt_flow_main_string2_1.flow,
+                self.pvt_flow_main_string2_2.flow,
+                self.pvt_flow_main_string3.flow,
+                self.pvt_flow_main_string4.flow,
+                self.pvt_flow_main_string5_1.flow,
+                self.pvt_flow_main_string5_2.flow,
+                self.pvt_flow_main_string6_1.flow,
+                self.pvt_flow_main_string6_2.flow,
+            ],
+            [
+                self.pvt_temperature_main_string1_supply,
+                self.pvt_temperature_main_string1_supply,
+                self.pvt_temperature_main_string2_supply,
+                self.pvt_temperature_main_string2_supply,
+                self.pvt_temperature_main_string3_supply,
+                self.pvt_temperature_main_string4_supply,
+                self.pvt_temperature_main_string5_supply,
+                self.pvt_temperature_main_string5_supply,
+                self.pvt_temperature_main_string6_supply,
+                self.pvt_temperature_main_string6_supply,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_fwd_strings_supply(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string7_1.flow,
+                self.pvt_flow_main_string7_2.flow,
+                self.pvt_flow_main_string8_1.flow,
+                self.pvt_flow_main_string8_2.flow,
+                self.pvt_flow_main_string9.flow,
+                self.pvt_flow_main_string10.flow,
+                self.pvt_flow_main_string11_1.flow,
+                self.pvt_flow_main_string11_2.flow,
+                self.pvt_flow_main_string12.flow,
+                self.pvt_flow_main_string13.flow,
+            ],
+            [
+                self.pvt_temperature_main_string7_supply,
+                self.pvt_temperature_main_string7_supply,
+                self.pvt_temperature_main_string8_supply,
+                self.pvt_temperature_main_string8_supply,
+                self.pvt_temperature_main_string9_supply,
+                self.pvt_temperature_main_string10_supply,
+                self.pvt_temperature_main_string11_supply,
+                self.pvt_temperature_main_string11_supply,
+                self.pvt_temperature_main_string12_supply,
+                self.pvt_temperature_main_string13_supply,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_owners_strings_supply(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_owners_string1.flow,
+                self.pvt_flow_owners_string2.flow,
+                self.pvt_flow_owners_string3.flow,
+                self.pvt_flow_owners_string4.flow,
+                self.pvt_flow_owners_string5.flow,
+                self.pvt_flow_owners_string6.flow,
+            ],
+            [
+                self.pvt_temperature_owners_string1_supply,
+                self.pvt_temperature_owners_string2_supply,
+                self.pvt_temperature_owners_string3_supply,
+                self.pvt_temperature_owners_string4_supply,
+                self.pvt_temperature_owners_string5_supply,
+                self.pvt_temperature_owners_string6_supply,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_aft_strings_return(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string1_1.flow,
+                self.pvt_flow_main_string1_2.flow,
+                self.pvt_flow_main_string2_1.flow,
+                self.pvt_flow_main_string2_2.flow,
+                self.pvt_flow_main_string3.flow,
+                self.pvt_flow_main_string4.flow,
+                self.pvt_flow_main_string5_1.flow,
+                self.pvt_flow_main_string5_2.flow,
+                self.pvt_flow_main_string6_1.flow,
+                self.pvt_flow_main_string6_2.flow,
+            ],
+            [
+                self.pvt_temperature_main_string1_1_return,
+                self.pvt_temperature_main_string1_2_return,
+                self.pvt_temperature_main_string2_1_return,
+                self.pvt_temperature_main_string2_2_return,
+                self.pvt_temperature_main_string3_return,
+                self.pvt_temperature_main_string4_return,
+                self.pvt_temperature_main_string5_1_return,
+                self.pvt_temperature_main_string5_2_return,
+                self.pvt_temperature_main_string6_1_return,
+                self.pvt_temperature_main_string6_2_return,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_fwd_strings_return(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string7_1.flow,
+                self.pvt_flow_main_string7_2.flow,
+                self.pvt_flow_main_string8_1.flow,
+                self.pvt_flow_main_string8_2.flow,
+                self.pvt_flow_main_string9.flow,
+                self.pvt_flow_main_string10.flow,
+                self.pvt_flow_main_string11_1.flow,
+                self.pvt_flow_main_string11_2.flow,
+                self.pvt_flow_main_string12.flow,
+                self.pvt_flow_main_string13.flow,
+            ],
+            [
+                self.pvt_temperature_main_string7_1_return,
+                self.pvt_temperature_main_string7_2_return,
+                self.pvt_temperature_main_string8_1_return,
+                self.pvt_temperature_main_string8_2_return,
+                self.pvt_temperature_main_string9_return,
+                self.pvt_temperature_main_string10_return,
+                self.pvt_temperature_main_string11_1_return,
+                self.pvt_temperature_main_string11_2_return,
+                self.pvt_temperature_main_string12_return,
+                self.pvt_temperature_main_string13_return,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_owners_strings_return(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_owners_string1.flow,
+                self.pvt_flow_owners_string2.flow,
+                self.pvt_flow_owners_string3.flow,
+                self.pvt_flow_owners_string4.flow,
+                self.pvt_flow_owners_string5.flow,
+                self.pvt_flow_owners_string6.flow,
+            ],
+            [
+                self.pvt_temperature_owners_string1_return,
+                self.pvt_temperature_owners_string2_return,
+                self.pvt_temperature_owners_string3_return,
+                self.pvt_temperature_owners_string4_return,
+                self.pvt_temperature_owners_string5_return,
+                self.pvt_temperature_owners_string6_return,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_flow_main_aft_strings(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow.from_sensors(
+            [
+                self.pvt_flow_main_string1_1,
+                self.pvt_flow_main_string1_2,
+                self.pvt_flow_main_string2_1,
+                self.pvt_flow_main_string2_2,
+                self.pvt_flow_main_string3,
+                self.pvt_flow_main_string4,
+                self.pvt_flow_main_string5_1,
+                self.pvt_flow_main_string5_2,
+                self.pvt_flow_main_string6_1,
+                self.pvt_flow_main_string6_2,
+            ],
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_flow_main_fwd_strings(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow.from_sensors(
+            [
+                self.pvt_flow_main_string7_1,
+                self.pvt_flow_main_string7_2,
+                self.pvt_flow_main_string8_1,
+                self.pvt_flow_main_string8_2,
+                self.pvt_flow_main_string9,
+                self.pvt_flow_main_string10,
+                self.pvt_flow_main_string11_1,
+                self.pvt_flow_main_string11_2,
+                self.pvt_flow_main_string12,
+                self.pvt_flow_main_string13,
+            ],
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_flow_owners_strings(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow.from_sensors(
+            [
+                self.pvt_flow_owners_string1,
+                self.pvt_flow_owners_string2,
+                self.pvt_flow_owners_string3,
+                self.pvt_flow_owners_string4,
+                self.pvt_flow_owners_string5,
+                self.pvt_flow_owners_string6,
+            ],
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50009001-01",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def pvt_pvt_main_fwd(self) -> sensor.Pvt:
+        return sensor.Pvt.from_sensors(
+            temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
+            temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
+            flow=self.pvt_flow_main_fwd_strings.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50009002-01",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def pvt_pvt_main_aft(self) -> sensor.Pvt:
+        return sensor.Pvt.from_sensors(
+            temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
+            temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
+            flow=self.pvt_flow_main_aft_strings.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50009001-03",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def pvt_pvt_owners(self) -> sensor.Pvt:
+        return sensor.Pvt.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_strings_return.temperature,
+            flow=self.pvt_flow_owners_strings.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_return_temperature(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_aft_recovery.flow,
+                self.pvt_flow_main_fwd_recovery.flow,
+                self.pvt_flow_owners_recovery.flow,
+            ],
+            [
+                self.pvt_temperature_main_aft_return,
+                self.pvt_temperature_main_fwd_return,
+                self.pvt_temperature_owners_return,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_total_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.pvt_flow_main_aft_recovery.flow,
+                self.pvt_flow_main_fwd_recovery.flow,
+                self.pvt_flow_owners_recovery.flow,
+                value=self.pvt_flow_main_aft_recovery.flow.value
+                + self.pvt_flow_main_fwd_recovery.flow.value
+                + self.pvt_flow_owners_recovery.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_seawater_exchanger_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.pvt_mix_exchanger.position_rel,
+                self.pvt_total_flow.flow,
+                value=(1 - self.pvt_mix_exchanger.position_rel.value)
+                * self.pvt_total_flow.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001002", component_type="heat_exchanger", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_seawater_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.pvt_temperature_supply.temperature,
+            temperature_return=self.pcm_temperature_producers_supply.temperature,
+            flow=self.pvt_seawater_exchanger_flow.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
         )
 
 
@@ -581,3 +965,14 @@ class PvtSimulationOutputs(ThrsValues):
     pvt_pcm_return: simulation.Boundary
     pvt_pcm_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="temperature_sensor"
+        )
+    )
+    @property
+    def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
+        )

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { HEAT_EXCHANGER_WIDTH } from "../../../components/heat-exchanger";
 import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
 import { DHW_MIMIC_DATA } from "../data";
 
@@ -15,7 +16,8 @@ const heatExchangers = DHW_MIMIC_DATA[MimicComponentType.HeatExchanger];
     :orientation="ComponentOrientation.Down"
   >
     <HeatExchangerLabelInstance
-      x="23"
+      :target-x="33"
+      :target-width="HEAT_EXCHANGER_WIDTH"
       y="379.3"
       :tag-id="heatExchangers['1007'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1007'].source"
@@ -28,7 +30,8 @@ const heatExchangers = DHW_MIMIC_DATA[MimicComponentType.HeatExchanger];
     :orientation="ComponentOrientation.Down"
   >
     <HeatExchangerLabelInstance
-      x="710"
+      :target-x="718.5"
+      :target-width="HEAT_EXCHANGER_WIDTH"
       y="585"
       :tag-id="heatExchangers['1009'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1009'].source"
@@ -42,7 +45,8 @@ const heatExchangers = DHW_MIMIC_DATA[MimicComponentType.HeatExchanger];
     :orientation="ComponentOrientation.Down"
   >
     <HeatExchangerLabelInstance
-      x="460"
+      :target-x="470"
+      :target-width="HEAT_EXCHANGER_WIDTH"
       y="425"
       :tag-id="heatExchangers['1008'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1008'].source"
@@ -55,7 +59,8 @@ const heatExchangers = DHW_MIMIC_DATA[MimicComponentType.HeatExchanger];
     :orientation="ComponentOrientation.Down"
   >
     <HeatExchangerLabelInstance
-      x="955"
+      :target-x="964.5"
+      :target-width="HEAT_EXCHANGER_WIDTH"
       y="425"
       :tag-id="heatExchangers['1004'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1004'].source"
