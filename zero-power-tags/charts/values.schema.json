@@ -84,26 +84,6 @@
         }
       }
     },
-    "stub": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Deploy an in-cluster stub Modbus server per panel and point the bridge at it."
-        },
-        "defaultRegisterValue": {
-          "type": "number",
-          "description": "Float value the stub serves for float32 registers."
-        },
-        "panels": {
-          "type": "array",
-          "description": "Panel keys in gateway order; one stub Modbus server per panel.",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "image": {
       "type": "object",
       "properties": {

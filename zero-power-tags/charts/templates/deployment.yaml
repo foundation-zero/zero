@@ -66,23 +66,12 @@ spec:
               value: {{ .Values.modbus.probe_interval | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
-            {{- if .Values.stub.enabled }}
-            {{- $base := int .Values.modbus.port }}
-            {{- $stubName := include "zero-power-tags.stub" . }}
-            {{- range $index, $panel := .Values.stub.panels }}
-            - name: MODBUS_PANELS__host_{{ $panel | lower }}
-              value: {{ $stubName | quote }}
-            - name: MODBUS_PANELS__port_{{ $panel | lower }}
-              value: {{ add $base $index | quote }}
-            {{- end }}
-            {{- else }}
             {{- range $key, $panel := .Values.modbus.panels }}
             - name: MODBUS_PANELS__host_{{ $key | lower }}
               value: {{ $panel.host | quote }}
             {{- if $panel.port }}
             - name: MODBUS_PANELS__port_{{ $key | lower }}
               value: {{ $panel.port | quote }}
-            {{- end }}
             {{- end }}
             {{- end }}
           resources:

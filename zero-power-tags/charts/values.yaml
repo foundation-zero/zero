@@ -27,21 +27,12 @@ modbus:
   #     host: "192.168.0.10"
   #     port: 502
   stub:
+    # Serve dummy Modbus data from a local stub deployment when no hardware is
+    # available: renders an extra `-stub` Deployment running the `stub`
+    # subcommand plus a Service in front of it. Point every modbus.panels host
+    # at the stub Service (zero-power-tags-stub) and set a per-panel port; stub
+    # and bridge share the same per-panel ports from modbus.panels.
     enabled: false
-
-stub:
-  enabled: false
-  defaultRegisterValue: 0.0
-  # One panel per gateway, ordered as in modbus_bridges.json. When enabled the
-  # stub serves a dedicated Modbus server per panel on `modbus.port + index`,
-  # and the bridge pod dials those panels through the stub service instead of
-  # `modbus.panels`.
-  panels:
-    - 10p0_1
-    - 10p0_3
-    - 10p1
-    - 10p2
-    - 10p3
 
 resources: {}
 
