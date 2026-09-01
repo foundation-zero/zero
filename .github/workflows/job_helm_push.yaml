@@ -19,11 +19,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: "0"
+          fetch-tags: true
       - name: Git describe
         id: ghd
         uses: proudust/gh-describe@v2
         with:
-          match: "v*.*.*" # Only tags with patch versions
+          match: "v*.*.*" # Best-effort match for semver-ish tags like vX.Y.Z
       - name: Update Chart Versions
         id: chart_info
         if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
