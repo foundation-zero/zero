@@ -1931,14 +1931,23 @@ export const PVT_CONTROLLER_STATE = toControllerStateDefinition({
   pvtHeatDumpController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  pvtMainAftController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainAftWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
-  pvtMainFwdController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainAftPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
-  pvtOwnersController: {
-    componentType: ControllerStateComponentType.PvtController,
+  pvtMainFwdWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtMainFwdPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtOwnersWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pvtOwnersPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
   },
 });
 

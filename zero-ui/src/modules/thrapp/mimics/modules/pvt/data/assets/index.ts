@@ -1,4 +1,4 @@
-import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
@@ -8,14 +8,8 @@ export const PVT_ASSET_DATA = toFieldsMap({
   [MimicComponentType.Pvt]: {
     "9001-01": toInstance<MimicComponentType.Pvt>({
       controls: {},
-      controllerState: {
-        controller: getField(
-          ControllerStateComponentType.PvtController,
-          "pvt",
-          "pvtMainFwdController",
-        ),
-      },
-      custom: {},
+      controllerState: {},
+      custom: { group: "fwd" },
       parameters: {},
       source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainFwd"),
       sensors: {
@@ -40,14 +34,8 @@ export const PVT_ASSET_DATA = toFieldsMap({
     }),
     "9002-01": toInstance<MimicComponentType.Pvt>({
       controls: {},
-      controllerState: {
-        controller: getField(
-          ControllerStateComponentType.PvtController,
-          "pvt",
-          "pvtMainAftController",
-        ),
-      },
-      custom: {},
+      controllerState: {},
+      custom: { group: "aft" },
       parameters: {},
       source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainAft"),
 
@@ -73,14 +61,8 @@ export const PVT_ASSET_DATA = toFieldsMap({
     }),
     "9001-03": toInstance<MimicComponentType.Pvt>({
       controls: {},
-      controllerState: {
-        controller: getField(
-          ControllerStateComponentType.PvtController,
-          "pvt",
-          "pvtOwnersController",
-        ),
-      },
-      custom: {},
+      controllerState: {},
+      custom: { group: "owners" },
       parameters: {},
       source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtOwners"),
 

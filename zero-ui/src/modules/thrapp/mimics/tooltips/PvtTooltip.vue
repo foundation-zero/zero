@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePvtMode } from "@/modules/thrapp/state";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -13,7 +14,6 @@ import {
 import { MimicComponentType } from "../../types";
 import { ComponentOrientation } from "../components";
 import { PvtInstance } from "../instances";
-import { ControllerStateValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import Circuit from "./partials/Circuit.vue";
@@ -21,6 +21,7 @@ import Circuit from "./partials/Circuit.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pvt>>();
 
 const { labels, actions, items } = useTranslations();
+const mode = usePvtMode(props.custom.group);
 </script>
 
 <template>
@@ -38,23 +39,18 @@ const { labels, actions, items } = useTranslations();
       <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
 
-    <ControllerStateValue
-      :source="controllerState.controller"
-      field="mode"
-    >
-      <TooltipList>
-        <TooltipListHeader>
-          {{ labels("mode") }}
-          <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
-        </TooltipListHeader>
-        <Partials.ListItem no-source>
-          {{ items("pvt") }}
-          <template #value>
-            <FieldRenderer.PvtMode />
-          </template>
-        </Partials.ListItem>
-      </TooltipList>
-    </ControllerStateValue>
+    <TooltipList>
+      <TooltipListHeader>
+        {{ labels("mode") }}
+        <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
+      </TooltipListHeader>
+      <Partials.ListItem no-source>
+        {{ items("pvt") }}
+        <template #value>
+          <FieldRenderer.PvtMode :value="mode" />
+        </template>
+      </Partials.ListItem>
+    </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SolarPanelIcon } from "@/modules/common/components/icons";
-import { PvtMode as PvtModeEnum } from "@/modules/thrsim/types";
+import { usePvtMode } from "@/modules/thrapp/state";
 import { RiDropLine, RiFireLine, RiFlashlightLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -30,19 +30,15 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
-const { getSensorValue, getComponentState, getControllerState } = getMimicDataProvider();
+const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const controller = getControllerState(props.controllerState.controller);
 const flow = getSensorValue(props.sensors.flow);
 const pvt = getSensorValue(props.source);
 const state = getComponentState();
+const modeKey = usePvtMode(props.custom.group);
 
 const flowRate = computed(() => {
   return flow.value?.flow?.value;
-});
-
-const modeKey = computed(() => {
-  return controller.value?.mode.value ?? PvtModeEnum.Idle;
 });
 </script>
 

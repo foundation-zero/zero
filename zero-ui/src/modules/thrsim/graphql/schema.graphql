@@ -266,10 +266,6 @@ type ControllerPidControllerValuesType {
   components: FloatListStampedType!
 }
 
-type ControllerPvtControllerValuesType {
-  mode: PvtModeStampedType!
-}
-
 type ControllerTanksControllerValuesType {
   tank1State: TankStateStampedType!
   tank2State: TankStateStampedType!
@@ -1246,23 +1242,16 @@ type PvtControlValuesType {
 
 type PvtControllerStateType {
   pvtHeatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  pvtMainAftController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
-  pvtMainFwdController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
-  pvtOwnersController: ControllerPvtControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pvt_controller", valveType: null)
+  pvtMainAftWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtMainAftPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtMainFwdWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtMainFwdPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtOwnersWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pvtOwnersPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type PvtGroupControlModeType {
   mode: String!
-}
-
-enum PvtMode {
-  IDLE
-  HARVESTING
-}
-
-type PvtModeStampedType {
-  value: PvtMode!
-  timestamp: DateTime!
 }
 
 type PvtParametersType {

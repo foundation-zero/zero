@@ -4,6 +4,12 @@ import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField, ModuleField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
+import {
+  pvtHeatDumpController,
+  pvtMainAftWarmupMixController,
+  pvtMainFwdWarmupMixController,
+  pvtOwnersWarmupMixController,
+} from "../controllers";
 
 export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
   fieldTooltip(field, {
@@ -18,7 +24,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixMainFwd"),
       },
       controllerState: {},
-      custom: {},
+      custom: { controller: pvtMainFwdWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixMainFwd"),
       sensors: {},
@@ -32,7 +38,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixMainAft"),
       },
       controllerState: {},
-      custom: {},
+      custom: { controller: pvtMainAftWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixMainAft"),
       sensors: {},
@@ -46,7 +52,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixOwners"),
       },
       controllerState: {},
-      custom: {},
+      custom: { controller: pvtOwnersWarmupMixController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixOwners"),
       sensors: {},
@@ -60,7 +66,7 @@ export const PVT_MIX_VALVE_DATA = toFieldsMap({
         valve: getField(ControlComponentType.Valve, "pvt", "pvtMixExchanger"),
       },
       controllerState: {},
-      custom: {},
+      custom: { controller: pvtHeatDumpController },
       parameters: {},
       source: getField(SensorComponentType.Valve, "pvt", "pvtMixExchanger"),
       sensors: {},
