@@ -33,13 +33,16 @@ const delegatedProps = reactiveOmit(props, "class");
 
     <div class="flex w-full flex-col pb-1">
       <MastLockCompactPosition
+        v-if="overhoist !== undefined"
         :state="overhoist"
-        :class="{ invisible: overhoist == undefined }"
       >
         {{ t("overhoist") }}
       </MastLockCompactPosition>
 
-      <hr class="border-border-subtle my-2 w-full" />
+      <hr
+        v-if="overhoist !== undefined"
+        class="border-border-subtle my-2 w-full"
+      />
 
       <MastLockCompactPosition :state="locked">
         {{ t("locked") }}
