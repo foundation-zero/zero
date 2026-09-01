@@ -14,10 +14,7 @@ def parse_directory(input_source: Path) -> pl.DataFrame:
 
     if not input_source.exists():
         raise FileNotFoundError(f"Input directory not found: {input_source}")
-    frames = []
-    for file in input_source.glob("*.htm"):
-        frame = parse_sailpack(file)
-        frames.append(frame)
+    frames = [parse_sailpack(file) for file in sorted(input_source.glob("*.htm"))]
 
     if not frames:
         raise ValueError(f"No .htm files found in sailpack directory: {input_source}")

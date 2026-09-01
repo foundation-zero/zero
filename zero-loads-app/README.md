@@ -86,6 +86,22 @@ Generate a JWT token for a specific role (e.g., `captain`):
 uv run loads generate-jwt --roles captain
 ```
 
+#### Seeds
+
+The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
+`hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
+load cases in `src/sailpack/load_cases`:
+
+```bash
+just export_seed
+```
+
+To verify the committed seed files are still consistent with the Sailpack
+export (also enforced in CI):
+```bash
+just check_seed
+```
+
 ## Testing
 
 1. Make sure the dependencies for testing are installed

@@ -5,6 +5,8 @@ on:
       - zero-loads-app/**
       - data/**
       - zero-generator/**
+      - hasura/seeds/zero/loads_reference_values.sql
+      - hasura/seeds/zero/loads_case_mappings.sql
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
@@ -15,6 +17,8 @@ on:
       - zero-loads-app/**
       - data/**
       - zero-generator/**
+      - hasura/seeds/zero/loads_reference_values.sql
+      - hasura/seeds/zero/loads_case_mappings.sql
       - .github/workflows/ci_zero_loads_app.yaml
 
 env:
@@ -59,6 +63,9 @@ jobs:
         working-directory: zero-loads-app
       - name: Unit Test
         run: uv run pytest --run=unit -vv
+        working-directory: zero-loads-app
+      - name: Check seeds are consistent with sailpack export
+        run: uv run loads check-seed
         working-directory: zero-loads-app
       - name: Run services
         run: docker compose --profile zero up -d --quiet-pull --wait postgres vernemq
