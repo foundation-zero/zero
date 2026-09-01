@@ -106,7 +106,7 @@ MinPositionAlarm: TypeAlias = Annotated[
 
 MaxPosition: TypeAlias = Annotated[
     BaseMaxPosition,
-    Field(default=None, validation_alias="st_position/i_MaxPosition"),
+    Field(validation_alias="st_position/i_MaxPosition"),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -117,7 +117,7 @@ MaxPosition: TypeAlias = Annotated[
 
 MinPosition: TypeAlias = Annotated[
     BaseMinPosition,
-    Field(default=None, validation_alias="st_position/i_MinPosition"),
+    Field(validation_alias="st_position/i_MinPosition"),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -762,7 +762,6 @@ class MainRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe501-main-runner-captive-winch-sb"
     load: Annotated[
         Load,
-        Field(),
         VariableMeta(
             display_name="Runner SB",
             applies_to_tack="starboard",
@@ -778,7 +777,6 @@ class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205-main-sheet-captive-winch"
     load: Annotated[
         Load,
-        Field(),
         VariableMeta(display_name="Sheet"),
     ]
     load_failure: LoadFailure
@@ -830,9 +828,9 @@ class MainTraveller(LoadsModel, ABC):
             scale_max_label="sb",
         ),
     ]
-    # TODO: Add position alarms/thresholds (MaxPosition field not found)
-    max_position_alarm: MaxPositionAlarm
-    min_position_alarm: MinPositionAlarm
+    # TODO: Add position alarms/thresholds (MaxPosition field not found, InnerLimit/OuterLimit fields might be used instead)
+    # max_position_alarm: MaxPositionAlarm
+    # min_position_alarm: MinPositionAlarm
 
 
 class MizzenCheckstay(LoadsModel, ABC):
