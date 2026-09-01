@@ -179,3 +179,9 @@ class TankControlMode(Enum):
 class PvtMode(Enum):
     IDLE = 0
     HARVESTING = 1
+
+
+class PumpControlMode(Enum):
+    CONSTANT_SPEED = 1
+    CONSTANT_DIFFERENTIAL_PRESSURE = 3
+    VARIABLE_DIFFERENTIAL_PRESSURE = 4
