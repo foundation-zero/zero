@@ -2838,12 +2838,489 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 281
+      },
+      "id": 43,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tthrs_data.timestamp            AS time,\r\n\tmetadata.device                AS device,\r\n\tthrs_data.cc_duty_point__value AS duty_point\r\nFROM public.marpower__thrs__pumps AS thrs_data\r\nJOIN (\r\n\tSELECT\r\n\t\tmqtt_topic,\r\n\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n\t\tconcat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\tFROM public.marpower__io_metadata\r\n\tWHERE mqtt_json_path = '$.CC_DutyPoint'\r\n) AS metadata\r\nON thrs_data.topic = metadata.mqtt_topic\r\nWHERE $__timeFilter(timestamp)\r\nAND metadata.\"section\" IN (${section:sqlstring})\r\nORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Duty point",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "duty_point": " ",
+              "energy_consumption": " ",
+              "operation_time": "",
+              "power_input": " ",
+              "pressure": " ",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 297
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tthrs_data.timestamp              AS time,\r\n\tmetadata.device                  AS device,\r\n\tthrs_data.cc_control_mode__value AS control_mode\r\nFROM public.marpower__thrs__pumps AS thrs_data\r\nJOIN (\r\n\tSELECT\r\n\t\tmqtt_topic,\r\n\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n\t\tconcat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\tFROM public.marpower__io_metadata\r\n\tWHERE mqtt_json_path = '$.CC_ControlMode'\r\n) AS metadata\r\nON thrs_data.topic = metadata.mqtt_topic\r\nWHERE $__timeFilter(timestamp)\r\nAND metadata.\"section\" IN (${section:sqlstring})\r\nORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Control mode",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "control_mode": " ",
+              "device": "Device",
+              "duty_point": "",
+              "energy_consumption": " ",
+              "operation_time": "",
+              "power_input": " ",
+              "pressure": " ",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": 300000,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 305
+      },
+      "id": 45,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "timeseries",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tthrs_data.timestamp        AS time,\r\n\tmetadata.device            AS device,\r\n\tthrs_data.cc_on_off__value AS on_off\r\nFROM public.marpower__thrs__pumps AS thrs_data\r\nJOIN (\r\n\tSELECT\r\n\t\tmqtt_topic,\r\n\t\tregexp_replace(mqtt_topic, 'marpower/500000-thrs/([^/]+)/.*$', '$1')                              AS \"section\",\r\n\t\tconcat('[', yard_tag, '] ', regexp_replace(mqtt_topic, 'marpower/500000-thrs/.*/([^/]+)$', '$1')) AS device\r\n\tFROM public.marpower__io_metadata\r\n\tWHERE mqtt_json_path = '$.CC_OnOff'\r\n) AS metadata\r\nON thrs_data.topic = metadata.mqtt_topic\r\nWHERE $__timeFilter(timestamp)\r\nAND metadata.\"section\" IN (${section:sqlstring})\r\nORDER BY device, time ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "On / Off",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "control_mode": "",
+              "device": "Device",
+              "duty_point": "",
+              "energy_consumption": " ",
+              "operation_time": "",
+              "power_input": " ",
+              "pressure": " ",
+              "tank1_level": "Fresh water - Tank 1",
+              "tank2_level": "Fresh water - Tank 2",
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Device"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 281
+        "y": 314
       },
       "id": 15,
       "panels": [],
@@ -2925,7 +3402,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 282
+        "y": 315
       },
       "id": 24,
       "options": {
@@ -3092,7 +3569,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 298
+        "y": 331
       },
       "id": 23,
       "options": {
@@ -3259,7 +3736,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 314
+        "y": 347
       },
       "id": 25,
       "options": {
