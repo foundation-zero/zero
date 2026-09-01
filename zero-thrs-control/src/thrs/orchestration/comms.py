@@ -3,6 +3,7 @@ import logging
 from asyncio import Event, Future, gather, timeout
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Mapping
+from functools import partial
 from inspect import isawaitable
 from typing import (
     Protocol,
@@ -321,19 +322,14 @@ class MergedModuleMqttMapping(
     ):
         self._sensor_values: CombinedValues | None = None
         self._control_values: CombinedValues | None = None
-        self._sensor_values_mappings = {
-            name: PartialMqttMapping(cls, topic_prefix, f"500000-thrs/{name}")
-            for name, cls in sensor_values_clss.items()
-        }
-        self._control_values_mappings = {
-            name: PartialMqttMapping(
-                cls,
-                topic_prefix,
-                f"500000-thrs/{name}",
-                context=AMCS_RECEIVE_CONTEXT,
-            )
-            for name, cls in control_values_clss.items()
-        }
+        self._sensor_values_mapping = ModuleMqttMapping(
+            sensor_values_clss, PartialMqttMapping, topic_prefix
+        )
+        self._control_values_mapping = ModuleMqttMapping(
+            control_values_clss,
+            partial(PartialMqttMapping, context=AMCS_RECEIVE_CONTEXT),
+            topic_prefix,
+        )
 
     def split_to_topics(
         self, model: tuple[CombinedValues | None, CombinedValues | None]
@@ -344,24 +340,18 @@ class MergedModuleMqttMapping(
         if self._sensor_values is None or self._control_values is None:
             return {}
         merged: dict[str, dict[str, object]] = defaultdict(dict)
-        self._merge_payloads(merged, self._sensor_values, self._sensor_values_mappings)
-        self._merge_payloads(
-            merged, self._control_values, self._control_values_mappings
-        )
+        self._merge_payloads(merged, self._sensor_values, self._sensor_values_mapping)
+        self._merge_payloads(merged, self._control_values, self._control_values_mapping)
         return {topic: json.dumps(payload) for topic, payload in merged.items()}
 
     def _merge_payloads(
         self,
         merged: dict[str, dict[str, object]],
         values: CombinedValues,
-        mappings: Mapping[str, PartialMqttMapping],
+        mapping: ModuleMqttMapping,
     ) -> None:
-        for module_name, mapping in mappings.items():
-            module = values.values.get(module_name)
-            if module is None:
-                continue
-            for topic, payload in mapping.split_to_topics(module).items():
-                merged[topic].update(json.loads(payload))
+        for topic, payload in mapping.split_to_topics(values).items():
+            merged[topic].update(json.loads(payload))
 
 
 class ControlChannels[
