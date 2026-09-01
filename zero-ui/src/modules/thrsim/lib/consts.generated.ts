@@ -2385,40 +2385,37 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-55",
     componentType: SensorComponentType.Temperature,
   },
-  pvtMode: {
-    componentType: SensorComponentType.AmcsControlMode,
-  },
-  pvtMaxTemperatureMainFwdStrings: {
+  pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtMaxTemperatureMainAftStrings: {
+  pvtMaxTemperatureMainFwdStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtMaxTemperatureOwnersStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainFwdStringsSupply: {
+  pvtTemperatureMainAftStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainAftStringsSupply: {
+  pvtTemperatureMainFwdStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureOwnersStringsSupply: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainFwdStringsReturn: {
+  pvtTemperatureMainAftStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtTemperatureMainAftStringsReturn: {
+  pvtTemperatureMainFwdStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureOwnersStringsReturn: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
-  pvtFlowMainFwdStrings: {
+  pvtFlowMainAftStrings: {
     componentType: SensorComponentType.CalculatedFlow,
   },
-  pvtFlowMainAftStrings: {
+  pvtFlowMainFwdStrings: {
     componentType: SensorComponentType.CalculatedFlow,
   },
   pvtFlowOwnersStrings: {

@@ -2029,40 +2029,37 @@ export const PVT_SENSOR_QUERY = `
   pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
-  pvtMode {
-    mode { value timestamp }
-  }
-  pvtMaxTemperatureMainFwdStrings {
+  pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }
   }
-  pvtMaxTemperatureMainAftStrings {
+  pvtMaxTemperatureMainFwdStrings {
     temperature { value timestamp }
   }
   pvtMaxTemperatureOwnersStrings {
     temperature { value timestamp }
   }
-  pvtTemperatureMainFwdStringsSupply {
+  pvtTemperatureMainAftStringsSupply {
     temperature { value timestamp }
   }
-  pvtTemperatureMainAftStringsSupply {
+  pvtTemperatureMainFwdStringsSupply {
     temperature { value timestamp }
   }
   pvtTemperatureOwnersStringsSupply {
     temperature { value timestamp }
   }
-  pvtTemperatureMainFwdStringsReturn {
+  pvtTemperatureMainAftStringsReturn {
     temperature { value timestamp }
   }
-  pvtTemperatureMainAftStringsReturn {
+  pvtTemperatureMainFwdStringsReturn {
     temperature { value timestamp }
   }
   pvtTemperatureOwnersStringsReturn {
     temperature { value timestamp }
   }
-  pvtFlowMainFwdStrings {
+  pvtFlowMainAftStrings {
     flow { value timestamp }
   }
-  pvtFlowMainAftStrings {
+  pvtFlowMainFwdStrings {
     flow { value timestamp }
   }
   pvtFlowOwnersStrings {
