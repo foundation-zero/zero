@@ -137,7 +137,7 @@
         "powerInput": "Power input",
         "energyConsumption": "Energy consumption",
         "pressure": "Pressure",
-        "relativeDutyPoint": "Relative duty point",
+        "relativeDutyPoint": "Dutypoint",
         "onOff": "On-off",
         "error": "Error",
         "measurement": "Measurement",
