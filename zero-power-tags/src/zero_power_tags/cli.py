@@ -86,23 +86,43 @@ def configured_modbus_ports(
     }
 
 
+def configured_specs(
+    settings: PowerTagsSettings, specs: list[BridgeSpec]
+) -> list[BridgeSpec]:
+    """Specs whose panel has a gateway host configured (i.e. is deployed).
+
+    A panel with no ``host_<PANEL>`` is treated as "not deployed yet", so both
+    the run bridges and the stub servers act on the same subset.
+    """
+    return [spec for spec in specs if settings.field_for(spec.panel, "host")]
+
+
 def resolve_bridge_endpoints(
     settings: PowerTagsSettings, specs: list[BridgeSpec], default_port: int
 ) -> list[BridgeEndpoint]:
-    """Resolve gateway addresses; every panel needs ``host_<PANEL>`` set."""
-    missing = sorted(
-        spec.panel for spec in specs if not settings.field_for(spec.panel, "host")
-    )
-    if missing:
-        expected = ", ".join(_panel_field_key(panel, "host") for panel in missing)
-        raise ValueError(f"Missing Modbus gateway configuration: {expected}")
+    """Resolve gateway addresses for the panels that have a ``host_<PANEL>`` set.
 
-    ports = configured_modbus_ports(settings, specs)
+    Panels without a configured host are treated as "not deployed yet": they
+    are skipped (with a warning) so the app can be rolled out panel-by-panel.
+    Only a configuration with *no* hosts at all is an error.
+    """
+    configured = configured_specs(settings, specs)
+    configured_panels = {spec.panel for spec in configured}
+    skipped = sorted(
+        spec.panel for spec in specs if spec.panel not in configured_panels
+    )
+    if skipped:
+        logger.warning(
+            "Skipping panels with no configured gateway host: %s", ", ".join(skipped)
+        )
+    if not configured:
+        raise ValueError("No Modbus gateway hosts configured for any panel")
+
+    ports = configured_modbus_ports(settings, configured)
     endpoints: list[BridgeEndpoint] = []
-    for spec in specs:
+    for spec in configured:
         host = settings.field_for(spec.panel, "host")
-        if host is None:  # unreachable: guaranteed non-missing above
-            raise ValueError(f"Missing host for panel {spec.panel}")
+        assert host is not None  # guaranteed by the `configured` filter above
         panel_port = ports[spec.panel]
         endpoints.append(
             BridgeEndpoint(
@@ -119,8 +139,8 @@ def stub_ports(
 ) -> dict[str, int]:
     """Local ports for the stub servers.
 
-    Honors explicit `MODBUS_PORT_<PANEL>` overrides; panels without one are
-    spread over consecutive ports starting at base_port so the servers can
+    Honors explicit `MODBUS_PANELS__port_<panel>` overrides; panels without one
+    are spread over consecutive ports starting at base_port so the servers can
     coexist on a single machine.
     """
     configured = configured_modbus_ports(settings, specs)
@@ -184,9 +204,13 @@ class StubCmd(BaseSettings):
     default_value: float = 0.0
 
     def cli_cmd(self) -> None:
+        settings = PowerTagsSettings()
         specs = read_modbus_bridge_specs()
+        # Serve only the deployed panels so their pinned ports line up with the
+        # run bridges; with no panels configured (local dev) serve every panel.
+        served = configured_specs(settings, specs) or specs
         stub = Stub.from_topic_groups(
-            local_topic_groups(PowerTagsSettings(), specs, self.modbus_port),
+            local_topic_groups(settings, served, self.modbus_port),
             default_value=0,
             float_default=self.default_value,
         )

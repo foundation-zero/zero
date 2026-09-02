@@ -1,0 +1,101 @@
+{{- if and .Values.modbus.stub .Values.modbus.stub.enabled }}
+{{- if not .Values.modbus.panels }}
+{{- fail "modbus.stub.enabled is set but modbus.panels is empty; nothing for the stub to serve" }}
+{{- end }}
+{{- $stubName := include "zero-power-tags.stubName" . }}
+{{- $base := int .Values.modbus.stub.basePort }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $stubName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $stubName }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $stubName }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: stub
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: power-tags-stub
+          args: ["stub"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            # Base port for the stub's Modbus servers; each panel's own port is
+            # pinned below so it matches the port the run deployment dials.
+            - name: MODBUS_PORT
+              value: {{ $base | quote }}
+            {{- include "zero-power-tags.panelEnv" . | trim | nindent 12 }}
+          ports:
+            {{- range $key, $panel := .Values.modbus.panels }}
+            - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
+              containerPort: {{ include "zero-power-tags.stubPort" (dict "ctx" $ "key" $key) }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $stubName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+spec:
+  selector:
+    app.kubernetes.io/name: {{ $stubName }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    {{- range $key, $panel := .Values.modbus.panels }}
+    {{- $port := include "zero-power-tags.stubPort" (dict "ctx" $ "key" $key) }}
+    - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
+      port: {{ $port }}
+      targetPort: {{ $port }}
+    {{- end }}
+{{- end }}

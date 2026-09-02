@@ -23,6 +23,11 @@ modbus:
   #   10P0_1:
   #     host: "192.168.0.10"
   #     port: 502
+  # Dummy-data mode (envs without hardware): run an extra stub workload and
+  # point every panel at it. basePort must be unprivileged (stub runs non-root).
+  stub:
+    enabled: false
+    basePort: 15020
 
 resources: {}
 
