@@ -53,8 +53,7 @@ def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
     """
     if not hasattr(msg_type, "name_to_idx"):
         return None
-    for fields_entry in msg_type.fields:
-        desc, name, *rest = fields_entry
+    for _, name, *rest in msg_type.fields:
         if name == field_name:
             converter = rest[0] if rest else None
             return _json_type_from_converter(converter)
@@ -76,28 +75,24 @@ def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]
     msg = pynmea2.parse(raw, check=True)
     msg_type = type(msg)
 
-    # Build a mapping from envelope key → original pynmea2 field name so we
-    # can look up the declared converter for fields the parser renamed.
-    # parser.py renames some fields; register the emitted key alongside the
-    # original so we can still find the original field's converter.
+    # Map each envelope key back to its original pynmea2 field name, so the
+    # declared converter stays findable for fields parser.py renamed.
     orig_name_by_env_key: dict[str, str] = {}
-    for fields_entry in msg_type.fields:
-        desc, name, *rest = fields_entry  # noqa: F841 (desc unused)
+    for _, name, *_ in msg_type.fields:
         orig_name_by_env_key[name] = name
         if name == "timestamp":
             orig_name_by_env_key["nmea_time"] = name
         if name in {"type", "sender", "talker", "raw", "table"}:
             orig_name_by_env_key[f"nmea_{name}"] = name
 
-    field_types: dict[str, str] = {}
-    for env_key in envelope:
-        special = _SPECIAL_FIELD_TYPES.get(env_key)
-        if special is not None:
-            field_types[env_key] = special
-        else:
-            orig = orig_name_by_env_key.get(env_key)
-            conv_type = _converter_type_for_field(orig, msg_type) if orig else None
-            field_types[env_key] = conv_type or "string"
+    def type_for(env_key: str) -> str:
+        if (special := _SPECIAL_FIELD_TYPES.get(env_key)) is not None:
+            return special
+        orig = orig_name_by_env_key.get(env_key)
+        conv_type = _converter_type_for_field(orig, msg_type) if orig else None
+        return conv_type or "string"
+
+    field_types = {env_key: type_for(env_key) for env_key in envelope}
 
     field_order = list(envelope.keys())
     return field_types, field_order
@@ -184,10 +179,9 @@ def build_spec() -> dict[str, Any]:
         },
     }
 
-    # ── Input channel ───────────────────────────────────────────────────────────
     input_channel_id = "atpx/nmea0183/{sender}/{TYPE}"
     spec["channels"][input_channel_id] = {
-        "address": "atpx/nmea0183/{sender}/{TYPE}",
+        "address": input_channel_id,
         "title": "Raw NMEA 0183 input from A+T broker",
         "description": (
             "Raw NMEA 0183 sentences published by A+T's onboard systems. "
@@ -228,15 +222,13 @@ def build_spec() -> dict[str, Any]:
         },
     }
 
-    # ── Output channels (one per documented type) ────────────────────────────────
     for nmea_type in documented_types():
         field_types, field_order = _gather_envelope_for_type(nmea_type)
         message_id = f"{nmea_type}_envelope"
-        channel_address = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
         channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
 
         spec["channels"][channel_id] = {
-            "address": channel_address,
+            "address": channel_id,
             "title": f"{nmea_type.upper()} processed envelope",
             "description": (
                 f"Parsed JSON envelope for NMEA 0183 {nmea_type.upper()} sentences. "

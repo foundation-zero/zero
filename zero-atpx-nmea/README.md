@@ -33,7 +33,6 @@ Vector's NMEA ingestion pipeline depends on these output channels; the spec
 is the contract for anyone building on top of the `atpx__nmea_<type>`
 Greptime tables.
 
-
 ### Regenerating
 
 ```sh
@@ -50,20 +49,5 @@ never silently drifts from what the service actually emits.
 uv run python -m zero_atpx_nmea asyncapi
 ```
 
-Prints the spec to stdout. You can pipe it through `jq` or redirect to a file.
-
-## Project layout
-
-| Path | Purpose |
-|------|---------|
-| `src/zero_atpx_nmea/parser.py` | Pure NMEA-to-envelope parser (the primary seam) |
-| `src/zero_atpx_nmea/app.py` | FastStream MQTT bridge (thin shell around parser) |
-| `src/zero_atpx_nmea/cli.py` | CLI: `run` starts the ATPX NMEA ingest, `asyncapi` prints the spec |
-| `src/zero_atpx_nmea/asyncapi_spec.py` | AsyncAPI 3.0.0 spec builder (`build_spec()`) |
-| `src/zero_atpx_nmea/corpus.py` | Curated type→example sentence mapping |
-| `src/zero_atpx_nmea/custom_sentences.py` | Custom pynmea2 sentence classes (ALR, ALC, POS) |
-| `src/zero_atpx_nmea/settings.py` | MQTT broker connection settings |
-| `asyncapi.json` | Committed AsyncAPI specification (consumer contract) |
-| `tests/test_asyncapi_spec.py` | Spec validation and drift-protection tests |
-| `tests/test_parser.py` | Parser golden tests |
+Prints the spec to stdout.
 
