@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types/index.ts";
 
@@ -17,15 +18,16 @@ const props = defineProps<
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["legs"]);
 </script>
 
 <template>
   <MimicTooltipTrigger
     :type="MimicComponentType.MixValve"
-    :data="props"
+    :data="forwardedProps"
   >
     <ActuatedValve
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <MixValve />

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -20,17 +21,18 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
 
-// A switch valve is either fully on A or fully on B, never partially mixed.
+// A switch valve is either fully on A or fully on B, and only mixed during transient state.
 const flow = computed(() => Math.round(valve.value?.positionRel.value ?? 0));
+const forwardedProps = reactiveOmit(props, ["legs"]);
 </script>
 
 <template>
   <MimicTooltipTrigger
     :type="MimicComponentType.ThreeWaySwitchValve"
-    :data="props"
+    :data="forwardedProps"
   >
     <ActuatedValve
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <SwitchValve />
