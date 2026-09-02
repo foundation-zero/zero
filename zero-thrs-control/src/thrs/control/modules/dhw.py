@@ -60,7 +60,7 @@ class DhwParameters(ThrsValues):
     ht_boosting_enabled: bool = False
     heatpump_flow_setpoint: LMin = 25
     heatpump_temperature_setpoint: Celsius = 65
-    ht_boosting_temperature_setpoint: Celsius = 65
+    ht_boosting_temperature_setpoint: Celsius = 55
     minimum_tank_temperature: Celsius = 50
     maximum_tank_temperature: Celsius = 55
     boosting_delta: Annotated[
@@ -115,8 +115,8 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N
             on=Stamped(value=False, timestamp=timestamp),
             temperature_setpoint=Stamped(value=50.0, timestamp=timestamp),
         ),
-        dhw_flowcontrol_dc=Valve(setpoint=Stamped(value=0.5, timestamp=timestamp)),
-        dhw_flowcontrol_drives=Valve(setpoint=Stamped(value=0.5, timestamp=timestamp)),
+        dhw_flowcontrol_dc=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
+        dhw_flowcontrol_drives=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
         dhw_switch_tank3_inlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
         dhw_switch_tank3_boosting_return=Valve(
             setpoint=Stamped(value=0.0, timestamp=timestamp)
@@ -658,7 +658,7 @@ class DhwControl(
             self.parameters.ht_boosting_temperature_setpoint,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
-            (0.05, 1),
+            (0.15, 1),
         )
 
         self._pump_flow_controller = PidController[Ratio, LMin](
@@ -666,6 +666,7 @@ class DhwControl(
             self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
+            (0.15,1)
         )
 
         self._drives_flow_controller = PidController[Ratio, Celsius](
