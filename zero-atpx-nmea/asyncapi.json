@@ -3,7 +3,7 @@
   "info": {
     "title": "Zero ATPX NMEA",
     "version": "0.1.0",
-    "description": "Zero ATPX NMEA bridges A+T's raw NMEA 0183 stream onto our own MQTT broker. It subscribes to `atpx/nmea0183/<sender>/<TYPE>` on **A+T's onboard broker** (the ATPX MQTT host), parses each sentence with pynmea2 into a JSON envelope, and republishes it to `atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** (the output MQTT host). Vector then ingests `atpx/processed/nmea/#` into Greptime tables named `atpx__nmea_<type>`.\n\n**Known-type scope.** The documented type set below is the known/supported subset for which this service has been tested with real A+T data. The service subscribes to `atpx/nmea0183/#` and will parse any well-formed NMEA 0183 sentence it receives, including types not listed here \u2014 the envelope for an undocumented type will simply carry whatever fields pynmea2 produces for it rather than a curated schema. Adding a new documented type is a one-line corpus addition plus a spec regeneration."
+    "description": "Zero ATPX NMEA bridges A+T's raw NMEA 0183 stream onto our own MQTT broker. It subscribes to `atpx/nmea0183/<sender>/<TYPE>` on **A+T's onboard broker** (the ATPX MQTT host), parses each sentence with pynmea2 into a JSON envelope, and republishes it to `atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** (the output MQTT host). Vector then ingests `atpx/processed/nmea/#` into Greptime tables named `atpx__nmea_<type>`.\n\n**Known-type scope.** The documented type set below is the known/supported subset for which this service has been tested with real A+T data. The service subscribes to `atpx/nmea0183/#` and parses any type pynmea2 or our registered custom parsers support, including types not listed here \u2014 an undocumented type carries whatever fields pynmea2 produces rather than a curated schema, while unparseable sentences are dropped. Adding a new documented type is a one-line corpus addition plus a spec regeneration."
   },
   "channels": {
     "atpx/nmea0183/{sender}/{TYPE}": {
@@ -445,6 +445,8 @@
             }
           },
           "required": [
+            "rate_of_turn",
+            "status",
             "type",
             "sender",
             "talker",
@@ -498,6 +500,8 @@
             }
           },
           "required": [
+            "heading",
+            "hdg_true",
             "type",
             "sender",
             "talker",
@@ -551,6 +555,8 @@
             }
           },
           "required": [
+            "manufacturer",
+            "data",
             "type",
             "sender",
             "talker",
@@ -688,6 +694,22 @@
             }
           },
           "required": [
+            "nmea_time",
+            "lat",
+            "lat_dir",
+            "lon",
+            "lon_dir",
+            "gps_qual",
+            "num_sats",
+            "horizontal_dil",
+            "altitude",
+            "altitude_units",
+            "geo_sep",
+            "geo_sep_units",
+            "age_gps_data",
+            "ref_station_id",
+            "latitude",
+            "longitude",
             "type",
             "sender",
             "talker",
@@ -765,6 +787,12 @@
             }
           },
           "required": [
+            "depth_feet",
+            "unit_feet",
+            "depth_meters",
+            "unit_meters",
+            "depth_fathoms",
+            "unit_fathoms",
             "type",
             "sender",
             "talker",
@@ -824,6 +852,9 @@
             }
           },
           "required": [
+            "depth",
+            "offset",
+            "range",
             "type",
             "sender",
             "talker",
@@ -919,6 +950,15 @@
             }
           },
           "required": [
+            "lat",
+            "lat_dir",
+            "lon",
+            "lon_dir",
+            "nmea_time",
+            "status",
+            "faa_mode",
+            "latitude",
+            "longitude",
             "type",
             "sender",
             "talker",
@@ -1014,6 +1054,15 @@
             }
           },
           "required": [
+            "true_track",
+            "true_track_sym",
+            "mag_track",
+            "mag_track_sym",
+            "spd_over_grnd_kts",
+            "spd_over_grnd_kts_sym",
+            "spd_over_grnd_kmph",
+            "spd_over_grnd_kmph_sym",
+            "faa_mode",
             "type",
             "sender",
             "talker",
@@ -1091,6 +1140,12 @@
             }
           },
           "required": [
+            "lon_water_spd",
+            "trans_water_spd",
+            "data_validity_water_spd",
+            "lon_grnd_spd",
+            "trans_grnd_spd",
+            "data_validity_grnd_spd",
             "type",
             "sender",
             "talker",
@@ -1168,6 +1223,12 @@
             }
           },
           "required": [
+            "nmea_time",
+            "day",
+            "month",
+            "year",
+            "local_zone",
+            "local_zone_minutes",
             "type",
             "sender",
             "talker",
@@ -1257,6 +1318,14 @@
             }
           },
           "required": [
+            "heading_true",
+            "true",
+            "heading_magnetic",
+            "magnetic",
+            "water_speed_knots",
+            "knots",
+            "water_speed_km",
+            "kilometers",
             "type",
             "sender",
             "talker",
@@ -1322,6 +1391,10 @@
             }
           },
           "required": [
+            "trip_distance",
+            "trip_distance_miles",
+            "trip_distance_reset",
+            "trip_distance_reset_miles",
             "type",
             "sender",
             "talker",
@@ -1453,6 +1526,21 @@
             }
           },
           "required": [
+            "nmea_time",
+            "status",
+            "lat",
+            "lat_dir",
+            "lon",
+            "lon_dir",
+            "spd_over_grnd",
+            "true_course",
+            "datestamp",
+            "mag_variation",
+            "mag_var_dir",
+            "mode_indicator",
+            "nav_status",
+            "latitude",
+            "longitude",
             "type",
             "sender",
             "talker",
@@ -1524,6 +1612,11 @@
             }
           },
           "required": [
+            "nmea_time",
+            "alarm_number",
+            "alarm_condition",
+            "alarm_ack_state",
+            "alarm_text",
             "type",
             "sender",
             "talker",
@@ -1589,6 +1682,10 @@
             }
           },
           "required": [
+            "total_sentences",
+            "sentence_number",
+            "sequence_id",
+            "num_alerts",
             "type",
             "sender",
             "talker",
@@ -1690,6 +1787,16 @@
             }
           },
           "required": [
+            "device_talker",
+            "equipment_number",
+            "status",
+            "x_offset",
+            "y_offset",
+            "z_offset",
+            "position_valid",
+            "length",
+            "beam",
+            "sentence_status",
             "type",
             "sender",
             "talker",

@@ -14,7 +14,6 @@ from typing import Any
 
 import pynmea2
 
-import zero_atpx_nmea.custom_sentences  # noqa: F401 — registers custom sentence classes
 from zero_atpx_nmea.corpus import documented_types, sender_for, sentence_for
 from zero_atpx_nmea.parser import parse
 
@@ -136,7 +135,7 @@ def _build_message_schema(
         "payload": {
             "type": "object",
             "properties": _build_properties(field_types, field_order),
-            "required": ["type", "sender", "talker", "raw"],
+            "required": field_order,
         },
     }
 
@@ -164,11 +163,11 @@ def build_spec() -> dict[str, Any]:
                 "`atpx__nmea_<type>`.\n\n"
                 "**Known-type scope.** The documented type set below is the "
                 "known/supported subset for which this service has been tested with "
-                "real A+T data. The service subscribes to `atpx/nmea0183/#` and will "
-                "parse any well-formed NMEA 0183 sentence it receives, including "
-                "types not listed here \u2014 the envelope for an undocumented type will "
-                "simply carry whatever fields pynmea2 produces for it rather than a "
-                "curated schema. Adding a new documented type is a one-line corpus "
+                "real A+T data. The service subscribes to `atpx/nmea0183/#` and parses "
+                "any type pynmea2 or our registered custom parsers support, including "
+                "types not listed here \u2014 an undocumented type carries whatever fields "
+                "pynmea2 produces rather than a curated schema, while unparseable "
+                "sentences are dropped. Adding a new documented type is a one-line corpus "
                 "addition plus a spec regeneration."
             ),
         },
