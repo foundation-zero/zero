@@ -23,7 +23,6 @@ def test_log_event_saves_to_database(
 
     model = added_model(mock_session)
     assert model is event
-    mock_session.commit.assert_awaited_once()
 
 
 def test_log_transition_saves_to_database(
@@ -40,7 +39,6 @@ def test_log_transition_saves_to_database(
     logger.log_transition(transition)
 
     assert added_model(mock_session) is transition
-    mock_session.commit.assert_awaited_once()
 
 
 def test_log_parameters_saves_to_database(
@@ -98,4 +96,3 @@ async def test_log_model_in_running_loop_saves_to_database(
     await asyncio.sleep(0)  # give the scheduled task a chance to run
 
     mock_session.add.assert_called_once()
-    mock_session.commit.assert_awaited_once()

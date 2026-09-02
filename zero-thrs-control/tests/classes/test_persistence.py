@@ -73,7 +73,7 @@ def test_diff_is_empty_for_identical_snapshots():
         control_mode="manual",
     )
 
-    assert snapshot.diff(snapshot.model_copy(deep=True)) == {}
+    assert snapshot._diff(snapshot.model_copy(deep=True)) == {}
 
 
 def test_diff_reports_only_the_changed_leaf_by_dotted_path():
@@ -94,7 +94,7 @@ def test_diff_reports_only_the_changed_leaf_by_dotted_path():
         },
     )
 
-    diff = old.diff(new)
+    diff = old._diff(new)
 
     assert diff == {
         "manual_control_values.dhw_pump.on.value": (False, True),
@@ -243,23 +243,28 @@ async def test_restore_all_covers_every_module():
     assert modules[1].get_persistence_snapshot().control_mode == "manual"
 
 
-async def test_restore_keeps_defaults_when_stored_config_no_longer_validates():
+async def test_restore_raises_when_stored_config_no_longer_validates():
     store = InMemoryPersistentEngine(
         {"dhw": ModulePersistenceSnapshot(parameters={"setpoint": "warm"})}
     )
     manager = make_manager(store)
     module = make_module()
 
-    assert await manager.restore(module) is False
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
+
     assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
 
 
-async def test_database_errors_do_not_break_the_control_loop():
+async def test_database_errors_propagate_from_restore_and_persist():
     manager = make_manager(FailingSnapshotStore())
     module = make_module()
 
-    assert await manager.restore(module) is False
-    assert await manager.persist(module) is False
+    with pytest.raises(OperationalError):
+        await manager.restore(module)
+
+    with pytest.raises(OperationalError):
+        await manager.persist(module)
 
 
 async def test_corrupt_stored_snapshot_raises_by_default():
@@ -315,7 +320,8 @@ async def test_restore_all_stops_on_first_corrupt_snapshot_by_default():
 async def test_failed_write_is_retried_next_call():
     manager = make_manager(FailingSnapshotStore())
 
-    await manager.persist(make_module())
+    with pytest.raises(OperationalError):
+        await manager.persist(make_module())
 
     assert manager._persisted_at == {}
 
@@ -351,22 +357,36 @@ async def test_noop_store_never_returns_a_snapshot():
         pytest.param({"setpoint": None}, id="wrong-type-none"),
         pytest.param({"setpoint": [1, 2, 3]}, id="wrong-type-list"),
         pytest.param({"setpoint": {"nested": True}}, id="wrong-type-dict"),
-        pytest.param({}, id="missing-field-falls-back-to-default"),
-        pytest.param({"unexpected_field": "surprise"}, id="unknown-extra-field-only"),
     ],
 )
-async def test_restore_rejects_or_safely_ignores_bad_parameters(bad_parameters):
+async def test_restore_raises_on_bad_parameters(bad_parameters):
     stored = ModulePersistenceSnapshot(parameters=bad_parameters)
     manager = make_manager(InMemoryPersistentEngine({"dhw": stored}))
     module = make_module()
 
-    await manager.restore(module)
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
 
-    # Whatever happened, the module must never end up holding a value outside its
-    # declared bounds.
-    parameters = module.get_persistence_snapshot().parameters
-    assert parameters is not None
-    assert 0.0 <= parameters["setpoint"] <= 100.0
+    # The rejected snapshot must never have been (partially) applied to the module.
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+
+@pytest.mark.parametrize(
+    "parameters",
+    [
+        pytest.param({}, id="missing-field-falls-back-to-default"),
+        pytest.param({"unexpected_field": "surprise"}, id="unknown-extra-field-only"),
+    ],
+)
+async def test_restore_accepts_parameters_that_validate_via_field_defaults(parameters):
+    """Missing fields fall back to the model's own default, and unrecognized extra
+    fields are ignored - neither is a validation failure, so restore should succeed."""
+    stored = ModulePersistenceSnapshot(parameters=parameters)
+    manager = make_manager(InMemoryPersistentEngine({"dhw": stored}))
+    module = make_module()
+
+    assert await manager.restore(module) is True
+    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
 
 
 async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
@@ -377,7 +397,8 @@ async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
     channels = make_async_channels()
     module = make_module(channels=channels)
 
-    assert await manager.restore(module) is False
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
 
     await module.tick(SimpleInOut.zero())
 
@@ -396,7 +417,9 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
     manager = make_manager(InMemoryPersistentEngine({"dhw": corrupt}))
     module = make_module()
 
-    assert await manager.restore(module) is False
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
+
     assert module.get_persistence_snapshot().control_mode == "manual"
     assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
 
@@ -409,16 +432,21 @@ async def test_restore_with_malformed_manual_control_values_keeps_defaults():
     manager = make_manager(InMemoryPersistentEngine({"dhw": corrupt}))
     module = make_module()
 
-    assert await manager.restore(module) is False
+    with pytest.raises(ValidationError):
+        await manager.restore(module)
+
     # Since manual control values fail validation, the whole restore is rejected -
     # even the otherwise-valid setpoint must not be partially applied.
     assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
 
 
-async def test_excessive_bad_snapshots_across_many_modules_never_crash_the_loop():
-    """Simulates a fleet of modules with every kind of corrupted row at once - the
-    manager must degrade every one of them to safe defaults, never raise, and never
-    take down `restore_all`."""
+async def test_restore_all_stops_on_first_module_with_invalid_persisted_values():
+    """A fleet of modules with corrupted control values, one bad module aborts
+    `restore_all` rather than being silently degraded to defaults while the loop
+    continues to the next module - same contract as
+    `test_restore_all_stops_on_first_corrupt_snapshot_by_default` above, but for a
+    row that fails validation against the module's own models instead of a corrupt
+    database row."""
     bad_values = [
         1_000_000.0,
         -1_000_000.0,
@@ -437,7 +465,5 @@ async def test_excessive_bad_snapshots_across_many_modules_never_crash_the_loop(
     manager = make_manager(store)
     modules = [make_module(f"module-{i}") for i in range(len(bad_values))]
 
-    await manager.restore_all(modules)
-
-    for module in modules:
-        assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    with pytest.raises(ValidationError):
+        await manager.restore_all(modules)

@@ -3,7 +3,6 @@ from collections.abc import Iterable
 from datetime import datetime, timedelta
 
 from pydantic import ValidationError
-from sqlalchemy.exc import SQLAlchemyError
 
 from thrs.classes.persistence.engine import PersistentEngine
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
@@ -34,7 +33,7 @@ class PersistManager:
 
     async def restore(self, module: Module) -> bool:
         """Retrieve the module configuration from the persistence engine and apply it to the module.
-        Returns True if a restore was performed."""
+        Returns True if a restore was performed. Returns True if restore was applied successfully."""
 
         logger.debug("Persistence restoring config for module %s", module.name)
         stored = await self._load_snapshot(module.name)
@@ -48,7 +47,8 @@ class PersistManager:
                 module.name,
                 self._restore_manual_control_values,
             )
-            return self._apply_snapshot(module, stored)
+            self._apply_snapshot(module, stored)
+            return True
 
         return False
 
@@ -76,15 +76,12 @@ class PersistManager:
         self, module_name: str, snapshot: ModulePersistenceSnapshot
     ) -> bool:
         """Save the module configuration to the persistence engine if it changed or the heartbeat expired.
-        Returns True if a write was performed."""
+        Returns True if a write was performed, False if it was skipped because nothing
+        changed. Raises if the persistence engine itself fails."""
         if not self._require_save(module_name, snapshot):
             return False
 
-        try:
-            await self._persistence_engine.save(module_name, snapshot)
-        except SQLAlchemyError:
-            logger.exception("Could not persist config for module %s", module_name)
-            return False
+        await self._persistence_engine.save(module_name, snapshot)
 
         return True
 
@@ -120,16 +117,10 @@ class PersistManager:
 
     def _apply_snapshot(
         self, module: Module, snapshot: ModulePersistenceSnapshot
-    ) -> bool:
-        """Apply a stored configuration snapshot to the module. Returns True if applied successfully."""
-        try:
-            module.apply_persistence_snapshot(snapshot)
-        except ValidationError:
-            logger.exception(
-                "Stored config for module %s does not match the current models, keeping defaults",
-                module.name,
-            )
-            return False
+    ) -> None:
+        """Apply a stored configuration snapshot to the module. Raises if the stored
+        config no longer matches the module's current models."""
+        module.apply_persistence_snapshot(snapshot)
 
         # Save to cache, so on a subsequent persist call, the snapshot can be compared to avoid unnecessary writes only if the module configuration has changed.
         self._save_to_cache(module.name, module.get_persistence_snapshot())
@@ -138,18 +129,17 @@ class PersistManager:
             module.name,
             snapshot.control_mode,
         )
-        return True
 
     async def _load_snapshot(
         self, module_name: str
     ) -> ModulePersistenceSnapshot | None:
         """Load a stored configuration snapshot for the module from the persistence
-        engine. Returns None if no snapshot is found or if a database error occurred"""
+        engine. Returns None if no snapshot is found. Raises if the persistence engine
+        itself fails, unless the stored row is corrupt (fails validation) and
+        `apply_module_defaults_on_corrupt_database` is set, in which case it degrades
+        that one module to defaults instead."""
         try:
             is_stored = await self._persistence_engine.load(module_name)
-        except SQLAlchemyError:
-            logger.exception("Unable to load stored config for module %s", module_name)
-            return None
         except ValidationError:
             if not self._apply_module_defaults_on_corrupt_database:
                 raise

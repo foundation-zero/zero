@@ -112,7 +112,9 @@ async def test_persist_then_restore_reproduces_the_module_snapshot():
     await PersistManager(store).persist(running)
 
     restarted = make_module()
-    restored = await PersistManager(store).restore(restarted)
+    restored = await PersistManager(store, restore_manual_control_values=True).restore(
+        restarted
+    )
 
     assert restored is True
     assert restarted.get_persistence_snapshot() == running.get_persistence_snapshot()

@@ -25,7 +25,7 @@ class ModulePersistenceSnapshot(BaseModel):
     manual_control_values: dict[str, Any] | None = None
     control_mode: ControlModes = "manual"
 
-    def diff(self, other: "ModulePersistenceSnapshot") -> dict[str, tuple[Any, Any]]:
+    def _diff(self, other: "ModulePersistenceSnapshot") -> dict[str, tuple[Any, Any]]:
         """Return the leaf values that differ from another snapshot, as
         {dotted.path: (self_value, other_value)}. Nested dicts (e.g. per-actuator
         manual control values) are compared recursively so only the fields that
@@ -42,7 +42,7 @@ class ModulePersistenceSnapshot(BaseModel):
         actual value changes remain."""
         return {
             path: change
-            for path, change in self.diff(other).items()
+            for path, change in self._diff(other).items()
             if path.rsplit(".", 1)[-1] != "timestamp"
         }
 
