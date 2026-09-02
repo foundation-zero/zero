@@ -82,6 +82,5 @@ class PostgresPersistentEngine(PersistentEngine):
             },
         )
 
-        async with self._database.session_factory() as session:
+        async with self._database.session_factory.begin() as session:
             await session.execute(upsert)
-            await session.commit()
