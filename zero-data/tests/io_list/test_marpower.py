@@ -26,7 +26,7 @@ def test_marpower_amcs_io_excel():
     )
     assert marpower_io_result.io_list.shape == (13587, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 754
+    assert len(marpower_io_result.topics) == 759
 
 
 def test_mocked_io_excel():
