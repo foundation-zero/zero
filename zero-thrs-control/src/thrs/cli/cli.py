@@ -163,10 +163,10 @@ class LockstepCmd(BaseSettings):
             machine_state_logging_service_enabled=self.machine_state_logging,
         )
 
-        await persistence.restore_all(control_modules)
-
         for module in control_modules:
             module.set_automation_mode(AutomationMode(mode="automatic"))
+
+        await persistence.restore_all(control_modules)
 
         runner = LockstepRunner(control_modules, simulation_module, persistence)
 
