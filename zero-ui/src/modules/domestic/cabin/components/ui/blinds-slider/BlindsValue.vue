@@ -8,7 +8,7 @@ defineProps<{
 }>();
 
 const { value } = getContext();
-const percentage = ratioAsPercentage(value);
+const percentage = ratioAsPercentage(value, true);
 </script>
 
 <template>
