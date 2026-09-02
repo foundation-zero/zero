@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict, computed_field
+from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
@@ -514,7 +514,7 @@ class DhwControlValues(ThrsValues):
     ]
     dhw_heatpump: Annotated[
         control.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
-    ]
+    ] = Field(default_factory=lambda: control.HeatPump(on = Stamped.stamp(False), temperature_setpoint = Stamped.stamp(0))) #TODO: fix later 
     dhw_flowcontrol_dc: Annotated[
         control.Valve,
         component_meta(
