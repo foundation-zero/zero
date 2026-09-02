@@ -26,7 +26,7 @@ const state = getComponentState();
       :state="state"
       :rotation="1 - (valve?.positionRel.value ?? 0)"
     >
-      <SwitchValve />
+      <SwitchValve :fixed-label="false" />
       <TwoWayValve :flow="valve?.positionRel.value ?? 0" />
     </ActuatedValve>
     <slot />

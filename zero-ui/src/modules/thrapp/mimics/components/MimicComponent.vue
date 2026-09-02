@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { HTMLAttributes, toRefs } from "vue";
+import { computed, HTMLAttributes, toRefs } from "vue";
 import {
   ComponentOrientation,
   createMimicComponentContext,
@@ -9,7 +9,7 @@ import {
   MimicComponentProps,
   MimicComponentState,
   provideMimicComponentContext,
-  useOrientation,
+  useRotationDegrees,
 } from ".";
 
 const props = withDefaults(
@@ -26,10 +26,12 @@ const props = withDefaults(
 
 const { baseOrientation, orientation, rotation, state } = toRefs(props);
 
-const rotationStyle = useOrientation(orientation, baseOrientation, rotation);
+const rotationDegrees = useRotationDegrees(orientation, baseOrientation, rotation);
+
+const rotationStyle = computed(() => ({ transform: `rotate(${rotationDegrees.value}deg)` }));
 
 const { stateColor, strokeWidth } = provideMimicComponentContext(
-  createMimicComponentContext(state),
+  createMimicComponentContext(state, rotationDegrees),
 );
 </script>
 
