@@ -40,6 +40,7 @@ class ControlCmd(BaseSettings):
     machine_state_logging: CliImplicitFlag[bool] = True
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
+    restore_manual_control_values: CliImplicitFlag[bool] = False
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command: %s", self.mode)
@@ -59,6 +60,7 @@ class ControlCmd(BaseSettings):
             database,
             self.module_persistence,
             self.allow_boot_without_persistence_having_active_postgres,
+            self.restore_manual_control_values,
         )
 
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
@@ -123,6 +125,7 @@ class LockstepCmd(BaseSettings):
     play: CliImplicitFlag[bool] = False
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
+    restore_manual_control_values: CliImplicitFlag[bool] = False
 
     async def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -152,6 +155,7 @@ class LockstepCmd(BaseSettings):
             database,
             self.module_persistence,
             self.allow_boot_without_persistence_having_active_postgres,
+            self.restore_manual_control_values,
         )
 
         control_modules: list[Module] = setup_control_modules(

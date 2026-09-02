@@ -48,9 +48,16 @@ class CorruptSnapshotStore(PersistentEngine):
 
 
 def make_manager(
-    store: PersistentEngine, apply_module_defaults_on_corrupt_database: bool = False
+    store: PersistentEngine,
+    apply_module_defaults_on_corrupt_database: bool = False,
+    restore_manual_control_values: bool = True,
 ) -> PersistManager:
-    return PersistManager(store, HEARTBEAT, apply_module_defaults_on_corrupt_database)
+    return PersistManager(
+        store,
+        HEARTBEAT,
+        apply_module_defaults_on_corrupt_database,
+        restore_manual_control_values,
+    )
 
 
 def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
@@ -193,6 +200,34 @@ async def test_restore_does_not_trigger_an_immediate_rewrite():
 
     assert await manager.persist(module) is False
     assert store.snapshots["dhw"] == stored
+
+
+async def test_restore_skips_manual_control_values_when_disabled():
+    """`restore_manual_control_values=False` still restores parameters and control
+    mode from a stored snapshot - it only keeps manual control values at their
+    module defaults, mirroring how `allow_boot_without_persistence_having_active_postgres`
+    only toggles one specific piece of persisted behavior."""
+    stored = ModulePersistenceSnapshot(
+        parameters={"setpoint": 60.0},
+        manual_control_values={
+            "go_with_the": {"flow": {"value": 99.0}, "temperature": {"value": 20.0}}
+        },
+        control_mode="automatic",
+    )
+    manager = make_manager(
+        InMemoryPersistentEngine({"dhw": stored}),
+        restore_manual_control_values=False,
+    )
+    module = make_module()
+
+    assert await manager.restore(module) is True
+
+    snapshot = module.get_persistence_snapshot()
+    assert snapshot.parameters == {"setpoint": 60.0}
+    assert snapshot.control_mode == "automatic"
+    manual_control_values = snapshot.manual_control_values
+    assert manual_control_values is not None
+    assert manual_control_values["go_with_the"]["flow"]["value"] == 0.0
 
 
 async def test_restore_all_covers_every_module():

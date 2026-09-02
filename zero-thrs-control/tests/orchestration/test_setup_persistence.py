@@ -129,3 +129,23 @@ async def test_raises_when_postgres_unreachable_and_boot_without_persistence_dis
             module_persistence_enabled=True,
             allow_boot_without_persistence_having_active_postgres=False,
         )
+
+
+async def test_persistence_manager_restores_manual_control_values_by_default():
+    database = _fake_database(_WorkingSessionFactory())
+
+    manager = await setup_persistence_manager(database, module_persistence_enabled=True)
+
+    assert manager._restore_manual_control_values is True
+
+
+async def test_persistence_manager_threads_restore_manual_control_values_flag():
+    database = _fake_database(_WorkingSessionFactory())
+
+    manager = await setup_persistence_manager(
+        database,
+        module_persistence_enabled=True,
+        restore_manual_control_values=False,
+    )
+
+    assert manager._restore_manual_control_values is False

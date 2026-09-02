@@ -21,12 +21,14 @@ class PersistManager:
         persistence_engine: PersistentEngine,
         heartbeat: timedelta = timedelta(seconds=60),
         apply_module_defaults_on_corrupt_database: bool = False,
+        restore_manual_control_values: bool = False,
     ) -> None:
         self._persistence_engine = persistence_engine
         self._heartbeat = heartbeat
         self._apply_module_defaults_on_corrupt_database = (
             apply_module_defaults_on_corrupt_database
         )
+        self._restore_manual_control_values = restore_manual_control_values
         self._persisted: dict[str, ModulePersistenceSnapshot] = {}
         self._persisted_at: dict[str, datetime] = {}
 
@@ -38,8 +40,13 @@ class PersistManager:
         stored = await self._load_snapshot(module.name)
 
         if stored is not None:
+            if not self._restore_manual_control_values:
+                stored = stored.model_copy(update={"manual_control_values": None})
+
             logger.debug(
-                "Persistence applying stored config for module %s", module.name
+                "Persistence applying stored config for module %s, restoring manual_control_values: %s",
+                module.name,
+                self._restore_manual_control_values,
             )
             return self._apply_snapshot(module, stored)
 
