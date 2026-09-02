@@ -9,7 +9,7 @@ export const usePvtMode = (group: PvtGroup) => {
   const { control } = toRefs(useAutomationStore());
 
   return computed(
-    () => control.value?.modules?.pvt.controlMode.automaticMode?.[group].mode ?? PvtMode.Idle,
+    () => control.value?.modules?.pvt.controlMode?.automaticMode?.[group].mode ?? PvtMode.Idle,
   );
 };
 

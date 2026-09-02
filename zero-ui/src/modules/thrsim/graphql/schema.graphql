@@ -250,6 +250,7 @@ type ControlPcmType {
 type ControlPumpType {
   dutypoint: FloatStampedType!
   on: BoolStampedType!
+  controlMode: PumpControlModeOptionalStampedType!
 }
 
 type ControlValveType {
@@ -1216,9 +1217,21 @@ input PropulsionDriveInputType {
   active: Boolean!
 }
 
+enum PumpControlMode {
+  CONSTANT_SPEED
+  CONSTANT_DIFFERENTIAL_PRESSURE
+  VARIABLE_DIFFERENTIAL_PRESSURE
+}
+
+type PumpControlModeOptionalStampedType {
+  value: PumpControlMode
+  timestamp: DateTime!
+}
+
 input PumpInputType {
   dutypoint: Float!
   on: Boolean!
+  controlMode: PumpControlMode = null
 }
 
 type PvtControlModeType {
