@@ -24,7 +24,7 @@ def test_marpower_amcs_io_excel():
         [(Path(__file__).parent / "../../io_lists/io-list ~ help ~ totals.xlsx")],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (13322, 13)
+    assert marpower_io_result.io_list.shape == (13587, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 754
 
