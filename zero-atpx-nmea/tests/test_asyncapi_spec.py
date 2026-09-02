@@ -1,11 +1,7 @@
-"""Tests for the AsyncAPI 3.0.0 spec builder.
-
-Tests the primary seam (``build_spec()``) and the self-validating corpus, not
-the internal wiring of the builder. Follows the same pure-function, assert-on-output
-style as ``test_parser.py``.
-"""
+"""Tests for the AsyncAPI 3.0.0 spec builder and the self-validating corpus."""
 
 import json
+from pathlib import Path
 from typing import Any
 
 from zero_atpx_nmea.asyncapi_spec import build_spec
@@ -259,17 +255,12 @@ def test_spec_serializes_to_json() -> None:
 
 
 def test_committed_spec_matches_generated() -> None:
-    """The committed asyncapi.json must match what build_spec() produces right now.
+    """Drift guard: the committed asyncapi.json must match build_spec()'s current output.
 
-    This is the drift guard: if the committed file is stale (doesn't match
-    the current builder and parser), this test fails. The ``just regenerate-spec``
-    command updates the file, and CI runs this as a check.
+    Regenerate with ``just regenerate-spec``; CI runs this as a check.
     """
-    from pathlib import Path
-
-    committed = json.loads(
-        (Path(__file__).resolve().parents[1] / "asyncapi.json").read_text()
-    )
+    spec_path = Path(__file__).resolve().parent.parent / "asyncapi.json"
+    committed = json.loads(spec_path.read_text())
     generated = build_spec()
     assert committed == generated, (
         "asyncapi.json is out of date. Run 'just regenerate-spec' to refresh it."

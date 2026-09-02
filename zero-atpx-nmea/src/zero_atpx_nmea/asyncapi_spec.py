@@ -1,13 +1,12 @@
-"""AsyncAPI 3.0.0 specification builder for zero-atpx-nmea.
+"""Builds the AsyncAPI 3.0.0 spec for zero-atpx-nmea: the consumer contract for
+its MQTT interface.
 
-This is the primary seam of the feature: a pure function ``build_spec() -> dict``
-that returns a complete AsyncAPI 3.0.0 document describing the service's MQTT
-interface. No I/O; deterministic.
+``build_spec()`` returns the full AsyncAPI document (ready to serialise as
+``asyncapi.json``) describing the raw NMEA input channel and one output channel
+per documented sentence type, each with its JSON envelope schema. The result is
+guaranteed to match what the service actually publishes.
 
-Per-type message schemas are derived from the real ``parse()`` function — the
-parser is the oracle. Each curated example sentence is parsed to obtain the
-authoritative set of envelope keys for that type, and per-field JSON types are
-enriched from pynmea2's declared field converters where available.
+Each schema is derived by parsing a real example sentence and reading its fields.
 """
 
 from decimal import Decimal
@@ -34,33 +33,23 @@ _SPECIAL_FIELD_TYPES: dict[str, str] = {
 }
 
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
-
-
 def _json_type_from_converter(converter: Any) -> str:
-    """Map a pynmea2 field converter to its AsyncAPI JSON Schema type.
-
-    pynmea2 field tuples are ``(description, name)`` or ``(description, name, converter)``.
-    ``converter`` is typically ``int``, ``float``, ``Decimal``, a function like
-    ``timestamp``/``datestamp``, or absent.
-    """
+    """Map a pynmea2 field converter to its AsyncAPI JSON Schema type."""
     if converter is None:
         return "string"
     if converter is int:
         return "integer"
     if converter is float or converter is Decimal:
         return "number"
-    # Functions like timestamp/datestamp return datetime objects that the parser
-    # converts to ISO-format strings.
+    # timestamp/datestamp converters yield datetimes the parser serialises as strings.
     return "string"
 
 
 def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
-    """Look up the pynmea2-declared converter for *field_name* and return its
-    JSON Schema type, or ``None`` if no converter is declared.
+    """JSON Schema type for the pynmea2-declared converter of *field_name*, or None.
 
-    ``field_name`` is the **original** pynmea2 field name (not the envelope
-    key — the parser may rename it).
+    *field_name* is the original pynmea2 field name, not the (possibly renamed)
+    envelope key.
     """
     if not hasattr(msg_type, "name_to_idx"):
         return None
@@ -73,13 +62,10 @@ def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
 
 
 def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]]:
-    """Parse the example sentence and return (field_types, field_order).
+    """Return (envelope key → JSON Schema type, key order) for a documented type.
 
-    ``field_types`` maps envelope key → AsyncAPI JSON Schema type name.
-    ``field_order`` lists keys in insertion order.
-
-    The parser is the oracle: we run the real ``parse()`` to get the authoritative
-    envelope, then enrich types from pynmea2's declared converters.
+    Runs the real ``parse()`` on the corpus example for the authoritative envelope,
+    then enriches types from pynmea2's declared converters.
     """
     sender = sender_for(nmea_type)
     raw = sentence_for(nmea_type)
@@ -92,12 +78,12 @@ def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]
 
     # Build a mapping from envelope key → original pynmea2 field name so we
     # can look up the declared converter for fields the parser renamed.
+    # parser.py renames some fields; register the emitted key alongside the
+    # original so we can still find the original field's converter.
     orig_name_by_env_key: dict[str, str] = {}
     for fields_entry in msg_type.fields:
         desc, name, *rest = fields_entry  # noqa: F841 (desc unused)
         orig_name_by_env_key[name] = name
-        # parser.py renames some fields; register the emitted key so we can
-        # still find the original field's converter.
         if name == "timestamp":
             orig_name_by_env_key["nmea_time"] = name
         if name in {"type", "sender", "talker", "raw", "table"}:
@@ -118,22 +104,14 @@ def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]
 
 
 def _json_pointer_ref(channel_id: str) -> str:
-    """Build a JSON Pointer ``$ref`` for a channel, encoding special characters.
+    """Build a ``#/channels/<id>`` JSON Pointer ``$ref`` for a channel.
 
-    JSON Pointer (RFC 6901) requires ``/`` in path segments to be encoded as
-    ``~1`` and ``~`` as ``~0``.  Curly braces ``{``/``}`` are not special in
-    JSON Pointer but some AsyncAPI tools treat them specially in resolved
-    documents, so they are percent-encoded as ``%7B``/``%7D``.
-
-    Only the path segment (the channel ID within ``channels/``) is encoded;
-    the ``#/channels/`` prefix is left as-is.
+    Encodes the id segment per RFC 6901 (``~``→``~0``, ``/``→``~1``); braces are
+    percent-encoded because some AsyncAPI tools treat them specially in $refs.
     """
     segment = channel_id.replace("~", "~0").replace("/", "~1")
     segment = segment.replace("{", "%7B").replace("}", "%7D")
     return f"#/channels/{segment}"
-
-
-# ── Schema builders ─────────────────────────────────────────────────────────────
 
 
 def _build_properties(
@@ -141,18 +119,13 @@ def _build_properties(
 ) -> dict[str, Any]:
     """Build the ``properties`` dict for an object schema.
 
-    Every property is nullable (since empty NMEA fields become ``null``).
-    The AsyncAPI 3.0 meta-schema expects ``description`` to be a string or
-    absent (never ``null``), so it is omitted when there is no description.
+    Every property is nullable, since empty NMEA fields parse to ``null``.
     """
     props: dict[str, Any] = {}
     for key in field_order:
-        prop: dict[str, Any] = {}
-        # Use JSON Schema draft-2020-12 style: type: [T, "null"] rather than
-        # the draft-4 ``nullable`` keyword, which the AsyncAPI 3.0 validator
-        # rejects on the ``payload`` schema.
-        prop["type"] = [field_types[key], "null"]
-        props[key] = prop
+        # draft-2020-12 style ``type: [T, "null"]``; the AsyncAPI 3.0 validator
+        # rejects the draft-4 ``nullable`` keyword on the payload schema.
+        props[key] = {"type": [field_types[key], "null"]}
     return props
 
 
@@ -173,14 +146,8 @@ def _build_message_schema(
     }
 
 
-# ── Public seam ─────────────────────────────────────────────────────────────────
-
-
 def build_spec() -> dict[str, Any]:
-    """Build a complete AsyncAPI 3.0.0 document for zero-atpx-nmea's MQTT interface.
-
-    Returns a dict ready to serialise as JSON. No I/O, deterministic.
-    """
+    """Build the complete AsyncAPI 3.0.0 document for zero-atpx-nmea's MQTT interface."""
     # Static, not the hatch-vcs package version: that changes every commit and
     # would churn asyncapi.json on every push. Bump when the documented
     # interface (channels, schemas) changes.

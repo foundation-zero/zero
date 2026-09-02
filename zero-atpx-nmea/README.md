@@ -58,6 +58,7 @@ Prints the spec to stdout. You can pipe it through `jq` or redirect to a file.
 |------|---------|
 | `src/zero_atpx_nmea/parser.py` | Pure NMEA-to-envelope parser (the primary seam) |
 | `src/zero_atpx_nmea/app.py` | FastStream MQTT bridge (thin shell around parser) |
+| `src/zero_atpx_nmea/cli.py` | CLI: `run` starts the ATPX NMEA ingest, `asyncapi` prints the spec |
 | `src/zero_atpx_nmea/asyncapi_spec.py` | AsyncAPI 3.0.0 spec builder (`build_spec()`) |
 | `src/zero_atpx_nmea/corpus.py` | Curated type→example sentence mapping |
 | `src/zero_atpx_nmea/custom_sentences.py` | Custom pynmea2 sentence classes (ALR, ALC, POS) |

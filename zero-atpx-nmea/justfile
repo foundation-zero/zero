@@ -19,10 +19,12 @@ format:
 regenerate-spec:
     uv run python -m zero_atpx_nmea asyncapi > asyncapi.json
 
-# Generate AsyncAPI HTML docs from the committed spec
-# Pinned @asyncapi/cli@6.0.2 + @asyncapi/html-template@3.5.6 to match CI.
+# Generate AsyncAPI HTML docs from the committed spec (output is gitignored).
+# Pinned @asyncapi/html-template@3.5.6 (and @asyncapi/cli@6.0.2 fallback) to match CI.
 docs:
-    if which asyncapi >/dev/null 2>&1; then
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if command -v asyncapi >/dev/null 2>&1; then
         SUPPRESS_NO_CONFIG_WARNING=true asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o docs/ --force-write
     else
         SUPPRESS_NO_CONFIG_WARNING=true npx --yes @asyncapi/cli@6.0.2 generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o docs/ --force-write

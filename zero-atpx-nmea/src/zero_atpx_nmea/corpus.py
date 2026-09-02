@@ -1,23 +1,15 @@
-"""Canonical mapping of documented NMEA 0183 type → representative example sentence.
+"""Documented NMEA 0183 type → representative example sentence.
 
-This is the authoritative list of types `zero-atpx-nmea` documents in its AsyncAPI
-spec. Each entry pairs a lowercased type key with a real, parseable NMEA 0183
-sentence captured from A+T's stream, so that the spec builder can derive per-type
-payload schemas from the actual parser output.
-
-Adding a new type is: add a line here, regenerate the spec, done.
+The authoritative list of types `zero-atpx-nmea` documents in its AsyncAPI spec.
+Each entry pairs a lowercased type key with a real, parseable sentence captured
+from A+T's stream, from which the spec builder derives per-type payload schemas.
+Adding a type: add a line here, regenerate the spec.
 """
 
 from typing import NamedTuple
 
 
 class CorpusEntry(NamedTuple):
-    """A representative sentence for a documented type, and the sender it came from.
-
-    The sender matches the golden tests in test_parser.py so the parsed envelope
-    is reproduced faithfully.
-    """
-
     sender: str
     sentence: str
 
