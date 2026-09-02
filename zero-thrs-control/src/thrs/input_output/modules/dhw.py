@@ -514,7 +514,7 @@ class DhwControlValues(ThrsValues):
     ]
     dhw_heatpump: Annotated[
         control.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
-    ] = Field(default_factory=lambda: control.HeatPump(on = Stamped.stamp(False), temperature_setpoint = Stamped.stamp(0))) #TODO: fix later 
+    ] = Field(default_factory=lambda: control.HeatPump(on = Stamped.stamp(False), temperature_setpoint = Stamped.stamp(0))) #TODO: fix later
     dhw_flowcontrol_dc: Annotated[
         control.Valve,
         component_meta(

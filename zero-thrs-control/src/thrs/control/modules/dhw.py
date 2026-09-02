@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, cast
 
 from pydantic import Field, model_validator
 from transitions import State
@@ -736,6 +736,12 @@ class DhwControl(
     @StateLogger.log_parameters
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
+
+    def update_controls(self, control_values: DhwControlValues): #TODO: implement this for other controls using helper fn
+        for component_name, component in DhwControlValues.model_fields.items():
+            for field_name in cast(ThrsValues, type(component)).model_fields:
+                cur_component = getattr(self._current_values, component_name)
+                setattr(cur_component, field_name, getattr(getattr(control_values, component_name), field_name))
 
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())

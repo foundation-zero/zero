@@ -79,6 +79,7 @@ class Switching[
 
         if self.control_mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
+            self._automatic_control.update_controls(control_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
         control_values, controller_state = self._automatic_control.control(
