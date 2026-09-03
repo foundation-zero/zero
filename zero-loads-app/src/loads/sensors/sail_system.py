@@ -596,6 +596,7 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_max_load: Annotated[
         MaxLoad,
+        Field(validation_alias="st_Load/i_MaxLoadSetting"),
         VariableMeta(
             name="deflector-max-load",
             display_name="Main Deflector Max Load",
@@ -624,6 +625,7 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     max_load_ps: Annotated[
         MaxLoad,
+        Field(validation_alias="st_LoadPs/i_MaxLoadSetting"),
         VariableMeta(
             name="max-ps-load",
             display_name="Main Checkstay PT Max Load",
@@ -651,6 +653,7 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     max_load_sb: Annotated[
         MaxLoad,
+        Field(validation_alias="st_LoadSb/i_MaxLoadSetting"),
         VariableMeta(
             name="max-sb-load",
             display_name="Main Checkstay SB Max Load",
