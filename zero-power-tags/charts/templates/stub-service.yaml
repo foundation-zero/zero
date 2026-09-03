@@ -1,0 +1,23 @@
+{{- if .Values.modbus.stub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zero-power-tags.fullname" . }}-stub
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+spec:
+  type: ClusterIP
+  ports:
+    {{- range $key, $panel := .Values.modbus.panels }}
+    {{- if $panel.port }}
+    - name: {{ $key | lower | replace "_" "-" }}
+      port: {{ $panel.port }}
+      protocol: TCP
+    {{- end }}
+    {{- end }}
+  selector:
+    {{- include "zero-power-tags.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+{{ end }}

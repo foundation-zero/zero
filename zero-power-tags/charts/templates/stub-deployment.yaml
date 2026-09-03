@@ -1,15 +1,18 @@
+{{- if .Values.modbus.stub.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-termodinamica.name" . }}
+  name: {{ include "zero-power-tags.fullname" . }}-stub
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "zero-termodinamica.labels" . | nindent 4 }}
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "zero-termodinamica.selectorLabels" . | nindent 6 }}
+      {{- include "zero-power-tags.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: stub
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,10 +20,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "zero-termodinamica.labels" . | nindent 8 }}
+        {{- include "zero-power-tags.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        app.kubernetes.io/component: stub
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -29,8 +33,8 @@ spec:
       securityContext:
         fsGroup: 1001
       containers:
-        - name: termodinamica
-          args: ["run"]
+        - name: power-tags-stub
+          args: ["stub"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -45,34 +49,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: MQTT_HOST
-              value: {{ .Values.mqtt.host | quote }}
-            - name: MQTT_PORT
-              value: {{ .Values.mqtt.port | quote }}
-            {{- if .Values.mqtt.username }}
-            - name: MQTT_USERNAME
-              value: {{ .Values.mqtt.username | quote }}
-            {{- end }}
-            {{- if .Values.mqtt.existingSecret }}
-            - name: MQTT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mqtt.existingSecret }}
-                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
-            {{- end }}
-            {{- if .Values.stub.enabled }}
-            - name: MODBUS_HOST
-              value: {{ include "zero-termodinamica.stub" . | quote }}
-            {{- else }}
-            - name: MODBUS_HOST
-              value: {{ .Values.modbus.host | quote }}
-            {{- end }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: MODBUS_PROBE_INTERVAL
-              value: {{ .Values.modbus.probe_interval | quote }}
-            - name: MODBUS_BRIDGES_PATH
-              value: {{ .Values.modbus.bridgesPath | quote }}
+            {{- range $key, $panel := .Values.modbus.panels }}
+            {{- if $panel.port }}
+            - name: MODBUS_PANELS__port_{{ $key | lower }}
+              value: {{ $panel.port | quote }}
+            {{- end }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -93,3 +77,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{ end }}

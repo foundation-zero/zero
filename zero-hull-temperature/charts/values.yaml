@@ -16,6 +16,14 @@ modbus:
   host: ""
   port: 502
 
+stub:
+  enabled: false
+  temperature: 20
+  seconds: -1
+  # When enabled the bridge dials the stub service on `modbus.port` instead of
+  # the external gateway. The stub binds `0.0.0.0` and only serves Modbus
+  # after receiving the activate command on `hullTemperature.activateTopic`.
+
 hullTemperature:
   activateTopic: marpower/450000-amcs/Command
   activateJsonPath: $.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF

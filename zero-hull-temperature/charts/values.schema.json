@@ -48,6 +48,23 @@
         }
       }
     },
+    "stub": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Deploy an in-cluster stub Modbus server and point the bridge at it."
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Temperature the stub serves once activated."
+        },
+        "seconds": {
+          "type": "integer",
+          "description": "Seconds to run the stub before exiting; -1 runs forever."
+        }
+      }
+    },
     "hullTemperature": {
       "type": "object",
       "required": ["activateTopic", "activateJsonPath"],

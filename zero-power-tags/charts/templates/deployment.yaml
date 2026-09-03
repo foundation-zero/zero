@@ -64,6 +64,8 @@ spec:
               value: {{ .Values.modbus.port | quote }}
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
+            - name: MODBUS_BRIDGES_PATH
+              value: {{ .Values.modbus.bridgesPath | quote }}
             {{- range $key, $panel := .Values.modbus.panels }}
             - name: MODBUS_PANELS__host_{{ $key | lower }}
               value: {{ $panel.host | quote }}

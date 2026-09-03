@@ -50,3 +50,18 @@ Selector labels
 app.kubernetes.io/name: {{ include "zero-termodinamica.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Stub deployment/service name.
+*/}}
+{{- define "zero-termodinamica.stub" -}}
+{{- printf "%s-stub" (include "zero-termodinamica.name" .) -}}
+{{- end -}}
+
+{{/*
+Selector labels for the stub workload.
+*/}}
+{{- define "zero-termodinamica.stubSelectorLabels" -}}
+{{ include "zero-termodinamica.selectorLabels" . }}
+app.kubernetes.io/component: stub
+{{- end }}

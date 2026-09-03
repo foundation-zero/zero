@@ -30,7 +30,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: hull-temperature
-          command: ["python", "-m", "zero_hull_temperature", "run"]
+          args: ["run"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -60,8 +60,13 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
+            {{- if .Values.stub.enabled }}
+            - name: MODBUS_HOST
+              value: {{ include "zero-hull-temperature.stub" . | quote }}
+            {{- else }}
             - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
+            {{- end }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
             - name: RUN__ACTIVATE_TOPIC
