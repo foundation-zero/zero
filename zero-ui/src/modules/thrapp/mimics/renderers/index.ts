@@ -18,6 +18,7 @@ import Level from "./LevelRenderer.vue";
 import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
+import Placeholder from "./PlaceholderRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
 import PvtMode from "./PvtModeRenderer.vue";
@@ -34,6 +35,7 @@ export type FieldRendererProps<T> = {
 };
 
 export const FieldRenderer = {
+  Placeholder,
   Number,
   Temperature,
   HeatPumpMode,

@@ -65,7 +65,7 @@ export const getField = <
 >(
   type: Type,
   module: Module,
-  field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>>,
+  field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>> | Placeholder,
 ): ModuleField<Type, Module> => [type, module, field, null] as ModuleField<Type, Module>;
 
 export type ModuleField<
@@ -102,10 +102,25 @@ export const isField = <
   return field?.[0] !== undefined && (type === undefined || field[0] === type);
 };
 
+export type Placeholder = "placeholder";
+
 export const isCustomField = <Type extends "custom" = "custom">(
   field?: ModuleField,
 ): field is ModuleField<Type> => {
   return isField(field, "custom");
+};
+
+export const isPlaceholderField = <
+  Type extends
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType
+    | "custom",
+>(
+  field?: ModuleField<Type | undefined>,
+) => {
+  return isField(field) && field[2] === "placeholder";
 };
 
 export const isSensorField = <Type extends SensorComponentType = SensorComponentType>(
@@ -249,6 +264,9 @@ export const getFieldValue = <T>(
 export const getDefinition = (field: ModuleField) => {
   const [_, module, fieldName, customData] = field;
 
+  if (fieldName === "placeholder") {
+    return undefined;
+  }
   if (isSensorField(field)) {
     return getSensorDefinition(module, fieldName);
   } else if (isControlField(field)) {
