@@ -59,7 +59,7 @@ export type ControlModes = {
 export type ControlStatus = {
   modules: {
     [K in keyof ControlModes]: {
-      controlMode: ControlMode<ControlModes[K]>;
+      controlMode: Nullable<ControlMode<ControlModes[K]>>;
       sensorValues: Record<`mode`, AmcsControlModeSensor>;
     };
   };
