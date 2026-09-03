@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pytest
@@ -60,12 +61,14 @@ class TestResolveBridgeEndpoints:
         )
         assert endpoints[0].port == 1502
 
-    def test_unconfigured_panels_are_skipped(self):
+    def test_unconfigured_panels_are_skipped(self, caplog):
         settings = _settings(host_10p0_1="192.168.0.10")
-        endpoints = resolve_bridge_endpoints(
-            settings, [_spec("10P0.1"), _spec("10P1")], default_port=502
-        )
+        with caplog.at_level(logging.WARNING):
+            endpoints = resolve_bridge_endpoints(
+                settings, [_spec("10P0.1"), _spec("10P1")], default_port=502
+            )
         assert [e.spec.panel for e in endpoints] == ["10P0.1"]
+        assert "10P1" in caplog.text
 
     def test_no_configured_panels_raises(self):
         with pytest.raises(ValueError, match="No Modbus gateway hosts"):

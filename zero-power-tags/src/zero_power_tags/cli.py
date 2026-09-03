@@ -113,7 +113,7 @@ def resolve_bridge_endpoints(
     )
     if skipped:
         logger.warning(
-            "Skipping panels with no configured gateway host: %s", ", ".join(skipped)
+            f"Skipping panels with no configured gateway host: {', '.join(skipped)}"
         )
     if not configured:
         raise ValueError("No Modbus gateway hosts configured for any panel")

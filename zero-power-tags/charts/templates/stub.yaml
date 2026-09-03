@@ -3,7 +3,6 @@
 {{- fail "modbus.stub.enabled is set but modbus.panels is empty; nothing for the stub to serve" }}
 {{- end }}
 {{- $stubName := include "zero-power-tags.stubName" . }}
-{{- $base := int .Values.modbus.stub.basePort }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,15 +47,15 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            # Base port for the stub's Modbus servers; each panel's own port is
-            # pinned below so it matches the port the run deployment dials.
+            # Default Modbus port; each panel's own port comes from panelEnv
+            # below, matching the host:port the run deployment dials.
             - name: MODBUS_PORT
-              value: {{ $base | quote }}
+              value: {{ .Values.modbus.port | quote }}
             {{- include "zero-power-tags.panelEnv" . | trim | nindent 12 }}
           ports:
             {{- range $key, $panel := .Values.modbus.panels }}
             - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
-              containerPort: {{ include "zero-power-tags.stubPort" (dict "ctx" $ "key" $key) }}
+              containerPort: {{ $panel.port | default $.Values.modbus.port }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -93,9 +92,8 @@ spec:
     app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
     {{- range $key, $panel := .Values.modbus.panels }}
-    {{- $port := include "zero-power-tags.stubPort" (dict "ctx" $ "key" $key) }}
     - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
-      port: {{ $port }}
-      targetPort: {{ $port }}
+      port: {{ $panel.port | default $.Values.modbus.port }}
+      targetPort: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
     {{- end }}
 {{- end }}

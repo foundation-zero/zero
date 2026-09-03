@@ -70,17 +70,11 @@
         },
         "stub": {
           "type": "object",
-          "description": "Dummy-data mode: deploy a stub Modbus workload and point every panel at it (for envs without hardware).",
+          "description": "Dummy-data mode: deploy a stub Modbus workload/Service (for envs without hardware). Point each panel's host at the stub Service with a distinct unprivileged port.",
           "properties": {
             "enabled": {
               "type": "boolean",
-              "description": "Deploy the stub workload/Service and route the run deployment's panels to it."
-            },
-            "basePort": {
-              "type": "integer",
-              "description": "First Modbus port for the stub; panels are spread over consecutive ports from here. Must be unprivileged (>= 1024) since the stub runs as non-root.",
-              "minimum": 1024,
-              "maximum": 65535
+              "description": "Deploy the stub workload/Service. Each panel's host should point at the stub Service on a distinct port (>= 1024, since the stub runs non-root)."
             }
           }
         }
