@@ -48,6 +48,8 @@ sources:
       codec: json
     user: "${ATPX_MQTT_USER:-}"
     password: "${ATPX_MQTT_PASSWORD:-}"
+  vector_metrics:
+    type: internal_metrics
 transforms:
   process:
     type: remap
@@ -108,3 +110,7 @@ sinks:
     topic: "{{ %mqtt_topic }}"
     encoding:
       codec: json
+  prometheus:
+    type: prometheus_exporter
+    inputs:
+      - vector_metrics
