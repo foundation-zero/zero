@@ -76,7 +76,7 @@ uv run loads sail-system-sensors-stub
 
 Run the A+T sensor stub to simulate sensor data over MQTT:
 ```bash
-uv run loads at-stub
+uv run loads at-sensors-stub
 ```
 
 #### Generate JWT Token

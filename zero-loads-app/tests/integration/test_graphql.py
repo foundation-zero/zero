@@ -8,7 +8,7 @@ from httpx import AsyncClient
 
 from loads.api.dependencies import get_messaging
 from loads.registry.registry import VARIABLES
-from loads.sensors.at import ApparentWindSpeed
+from loads.sensors.at import ApparentWindAngle, ApparentWindSpeed
 from loads.sensors.fiber_optic import FiberOptic
 from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
@@ -581,16 +581,21 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
 
 @pytest.mark.asyncio
 async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
-    variable_name = "aws"
-    raw_value = "16.7"
-    await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
+    await mqtt_client_send.publish(
+        ApparentWindSpeed.TOPIC,
+        json.dumps({"field": "app_wind_speed_kts", "value": 22.826641}),
+    )
+    await mqtt_client_send.publish(
+        ApparentWindAngle.TOPIC,
+        json.dumps({"field": "app_wind_angle", "value": 69.311159}),
+    )
     await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["%s"]) {
+                variables(variables: ["aws", "awa"]) {
                     id
                     actual {
                         id
@@ -599,7 +604,6 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
                 }
             }
             """
-            % variable_name
         },
     )
 
@@ -607,10 +611,8 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
     assert response.json() == {
         "data": {
             "variables": [
-                {
-                    "id": variable_name,
-                    "actual": {"id": variable_name, "value": float(raw_value)},
-                }
+                {"id": "aws", "actual": {"id": "aws", "value": 22.826641}},
+                {"id": "awa", "actual": {"id": "awa", "value": 69.311159}},
             ]
         }
     }
