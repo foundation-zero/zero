@@ -1,6 +1,6 @@
 blueprint:
   name: Red/night lights
-  description: Turn on red lights when night mode is active, and turn them off when night mode is inactive. This blueprint is intended to be used with the single_button and dual_button blueprints, but can be used on its own as well.
+  description: Turn on red lights when night mode is active, and turn them off when night mode is inactive. Optionally, turn off white lights when night mode is active, and turn them on when night mode is inactive.
   domain: automation
   input:
     lights_section:
@@ -8,16 +8,25 @@ blueprint:
       icon: mdi:lightbulb-on-outline
       description: The lights that need to be controlled
       input:
-        lights:
-          name: Lights
-          description: Lights to control
+        red_lights:
+          name: Red Lights
+          description: Red Lights to turn on when night mode is active, and turn off when night mode is inactive
           selector:
-            label:
+            target:
+              entity:
+                - domain: light
+        white_lights:
+          name: White Lights
+          description: White Lights to turn off when night mode is active, and turn on when night mode is inactive
+          selector:
+            entity:
+              domain: input_number
               multiple: true
         night_mode:
           default: []
           name: Night Mode
-          description: Select a toggle to determine if night mode is active.
+          description: Select a toggle to determine if night mode is active.gfp
+          
           selector:
             entity:
               domain: [binary_sensor, input_boolean]
@@ -25,7 +34,6 @@ blueprint:
 mode: parallel
 
 variables:
-  lights: !input lights
   night_mode: !input night_mode
 
 triggers:
@@ -38,20 +46,26 @@ actions:
       - condition: template
         value_template: "{{ is_state(night_mode, 'on') }}"
     then:
+      - alias: Turn on all red lights
+        action: light.turn_on
+        data:
+          brightness_pct: 100
+        target: !input red_lights
       - repeat:
-          for_each: !input lights
+          for_each: !input white_lights
           sequence:
-            - alias: Turn on all lights
-              action: light.turn_on
+            - alias: Turn off all white lights
+              action: script.light_turn_off
               data:
-                brightness_pct: 100
-              target:
-                label_id: "{{ repeat.item }}"
+                dim_level: "{{ repeat.item }}"
     else:
+      - alias: Turn off all red lights
+        action: light.turn_off
+        target: !input red_lights
       - repeat:
-          for_each: !input lights
+          for_each: !input white_lights
           sequence:
-            - alias: Turn off all lights
-              action: light.turn_off
-              target:
-                label_id: "{{ repeat.item }}"
+            - alias: Turn on all white lights
+              action: script.light_turn_on
+              data:
+                dim_level: "{{ repeat.item }}"
