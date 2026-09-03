@@ -61,7 +61,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   helm-push:
-    if: ${{ github.event_name == 'release' }}
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
@@ -71,4 +71,3 @@ jobs:
     with:
       helm_chart: "hasura/charts"
       version_updates: '[{"file": "hasura/charts/values.yaml", "path": ".hasura-enterprise-stack.graphql-engine.image.tag"}]'
-
