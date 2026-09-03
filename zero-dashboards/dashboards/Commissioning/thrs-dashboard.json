@@ -3785,8 +3785,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "GreptimeDB",
-          "value": "P6A33BD2DBCC29C4B"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -3873,13 +3873,13 @@
           "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1 LIMIT 500",
+        "definition": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1",
         "includeAll": true,
         "label": "Device",
         "multi": true,
         "name": "device",
         "options": [],
-        "query": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1 LIMIT 500",
+        "query": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1",
         "refresh": 1,
         "regex": "",
         "type": "query"
