@@ -1,0 +1,19 @@
+default: run
+
+run:
+    pnpm dev
+
+check: lint type_check test
+
+lint:
+    pnpm lint
+
+type_check:
+    pnpm typecheck
+
+test:
+    pnpm test:api
+
+
+extract_all_schemas:
+    pnpm extract-all-schemas
