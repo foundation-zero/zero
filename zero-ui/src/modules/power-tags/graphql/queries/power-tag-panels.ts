@@ -2,7 +2,7 @@ import { gql } from "@urql/vue";
 
 export const POWER_TAG_PANELS = gql`
   query GetPowerTagPanels {
-    powerTagPanels {
+    powerTagPanels: powerTagBuckets {
       id
       powerTags {
         topic
