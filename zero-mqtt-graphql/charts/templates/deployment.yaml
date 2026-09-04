@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-mqtt-graphql.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-mqtt-graphql.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "zero-mqtt-graphql.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zero-mqtt-graphql.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: mqtt-graphql
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - {{ .Values.command | default "serve" }}
+            - --spec-dir
+            - {{ .Values.specDir | quote }}
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.logLevel | quote }}
+            - name: MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            {{- if .Values.mqtt.username }}
+            - name: MQTT_USERNAME
+              value: {{ .Values.mqtt.username | quote }}
+            {{- end }}
+            {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            {{- end }}
+            - name: LISTEN_PORT
+              value: {{ .Values.listenPort | quote }}
+            - name: DEFAULT_TTL_SECS
+              value: {{ .Values.defaultTtlSecs | default 300 | quote }}
+          ports:
+            {{- if ne (.Values.command | default "serve") "listen" }}
+            - name: http
+              containerPort: {{ .Values.listenPort }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

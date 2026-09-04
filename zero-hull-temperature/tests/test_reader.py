@@ -39,7 +39,7 @@ async def test_reader_reads_float32_registers(modbus_settings, modbus_client):
         assert isinstance(payload, HullTemperaturesModel)
         # alias fields are present via by_alias
         dumped = payload.model_dump(by_alias=True)
-        assert any(v == 20.0 for v in dumped.values())
+        assert all(v == 20.0 for v in dumped.values())
         assert len(dumped) == 46
     finally:
         server.stop()

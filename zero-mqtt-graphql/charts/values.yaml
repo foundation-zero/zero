@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-mqtt-graphql
+  pullPolicy: IfNotPresent
+  tag: ""
+
+specDir: /app/specs
+logLevel: info
+listenPort: 5103
+defaultTtlSecs: 300
+# Command to run: "serve" (default), "validate" or "listen"
+command: serve
+
+mqtt:
+  host: ""
+  port: 1883
+  username: ""
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
