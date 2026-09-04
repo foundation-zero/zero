@@ -81,10 +81,16 @@ export const updateSetpointWhenControlsHaveChanged = <K extends string>(
     }
   });
 
-export const ratioAsPercentage = (ratio: MaybeRef<Maybe<number>>) =>
-  computed({
+export function ratioAsPercentage(ratio: MaybeRef<Maybe<number>>): Ref<number | undefined>;
+export function ratioAsPercentage(ratio: MaybeRef<Maybe<number>>, defaultToZero: true): Ref<number>;
+export function ratioAsPercentage(
+  ratio: MaybeRef<Maybe<number>>,
+  defaultToZero?: boolean,
+): Ref<number | undefined> {
+  return computed({
     get() {
-      return Number(unref(ratio)) * 100;
+      const value = unref(ratio);
+      return value !== undefined ? Number(value) * 100 : defaultToZero ? 0 : undefined;
     },
     set(percentage: number) {
       if (isRef(ratio)) {
@@ -92,8 +98,10 @@ export const ratioAsPercentage = (ratio: MaybeRef<Maybe<number>>) =>
       }
     },
   });
+}
 
-export const toInversedPercentage = (percentage: number) => 100 - percentage;
+export const toInversedPercentage = (percentage: MaybeRef<number>) => 100 - unref(percentage);
+
 export const separateDecimals = (
   value: Ref<Maybe<number>>,
   digits: number = 1,
