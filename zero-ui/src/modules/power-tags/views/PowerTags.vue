@@ -107,7 +107,7 @@ useIntervalFn(() => store.refresh(), POLL_INTERVAL_MS);
                 v-for="col in store.visibleColumns"
                 :key="col.key"
                 class="text-right whitespace-nowrap tabular-nums"
-                :data-testid="`power-tags-value-${col.key}`"
+                :data-testid="`${rowTestId(tag.topic)}-value-${col.key}`"
               >
                 {{
                   formatValue(
