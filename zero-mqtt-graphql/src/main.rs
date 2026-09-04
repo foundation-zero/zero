@@ -14,7 +14,7 @@ use zero_mqtt_graphql::config::AppConfig;
 use zero_mqtt_graphql::graphql::build_schema;
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::metadata::{load_metadata, MetadataFile};
-use zero_mqtt_graphql::mqtt::MqttSubscriber;
+use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
 
 /// A spawned MQTT subscriber task paired with a receiver that fires when
 /// the task exits.
@@ -159,16 +159,13 @@ fn spawn_mqtt_subscriber(
         return Ok(None);
     }
 
-    let mut sub = MqttSubscriber::new_with_mode(
-        &config.mqtt_host,
-        config.mqtt_port,
-        config.mqtt_username.as_deref(),
-        config.mqtt_password.as_deref(),
-        cache.clone(),
-        false,
-        topics,
-        groups,
-    )?;
+    let connection = MqttConnection {
+        host: &config.mqtt_host,
+        port: config.mqtt_port,
+        username: config.mqtt_username.as_deref(),
+        password: config.mqtt_password.as_deref(),
+    };
+    let mut sub = MqttSubscriber::new_with_mode(connection, cache.clone(), false, topics, groups)?;
     sub.set_pending_subscriptions(&mqtt_topics);
     Ok(Some(spawn_subscriber(sub)))
 }
@@ -244,16 +241,13 @@ async fn run_listen_only(
         .chain(groups.iter().map(|g| g.pattern.clone()))
         .collect();
 
-    let mut sub = MqttSubscriber::new_with_mode(
-        &config.mqtt_host,
-        config.mqtt_port,
-        config.mqtt_username.as_deref(),
-        config.mqtt_password.as_deref(),
-        cache,
-        true,
-        &topics,
-        &groups,
-    )?;
+    let connection = MqttConnection {
+        host: &config.mqtt_host,
+        port: config.mqtt_port,
+        username: config.mqtt_username.as_deref(),
+        password: config.mqtt_password.as_deref(),
+    };
+    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, &topics, &groups)?;
     sub.set_pending_subscriptions(&mqtt_topics);
 
     let (handle, dead_rx) = spawn_subscriber(sub);

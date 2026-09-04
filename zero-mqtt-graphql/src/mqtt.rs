@@ -10,6 +10,13 @@ use serde_json::Value;
 use crate::asyncapi::{TopicDef, TopicGroupDef};
 use crate::cache::{mqtt_pattern_matches, TopicCache};
 
+pub struct MqttConnection<'a> {
+    pub host: &'a str,
+    pub port: u16,
+    pub username: Option<&'a str>,
+    pub password: Option<&'a str>,
+}
+
 pub struct MqttSubscriber {
     client: AsyncClient,
     event_loop: EventLoop,
@@ -23,12 +30,8 @@ pub struct MqttSubscriber {
 }
 
 impl MqttSubscriber {
-    #[allow(clippy::too_many_arguments)]
     pub fn new_with_mode(
-        host: &str,
-        port: u16,
-        username: Option<&str>,
-        password: Option<&str>,
+        connection: MqttConnection,
         cache: Arc<TopicCache>,
         listen_only: bool,
         topics: &[TopicDef],
@@ -36,10 +39,10 @@ impl MqttSubscriber {
     ) -> anyhow::Result<Self> {
         let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
-        let mut mqttoptions = MqttOptions::new(&client_id, host, port);
+        let mut mqttoptions = MqttOptions::new(&client_id, connection.host, connection.port);
         mqttoptions.set_keep_alive(Duration::from_secs(15));
 
-        if let (Some(user), Some(pass)) = (username, password) {
+        if let (Some(user), Some(pass)) = (connection.username, connection.password) {
             mqttoptions.set_credentials(user, pass);
         }
 
@@ -470,11 +473,14 @@ mod tests {
     }
 
     fn test_subscriber(topics: &[TopicDef], groups: &[TopicGroupDef]) -> MqttSubscriber {
+        let connection = MqttConnection {
+            host: "localhost",
+            port: 1883,
+            username: None,
+            password: None,
+        };
         MqttSubscriber::new_with_mode(
-            "localhost",
-            1883,
-            None,
-            None,
+            connection,
             Arc::new(TopicCache::new()),
             true,
             topics,
