@@ -63,6 +63,15 @@
         "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
         "password": "Password",
         "advisoryDisabled": "Attention: Circuit is not in advisory mode. There are no controls active from the THRS. You are unable to request manual control."
+      },
+      "advisoryModeDisabled": {
+        "title": "Advisory mode disabled",
+        "content": [
+          "The advisory mode for this circuit is disabled in the AMCS.",
+          "Automatic control or manual control via the THRS app is unavailable. The mimics are ‘read-only’. The controls and parameters in the THRS app are disregarded.",
+          "To enable the advisory mode, please check the AMCS systems."
+        ],
+        "action": "OK"
       }
     },
     "labels": {
