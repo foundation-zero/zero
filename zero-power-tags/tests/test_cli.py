@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pytest
@@ -5,6 +6,7 @@ import pytest
 from zero_power_tags.cli import (
     PowerTagsSettings,
     configured_modbus_ports,
+    configured_specs,
     resolve_bridge_endpoints,
     stub_ports,
 )
@@ -59,16 +61,40 @@ class TestResolveBridgeEndpoints:
         )
         assert endpoints[0].port == 1502
 
-    def test_missing_host_lists_expected_variables(self):
-        with pytest.raises(ValueError, match="host_10p0_1"):
+    def test_unconfigured_panels_are_skipped(self, caplog):
+        settings = _settings(host_10p0_1="192.168.0.10")
+        with caplog.at_level(logging.WARNING):
+            endpoints = resolve_bridge_endpoints(
+                settings, [_spec("10P0.1"), _spec("10P1")], default_port=502
+            )
+        assert [e.spec.panel for e in endpoints] == ["10P0.1"]
+        assert "10P1" in caplog.text
+
+    def test_no_configured_panels_raises(self):
+        with pytest.raises(ValueError, match="No Modbus gateway hosts"):
             resolve_bridge_endpoints(
                 _settings(), [_spec("10P0.1"), _spec("10P1")], default_port=502
             )
 
-    def test_empty_host_counts_as_missing(self):
+    def test_empty_host_counts_as_unconfigured(self):
         settings = _settings(host_10p0_1="")
-        with pytest.raises(ValueError, match="host_10p0_1"):
+        with pytest.raises(ValueError, match="No Modbus gateway hosts"):
             resolve_bridge_endpoints(settings, [_spec("10P0.1")], default_port=502)
+
+
+class TestConfiguredSpecs:
+    def test_keeps_only_panels_with_a_host(self):
+        settings = _settings(host_10p1="192.168.0.10")
+        specs = [_spec("10P0.1"), _spec("10P1")]
+        assert [spec.panel for spec in configured_specs(settings, specs)] == ["10P1"]
+
+    def test_stub_serves_only_configured_ports(self):
+        # Partial rollout: only 10P1 is deployed, pinned to stub port 15021.
+        # The stub must not also spread the undeployed 10P0.3 onto 15021.
+        settings = _settings(host_10p1="stub", port_10p1="15021")
+        specs = [_spec("10P0.1"), _spec("10P0.3"), _spec("10P1")]
+        served = configured_specs(settings, specs) or specs
+        assert stub_ports(settings, served, base_port=15020) == {"10P1": 15021}
 
 
 class TestStubPorts:
