@@ -64,7 +64,7 @@ async fn main() -> Result<()> {
             let metadata = load_metadata_or_empty(&cli.spec_dir);
             export_sdl(&topics, &groups, &metadata, output.as_deref())?;
         }
-        Command::Listen => run_listen_only(cli.spec_dir, topics, config).await?,
+        Command::Listen => run_listen_only(cli.spec_dir, topics, groups, config).await?,
         Command::Serve => run_serve(&cli.spec_dir, config, topics, groups).await?,
     }
     Ok(())
@@ -167,6 +167,7 @@ fn spawn_mqtt_subscriber(
         cache.clone(),
         false,
         topics,
+        groups,
     )?;
     sub.set_pending_subscriptions(&mqtt_topics);
     Ok(Some(spawn_subscriber(sub)))
@@ -220,18 +221,28 @@ async fn reap_mqtt_subscriber(handle: JoinHandle<()>) {
     }
 }
 
-async fn run_listen_only(spec_dir: String, topics: Vec<TopicDef>, config: AppConfig) -> Result<()> {
-    if topics.is_empty() {
+async fn run_listen_only(
+    spec_dir: String,
+    topics: Vec<TopicDef>,
+    groups: Vec<TopicGroupDef>,
+    config: AppConfig,
+) -> Result<()> {
+    if topics.is_empty() && groups.is_empty() {
         anyhow::bail!("no topics found in '{}' — nothing to listen for", spec_dir);
     }
     info!(
-        "Running in listen-only mode: {} topic(s) from '{}' — validating payloads, not serving GraphQL",
+        "Running in listen-only mode: {} topic(s), {} group(s) from '{}' — validating payloads, not serving GraphQL",
         topics.len(),
+        groups.len(),
         spec_dir
     );
 
     let cache = Arc::new(TopicCache::new());
-    let mqtt_topics: Vec<String> = topics.iter().map(|t| t.topic.clone()).collect();
+    let mqtt_topics: Vec<String> = topics
+        .iter()
+        .map(|t| t.topic.clone())
+        .chain(groups.iter().map(|g| g.pattern.clone()))
+        .collect();
 
     let mut sub = MqttSubscriber::new_with_mode(
         &config.mqtt_host,
@@ -241,6 +252,7 @@ async fn run_listen_only(spec_dir: String, topics: Vec<TopicDef>, config: AppCon
         cache,
         true,
         &topics,
+        &groups,
     )?;
     sub.set_pending_subscriptions(&mqtt_topics);
 

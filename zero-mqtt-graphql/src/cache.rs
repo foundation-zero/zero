@@ -130,7 +130,7 @@ impl TopicCache {
 }
 
 /// MQTT wildcard match: `+` matches one level, `#` matches the rest.
-fn mqtt_pattern_matches(pattern: &str, topic: &str) -> bool {
+pub(crate) fn mqtt_pattern_matches(pattern: &str, topic: &str) -> bool {
     let mut pattern_levels = pattern.split('/');
     let mut topic_levels = topic.split('/');
     loop {
@@ -150,6 +150,58 @@ mod tests {
     use crate::asyncapi::{FieldDef, TopicGroupDef};
     use serde_json::json;
     use std::collections::BTreeMap;
+
+    #[test]
+    fn test_pattern_matches_exact() {
+        assert!(mqtt_pattern_matches(
+            "power-tags/10P1/slug",
+            "power-tags/10P1/slug"
+        ));
+        assert!(!mqtt_pattern_matches(
+            "power-tags/10P1/slug",
+            "power-tags/10P1/other"
+        ));
+    }
+
+    #[test]
+    fn test_pattern_matches_plus_single_level() {
+        assert!(mqtt_pattern_matches(
+            "power-tags/+/+",
+            "power-tags/10P1/slug"
+        ));
+        assert!(mqtt_pattern_matches(
+            "power-tags/+/+",
+            "power-tags/10P2/other-slug"
+        ));
+        // `+` matches exactly one level, not zero and not several.
+        assert!(!mqtt_pattern_matches("power-tags/+/+", "power-tags/10P1"));
+        assert!(!mqtt_pattern_matches(
+            "power-tags/+/+",
+            "power-tags/10P1/a/b"
+        ));
+    }
+
+    #[test]
+    fn test_pattern_matches_hash_matches_remaining_levels() {
+        assert!(mqtt_pattern_matches("logs/#", "logs/a"));
+        assert!(mqtt_pattern_matches("logs/#", "logs/a/b/c"));
+        // `#` also matches zero remaining levels (the prefix topic itself).
+        assert!(mqtt_pattern_matches("logs/#", "logs"));
+    }
+
+    #[test]
+    fn test_pattern_matches_rejects_different_prefix() {
+        assert!(!mqtt_pattern_matches("logs/#", "metrics/a"));
+        assert!(!mqtt_pattern_matches(
+            "power-tags/+/+",
+            "power-tags-other/10P1/slug"
+        ));
+    }
+
+    #[test]
+    fn test_pattern_matches_rejects_pattern_longer_than_topic() {
+        assert!(!mqtt_pattern_matches("power-tags/+/+", "power-tags/10P1"));
+    }
 
     fn topic(topic_name: &str, ttl_secs: u64) -> TopicDef {
         TopicDef {
