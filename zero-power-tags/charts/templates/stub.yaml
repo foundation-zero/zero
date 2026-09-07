@@ -31,13 +31,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ $stubName }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "zero-power-tags.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: stub
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ $stubName }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "zero-power-tags.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: stub
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -104,8 +103,8 @@ metadata:
     app.kubernetes.io/component: stub
 spec:
   selector:
-    app.kubernetes.io/name: {{ $stubName }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "zero-power-tags.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
   ports:
     {{- range $key, $panel := .Values.modbus.panels }}
     - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
