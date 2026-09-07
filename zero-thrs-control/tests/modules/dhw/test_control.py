@@ -281,7 +281,7 @@ def test_boosting_pump_held_until_boosting_loop_open(
 
     # while the boosting valves travel the pump must not be driven
     while not control._boosting_loop_open(runner.tick()[0]):  # type: ignore
-        assert control._current_values.dhw_pump.dutypoint.value == 0.0
+        assert control._current_values.dhw_pump.dutypoint.value == 0.1
         assert not control._pump_temperature_controller.enabled()
 
     sensor_values, *_ = runner.run(120)

@@ -80,8 +80,8 @@ def simulation(simulation_inputs):
 
 
 @fixture
-def control(simulation) -> DhwControl:
-    return DhwControl(DhwParameters(), simulation.time)
+def control(parameters, simulation) -> DhwControl:
+    return DhwControl(parameters, simulation.time)
 
 
 @fixture
@@ -91,7 +91,28 @@ def alarms() -> DhwAlarms:
 
 @fixture
 def parameters() -> DhwParameters:
-    return DhwParameters()
+    return DhwParameters(
+        heatpump_boosting_enabled=True,
+        ht_boosting_enabled=True,
+        heatpump_flow_setpoint=25,
+        heatpump_temperature_setpoint=65,
+        ht_boosting_temperature_setpoint=65,
+        minimum_tank_temperature=55,
+        maximum_tank_temperature=60,
+        boosting_delta=2,
+        drives_flowcontrol_minimum_setpoint=0.1,
+        dc_flowcontrol_minimum_setpoint=0.1,
+        filling_temperature_setpoint=40,
+        minimum_tank_level=30,
+        maximum_tank_level=260,
+        tank1_enabled=True,
+        tank2_enabled=True,
+        tank3_enabled=True,
+        pump_temperature_tuning=(-0.01, -0.001, 0.0),
+        pump_flow_tuning=(0.01, 0.001, 0.0),
+        dc_flow_tuning=(-0.01, -0.001, 0.0),
+        drives_flow_tuning=(-0.01, -0.001, 0.0),
+    )
 
 
 @fixture()

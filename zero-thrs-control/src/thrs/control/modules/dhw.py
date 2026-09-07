@@ -108,7 +108,7 @@ class DhwParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
     return DhwControlValues(
         dhw_pump=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         dhw_heatpump=HeatPump(
