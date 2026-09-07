@@ -332,7 +332,7 @@ class CodeZeroTack(LoadsModel, ABC):
         RelativePosition,
         Field(validation_alias="i_PositionAvg_permille"),
         VariableMeta(
-            display_name="Cunningham",
+            display_name="Tack",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -477,6 +477,21 @@ class Mast(LoadsModel, ABC):
         Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck3"),
         VariableMeta(name="lock_main_boom_3", display_name="Boom Reef 3"),
     ]
+    overhoist_main_boom_1: Annotated[
+        Lock,
+        Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck1Ovrhst"),
+        VariableMeta(name="overhoist_main_boom_1", display_name="Boom Reef 1"),
+    ]
+    overhoist_main_boom_2: Annotated[
+        Lock,
+        Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck2Ovrhst"),
+        VariableMeta(name="overhoist_main_boom_2", display_name="Boom Reef 2"),
+    ]
+    overhoist_main_boom_3: Annotated[
+        Lock,
+        Field(validation_alias="FE207_MnHlyrd/ix_SnsrBmRfLck3Ovrhst"),
+        VariableMeta(name="overhoist_main_boom_3", display_name="Boom Reef 3"),
+    ]
 
     lock_mizzen_1: Annotated[
         Lock,
@@ -517,6 +532,16 @@ class Mast(LoadsModel, ABC):
         Lock,
         Field(validation_alias="FE404_MzznHlyrd/ix_SnsrBmRfLck2"),
         VariableMeta(name="lock_mizzen_boom_2", display_name="Boom Reef 2"),
+    ]
+    overhoist_mizzen_boom_1: Annotated[
+        Lock,
+        Field(validation_alias="FE404_MzznHlyrd/ix_SnsrBmRfLck1Ovrhst"),
+        VariableMeta(name="overhoist_mizzen_boom_1", display_name="Boom Reef 1"),
+    ]
+    overhoist_mizzen_boom_2: Annotated[
+        Lock,
+        Field(validation_alias="FE404_MzznHlyrd/ix_SnsrBmRfLck2Ovrhst"),
+        VariableMeta(name="overhoist_mizzen_boom_2", display_name="Boom Reef 2"),
     ]
 
     storm_jib_load: Annotated[
@@ -612,6 +637,15 @@ class MainCheckstay(LoadsModel, ABC):
             display_name="Checkstay PT",
             applies_to_tack="port",
             variable_key="main-checkstay-load",
+        ),
+    ]
+    load_ps_failure: Annotated[
+        LoadFailure,
+        Field(validation_alias="st_LoadPs/x_Failure"),
+        VariableMeta(
+            name="ps-load-failure",
+            display_name="Main Checkstay PT Load Failure",
+            alarm_for="ps_load",
         ),
     ]
     load_sb_failure: Annotated[
@@ -831,9 +865,24 @@ class MainTraveller(LoadsModel, ABC):
             scale_max_label="sb",
         ),
     ]
-    # TODO: Add position alarms/thresholds (MaxPosition field not found, InnerLimit/OuterLimit fields might be used instead)
-    # max_position_alarm: MaxPositionAlarm
-    # min_position_alarm: MinPositionAlarm
+    inner_limit_alarm: Annotated[
+        MinPositionAlarm,
+        Field(validation_alias="xInnerLimit"),
+        VariableMeta(
+            name="inner-limit-alarm",
+            display_name="Traveller Inner Limit Alarm",
+            alarm_for="relative_position",
+        ),
+    ]
+    outer_limit_alarm: Annotated[
+        MaxPositionAlarm,
+        Field(validation_alias="xOuterLimit"),
+        VariableMeta(
+            name="outer-limit-alarm",
+            display_name="Traveller Outer Limit Alarm",
+            alarm_for="relative_position",
+        ),
+    ]
 
 
 class MizzenCheckstay(LoadsModel, ABC):
@@ -914,6 +963,15 @@ class MizzenCheckstay(LoadsModel, ABC):
             display_name="Checkstay PT",
             applies_to_tack="port",
             variable_key="mizzen-checkstay-load",
+        ),
+    ]
+    load_ps_failure: Annotated[
+        LoadFailure,
+        Field(validation_alias="st_LoadPs/x_Failure"),
+        VariableMeta(
+            name="ps-load-failure",
+            display_name="Mizzen Checkstay PT Load Failure",
+            alarm_for="ps_load",
         ),
     ]
     load_sb_failure: Annotated[
