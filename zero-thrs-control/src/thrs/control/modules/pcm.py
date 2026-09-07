@@ -273,6 +273,9 @@ class PcmControl(
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
+    def update_controls(self, control_values: PcmControlValues):
+        self._current_values.update_in_place(control_values)
+
     @StateLogger.log_warnings
     def control(
         self, sensor_values: PcmSensorValues

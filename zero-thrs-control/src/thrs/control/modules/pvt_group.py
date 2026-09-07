@@ -150,10 +150,6 @@ class PvtGroupControl(
     def parameters(self) -> PvtGroupParameters:
         return self._parameters
 
-    @property
-    def current_values(self) -> PvtGroupControlValues:
-        return self._current_values
-
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -170,6 +166,9 @@ class PvtGroupControl(
     @StateLogger.log_parameters
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
+
+    def update_controls(self, control_values: PvtGroupControlValues):
+        self._current_values.update_in_place(control_values)
 
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (self._current_values, PvtGroupControllerState())

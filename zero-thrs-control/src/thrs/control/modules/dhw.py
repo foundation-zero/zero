@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, cast
+from typing import Annotated
 
 from pydantic import Field, model_validator
 from transitions import State
@@ -666,7 +666,7 @@ class DhwControl(
             self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
-            (0.15,1)
+            (0.15, 1),
         )
 
         self._drives_flow_controller = PidController[Ratio, Celsius](
@@ -737,11 +737,8 @@ class DhwControl(
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: DhwControlValues): #TODO: implement this for other controls using helper fn
-        for component_name, component in DhwControlValues.model_fields.items():
-            for field_name in cast(ThrsValues, type(component)).model_fields:
-                cur_component = getattr(self._current_values, component_name)
-                setattr(cur_component, field_name, getattr(getattr(control_values, component_name), field_name))
+    def update_controls(self, control_values: DhwControlValues):
+        self._current_values.update_in_place(control_values)
 
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
@@ -910,8 +907,10 @@ class DhwControl(
                 and self._boosting_pump_controller.enabled()
             ):
                 self._boosting_pump_controller.disable()
-            self._current_values.dhw_pump.dutypoint = Stamped(
-                value=0.0, timestamp=self._time()
+            self._current_values.dhw_pump.dutypoint = (
+                Stamped(  # TODO: better to turn the pump off?
+                    value=0.1, timestamp=self._time()
+                )
             )
             return
 

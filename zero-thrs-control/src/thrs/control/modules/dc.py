@@ -216,6 +216,9 @@ class DcControl(
         )
         self._ugrids_control.update_parameters(ugrids_parameters(parameters))
 
+    def update_controls(self, control_values: DcControlValues):
+        self._current_values.update_in_place(control_values)
+
     @staticmethod
     def modes() -> list[str]:
         return [""]

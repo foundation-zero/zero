@@ -177,8 +177,11 @@ class Module[
             await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_manual_control(self._control.manual_controls)
 
-    async def tick(self, sensor_values: S | None) -> C:
+    async def tick(self, sensor_values: S | None) -> C | None:
         if sensor_values is None:
+            logging.debug(
+                f"Module {self._name} has no sensor values - sending initial control values"
+            )
             control_values, controller_state = self._control.initial()
         else:
             control_values, controller_state = self.execute_control(sensor_values)

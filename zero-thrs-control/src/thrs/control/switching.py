@@ -74,12 +74,14 @@ class Switching[
         # we cannot stay "automatic" while not the acting controller.
         if not sensor_values.mode.is_advisory:
             if actuated_control_values is not None:
-                self._manual_control.update_controls(actuated_control_values)
+                self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self.control_mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
-            self._automatic_control.update_controls(control_values)
+            self._automatic_control.update_controls(
+                control_values
+            )  # Keep automatic control in sync with manual control
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
         control_values, controller_state = self._automatic_control.control(
@@ -87,7 +89,7 @@ class Switching[
         )
 
         # Keep the manual controls tracking the control output, so switching doesn't jump controls
-        self._manual_control.update_controls(control_values)
+        self.update_manual_controls(control_values)
         return control_values, controller_state
 
     def switch_mode(self, mode: AutomationMode):

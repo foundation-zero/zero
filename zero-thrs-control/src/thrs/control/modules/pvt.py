@@ -293,6 +293,9 @@ class PvtControl(
         self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
         self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
 
+    def update_controls(self, control_values: PvtControlValues):
+        self._current_values.update_in_place(control_values)
+
     def _control_heat_dump(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=self._heat_dump_controller(

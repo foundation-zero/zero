@@ -45,6 +45,22 @@ class ThrsValues(BaseModel):
         }
         return cls(**vals)
 
+    def update_in_place(self, other: Self) -> None:
+        """Copy the values of other into self, keeping the identity of nested components."""
+        for field_name in type(self).model_fields:
+            current = getattr(self, field_name)
+            incoming = getattr(other, field_name)
+
+            if isinstance(current, Stamped):
+                setattr(self, field_name, incoming.model_copy(deep=True))
+            elif isinstance(current, ThrsValues):
+                current.update_in_place(incoming)
+            elif isinstance(current, list):
+                for current_item, incoming_item in zip(current, incoming, strict=True):
+                    current_item.update_in_place(incoming_item)
+            else:
+                setattr(self, field_name, incoming)
+
     @classmethod
     def yard_tag(cls, field_name: str) -> str:
         return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]

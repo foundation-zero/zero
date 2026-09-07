@@ -204,6 +204,9 @@ class ConsumersControl(
     def update_parameters(self, parameters: ConsumersParameters):
         self._parameters = parameters
 
+    def update_controls(self, control_values: ConsumersControlValues):
+        self._current_values.update_in_place(control_values)
+
 
 class ConsumersAlarms(BaseAlarms):
     pass
