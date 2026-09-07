@@ -52,18 +52,22 @@ def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
     """
     if not hasattr(msg_type, "name_to_idx"):
         return None
-    for _, name, *rest in msg_type.fields:
-        if name == field_name:
-            converter = rest[0] if rest else None
-            return _json_type_from_converter(converter)
-    return None
+    return next(
+        (
+            _json_type_from_converter(rest[0] if rest else None)
+            for _, name, *rest in msg_type.fields
+            if name == field_name
+        ),
+        None,
+    )
 
 
-def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]]:
-    """Return (envelope key → JSON Schema type, key order) for a documented type.
+def _gather_envelope_for_type(nmea_type: str) -> dict[str, str]:
+    """Return the envelope key → JSON Schema type map for a documented type.
 
-    Runs the real ``parse()`` on the corpus example for the authoritative envelope,
-    then enriches types from pynmea2's declared converters.
+    Keys are in the order ``parse()`` emits them. Runs the real ``parse()`` on the
+    corpus example for the authoritative envelope, then enriches types from
+    pynmea2's declared converters.
     """
     sender = sender_for(nmea_type)
     raw = sentence_for(nmea_type)
@@ -85,16 +89,12 @@ def _gather_envelope_for_type(nmea_type: str) -> tuple[dict[str, str], list[str]
             orig_name_by_env_key[f"nmea_{name}"] = name
 
     def type_for(env_key: str) -> str:
-        if (special := _SPECIAL_FIELD_TYPES.get(env_key)) is not None:
-            return special
+        if env_key in _SPECIAL_FIELD_TYPES:
+            return _SPECIAL_FIELD_TYPES[env_key]
         orig = orig_name_by_env_key.get(env_key)
-        conv_type = _converter_type_for_field(orig, msg_type) if orig else None
-        return conv_type or "string"
+        return (_converter_type_for_field(orig, msg_type) if orig else None) or "string"
 
-    field_types = {env_key: type_for(env_key) for env_key in envelope}
-
-    field_order = list(envelope.keys())
-    return field_types, field_order
+    return {env_key: type_for(env_key) for env_key in envelope}
 
 
 def _json_pointer_ref(channel_id: str) -> str:
@@ -108,23 +108,18 @@ def _json_pointer_ref(channel_id: str) -> str:
     return f"#/channels/{segment}"
 
 
-def _build_properties(
-    field_types: dict[str, str], field_order: list[str]
-) -> dict[str, Any]:
+def _build_properties(field_types: dict[str, str]) -> dict[str, Any]:
     """Build the ``properties`` dict for an object schema.
 
     Every property is nullable, since empty NMEA fields parse to ``null``.
     """
-    props: dict[str, Any] = {}
-    for key in field_order:
-        # draft-2020-12 style ``type: [T, "null"]``; the AsyncAPI 3.0 validator
-        # rejects the draft-4 ``nullable`` keyword on the payload schema.
-        props[key] = {"type": [field_types[key], "null"]}
-    return props
+    return {
+        key: {"type": [json_type, "null"]} for key, json_type in field_types.items()
+    }
 
 
 def _build_message_schema(
-    nmea_type: str, field_types: dict[str, str], field_order: list[str]
+    nmea_type: str, field_types: dict[str, str]
 ) -> dict[str, Any]:
     """Build a per-type message schema."""
     return {
@@ -134,8 +129,8 @@ def _build_message_schema(
         "contentType": "application/json",
         "payload": {
             "type": "object",
-            "properties": _build_properties(field_types, field_order),
-            "required": field_order,
+            "properties": _build_properties(field_types),
+            "required": list(field_types),
         },
     }
 
@@ -158,9 +153,7 @@ def build_spec() -> dict[str, Any]:
                 "**A+T's onboard broker** (the ATPX MQTT host), parses each sentence "
                 "with pynmea2 into a JSON envelope, and republishes it to "
                 "`atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** "
-                "(the output MQTT host). Vector then ingests "
-                "`atpx/processed/nmea/#` into Greptime tables named "
-                "`atpx__nmea_<type>`.\n\n"
+                "(the output MQTT host).\n\n"
                 "**Known-type scope.** The documented type set below is the "
                 "known/supported subset for which this service has been tested with "
                 "real A+T data. The service subscribes to `atpx/nmea0183/#` and parses "
@@ -222,7 +215,7 @@ def build_spec() -> dict[str, Any]:
     }
 
     for nmea_type in documented_types():
-        field_types, field_order = _gather_envelope_for_type(nmea_type)
+        field_types = _gather_envelope_for_type(nmea_type)
         message_id = f"{nmea_type}_envelope"
         channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
 
@@ -244,7 +237,7 @@ def build_spec() -> dict[str, Any]:
             },
         }
         spec["components"]["messages"][message_id] = _build_message_schema(
-            nmea_type, field_types, field_order
+            nmea_type, field_types
         )
         spec["operations"][f"send_{nmea_type}_envelope"] = {
             "action": "send",
