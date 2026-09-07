@@ -15,6 +15,7 @@ Types:    pydantic BaseModel/BaseSettings, 3.12+ generics (list[T] not List[T])
 Async:    asyncio.TaskGroup, aiomqtt, @asynccontextmanager
 Log:      %(asctime)s | %(levelname)-8s | %(message)s
 Testing:  pytest + pytest-asyncio, asyncio_mode=auto, function loop scope
+CLI:      pydantic-settings (CliApp), not argparse/click
 Idioms:   comprehensions > loops, f-strings, pathlib, MqttTopic not MQTTTopic
 ```
 
@@ -178,6 +179,9 @@ merged = base | extra
 - `any()` / `all()` / `sum()` take generator expressions.
 - A comprehension signals a result is being built. Pure side effects can use a loop.
 
+**First match:** `next((x for x in xs if pred(x)), None)` to find the first
+matching item, rather than a `for` loop with an early `return`.
+
 **Tuple destructuring:** `a, b = result` rather than `result[0]`, `result[1]`.
 
 **Context managers:** `async with` is the standard. `@asynccontextmanager` for
@@ -206,6 +210,10 @@ Use `@property` or a named getter.
 
 **`print`:** For CLI output. Use `logging.getLogger(__name__)` for runtime messages.
 
+**`assert`:** Not in production code — `python -O` strips assertions, turning a
+guard into a silent no-op. Raise an explicit exception (or validate via pydantic).
+`assert` belongs only in tests.
+
 **Comments:**
 
 - Comments explain *why*, not *what*.
@@ -213,12 +221,21 @@ Use `@property` or a named getter.
 - Avoid long comments.
 - Avoid comments with irrelevant design decisions.
 - If a comment raises more questions than it answers, rewrite or remove it.
+- Don't commit an assistant's narration of its own reasoning or changes; that
+  belongs in the PR, not the source.
 - `# TODO:` is the convention for deferred work. Other markers (`FIXME`, `HACK`,
   `XXX`) are not used.
 
 **Tests:**
 
 - Use `nullcontext` from `contextlib` to make "does not raise" explicit in parametrized tests.
+
+### 2.8 CLIs
+
+Build CLIs on `pydantic-settings` (`CliApp` / `BaseSettings` CLI support), not
+`argparse` or `click` — one settings model backs both env vars and CLI flags.
+Keep the no-argument invocation running the service, so container entrypoints
+work without passing a subcommand.
 
 ---
 
@@ -509,4 +526,3 @@ Multi-arch (`linux/amd64,linux/arm64`) for services, single-arch for frontend/in
 
 - `.vscode/settings.json` configures pytest for `zero-loads-app`.
 - No repo-level `.editorconfig`. Configure tooling via editor extensions.
-
