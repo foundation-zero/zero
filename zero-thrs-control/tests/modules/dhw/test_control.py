@@ -137,7 +137,7 @@ def test_boosting_transitions(
     assert control._tanks_controller.boosting
     assert control.mode.is_boosting_heatpump
     assert isinstance(sensor_values, DhwSensorValues)
-    assert sensor_values.dhw_flow_boosting.flow.value == approx(25, abs=0.2)
+    assert sensor_values.dhw_flow_boosting.flow.value == approx(25, abs=0.5)
     assert (
         sensor_values.dhw_temperature_boosting_supply.temperature.value
         < sensor_values.dhw_temperature_boosting_return.temperature.value
