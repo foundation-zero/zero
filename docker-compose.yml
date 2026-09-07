@@ -147,6 +147,22 @@ services:
       postgres:
         condition: service_healthy
 
+  mqtt-graphql:
+    build:
+      context: ./zero-mqtt-graphql
+    ports:
+      - 5103:5103
+    profiles:
+      - data
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+    depends_on:
+      vernemq:
+        condition: service_healthy
+    volumes:
+      - ./specs:/app/specs:ro
+
   # ---- data collection ----
   vector:
     image: timberio/vector:0.54.0-debian
