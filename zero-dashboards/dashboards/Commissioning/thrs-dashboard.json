@@ -3873,13 +3873,13 @@
           "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1",
+        "definition": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' AND ( '${section:raw}' = '$__all' OR split_part(mqtt_topic,'/',3) IN (${section:sqlstring}) ) ORDER BY 1",
         "includeAll": true,
         "label": "Device",
         "multi": true,
         "name": "device",
         "options": [],
-        "query": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' ORDER BY 1",
+        "query": "SELECT DISTINCT split_part(mqtt_topic,'/',4) AS __value, concat('[', yard_tag, '] ', split_part(mqtt_topic,'/',4)) AS __text FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%' AND yard_tag IS NOT NULL AND yard_tag <> '' AND ( '${section:raw}' = '$__all' OR split_part(mqtt_topic,'/',3) IN (${section:sqlstring}) ) ORDER BY 1",
         "refresh": 1,
         "regex": "",
         "type": "query"
