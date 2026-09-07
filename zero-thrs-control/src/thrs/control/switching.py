@@ -1,3 +1,4 @@
+import logging
 from typing import Literal, cast
 
 from thrs.classes.control import Control
@@ -10,6 +11,8 @@ from thrs.input_output.base import ThrsValues
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 type ControlModes = Literal["manual", "automatic"]
+
+logger = logging.getLogger(__name__)
 
 
 class SwitchingControlMode[Mode](ThrsValues):
@@ -41,10 +44,13 @@ class Switching[
             ControlMode,
             ControllerState,
         ],
+        name: str,
     ):
         self._manual_control = manual
         self._automatic_control = automatic
+        self._name = name
         self._mode: ControlModes = "manual"
+        self._was_advisory: bool | None = None
         self._parameters = cast(ControlParameters, EmptyParameters())
         self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
@@ -72,16 +78,25 @@ class Switching[
         # When the AMCS is not in advisory mode it is in control itself: we keep the
         # manual controls tracking what it actually actuated and force manual mode, so
         # we cannot stay "automatic" while not the acting controller.
-        if not sensor_values.mode.is_advisory:
+        is_advisory = sensor_values.mode.is_advisory
+        if self._was_advisory and not is_advisory:
+            logger.warning(
+                "AMCS advisory was disabled for %s (amcs_mode=%s, control_mode=%s); "
+                "forcing manual mode and echoing actuated values from AMCS",
+                self._name,
+                sensor_values.mode.mode.value,
+                self._mode,
+            )
+        self._was_advisory = is_advisory
+        if not is_advisory:
             if actuated_control_values is not None:
                 self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self.control_mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
-            self._automatic_control.update_controls(
-                control_values
-            )  # Keep automatic control in sync with manual control
+            # Keep automatic control in sync with manual control
+            self._automatic_control.update_controls(control_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
         control_values, controller_state = self._automatic_control.control(

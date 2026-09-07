@@ -68,7 +68,9 @@ class Module[
         channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
     ):
         self._name = name
-        self._control = Switching(ManualControl(control.initial()[0]), control)
+        self._control = Switching(
+            ManualControl(control.initial()[0]), control, name=name
+        )
         self._alarms = alarms
         self._channels = channels
         self._active_alarms: dict[str, Alarm] = {}
@@ -179,10 +181,12 @@ class Module[
 
     async def tick(self, sensor_values: S | None) -> C | None:
         if sensor_values is None:
-            logging.debug(
-                f"Module {self._name} has no sensor values - sending initial control values"
+            logging.warning(
+                "Module %s has no sensor values - sending last known manual control values",
+                self._name,
             )
-            control_values, controller_state = self._control.initial()
+            control_values = self._control.manual_controls
+            _, controller_state = self._control.automatic_control.initial()
         else:
             control_values, controller_state = self.execute_control(sensor_values)
 
