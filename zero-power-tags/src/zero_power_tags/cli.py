@@ -122,7 +122,8 @@ def resolve_bridge_endpoints(
     endpoints: list[BridgeEndpoint] = []
     for spec in configured:
         host = settings.field_for(spec.panel, "host")
-        assert host is not None  # guaranteed by the `configured` filter above
+        if not host:
+            continue
         panel_port = ports[spec.panel]
         endpoints.append(
             BridgeEndpoint(

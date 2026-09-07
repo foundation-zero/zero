@@ -2,6 +2,22 @@
 {{- if not .Values.modbus.panels }}
 {{- fail "modbus.stub.enabled is set but modbus.panels is empty; nothing for the stub to serve" }}
 {{- end }}
+{{/* The stub runs non-root, so every panel needs its own port >= 1024;
+without one the servers collide on modbus.port (502) and fail to bind. */}}
+{{- $seenPorts := dict }}
+{{- range $key, $panel := .Values.modbus.panels }}
+{{- if not $panel.port }}
+{{- fail (printf "modbus.stub.enabled is set but panel %s has no port; the non-root stub needs a distinct port >= 1024 per panel" $key) }}
+{{- end }}
+{{- $port := int $panel.port }}
+{{- if lt $port 1024 }}
+{{- fail (printf "modbus.stub.enabled is set but panel %s uses privileged port %d; the non-root stub can only bind ports >= 1024" $key $port) }}
+{{- end }}
+{{- if hasKey $seenPorts (printf "%d" $port) }}
+{{- fail (printf "modbus.stub.enabled is set but panels %s and %s both use port %d" (index $seenPorts (printf "%d" $port)) $key $port) }}
+{{- end }}
+{{- $_ := set $seenPorts (printf "%d" $port) $key }}
+{{- end }}
 {{- $stubName := include "zero-power-tags.stubName" . }}
 apiVersion: apps/v1
 kind: Deployment
