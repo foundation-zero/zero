@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps\
     wayvnc \
     wlr-randr \
+    evtest \
+    libinput-tools \
     && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh

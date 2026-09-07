@@ -53,7 +53,7 @@ start_vnc() {
             || echo "Warning: failed to set headless resolution; using default."
     fi
 
-    wayvnc --disable-input 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
+    wayvnc  0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
 start_cage_chromium() {
@@ -67,6 +67,8 @@ start_cage_chromium() {
     export DBUS_SESSION_BUS_ADDRESS="/dev/null"
 
     CHROME_FLAGS="--ozone-platform=wayland \
+                --touch-events=enabled \
+                --enable-touch-drag-drop \
                 --kiosk \
                 --no-sandbox \
                 --no-first-run \
