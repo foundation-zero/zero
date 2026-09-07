@@ -69,10 +69,8 @@ chars, lower-case). Takes a dict with `key` (the panel key).
 
 {{/*
 Panel env vars (MODBUS_PANELS__host_/port_) shared by the run and stub
-deployments, taken straight from modbus.panels. The host var is what marks a
-panel "deployed", so the stub also relies on it to decide which panels to serve
-(see StubCmd). In stub mode the panel hosts point at the stub Service (see
-modbus.stub) with a distinct port each.
+deployments. In stub mode the panel hosts point at the stub Service with a
+distinct port each.
 */}}
 {{- define "zero-power-tags.panelEnv" -}}
 {{- range $key, $panel := .Values.modbus.panels }}

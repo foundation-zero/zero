@@ -86,27 +86,18 @@ def configured_modbus_ports(
     }
 
 
-def configured_specs(
+def deployed_specs(
     settings: PowerTagsSettings, specs: list[BridgeSpec]
 ) -> list[BridgeSpec]:
-    """Specs whose panel has a gateway host configured (i.e. is deployed).
-
-    A panel with no ``host_<PANEL>`` is treated as "not deployed yet", so both
-    the run bridges and the stub servers act on the same subset.
-    """
+    """Specs whose panel has a gateway host configured, i.e. is deployed."""
     return [spec for spec in specs if settings.field_for(spec.panel, "host")]
 
 
 def resolve_bridge_endpoints(
     settings: PowerTagsSettings, specs: list[BridgeSpec], default_port: int
 ) -> list[BridgeEndpoint]:
-    """Resolve gateway addresses for the panels that have a ``host_<PANEL>`` set.
-
-    Panels without a configured host are treated as "not deployed yet": they
-    are skipped (with a warning) so the app can be rolled out panel-by-panel.
-    Only a configuration with *no* hosts at all is an error.
-    """
-    configured = configured_specs(settings, specs)
+    """Resolve gateway addresses for the panels that have a ``host_<PANEL>`` set."""
+    configured = deployed_specs(settings, specs)
     configured_panels = {spec.panel for spec in configured}
     skipped = sorted(
         spec.panel for spec in specs if spec.panel not in configured_panels
@@ -119,20 +110,15 @@ def resolve_bridge_endpoints(
         raise ValueError("No Modbus gateway hosts configured for any panel")
 
     ports = configured_modbus_ports(settings, configured)
-    endpoints: list[BridgeEndpoint] = []
-    for spec in configured:
-        host = settings.field_for(spec.panel, "host")
-        if not host:
-            continue
-        panel_port = ports[spec.panel]
-        endpoints.append(
-            BridgeEndpoint(
-                spec=spec,
-                host=host,
-                port=panel_port if panel_port is not None else default_port,
-            )
+    return [
+        BridgeEndpoint(
+            spec=spec,
+            host=host,
+            port=port if (port := ports[spec.panel]) is not None else default_port,
         )
-    return endpoints
+        for spec in configured
+        if (host := settings.field_for(spec.panel, "host")) is not None
+    ]
 
 
 def stub_ports(
@@ -209,7 +195,7 @@ class StubCmd(BaseSettings):
         specs = read_modbus_bridge_specs()
         # Serve only the deployed panels so their pinned ports line up with the
         # run bridges; with no panels configured (local dev) serve every panel.
-        served = configured_specs(settings, specs) or specs
+        served = deployed_specs(settings, specs) or specs
         stub = Stub.from_topic_groups(
             local_topic_groups(settings, served, self.modbus_port),
             default_value=0,

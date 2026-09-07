@@ -1,20 +1,21 @@
 {{- if and .Values.modbus.stub .Values.modbus.stub.enabled }}
+{{- $ctx := "modbus.stub.enabled is set but" }}
 {{- if not .Values.modbus.panels }}
-{{- fail "modbus.stub.enabled is set but modbus.panels is empty; nothing for the stub to serve" }}
+{{- fail (printf "%s modbus.panels is empty; nothing for the stub to serve" $ctx) }}
 {{- end }}
 {{/* The stub runs non-root, so every panel needs its own port >= 1024;
 without one the servers collide on modbus.port (502) and fail to bind. */}}
 {{- $seenPorts := dict }}
 {{- range $key, $panel := .Values.modbus.panels }}
 {{- if not $panel.port }}
-{{- fail (printf "modbus.stub.enabled is set but panel %s has no port; the non-root stub needs a distinct port >= 1024 per panel" $key) }}
+{{- fail (printf "%s panel %s has no port; the non-root stub needs a distinct port >= 1024 per panel" $ctx $key) }}
 {{- end }}
 {{- $port := int $panel.port }}
 {{- if lt $port 1024 }}
-{{- fail (printf "modbus.stub.enabled is set but panel %s uses privileged port %d; the non-root stub can only bind ports >= 1024" $key $port) }}
+{{- fail (printf "%s panel %s uses privileged port %d; the non-root stub can only bind ports >= 1024" $ctx $key $port) }}
 {{- end }}
 {{- if hasKey $seenPorts (printf "%d" $port) }}
-{{- fail (printf "modbus.stub.enabled is set but panels %s and %s both use port %d" (index $seenPorts (printf "%d" $port)) $key $port) }}
+{{- fail (printf "%s panels %s and %s both use port %d" $ctx (index $seenPorts (printf "%d" $port)) $key $port) }}
 {{- end }}
 {{- $_ := set $seenPorts (printf "%d" $port) $key }}
 {{- end }}
@@ -70,7 +71,7 @@ spec:
           ports:
             {{- range $key, $panel := .Values.modbus.panels }}
             - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
-              containerPort: {{ $panel.port | default $.Values.modbus.port }}
+              containerPort: {{ $panel.port }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -108,7 +109,7 @@ spec:
   ports:
     {{- range $key, $panel := .Values.modbus.panels }}
     - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
-      port: {{ $panel.port | default $.Values.modbus.port }}
+      port: {{ $panel.port }}
       targetPort: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
     {{- end }}
 {{- end }}

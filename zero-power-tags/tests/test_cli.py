@@ -6,7 +6,7 @@ import pytest
 from zero_power_tags.cli import (
     PowerTagsSettings,
     configured_modbus_ports,
-    configured_specs,
+    deployed_specs,
     resolve_bridge_endpoints,
     stub_ports,
 )
@@ -82,18 +82,18 @@ class TestResolveBridgeEndpoints:
             resolve_bridge_endpoints(settings, [_spec("10P0.1")], default_port=502)
 
 
-class TestConfiguredSpecs:
+class TestDeployedSpecs:
     def test_keeps_only_panels_with_a_host(self):
         settings = _settings(host_10p1="192.168.0.10")
         specs = [_spec("10P0.1"), _spec("10P1")]
-        assert [spec.panel for spec in configured_specs(settings, specs)] == ["10P1"]
+        assert [spec.panel for spec in deployed_specs(settings, specs)] == ["10P1"]
 
     def test_stub_serves_only_configured_ports(self):
         # Partial rollout: only 10P1 is deployed, pinned to stub port 15021.
         # The stub must not also spread the undeployed 10P0.3 onto 15021.
         settings = _settings(host_10p1="stub", port_10p1="15021")
         specs = [_spec("10P0.1"), _spec("10P0.3"), _spec("10P1")]
-        served = configured_specs(settings, specs) or specs
+        served = deployed_specs(settings, specs) or specs
         assert stub_ports(settings, served, base_port=15020) == {"10P1": 15021}
 
 
