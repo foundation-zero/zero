@@ -26,7 +26,7 @@ class Pump(ThrsValues):
 
         if is_actuated(info.context):
             for field, actuated_key in (
-                ("Dutypoint", "CC_Dutypoint"),
+                ("Dutypoint", "CC_DutyPoint"),
                 ("On", "CC_OnOff"),
                 ("ControlMode", "CC_ControlMode"),
             ):
@@ -35,7 +35,7 @@ class Pump(ThrsValues):
                 elif field in values:
                     values.pop(field)
         elif is_commanded(info.context) and any(
-            key in values for key in ("CC_Dutypoint", "CC_OnOff", "CC_ControlMode")
+            key in values for key in ("CC_DutyPoint", "CC_OnOff", "CC_ControlMode")
         ):
             raise ValueError("CC_ keys are not valid for commanded values")
 
@@ -46,7 +46,7 @@ class Pump(ThrsValues):
         data = handler(self)
         if is_actuated(info.context):
             for key, actuated_key in (
-                ("Dutypoint", "CC_Dutypoint"),
+                ("Dutypoint", "CC_DutyPoint"),
                 ("On", "CC_OnOff"),
                 ("ControlMode", "CC_ControlMode"),
             ):
