@@ -1,0 +1,302 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 0,
+    "links": [],
+    "panels": [
+        {
+            "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "P6A33BD2DBCC29C4B"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "showValues": false,
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 1,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.3.0",
+            "repeatDirection": "v",
+            "targets": [
+                {
+                    "builderOptions": {
+                        "aggregates": [],
+                        "columns": [
+                            {
+                                "alias": "flow__value",
+                                "custom": false,
+                                "name": "flow__value",
+                                "type": "Float64"
+                            },
+                            {
+                                "alias": "flow__timestamp",
+                                "custom": false,
+                                "name": "flow__timestamp",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "quantity__value",
+                                "custom": false,
+                                "name": "quantity__value",
+                                "type": "Float64"
+                            },
+                            {
+                                "alias": "quantity__timestamp",
+                                "custom": false,
+                                "name": "quantity__timestamp",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "temperature__value",
+                                "custom": false,
+                                "name": "temperature__value",
+                                "type": "Float64"
+                            },
+                            {
+                                "alias": "temperature__timestamp",
+                                "custom": false,
+                                "name": "temperature__timestamp",
+                                "type": "String"
+                            }
+                        ],
+                        "database": "public",
+                        "filters": [],
+                        "groupBy": [],
+                        "limit": 1000,
+                        "meta": {},
+                        "mode": "list",
+                        "orderBy": [],
+                        "queryType": "table",
+                        "table": "marpower__500000_thrs__pvt__pvt_flow_main_aft_recovery"
+                    },
+                    "datasource": {
+                        "type": "info8fcc-greptimedb-datasource",
+                        "uid": "P6A33BD2DBCC29C4B"
+                    },
+                    "editorType": "sql",
+                    "format": 1,
+                    "meta": {
+                        "builderOptions": {
+                            "aggregates": [],
+                            "columns": [
+                                {
+                                    "alias": "flow__value",
+                                    "custom": false,
+                                    "name": "flow__value",
+                                    "type": "Float64"
+                                },
+                                {
+                                    "alias": "flow__timestamp",
+                                    "custom": false,
+                                    "name": "flow__timestamp",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "quantity__value",
+                                    "custom": false,
+                                    "name": "quantity__value",
+                                    "type": "Float64"
+                                },
+                                {
+                                    "alias": "quantity__timestamp",
+                                    "custom": false,
+                                    "name": "quantity__timestamp",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "temperature__value",
+                                    "custom": false,
+                                    "name": "temperature__value",
+                                    "type": "Float64"
+                                },
+                                {
+                                    "alias": "temperature__timestamp",
+                                    "custom": false,
+                                    "name": "temperature__timestamp",
+                                    "type": "String"
+                                }
+                            ],
+                            "database": "public",
+                            "filters": [],
+                            "groupBy": [],
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "orderBy": [],
+                            "queryType": "table",
+                            "table": "marpower__500000_thrs__pvt__pvt_flow_main_aft_recovery"
+                        }
+                    },
+                    "pluginVersion": "2.1.4",
+                    "queryType": "table",
+                    "rawSql": "SELECT\n\tdate_bin('$__interval', ${field}__timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(${field}__value) AS \"${field}\"\nFROM public.marpower__thrs__${type} AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '$device' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+                    "refId": "A"
+                }
+            ],
+            "title": "",
+            "type": "timeseries"
+        }
+    ],
+    "preload": false,
+    "schemaVersion": 42,
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": "valves",
+                    "value": "valves"
+                },
+                "datasource": {
+                    "type": "info8fcc-greptimedb-datasource",
+                    "uid": "P6A33BD2DBCC29C4B"
+                },
+                "definition": "SELECT split_part(table_name,'__',3) as table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'marpower__thrs__%' AND NOT table_name LIKE '%_old'",
+                "description": "",
+                "name": "type",
+                "options": [],
+                "query": "SELECT split_part(table_name,'__',3) as table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'marpower__thrs__%' AND NOT table_name LIKE '%_old'",
+                "refresh": 1,
+                "regex": "",
+                "type": "query"
+            },
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": "[50001046-02] adsorption-mix-hot",
+                    "value": "adsorption-mix-hot"
+                },
+                "datasource": {
+                    "type": "info8fcc-greptimedb-datasource",
+                    "uid": "P6A33BD2DBCC29C4B"
+                },
+                "definition": "SELECT DISTINCT thrs_data.technical_name AS __value,\n    concat(\n        '[',\n        coalesce(metadata.yard_tag, ''),\n        '] ',\n        thrs_data.technical_name\n    ) AS __text\nFROM public.marpower__io_metadata AS metadata \nJOIN ( SELECT technical_name, topic FROM public.marpower__thrs__${type} GROUP BY  technical_name, topic) AS thrs_data ON thrs_data.topic = metadata.mqtt_topic\nWHERE metadata.mqtt_topic LIKE 'marpower/500000-thrs/%'\n    AND metadata.yard_tag IS NOT NULL\n    AND metadata.yard_tag <> ''\nORDER BY 1",
+                "includeAll": false,
+                "label": "Device",
+                "name": "device",
+                "options": [],
+                "query": "SELECT DISTINCT thrs_data.technical_name AS __value,\n    concat(\n        '[',\n        coalesce(metadata.yard_tag, ''),\n        '] ',\n        thrs_data.technical_name\n    ) AS __text\nFROM public.marpower__io_metadata AS metadata \nJOIN ( SELECT technical_name, topic FROM public.marpower__thrs__${type} GROUP BY  technical_name, topic) AS thrs_data ON thrs_data.topic = metadata.mqtt_topic\nWHERE metadata.mqtt_topic LIKE 'marpower/500000-thrs/%'\n    AND metadata.yard_tag IS NOT NULL\n    AND metadata.yard_tag <> ''\nORDER BY 1",
+                "refresh": 1,
+                "regex": "",
+                "type": "query"
+            },
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": "position_abs",
+                    "value": "position_abs"
+                },
+                "datasource": {
+                    "type": "info8fcc-greptimedb-datasource",
+                    "uid": "P6A33BD2DBCC29C4B"
+                },
+                "definition": "SELECT split_part(column_name, '__', 1) from information_schema.columns where table_name = 'marpower__thrs__${type}' AND column_name LIKE '%\\_\\_value'",
+                "includeAll": false,
+                "label": "Field",
+                "name": "field",
+                "options": [],
+                "query": "SELECT split_part(column_name, '__', 1) from information_schema.columns where table_name = 'marpower__thrs__${type}' AND column_name LIKE '%\\_\\_value'",
+                "refresh": 1,
+                "regex": "",
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-24h",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "THRS ui embed",
+    "uid": "adzxbs2",
+    "version": 16
+}
