@@ -60,8 +60,6 @@ services:
       - "./grafana/greptime.yaml:/etc/grafana/provisioning/datasources/greptime.yaml"
     profiles:
       - data
-    environment:
-      - GF_PLUGINS_PREINSTALL=marcusolsson-treemap-panel
     container_name: grafana
     healthcheck:
       test:
