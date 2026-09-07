@@ -23,7 +23,7 @@ watch(
   { immediate: true },
 );
 
-const brightnessPercentage = ratioAsPercentage(brightness);
+const brightnessPercentage = ratioAsPercentage(brightness, true);
 const disabled = inject<Ref<boolean>>("disabled", ref(false));
 
 const on = computed({

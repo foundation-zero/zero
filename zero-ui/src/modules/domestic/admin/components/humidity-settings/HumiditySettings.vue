@@ -35,7 +35,7 @@ const value = ref(
   roomsWithHumidityControl.value?.[0]?.airConditioning?.humiditySetpoint ??
     HUMIDITY_SETPOINT_RANGE[0],
 );
-const valuePercentage = ratioAsPercentage(value);
+const valuePercentage = ratioAsPercentage(value, true);
 
 updateSetpointWhenControlsHaveChanged(valuePercentage, controls, "humiditySetpoint");
 
