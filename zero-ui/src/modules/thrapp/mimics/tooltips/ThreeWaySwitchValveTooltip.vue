@@ -7,6 +7,7 @@ import {
 } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { FieldEditor } from "../editors";
 import ThreeWaySwitchValveInstance from "../instances/ThreeWaySwitchValveInstance.vue";
@@ -32,6 +33,11 @@ const { labels, items, sources } = useTranslations();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="valves"
+        field="cc_setpoint"
+      />
       <ManualControl />
     </TooltipList>
 

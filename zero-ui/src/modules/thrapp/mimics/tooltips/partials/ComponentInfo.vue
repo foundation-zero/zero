@@ -2,7 +2,6 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { useTranslations } from "..";
-
 const { items } = useTranslations();
 
 defineProps<{ tooltip?: TooltipContent }>();
