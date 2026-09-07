@@ -53,7 +53,7 @@ start_vnc() {
             || echo "Warning: failed to set headless resolution; using default."
     fi
 
-    wayvnc --disable-input 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
+    wayvnc  0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
 start_cage_chromium() {
