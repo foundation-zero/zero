@@ -27,7 +27,7 @@ ACTUATED_CASES = [
             "ControlMode": _stamped(1),
         },
         {
-            "CC_Dutypoint": _stamped(0.4),
+            "CC_DutyPoint": _stamped(0.4),
             "CC_OnOff": _stamped(True),
             "CC_ControlMode": _stamped(1),
         },
@@ -68,7 +68,7 @@ def test_amcs_receive_validation_reads_supported_pump_control_modes(value: int):
     model = Pump.model_validate_json(
         json.dumps(
             {
-                "CC_Dutypoint": _stamped(0.4),
+                "CC_DutyPoint": _stamped(0.4),
                 "CC_OnOff": _stamped(True),
                 "CC_ControlMode": _stamped(value),
             }
@@ -84,7 +84,7 @@ def test_amcs_receive_validation_rejects_unsupported_pump_control_mode():
         Pump.model_validate_json(
             json.dumps(
                 {
-                    "CC_Dutypoint": _stamped(0.4),
+                    "CC_DutyPoint": _stamped(0.4),
                     "CC_OnOff": _stamped(True),
                     "CC_ControlMode": _stamped(2),
                 }
