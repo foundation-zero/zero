@@ -12,6 +12,7 @@ mkdir -p "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR"
 
 URL="${KIOSK_URL:-https://sy-zero.com/}"
+ENABLE_VNC_CONTROL="${ENABLE_VNC_CONTROL:-false}"
 
 cleanup() {
     set +e
@@ -53,7 +54,12 @@ start_vnc() {
             || echo "Warning: failed to set headless resolution; using default."
     fi
 
-    wayvnc --disable-input 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
+    VNC_ARGS=""
+    if [ "$ENABLE_VNC_CONTROL" != "true" ]; then
+        VNC_ARGS="${VNC_ARGS} --disable-input"
+    fi
+
+    wayvnc $VNC_ARGS 0.0.0.0 5900 > /tmp/wayvnc.log 2>&1
 }
 
 start_cage_chromium() {
