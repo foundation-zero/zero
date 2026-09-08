@@ -12534,6 +12534,2872 @@
     },
     {
       "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_rpm/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_pressure/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pressurebar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_frequency/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rothz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_perc/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_current/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_voltage/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_time/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "h"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_deg/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 43,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hydr_system_pressure",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. sys. pressure"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hydr_tank_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 50,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. tank temp"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 50,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hyd_tank_level",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 90,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. tank level"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 90,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "output_velocity_rpm",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 130,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Output velocity"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 130,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "speed_setpoint_rpm",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 170,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Speed setpoint"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 170,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_current",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor current"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 10,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_voltage",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 50,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor voltage"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 50,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_temperature",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 90,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor temperature"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 90,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "drive_temperature",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 130,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Drive temperature"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 130,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_run_time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 170,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor run time"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 170,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_frequency",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 21",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 210,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor frequency"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 22",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 210,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_torque_perc",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 23",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 250,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor torque"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 24",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 250,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_power_perc",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 25",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 290,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor power"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 26",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 290,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "power_on_time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 27",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 210,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Power on time"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 28",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 210,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "propellor_azimuth_deg",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 29",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 250,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Propellor azimuth"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 30",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 250,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "propellor_pitch_deg",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 31",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 290,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Propellor pitch"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 32",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 290,
+                "width": 178
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1767775905609",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp,\r\n  hydr_system_press__value       AS hydr_system_pressure,\r\n  hydr_tank_temp__value          AS hydr_tank_temp,\r\n  hyd_tank_level_sensor__value   AS hyd_tank_level,\r\n  output_velocity__value         AS output_velocity_rpm,\r\n  speed_setpoint__value          AS speed_setpoint_rpm,\r\n  motor_frequency__value         AS motor_frequency,\r\n  motor_torque__value            AS motor_torque_perc,\r\n  motor_power_in_perc__value     AS motor_power_perc,\r\n  motor_current__value           AS motor_current,\r\n  motor_voltage__value           AS motor_voltage,\r\n  motor_thermal_state__value     AS motor_temperature,\r\n  drive_thermal_state__value     AS drive_temperature,\r\n  motor_run_time__value          AS motor_run_time,\r\n  power_on_time__value           AS power_on_time,\r\n  propellor_azimuth__value       AS propellor_azimuth_deg,\r\n  propellor_pitch__value         AS propellor_pitch_deg\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "AFT - Miscellaneous",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_rpm/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_pressure/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pressurebar"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_frequency/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rothz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_perc/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_current/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_voltage/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_time/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "h"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_deg/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 46
+      },
+      "id": 44,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hydr_system_pressure",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. sys. pressure"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hydr_tank_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 50,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. tank temp"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 50,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "hyd_tank_level",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 90,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Hydr. tank level"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 90,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "output_velocity_rpm",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation1_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 130,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Output velocity"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation1_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 130,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "speed_setpoint_rpm",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 170,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Speed setpoint"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 170,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_current",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor current"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_U2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 10,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_voltage",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 50,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor voltage"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_V2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 50,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_temperature",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 90,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor temperature"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_W2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 90,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "drive_temperature",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation2_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 130,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Drive temperature"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "ventilation2_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 130,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_run_time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 170,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor run time"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp label",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 170,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_frequency",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 21",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 210,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor frequency"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 22",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 210,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_torque_perc",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 23",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 250,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor torque"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 24",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 250,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "motor_power_perc",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 25",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 290,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Motor power"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 26",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 290,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "power_on_time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 27",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 210,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Power on time"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 28",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 210,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "propellor_azimuth_deg",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 29",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 250,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Propellor azimuth"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 30",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 250,
+                "width": 178
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "propellor_pitch_deg",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 31",
+              "placement": {
+                "height": 30,
+                "left": 590,
+                "rotation": 0,
+                "top": 290,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Propellor pitch"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 32",
+              "placement": {
+                "height": 30,
+                "left": 405,
+                "rotation": 0,
+                "top": 290,
+                "width": 178
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1767775905609",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp,\r\n  hydr_system_press__value       AS hydr_system_pressure,\r\n  hydr_tank_temp__value          AS hydr_tank_temp,\r\n  hyd_tank_level_sensor__value   AS hyd_tank_level,\r\n  output_velocity__value         AS output_velocity_rpm,\r\n  speed_setpoint__value          AS speed_setpoint_rpm,\r\n  motor_frequency__value         AS motor_frequency,\r\n  motor_torque__value            AS motor_torque_perc,\r\n  motor_power_in_perc__value     AS motor_power_perc,\r\n  motor_current__value           AS motor_current,\r\n  motor_voltage__value           AS motor_voltage,\r\n  motor_thermal_state__value     AS motor_temperature,\r\n  drive_thermal_state__value     AS drive_temperature,\r\n  motor_run_time__value          AS motor_run_time,\r\n  power_on_time__value           AS power_on_time,\r\n  propellor_azimuth__value       AS propellor_azimuth_deg,\r\n  propellor_pitch__value         AS propellor_pitch_deg\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "FWD - Miscellaneous",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
         "type": "info8fcc-greptimedb-datasource",
         "uid": "PBAD09CF7391C3C43"
       },
@@ -12543,7 +15409,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "left",
             "cellOptions": {
               "type": "auto"
             },
@@ -12586,7 +15452,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 46
+        "y": 56
       },
       "id": 39,
       "options": {
@@ -12645,7 +15511,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "left",
             "cellOptions": {
               "type": "auto"
             },
@@ -12688,7 +15554,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 46
+        "y": 56
       },
       "id": 40,
       "options": {
@@ -12747,7 +15613,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "left",
             "cellOptions": {
               "type": "auto"
             },
@@ -12790,7 +15656,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 53
+        "y": 63
       },
       "id": 41,
       "options": {
@@ -12822,7 +15688,6 @@
       "title": "AFT - Shear beams",
       "transformations": [
         {
-          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
@@ -12831,12 +15696,14 @@
             "renameByName": {
               "horizontal": "Horizontal",
               "pin": "Loadpin",
+              "shear_beam": "Shear beam",
               "shear_beam_1__value": "Shear beam 1",
               "shear_beam_2__value": "Shear beam 2",
               "shear_beam_3__value": "Shear beam 3",
               "shear_beam_4__value": "Shear beam 4",
               "time": "Timestamp",
               "timestamp": "",
+              "value": "Value",
               "vertical": "Vertical"
             }
           }
@@ -12855,7 +15722,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "left",
             "cellOptions": {
               "type": "auto"
             },
@@ -12898,7 +15765,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 63
       },
       "id": 42,
       "options": {
@@ -12930,7 +15797,6 @@
       "title": "FWD - Shear beams",
       "transformations": [
         {
-          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
@@ -12939,12 +15805,14 @@
             "renameByName": {
               "horizontal": "Horizontal",
               "pin": "Loadpin",
+              "shear_beam": "Shear beam",
               "shear_beam_1__value": "Shear beam 1",
               "shear_beam_2__value": "Shear beam 2",
               "shear_beam_3__value": "Shear beam 3",
               "shear_beam_4__value": "Shear beam 4",
               "time": "Timestamp",
               "timestamp": "",
+              "value": "Value",
               "vertical": "Vertical"
             }
           }
