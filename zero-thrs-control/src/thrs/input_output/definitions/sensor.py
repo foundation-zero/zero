@@ -69,6 +69,15 @@ class TemperatureSensor(ThrsValues):
 class LevelSensor(ThrsValues):
     level: Stamped[Liter]
 
+    # TODO: Remove this when api is no longer coupled
+    @field_validator("level", mode="before")
+    @classmethod
+    def fix_nan(cls, value: Stamped[Liter] | dict) -> Stamped[Liter] | dict:
+        if isinstance(value, dict) and value["Value"] == "NaN":
+            value["Value"] = 0.0
+            value["TimeStamp"] = datetime.fromtimestamp(0, UTC)
+        return value
+
 
 class CalculatedTemperature(ThrsValues):
     temperature: Stamped[OptionalCelsius]
