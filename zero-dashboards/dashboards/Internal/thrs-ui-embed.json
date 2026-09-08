@@ -18,7 +18,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 0,
+    "id": 1352,
     "links": [],
     "panels": [
         {
@@ -103,7 +103,6 @@
                 }
             },
             "pluginVersion": "12.3.0",
-            "repeatDirection": "v",
             "targets": [
                 {
                     "builderOptions": {
@@ -251,8 +250,8 @@
             {
                 "allowCustomValue": false,
                 "current": {
-                    "text": "[50001046-02] adsorption-mix-hot",
-                    "value": "adsorption-mix-hot"
+                    "text": "[50001062-03] adsorption-flowcontrol-waste",
+                    "value": "adsorption-flowcontrol-waste"
                 },
                 "datasource": {
                     "type": "info8fcc-greptimedb-datasource",
@@ -271,8 +270,8 @@
             {
                 "allowCustomValue": false,
                 "current": {
-                    "text": "position_abs",
-                    "value": "position_abs"
+                    "text": "position_rel",
+                    "value": "position_rel"
                 },
                 "datasource": {
                     "type": "info8fcc-greptimedb-datasource",
