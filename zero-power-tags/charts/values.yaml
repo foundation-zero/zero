@@ -23,6 +23,11 @@ modbus:
   #   10P0_1:
   #     host: "192.168.0.10"
   #     port: 502
+  # Dummy-data mode (envs without hardware): deploy an extra stub workload and
+  # Service (zero-power-tags-stub). Point each panel's host at that Service with
+  # a distinct port.
+  stub:
+    enabled: false
 
 resources: {}
 
