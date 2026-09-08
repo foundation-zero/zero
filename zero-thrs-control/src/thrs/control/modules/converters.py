@@ -117,6 +117,7 @@ class ConvertersControl(
             setpoint=0.0,  # Overwritten in control
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
+            output_limits=(0.1, 1),
         )
 
         self._warmup_mix_controller = PidController[Ratio, Celsius](

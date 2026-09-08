@@ -60,7 +60,7 @@ class Pump(ThrsValues):
                         data[actuated_key] = value
         return data
 
-    dutypoint: Stamped[Ratio]
+    dutypoint: Annotated[Stamped[Ratio], field_meta(zero_value=0.1)]
     on: Stamped[OnOff]
     control_mode: Annotated[
         Stamped[PumpControlMode | None], field_meta(included_in_fmu=False)

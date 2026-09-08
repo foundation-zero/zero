@@ -9,9 +9,8 @@ from tests.helpers.modules import (
     ConfigurableModule,
     make_async_channels,
     make_module,
-    manual_values,
 )
-from tests.orchestration.simples import SimpleInOut
+from tests.orchestration.simples import SimpleInOut, simple_control_values
 from thrs.classes.persistence.engine import (
     InMemoryPersistentEngine,
     NoopPersistentEngine,
@@ -136,7 +135,7 @@ async def test_persist_skips_snapshot_that_only_changed_timestamps():
     store = InMemoryPersistentEngine()
     manager = make_manager(store)
     channels = make_async_channels()
-    channels.get_manual_controls.side_effect = lambda: manual_values(3.5)
+    channels.get_manual_controls.side_effect = lambda: simple_control_values(3.5)
     module = make_module(channels=channels)
     await module.sync_control_channels_state()
 

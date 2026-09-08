@@ -658,7 +658,7 @@ class DhwControl(
             self.parameters.ht_boosting_temperature_setpoint,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
-            (0.15, 1),
+            (0.1, 1),
         )
 
         self._pump_flow_controller = PidController[Ratio, LMin](
@@ -666,7 +666,7 @@ class DhwControl(
             self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
-            (0.15, 1),
+            (0.1, 1),
         )
 
         self._drives_flow_controller = PidController[Ratio, Celsius](
@@ -907,15 +907,18 @@ class DhwControl(
                 and self._boosting_pump_controller.enabled()
             ):
                 self._boosting_pump_controller.disable()
-            self._current_values.dhw_pump.dutypoint = (
-                Stamped(  # TODO: better to turn the pump off?
-                    value=0.1, timestamp=self._time()
+            if self._current_values.dhw_pump.on.value is not False:
+                self._current_values.dhw_pump.on = Stamped(
+                    value=False, timestamp=self._time()
                 )
-            )
             return
 
         if not self._boosting_pump_controller.enabled():
             self._boosting_pump_controller.enable()
+        if self._current_values.dhw_pump.on.value is not True:
+            self._current_values.dhw_pump.on = Stamped(
+                value=True, timestamp=self._time()
+            )
         self._current_values.dhw_pump.dutypoint = Stamped(
             value=self._boosting_pump_controller(
                 self._boosting_pump_measurement(sensor_values)

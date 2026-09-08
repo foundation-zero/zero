@@ -26,6 +26,10 @@ class ThrsValues(BaseModel):
     def zero(cls) -> Self:
         def _zero_component(component):
             def _zero_value(field: FieldInfo):
+                if isinstance(field.json_schema_extra, dict):
+                    override = field.json_schema_extra.get("zero_value")
+                    if override is not None:
+                        return override
                 unit = unit_for_annotation(field.annotation)
                 return zero_for_unit(unit) if unit else 0.0
 
@@ -109,6 +113,7 @@ class ParameterMeta:
 
 class FieldMeta(BaseModel):
     included_in_fmu: bool = True
+    zero_value: Any | None = None
 
 
 def field_meta(*args, **kwargs):
