@@ -61,6 +61,10 @@ transforms:
       - "/etc/vector/3_timestamp.vrl"
       - "/etc/vector/4_spell_fix.vrl"
       - "/etc/vector/5_snakecase.vrl"
+    # Enable dead letter queue
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
   # Resolves each single-value ATPX message into one `atpx_raw` row (topic,
   # human-readable sender and field names, value).
   atpx_parse:
@@ -69,6 +73,9 @@ transforms:
     files:
       - "/etc/vector/atpx_0_consts.vrl"
       - "/etc/vector/atpx_1_parse.vrl"
+    # Enable dead letter queue
+    drop_on_error: true
+    reroute_dropped: true
   # Derives the Greptime table name from the parser's `type` field and stamps
   # ingestion time as the uniform time index. Each NMEA sentence is an
   # independent row - no reduce/merge step (ATPX lands raw, see atpx_parse).
@@ -77,7 +84,10 @@ transforms:
     inputs: ["atpx_nmea_mqtt"]
     files:
       - "/etc/vector/atpx_nmea_route.vrl"
-
+    # Enable dead letter queue
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
 sinks:
   greptimedb:
     type: greptimedb_logs
@@ -115,3 +125,11 @@ sinks:
     inputs:
       - vector_metrics
     address: 0.0.0.0:9090 # prom-exporter port from chart
+  dead_letter_queue:
+    type: greptimedb_logs
+    inputs: ["*.dropped"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "vector_dead_letter_queue"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"
