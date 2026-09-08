@@ -179,9 +179,9 @@ class Module[
             await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_manual_control(self._control.manual_controls)
 
-    async def tick(self, sensor_values: S | None) -> C | None:
+    async def tick(self, sensor_values: S | None) -> C:
         if sensor_values is None:
-            logging.warning(
+            logger.warning(
                 "Module %s has no sensor values - sending last known manual control values",
                 self._name,
             )

@@ -2,7 +2,7 @@ from datetime import UTC, datetime
 from typing import Annotated, Any, ClassVar
 
 from pydantic import (
-    field_serializer,
+    field_validator,
     model_serializer,
     model_validator,
 )
@@ -66,7 +66,7 @@ class Pump(ThrsValues):
         Stamped[PumpControlMode | None], field_meta(included_in_fmu=False)
     ] = Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
 
-    @field_serializer("dutypoint")
+    @field_validator("dutypoint")
     @classmethod
     def validate_dutypoint(cls, dutypoint: Stamped[Ratio]) -> Stamped[Ratio]:
         if dutypoint.value < 0.1:

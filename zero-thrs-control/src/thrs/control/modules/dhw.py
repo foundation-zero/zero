@@ -979,7 +979,7 @@ class DhwControl(
     def _deactivate_pump(self, sensor_values: DhwSensorValues):
         self._current_values.dhw_pump.on = Stamped(value=False, timestamp=self._time())
         self._current_values.dhw_pump.dutypoint = Stamped(
-            value=0.0, timestamp=self._time()
+            value=0.1, timestamp=self._time()
         )
 
     def _activate_heatpump(self, sensor_values: DhwSensorValues):

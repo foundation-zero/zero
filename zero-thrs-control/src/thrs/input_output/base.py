@@ -31,8 +31,12 @@ class ThrsValues(BaseModel):
                     if override is not None:
                         return override
                 unit = unit_for_annotation(field.annotation)
+                if unit is datetime:
+                    return datetime.fromtimestamp(0, UTC)
                 return zero_for_unit(unit) if unit else 0.0
 
+            if issubclass(component, Stamped):
+                return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
             if issubclass(component, ThrsValues):
                 return component(
                     **{
@@ -60,8 +64,15 @@ class ThrsValues(BaseModel):
             elif isinstance(current, ThrsValues):
                 current.update_in_place(incoming)
             elif isinstance(current, list):
-                for current_item, incoming_item in zip(current, incoming, strict=True):
-                    current_item.update_in_place(incoming_item)
+                for idx, (current_item, incoming_item) in enumerate(
+                    zip(current, incoming, strict=True)
+                ):
+                    if isinstance(current_item, ThrsValues):
+                        current_item.update_in_place(incoming_item)
+                    elif isinstance(current_item, Stamped):
+                        current[idx] = incoming_item.model_copy(deep=True)
+                    else:
+                        current[idx] = incoming_item
             else:
                 setattr(self, field_name, incoming)
 
@@ -117,7 +128,9 @@ class FieldMeta(BaseModel):
 
 
 def field_meta(*args, **kwargs):
-    return Field(json_schema_extra=FieldMeta(*args, **kwargs).model_dump())
+    return Field(
+        json_schema_extra=FieldMeta(*args, **kwargs).model_dump(exclude_none=True)
+    )
 
 
 @dataclass

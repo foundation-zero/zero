@@ -88,9 +88,9 @@ class Switching[
                 self._mode,
             )
         self._was_advisory = is_advisory
+        if actuated_control_values is not None:
+            self.update_manual_controls(actuated_control_values)
         if not is_advisory:
-            if actuated_control_values is not None:
-                self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self.control_mode == "manual":
