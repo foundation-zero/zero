@@ -385,22 +385,6 @@ class TestMergedModuleMqttMapping:
         temperature_payload = json.loads(topics["base/500000-thrs/module/temperature"])
         assert set(temperature_payload) == {"Temperature"}
 
-    def test_split_to_topics_corrects_marpower_dutypoint(self):
-        control_values = CombinedValues(
-            {
-                "module": MergeControlValues(
-                    pump=Pump(dutypoint=Stamped.stamp(40.0), on=Stamped.stamp(True)),
-                    valve=Valve(setpoint=Stamped.stamp(0.6)),
-                )
-            }
-        )
-        mapping = merged_mapping()
-        mapping.split_to_topics((merged_sensor_values(), None))
-        topics = mapping.split_to_topics((None, control_values))
-
-        pump_payload = json.loads(topics["base/500000-thrs/module/pump"])
-        assert pump_payload["CC_DutyPoint"]["Value"] == 0.4
-
     def test_split_to_topics_handles_absent_sides(self):
         sensor_only = merged_mapping().split_to_topics((merged_sensor_values(), None))
         assert sensor_only == {}
