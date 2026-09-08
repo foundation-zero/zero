@@ -52,14 +52,11 @@ def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
     """
     if not hasattr(msg_type, "name_to_idx"):
         return None
-    return next(
-        (
-            _json_type_from_converter(rest[0] if rest else None)
-            for _, name, *rest in msg_type.fields
-            if name == field_name
-        ),
-        None,
-    )
+    field = next((f for f in msg_type.fields if f[1] == field_name), None)
+    if field is None:
+        return None
+    converter = field[2] if len(field) > 2 else None
+    return _json_type_from_converter(converter)
 
 
 def _gather_envelope_for_type(nmea_type: str) -> dict[str, str]:
