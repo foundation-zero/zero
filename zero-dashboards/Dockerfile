@@ -16,7 +16,7 @@ RUN mkdir -p "$GF_PATHS_PLUGINS" && \
 
 USER grafana
 
-ARG GF_INSTALL_PLUGINS="grafana-polystat-panel,marcusolsson-treemap-panel,https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/download/v2.1.6/info8fcc-greptimedb-datasource.zip;greptimedb-datasource"
+ARG GF_INSTALL_PLUGINS="grafana-metricsdrilldown-app,grafana-lokiexplore-app,grafana-polystat-panel,marcusolsson-treemap-panel,https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/download/v2.1.6/info8fcc-greptimedb-datasource.zip;greptimedb-datasource"
 
 RUN if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then \
       OLDIFS=$IFS; \
