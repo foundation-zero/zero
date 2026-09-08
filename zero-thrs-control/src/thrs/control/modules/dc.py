@@ -49,15 +49,15 @@ class DcParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
     return DcControlValues(
         dc_pump_aft=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         dc_pump_fwd=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         dc_pump_ugrid=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         dc_mix_fwd=Valve(
@@ -215,6 +215,9 @@ class DcControl(
             brightloops_fwd_parameters(parameters)
         )
         self._ugrids_control.update_parameters(ugrids_parameters(parameters))
+
+    def update_controls(self, control_values: DcControlValues):
+        self._current_values.update_in_place(control_values)
 
     @staticmethod
     def modes() -> list[str]:

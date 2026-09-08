@@ -105,15 +105,15 @@ class PvtParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N802
     return PvtControlValues(
         pvt_pump_main_fwd=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         pvt_pump_main_aft=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         pvt_pump_owners=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         pvt_mix_main_fwd=Valve(
@@ -292,6 +292,9 @@ class PvtControl(
         self._main_fwd_control.update_parameters(main_pvt_group_parameters(parameters))
         self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
         self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
+
+    def update_controls(self, control_values: PvtControlValues):
+        self._current_values.update_in_place(control_values)
 
     def _control_heat_dump(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(

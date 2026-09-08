@@ -31,7 +31,7 @@ class PcmParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
     return PcmControlValues(
         pcm_pump=Pump(
-            dutypoint=Stamped(value=0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         pcm_switch_charging_return=Valve(
@@ -201,6 +201,7 @@ class PcmControl(
             0,
             lambda: self._parameters.pump_tuning,
             self._time,
+            output_limits=(0.1, 1),
         )
 
         self.module1_flow_controller = PidController[Ratio, LMin](
@@ -272,6 +273,9 @@ class PcmControl(
     @StateLogger.log_parameters
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
+
+    def update_controls(self, control_values: PcmControlValues):
+        self._current_values.update_in_place(control_values)
 
     @StateLogger.log_warnings
     def control(

@@ -87,6 +87,7 @@ class SimpleControl(
         self._parameters = parameters
         self._time = time_fn
         self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+        self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (SimpleInOut.zero(), SimpleControllerState())
@@ -114,6 +115,37 @@ class SimpleControl(
 
     def update_parameters(self, parameters: SimpleParameters):
         pass
+
+    def update_controls(self, control_values: SimpleInOut) -> None:
+        self._current_values.update_in_place(control_values)
+
+
+def simple_advisory_values(flow: float) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        ),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+    )
+
+
+def simple_non_advisory_values(
+    flow: float, mode: ControlMode = ControlMode.MANUAL
+) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        ),
+        mode=AmcsControlMode(mode=Stamped.stamp(mode)),
+    )
+
+
+def simple_control_values(flow: float) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        )
+    )
 
 
 class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters]):

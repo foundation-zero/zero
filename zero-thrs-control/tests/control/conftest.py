@@ -1,13 +1,20 @@
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
 from tests.modules.thrusters.conftest import ThrustersSimulation
+from tests.orchestration.simples import (
+    SimpleControl,
+    SimpleParameters,
+    simple_control_values,
+)
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingService,
 )
+from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
+from thrs.control.switching import Switching
 from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
     ThrustersSimulationInputs,
@@ -46,3 +53,13 @@ def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> Thrusters
         time_fn=simulation.time,
         state_logger=MachineStateLoggingService(postgres_db),
     )
+
+
+@fixture
+def switching() -> Callable[[float], Switching]:
+    def _make(manual_flow: float = 1.0) -> Switching:
+        manual = ManualControl(simple_control_values(flow=manual_flow))
+        automatic = SimpleControl(SimpleParameters.zero(), datetime.now)
+        return Switching(manual, automatic, name="simple")
+
+    return _make

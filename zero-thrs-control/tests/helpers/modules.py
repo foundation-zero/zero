@@ -6,6 +6,7 @@ from tests.orchestration.simples import (
     SimpleControllerState,
     SimpleInOut,
     SimpleMode,
+    simple_control_values,
 )
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
@@ -13,8 +14,7 @@ from thrs.classes.machine_state_logger import (
     StateLogger,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.input_output.base import ThrsValues
 from thrs.orchestration.module import Module
 
 
@@ -39,6 +39,7 @@ class ConfigurableControl(
     def __init__(self, parameters: ConfigurableParameters) -> None:
         self._parameters = parameters
         self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+        self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (SimpleInOut.zero(), SimpleControllerState())
@@ -59,6 +60,9 @@ class ConfigurableControl(
     def update_parameters(self, parameters: ConfigurableParameters) -> None:
         self._parameters = parameters
 
+    def update_controls(self, control_values: SimpleInOut) -> None:
+        self._current_values.update_in_place(control_values)
+
 
 type ConfigurableModule = Module[
     SimpleInOut,
@@ -76,6 +80,7 @@ def make_channels() -> mock.Mock:
     channels.get_parameters.return_value = None
     channels.get_manual_controls.return_value = None
     channels.get_automation_modes.return_value = None
+    channels.get_actuated_control_values.return_value = None
     return channels
 
 
@@ -93,7 +98,7 @@ def make_async_channels() -> mock.Mock:
 
 
 def make_module(
-    name: str = "dhw", channels: mock.Mock | None = None
+    name: str = "test", channels: mock.Mock | None = None
 ) -> ConfigurableModule:
     return Module(
         name,
@@ -103,9 +108,9 @@ def make_module(
     )
 
 
-def manual_values(flow: float) -> SimpleInOut:
-    return SimpleInOut(
-        go_with_the=FlowSensor(
-            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
-        )
-    )
+__all__ = [
+    "make_async_channels",
+    "make_channels",
+    "make_module",
+    "simple_control_values",
+]

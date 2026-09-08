@@ -366,4 +366,4 @@ def test_cooldown(
         < control.parameters.cooling_temperature
     )
 
-    assert control_values.thrusters_pump1.dutypoint.value == 0.0
+    assert not control_values.thrusters_pump1.on.value

@@ -210,6 +210,9 @@ class AdsorptionControl(
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 
+    def update_controls(self, control_values: AdsorptionControlValues):
+        self._current_values.update_in_place(control_values)
+
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 

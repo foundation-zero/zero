@@ -5,7 +5,7 @@ from tests.helpers.modules import (
     ConfigurableParameters,
     make_channels,
     make_module,
-    manual_values,
+    simple_control_values,
 )
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
@@ -31,7 +31,7 @@ def test_persistence_snapshot_follows_automation_mode():
 async def test_persistence_snapshot_round_trips_channel_updates():
     channels = make_channels()
     channels.get_parameters.return_value = ConfigurableParameters(setpoint=72.5)
-    channels.get_manual_controls.return_value = manual_values(3.5)
+    channels.get_manual_controls.return_value = simple_control_values(3.5)
     channels.get_automation_modes.return_value = AutomationMode(mode="automatic")
 
     source = make_module(channels=channels)
@@ -103,7 +103,7 @@ def test_apply_snapshot_with_unchanged_default_values_applies_correctly():
 async def test_persist_then_restore_reproduces_the_module_snapshot():
     channels = make_channels()
     channels.get_parameters.return_value = ConfigurableParameters(setpoint=65.0)
-    channels.get_manual_controls.return_value = manual_values(1.25)
+    channels.get_manual_controls.return_value = simple_control_values(1.25)
     channels.get_automation_modes.return_value = AutomationMode(mode="automatic")
 
     store = InMemoryPersistentEngine()

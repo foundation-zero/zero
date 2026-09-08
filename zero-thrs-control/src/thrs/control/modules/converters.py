@@ -93,7 +93,7 @@ class ConvertersControl(
         self._parameters = parameters
         self._time = time_fn
         self.state_logger = state_logger
-        self.current_values = initial_control_values
+        self._current_values = initial_control_values
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -113,14 +113,15 @@ class ConvertersControl(
             )
 
         self._pump_controller = PidController[Ratio, LMin](
-            initial=self.current_values.pump.dutypoint.value,
+            initial=self._current_values.pump.dutypoint.value,
             setpoint=0.0,  # Overwritten in control
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
+            output_limits=(0.1, 1),
         )
 
         self._warmup_mix_controller = PidController[Ratio, Celsius](
-            initial=self.current_values.mix.setpoint.value,
+            initial=self._current_values.mix.setpoint.value,
             setpoint=lambda: self._parameters.converter_return_temperature,
             tuning=lambda: self._parameters.warmup_mix_tuning,
             time_fn=self._time,
@@ -173,6 +174,9 @@ class ConvertersControl(
     def update_parameters(self, parameters: ConvertersParameters):
         self._parameters = parameters
 
+    def update_controls(self, control_values: ConvertersControlValues):
+        self._current_values.update_in_place(control_values)
+
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -187,18 +191,18 @@ class ConvertersControl(
         return ConvertersControlMode(mode=mode)
 
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
-        return (self.current_values, ConvertersControllerState())
+        return (self._current_values, ConvertersControllerState())
 
     def _close_circuit(self):
-        self.current_values.mix.setpoint = Stamped(
+        self._current_values.mix.setpoint = Stamped(
             value=Valve.MIXING_B_TO_AB, timestamp=self._time()
         )
 
     def _activate_pump(self, sensor_values: ConvertersSensorValues):
-        self.current_values.pump.on = Stamped(value=True, timestamp=self._time())
+        self._current_values.pump.on = Stamped(value=True, timestamp=self._time())
 
     def _deactivate_pump(self, sensor_values: ConvertersSensorValues):
-        self.current_values.pump.on = Stamped(value=False, timestamp=self._time())
+        self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
 
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
@@ -212,10 +216,10 @@ class ConvertersControl(
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
 
-        return (self.current_values, ConvertersControllerState())
+        return (self._current_values, ConvertersControllerState())
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
-        self.current_values.mix.setpoint = Stamped(
+        self._current_values.mix.setpoint = Stamped(
             value=self._warmup_mix_controller(
                 sensor_values.max_return_temperature_active_components
             ),
@@ -228,14 +232,14 @@ class ConvertersControl(
             * sum(switch.position_rel.value**2 for switch in sensor_values.switches)
         )  # Control flow based on switch valves to prevent pumping against closed valves, as well as having insufficient flow during the closing of valves (when components are already inacive). Assuming possible flow is approximately quadratic to valve opening.
 
-        self.current_values.pump.dutypoint = Stamped(
+        self._current_values.pump.dutypoint = Stamped(
             value=self._pump_controller(sensor_values.total_flow),
             timestamp=self._time(),
         )
 
     def _control_switch_valves(self, sensor_values: ConvertersSensorValues):
         for switch, converter in zip(
-            self.current_values.switches, sensor_values.converters, strict=False
+            self._current_values.switches, sensor_values.converters, strict=False
         ):
             if switch.setpoint.value == Valve.CLOSED and converter.active.value:
                 switch.setpoint = Stamped(value=Valve.OPEN, timestamp=self._time())

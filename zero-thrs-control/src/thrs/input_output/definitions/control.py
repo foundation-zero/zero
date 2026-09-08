@@ -1,7 +1,11 @@
 from datetime import UTC, datetime
 from typing import Annotated, Any, ClassVar
 
-from pydantic import model_serializer, model_validator
+from pydantic import (
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
@@ -56,11 +60,18 @@ class Pump(ThrsValues):
                         data[actuated_key] = value
         return data
 
-    dutypoint: Stamped[Ratio]
+    dutypoint: Annotated[Stamped[Ratio], field_meta(zero_value=0.1)]
     on: Stamped[OnOff]
     control_mode: Annotated[
         Stamped[PumpControlMode | None], field_meta(included_in_fmu=False)
     ] = Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
+
+    @field_validator("dutypoint")
+    @classmethod
+    def validate_dutypoint(cls, dutypoint: Stamped[Ratio]) -> Stamped[Ratio]:
+        if dutypoint.value < 0.1:
+            raise ValueError("Pump dutypoint cannot be set < 0.1")
+        return dutypoint
 
 
 class Valve(ThrsValues):

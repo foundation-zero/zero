@@ -382,7 +382,7 @@ async def test_query_control_values(app, test_client):
         "data": {
             "modules": {
                 "thrusters": {
-                    "controlValues": {"thrustersPump1": {"dutypoint": {"value": 0.0}}}
+                    "controlValues": {"thrustersPump1": {"dutypoint": {"value": 0.1}}}
                 }
             }
         }
@@ -1548,7 +1548,7 @@ async def test_mutation_control_values_hanging_around(app, test_client, messagin
     assert response2.json() == {
         "data": {
             "thrustersControlSetThrustersPump2": {
-                "thrustersPump1": {"dutypoint": {"value": 0}},
+                "thrustersPump1": {"dutypoint": {"value": 0.1}},
                 "thrustersPump2": {"dutypoint": {"value": 0.4}},
             }
         }
