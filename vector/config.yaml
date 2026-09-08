@@ -88,6 +88,13 @@ transforms:
     drop_on_error: true
     drop_on_abort: true
     reroute_dropped: true
+  dropped_append_timestamp:
+    type: remap
+    inputs: ["*.dropped"]
+    source: |
+      if !exists(.timestamp) || is_null(.timestamp) {
+        .timestamp = now()
+      }
 sinks:
   greptimedb:
     type: greptimedb_logs
@@ -127,7 +134,7 @@ sinks:
     address: 0.0.0.0:9090 # prom-exporter port from chart
   dead_letter_queue:
     type: greptimedb_logs
-    inputs: ["*.dropped"]
+    inputs: ["dropped_append_timestamp"]
     endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
     dbname: "public"
     table: "vector_dead_letter_queue"
