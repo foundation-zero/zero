@@ -12531,6 +12531,426 @@
       ],
       "title": "FWD - Temperatures",
       "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "PBAD09CF7391C3C43"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forcekN"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Loadpin"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 39,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "WITH loadpins AS (\r\n  SELECT\r\n    timestamp,\r\n    loadpin_1_horizontal__value,\r\n    loadpin_1_vertical__value,\r\n    loadpin_2_horizontal__value,\r\n    loadpin_2_vertical__value,\r\n    loadpin_3_horizontal__value,\r\n    loadpin_3_vertical__value,\r\n    loadpin_4_horizontal__value,\r\n    loadpin_4_vertical__value\r\n  FROM public.marpower__150000_propulsion__pcs_aft\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\nSELECT timestamp AS time, 1 AS pin, loadpin_1_horizontal__value AS horizontal, loadpin_1_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 2 AS pin, loadpin_2_horizontal__value AS horizontal, loadpin_2_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 3 AS pin, loadpin_3_horizontal__value AS horizontal, loadpin_3_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 4 AS pin, loadpin_4_horizontal__value AS horizontal, loadpin_4_vertical__value AS vertical FROM loadpins\r\nORDER BY pin",
+          "refId": "A"
+        }
+      ],
+      "title": "AFT - Load pins",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "horizontal": "Horizontal",
+              "pin": "Loadpin",
+              "time": "Timestamp",
+              "vertical": "Vertical"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "PBAD09CF7391C3C43"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forcekN"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Loadpin"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 46
+      },
+      "id": 40,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "WITH loadpins AS (\r\n  SELECT\r\n    timestamp,\r\n    loadpin_1_horizontal__value,\r\n    loadpin_1_vertical__value,\r\n    loadpin_2_horizontal__value,\r\n    loadpin_2_vertical__value,\r\n    loadpin_3_horizontal__value,\r\n    loadpin_3_vertical__value,\r\n    loadpin_4_horizontal__value,\r\n    loadpin_4_vertical__value\r\n  FROM public.marpower__150000_propulsion__pcs_fwd\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\nSELECT timestamp AS time, 1 AS pin, loadpin_1_horizontal__value AS horizontal, loadpin_1_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 2 AS pin, loadpin_2_horizontal__value AS horizontal, loadpin_2_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 3 AS pin, loadpin_3_horizontal__value AS horizontal, loadpin_3_vertical__value AS vertical FROM loadpins\r\nUNION ALL\r\nSELECT timestamp AS time, 4 AS pin, loadpin_4_horizontal__value AS horizontal, loadpin_4_vertical__value AS vertical FROM loadpins\r\nORDER BY pin",
+          "refId": "A"
+        }
+      ],
+      "title": "FWD - Load pins",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "horizontal": "Horizontal",
+              "pin": "Loadpin",
+              "time": "Timestamp",
+              "vertical": "Vertical"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "PBAD09CF7391C3C43"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "shear_beam"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 53
+      },
+      "id": 41,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "WITH shear_beams AS (\r\n  SELECT\r\n    timestamp,\r\n    shear_beam_1__value,\r\n    shear_beam_2__value,\r\n    shear_beam_3__value,\r\n    shear_beam_4__value,\r\n    shear_beam_calculated__value\r\n  FROM public.marpower__150000_propulsion__pcs_aft\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\nSELECT timestamp AS time, '1' AS shear_beam, shear_beam_1__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '2' AS shear_beam, shear_beam_2__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '3' AS shear_beam, shear_beam_3__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '4' AS shear_beam, shear_beam_4__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, 'Calculated' AS shear_beam, shear_beam_calculated__value AS value FROM shear_beams\r\nORDER BY shear_beam",
+          "refId": "A"
+        }
+      ],
+      "title": "AFT - Shear beams",
+      "transformations": [
+        {
+          "disabled": true,
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "horizontal": "Horizontal",
+              "pin": "Loadpin",
+              "shear_beam_1__value": "Shear beam 1",
+              "shear_beam_2__value": "Shear beam 2",
+              "shear_beam_3__value": "Shear beam 3",
+              "shear_beam_4__value": "Shear beam 4",
+              "time": "Timestamp",
+              "timestamp": "",
+              "vertical": "Vertical"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "PBAD09CF7391C3C43"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "shear_beam"
+            },
+            "properties": [
+              {
+                "id": "unit"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 53
+      },
+      "id": 42,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "WITH shear_beams AS (\r\n  SELECT\r\n    timestamp,\r\n    shear_beam_1__value,\r\n    shear_beam_2__value,\r\n    shear_beam_3__value,\r\n    shear_beam_4__value,\r\n    shear_beam_calculated__value\r\n  FROM public.marpower__150000_propulsion__pcs_fwd\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\nSELECT timestamp AS time, '1' AS shear_beam, shear_beam_1__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '2' AS shear_beam, shear_beam_2__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '3' AS shear_beam, shear_beam_3__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, '4' AS shear_beam, shear_beam_4__value AS value FROM shear_beams\r\nUNION ALL\r\nSELECT timestamp AS time, 'Calculated' AS shear_beam, shear_beam_calculated__value AS value FROM shear_beams\r\nORDER BY shear_beam",
+          "refId": "A"
+        }
+      ],
+      "title": "FWD - Shear beams",
+      "transformations": [
+        {
+          "disabled": true,
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "horizontal": "Horizontal",
+              "pin": "Loadpin",
+              "shear_beam_1__value": "Shear beam 1",
+              "shear_beam_2__value": "Shear beam 2",
+              "shear_beam_3__value": "Shear beam 3",
+              "shear_beam_4__value": "Shear beam 4",
+              "time": "Timestamp",
+              "timestamp": "",
+              "vertical": "Vertical"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "preload": false,
