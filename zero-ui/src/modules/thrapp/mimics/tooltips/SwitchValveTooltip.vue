@@ -40,7 +40,7 @@ const { labels, items, sources } = useTranslations();
       <SensorGraph
         :device="tooltip?.technicalName"
         type="valves"
-        field="cc_setpoint"
+        field="position_rel"
       />
       <ManualControl />
     </TooltipList>

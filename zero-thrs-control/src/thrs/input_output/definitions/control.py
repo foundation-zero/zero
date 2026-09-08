@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Annotated, Any, ClassVar
 
-from pydantic import field_validator, model_serializer, model_validator
+from pydantic import model_serializer, model_validator
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
@@ -62,15 +62,6 @@ class Pump(ThrsValues):
         Stamped[PumpControlMode | None], field_meta(included_in_fmu=False)
     ] = Stamped(value=None, timestamp=datetime.fromtimestamp(0, UTC))
 
-    # TODO: Remove once marpower fixes this on their side
-    @field_validator("dutypoint")
-    @classmethod
-    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        if value.value > 1.0:
-            value.value /= 100
-
-        return value
-
 
 class Valve(ThrsValues):
     CLOSED: ClassVar = 0.0
@@ -125,15 +116,6 @@ class Valve(ThrsValues):
                     data["CC_Setpoint"] = data.pop(key)
                     break
         return data
-
-    # TODO: Remove once marpower fixes this on their side
-    @field_validator("setpoint")
-    @classmethod
-    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        if value.value > 1.0:
-            value.value /= 100
-
-        return value
 
 
 class Pcm(ThrsValues):
