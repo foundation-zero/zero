@@ -1,9 +1,12 @@
+from datetime import datetime
+
 import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwControl,
+    DhwParameters,
     TanksController,
 )
 from thrs.input_output.base import Stamped
@@ -314,6 +317,34 @@ def test_boosting_pump_held_until_boosting_loop_open(
     assert sensor_values is not None
     assert control._pump_temperature_controller.enabled()
     assert sensor_values.dhw_flow_boosting.flow.value > 0.1
+
+
+def test_pump_minimum_dutypoint_follows_parameters(parameters: DhwParameters):
+    control = DhwControl(parameters, datetime.now)
+    pumps = (
+        control._pump_flow_controller,
+        control._pump_temperature_controller,
+    )
+
+    for pump in pumps:
+        pump(None)
+        assert pump._output_limits == (0.1, 1.0)
+
+    control.update_parameters(
+        parameters.model_copy(update={"minimum_pump_dutypoint": 0.4})
+    )
+    for pump in pumps:
+        pump(None)
+        assert pump._output_limits == (0.4, 1.0)
+
+
+def test_minimum_pump_dutypoint_rejects_below_pump_floor(
+    parameters: DhwParameters,
+):
+    with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
+        DhwParameters(
+            **{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05}
+        )
 
 
 def test_reset_restores_initial_control_state(

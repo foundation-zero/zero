@@ -23,6 +23,7 @@
           "highTemperatureBoosting": "High temperature boosting",
           "heatpumpTemperature": "Heatpump temperature",
           "heatpumpFlow": "Heatpump flow",
+          "minimumPumpDutypoint": "Minimum pump dutypoint",
           "boostingTemperature": "Boosting temperature"
         },
         "tankSelection": {

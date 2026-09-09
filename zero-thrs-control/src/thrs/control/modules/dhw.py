@@ -81,6 +81,14 @@ class DhwParameters(ThrsValues):
             description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
         ),
     ] = 0.1
+    minimum_pump_dutypoint: Annotated[
+        Ratio,
+        Field(
+            description="Minimum output of the boosting pump controllers",
+            ge=0.1,
+            le=1.0,
+        ),
+    ] = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
     maximum_tank_level: Annotated[Liter, Field(le=275)] = 230
@@ -678,7 +686,7 @@ class DhwControl(
             lambda: self._parameters.ht_boosting_temperature_setpoint,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
-            (0.1, 1),
+            lambda: (self._parameters.minimum_pump_dutypoint, 1.0),
         )
 
         self._pump_flow_controller = PidController[Ratio, LMin](
@@ -686,7 +694,7 @@ class DhwControl(
             lambda: self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
-            (0.1, 1),
+            lambda: (self._parameters.minimum_pump_dutypoint, 1.0),
         )
 
         self._drives_flow_controller = PidController[Ratio, Celsius](

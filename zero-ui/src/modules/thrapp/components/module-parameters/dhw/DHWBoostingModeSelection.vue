@@ -37,6 +37,11 @@ const t = tScoped("thrapp.parameters.dhw");
       >
         {{ t("items.highTemperatureBoosting") }}
       </ParameterItems.Enabled>
+      <ParameterItems.Dutypoint
+        :source="getField(ParametersType.Dutypoint, 'dhw', 'minimumPumpDutypoint')"
+      >
+        {{ t("items.minimumPumpDutypoint") }}
+      </ParameterItems.Dutypoint>
     </Parameters.List>
   </Parameters.Card>
 </template>

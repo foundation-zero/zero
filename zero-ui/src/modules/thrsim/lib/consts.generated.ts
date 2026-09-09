@@ -918,6 +918,9 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   dcFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,
   },
+  minimumPumpDutypoint: {
+    componentType: ParametersType.Dutypoint,
+  },
   fillingTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
   },
