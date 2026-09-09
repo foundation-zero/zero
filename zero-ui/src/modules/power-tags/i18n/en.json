@@ -1,0 +1,35 @@
+{
+  "powerTags": {
+    "title": "Power Tags",
+    "loading": "Loading power tags…",
+    "error": "Failed to load power tags.",
+    "offlineNotice": "All readings are null — this power tag is likely down.",
+    "columns": {
+      "panel": "Panel",
+      "component": "Component",
+      "consumer": "Consumer",
+      "currentA": "Current A",
+      "currentB": "Current B",
+      "currentC": "Current C",
+      "currentN": "Current N",
+      "voltageAn": "Voltage AN",
+      "voltageBn": "Voltage BN",
+      "voltageCn": "Voltage CN",
+      "activePowerA": "Power A",
+      "activePowerB": "Power B",
+      "activePowerC": "Power C",
+      "activePowerTotal": "Power Total",
+      "powerFactorA": "PF A",
+      "powerFactorB": "PF B",
+      "powerFactorC": "PF C",
+      "powerFactorTotal": "PF Total"
+    },
+    "tabs": {
+      "panel": "Panel {panel}"
+    },
+    "toggle": {
+      "showAll": "Show all values",
+      "showLess": "Show less"
+    }
+  }
+}

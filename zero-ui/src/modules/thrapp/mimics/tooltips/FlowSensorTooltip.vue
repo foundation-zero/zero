@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { FlowSensorInstance } from "../instances";
 import { SensorValue } from "../providers";
@@ -32,6 +33,11 @@ const { items, labels } = useTranslations();
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="flows"
+        field="flow"
+      />
     </TooltipList>
 
     <TooltipList>

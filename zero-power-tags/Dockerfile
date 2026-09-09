@@ -32,6 +32,8 @@ WORKDIR /app
 COPY --chown=1001:1001 zero-power-tags/src/ /app/zero-power-tags/src/
 COPY --chown=1001:1001 zero-power-tags/modbus_bridges.json /app/zero-power-tags/
 
+ENV MODBUS_BRIDGES_PATH=/app/zero-power-tags/modbus_bridges.json
+
 WORKDIR /app/zero-power-tags
 
 USER 1001

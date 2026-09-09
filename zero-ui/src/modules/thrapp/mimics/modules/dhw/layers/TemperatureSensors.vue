@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { TEMPERATURE_SENSOR_WIDTH } from "../../../components/temperature-sensor";
 import { TemperatureSensorInstance } from "../../../instances";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
 import { DHW_MIMIC_DATA } from "../data";
@@ -17,7 +18,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
-        x="313"
+        :target-x="324 - 10"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="71"
         :tag-id="temperatureSensors['1038-45'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-45'].source"
@@ -30,7 +32,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
-        x="676"
+        :target-x="687 - 10"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="71"
         :tag-id="temperatureSensors['1038-44'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-44'].source"
@@ -43,7 +46,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Right"
     >
       <TemperatureLabelInstance
-        x="1016"
+        :target-x="1025 - 10"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="71"
         :tag-id="temperatureSensors['1038-27'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-27'].source"
@@ -56,7 +60,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="180"
+        :target-x="185"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="158"
         :tag-id="temperatureSensors['1038-65'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-65'].source"
@@ -69,7 +74,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="1163"
+        :target-x="1170"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="496"
         :tag-id="temperatureSensors['1038-47'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-47'].source"
@@ -82,7 +88,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="393"
+        :target-x="403"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="580"
         :tag-id="temperatureSensors['1038-46'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-46'].source"
@@ -96,7 +103,7 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
     >
       <TemperatureLabelInstance
         x="236"
-        y="517"
+        y="510"
         :tag-id="temperatureSensors['1038-66'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-66'].source"
       />
@@ -108,7 +115,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="395"
+        :target-x="401"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="423"
         :tag-id="temperatureSensors['1038-26'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-26'].source"
@@ -121,7 +129,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="553"
+        :target-x="562"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="420"
         :tag-id="temperatureSensors['1038-25'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-25'].source"
@@ -134,7 +143,8 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        x="910"
+        :target-x="911"
+        :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="507"
         :tag-id="temperatureSensors['1038-51'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-51'].source"

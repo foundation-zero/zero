@@ -18,7 +18,6 @@ async def test_control_messaging_set_manual_control():
     mock_channels.get_manual_values = mock.Mock(return_value=DummyValues())
 
     messaging = ControlMessaging(mock_channels)
-    messaging.active = True
 
     result = await messaging.set_manual_control("test", True)
 
@@ -42,7 +41,6 @@ async def test_control_messaging_set_parameter():
     mock_channels.get_parameters = mock.Mock(return_value=DummyValues())
 
     messaging = ControlMessaging(mock_channels)
-    messaging.active = True
 
     result = await messaging.set_parameter("test", True)
 
@@ -61,11 +59,22 @@ async def test_control_messaging_set_parameter():
     ]
 
 
+async def test_control_messaging_control_values_is_actuated():
+    mock_channels = mock.Mock()
+    messaging = ControlMessaging(mock_channels)
+
+    mock_channels.get_actuated_control_values.return_value = None
+    assert messaging.control_values is None
+    mock_channels.get_actuated_control_values.assert_called_once()
+
+    mock_channels.get_actuated_control_values.return_value = DummyValues(test=True)
+    assert messaging.control_values == DummyValues(test=True)
+
+
 async def test_control_messaging_set_automation_mode():
     mock_channels = mock.AsyncMock()
 
     messaging = ControlMessaging(mock_channels)
-    messaging.active = True
 
     result = await messaging.set_automation_mode(True)
 

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zero-mqtt-graphql-chart
+description: Zero MQTT to GraphQL bridge service.
+type: application
+version: 0.0.0
+appVersion: 0.0.0

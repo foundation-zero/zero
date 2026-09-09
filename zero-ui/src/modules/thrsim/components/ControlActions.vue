@@ -1,7 +1,6 @@
 <script setup lang="ts" generic="K extends keyof ControlStatus['modules']">
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import InfoTooltip from "@/modules/common/components/info-tooltip/InfoTooltip.vue";
 import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
 import { tScoped } from "@/modules/common/lib/utils";
 import { ManualModeToggleDialog } from "@/modules/thrapp/components/manual-mode-toggle";
@@ -16,6 +15,7 @@ import {
 import { ENV } from "@/settings";
 import { RiLock2Fill } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";
+import AdvisoryModeTooltip from "./AdvisoryModeTooltip.vue";
 
 const props = defineProps<{
   activeModule: string;
@@ -73,17 +73,7 @@ const toggleAutomaticMode = async () => {
 </script>
 
 <template>
-  <div
-    v-if="!advisoryEnabled"
-    class="text-destructive flex justify-center text-sm"
-  >
-    {{ t("advisoryDisabled") }}
-    <div class="ml-1">
-      <InfoTooltip class="stroke-destructive fill-destructive text-destructive">
-        {{ t("advisoryDisabledTooltip") }}
-      </InfoTooltip>
-    </div>
-  </div>
+  <AdvisoryModeTooltip v-if="!advisoryEnabled" />
 
   <template v-else>
     <div

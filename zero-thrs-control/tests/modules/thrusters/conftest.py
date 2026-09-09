@@ -49,7 +49,7 @@ def simulation_inputs():
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
-        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

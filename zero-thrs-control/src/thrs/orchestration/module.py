@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
+from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
-    SwitchingControl,
+    Switching,
     SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
@@ -67,7 +68,9 @@ class Module[
         channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
     ):
         self._name = name
-        self._control = SwitchingControl(ManualControl(control.initial()[0]), control)
+        self._control = Switching(
+            ManualControl(control.initial()[0]), control, name=name
+        )
         self._alarms = alarms
         self._channels = channels
         self._active_alarms: dict[str, Alarm] = {}
@@ -97,8 +100,9 @@ class Module[
 
     def execute_control(self, sensor_values: S) -> tuple[C, CS]:
         """Execute a control tick, send control values and evaluate alarms."""
-
-        control_values, controller_state = self._control.control(sensor_values)
+        control_values, controller_state = self._control.control(
+            sensor_values, self._channels.get_actuated_control_values()
+        )
 
         self._check_alarms(sensor_values, control_values)
 
@@ -106,6 +110,47 @@ class Module[
 
     def set_automation_mode(self, mode: AutomationMode) -> None:
         self._control.switch_mode(mode)
+
+    def get_persistence_snapshot(self) -> ModulePersistenceSnapshot:
+        """Serialize the configuration a restart should be able to pick up again."""
+        return ModulePersistenceSnapshot(
+            parameters=self._control.parameters.model_dump(mode="json"),
+            manual_control_values=self._control.manual_controls.model_dump(mode="json"),
+            control_mode=self._control.control_mode,
+        )
+
+    def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
+        """Apply a configuration snapshot."""
+
+        parameters = self._validate_parameters(snapshot)
+        manual_control_values = self._validate_manual_control_values(snapshot)
+        automation_mode = AutomationMode(mode=snapshot.control_mode)
+
+        if parameters is not None:
+            self._control.update_parameters(parameters)
+
+        if manual_control_values is not None:
+            self._control.update_manual_controls(manual_control_values)
+
+        self._control.switch_mode(automation_mode)
+
+    def _validate_manual_control_values(
+        self, snapshot: ModulePersistenceSnapshot
+    ) -> C | None:
+        """Validate manual control values from a snapshot without applying them."""
+        if snapshot.manual_control_values is None:
+            return None
+
+        control_values_cls = type(self._control.manual_controls)
+        return control_values_cls.model_validate(snapshot.manual_control_values)
+
+    def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
+        """Validate control parameters from a snapshot without applying them."""
+        if snapshot.parameters is None:
+            return None
+
+        parameters_cls = type(self._control.parameters)
+        return parameters_cls.model_validate(snapshot.parameters)
 
     @StateLogger.log_alarms
     def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
@@ -136,7 +181,12 @@ class Module[
 
     async def tick(self, sensor_values: S | None) -> C:
         if sensor_values is None:
-            control_values, controller_state = self._control.initial()
+            logger.warning(
+                "Module %s has no sensor values - sending last known manual control values",
+                self._name,
+            )
+            control_values = self._control.manual_controls
+            _, controller_state = self._control.automatic_control.initial()
         else:
             control_values, controller_state = self.execute_control(sensor_values)
 

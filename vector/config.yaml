@@ -17,6 +17,7 @@ sources:
       - "termodinamica/#"
       - "sail-systems/#"
       - "power-tags/#"
+      - "fiber-optics/values"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840
@@ -32,6 +33,8 @@ sources:
       - "${ATPX_MQTT_TOPIC:-atpx/#}"
     decoding:
       codec: bytes
+    user: "${ATPX_MQTT_USER:-}"
+    password: "${ATPX_MQTT_PASSWORD:-}"
   # A+T (ATPX) NMEA 0183 stream, already parsed to JSON and republished on our
   # own broker by the standalone zero-atpx-nmea service. See ZERO-1660.
   atpx_nmea_mqtt:
@@ -43,8 +46,10 @@ sources:
       - "atpx/processed/nmea/#"
     decoding:
       codec: json
-    user: "${MQTT_USER}"
-    password: "${MQTT_PASSWORD}"
+    user: "${ATPX_MQTT_USER:-}"
+    password: "${ATPX_MQTT_PASSWORD:-}"
+  vector_metrics:
+    type: internal_metrics
 transforms:
   process:
     type: remap
@@ -105,3 +110,8 @@ sinks:
     topic: "{{ %mqtt_topic }}"
     encoding:
       codec: json
+  prometheus:
+    type: prometheus_exporter
+    inputs:
+      - vector_metrics
+    address: 0.0.0.0:9090 # prom-exporter port from chart

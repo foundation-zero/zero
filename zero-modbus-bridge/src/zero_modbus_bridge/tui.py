@@ -295,8 +295,8 @@ def run_tui(
     ]
 
     for server in stub.servers:
+        logger.info("Starting stub server on %s:%d", server.host, server.port)
         server.start()
-        logger.info("Stub serving on %s:%d", server.host, server.port)
     try:
         StubTui(tabs).run()
     finally:

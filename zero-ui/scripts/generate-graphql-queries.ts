@@ -52,7 +52,7 @@ interface Definitions {
 }
 
 interface ComponentFieldMappings {
-  [componentType: string]: string[];
+  [componentType: string]: string[] | null;
 }
 
 interface AllFieldMappings {
@@ -102,6 +102,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "components",
     ],
     DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill"],
+    PvtController: ["mode"],
   },
 
   // Sensor component fields
@@ -110,16 +111,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     CalculatedTemperature: ["temperature"],
     Pressure: ["pressure"],
     Flow: ["flow", "temperature", "quantity"],
-    Pump: [
-      "dutypoint",
-      "on",
-      "flow",
-      "speed",
-      "opTime",
-      "pressure",
-      "energyConsumption",
-      "powerInput",
-    ],
+    Pump: ["flow", "speed", "opTime", "pressure", "energyConsumption", "powerInput"],
     Valve: ["positionRel", "positionAbs"],
     Thruster: ["active"],
     Pcs: ["mode"],

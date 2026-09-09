@@ -63,6 +63,15 @@
         "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
         "password": "Password",
         "advisoryDisabled": "Attention: Circuit is not in advisory mode. There are no controls active from the THRS. You are unable to request manual control."
+      },
+      "advisoryModeDisabled": {
+        "title": "Advisory mode disabled",
+        "content": [
+          "The advisory mode for this circuit is disabled in the AMCS.",
+          "Automatic control or manual control via the THRS app is unavailable. The mimics are ‘read-only’. The controls and parameters in the THRS app are disregarded.",
+          "To enable the advisory mode, please check the AMCS systems."
+        ],
+        "action": "OK"
       }
     },
     "labels": {
@@ -128,7 +137,7 @@
         "powerInput": "Power input",
         "energyConsumption": "Energy consumption",
         "pressure": "Pressure",
-        "relativeDutyPoint": "Relative duty point",
+        "relativeDutyPoint": "Dutypoint",
         "onOff": "On-off",
         "error": "Error",
         "measurement": "Measurement",
@@ -169,7 +178,8 @@
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
-        "empty": "Level"
+        "empty": "Level",
+        "pvt": "Pvt"
       }
     },
     "mimics": {
@@ -237,6 +247,22 @@
             "propulsion": "Propulsion",
             "maneuvering": "Maneuvering",
             "regeneration": "Regeneration"
+          }
+        }
+      },
+      "pvt": {
+        "assets": {
+          "fwdTitle": "PVT FWD",
+          "aftTitle": "PVT AFT",
+          "ownersTitle": "PVT OWNERS",
+          "labels": {
+            "power": "Power",
+            "temperature": "Temp"
+          },
+          "modes": {
+            "recovery": "Recovery",
+            "idle": "Idle",
+            "manual": "Manual"
           }
         }
       }

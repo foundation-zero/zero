@@ -35,7 +35,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
         pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(70)),
-        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

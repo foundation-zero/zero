@@ -228,7 +228,7 @@ def test_waste_cooling():
         adsorption_dhw_supply=Boundary(
             temperature=Stamped.stamp(10.0), flow=Stamped.stamp(45.0)
         ),
-        adsorption_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
     parameters = AdsorptionParameters(
         waste_recovery_temperature_setpoint=10,

@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { FieldEditor } from "../editors";
 import MixValveInstance from "../instances/MixValveInstance.vue";
@@ -36,6 +37,11 @@ const { labels, items, sources } = useTranslations();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="valves"
+        field="position_rel"
+      />
       <ManualControl />
     </TooltipList>
 
@@ -60,11 +66,12 @@ const { labels, items, sources } = useTranslations();
       <Partials.ValvePosition :valve="source" />
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controller">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
+      <Partials.PIDController v-bind="custom.controller" />
     </TooltipList>
   </MimicTooltip>
 </template>

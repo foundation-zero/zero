@@ -5,6 +5,7 @@ import Bypasses from "./layers/Bypasses.vue";
 import CheckValves from "./layers/CheckValves.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
+import ExpansionTanks from "./layers/ExpansionTanks.vue";
 import FlowSensors from "./layers/FlowSensors.vue";
 import HeatExchangers from "./layers/HeatExchangers.vue";
 import Labels from "./layers/Labels.vue";
@@ -24,6 +25,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     aria-hidden="true"
   >
     <Bypasses />
+    <ExpansionTanks />
     <Pipes />
     <HeatExchangers />
     <CheckValves />

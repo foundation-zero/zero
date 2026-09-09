@@ -44,6 +44,13 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/api\/loads/, "");
           },
         },
+        "/api/mqtt-graphql": {
+          target: env.VITE_MQTT_GRAPHQL_API_SERVER,
+          changeOrigin: true,
+          rewrite(path) {
+            return path.replace(/^\/api\/mqtt-graphql/, "");
+          },
+        },
       },
     },
     plugins: [vue(), tailwindcss()],

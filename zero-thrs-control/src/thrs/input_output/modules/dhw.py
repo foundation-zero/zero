@@ -64,21 +64,15 @@ class DhwSensorValues(AmcsModeSensorValues):
     dhw_level_tank1: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-01", component_type="level_sensor"),
-    ] = sensor.LevelSensor(  # TODO: Remove default
-        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
     dhw_level_tank2: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-02", component_type="level_sensor"),
-    ] = sensor.LevelSensor(  # TODO: Remove default
-        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
     dhw_level_tank3: Annotated[
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="level_sensor"),
-    ] = sensor.LevelSensor(  # TODO: Remove default
-        level=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
     dhw_flow_dc: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-17", component_type="flow_sensor"),
@@ -507,14 +501,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             )
         return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
-    dhw_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.dhw_mode
-
 
 class DhwControlValues(ThrsValues):
     model_config = ConfigDict(
@@ -528,7 +514,9 @@ class DhwControlValues(ThrsValues):
     ]
     dhw_heatpump: Annotated[
         control.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
-    ]
+    ] = Field(
+        default_factory=control.HeatPump.zero
+    )  # TODO: Fix when heatpump is available on MQTT
     dhw_flowcontrol_dc: Annotated[
         control.Valve,
         component_meta(
@@ -642,7 +630,7 @@ class DhwSimulationInputs(ThrsValues):
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
-    dhw_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

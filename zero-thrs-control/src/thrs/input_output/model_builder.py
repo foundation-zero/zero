@@ -7,6 +7,7 @@ from typing import Any
 from pydantic import TypeAdapter, ValidationError
 
 from thrs.input_output.base import ThrsValues
+from thrs.input_output.definitions.wire_context import WireContext
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +39,9 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
     Each input call is expected to set one field in the model.
     """
 
-    def __init__(self, cls: type[T]):
+    def __init__(self, cls: type[T], validation_context: WireContext | None = None):
         self._cls = cls
+        self._validation_context = validation_context
         self._value: T | None = None
         self._values: dict[str, Any] = {}
         self._fields: dict[str, TypeAdapter] = {
@@ -49,7 +51,9 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         self._complete_model = Future()
 
     def input(self, field: str, json: str | bytes):
-        value = self._fields[field].validate_json(json)
+        value = self._fields[field].validate_json(
+            json, context=self._validation_context
+        )
 
         self._values[field] = value
 

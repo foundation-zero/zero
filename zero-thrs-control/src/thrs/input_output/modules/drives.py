@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import ThrsValues, component_meta
@@ -199,13 +199,6 @@ class DrivesSensorValues(AmcsModeSensorValues):
             topic_override="dummy-pcs/shorepower-active",
         ),
     ]
-    drives_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.drives_mode
 
 
 class DrivesControlValues(ThrsValues):
@@ -293,7 +286,7 @@ class DrivesSimulationInputs(ThrsValues):
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
     drives_dhw_supply: simulation.Boundary
-    drives_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class DrivesSimulationOutputs(ThrsValues):

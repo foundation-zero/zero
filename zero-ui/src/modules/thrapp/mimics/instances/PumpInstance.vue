@@ -3,16 +3,16 @@ import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { PumpState } from "../components/pump";
+import { PumpProps, PumpState } from "../components/pump";
 import Pump from "../components/pump/Pump.vue";
 import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
-  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.Pump>
+  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.Pump> & PumpProps
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
-const pump = getSensorValue(props.source);
+const { getControlValue, getComponentState } = getMimicDataProvider();
+const pump = getControlValue(props.controls.pump);
 const state = getComponentState();
 
 const pumpState = computed(() => {

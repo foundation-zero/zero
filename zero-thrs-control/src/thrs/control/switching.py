@@ -1,3 +1,4 @@
+import logging
 from typing import Literal, cast
 
 from thrs.classes.control import Control
@@ -9,6 +10,10 @@ from thrs.control.manual import EmptyParameters, ManualControl
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
+type ControlModes = Literal["manual", "automatic"]
+
+logger = logging.getLogger(__name__)
+
 
 class SwitchingControlMode[Mode](ThrsValues):
     automatic_mode: Mode | None
@@ -19,24 +24,16 @@ class SwitchingControlMode[Mode](ThrsValues):
 
 
 class AutomationMode(ThrsValues):
-    mode: Literal["manual", "automatic"]
+    mode: ControlModes
 
 
-class SwitchingControl[
+class Switching[
     SensorValues: AmcsModeSensorValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
     ControlMode,
     ControllerState: ThrsValues,
-](
-    Control[
-        SensorValues,
-        ControlValues,
-        ControlParameters,
-        SwitchingControlMode[ControlMode],
-        ControllerState,
-    ]
-):
+]:
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],
@@ -47,10 +44,13 @@ class SwitchingControl[
             ControlMode,
             ControllerState,
         ],
+        name: str,
     ):
         self._manual_control = manual
         self._automatic_control = automatic
-        self._mode: Literal["manual", "automatic"] = "manual"
+        self._name = name
+        self._mode: ControlModes = "manual"
+        self._was_advisory: bool | None = None
         self._parameters = cast(ControlParameters, EmptyParameters())
         self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
@@ -71,16 +71,41 @@ class SwitchingControl[
         )
 
     def control(
-        self, sensor_values: SensorValues
+        self,
+        sensor_values: SensorValues,
+        actuated_control_values: ControlValues | None = None,
     ) -> tuple[ControlValues, ControllerState]:
-        if not sensor_values.mode.is_advisory:
-            return self.initial()
+        # When the AMCS is not in advisory mode it is in control itself: we keep the
+        # manual controls tracking what it actually actuated and force manual mode, so
+        # we cannot stay "automatic" while not the acting controller.
+        is_advisory = sensor_values.mode.is_advisory
+        if self._was_advisory and not is_advisory:
+            logger.warning(
+                "AMCS advisory was disabled for %s (amcs_mode=%s, control_mode=%s); "
+                "forcing manual mode and echoing actuated values from AMCS",
+                self._name,
+                sensor_values.mode.mode.value,
+                self._mode,
+            )
+        self._was_advisory = is_advisory
+        if actuated_control_values is not None:
+            self.update_manual_controls(actuated_control_values)
+        if not is_advisory:
+            self._mode = "manual"
 
-        if self._mode == "manual":
+        if self.control_mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
+            # Keep automatic control in sync with manual control
+            self._automatic_control.update_controls(control_values)
             _, controller_state = self._automatic_control.initial()
             return control_values, controller_state
-        return self._automatic_control.control(sensor_values)
+        control_values, controller_state = self._automatic_control.control(
+            sensor_values
+        )
+
+        # Keep the manual controls tracking the control output, so switching doesn't jump controls
+        self.update_manual_controls(control_values)
+        return control_values, controller_state
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode
@@ -104,13 +129,21 @@ class SwitchingControl[
     def mode(self) -> SwitchingControlMode[ControlMode]:
         return (
             SwitchingControlMode(automatic_mode=None)
-            if self._mode == "manual"
+            if self.control_mode == "manual"
             else SwitchingControlMode(automatic_mode=self._automatic_control.mode)
         )
 
     @property
     def automatic(self) -> bool:
-        return self._mode == "automatic"
+        return self.control_mode == "automatic"
+
+    @property
+    def manual(self) -> bool:
+        return self.control_mode == "manual"
+
+    @property
+    def control_mode(self) -> ControlModes:
+        return self._mode
 
     @property
     def manual_controls(self) -> ControlValues:

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import ThrsValues, component_meta
@@ -119,13 +119,6 @@ class PcmSensorValues(AmcsModeSensorValues):
             yard_tag="50001071-02", component_type="valve", valve_type="switch"
         ),
     ]
-    pcm_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.pcm_mode
 
 
 class PcmControlValues(ThrsValues):
@@ -196,7 +189,7 @@ class PcmSimulationInputs(ThrsValues):
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
     pcm_consumers_supply: simulation.TemperatureBoundary
-    pcm_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class PcmSimulationOutputs(ThrsValues):

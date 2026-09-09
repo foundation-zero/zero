@@ -3,11 +3,11 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { MimicComponentState } from "../components";
-import { PumpState } from "../components/pump";
+import { PumpProps, PumpState } from "../components/pump";
 import Pump from "../components/pump/Pump.vue";
 
 const props = defineProps<
-  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.ManualPump>
+  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.ManualPump> & PumpProps
 >();
 </script>
 

@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_marpower__150000_propulsion__pcs_fwd
+    description: >
+      Cleaned forward-PCS propulsion telemetry: a curated set of measures with stable
+      names, the `__value`/`__is_valid` clumps and Vector transport metadata dropped.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest time index (renamed from the raw `timestamp`)."
+        tests:
+          - not_null
+      - name: device_state
+        description: "Device state measure."
+      - name: drive_thermal_state
+        description: "Drive thermal state measure."
+      - name: command_register
+        description: "Command register measure."
+      - name: azimuth_setpoint_not_reached
+        description: "Azimuth setpoint-not-reached flag."

@@ -3,12 +3,17 @@ import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
 from typing import cast
+from unittest import mock
 
 import pytest
 from aiomqtt import Client
 
+from thrs.classes.database import PostgresDatabase
+from thrs.classes.persistence.engine import NoopPersistentEngine
+from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.control.switching import AutomationMode
+from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -44,7 +49,8 @@ def setup_lockstep(
     mode: Mode,
     settings: Config,
     mqtt_client: Client,
-    machine_state_logging_service_enabled: bool = True,
+    database: PostgresDatabase | None = None,
+    machine_state_logging_service_enabled: bool = False,
 ) -> Runtime:
     """Test helper mirroring LockstepCmd.setup() from the CLI."""
     connector = MqttConnector(mqtt_client)
@@ -64,13 +70,15 @@ def setup_lockstep(
         settings,
         mode.control_modules,
         time_fn=simulation_module.time,
+        database=database or mock.Mock(spec=PostgresDatabase),
         machine_state_logging_service_enabled=machine_state_logging_service_enabled,
     )
 
     for module in control_modules:
         module.set_automation_mode(AutomationMode(mode="automatic"))
 
-    runner = LockstepRunner(control_modules, simulation_module)
+    persistence = PersistManager(NoopPersistentEngine())
+    runner = LockstepRunner(control_modules, simulation_module, persistence)
 
     directive_handling = DirectiveHandling(
         DirectivesChannels(connector, settings),
@@ -101,7 +109,6 @@ async def test_simulation_run_start_stop(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -192,7 +199,6 @@ async def test_simulation_run_playback_rate(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -309,7 +315,6 @@ async def test_simulation_run_step(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -412,7 +417,6 @@ async def test_simulation_controls_automated_control(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -480,7 +484,9 @@ async def test_simulation_controls_automated_control(
 
         assert paused is not None
 
-        control_builder = PartialModelBuilder(ThrustersControlValues)
+        control_builder = PartialModelBuilder(
+            ThrustersControlValues, validation_context=AMCS_WRITE_CONTEXT
+        )
         while len(test_client.messages) != 0:
             logger.info("Waiting on message")
             msg = await anext(test_client.messages)
@@ -524,7 +530,6 @@ async def test_simulation_controls_set_parameters(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -608,7 +613,6 @@ async def test_simulation_controls_set_simulation_inputs(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()
@@ -691,7 +695,6 @@ async def test_simulation_controls_simulation_output(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
-        machine_state_logging_service_enabled=False,
     )
 
     await runtime.clear_previous()

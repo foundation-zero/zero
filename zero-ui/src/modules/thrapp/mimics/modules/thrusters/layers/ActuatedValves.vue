@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
 import { MixValveInstance, SwitchValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowControlValveInstance from "../../../instances/FlowControlValveInstance.vue";
@@ -22,9 +23,15 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       y="193"
       :orientation="ComponentOrientation.Up"
       v-bind="threeWaySwitchValves['1091-01']"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.B,
+        [ValveLeg.Bottom]: ValvePortName.A,
+      }"
     >
       <TagLabelInstance
-        x="416"
+        :target-x="414"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="179"
         :tag-id="threeWaySwitchValves['1091-01'].tooltip?.yardTag"
       />
@@ -33,10 +40,16 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       x="414"
       y="449.5"
       :orientation="ComponentOrientation.Down"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.B,
+        [ValveLeg.Right]: ValvePortName.AB,
+        [ValveLeg.Bottom]: ValvePortName.A,
+      }"
       v-bind="threeWaySwitchValves['1091-02']"
     >
       <TagLabelInstance
-        x="416"
+        :target-x="414"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="484"
         :tag-id="threeWaySwitchValves['1091-02'].tooltip?.yardTag"
       />
@@ -48,7 +61,8 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       v-bind="switchValves['1066-03']"
     >
       <TagLabelInstance
-        x="575"
+        :target-x="575"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="332"
         :tag-id="switchValves['1066-03'].tooltip?.yardTag"
       />
@@ -61,7 +75,8 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       v-bind="flowControlValves['1215']"
     >
       <FlowControlLabelInstance
-        x="218"
+        :target-x="214"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="163"
         :tag-id="flowControlValves['1215'].tooltip?.yardTag"
         :valve="flowControlValves['1215'].source"
@@ -73,7 +88,8 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       :orientation="ComponentOrientation.Up"
       v-bind="flowControlValves['1064-02']"
       ><FlowControlLabelInstance
-        x="214"
+        :target-x="214"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="418"
         :tag-id="flowControlValves['1064-02'].tooltip?.yardTag"
         :valve="flowControlValves['1064-02'].source"
@@ -84,10 +100,16 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       x="759.5"
       y="242"
       :orientation="ComponentOrientation.Down"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.A,
+        [ValveLeg.Bottom]: ValvePortName.B,
+      }"
       v-bind="mixValves['1214-01']"
     >
       <ThreeWayValveLabelInstance
-        x="755"
+        :target-x="759.5"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="273"
         :tag-id="mixValves['1214-01'].tooltip?.yardTag"
         :valve="mixValves['1214-01'].source"
@@ -98,9 +120,15 @@ const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwi
       y="346"
       :orientation="ComponentOrientation.Up"
       v-bind="mixValves['1074']"
+      :legs="{
+        [ValveLeg.Left]: ValvePortName.AB,
+        [ValveLeg.Right]: ValvePortName.A,
+        [ValveLeg.Bottom]: ValvePortName.B,
+      }"
     >
       <ThreeWayValveLabelInstance
-        x="689"
+        :target-x="693.5"
+        :target-width="ACTUATED_VALVE_WIDTH"
         y="315"
         :tag-id="mixValves['1074'].tooltip?.yardTag"
         :valve="mixValves['1074'].source"

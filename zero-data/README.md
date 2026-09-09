@@ -52,6 +52,41 @@ uv run zero-data generate-data
    uv run pytest .
    ```
 
+## Greptime views (dbt)
+
+`dbt/` builds stable, typed **views** over GreptimeDB's dynamically-generated raw telemetry
+tables (materialized into a dedicated `views` database, leaving `public` as raw-ingest
+only). Because dev and CI have no live MQTT data, a committed **snapshot** of prod's real
+schema (`SHOW CREATE TABLE` → `snapshot/*.sql`) is replayed into a local Greptime so the
+models can be developed and tested fully offline.
+
+```bash
+# Local GreptimeDB, from the repo root (uses the repo-root docker-compose.yml):
+docker compose --profile data-collection up -d greptimedb
+
+# From this zero-data/ directory:
+# Recreate prod's table shapes (empty) locally from the committed snapshot, and create the
+# `greptime` and `views` databases dbt needs.
+uv run zero-data greptime load
+
+# Build the views and run the tests.
+cd dbt && DBT_PROFILES_DIR="$PWD" uv run --project .. dbt build
+```
+
+Refresh the committed schema from a live tier (over Tailscale), then review the diff:
+
+```bash
+# add the table to snapshot/tables.txt first, then:
+uv run zero-data greptime snapshot --host greptime-zero.tail0b4840.ts.net
+git diff snapshot/
+```
+
+`GREPTIME_HOST` / `GREPTIME_PG_PORT` / `GREPTIME_USER` / `GREPTIME_PASSWORD` configure both
+the tooling and dbt (defaults target the local compose instance). The integration tests
+(`tests/greptime/`) exercise both seams against a real local Greptime — no DB mocking. How
+dbt-postgres drives Greptime, and the friction points, are in
+[`docs/greptime-views-viability-check.md`](docs/greptime-views-viability-check.md).
+
 ## Release Management
 
 ### Charts

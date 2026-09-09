@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import PumpInstance from "../instances/PumpInstance.vue";
 import { ControlValue, ControlValueForm, SensorValue } from "../providers";
@@ -35,6 +36,11 @@ const { labels, actions, items, sources } = useTranslations();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="pumps"
+        field="cc_duty_point"
+      />
       <ManualControl />
     </TooltipList>
 
@@ -131,7 +137,10 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ actions("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Partials.PIDController v-bind="custom.flowController">
+      <Partials.PIDController
+        v-if="custom.flowController"
+        v-bind="custom.flowController"
+      >
         {{ sources("pumpFlowController") }}
       </Partials.PIDController>
       <Partials.PIDController

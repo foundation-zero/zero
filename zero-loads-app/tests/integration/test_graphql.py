@@ -8,7 +8,7 @@ from httpx import AsyncClient
 
 from loads.api.dependencies import get_messaging
 from loads.registry.registry import VARIABLES
-from loads.sensors.at import ApparentWindSpeed
+from loads.sensors.at import ApparentWindAngle, ApparentWindSpeed
 from loads.sensors.fiber_optic import FiberOptic
 from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
@@ -455,6 +455,8 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
+            "st_position/i_MaxPosition": 1000,
+            "st_position/i_MinPosition": 0,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "st_Load/i_Load": 500,
@@ -462,6 +464,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/x_MaxLimitReached": true,
             "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
+            "st_LoadPs/x_Failure": false,
             "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
@@ -500,7 +503,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "alarms": [
                 {
                     "id": "main-checkstay-deflector-load-alarm",
-                    "name": "Checkstay Deflector Load Alarm",
+                    "name": "Main Deflector Load Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 5.0,
@@ -522,6 +525,8 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
+            "st_position/i_MaxPosition": 1000,
+            "st_position/i_MinPosition": 0,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "st_Load/i_Load": 500,
@@ -529,6 +534,7 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
             "st_Load/x_MaxLimitReached": true,
             "st_Load/i_MaxLoadSetting": 400,
             "st_LoadPs/i_Load": 420,
+            "st_LoadPs/x_Failure": false,
             "st_LoadPs/i_MaxLoadSetting": 450,
             "st_LoadPs/x_MaxLimitReached": false,
             "st_LoadSb/i_Load": 500,
@@ -577,16 +583,21 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
 
 @pytest.mark.asyncio
 async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
-    variable_name = "aws"
-    raw_value = "16.7"
-    await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
+    await mqtt_client_send.publish(
+        ApparentWindSpeed.TOPIC,
+        json.dumps({"field": "app_wind_speed_kts", "value": 22.826641}),
+    )
+    await mqtt_client_send.publish(
+        ApparentWindAngle.TOPIC,
+        json.dumps({"field": "app_wind_angle", "value": 69.311159}),
+    )
     await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["%s"]) {
+                variables(variables: ["aws", "awa"]) {
                     id
                     actual {
                         id
@@ -595,7 +606,6 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
                 }
             }
             """
-            % variable_name
         },
     )
 
@@ -603,10 +613,8 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
     assert response.json() == {
         "data": {
             "variables": [
-                {
-                    "id": variable_name,
-                    "actual": {"id": variable_name, "value": float(raw_value)},
-                }
+                {"id": "aws", "actual": {"id": "aws", "value": 22.826641}},
+                {"id": "awa", "actual": {"id": "awa", "value": 69.311159}},
             ]
         }
     }

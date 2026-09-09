@@ -63,10 +63,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
-        consumers_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
-        pcm_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
-        pvt_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
-        thrusters_mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     )
 
 

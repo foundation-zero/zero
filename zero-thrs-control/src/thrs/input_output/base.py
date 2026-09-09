@@ -26,9 +26,17 @@ class ThrsValues(BaseModel):
     def zero(cls) -> Self:
         def _zero_component(component):
             def _zero_value(field: FieldInfo):
+                if isinstance(field.json_schema_extra, dict):
+                    override = field.json_schema_extra.get("zero_value")
+                    if override is not None:
+                        return override
                 unit = unit_for_annotation(field.annotation)
+                if unit is datetime:
+                    return datetime.fromtimestamp(0, UTC)
                 return zero_for_unit(unit) if unit else 0.0
 
+            if issubclass(component, Stamped):
+                return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
             if issubclass(component, ThrsValues):
                 return component(
                     **{
@@ -44,6 +52,29 @@ class ThrsValues(BaseModel):
             for component_name, component in cls.model_fields.items()
         }
         return cls(**vals)
+
+    def update_in_place(self, other: Self) -> None:
+        """Copy the values of other into self, keeping the identity of nested components."""
+        for field_name in type(self).model_fields:
+            current = getattr(self, field_name)
+            incoming = getattr(other, field_name)
+
+            if isinstance(current, Stamped):
+                setattr(self, field_name, incoming.model_copy(deep=True))
+            elif isinstance(current, ThrsValues):
+                current.update_in_place(incoming)
+            elif isinstance(current, list):
+                for idx, (current_item, incoming_item) in enumerate(
+                    zip(current, incoming, strict=True)
+                ):
+                    if isinstance(current_item, ThrsValues):
+                        current_item.update_in_place(incoming_item)
+                    elif isinstance(current_item, Stamped):
+                        current[idx] = incoming_item.model_copy(deep=True)
+                    else:
+                        current[idx] = incoming_item
+            else:
+                setattr(self, field_name, incoming)
 
     @classmethod
     def yard_tag(cls, field_name: str) -> str:
@@ -93,10 +124,13 @@ class ParameterMeta:
 
 class FieldMeta(BaseModel):
     included_in_fmu: bool = True
+    zero_value: Any | None = None
 
 
 def field_meta(*args, **kwargs):
-    return Field(json_schema_extra=FieldMeta(*args, **kwargs).model_dump())
+    return Field(
+        json_schema_extra=FieldMeta(*args, **kwargs).model_dump(exclude_none=True)
+    )
 
 
 @dataclass

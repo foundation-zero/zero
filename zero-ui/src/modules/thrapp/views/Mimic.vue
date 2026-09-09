@@ -7,7 +7,7 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { MIMICS } from "../router/mimics";
@@ -19,6 +19,12 @@ const { currentRoute } = useRouter();
 const { t } = useI18n();
 
 const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as keyof ThrsModules]);
+const data = ref(currentMimic.value?.data);
+
+watch(currentMimic, (mimic) => {
+  data.value = undefined;
+  nextTick(() => (data.value = mimic?.data));
+});
 </script>
 <template>
   <component :is="provider">
@@ -45,8 +51,8 @@ const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as k
       </aside>
 
       <MimicTooltipProvider
-        v-if="currentMimic"
-        :source="currentMimic.data"
+        v-if="currentMimic && data"
+        :source="data"
       >
         <component
           :is="currentMimic.component"

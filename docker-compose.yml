@@ -60,8 +60,6 @@ services:
       - "./grafana/greptime.yaml:/etc/grafana/provisioning/datasources/greptime.yaml"
     profiles:
       - data
-    environment:
-      - GF_PLUGINS_PREINSTALL=marcusolsson-treemap-panel
     container_name: grafana
     healthcheck:
       test:
@@ -146,6 +144,22 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+
+  mqtt-graphql:
+    build:
+      context: ./zero-mqtt-graphql
+    ports:
+      - 5103:5103
+    profiles:
+      - data
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+    depends_on:
+      vernemq:
+        condition: service_healthy
+    volumes:
+      - ./specs:/app/specs:ro
 
   # ---- data collection ----
   vector:
@@ -345,6 +359,8 @@ services:
       - "5102:5102"
     environment: &thrs_env
       MACHINE_STATE_LOGGING: ${MACHINE_STATE_LOGGING:-true}
+      MODULE_PERSISTENCE: ${MODULE_PERSISTENCE:-false}
+      ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES: ${ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES:-false}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       MQTT_DEVICES_TOPIC_PREFIX: devices_topic

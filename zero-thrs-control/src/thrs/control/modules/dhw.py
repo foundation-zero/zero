@@ -57,12 +57,12 @@ class DhwControllerState(ThrsValues):
 
 class DhwParameters(ThrsValues):
     heatpump_boosting_enabled: bool = True
-    ht_boosting_enabled: bool = True
+    ht_boosting_enabled: bool = False
     heatpump_flow_setpoint: LMin = 25
     heatpump_temperature_setpoint: Celsius = 65
-    ht_boosting_temperature_setpoint: Celsius = 65
-    minimum_tank_temperature: Celsius = 55
-    maximum_tank_temperature: Celsius = 60
+    ht_boosting_temperature_setpoint: Celsius = 55
+    minimum_tank_temperature: Celsius = 50
+    maximum_tank_temperature: Celsius = 55
     boosting_delta: Annotated[
         DeltaT,
         Field(
@@ -83,7 +83,7 @@ class DhwParameters(ThrsValues):
     ] = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
-    maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
+    maximum_tank_level: Annotated[Liter, Field(le=275)] = 230
     tank1_enabled: bool = True
     tank2_enabled: bool = True
     tank3_enabled: bool = True
@@ -108,15 +108,15 @@ class DhwParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
     return DhwControlValues(
         dhw_pump=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         dhw_heatpump=HeatPump(
             on=Stamped(value=False, timestamp=timestamp),
             temperature_setpoint=Stamped(value=50.0, timestamp=timestamp),
         ),
-        dhw_flowcontrol_dc=Valve(setpoint=Stamped(value=0.5, timestamp=timestamp)),
-        dhw_flowcontrol_drives=Valve(setpoint=Stamped(value=0.5, timestamp=timestamp)),
+        dhw_flowcontrol_dc=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
+        dhw_flowcontrol_drives=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
         dhw_switch_tank3_inlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
         dhw_switch_tank3_boosting_return=Valve(
             setpoint=Stamped(value=0.0, timestamp=timestamp)
@@ -655,10 +655,10 @@ class DhwControl(
 
         self._pump_temperature_controller = PidController[Ratio, Celsius](
             self._current_values.dhw_pump.dutypoint.value,
-            0,
+            self.parameters.ht_boosting_temperature_setpoint,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
-            (0.05, 1),
+            (0.1, 1),
         )
 
         self._pump_flow_controller = PidController[Ratio, LMin](
@@ -666,6 +666,7 @@ class DhwControl(
             self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
+            (0.1, 1),
         )
 
         self._drives_flow_controller = PidController[Ratio, Celsius](
@@ -735,6 +736,9 @@ class DhwControl(
     @StateLogger.log_parameters
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
+
+    def update_controls(self, control_values: DhwControlValues):
+        self._current_values.update_in_place(control_values)
 
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
@@ -903,13 +907,18 @@ class DhwControl(
                 and self._boosting_pump_controller.enabled()
             ):
                 self._boosting_pump_controller.disable()
-            self._current_values.dhw_pump.dutypoint = Stamped(
-                value=0.0, timestamp=self._time()
-            )
+            if self._current_values.dhw_pump.on.value is not False:
+                self._current_values.dhw_pump.on = Stamped(
+                    value=False, timestamp=self._time()
+                )
             return
 
         if not self._boosting_pump_controller.enabled():
             self._boosting_pump_controller.enable()
+        if self._current_values.dhw_pump.on.value is not True:
+            self._current_values.dhw_pump.on = Stamped(
+                value=True, timestamp=self._time()
+            )
         self._current_values.dhw_pump.dutypoint = Stamped(
             value=self._boosting_pump_controller(
                 self._boosting_pump_measurement(sensor_values)
@@ -970,7 +979,7 @@ class DhwControl(
     def _deactivate_pump(self, sensor_values: DhwSensorValues):
         self._current_values.dhw_pump.on = Stamped(value=False, timestamp=self._time())
         self._current_values.dhw_pump.dutypoint = Stamped(
-            value=0.0, timestamp=self._time()
+            value=0.1, timestamp=self._time()
         )
 
     def _activate_heatpump(self, sensor_values: DhwSensorValues):

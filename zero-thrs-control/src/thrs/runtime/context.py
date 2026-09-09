@@ -1,10 +1,13 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Iterable
 from contextlib import asynccontextmanager
-from typing import Any
+
+from thrs.orchestration.module import Module
 
 
 @asynccontextmanager
-async def control_shutdown_context(control_modules: Any) -> AsyncGenerator[None, None]:
+async def control_shutdown_context(
+    control_modules: Iterable[Module],
+) -> AsyncGenerator[None, None]:
     """Shutdown control modules after the context is exited."""
     try:
         yield

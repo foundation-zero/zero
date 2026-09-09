@@ -47,6 +47,11 @@ export type PIDController = {
   components: Stamped<PID>;
 };
 
+export const enum PvtMode {
+  Idle = "IDLE",
+  Recovery = "RECOVERY",
+}
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;
@@ -127,8 +132,6 @@ export type SimulationFields = {
 };
 
 export type PumpSensor = {
-  dutypoint: Stamped<Ratio>;
-  on: Stamped<boolean>;
   flow: Stamped<Ratio>;
   speed: Stamped<number>;
   opTime: Stamped<number>;
@@ -197,6 +200,9 @@ export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
 export type PropulsionDriveSensor = Toggle;
 export type ShorePowerConverterSensor = Toggle;
+export type IrradianceSensor = {
+  irradiance: Stamped<number>;
+};
 
 export type PcsSensor = ModeSelector<string>;
 
@@ -225,7 +231,8 @@ export type SensorType =
   | BrightloopSensor
   | UgridSensor
   | PropulsionDriveSensor
-  | ShorePowerConverterSensor;
+  | ShorePowerConverterSensor
+  | IrradianceSensor;
 
 export type ControlType =
   | PumpControl
@@ -354,6 +361,7 @@ export const enum SensorComponentType {
   Temperature = "sensor:temperature",
   CalculatedTemperature = "sensor:calculatedTemperature",
   Pressure = "sensor:pressure",
+  Irradiance = "sensor:irradiance",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
   Valve = "sensor:valve",
@@ -392,6 +400,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
+  SensorComponentType.Irradiance,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -455,6 +464,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
+  [SensorComponentType.Irradiance]: IrradianceSensor;
   [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };
 
