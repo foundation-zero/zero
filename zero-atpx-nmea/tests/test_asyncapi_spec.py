@@ -93,6 +93,24 @@ class TestInputChannel:
         assert op["action"] == "receive"
 
 
+class TestOutputOnlySpec:
+    """The ``include_input_channel=False`` view consumed by the MQTT-GraphQL bridge."""
+
+    def test_input_channel_omitted(self) -> None:
+        spec = build_spec(include_input_channel=False)
+        assert "atpx/nmea0183/{sender}/{TYPE}" not in spec["channels"]
+        assert "raw_nmea_sentence" not in spec["components"]["messages"]
+        assert "receive_raw_nmea" not in spec["operations"]
+
+    def test_output_channels_are_unchanged(self, spec: dict[str, Any]) -> None:
+        """Dropping the input channel leaves every output channel intact."""
+        output_only = build_spec(include_input_channel=False)
+        for nmea_type in documented_types():
+            channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+            assert output_only["channels"][channel_id] == spec["channels"][channel_id]
+        assert len(output_only["channels"]) == len(documented_types())
+
+
 class TestOutputChannels:
     """One output channel per documented type."""
 

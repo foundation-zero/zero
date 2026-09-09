@@ -18,12 +18,23 @@ class RunCmd(BaseModel):
 
 
 class AsyncApiCmd(BaseModel):
+    # Emit only the JSON output channels, dropping the raw bare-string input
+    # channel. This is the view the MQTT-GraphQL bridge consumes (it builds a
+    # schema from object fields, which the raw string channel lacks).
+    output_only: bool = False
+
     def cli_cmd(self) -> None:
-        print(json.dumps(build_spec(), indent=2))
+        print(
+            json.dumps(
+                build_spec(include_input_channel=not self.output_only), indent=2
+            )
+        )
 
 
 class ZeroAtpxNmea(BaseSettings, cli_kebab_case=True):
-    model_config = SettingsConfigDict(cli_ignore_unknown_args=True)
+    model_config = SettingsConfigDict(
+        cli_ignore_unknown_args=True, cli_implicit_flags=True
+    )
 
     run: CliSubCommand[RunCmd]
     asyncapi: CliSubCommand[AsyncApiCmd]

@@ -70,7 +70,8 @@ def _gather_envelope_for_type(nmea_type: str) -> dict[str, str]:
     raw = sentence_for(nmea_type)
     topic = f"atpx/nmea0183/{sender}/{nmea_type.upper()}"
     envelope = parse(raw, topic)
-    assert envelope is not None, f"Example sentence for {nmea_type} should parse"
+    if envelope is None:
+        raise ValueError(f"Corpus example sentence for {nmea_type} failed to parse")
 
     msg = pynmea2.parse(raw, check=True)
     msg_type = type(msg)
@@ -132,8 +133,15 @@ def _build_message_schema(
     }
 
 
-def build_spec() -> dict[str, Any]:
-    """Build the complete AsyncAPI 3.0.0 document for zero-atpx-nmea's MQTT interface."""
+def build_spec(*, include_input_channel: bool = True) -> dict[str, Any]:
+    """Build the AsyncAPI 3.0.0 document for zero-atpx-nmea's MQTT interface.
+
+    With ``include_input_channel=False`` the raw NMEA input channel is omitted,
+    leaving only the JSON output channels. The raw channel carries a bare-string
+    payload on A+T's broker; consumers that build a schema from object fields
+    (e.g. the MQTT-GraphQL bridge) can't use it, so they take the output-only
+    view. The default is the full contract, as committed to ``asyncapi.json``.
+    """
     # Static, not the hatch-vcs package version: that changes every commit and
     # would churn asyncapi.json on every push. Bump when the documented
     # interface (channels, schemas) changes.
@@ -168,6 +176,44 @@ def build_spec() -> dict[str, Any]:
         },
     }
 
+    if include_input_channel:
+        _add_input_channel(spec)
+
+    for nmea_type in documented_types():
+        field_types = _gather_envelope_for_type(nmea_type)
+        message_id = f"{nmea_type}_envelope"
+        channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+
+        spec["channels"][channel_id] = {
+            "address": channel_id,
+            "title": f"{nmea_type.upper()} processed envelope",
+            "description": (
+                f"Parsed JSON envelope for NMEA 0183 {nmea_type.upper()} sentences. "
+                "``{sender}`` identifies the originating A+T device."
+            ),
+            "parameters": {
+                "sender": {
+                    "description": "A+T device identifier (e.g. 3143, 3145)",
+                    "location": "$message.header#/topic/parts/4",
+                },
+            },
+            "messages": {
+                message_id: {"$ref": f"#/components/messages/{message_id}"},
+            },
+        }
+        spec["components"]["messages"][message_id] = _build_message_schema(
+            nmea_type, field_types
+        )
+        spec["operations"][f"send_{nmea_type}_envelope"] = {
+            "action": "send",
+            "channel": {"$ref": _json_pointer_ref(channel_id)},
+        }
+
+    return spec
+
+
+def _add_input_channel(spec: dict[str, Any]) -> None:
+    """Add the raw NMEA input channel, its message, and its receive operation."""
     input_channel_id = "atpx/nmea0183/{sender}/{TYPE}"
     spec["channels"][input_channel_id] = {
         "address": input_channel_id,
@@ -210,35 +256,3 @@ def build_spec() -> dict[str, Any]:
             "$ref": _json_pointer_ref(input_channel_id),
         },
     }
-
-    for nmea_type in documented_types():
-        field_types = _gather_envelope_for_type(nmea_type)
-        message_id = f"{nmea_type}_envelope"
-        channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
-
-        spec["channels"][channel_id] = {
-            "address": channel_id,
-            "title": f"{nmea_type.upper()} processed envelope",
-            "description": (
-                f"Parsed JSON envelope for NMEA 0183 {nmea_type.upper()} sentences. "
-                "``{sender}`` identifies the originating A+T device."
-            ),
-            "parameters": {
-                "sender": {
-                    "description": "A+T device identifier (e.g. 3143, 3145)",
-                    "location": "$message.header#/topic/parts/4",
-                },
-            },
-            "messages": {
-                message_id: {"$ref": f"#/components/messages/{message_id}"},
-            },
-        }
-        spec["components"]["messages"][message_id] = _build_message_schema(
-            nmea_type, field_types
-        )
-        spec["operations"][f"send_{nmea_type}_envelope"] = {
-            "action": "send",
-            "channel": {"$ref": _json_pointer_ref(channel_id)},
-        }
-
-    return spec

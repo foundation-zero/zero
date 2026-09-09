@@ -43,6 +43,14 @@ if ! (cd "$REPO_ROOT/zero-hull-temperature" && uv run python -m zero_hull_temper
   fail_or_warn "hull-temperature" || exit 1
 fi
 
+# --output-only drops the raw NMEA input channel (a bare-string payload on A+T's
+# broker) that the bridge can't build a schema from; only the JSON output
+# channels reach the specs dir.
+echo "  -> atpx-nmea"
+if ! (cd "$REPO_ROOT/zero-atpx-nmea" && uv run python -m zero_atpx_nmea asyncapi --output-only) > "$SPECS_DIR/atpx-nmea.json"; then
+  fail_or_warn "atpx-nmea" || exit 1
+fi
+
 if [ "$warnings" -gt 0 ]; then
   echo "Done with $warnings warning(s). Specs in $SPECS_DIR/" >&2
   ls -la "$SPECS_DIR/" >&2
