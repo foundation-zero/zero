@@ -9,24 +9,6 @@ sources:
     port: ${MQTT_PORT}
     client_id: vector
     decoding:
-      codec: json
-    topic:
-      - "marpower/#"
-      - "domestic/+"
-      - "hull-temperature/temperatures"
-      - "termodinamica/#"
-      - "sail-systems/#"
-      - "power-tags/#"
-      - "fiber-optics/values"
-    user: "${MQTT_USER}"
-    password: "${MQTT_PASSWORD}"
-    max_packet_size: 163840
-  mqtt_raw:
-    type: mqtt
-    host: "${MQTT_HOST}"
-    port: ${MQTT_PORT}
-    client_id: vector-raw
-    decoding:
       codec: bytes
     topic:
       - "marpower/#"
@@ -74,11 +56,12 @@ transforms:
     inputs: ["mqtt"]
     files:
       - "/etc/vector/process_0_consts.vrl"
-      - "/etc/vector/process_1_table.vrl"
-      - "/etc/vector/process_2_flatten.vrl"
-      - "/etc/vector/process_3_timestamp.vrl"
-      - "/etc/vector/process_4_spell_fix.vrl"
-      - "/etc/vector/process_5_snakecase.vrl"
+      - "/etc/vector/process_1_ingest.vrl"
+      - "/etc/vector/process_2_table.vrl"
+      - "/etc/vector/process_3_flatten.vrl"
+      - "/etc/vector/process_4_timestamp.vrl"
+      - "/etc/vector/process_5_spell_fix.vrl"
+      - "/etc/vector/process_6_snakecase.vrl"
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true
@@ -105,15 +88,6 @@ transforms:
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true
-    reroute_dropped: true
-  signal_mqtt_not_json:
-    type: remap
-    inputs: ["mqtt_raw"]
-    # We are only interested in parsing errors for the dead letter queue
-    source: |
-      parse_json!(string!(.message))
-      abort
-    drop_on_error: true
     reroute_dropped: true
   dropped_append_timestamp:
     type: remap

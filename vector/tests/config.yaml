@@ -9,7 +9,6 @@ sources:
       codec: json
     streaming:
       respawn_on_exit: false
-
 transforms:
   take_msg:
     type: remap
@@ -25,11 +24,13 @@ transforms:
     inputs: ["take_msg"]
     files:
       - "./processing/process_0_consts.vrl"
-      - "./processing/process_1_table.vrl"
-      - "./processing/process_2_flatten.vrl"
-      - "./processing/process_3_timestamp.vrl"
-      - "./processing/process_4_spell_fix.vrl"
-      - "./processing/process_5_snakecase.vrl"
+      - "./processing/process_1_ingest.vrl"
+      - "./processing/process_2_table.vrl"
+      - "./processing/process_3_flatten.vrl"
+      - "./processing/process_4_timestamp.vrl"
+      - "./processing/process_5_spell_fix.vrl"
+      - "./processing/process_6_snakecase.vrl"
+    drop_on_error: true
   re_add_table:
     type: remap
     inputs: ["process"]

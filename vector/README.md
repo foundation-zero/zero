@@ -19,16 +19,17 @@ three separate pipelines through it:
 
 The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 `domestic/+`, `hull-temperature/...`, `termodinamica/#`, `sail-systems/#`,
-`power-tags/#`), then runs each message through six steps in `processing/`:
+`power-tags/#`), then runs each message through the steps in `processing/process-*.vrl`:
 
 | Step | File | What it does |
 | ------ | ------ | -------------- |
 | 0 | `process_0_consts.vrl` | Lookup tables that map a topic to its Greptime table name. **Auto-generated** by `zero-data`. |
-| 1 | `process_1_table.vrl` | Picks the table name for this message from those lookups. |
-| 2 | `process_2_flatten.vrl` | Flattens nested JSON into flat `a__b` keys. |
-| 3 | `process_3_timestamp.vrl` | Finds the newest `*TimeStamp` field, or falls back to "now". |
-| 4 | `process_4_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
-| 5 | `process_5_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
+| 1 | `process_1_ingest.vrl` | Parses the JSON message while preserving its source metadata. |
+| 2 | `process_2_table.vrl` | Picks the table name for this message from those lookups. |
+| 3 | `process_3_flatten.vrl` | Flattens nested JSON into flat `a__b` keys. |
+| 4 | `process_4_timestamp.vrl` | Finds the newest `*TimeStamp` field, or falls back to "now". |
+| 5 | `process_5_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
+| 6 | `process_6_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
