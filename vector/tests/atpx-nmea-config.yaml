@@ -32,10 +32,14 @@ transforms:
     inputs: ["atpx_nmea_route"]
     source: |
       del(.timestamp)
-
+  re_add_table:
+    type: remap
+    inputs: ["strip_timestamp"]
+    source: |
+      .table = %table
 sinks:
   output:
     type: console
-    inputs: ["strip_timestamp"]
+    inputs: ["re_add_table"]
     encoding:
       codec: json

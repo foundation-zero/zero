@@ -9,7 +9,7 @@ sources:
       codec: json
     streaming:
       respawn_on_exit: false
-  
+
 transforms:
   take_msg:
     type: remap
@@ -30,10 +30,14 @@ transforms:
       - "./processing/3_timestamp.vrl"
       - "./processing/4_spell_fix.vrl"
       - "./processing/5_snakecase.vrl"
-
+  re_add_table:
+    type: remap
+    inputs: ["process"]
+    source: |
+      .table = %table
 sinks:
   output:
     type: console
-    inputs: ["process"]
+    inputs: ["re_add_table"]
     encoding:
       codec: json

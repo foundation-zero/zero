@@ -128,7 +128,7 @@ sinks:
     inputs: ["process", "atpx_nmea_route"]
     endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
     dbname: "public"
-    table: "{{ table }}"
+    table: "{{ %table }}"
     extra_params:
       custom_time_index: "timestamp;datestr;%+"
   # All ATPX messages land in a single table; a pivot view produces the
