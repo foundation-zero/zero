@@ -139,6 +139,21 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const heat = useRandomizedNumber(0, 100);
     return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
   },
+  [SensorComponentType.HvacExchanger]: () => {
+    const deltaT = useRandomizedNumber(-20, 20);
+    const heat = useRandomizedNumber(0, 100);
+    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+  },
+  [SensorComponentType.HeatPump]: () => {
+    const deltaT = useRandomizedNumber(-20, 20);
+    const heat = useRandomizedNumber(0, 100);
+    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+  },
+  [SensorComponentType.Pvt]: () => {
+    const deltaT = useRandomizedNumber(-20, 20);
+    const heat = useRandomizedNumber(0, 100);
+    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+  },
   [SensorComponentType.DeltaT]: () => {
     const deltaT = useRandomizedNumber(-20, 20);
     return computed(() => ({ deltaT: stamp(deltaT) }));

@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     flow: getField(SensorComponentType.Flow, "dhw", "consumersFlowDhw"),
     incoming: getField(SensorComponentType.Temperature, "dhw", "consumersTemperatureDhwSupply"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "consumersTemperatureDhwReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
+    heatExchanger: getField(SensorComponentType.HeatPump, "dhw", "dhwHeatpump"),
   },
   get tooltip() {
     return tooltip(this.source);

@@ -11,7 +11,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "fwd" },
       parameters: {},
-      source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainFwd"),
+      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainFwd"),
       sensors: {
         flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowMainFwdStrings"),
         incoming: getField(
@@ -37,7 +37,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "aft" },
       parameters: {},
-      source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainAft"),
+      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainAft"),
 
       sensors: {
         flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowMainAftStrings"),
@@ -64,7 +64,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "owners" },
       parameters: {},
-      source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtOwners"),
+      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtOwners"),
 
       sensors: {
         flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowOwnersStrings"),

@@ -32,7 +32,7 @@ const controlValues = toRef(props, "values");
 const { submit, isSubmitting, error, flow } = controlValuesForm(
   props.simulation,
   MutationType.Simulation,
-  "BoundaryInputType!",
+  "FlowBoundaryInputType!",
   props.componentName,
   controlValues,
   ["flow"],

@@ -8,7 +8,13 @@ import ValueListItem from "./ValueListItem.vue";
 
 const props = defineProps<{
   value?: number;
-  source: ModuleField<SensorComponentType.DeltaT | SensorComponentType.HeatExchanger>;
+  source: ModuleField<
+    | SensorComponentType.DeltaT
+    | SensorComponentType.HeatExchanger
+    | SensorComponentType.HvacExchanger
+    | SensorComponentType.HeatPump
+    | SensorComponentType.Pvt
+  >;
   class?: HTMLAttributes["class"];
 }>();
 

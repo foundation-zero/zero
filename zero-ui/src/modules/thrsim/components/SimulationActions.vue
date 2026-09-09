@@ -8,18 +8,26 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { useSimulationStore } from "@/modules/thrsim/stores/simulation";
 import { tScoped } from "@common/lib/utils";
 import { RiPauseLine, RiPlayLine, RiRestartLine, RiSettingsLine } from "@remixicon/vue";
 import { useLocalStorage, watchDebounced } from "@vueuse/core";
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
 
-const { pause, play, step } = useSimulationStore();
-const { isRunning, isAvailable, isProcessing, isStepping } = toRefs(useSimulationStore());
+const simulationStore = useSimulationStore();
+const { pause, play, step, setAdvisory } = simulationStore;
+const { isRunning, isAvailable, isProcessing, isStepping, isAdvisory, activeSimulationType } =
+  toRefs(simulationStore);
 
 const $t = tScoped("thrs.components.simulationActions");
 
 const playbackRate = useLocalStorage("simulation:playbackRate", 1.0);
+
+const advisory = computed({
+  get: () => isAdvisory.value,
+  set: (value: boolean) => setAdvisory(value),
+});
 
 const toggle = async () => {
   if (isAvailable.value) {
@@ -95,5 +103,14 @@ watchDebounced(
     >
       <RiRestartLine />
     </Button>
+
+    <label class="ml-2 flex items-center gap-2 text-sm capitalize">
+      {{ $t("advisory") }}
+      <Switch
+        :model-value="advisory"
+        :disabled="isProcessing || !activeSimulationType"
+        @update:model-value="advisory = $event"
+      />
+    </label>
   </div>
 </template>

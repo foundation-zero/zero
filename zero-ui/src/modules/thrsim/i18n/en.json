@@ -51,6 +51,7 @@
         "run": "Run",
         "pause": "Pause",
         "step": "Step",
+        "advisory": "Advisory",
         "tuning": "Tuning",
         "description": "Control the simulation playback and speed."
       },

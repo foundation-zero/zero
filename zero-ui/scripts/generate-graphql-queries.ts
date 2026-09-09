@@ -120,6 +120,9 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     LevelSwitch: ["empty"],
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
+    HvacExchanger: ["heat", "deltaT"],
+    HeatPump: ["heat", "deltaT"],
+    Pvt: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],
     AdsorptionChiller: ["operating", "noError", "freeCooling"],
     Brightloop: ["active"],
@@ -140,6 +143,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     HeatSource: ["heatFlow"],
     HvacExchanger: ["heatFlow", "maximumTemperature"],
     AmcsControlMode: ["mode"],
+    AdsorptionChiller: ["freeCooling"],
   },
 
   // Parameter fields (parameters are flat values, no nested fields)

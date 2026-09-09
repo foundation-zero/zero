@@ -9,7 +9,9 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 import { defineStore } from "pinia";
 import { computed, ref, toRefs } from "vue";
+import { SIMULATION_INPUT_QUERIES } from "../lib/consts";
 import { SIMULATION_TYPES } from "../lib/consts.types";
+import { AmcsControlMode } from "../types";
 import { useThrsHistory } from "./history";
 
 export type SimulationStatus = {
@@ -64,6 +66,42 @@ export const useSimulationStore = defineStore("simulation", () => {
   const isRunning = computed(() => status.value === "running");
   const isStepping = computed(() => status.value === "stepping");
 
+  const advisoryError = ref<string | null>(null);
+  const isAdvisory = computed(
+    () =>
+      (data.value?.simulation?.inputs as { mode?: { mode?: { value?: string } } } | undefined)?.mode
+        ?.mode?.value === AmcsControlMode.External,
+  );
+
+  const setAdvisory = async (enabled: boolean) => {
+    const type = activeSimulationType.value;
+    if (!type || isProcessing.value) return;
+    isProcessing.value = true;
+    advisoryError.value = null;
+    try {
+      const mutation = `${type}SimulationSetMode`;
+      const query = `mutation ($input: AmcsControlModeInputType!) {
+      ${mutation}(value: $input) {
+        ${SIMULATION_INPUT_QUERIES[type]}
+      }
+    }`;
+      const input = { mode: enabled ? AmcsControlMode.External : AmcsControlMode.Manual };
+      const history = useThrsHistory();
+      const result = await history.mutate(query, { input });
+      const resultError = (result as { error?: { message?: string } })?.error;
+      if (resultError) {
+        advisoryError.value = resultError.message ?? "Failed to submit";
+        return;
+      }
+      await history.refresh();
+      await updateStatus();
+    } catch (err) {
+      advisoryError.value = err instanceof Error ? err.message : "Failed to submit";
+    } finally {
+      isProcessing.value = false;
+    }
+  };
+
   type MutationFnParams = [query: TypedDocumentNode, onSuccess: PromiseFn];
 
   function mutationFn(...args: MutationFnParams): () => Promise<Maybe<OperationResult>>;
@@ -92,6 +130,9 @@ export const useSimulationStore = defineStore("simulation", () => {
     pause: mutationFn(pause, updateStatus),
     play: mutationFn<number>(play, updateStatus),
     step: mutationFn<number>(step, updateStatus),
+    setAdvisory,
+    isAdvisory,
+    advisoryError,
     status: statusQuery.data,
     isAvailable,
     isRunning,
