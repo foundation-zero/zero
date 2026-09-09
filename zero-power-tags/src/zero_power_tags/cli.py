@@ -2,9 +2,10 @@ import asyncio
 import json
 import logging
 import re
-from typing import Literal
+from typing import Any, Literal
 
 from faststream import FastStream
+from faststream.mqtt import MQTTBroker, ReconnectConfig
 from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
@@ -148,7 +149,16 @@ def local_topic_groups(
 
 class RunCmd(MqttSettings):
     modbus_port: int = 502
-    modbus_probe_interval: int = 10
+    modbus_probe_interval: int = 1
+
+    def make_broker(self, **extra: Any) -> MQTTBroker:
+        # Reconnect indefinitely (the default 5 attempts leaves us dark after a
+        # blip); ping every 15s, since 60s races RabbitMQ's keepalive window.
+        return super().make_broker(
+            reconnect=ReconnectConfig(max_attempts=None),
+            keepalive=15,
+            **extra,
+        )
 
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
@@ -164,6 +174,10 @@ class RunCmd(MqttSettings):
                 publisher,
                 endpoint.spec.topics,
                 self.modbus_probe_interval,
+                # 1s cadence: cap each read below the interval, and drop rather
+                # than retry a failed publish (make_broker reconnects on its own).
+                modbus_timeout=0.5,
+                drop_failed_publishes=True,
             )
             for endpoint in endpoints
         ]

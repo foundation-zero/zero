@@ -23,8 +23,8 @@ class MqttSettings(BaseSettings):
     mqtt_username: str | None = None
     mqtt_password: str | None = None
 
-    def make_broker(self) -> MQTTBroker:
-        kwargs: dict[str, Any] = {}
+    def make_broker(self, **extra: Any) -> MQTTBroker:
+        kwargs: dict[str, Any] = dict(extra)
         if self.mqtt_username and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
         return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)

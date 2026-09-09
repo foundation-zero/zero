@@ -44,6 +44,7 @@ grouped_topics = [
   "marpower/hydrogeneration/",
   "marpower/pvt/",
   "marpower/thruster/",
+  "power-tags/",
   "termodinamica/ac/"
 ]
 
