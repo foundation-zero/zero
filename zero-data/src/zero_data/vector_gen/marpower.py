@@ -35,7 +35,7 @@ class ThrsTopicMapping(BaseModel):
 
 class MarpowerVectorGenerator:
     def __init__(self, vector_path: Path):
-        self._vector_path = vector_path / "processing/0_consts.vrl"
+        self._vector_path = vector_path / "processing/process_0_consts.vrl"
 
     def generate(self, io_result: IOResult):
         """Generate the VRL file for the given topics."""

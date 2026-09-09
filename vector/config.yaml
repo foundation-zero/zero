@@ -73,12 +73,12 @@ transforms:
     type: remap
     inputs: ["mqtt"]
     files:
-      - "/etc/vector/0_consts.vrl"
-      - "/etc/vector/1_table.vrl"
-      - "/etc/vector/2_flatten.vrl"
-      - "/etc/vector/3_timestamp.vrl"
-      - "/etc/vector/4_spell_fix.vrl"
-      - "/etc/vector/5_snakecase.vrl"
+      - "/etc/vector/process_0_consts.vrl"
+      - "/etc/vector/process_1_table.vrl"
+      - "/etc/vector/process_2_flatten.vrl"
+      - "/etc/vector/process_3_timestamp.vrl"
+      - "/etc/vector/process_4_spell_fix.vrl"
+      - "/etc/vector/process_5_snakecase.vrl"
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true

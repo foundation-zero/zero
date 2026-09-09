@@ -3,7 +3,7 @@ sources:
     type: exec
     command:
       - "cat"
-      - "tests/test-cases.json"
+      - "tests/process-test-cases.json"
     mode: streaming
     decoding:
       codec: json
@@ -24,12 +24,12 @@ transforms:
     type: remap
     inputs: ["take_msg"]
     files:
-      - "./processing/0_consts.vrl"
-      - "./processing/1_table.vrl"
-      - "./processing/2_flatten.vrl"
-      - "./processing/3_timestamp.vrl"
-      - "./processing/4_spell_fix.vrl"
-      - "./processing/5_snakecase.vrl"
+      - "./processing/process_0_consts.vrl"
+      - "./processing/process_1_table.vrl"
+      - "./processing/process_2_flatten.vrl"
+      - "./processing/process_3_timestamp.vrl"
+      - "./processing/process_4_spell_fix.vrl"
+      - "./processing/process_5_snakecase.vrl"
   re_add_table:
     type: remap
     inputs: ["process"]
