@@ -485,6 +485,9 @@ type DhwParametersType {
   fillingTemperatureSetpoint: Float!
   minimumTankLevel: Float!
   maximumTankLevel: Float!
+
+  """Level above which a non-filling tank counts as full"""
+  fullLevelLowerBand: Float!
   tank1Enabled: Boolean!
   tank2Enabled: Boolean!
   tank3Enabled: Boolean!
@@ -934,6 +937,7 @@ type Mutation {
   dhwParameterSetFillingTemperatureSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumTankLevel(value: Float!): DhwParametersType!
   dhwParameterSetMaximumTankLevel(value: Float!): DhwParametersType!
+  dhwParameterSetFullLevelLowerBand(value: Float!): DhwParametersType!
   dhwParameterSetTank1Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank2Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank3Enabled(value: Boolean!): DhwParametersType!

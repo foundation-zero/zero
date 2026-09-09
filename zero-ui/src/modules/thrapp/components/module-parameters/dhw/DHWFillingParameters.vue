@@ -20,6 +20,9 @@ const t = tScoped("thrapp.parameters.dhw");
       <ParameterItems.Level :source="getField(ParametersType.Level, 'dhw', 'maximumTankLevel')">
         {{ t("items.maximumTankLevel") }}
       </ParameterItems.Level>
+      <ParameterItems.Level :source="getField(ParametersType.Level, 'dhw', 'fullLevelLowerBand')">
+        {{ t("items.fullTankLevel") }}
+      </ParameterItems.Level>
       <ParameterItems.Temperature
         :source="getField(ParametersType.Temperature, 'dhw', 'fillingTemperatureSetpoint')"
       >

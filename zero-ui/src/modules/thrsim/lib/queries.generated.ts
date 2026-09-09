@@ -747,6 +747,7 @@ export const DHW_PARAMETERS_QUERY = `
   fillingTemperatureSetpoint
   minimumTankLevel
   maximumTankLevel
+  fullLevelLowerBand
   tank1Enabled
   tank2Enabled
   tank3Enabled

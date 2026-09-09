@@ -927,6 +927,9 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   maximumTankLevel: {
     componentType: ParametersType.Level,
   },
+  fullLevelLowerBand: {
+    componentType: ParametersType.Level,
+  },
   tank1Enabled: {
     componentType: ParametersType.Enabled,
   },
