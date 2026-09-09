@@ -14,14 +14,14 @@ class Config(BaseSettings):
     pg_password: str | None = None
     pg_db: str | None = None
 
-    mqtt_host: str
-    mqtt_port: int
-    mqtt_devices_topic_prefix: str
-    mqtt_controller_topic_prefix: str
-    mqtt_controller_topic_suffix: str
-    mqtt_simulator_topic_prefix: str
-    mqtt_simulator_topic_suffix: str
-    mqtt_control_topic_suffix: str
+    mqtt_host: str = "localhost"
+    mqtt_port: int = 1883
+    mqtt_devices_topic_prefix: str = "simulation"
+    mqtt_controller_topic_prefix: str = "thrs/controller"
+    mqtt_controller_topic_suffix: str = "set"
+    mqtt_simulator_topic_prefix: str = "thrs/simulator"
+    mqtt_simulator_topic_suffix: str = "set"
+    mqtt_control_topic_suffix: str = "Command"
 
     liveness_path: Path | None = None
 

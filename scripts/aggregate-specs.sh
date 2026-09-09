@@ -43,6 +43,16 @@ if ! (cd "$REPO_ROOT/zero-hull-temperature" && uv run python -m zero_hull_temper
   fail_or_warn "hull-temperature" || exit 1
 fi
 
+# TODO: remove enabled=false once zero-mqtt-graphql can handle thrs-control spec
+THRS_CONTROL_ENABLED=false
+
+echo "  -> thrs-control"
+if [ "$THRS_CONTROL_ENABLED" = "true" ]; then
+  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi) > "$SPECS_DIR/thrs-control.json"; then
+    fail_or_warn "thrs-control" || exit 1
+  fi
+fi
+
 if [ "$warnings" -gt 0 ]; then
   echo "Done with $warnings warning(s). Specs in $SPECS_DIR/" >&2
   ls -la "$SPECS_DIR/" >&2
