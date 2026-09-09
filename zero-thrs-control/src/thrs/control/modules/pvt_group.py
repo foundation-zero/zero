@@ -173,6 +173,10 @@ class PvtGroupControl(
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (self._current_values, PvtGroupControllerState())
 
+    def reset(self) -> None:
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers()
+
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
             sensor_values.max_temperature_strings.temperature.value is not None

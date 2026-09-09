@@ -358,9 +358,7 @@ async def test_control_runner_ticks_and_uses_channels():
     assert alarms.check.call_count == 2
 
     assert control.update_parameters.call_count == 2
-    # Manual controls no longer track the automatic output: engaging automatic
-    # rebuilds a fresh control, and the bumpless return to manual comes from
-    # the actuated snap on entering manual instead.
+    # Engaging automatic resets the automatic control, and return to manual usese actuated values
     assert module._control._manual_control._control_values == control_values_new
 
     assert channels.send_control_values.await_count == 2

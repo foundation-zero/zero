@@ -390,6 +390,13 @@ class ThrustersControl(
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
+    def reset(self) -> None:
+        self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers(self._parameters)
+
     @StateLogger.log_warnings
     def control(
         self, sensor_values: ThrustersSensorValues

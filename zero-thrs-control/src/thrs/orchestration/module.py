@@ -75,11 +75,6 @@ class Module[
             ManualControl(control.initial()[0]),
             control,
             name=name,
-            automatic_factory=lambda parameters, time_fn, state_logger: (  # noqa: PLW0108
-                description.control(parameters, time_fn, state_logger)
-            ),
-            time_fn=time_fn,
-            state_logger=state_logger,
         )
         self._alarms = description.alarms()
         self._channels = channels

@@ -9,10 +9,7 @@ from tests.orchestration.simples import (
     SimpleParameters,
     simple_control_values,
 )
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingService,
-    MachineStateLoggingServiceNoop,
-)
+from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.control.switching import Switching
@@ -65,11 +62,6 @@ def switching() -> Callable[[float], Switching]:
             manual,
             automatic,
             name="simple",
-            automatic_factory=lambda parameters, time_fn, state_logger: SimpleControl(  # noqa: PLW0108
-                parameters, time_fn, state_logger
-            ),
-            time_fn=datetime.now,
-            state_logger=MachineStateLoggingServiceNoop(),
         )
 
     return _make

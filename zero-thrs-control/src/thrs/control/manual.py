@@ -56,3 +56,6 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
 
     def update_parameters(self, parameters: EmptyParameters):
         pass
+
+    def reset(self) -> None:
+        pass
