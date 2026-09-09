@@ -98,6 +98,7 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
         return cast(MeasurementUnit | None, self._pid._last_error)  # type: ignore
 
     def values(self) -> PidControllerValues:
+        self._sync_parameters()
         timestamp = self._time()
         return PidControllerValues(
             setpoint=Stamped(value=self.setpoint, timestamp=timestamp),

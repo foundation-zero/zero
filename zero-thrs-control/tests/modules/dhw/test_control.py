@@ -342,9 +342,7 @@ def test_minimum_pump_dutypoint_rejects_below_pump_floor(
     parameters: DhwParameters,
 ):
     with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
-        DhwParameters(
-            **{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05}
-        )
+        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})
 
 
 def test_reset_restores_initial_control_state(

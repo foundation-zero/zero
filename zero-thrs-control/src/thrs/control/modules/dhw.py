@@ -114,9 +114,7 @@ class DhwParameters(ThrsValues):
                 "Maximum tank level must be greater than minimum tank level"
             )
         if self.full_level_lower_band > self.maximum_tank_level:
-            raise ValueError(
-                "Full level lower band must not exceed maximum tank level"
-            )
+            raise ValueError("Full level lower band must not exceed maximum tank level")
         if self.minimum_tank_level > self.full_level_lower_band:
             raise ValueError(
                 "Full level lower band must not be below minimum tank level"
@@ -253,9 +251,7 @@ class Tank:
             return False
         return self._level < parameters.minimum_tank_level
 
-    def standby(
-        self, parameters: DhwParameters, is_filling: bool = False
-    ) -> bool:
+    def standby(self, parameters: DhwParameters, is_filling: bool = False) -> bool:
         return (
             self._enabled
             and not is_filling
@@ -277,9 +273,7 @@ class Tank:
             if valve.setpoint.value != Valve.CLOSED:
                 valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
-    def boostable(
-        self, parameters: DhwParameters, is_filling: bool = False
-    ) -> bool:
+    def boostable(self, parameters: DhwParameters, is_filling: bool = False) -> bool:
         return (
             self._enabled
             and not is_filling
@@ -295,9 +289,7 @@ class Tank:
         if self._inlet.setpoint.value != Valve.CLOSED:
             self._inlet.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
-    def fillable(
-        self, parameters: DhwParameters, is_filling: bool = False
-    ) -> bool:
+    def fillable(self, parameters: DhwParameters, is_filling: bool = False) -> bool:
         if is_filling or self._level is None:
             return False
         return self._enabled and not self.level_full(parameters)
@@ -401,9 +393,9 @@ class TanksController:
             # flow continues to the anticipated maximum and the next tank is
             # not selected into the overlap. The FILLING label therefore
             # persists while the valve turns.
-            if self._filling_tank.level_full(
-                parameters
-            ) and self._inlets_closed(sensor_values):
+            if self._filling_tank.level_full(parameters) and self._inlets_closed(
+                sensor_values
+            ):
                 self._filling_tank = None
 
         if self._filling_tank is None:
@@ -803,10 +795,9 @@ class DhwControl(
     ) -> tuple[DhwControlValues, DhwControllerState]:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
-        self._tanks_controller.apply_boosting(
-            boosting_available=self.mode.is_boosting
-        )
+        self._tanks_controller.apply_boosting(boosting_available=self.mode.is_boosting)
         self._enforce_boosting_source_valves()
+        self._enforce_heatpump_setpoint()
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
@@ -1064,6 +1055,13 @@ class DhwControl(
         self._current_values.dhw_heatpump.temperature_setpoint = Stamped(
             value=self._parameters.heatpump_temperature_setpoint, timestamp=self._time()
         )
+
+    def _enforce_heatpump_setpoint(self):
+        if self.mode.is_boosting_heatpump:
+            self._current_values.dhw_heatpump.temperature_setpoint = Stamped(
+                value=self._parameters.heatpump_temperature_setpoint,
+                timestamp=self._time(),
+            )
 
     def _deactivate_heatpump(self, sensor_values: DhwSensorValues):
         self._current_values.dhw_heatpump.on = Stamped(

@@ -287,9 +287,10 @@ def test_fresh_takeover_selects_filling_and_sweeps(
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
     assert tanks_controller._filling_tank is tanks_controller._tanks[0]
-    assert tanks_controller.tank_state(
-        tanks_controller._tanks[0], parameters
-    ).value == "filling"
+    assert (
+        tanks_controller.tank_state(tanks_controller._tanks[0], parameters).value
+        == "filling"
+    )
     assert tanks_controller._tanks[0]._inlet.setpoint.value == 1.0
     assert tanks_controller._tanks[0]._outlet.setpoint.value == 0.0
     # tank2 is full+hot so it becomes in-use with its outlet open; the rest
@@ -318,9 +319,10 @@ def test_fresh_takeover_selects_boosting_immediately(
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
     assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
-    assert tanks_controller.tank_state(
-        tanks_controller._tanks[2], parameters
-    ).value == "boosting"
+    assert (
+        tanks_controller.tank_state(tanks_controller._tanks[2], parameters).value
+        == "boosting"
+    )
     assert tanks_controller._tanks[2]._boosting_supply_valve.setpoint.value == 1.0
     assert tanks_controller._tanks[2]._boosting_return_valve.setpoint.value == 1.0
     for tank in tanks_controller._tanks[:2]:
