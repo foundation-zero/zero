@@ -36,6 +36,8 @@ class ModbusBridge:
         broker error (see ``_TRANSIENT_PUBLISH_ERRORS``); the default raises."""
         self._reader = reader
         self._publisher = publisher
+        if probe_interval <= 0:
+            raise ValueError("probe_interval must be > 0")
         self._probe_interval = probe_interval
         self._drop_failed_publishes = drop_failed_publishes
 
@@ -73,6 +75,8 @@ class ModbusBridge:
         """
         client_kwargs: dict[str, Any] = {"auto_open": False}
         if modbus_timeout is not None:
+            if modbus_timeout <= 0:
+                raise ValueError("modbus_timeout must be > 0")
             client_kwargs["timeout"] = modbus_timeout
         reader = ModbusReader(ModbusClient(host, port, **client_kwargs), topics)
         return cls(

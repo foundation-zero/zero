@@ -154,11 +154,10 @@ class RunCmd(MqttSettings):
     def make_broker(self, **extra: Any) -> MQTTBroker:
         # Reconnect indefinitely (the default 5 attempts leaves us dark after a
         # blip); ping every 15s, since 60s races RabbitMQ's keepalive window.
-        return super().make_broker(
-            reconnect=ReconnectConfig(max_attempts=None),
-            keepalive=15,
-            **extra,
-        )
+        kwargs: dict[str, Any] = dict(extra)
+        kwargs.setdefault("reconnect", ReconnectConfig(max_attempts=None))
+        kwargs.setdefault("keepalive", 15)
+        return super().make_broker(**kwargs)
 
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
