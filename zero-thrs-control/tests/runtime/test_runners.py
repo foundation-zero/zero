@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector
@@ -42,6 +43,15 @@ class ModelDumpable:
 
     def model_dump(self, mode: str = "json") -> dict:
         return {}
+
+
+def _mock_description(control: Mock, alarms: Mock) -> Mock:
+    """Stand-in ModuleDescription whose factories return the same mock control
+    and alarms, so engaging automatic rebuilds without needing real classes."""
+    description = Mock()
+    description.control.return_value = control
+    description.alarms.return_value = alarms
+    return description
 
 
 def test_simulation_test_runner():
@@ -190,7 +200,14 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     alarms = Mock()
     alarms.check.return_value = []
 
-    module = Module("module", control, alarms, control_channels)
+    module = Module(
+        "module",
+        description=_mock_description(control, alarms),
+        parameters=cast(Any, parameters),
+        channels=control_channels,
+        time_fn=datetime.now,
+        state_logger=MachineStateLoggingServiceNoop(),
+    )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
     simulation_module = SimulationUnit(simulation, simulation_channels)
@@ -317,7 +334,14 @@ async def test_control_runner_ticks_and_uses_channels():
     alarms = Mock()
     alarms.check.return_value = []
 
-    module = Module("module", control, alarms, channels)
+    module = Module(
+        "module",
+        description=_mock_description(control, alarms),
+        parameters=cast(Any, parameters),
+        channels=channels,
+        time_fn=datetime.now,
+        state_logger=MachineStateLoggingServiceNoop(),
+    )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
     persistence = PersistManager(NoopPersistentEngine())
@@ -334,8 +358,10 @@ async def test_control_runner_ticks_and_uses_channels():
     assert alarms.check.call_count == 2
 
     assert control.update_parameters.call_count == 2
-    # Manual controls track the automatic output so switching to manual is bumpless
-    assert module._control._manual_control._control_values == control_values
+    # Manual controls no longer track the automatic output: engaging automatic
+    # rebuilds a fresh control, and the bumpless return to manual comes from
+    # the actuated snap on entering manual instead.
+    assert module._control._manual_control._control_values == control_values_new
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2
@@ -354,8 +380,8 @@ async def test_control_runner_ticks_and_uses_channels():
     )
     channels.send_parameters.assert_has_awaits([call(parameters), call(parameters)])
     channels.send_manual_control.assert_has_awaits(
-        # Manual controls track the automatic output so switching is bumpless
-        [call(control_values), call(control_values)]
+        # Manual holds the UI value; automatic output is no longer tracked into it
+        [call(control_values_new), call(control_values_new)]
     )
 
 

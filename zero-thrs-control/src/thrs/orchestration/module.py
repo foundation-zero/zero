@@ -63,15 +63,25 @@ class Module[
     def __init__(
         self,
         name: str,
-        control: "Control[S, C, P, M, CS]",
-        alarms: "BaseAlarms[S, C, P]",
+        description: ModuleDescription[S, C, P, M, CS],
+        parameters: P,
         channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
+        time_fn: "Callable[[], datetime]",
+        state_logger: StateLogger,
     ):
         self._name = name
+        control = description.control(parameters, time_fn, state_logger)
         self._control = Switching(
-            ManualControl(control.initial()[0]), control, name=name
+            ManualControl(control.initial()[0]),
+            control,
+            name=name,
+            automatic_factory=lambda parameters, time_fn, state_logger: (  # noqa: PLW0108
+                description.control(parameters, time_fn, state_logger)
+            ),
+            time_fn=time_fn,
+            state_logger=state_logger,
         )
-        self._alarms = alarms
+        self._alarms = description.alarms()
         self._channels = channels
         self._active_alarms: dict[str, Alarm] = {}
 

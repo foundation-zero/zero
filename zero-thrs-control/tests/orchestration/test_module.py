@@ -126,8 +126,13 @@ async def test_tick_publishes_actuated_echo_when_not_advisory(
     assert mock_channels.send_manual_control.await_args == mock.call(actuated)
 
 
-async def test_automatic_control_sends_manual_as_first_value(
-    advisory_sensor_values, manual_values, mock_channels, mock_control, module_factory
+async def test_automatic_control_rebuilds_and_returns_first_control_tick(
+    advisory_sensor_values,
+    manual_values,
+    mock_channels,
+    mock_control,
+    mock_description,
+    module_factory,
 ):
     initial = simple_control_values(flow=1.0)
     actuated = simple_control_values(flow=6.0)
@@ -136,13 +141,14 @@ async def test_automatic_control_sends_manual_as_first_value(
     mock_channels.get_actuated_control_values.return_value = actuated
 
     module = module_factory()
+    assert mock_description.control.call_count == 1  # initial build
 
     manual_control_values = await module.tick(manual_values)
     module.set_automation_mode(AutomationMode(mode="automatic"))
     automatic_control_values = await module.tick(advisory_sensor_values)
 
     assert manual_control_values == actuated
-    mock_control.update_controls.assert_called_once_with(actuated)
+    assert mock_description.control.call_count == 2
     assert automatic_control_values == actuated
     assert automatic_control_values != initial
 
