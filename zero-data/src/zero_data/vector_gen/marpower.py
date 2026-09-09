@@ -20,6 +20,7 @@ EXTRA_GROUPED_TOPICS = [
     "marpower/450000-dynamic-conv-ps/",
     "marpower/450000-dynamic-conv-sb/",
     "termodinamica/ac/",
+    "power-tags/",
 ]
 
 

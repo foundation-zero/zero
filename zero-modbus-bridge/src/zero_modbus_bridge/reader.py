@@ -34,10 +34,22 @@ class ModbusReader:
         return bool(self._modbus.open())
 
     def read_all(self) -> Iterator[tuple[str, Any]]:
-        """Read every topic once and yield ``(topic_name, payload)``."""
-        if not self._modbus.is_open:
-            raise ValueError("Modbus connection is not open")
+        """Read every topic once and yield ``(topic_name, payload)``.
+
+        Ensure the socket is open before each topic; a dead unit can time out and
+        drop the connection, so we may need to reopen between topics to keep the
+        rest of the cycle readable.
+        """
         for topic in self._topics:
+            if not self.ensure_open():
+                # A failed reopen means the whole gateway is down, so the rest
+                # would fail too; stop rather than warn once per remaining topic.
+                logger.warning(
+                    "Modbus connection unavailable - skipping remaining topics "
+                    "this probe (at %s)",
+                    topic.topic,
+                )
+                break
             self._modbus.unit_id = topic.unit_id
             try:
                 payload = self.read_topic(topic)

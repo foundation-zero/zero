@@ -79,7 +79,9 @@ def _read_breakers(
         if not code or str(code).strip() == "CODE":
             return None
         code = str(code).strip()
-        consumer = str(df[consumer_col][index]).strip() if df[consumer_col][index] else ""
+        consumer = (
+            str(df[consumer_col][index]).strip() if df[consumer_col][index] else ""
+        )
         patched = patches.get(f"{panel}/{code}", {}).get("_consumer") or patches.get(
             code, {}
         ).get("_consumer")

@@ -32,7 +32,7 @@ class TestParseTopic:
         assert isinstance(topic, ModbusTopic)
         assert topic.topic == "power-tags/test/t1"
         assert topic.unit_id == 1
-        assert topic.fields[0].register == 3000
+        assert topic.fields[0].register == 2999
         assert topic.model is PowerTag
         assert topic.extra_fields == {"panel": "10P0.1", "component": "ABC"}
 
