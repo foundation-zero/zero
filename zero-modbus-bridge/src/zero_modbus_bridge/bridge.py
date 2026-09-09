@@ -96,16 +96,15 @@ class ModbusBridge:
             await asyncio.sleep(max(0.0, next_probe_at - loop.time()))
 
     async def run_once(self) -> None:
-        # Blocking socket reads: off-thread so a slow gateway can't starve the
-        # loop and delay MQTT keepalives (which would drop the connection).
-        if not await asyncio.to_thread(self._reader.ensure_open):
+        # One worker-thread call per probe: keeps the loop responsive to MQTT
+        # keepalives, and the client on one thread (pyModbusTCP isn't thread-safe).
+        readings = await asyncio.to_thread(self._probe)
+        if readings is None:
             logger.warning("Modbus connection not available - skipping probe")
             return
         dropped = 0
         last_error: BaseException | None = None
-        for topic_name, payload in await asyncio.to_thread(
-            list, self._reader.read_all()
-        ):
+        for topic_name, payload in readings:
             try:
                 await self._publisher.publish(topic_name, payload)
             except _TRANSIENT_PUBLISH_ERRORS as exc:
@@ -121,3 +120,14 @@ class ModbusBridge:
                 dropped,
                 last_error,
             )
+
+    def _probe(self) -> list[tuple[str, Any]] | None:
+        """Run the blocking Modbus probe; ``None`` means the gateway is down.
+
+        ``read_all()`` reopens per topic, so the up-front ``ensure_open`` only
+        tells a dead gateway (skip the probe) from a mid-cycle drop (skip the
+        rest); it doesn't re-dial a live socket.
+        """
+        if not self._reader.ensure_open():
+            return None
+        return list(self._reader.read_all())
