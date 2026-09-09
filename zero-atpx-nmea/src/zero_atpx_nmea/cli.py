@@ -25,9 +25,7 @@ class AsyncApiCmd(BaseModel):
 
     def cli_cmd(self) -> None:
         print(
-            json.dumps(
-                build_spec(include_input_channel=not self.output_only), indent=2
-            )
+            json.dumps(build_spec(include_input_channel=not self.output_only), indent=2)
         )
 
 
