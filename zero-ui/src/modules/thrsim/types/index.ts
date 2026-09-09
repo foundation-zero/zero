@@ -105,6 +105,7 @@ export type SensorValueFields =
   | keyof DeltaTSensor
   | keyof HeatExchangerSensor
   | keyof Valve
+  | keyof PcmSensor
   | keyof LevelSwitchSensor;
 
 export type SensorFields = {
@@ -185,6 +186,8 @@ export type ModeSelector<T> = {
 
 export type PcmSensor = {
   charged: Stamped<boolean>;
+  charge: Stamped<number>;
+  deltaT: Stamped<number>;
 };
 
 export type LevelSensor = {

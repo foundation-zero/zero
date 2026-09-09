@@ -216,6 +216,18 @@
           "heating-medium": "Heating"
         }
       },
+      "pcm": {
+        "modes": {
+          "charging": "Charging",
+          "discharging": "Discharging",
+          "idle": "Idle"
+        },
+        "states": {
+          "empty": "Empty",
+          "full": "Full",
+          "half-full": "Half full"
+        }
+      },
       "dhw": {
         "assets": {
           "heatPumpTitle": "Heat pump",

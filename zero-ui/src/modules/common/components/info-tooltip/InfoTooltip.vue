@@ -2,7 +2,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { HTMLAttributes } from "vue";
 import { cn } from "../../lib/utils";
-import { InfoIcon } from "../icons";
+import { ZiInfoIcon } from "../icons";
 
 const props = defineProps<{ iconClass?: HTMLAttributes["class"] }>();
 const isOpen = defineModel<boolean>("open", { default: false });
@@ -17,7 +17,7 @@ const isOpen = defineModel<boolean>("open", { default: false });
         aria-label="More information"
       >
         <slot name="trigger" />
-        <InfoIcon :icon-class="cn('size-5', props.iconClass)" />
+        <ZiInfoIcon :icon-class="cn('size-5', props.iconClass)" />
       </button>
     </PopoverTrigger>
     <PopoverContent side="bottom">

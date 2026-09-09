@@ -21,8 +21,9 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
   <g>
     <LoopCircuitInstance
       x="0"
-      y="25"
+      y="0"
       force-height
+      height="150"
       v-bind="circuits['highTempLoop']"
     />
     <LoopCircuitInstance

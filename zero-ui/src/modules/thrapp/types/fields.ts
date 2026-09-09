@@ -54,6 +54,7 @@ export type CustomFields<Fields extends Record<MimicComponentType, Record<string
   Fields;
 
 export type SensorFieldDefinitions = SensorFields<{
+  [MimicComponentType.Pcm]: EmptyObject;
   [MimicComponentType.BoilerTank]: {
     level: SensorComponentType.Level;
     temperature: SensorComponentType.Temperature;
@@ -112,6 +113,7 @@ export type SensorFieldDefinitions = SensorFields<{
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
+  [MimicComponentType.Pcm]: EmptyObject;
   [MimicComponentType.BoilerTank]: EmptyObject;
   [MimicComponentType.Pump]: {
     pump: ControlComponentType.Pump;
@@ -148,6 +150,7 @@ export type ControlFieldDefinitions = ControlFields<{
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
+  [MimicComponentType.Pcm]: EmptyObject;
   [MimicComponentType.BoilerTank]: {
     controller: ControllerStateComponentType.DhwTanksController;
   };
@@ -176,6 +179,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
+  [MimicComponentType.Pcm]: EmptyObject;
   [MimicComponentType.BoilerTank]: {
     minimumLevel: ParametersType.Level;
     maximumLevel: ParametersType.Level;
@@ -224,6 +228,7 @@ export type PIDController<
 export type BoilerTankController = TooltipComponentContext<MimicComponentType.BoilerTank>;
 
 export type CustomFieldDefinitions = CustomFields<{
+  [MimicComponentType.Pcm]: EmptyObject;
   [MimicComponentType.BoilerTank]: {
     tankStateField: BoilerTankStateField;
   };
@@ -281,6 +286,7 @@ export type CustomFieldDefinitions = CustomFields<{
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
+  [MimicComponentType.Pcm]: SensorComponentType.Pcm;
   [MimicComponentType.Pump]: SensorComponentType.Pump;
   [MimicComponentType.ManualPump]: undefined;
   [MimicComponentType.HeatExchanger]: SensorComponentType.HeatExchanger;
