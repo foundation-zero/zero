@@ -1,8 +1,10 @@
 import contextlib
+import json
 import logging
 from datetime import datetime, timedelta
 
 from aiomqtt import Client as MqttClient
+from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -205,6 +207,19 @@ class LockstepCmd(BaseSettings):
                 await runtime.start()
 
 
+class AsyncApiCmd(BaseModel):
+    title: str = "THRS Control"
+    version: str = "1.0.0"
+
+    def cli_cmd(self) -> None:
+        # Imported lazily: faststream is a dev/test-only dependency (see
+        # pyproject.toml) - spec generation is a CI/local-dev side quest,
+        # not part of the runtime this image actually ships to run control.
+        from thrs.spec.asyncapi import build_asyncapi  # noqa: PLC0415
+
+        print(json.dumps(build_asyncapi(self.title, self.version), indent=2))  # noqa: T201 - CLI output, not logging
+
+
 class ThrsCli(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -216,6 +231,7 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     lockstep: CliSubCommand[LockstepCmd]
     simulation: CliSubCommand[SimulationCmd]
     control: CliSubCommand[ControlCmd]
+    print_asyncapi: CliSubCommand[AsyncApiCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()
