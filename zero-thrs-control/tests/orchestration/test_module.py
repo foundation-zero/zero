@@ -153,6 +153,27 @@ async def test_automatic_control_rebuilds_and_returns_first_control_tick(
     assert automatic_control_values != initial
 
 
+async def test_automatic_to_manual_snaps_to_actuated_while_advisory(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    """Flipping to manual while advisory resumes from actuated values."""
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    auto_values = simple_control_values(flow=8.0)
+    actuated = simple_control_values(flow=6.0)
+    mock_control.control.return_value = (auto_values, None)
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+    assert await module.tick(advisory_sensor_values) == auto_values
+
+    module.set_automation_mode(AutomationMode(mode="manual"))
+    mock_channels.get_actuated_control_values.return_value = actuated
+    control_values = await module.tick(advisory_sensor_values)
+
+    assert control_values == actuated
+    assert mock_channels.send_manual_control.await_args == mock.call(actuated)
+
+
 async def test_disable_warning_names_module(
     caplog, manual_values, mock_channels, mock_control, module_factory
 ):

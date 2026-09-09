@@ -113,6 +113,8 @@ class Switching[
             self._mode = "manual"
 
         if self.control_mode == "manual":
+            if self._last_mode == "automatic" and actuated_control_values is not None:
+                self.update_manual_controls(actuated_control_values)
             control_values, _ = self._manual_control.control(sensor_values)
             _, controller_state = self._automatic_control.initial()
             self._last_mode = "manual"

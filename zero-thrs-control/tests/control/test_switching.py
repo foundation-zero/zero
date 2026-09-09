@@ -139,6 +139,49 @@ def test_manual_to_automatic_rebuilds_and_returns_first_control_tick():
     assert fresh.control.call_count == 2
 
 
+def test_automatic_to_manual_snaps_to_actuated(switching):
+    switching_control = switching(manual_flow=1.0)
+    switching_control.switch_mode(AutomationMode(mode="automatic"))
+    switching_control.control(simple_advisory_values(flow=8.0))
+
+    switching_control.switch_mode(AutomationMode(mode="manual"))
+    control_values, _ = switching_control.control(
+        simple_advisory_values(flow=3.0), simple_control_values(flow=6.0)
+    )
+
+    assert switching_control.manual
+    assert control_values.go_with_the.flow.value == 6.0
+    assert switching_control.manual_controls.go_with_the.flow.value == 6.0
+
+    # Staying manual keeps the current value, ignoring newer actuated values.
+    control_values, _ = switching_control.control(
+        simple_advisory_values(flow=3.0), simple_control_values(flow=9.0)
+    )
+    assert control_values.go_with_the.flow.value == 6.0
+
+
+def test_manual_stays_isolated_from_actuated(switching):
+    switching_control = switching(manual_flow=1.0)
+    for actuated_flow in (7.0, 8.0):
+        control_values, _ = switching_control.control(
+            simple_advisory_values(flow=9.0),
+            simple_control_values(flow=actuated_flow),
+        )
+        assert control_values.go_with_the.flow.value == 1.0
+    assert switching_control.manual_controls.go_with_the.flow.value == 1.0
+
+
+def test_non_advisory_staying_keeps_echoing(switching):
+    switching_control = switching(manual_flow=1.0)
+    for expected_flow in (6.0, 7.0):
+        control_values, _ = switching_control.control(
+            simple_non_advisory_values(flow=2.0),
+            simple_control_values(flow=expected_flow),
+        )
+        assert control_values.go_with_the.flow.value == expected_flow
+    assert switching_control.manual_controls.go_with_the.flow.value == 7.0
+
+
 @pytest.mark.parametrize("start_automatic", [True, False])
 def test_advisory_disable_logs_warning_on_falling_edge_only(
     switching, caplog, start_automatic
