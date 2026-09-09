@@ -1,11 +1,16 @@
 import logging
 from unittest import mock
 
-from tests.helpers.modules import make_async_channels, make_module
+from tests.helpers.modules import (
+    ConfigurableParameters,
+    make_async_channels,
+    make_module,
+)
 from tests.orchestration.simples import (
     simple_advisory_values,
     simple_control_values,
 )
+from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.switching import AutomationMode
 
 
@@ -136,8 +141,13 @@ async def test_automatic_control_rebuilds_and_returns_first_control_tick(
 ):
     initial = simple_control_values(flow=1.0)
     actuated = simple_control_values(flow=6.0)
+    fresh_values = simple_control_values(flow=9.0)
     mock_control.initial.return_value = (initial, None)
-    mock_control.control.return_value = (actuated, None)
+    mock_control.control.return_value = (simple_control_values(flow=99.0), None)
+    fresh_control = mock.Mock()
+    fresh_control.initial.return_value = (initial, None)
+    fresh_control.control.return_value = (fresh_values, None)
+    mock_description.control.side_effect = [mock_control, fresh_control]
     mock_channels.get_actuated_control_values.return_value = actuated
 
     module = module_factory()
@@ -149,8 +159,48 @@ async def test_automatic_control_rebuilds_and_returns_first_control_tick(
 
     assert manual_control_values == actuated
     assert mock_description.control.call_count == 2
-    assert automatic_control_values == actuated
+    assert mock_control.control.call_count == 0
+    assert fresh_control.control.call_args_list == [mock.call(advisory_sensor_values)]
+    assert automatic_control_values == fresh_values
     assert automatic_control_values != initial
+    assert automatic_control_values != actuated
+
+
+async def test_parameters_changed_while_manual_survive_engage():
+    channels = make_async_channels()
+    module = make_module(channels=channels)
+    module._control.update_parameters(ConfigurableParameters(setpoint=77.0))
+    stale = module._control.automatic_control
+    logger_before = module.control_state_logger
+
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+    await module.tick(simple_advisory_values(flow=2.0))
+
+    fresh = module._control.automatic_control
+    assert fresh is not stale
+    assert fresh.parameters.setpoint == 77.0
+    assert module._control.parameters.setpoint == 77.0
+    assert module.control_state_logger is logger_before
+
+
+async def test_snapshot_with_custom_params_restores_into_first_automatic_tick():
+    module = make_module(channels=make_async_channels())
+    module.apply_persistence_snapshot(
+        ModulePersistenceSnapshot(
+            parameters={"setpoint": 77.0},
+            manual_control_values=None,
+            control_mode="automatic",
+        )
+    )
+    assert module._control.parameters.setpoint == 77.0
+    stale = module._control.automatic_control
+
+    await module.tick(simple_advisory_values(flow=2.0))
+
+    fresh = module._control.automatic_control
+    assert fresh is not stale
+    assert fresh.parameters.setpoint == 77.0
+    assert module._control.parameters.setpoint == 77.0
 
 
 async def test_automatic_to_manual_snaps_to_actuated_while_advisory(

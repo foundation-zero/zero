@@ -77,7 +77,12 @@ def test_advisory_restore_does_not_auto_engage(switching):
     assert control_values.go_with_the.flow.value == 1.0
 
 
-def _mock_switching(initial_automatic: mock.Mock, factory: mock.Mock) -> Switching:
+def _mock_switching(
+    initial_automatic: mock.Mock,
+    factory: mock.Mock,
+    time_fn=datetime.now,
+    state_logger=None,
+) -> Switching:
     initial_automatic.initial.return_value = (
         SimpleInOut.zero(),
         SimpleControllerState(),
@@ -87,8 +92,8 @@ def _mock_switching(initial_automatic: mock.Mock, factory: mock.Mock) -> Switchi
         initial_automatic,
         name="simple",
         automatic_factory=factory,
-        time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
+        time_fn=time_fn,
+        state_logger=state_logger or MachineStateLoggingServiceNoop(),
     )
 
 
@@ -115,7 +120,9 @@ def test_manual_to_automatic_rebuilds_and_returns_first_control_tick():
         SimpleControllerState(),
     )
     factory = mock.Mock(return_value=fresh)
-    switching_control = _mock_switching(stale, factory)
+    time_fn = datetime.now
+    state_logger = MachineStateLoggingServiceNoop()
+    switching_control = _mock_switching(stale, factory, time_fn, state_logger)
     switching_control.control(simple_advisory_values(flow=9.0))
     assert switching_control.automatic_control is stale
 
@@ -128,15 +135,31 @@ def test_manual_to_automatic_rebuilds_and_returns_first_control_tick():
     assert switching_control.automatic_control is fresh
     factory.assert_called_once()
     assert factory.call_args[0][0] is stale.parameters
+    assert factory.call_args[0][1] is time_fn
+    assert factory.call_args[0][2] is state_logger
     stale.control.assert_not_called()
     fresh.control.assert_called_once()
     assert control_values.go_with_the.flow.value == 4.0
     assert controller_state is fresh.control.return_value[1]
 
-    # Staying automatic ticks the same instance without rebuilding again.
+    # Staying automatic ticks the same instance without rebuilding again
     switching_control.control(simple_advisory_values(flow=9.0))
     factory.assert_called_once()
     assert fresh.control.call_count == 2
+
+
+def test_manual_to_automatic_ignores_manual(switching):
+    switching_control = switching(manual_flow=99.0)
+    stale = switching_control.automatic_control
+
+    switching_control.switch_mode(AutomationMode(mode="automatic"))
+    control_values, _ = switching_control.control(
+        simple_advisory_values(flow=8.0), simple_control_values(flow=6.0)
+    )
+
+    assert switching_control.automatic_control is not stale
+    assert control_values.go_with_the.flow.value == 8.0
+    assert switching_control.manual_controls.go_with_the.flow.value == 99.0
 
 
 def test_automatic_to_manual_snaps_to_actuated(switching):
