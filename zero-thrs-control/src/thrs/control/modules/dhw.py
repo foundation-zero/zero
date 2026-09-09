@@ -209,7 +209,7 @@ class Tank:
         return self._level
 
     @level.setter
-    def level(self, level: Liter):
+    def level(self, level: Liter | None):
         self._level = level
 
     @property
@@ -217,7 +217,7 @@ class Tank:
         return self._temperature
 
     @temperature.setter
-    def temperature(self, temperature: Celsius):
+    def temperature(self, temperature: Celsius | None):
         self._temperature = temperature
 
     @property
