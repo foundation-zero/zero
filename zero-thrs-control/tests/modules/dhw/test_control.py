@@ -106,7 +106,13 @@ def test_boosting_transitions(
 ):
     # all tanks full and ht available
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
 
     sensor_values, *_ = runner.run(150)
@@ -166,7 +172,12 @@ def test_boosting_falls_back_to_heatpump_when_ht_disabled(
     # all tanks full and ht available, but ht boosting is not permitted
     control.update_parameters(
         control.parameters.model_copy(
-            update={"maximum_tank_level": 10, "ht_boosting_enabled": False}
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+                "ht_boosting_enabled": False,
+            }
         )
     )
 
@@ -194,7 +205,13 @@ def test_boosting_stays_idle_when_all_sources_disabled(
 ):
     # all tanks full and ht available, so boosting starts from high temperature
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
     runner.run(120)
 
@@ -241,7 +258,9 @@ def test_boosting_tank_reports_needs_boost_while_unauthorised(
     control.update_parameters(
         control.parameters.model_copy(
             update={
+                "minimum_tank_level": 2,
                 "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
                 "ht_boosting_enabled": False,
                 "heatpump_boosting_enabled": False,
             }
@@ -271,7 +290,13 @@ def test_boosting_pump_held_until_boosting_loop_open(
     simulation_inputs: DhwSimulationInputs,
 ):
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
 
     # run up to the tick the machine commits to boosting

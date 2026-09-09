@@ -105,6 +105,7 @@ def parameters() -> DhwParameters:
         filling_temperature_setpoint=40,
         minimum_tank_level=30,
         maximum_tank_level=260,
+        full_level_lower_band=220,
         tank1_enabled=True,
         tank2_enabled=True,
         tank3_enabled=True,
