@@ -21,6 +21,24 @@ sources:
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840
+  mqtt_raw:
+    type: mqtt
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
+    client_id: vector-raw
+    decoding:
+      codec: bytes
+    topic:
+      - "marpower/#"
+      - "domestic/+"
+      - "hull-temperature/temperatures"
+      - "termodinamica/#"
+      - "sail-systems/#"
+      - "power-tags/#"
+      - "fiber-optics/values"
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
+    max_packet_size: 163840
   # A+T (ATPX) instrument bus: one raw float per message on
   # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
   # ATPX_MQTT_TOPIC is atpx_raw/# locally, defaulting to A+T's atpx/# in prod.
@@ -87,6 +105,15 @@ transforms:
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true
+    reroute_dropped: true
+  signal_mqtt_not_json:
+    type: remap
+    inputs: ["mqtt_raw"]
+    # We are only interested in parsing errors for the dead letter queue
+    source: |
+      parse_json!(string!(.message))
+      abort
+    drop_on_error: true
     reroute_dropped: true
   dropped_append_timestamp:
     type: remap
