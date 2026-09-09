@@ -36,8 +36,9 @@ class ModbusReader:
     def read_all(self) -> Iterator[tuple[str, Any]]:
         """Read every topic once and yield ``(topic_name, payload)``.
 
-        Reopen before each topic: a dead unit times out and drops the socket,
-        so otherwise one bad unit would poison every later read this cycle.
+        Ensure the socket is open before each topic; a dead unit can time out and
+        drop the connection, so we may need to reopen between topics to keep the
+        rest of the cycle readable.
         """
         for topic in self._topics:
             if not self.ensure_open():
