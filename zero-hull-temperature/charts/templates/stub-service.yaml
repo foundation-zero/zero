@@ -8,8 +8,8 @@ spec:
   type: ClusterIP
   ports:
   - name: modbus
-    port: {{ .Values.modbus.port }}
-    targetPort: {{ .Values.modbus.port }}
+    port: {{ .Values.stub.port }}
+    targetPort: {{ .Values.stub.port }}
     protocol: TCP
   selector:
     {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 4 }}

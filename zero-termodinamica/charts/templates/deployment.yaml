@@ -63,12 +63,14 @@ spec:
             {{- if .Values.stub.enabled }}
             - name: MODBUS_HOST
               value: {{ include "zero-termodinamica.stub" . | quote }}
+            - name: MODBUS_PORT
+              value: {{ .Values.stub.port | quote }}
             {{- else }}
             - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
-            {{- end }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
+            {{- end }}
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
             - name: MODBUS_BRIDGES_PATH

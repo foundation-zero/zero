@@ -55,6 +55,12 @@
           "type": "boolean",
           "description": "Deploy an in-cluster stub Modbus server and point the bridge at it."
         },
+        "port": {
+          "type": "integer",
+          "description": "Port the stub binds and the bridge dials in stub mode; must be >= 1024 since the stub runs non-root.",
+          "minimum": 1024,
+          "maximum": 65535
+        },
         "temperature": {
           "type": "number",
           "description": "Temperature the stub serves once activated."

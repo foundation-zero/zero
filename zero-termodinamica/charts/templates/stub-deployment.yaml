@@ -43,7 +43,7 @@ spec:
             - name: MODBUS_HOST
               value: "0.0.0.0"
             - name: MODBUS_PORT
-              value: {{ .Values.modbus.port | quote }}
+              value: {{ .Values.stub.port | quote }}
             - name: DEFAULT_REGISTER_VALUE
               value: {{ .Values.stub.defaultRegisterValue | quote }}
             - name: MODBUS_BRIDGES_PATH

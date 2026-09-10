@@ -63,12 +63,14 @@ spec:
             {{- if .Values.stub.enabled }}
             - name: MODBUS_HOST
               value: {{ include "zero-hull-temperature.stub" . | quote }}
+            - name: MODBUS_PORT
+              value: {{ .Values.stub.port | quote }}
             {{- else }}
             - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
-            {{- end }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
+            {{- end }}
             - name: RUN__ACTIVATE_TOPIC
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: RUN__ACTIVATE_JSON_PATH

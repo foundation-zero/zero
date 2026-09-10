@@ -58,7 +58,7 @@ spec:
             - name: MODBUS_HOST
               value: "0.0.0.0"
             - name: MODBUS_PORT
-              value: {{ .Values.modbus.port | quote }}
+              value: {{ .Values.stub.port | quote }}
             - name: TEMPERATURE
               value: {{ .Values.stub.temperature | quote }}
             - name: SECONDS
