@@ -1,3 +1,4 @@
+export { default as Dutypoint } from "./ModuleParametersDutypointItem.vue";
 export { default as Enabled } from "./ModuleParametersEnabledItem.vue";
 export { default as FlowControl } from "./ModuleParametersFlowControlItem.vue";
 export { default as Flow } from "./ModuleParametersFlowItem.vue";

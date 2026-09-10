@@ -1,9 +1,12 @@
+from datetime import datetime
+
 import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwControl,
+    DhwParameters,
     TanksController,
 )
 from thrs.input_output.base import Stamped
@@ -106,7 +109,13 @@ def test_boosting_transitions(
 ):
     # all tanks full and ht available
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
 
     sensor_values, *_ = runner.run(150)
@@ -166,7 +175,12 @@ def test_boosting_falls_back_to_heatpump_when_ht_disabled(
     # all tanks full and ht available, but ht boosting is not permitted
     control.update_parameters(
         control.parameters.model_copy(
-            update={"maximum_tank_level": 10, "ht_boosting_enabled": False}
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+                "ht_boosting_enabled": False,
+            }
         )
     )
 
@@ -194,7 +208,13 @@ def test_boosting_stays_idle_when_all_sources_disabled(
 ):
     # all tanks full and ht available, so boosting starts from high temperature
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
     runner.run(120)
 
@@ -241,7 +261,9 @@ def test_boosting_tank_reports_needs_boost_while_unauthorised(
     control.update_parameters(
         control.parameters.model_copy(
             update={
+                "minimum_tank_level": 2,
                 "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
                 "ht_boosting_enabled": False,
                 "heatpump_boosting_enabled": False,
             }
@@ -271,7 +293,13 @@ def test_boosting_pump_held_until_boosting_loop_open(
     simulation_inputs: DhwSimulationInputs,
 ):
     control.update_parameters(
-        control.parameters.model_copy(update={"maximum_tank_level": 10})
+        control.parameters.model_copy(
+            update={
+                "minimum_tank_level": 2,
+                "maximum_tank_level": 10,
+                "full_level_lower_band": 5,
+            }
+        )
     )
 
     # run up to the tick the machine commits to boosting
@@ -289,6 +317,32 @@ def test_boosting_pump_held_until_boosting_loop_open(
     assert sensor_values is not None
     assert control._pump_temperature_controller.enabled()
     assert sensor_values.dhw_flow_boosting.flow.value > 0.1
+
+
+def test_pump_minimum_dutypoint_follows_parameters(parameters: DhwParameters):
+    control = DhwControl(parameters, datetime.now)
+    pumps = (
+        control._pump_flow_controller,
+        control._pump_temperature_controller,
+    )
+
+    for pump in pumps:
+        pump(None)
+        assert pump._output_limits == (0.1, 1.0)
+
+    control.update_parameters(
+        parameters.model_copy(update={"minimum_pump_dutypoint": 0.4})
+    )
+    for pump in pumps:
+        pump(None)
+        assert pump._output_limits == (0.4, 1.0)
+
+
+def test_minimum_pump_dutypoint_rejects_below_pump_floor(
+    parameters: DhwParameters,
+):
+    with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
+        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})
 
 
 def test_reset_restores_initial_control_state(

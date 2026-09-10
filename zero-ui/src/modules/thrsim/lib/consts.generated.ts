@@ -918,6 +918,9 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   dcFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,
   },
+  minimumPumpDutypoint: {
+    componentType: ParametersType.Dutypoint,
+  },
   fillingTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
   },
@@ -925,6 +928,9 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
     componentType: ParametersType.Level,
   },
   maximumTankLevel: {
+    componentType: ParametersType.Level,
+  },
+  fullLevelLowerBand: {
     componentType: ParametersType.Level,
   },
   tank1Enabled: {

@@ -98,6 +98,7 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
         return cast(MeasurementUnit | None, self._pid._last_error)  # type: ignore
 
     def values(self) -> PidControllerValues:
+        self._sync_parameters()
         timestamp = self._time()
         return PidControllerValues(
             setpoint=Stamped(value=self.setpoint, timestamp=timestamp),
@@ -110,9 +111,9 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
         )
 
     @classmethod
-    def zero(cls, timestamp: datetime) -> PidControllerValues:
+    def zero(cls, timestamp: datetime, setpoint: float = 0.0) -> PidControllerValues:
         return PidControllerValues(
-            setpoint=Stamped(value=0.0, timestamp=timestamp),
+            setpoint=Stamped(value=setpoint, timestamp=timestamp),
             measurement=Stamped(value=None, timestamp=timestamp),
             output=Stamped(value=None, timestamp=timestamp),
             error=Stamped(value=None, timestamp=timestamp),

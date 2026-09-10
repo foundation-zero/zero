@@ -9,6 +9,7 @@
         "items": {
           "minimumTankLevel": "Minimum tank level",
           "maximumTankLevel": "Maximum tank level",
+          "fullTankLevel": "Full tank level",
           "fillingTemperature": "Filling temperature",
           "minimumFlowDrives": "Minimum flow valve position - drives & shorepower",
           "minimumFlowDC": "Minimum flow valve position - DC converters",
@@ -22,6 +23,7 @@
           "highTemperatureBoosting": "High temperature boosting",
           "heatpumpTemperature": "Heatpump temperature",
           "heatpumpFlow": "Heatpump flow",
+          "minimumPumpDutypoint": "Minimum pump dutypoint",
           "boostingTemperature": "Boosting temperature"
         },
         "tankSelection": {

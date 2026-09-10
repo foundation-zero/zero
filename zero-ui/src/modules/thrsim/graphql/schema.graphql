@@ -482,9 +482,15 @@ type DhwParametersType {
   Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement
   """
   dcFlowcontrolMinimumSetpoint: Float!
+
+  """Minimum output of the boosting pump controllers"""
+  minimumPumpDutypoint: Float!
   fillingTemperatureSetpoint: Float!
   minimumTankLevel: Float!
   maximumTankLevel: Float!
+
+  """Level above which a non-filling tank counts as full"""
+  fullLevelLowerBand: Float!
   tank1Enabled: Boolean!
   tank2Enabled: Boolean!
   tank3Enabled: Boolean!
@@ -931,9 +937,11 @@ type Mutation {
   dhwParameterSetBoostingDelta(value: Float!): DhwParametersType!
   dhwParameterSetDrivesFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetDcFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetMinimumPumpDutypoint(value: Float!): DhwParametersType!
   dhwParameterSetFillingTemperatureSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumTankLevel(value: Float!): DhwParametersType!
   dhwParameterSetMaximumTankLevel(value: Float!): DhwParametersType!
+  dhwParameterSetFullLevelLowerBand(value: Float!): DhwParametersType!
   dhwParameterSetTank1Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank2Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank3Enabled(value: Boolean!): DhwParametersType!
