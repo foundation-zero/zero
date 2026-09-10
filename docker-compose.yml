@@ -465,6 +465,7 @@ services:
     build:
       context: .
       dockerfile: zero-atpx-nmea/Dockerfile
+    command: ["run"]
     profiles:
       - data-collection
     environment:

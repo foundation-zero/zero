@@ -43,6 +43,7 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["run"]
           env:
             - name: ATPX_MQTT_HOST
               value: {{ .Values.atpxMqtt.host | quote }}

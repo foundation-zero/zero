@@ -7,6 +7,7 @@ on:
       - zero-termodinamica/**
       - zero-power-tags/**
       - zero-hull-temperature/**
+      - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
       - .github/workflows/ci_mqtt_graphql.yaml
@@ -19,6 +20,7 @@ on:
       - zero-termodinamica/**
       - zero-power-tags/**
       - zero-hull-temperature/**
+      - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
       - .github/workflows/ci_mqtt_graphql.yaml
@@ -54,6 +56,9 @@ jobs:
       - name: Sync hull-temperature
         run: uv sync --locked
         working-directory: zero-hull-temperature
+      - name: Sync atpx-nmea
+        run: uv sync --locked
+        working-directory: zero-atpx-nmea
       - name: Sync data
         run: uv sync --locked
         working-directory: zero-data

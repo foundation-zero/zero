@@ -41,7 +41,10 @@ class ALR(pynmea2.TalkerSentence):
         # rather than forced through an `int` converter.
         ("Local alarm number/identifier", "alarm_number"),
         ("Alarm condition (A=threshold exceeded, V=not exceeded)", "alarm_condition"),
-        ("Alarm acknowledge state (A=acknowledged, V=unacknowledged)", "alarm_ack_state"),
+        (
+            "Alarm acknowledge state (A=acknowledged, V=unacknowledged)",
+            "alarm_ack_state",
+        ),
         ("Alarm description text", "alarm_text"),
     )
 

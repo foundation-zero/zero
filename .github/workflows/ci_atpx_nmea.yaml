@@ -41,9 +41,19 @@ jobs:
         working-directory: zero-atpx-nmea
       - run: uv run ruff check --no-fix
         working-directory: zero-atpx-nmea
+      - run: uv run ruff format --check src tests
+        working-directory: zero-atpx-nmea
       - run: uv run pyright
         working-directory: zero-atpx-nmea
       - run: uv run pytest
+        working-directory: zero-atpx-nmea
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install -g @asyncapi/cli@6.0.2
+        working-directory: zero-atpx-nmea
+      - name: AsyncAPI CLI validation
+        run: asyncapi validate asyncapi.json
         working-directory: zero-atpx-nmea
 
   docker-push:

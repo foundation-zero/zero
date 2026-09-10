@@ -15,3 +15,12 @@ test *args:
 
 format:
     uv run ruff format --check src tests
+
+regenerate-spec:
+    uv run python -m zero_atpx_nmea asyncapi > asyncapi.json
+
+# Generate AsyncAPI HTML docs from the committed spec (output is gitignored).
+# Requires the AsyncAPI CLI on PATH: npm install -g @asyncapi/cli@6.0.2 (as CI does).
+# html-template pinned to 3.5.6 to match CI.
+docs:
+    SUPPRESS_NO_CONFIG_WARNING=true asyncapi generate fromTemplate asyncapi.json @asyncapi/html-template@3.5.6 -o docs/ --force-write

@@ -261,7 +261,9 @@ def test_vlw() -> None:
 
 
 def test_rmc_position() -> None:
-    raw = "$GNRMC,104450.00,A,5311.41276,N,00526.15347,E,0.06,118.99,260826,3.1,E,A,S*51"
+    raw = (
+        "$GNRMC,104450.00,A,5311.41276,N,00526.15347,E,0.06,118.99,260826,3.1,E,A,S*51"
+    )
     envelope = parse(raw, "atpx/nmea0183/3145/RMC")
     assert envelope is not None
     assert envelope == {

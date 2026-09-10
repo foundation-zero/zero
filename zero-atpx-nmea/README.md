@@ -18,4 +18,36 @@ around that function: it uses two separate brokers, since in production
 `ATPX_MQTT_HOST` (A+T's onboard broker, unauthenticated) differs from
 `MQTT_HOST` (our own broker); locally both resolve to the same `vernemq`.
 
-Otherwise this follows standard project conventions.
+## Consumer contract (AsyncAPI specification)
+
+The service's MQTT interface is documented in a committed **AsyncAPI 3.0.0**
+specification at [`asyncapi.json`](./asyncapi.json). It describes:
+
+- **Input** — the `atpx/nmea0183/{sender}/{TYPE}` channel where A+T publishes
+  raw NMEA 0183 sentences (string payload).
+- **Output** — one channel per documented sentence type,
+  `atpx/processed/nmea/<type>/{sender}`, each with a concrete per-type JSON
+  envelope schema.
+
+Vector's NMEA ingestion pipeline depends on these output channels; the spec
+is the contract for anyone building on top of the `atpx__nmea_<type>`
+Greptime tables.
+
+### Regenerating
+
+```sh
+just regenerate-spec
+```
+
+Updates `asyncapi.json` from the current parser and corpus. CI runs this
+same command and fails if the committed file would change, so the contract
+never silently drifts from what the service actually emits.
+
+### Viewing
+
+```sh
+uv run python -m zero_atpx_nmea asyncapi
+```
+
+Prints the spec to stdout.
+
