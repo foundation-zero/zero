@@ -71,9 +71,9 @@ spec:
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
             {{- end }}
-            - name: RUN__ACTIVATE_TOPIC
+            - name: ACTIVATE_TOPIC
               value: {{ .Values.hullTemperature.activateTopic | quote }}
-            - name: RUN__ACTIVATE_JSON_PATH
+            - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -59,6 +59,10 @@ spec:
               value: "0.0.0.0"
             - name: MODBUS_PORT
               value: {{ .Values.stub.port | quote }}
+            - name: ACTIVATE_TOPIC
+              value: {{ .Values.hullTemperature.activateTopic | quote }}
+            - name: ACTIVATE_JSON_PATH
+              value: {{ .Values.hullTemperature.activateJsonPath | quote }}
             - name: TEMPERATURE
               value: {{ .Values.stub.temperature | quote }}
             - name: SECONDS
