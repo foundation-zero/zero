@@ -33,7 +33,7 @@ use roas_asyncapi::v3_0::schema::{
 use roas_asyncapi::v3_0::Document;
 use serde_json::Value as JsonValue;
 
-use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
+use crate::asyncapi::{FieldDef, ObjectTypeDef, TopicDef, TopicGroupDef};
 use crate::cache::TopicCache;
 use crate::metadata::{metadata_by_topic, MetadataByTopic, MetadataFile};
 use crate::naming::*;
@@ -64,6 +64,7 @@ pub fn build_schema(
     cache: Arc<TopicCache>,
     groups: &[TopicGroupDef],
     metadata: &[MetadataFile],
+    object_types: &[ObjectTypeDef],
 ) -> anyhow::Result<Schema> {
     validate_topics(topics)?;
 
@@ -101,12 +102,34 @@ pub fn build_schema(
         .flatten()
         .fold(query, Object::field);
 
+    let stamped_wrapper_objects = register_stamped_wrapper_objects(topics, groups);
+    let composite_objects = register_composite_object_types(object_types);
+
     finish_schema(
         query,
         group_objects.into_iter().flatten().collect(),
         objects,
         metadata_types,
+        stamped_wrapper_objects,
+        composite_objects,
     )
+}
+
+/// Composite object types from `asyncapi::resolve_object_type`, each
+/// turned into a GraphQL object with one field per `FieldDef`. Reuses
+/// `payload_field` since the cached JSON shape (raw PascalCase keys,
+/// projected to sanitized field names) is the same as a concrete topic's
+/// payload.
+fn register_composite_object_types(object_types: &[ObjectTypeDef]) -> Vec<Object> {
+    object_types
+        .iter()
+        .map(|def| {
+            def.fields
+                .iter()
+                .map(payload_field)
+                .fold(Object::new(def.name.as_str()), Object::field)
+        })
+        .collect()
 }
 
 /// The read-only `topics: [String]` introspection field listing every topic.
@@ -151,11 +174,15 @@ fn finish_schema(
     group_objects: Vec<Object>,
     concrete_objects: Vec<Object>,
     metadata_types: Vec<(String, BTreeMap<String, JsonValue>)>,
+    stamped_wrapper_objects: Vec<Object>,
+    composite_objects: Vec<Object>,
 ) -> anyhow::Result<Schema> {
     let schema_builder = Schema::build(query.type_name(), None, None).register(query);
     let schema_builder = group_objects
         .into_iter()
         .chain(concrete_objects)
+        .chain(stamped_wrapper_objects)
+        .chain(composite_objects)
         .chain(
             metadata_types
                 .into_iter()
@@ -539,6 +566,12 @@ fn register_group_queries(
     if group.fields.is_empty() {
         anyhow::bail!("topic group '{}' has no payload fields", group.group);
     }
+    // anyOf groups (asyncapi::extract_fields_from_any_of) union their
+    // branches' fields into one column set. Validate that union the same
+    // way a topic's fields get validated, so a real name conflict between
+    // branches is a clean error instead of a panic when the schema tries
+    // to register two fields under one name.
+    validate_topic_fields(&group.group, &group.fields)?;
     let query_field_name = claim_group_query_name(group, used_query_fields)?;
     let Some(metadata_fields) = group_metadata_fields(group, &entries)? else {
         return Ok(None);
@@ -908,8 +941,16 @@ pub fn spawn_eviction(cache: std::sync::Arc<TopicCache>) {
     });
 }
 
-/// Map a GraphQL type name to an async-graphql TypeRef.
+/// Map a GraphQL type name to an async-graphql TypeRef. `Stamped:<T>` and
+/// `Object:<Name>` markers (see `asyncapi::field_graphql_type`) resolve to
+/// their wrapper/composite object types instead of a scalar.
 fn graphql_type_ref(typ: &str) -> TypeRef {
+    if let Some(inner) = typ.strip_prefix("Stamped:") {
+        return TypeRef::named(stamped_wrapper_type_name(inner));
+    }
+    if let Some(name) = typ.strip_prefix("Object:") {
+        return TypeRef::named(name);
+    }
     match typ {
         "Float" => TypeRef::named(TypeRef::FLOAT),
         "Int" => TypeRef::named(TypeRef::INT),
@@ -917,6 +958,71 @@ fn graphql_type_ref(typ: &str) -> TypeRef {
         "String" => TypeRef::named(TypeRef::STRING),
         _ => TypeRef::named(TypeRef::STRING),
     }
+}
+
+/// Wrapper type name for a Stamped value of scalar type `inner`, e.g.
+/// `Float` -> `StampedFloat`.
+fn stamped_wrapper_type_name(inner: &str) -> String {
+    format!("Stamped{inner}")
+}
+
+/// The `Stamped<T>` type: `{ value: T, timestamp: String }`, projected
+/// from the raw cached JSON's `Value`/`TimeStamp` keys.
+fn stamped_wrapper_object(inner: &str) -> Object {
+    let type_name = stamped_wrapper_type_name(inner);
+    // Field names match THRS's own Stamped[T] GraphQL type: "value" and
+    // "timestamp" (not "timeStamp": the python field is just `timestamp`,
+    // "TimeStamp" is only the wire alias).
+    Object::new(type_name.as_str())
+        .field(stamped_wrapper_field("value", "Value", graphql_type_ref(inner)))
+        .field(stamped_wrapper_field(
+            "timestamp",
+            "TimeStamp",
+            TypeRef::named(TypeRef::STRING),
+        ))
+}
+
+/// One `Stamped<T>` field: reads `raw_key` (the published JSON key, e.g.
+/// `"Value"`) off the parent and exposes it as GraphQL field `name` (e.g.
+/// `"value"`).
+fn stamped_wrapper_field(name: &str, raw_key: &str, type_ref: TypeRef) -> Field {
+    let raw_key = raw_key.to_string();
+    Field::new(name, type_ref, move |ctx| {
+        let raw_key = raw_key.clone();
+        async_graphql::dynamic::FieldFuture::new(async move {
+            let parent = ctx.parent_value.try_to_value()?;
+            let value = match parent {
+                GraphQlValue::Object(map) => map
+                    .get(&Name::new(&raw_key))
+                    .cloned()
+                    .unwrap_or(GraphQlValue::Null),
+                _ => GraphQlValue::Null,
+            };
+            Ok(Some(FieldValue::value(value)))
+        })
+    })
+}
+
+/// Every distinct `Stamped<T>` type used across topics and groups,
+/// deduped by inner scalar type so each one is registered exactly once.
+fn register_stamped_wrapper_objects(
+    topics: &[TopicDef],
+    groups: &[TopicGroupDef],
+) -> Vec<Object> {
+    let mut inner_types: BTreeSet<String> = BTreeSet::new();
+    let all_fields = topics
+        .iter()
+        .flat_map(|t| t.fields.iter())
+        .chain(groups.iter().flat_map(|g| g.fields.iter()));
+    for field in all_fields {
+        if let Some(inner) = field.graphql_type.strip_prefix("Stamped:") {
+            inner_types.insert(inner.to_string());
+        }
+    }
+    inner_types
+        .into_iter()
+        .map(|inner| stamped_wrapper_object(&inner))
+        .collect()
 }
 
 /// Validate that sanitized topic and field names are unique and not reserved.
@@ -1096,7 +1202,7 @@ mod tests {
         }];
 
         let cache = Arc::new(TopicCache::new());
-        let _schema = build_schema(&topics, cache, &[], &[]).unwrap();
+        let _schema = build_schema(&topics, cache, &[], &[], &[]).unwrap();
         // Schema builds without panicking
     }
 
@@ -1124,7 +1230,7 @@ mod tests {
             },
         ];
 
-        let err = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap_err();
+        let err = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap_err();
         assert!(
             err.to_string().contains("duplicate sanitized topic name"),
             "{err}"
@@ -1143,7 +1249,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let err = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap_err();
+        let err = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap_err();
         assert!(err.to_string().contains("reserved"), "{err}");
     }
 
@@ -1159,7 +1265,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
         let sdl = schema.sdl();
         assert!(sdl.contains("_123Topic"), "{sdl}");
     }
@@ -1175,7 +1281,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
         let sdl = schema.sdl();
         assert!(!sdl.contains("emptyTopic"), "{sdl}");
     }
@@ -1210,7 +1316,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
         let sdl = schema.sdl();
         assert!(sdl.contains("fFloat: Float"), "{sdl}");
         assert!(sdl.contains("fInt: Int"), "{sdl}");
@@ -1247,7 +1353,7 @@ mod tests {
             "test/channel",
             json!({"value": 23.5, "ok": true, "label": "hello"}),
         );
-        let schema = build_schema(&topics, cache, &[], &[]).unwrap();
+        let schema = build_schema(&topics, cache, &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ testChannel { value ok label } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -1269,7 +1375,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ testChannel { value } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -1291,7 +1397,7 @@ mod tests {
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("test/channel", json!({"other": 1.0}));
-        let schema = build_schema(&topics, cache, &[], &[]).unwrap();
+        let schema = build_schema(&topics, cache, &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ testChannel { value } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -1311,7 +1417,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ testChannel { nope } }").await;
         assert!(!response.errors.is_empty());
@@ -1334,7 +1440,7 @@ mod tests {
             },
         ];
 
-        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[]).unwrap();
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ topics }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -1368,7 +1474,7 @@ mod tests {
         let cache = Arc::new(TopicCache::new());
         cache.insert("a/b", json!({"x": 1.5}));
         cache.insert("c/d", json!({"y": 2.5}));
-        let schema = build_schema(&topics, cache, &[], &[]).unwrap();
+        let schema = build_schema(&topics, cache, &[], &[], &[]).unwrap();
 
         let response = schema.execute("{ aB { x } cD { y } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -1438,7 +1544,7 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema = build_schema(&[], cache, &power_tag_group(), &power_tag_metadata()).unwrap();
+        let schema = build_schema(&[], cache, &power_tag_group(), &power_tag_metadata(), &[]).unwrap();
 
         let response = schema
             .execute(
@@ -1479,6 +1585,7 @@ mod tests {
             Arc::new(TopicCache::new()),
             &power_tag_group(),
             &power_tag_metadata(),
+            &[],
         )
         .unwrap();
 
@@ -1498,7 +1605,7 @@ mod tests {
         // Without metadata there is no enumeration source, so no list field
         // (empty object types would be invalid GraphQL).
         let schema =
-            build_schema(&[], Arc::new(TopicCache::new()), &power_tag_group(), &[]).unwrap();
+            build_schema(&[], Arc::new(TopicCache::new()), &power_tag_group(), &[], &[]).unwrap();
         let sdl = schema.sdl();
         assert!(!sdl.contains("powerTags"), "{sdl}");
     }
@@ -1514,6 +1621,7 @@ mod tests {
             cache.clone(),
             &power_tag_group(),
             &power_tag_metadata(),
+            &[],
         )
         .unwrap();
 
@@ -1542,7 +1650,7 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema = build_schema(&[], cache, &power_tag_group(), &metadata).unwrap();
+        let schema = build_schema(&[], cache, &power_tag_group(), &metadata, &[]).unwrap();
 
         let response = schema
             .execute(
@@ -1601,7 +1709,7 @@ mod tests {
             .insert("tank".to_string(), json!("T01"));
 
         let cache = Arc::new(TopicCache::new());
-        let schema = build_schema(&[], cache, &[group], &metadata).unwrap();
+        let schema = build_schema(&[], cache, &[group], &metadata, &[]).unwrap();
 
         let response = schema
             .execute(
@@ -1647,7 +1755,7 @@ mod tests {
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("sensor/temp", json!({"celsius": 21.5}));
-        let schema = build_schema(&topics, cache, &[], &metadata).unwrap();
+        let schema = build_schema(&topics, cache, &[], &metadata, &[]).unwrap();
 
         let response = schema
             .execute("{ sensorTemp { celsius metadata { room } } }")
@@ -1660,7 +1768,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_health_endpoint() {
-        let app = router(build_schema(&[], Arc::new(TopicCache::new()), &[], &[]).unwrap());
+        let app = router(build_schema(&[], Arc::new(TopicCache::new()), &[], &[], &[]).unwrap());
 
         let response = app
             .oneshot(
@@ -1689,7 +1797,7 @@ mod tests {
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("test/channel", json!({"value": 42.0}));
-        let app = router(build_schema(&topics, cache, &[], &[]).unwrap());
+        let app = router(build_schema(&topics, cache, &[], &[], &[]).unwrap());
 
         let request = axum::http::Request::builder()
             .method("POST")

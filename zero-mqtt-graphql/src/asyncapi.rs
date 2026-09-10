@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::Context;
@@ -6,7 +6,7 @@ use log::{info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use roas_asyncapi::v3_0::channel::Channel;
 use roas_asyncapi::v3_0::message::Message;
-use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat};
+use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SubSchema};
 use roas_asyncapi::v3_0::Document;
 use serde_json::Value;
 
@@ -51,6 +51,21 @@ pub struct FieldDef {
     pub graphql_type: String,
 }
 
+/// A pydantic model referenced by a field that isn't a scalar or a
+/// `Stamped` envelope (e.g. `PidControllerValues`). Gets its own GraphQL
+/// type instead of getting dropped. Same idea as THRS's own
+/// `pydantic_to_strawberry_type`: every model becomes its own named type.
+#[derive(Debug, Clone)]
+pub struct ObjectTypeDef {
+    /// Schema `title`, used as-is for the GraphQL type name.
+    pub name: String,
+    pub fields: Vec<FieldDef>,
+}
+
+/// Object types found so far, keyed by name. Dedupes a schema referenced
+/// from multiple fields. Threaded as `&mut` through the schema walk.
+pub type ObjectTypeRegistry = BTreeMap<String, ObjectTypeDef>;
+
 /// Read and parse every AsyncAPI document in `spec_dir` once, returning
 /// `(file name, path, document)` for each. Non-JSON files and topic-metadata
 /// files are skipped; unreadable or invalid `.json` files are an error —
@@ -86,12 +101,13 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf, Docume
 /// ignore the other half, so each spec file is read exactly once.
 pub fn load_specs_and_groups(
     spec_dir: &str,
-) -> anyhow::Result<(Vec<TopicDef>, Vec<TopicGroupDef>)> {
+) -> anyhow::Result<(Vec<TopicDef>, Vec<TopicGroupDef>, Vec<ObjectTypeDef>)> {
     let docs = spec_documents(spec_dir)?;
+    let mut object_types: ObjectTypeRegistry = ObjectTypeRegistry::new();
 
     let topics: Vec<TopicDef> = docs
         .iter()
-        .map(|(_, path, doc)| topics_from_document(doc, path))
+        .map(|(_, path, doc)| topics_from_document(doc, path, &mut object_types))
         .collect::<anyhow::Result<Vec<_>>>()?
         .into_iter()
         .flatten()
@@ -99,24 +115,29 @@ pub fn load_specs_and_groups(
 
     let groups: Vec<TopicGroupDef> = docs
         .iter()
-        .map(|(_, path, doc)| groups_from_document(doc, path))
+        .map(|(_, path, doc)| groups_from_document(doc, path, &mut object_types))
         .collect::<anyhow::Result<Vec<_>>>()?
         .into_iter()
         .flatten()
         .collect();
 
     info!(
-        "Loaded {} topic(s) and {} topic group(s) from {}",
+        "Loaded {} topic(s), {} topic group(s) and {} composite object type(s) from {}",
         topics.len(),
         groups.len(),
+        object_types.len(),
         spec_dir
     );
-    Ok((topics, groups))
+    Ok((topics, groups, object_types.into_values().collect()))
 }
 
 /// Extract concrete topics from one document, erroring on unresolvable
 /// channel references.
-fn topics_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<TopicDef>> {
+fn topics_from_document(
+    doc: &Document,
+    path: &Path,
+    object_types: &mut ObjectTypeRegistry,
+) -> anyhow::Result<Vec<TopicDef>> {
     if doc.channels.is_empty() {
         info!("File {} has no channels, skipping", path.display());
         return Ok(Vec::new());
@@ -132,7 +153,7 @@ fn topics_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<Topic
                     path.display()
                 )
             })?;
-            Ok(topic_from_channel(channel_name, channel, doc, path))
+            Ok(topic_from_channel(channel_name, channel, doc, path, object_types))
         })
         .collect::<anyhow::Result<Vec<_>>>()
         .map(|topics| topics.into_iter().flatten().collect())
@@ -140,7 +161,11 @@ fn topics_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<Topic
 
 /// Extract parametrized groups from one document, erroring on unresolvable
 /// channel references or malformed parametrized channels.
-fn groups_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<TopicGroupDef>> {
+fn groups_from_document(
+    doc: &Document,
+    path: &Path,
+    object_types: &mut ObjectTypeRegistry,
+) -> anyhow::Result<Vec<TopicGroupDef>> {
     doc.channels
         .iter()
         .map(|(channel_name, channel_ref)| {
@@ -151,7 +176,7 @@ fn groups_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<Topic
                     path.display()
                 )
             })?;
-            group_from_channel(channel_name, channel, doc, path)
+            group_from_channel(channel_name, channel, doc, path, object_types)
         })
         .collect::<anyhow::Result<Vec<_>>>()
         .map(|groups| groups.into_iter().flatten().collect())
@@ -164,6 +189,7 @@ fn topic_from_channel(
     channel: &Channel,
     doc: &Document,
     path: &Path,
+    object_types: &mut ObjectTypeRegistry,
 ) -> Option<TopicDef> {
     // Parametrized channels are handled by groups_from_document.
     let binding_topic = mqtt_topic_from_channel(channel);
@@ -191,7 +217,7 @@ fn topic_from_channel(
         );
     }
 
-    let (fields, payload_schema) = message_fields(channel, doc);
+    let (fields, payload_schema) = message_fields(channel, doc, object_types);
 
     Some(TopicDef {
         topic: mqtt_topic,
@@ -210,6 +236,7 @@ fn group_from_channel(
     channel: &Channel,
     doc: &Document,
     path: &Path,
+    object_types: &mut ObjectTypeRegistry,
 ) -> anyhow::Result<Option<TopicGroupDef>> {
     let binding_topic = mqtt_topic_from_channel(channel);
     if !is_parametrized_channel(channel.address(), binding_topic.as_deref()) {
@@ -223,12 +250,12 @@ fn group_from_channel(
         );
     };
     let params = extract_params(&address);
-    let group = static_prefix(&address).unwrap_or_else(|| address.clone());
+    let group = group_identity(&address).unwrap_or_else(|| address.clone());
     let pattern = binding_topic
         .filter(|topic| topic.contains('+') || topic.contains('#'))
         .unwrap_or_else(|| wildcard_from_address(&address));
 
-    let (fields, payload_schema) = message_fields(channel, doc);
+    let (fields, payload_schema) = message_fields(channel, doc, object_types);
     let value_extensions = payload_schema
         .as_ref()
         .map(extensions_from_payload_schema)
@@ -308,15 +335,27 @@ fn extract_params(address: &str) -> Vec<String> {
         .collect()
 }
 
-/// Static leading segments of the address: `power-tags/{panel}/{slug}` →
-/// `power-tags`.
-fn static_prefix(address: &str) -> Option<String> {
-    let prefix = address
+/// Group identity from an address's static segments, all of them, not
+/// just the leading run before the first `{param}`. `power-tags/{panel}/{slug}`
+/// still gives `power-tags` (params are trailing there), but
+/// `thrs/controller/{module}/parameters` now gives
+/// `thrs/controller/parameters` instead of just `thrs/controller`.
+///
+/// Needed because THRS has several `thrs/controller/{module}/<suffix>`
+/// channels (controller-state, parameters, manual-values,
+/// automation-mode/set, ...) that all share the same prefix before
+/// `{module}`. Cutting at the first param collapsed them into one bogus
+/// group and tripped the duplicate-query-name check.
+fn group_identity(address: &str) -> Option<String> {
+    // Addresses end in `:<Role>` (`controller-state:Publisher`,
+    // `{field}:Handler`) that names the AsyncAPI operation kind, not part
+    // of the topic path, so strip it first or it leaks into the group name.
+    let address = address.rsplit_once(':').map_or(address, |(path, _role)| path);
+    let segments: Vec<&str> = address
         .split('/')
-        .take_while(|segment| param_name(segment).is_none())
-        .collect::<Vec<_>>()
-        .join("/");
-    (!prefix.is_empty()).then_some(prefix)
+        .filter(|segment| param_name(segment).is_none())
+        .collect();
+    (!segments.is_empty()).then(|| segments.join("/"))
 }
 
 /// MQTT subscription pattern derived from the address.
@@ -338,7 +377,11 @@ fn wildcard_from_address(address: &str) -> String {
 ///
 /// Channels with multiple messages are not yet union-typed; only the first
 /// message contributes fields and schema.
-fn message_fields(channel: &Channel, doc: &Document) -> (Vec<FieldDef>, Option<Value>) {
+fn message_fields(
+    channel: &Channel,
+    doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
+) -> (Vec<FieldDef>, Option<Value>) {
     let Some(message) = channel_messages(channel, doc).into_iter().next() else {
         return (Vec::new(), None);
     };
@@ -350,7 +393,7 @@ fn message_fields(channel: &Channel, doc: &Document) -> (Vec<FieldDef>, Option<V
     match resolve_payload_schema(payload_ref, doc) {
         Some(schema_or_multi) => {
             let schema_value = serde_json::to_value(&schema_or_multi).ok();
-            let fields = extract_fields_from_schema_or_multi(&schema_or_multi, doc);
+            let fields = extract_fields_from_schema_or_multi(&schema_or_multi, doc, object_types);
             (fields, schema_value)
         }
         None => (Vec::new(), None),
@@ -499,13 +542,14 @@ fn resolve_payload_schema<'a>(
 fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
 ) -> Vec<FieldDef> {
     match schema_or_multi {
-        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc),
+        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc, object_types),
         SchemaOrMultiFormat::MultiFormat(mf) => {
             // Try to deserialize the raw schema value as a Schema
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
-                extract_fields_from_schema(&schema, doc)
+                extract_fields_from_schema(&schema, doc, object_types)
             } else {
                 Vec::new()
             }
@@ -514,14 +558,30 @@ fn extract_fields_from_schema_or_multi(
     }
 }
 
-fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> Vec<FieldDef> {
+fn extract_fields_from_schema(
+    schema: &Schema,
+    doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
+) -> Vec<FieldDef> {
+    // Groups with a per-{field} payload (adsorption etc, where one field
+    // is a TemperatureSensor and another a Valve) come through as a
+    // top-level `anyOf` of branch schemas instead of one `properties` map.
+    // Union all the branches into one wide column set. Each topic only
+    // fills in its own branch's columns, the rest stay null (group_row in
+    // graphql.rs).
+    if schema.properties.is_empty() {
+        if let Some(any_of) = &schema.any_of {
+            return extract_fields_from_any_of(any_of, doc, object_types);
+        }
+    }
+
     // Fields colliding after lowerCamel sanitization are not tolerated here:
     // they surface as errors from `validate_topics` instead.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let graphql_type = graphql_type_for_subschema(subschema, doc)?;
+            let graphql_type = field_graphql_type(subschema, doc, object_types)?;
             let sanitized = sanitize_to_graphql_name(name);
             if sanitized.is_empty() {
                 warn!("Skipping field '{name}' sanitizes to empty GraphQL name");
@@ -533,6 +593,122 @@ fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> Vec<FieldDef> 
             })
         })
         .collect()
+}
+
+/// Resolve one property's GraphQL type. Tries, in order: a `Stamped`
+/// envelope (`{ Value: <T>, TimeStamp: <string> }`; THRS wraps basically
+/// every value in one of these), encoded as `"Stamped:<T>"` and picked up by
+/// `graphql_type_ref` in graphql.rs and turned into the shared `Stamped<T>`
+/// type so we keep the timestamp instead of throwing it away); a plain
+/// scalar; and finally a composite object ref (`PidControllerValues` and
+/// friends) via `resolve_object_type`, same as before.
+fn field_graphql_type(
+    subschema: &SubSchema,
+    doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
+) -> Option<String> {
+    if let Some(inner) = stamped_value_subschema(subschema, doc) {
+        let inner_type = graphql_type_for_subschema(&inner, doc)?;
+        return Some(format!("Stamped:{inner_type}"));
+    }
+    if let Some(scalar) = graphql_type_for_subschema(subschema, doc) {
+        return Some(scalar);
+    }
+    resolve_object_type(subschema, doc, object_types)
+}
+
+/// True if `subschema` is a Stamped envelope (properties exactly
+/// `{Value, TimeStamp}`). Returns its `Value` subschema if so.
+fn stamped_value_subschema(subschema: &SubSchema, doc: &Document) -> Option<SubSchema> {
+    let schema = resolve_subschema_to_schema(subschema, doc)?;
+    let keys: BTreeSet<&str> = schema.properties.keys().map(String::as_str).collect();
+    if keys != BTreeSet::from(["Value", "TimeStamp"]) {
+        return None;
+    }
+    schema.properties.get("Value").cloned()
+}
+
+/// Resolve `subschema` as a named composite object (not a scalar, not
+/// Stamped) and register it once in `object_types`, recursing into its own
+/// properties. Returns the `"Object:<Name>"` marker for `graphql_type_ref`,
+/// or `None` if it has no title or no fields (e.g. `AdsorptionControllerState`
+/// is legitimately empty for modules without PID/tank controllers, and you
+/// can't make a GraphQL type with zero fields, so that field just gets
+/// skipped).
+///
+/// Inserts a placeholder before recursing so a self-referential schema
+/// can't loop forever.
+fn resolve_object_type(
+    subschema: &SubSchema,
+    doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
+) -> Option<String> {
+    let schema = resolve_subschema_to_schema(subschema, doc)?;
+    if schema.properties.is_empty() {
+        return None;
+    }
+    let name = schema.title.clone()?;
+    if !object_types.contains_key(&name) {
+        object_types.insert(
+            name.clone(),
+            ObjectTypeDef {
+                name: name.clone(),
+                fields: Vec::new(),
+            },
+        );
+        let fields = extract_fields_from_schema(&schema, doc, object_types);
+        object_types.get_mut(&name).expect("just inserted").fields = fields;
+    }
+    Some(format!("Object:{name}"))
+}
+
+/// Union the properties of every `anyOf` branch into one field list --
+/// first occurrence of a field name wins. Branches with an unresolvable
+/// `$ref` are just skipped.
+///
+/// Two branches sharing a field name with the same type is fine (e.g.
+/// `Setpoint` on both `Valve` and `Pump`). Same name, different type, or
+/// two different names colliding after sanitization: that's a real
+/// conflict and `validate_topic_fields` catches it later, not silently
+/// dropped here.
+fn extract_fields_from_any_of(
+    any_of: &[SubSchema],
+    doc: &Document,
+    object_types: &mut ObjectTypeRegistry,
+) -> Vec<FieldDef> {
+    let mut merged: BTreeMap<String, FieldDef> = BTreeMap::new();
+    for sub in any_of {
+        let Some(branch_schema) = resolve_subschema_to_schema(sub, doc) else {
+            continue;
+        };
+        for field in extract_fields_from_schema(&branch_schema, doc, object_types) {
+            merged.entry(field.name.clone()).or_insert(field);
+        }
+    }
+    merged.into_values().collect()
+}
+
+/// Resolve a subschema (inline or `$ref`) to its concrete `Schema`. Same
+/// resolution as `graphql::graphql_type_for_subschema`, just returns the
+/// schema itself instead of a mapped scalar type.
+fn resolve_subschema_to_schema(sub: &SubSchema, doc: &Document) -> Option<Schema> {
+    match sub {
+        SubSchema::Bool(_) => None,
+        SubSchema::Schema(boxed) => match boxed.as_ref() {
+            RefOr::Item(schema) => Some(schema.clone()),
+            RefOr::Reference(reference) => {
+                match resolve_ref_to_entry(reference, "schemas", &doc.components.as_ref()?.schemas)?
+                    .item()?
+                {
+                    SchemaOrMultiFormat::Schema(s) => Some((**s).clone()),
+                    SchemaOrMultiFormat::MultiFormat(mf) => {
+                        serde_json::from_value(mf.schema.clone()).ok()
+                    }
+                    SchemaOrMultiFormat::Bool(_) => None,
+                }
+            }
+        },
+    }
 }
 
 /// Effective TTL for cached values of a channel: the maximum `x-ttl`
@@ -598,7 +774,7 @@ mod tests {
 
     /// Test convenience wrapper extracting just the topics.
     fn loaded_topics(dir: &Path) -> anyhow::Result<Vec<TopicDef>> {
-        let (topics, _) = load_specs_and_groups(dir.to_str().unwrap())?;
+        let (topics, _, _) = load_specs_and_groups(dir.to_str().unwrap())?;
         Ok(topics)
     }
 
