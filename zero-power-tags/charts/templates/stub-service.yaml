@@ -1,0 +1,21 @@
+{{- if and .Values.modbus.stub .Values.modbus.stub.enabled }}
+{{- $stubName := include "zero-power-tags.stubName" . }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $stubName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-power-tags.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+spec:
+  selector:
+    {{- include "zero-power-tags.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
+  ports:
+    {{- range $key, $panel := .Values.modbus.panels }}
+    - name: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
+      port: {{ $panel.port }}
+      targetPort: {{ include "zero-power-tags.stubPortName" (dict "key" $key) }}
+    {{- end }}
+{{- end }}
