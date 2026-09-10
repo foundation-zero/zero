@@ -148,11 +148,6 @@ def setup_control_modules(
         )
 
         parameters = module.parameters_cls()
-        control = module.control(
-            parameters,
-            time_fn,
-            machine_state_logger,
-        )
 
         # This line should not be here since it exposes that we are dealing with a switching module
         # We need to refactor the switching control functionality to be more local/abstractable
@@ -160,8 +155,15 @@ def setup_control_modules(
 
         channel = ControlChannels(connector, config, module_name, module)
 
-        alarms = module.alarms()
-
-        result.append(Module(module_name, control, alarms, channel))
+        result.append(
+            Module(
+                module_name,
+                description=module,
+                parameters=parameters,
+                channels=channel,
+                time_fn=time_fn,
+                state_logger=machine_state_logger,
+            )
+        )
 
     return result

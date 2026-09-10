@@ -9,9 +9,7 @@ from tests.orchestration.simples import (
     SimpleParameters,
     simple_control_values,
 )
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingService,
-)
+from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.control.switching import Switching
@@ -60,6 +58,10 @@ def switching() -> Callable[[float], Switching]:
     def _make(manual_flow: float = 1.0) -> Switching:
         manual = ManualControl(simple_control_values(flow=manual_flow))
         automatic = SimpleControl(SimpleParameters.zero(), datetime.now)
-        return Switching(manual, automatic, name="simple")
+        return Switching(
+            manual,
+            automatic,
+            name="simple",
+        )
 
     return _make

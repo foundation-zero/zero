@@ -122,6 +122,12 @@ class ConsumersControl(
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
         return (_INITIAL_CONTROL_VALUES(self._time()), ConsumersControllerState())
 
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._init_controllers()
+
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
             self._parameters.dhw_enabled,

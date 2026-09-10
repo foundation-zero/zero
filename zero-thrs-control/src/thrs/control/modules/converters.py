@@ -193,6 +193,11 @@ class ConvertersControl(
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
         return (self._current_values, ConvertersControllerState())
 
+    def reset(self) -> None:
+        raise NotImplementedError(
+            "Reset is not implemented as this control is intended to be used as a subcontrol of DcControl"
+        )
+
     def _close_circuit(self):
         self._current_values.mix.setpoint = Stamped(
             value=Valve.MIXING_B_TO_AB, timestamp=self._time()

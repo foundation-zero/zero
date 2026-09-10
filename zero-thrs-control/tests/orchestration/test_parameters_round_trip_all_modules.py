@@ -99,19 +99,20 @@ def _make_module(name: str, description: ModuleDescription) -> Module:
     """Build a real Module for `description`, with mocked control channels since
     we never send anything over MQTT in these tests - only persistence is under
     test here."""
-    control = description.control(
-        description.parameters_cls(),
-        lambda: datetime.now(UTC),
-        MachineStateLoggingServiceNoop(),
-    )
-
     channels = mock.Mock()
     channels.get_sensor_values.return_value = None
     channels.get_parameters.return_value = None
     channels.get_manual_controls.return_value = None
     channels.get_automation_modes.return_value = None
 
-    return Module(name, control, description.alarms(), channels)
+    return Module(
+        name,
+        description=description,
+        parameters=description.parameters_cls(),
+        channels=channels,
+        time_fn=lambda: datetime.now(UTC),
+        state_logger=MachineStateLoggingServiceNoop(),
+    )
 
 
 @pytest.mark.parametrize("name,description", ALL_MODULE_DESCRIPTIONS.items())

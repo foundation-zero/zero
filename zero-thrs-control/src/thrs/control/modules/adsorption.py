@@ -232,6 +232,13 @@ class AdsorptionControl(
             AdsorptionControllerState(),
         )
 
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers()
+
     @StateLogger.log_warnings
     def control(
         self, sensor_values: AdsorptionSensorValues

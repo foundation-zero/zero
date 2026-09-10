@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import mock
 
 from pydantic import Field
@@ -15,7 +16,7 @@ from thrs.classes.machine_state_logger import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import ThrsValues
-from thrs.orchestration.module import Module
+from thrs.orchestration.module import Module, ModuleDescription
 
 
 class ConfigurableParameters(ThrsValues):
@@ -36,9 +37,17 @@ class ConfigurableControl(
         SimpleControllerState,
     ]
 ):
-    def __init__(self, parameters: ConfigurableParameters) -> None:
+    def __init__(
+        self,
+        parameters: ConfigurableParameters,
+        time_fn=None,
+        state_logger: StateLogger | None = None,
+    ) -> None:
         self._parameters = parameters
-        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+        self._time_fn = time_fn or datetime.now
+        self.state_logger: StateLogger = (
+            state_logger or MachineStateLoggingServiceNoop()
+        )
         self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
@@ -62,6 +71,9 @@ class ConfigurableControl(
 
     def update_controls(self, control_values: SimpleInOut) -> None:
         self._current_values.update_in_place(control_values)
+
+    def reset(self) -> None:
+        self._current_values = SimpleInOut.zero()
 
 
 type ConfigurableModule = Module[
@@ -97,14 +109,27 @@ def make_async_channels() -> mock.Mock:
     return channels
 
 
+CONFIGURABLE_MODULE_DESCRIPTION = ModuleDescription(
+    SimpleInOut,
+    SimpleInOut,
+    ConfigurableParameters,
+    ConfigurableControl,
+    SimpleMode,
+    SimpleControllerState,
+    ConfigurableAlarms,
+)
+
+
 def make_module(
     name: str = "test", channels: mock.Mock | None = None
 ) -> ConfigurableModule:
     return Module(
         name,
-        ConfigurableControl(ConfigurableParameters()),
-        ConfigurableAlarms(),
-        channels or make_channels(),
+        description=CONFIGURABLE_MODULE_DESCRIPTION,
+        parameters=ConfigurableParameters(),
+        channels=channels or make_channels(),
+        time_fn=datetime.now,
+        state_logger=MachineStateLoggingServiceNoop(),
     )
 
 

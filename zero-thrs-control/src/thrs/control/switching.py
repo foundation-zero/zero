@@ -1,12 +1,8 @@
 import logging
-from typing import Literal, cast
+from typing import Literal
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
-from thrs.control.manual import EmptyParameters, ManualControl
+from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
@@ -50,9 +46,8 @@ class Switching[
         self._automatic_control = automatic
         self._name = name
         self._mode: ControlModes = "manual"
+        self._last_mode: ControlModes = "manual"
         self._was_advisory: bool | None = None
-        self._parameters = cast(ControlParameters, EmptyParameters())
-        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
 
     @property
     def automatic_control(self):
@@ -88,23 +83,24 @@ class Switching[
                 self._mode,
             )
         self._was_advisory = is_advisory
-        if actuated_control_values is not None:
-            self.update_manual_controls(actuated_control_values)
         if not is_advisory:
+            if actuated_control_values is not None:
+                self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self.control_mode == "manual":
+            if self._last_mode == "automatic" and actuated_control_values is not None:
+                self.update_manual_controls(actuated_control_values)
             control_values, _ = self._manual_control.control(sensor_values)
-            # Keep automatic control in sync with manual control
-            self._automatic_control.update_controls(control_values)
             _, controller_state = self._automatic_control.initial()
+            self._last_mode = "manual"
             return control_values, controller_state
+        if self._last_mode == "manual":
+            self._automatic_control.reset()
         control_values, controller_state = self._automatic_control.control(
             sensor_values
         )
-
-        # Keep the manual controls tracking the control output, so switching doesn't jump controls
-        self.update_manual_controls(control_values)
+        self._last_mode = "automatic"
         return control_values, controller_state
 
     def switch_mode(self, mode: AutomationMode):

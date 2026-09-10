@@ -23,6 +23,8 @@ class Control[SensorValues, ControlValues, Parameters, ControlMode, ControllerSt
 
     def update_parameters(self, parameters: Parameters): ...
 
+    def reset(self) -> None: ...
+
     state_logger: StateLogger
 
 

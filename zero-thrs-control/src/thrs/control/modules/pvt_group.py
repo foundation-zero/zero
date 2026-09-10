@@ -173,6 +173,11 @@ class PvtGroupControl(
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (self._current_values, PvtGroupControllerState())
 
+    def reset(self) -> None:
+        raise NotImplementedError(
+            "Reset is not implemented as this control is intended to be used as a subcontrol of PvtControl"
+        )
+
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
             sensor_values.max_temperature_strings.temperature.value is not None

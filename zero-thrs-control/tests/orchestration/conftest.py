@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import mock
 
 import pytest
@@ -5,6 +6,7 @@ import pytest
 from tests.helpers.modules import make_async_channels
 from tests.orchestration.simples import simple_non_advisory_values
 from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
@@ -29,9 +31,24 @@ def mock_channels():
 
 
 @pytest.fixture
-def module_factory(mock_control, mock_alarms, mock_channels):
+def mock_description(mock_control, mock_alarms):
+    description = mock.Mock()
+    description.control.return_value = mock_control
+    description.alarms.return_value = mock_alarms
+    return description
+
+
+@pytest.fixture
+def module_factory(mock_channels, mock_description):
     def make_module(name: str = "test"):
-        return Module(name, mock_control, mock_alarms, mock_channels)
+        return Module(
+            name,
+            description=mock_description,
+            parameters=mock.Mock(),
+            channels=mock_channels,
+            time_fn=datetime.now,
+            state_logger=MachineStateLoggingServiceNoop(),
+        )
 
     return make_module
 

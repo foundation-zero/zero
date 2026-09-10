@@ -286,6 +286,12 @@ class PvtControl(
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._init_controllers(self._parameters, self._time)
+
     @StateLogger.log_parameters
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters

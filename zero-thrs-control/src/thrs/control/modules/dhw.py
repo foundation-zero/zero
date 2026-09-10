@@ -152,6 +152,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N
 
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
+
+    pump_pid_zero = PidController.zero(timestamp)
+    pump_pid_zero.setpoint = Stamped(value=0.1, timestamp=timestamp)
+
     return DhwControllerState(
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -161,8 +165,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
         ),
         dhw_drives_flow_controller=PidController.zero(timestamp),
         dhw_dc_flow_controller=PidController.zero(timestamp),
-        dhw_pump_flow_controller=PidController.zero(timestamp),
-        dhw_pump_temperature_controller=PidController.zero(timestamp),
+        dhw_pump_flow_controller=pump_pid_zero.model_copy(deep=True),
+        dhw_pump_temperature_controller=pump_pid_zero.model_copy(deep=True),
     )
 
 
@@ -761,6 +765,13 @@ class DhwControl(
             _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
             controller_state.model_copy(deep=True),
         )
+
+    def reset(self) -> None:
+        self._current_values, self._current_controller_state = self.initial()
+        self._boosting_pump_controller = None
+        self._boosting_pump_measurement = None
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers()
 
     @StateLogger.log_warnings
     def control(

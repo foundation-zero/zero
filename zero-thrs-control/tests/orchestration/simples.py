@@ -83,10 +83,17 @@ class SimpleControl(
         SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode, SimpleControllerState
     ]
 ):
-    def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
+    def __init__(
+        self,
+        parameters: SimpleParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger | None = None,
+    ):
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+        self.state_logger: StateLogger = (
+            state_logger or MachineStateLoggingServiceNoop()
+        )
         self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
@@ -111,13 +118,16 @@ class SimpleControl(
 
     @property
     def parameters(self) -> SimpleParameters:
-        return SimpleParameters()
+        return self._parameters
 
     def update_parameters(self, parameters: SimpleParameters):
-        pass
+        self._parameters = parameters
 
     def update_controls(self, control_values: SimpleInOut) -> None:
         self._current_values.update_in_place(control_values)
+
+    def reset(self) -> None:
+        self._current_values = SimpleInOut.zero()
 
 
 def simple_advisory_values(flow: float) -> SimpleInOut:
