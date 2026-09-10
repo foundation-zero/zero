@@ -84,7 +84,6 @@ export const MAIN_SAIL_GROUP = group(
   "Main sail",
   PositionId.Main,
   "main-sheet-load",
-  "main-traveller-load",
   "main-traveller-relative-position",
   "main-vang-load",
   "main-vang-relative-position",
