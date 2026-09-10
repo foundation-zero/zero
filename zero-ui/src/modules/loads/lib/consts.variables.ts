@@ -412,7 +412,6 @@ export const VARIABLE_IDS = [
   "main-runner-ps-load",
   "main-runner-sb-load",
   "main-sheet-load",
-  "main-traveller-load",
   "main-traveller-relative-position",
   "main-vang-load",
   "main-vang-relative-position",
