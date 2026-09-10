@@ -240,6 +240,36 @@ async def test_disable_warning_names_module(
     )
 
 
+async def test_stale_automation_mode_not_reapplied_after_advisory_return(
+    advisory_sensor_values, manual_values, mock_channels, mock_control, module_factory
+):
+    """A consumed `automatic` command must not switch to automatic after an advisory loss forced manual mode."""
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_control.control.return_value = (simple_control_values(flow=9.0), None)
+    mock_channels.get_automation_modes.side_effect = [
+        AutomationMode(mode="automatic"),
+        None,
+        None,
+    ]
+    mock_channels.get_actuated_control_values.return_value = simple_control_values(
+        flow=6.0
+    )
+
+    module = module_factory()
+
+    await module.sync_control_channels_state()
+    await module.tick(advisory_sensor_values)
+    assert module._control.automatic
+
+    await module.sync_control_channels_state()
+    await module.tick(manual_values)
+    assert module._control.manual
+
+    await module.sync_control_channels_state()
+    await module.tick(advisory_sensor_values)
+    assert module._control.manual
+
+
 async def test_tick_without_sensors_echoes_actuated(manual_values):
     """A sensor gap publishes the last actuated values"""
     channels = make_async_channels()

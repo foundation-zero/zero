@@ -6,7 +6,13 @@ import pytest
 from aiomqtt import Client, Topic
 from pydantic import computed_field
 
-from tests.orchestration.simples import SimpleInOut
+from tests.orchestration.simples import (
+    SimpleControllerState,
+    SimpleInOut,
+    SimpleMode,
+    SimpleParameters,
+)
+from thrs.control.switching import AutomationMode
 from thrs.input_output.base import (
     CombinedValues,
     Stamped,
@@ -21,12 +27,14 @@ from thrs.input_output.definitions.sensor import (
     TemperatureSensor,
 )
 from thrs.orchestration.comms import (
+    ControlChannels,
     DirectMqttMapping,
     MergedModuleMqttMapping,
     ModuleMqttMapping,
     MqttConnector,
     PartialMqttMapping,
 )
+from thrs.orchestration.module import ModuleDescription
 
 
 class ValuesWithTopics(ThrsValues):
@@ -173,6 +181,136 @@ class TestDirectMqttMapping:
         )
         mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
         assert mapping.result() == model
+
+
+def _simple_model(flow: float) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        )
+    )
+
+
+class TestDirectMqttMappingAutoclear:
+    def test_default_stays_sticky(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+        model = _simple_model(1.0)
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        assert mapping.result() == model
+        assert mapping.result() == model
+
+    def test_result_consumes_once(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
+        model = _simple_model(1.0)
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        assert mapping.result() == model
+        assert mapping.result() is None
+
+    def test_new_message_rearms(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
+        first = _simple_model(1.0)
+        mapping.handle_message("sensors/data", first.model_dump_json(by_alias=True))
+        assert mapping.result() == first
+        assert mapping.result() is None
+        second = _simple_model(2.0)
+        mapping.handle_message("sensors/data", second.model_dump_json(by_alias=True))
+        assert mapping.result() == second
+        assert mapping.result() is None
+
+    def test_for_module_passes_autoclear(self):
+        mapping = DirectMqttMapping.for_module(
+            SimpleInOut, "prefix", "module", type_topic="values", autoclear=True
+        )
+        model = _simple_model(1.0)
+        topic = next(iter(mapping.subscribe_topics()))
+        mapping.handle_message(topic, model.model_dump_json(by_alias=True))
+        assert mapping.result() == model
+        assert mapping.result() is None
+
+    async def test_wait_for_consumes_on_match(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
+        model = _simple_model(1.0)
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        assert await mapping.wait_for(lambda v: v == model, timeout_s=1.0) == model
+        assert mapping.result() is None
+
+    async def test_wait_for_preserves_non_matching(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
+        model = _simple_model(1.0)
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        with pytest.raises(TimeoutError):
+            await mapping.wait_for(lambda v: v == _simple_model(2.0), timeout_s=0.05)
+        assert mapping.result() == model
+
+    async def test_wait_for_result_consumes(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
+        first = _simple_model(1.0)
+        mapping.handle_message("sensors/data", first.model_dump_json(by_alias=True))
+        assert await mapping.wait_for_result() == first
+        assert mapping.result() is None
+        second = _simple_model(2.0)
+        mapping.handle_message("sensors/data", second.model_dump_json(by_alias=True))
+        assert await mapping.wait_for_result() == second
+        assert mapping.result() is None
+
+    async def test_wait_for_result_without_autoclear_stays_sticky(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+        model = _simple_model(1.0)
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        assert await mapping.wait_for_result() == model
+        assert mapping.result() == model
+
+
+class TestControlChannelsAutoclear:
+    def test_command_channels_consume(self, settings):
+        listeners: list = []
+        connector = mock.Mock()
+        connector._register_listener.side_effect = listeners.append
+        connector._create_publisher.side_effect = lambda _mapping, *args, **kwargs: (
+            mock.AsyncMock()
+        )
+        description = ModuleDescription(
+            SimpleInOut,
+            SimpleInOut,
+            SimpleParameters,
+            lambda *_args, **_kwargs: mock.Mock(),
+            SimpleMode,
+            SimpleControllerState,
+            mock.Mock,
+        )
+        channels = ControlChannels(connector, settings, "testmodule", description)
+
+        def listener_for(fragment: str):
+            return next(
+                listener
+                for listener in listeners
+                if any(fragment in topic for topic in listener.subscribe_topics())
+            )
+
+        mode_listener = listener_for("automation-mode")
+        mode_topic = next(iter(mode_listener.subscribe_topics()))
+        mode_listener.handle_message(
+            mode_topic, AutomationMode(mode="automatic").model_dump_json()
+        )
+        assert channels.get_automation_modes() == AutomationMode(mode="automatic")
+        assert channels.get_automation_modes() is None
+
+        parameters_listener = listener_for("parameters")
+        parameters_topic = next(iter(parameters_listener.subscribe_topics()))
+        parameters_listener.handle_message(
+            parameters_topic, SimpleParameters().model_dump_json()
+        )
+        assert channels.get_parameters() == SimpleParameters()
+        assert channels.get_parameters() is None
+
+        manual_listener = listener_for("manual-values")
+        manual_topic = next(iter(manual_listener.subscribe_topics()))
+        manual_values = _simple_model(3.0)
+        manual_listener.handle_message(
+            manual_topic, manual_values.model_dump_json(by_alias=True)
+        )
+        assert channels.get_manual_controls() == manual_values
+        assert channels.get_manual_controls() is None
 
 
 class TestCombinedMqttMapping:

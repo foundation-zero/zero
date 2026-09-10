@@ -169,6 +169,8 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         cls: type[M] | tuple[type[M], ...],
         topic: str,
         topic_suffix: str | None = None,
+        *,
+        autoclear: bool = False,
     ):
         self._types = cls if isinstance(cls, tuple) else (cls,)
         validate_type: type[M] | object = self._types[0]
@@ -180,6 +182,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._future = Future()
         self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
+        self._autoclear = autoclear
 
     @staticmethod
     def for_module(
@@ -189,11 +192,13 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         *,
         type_topic: str | None = None,
         topic_suffix: str | None = None,
+        autoclear: bool = False,
     ) -> "DirectMqttMapping[M]":
         base = f"{topic_prefix}/{module_name}{f'/{type_topic}' if type_topic else ''}"
         return DirectMqttMapping(
             message_type,
             f"{base}{f'/{topic_suffix}' if topic_suffix else ''}",
+            autoclear=autoclear,
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
@@ -216,9 +221,16 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         gather(*awaitables, return_exceptions=True)
 
     def result(self) -> M | None:
-        return self._value
+        value = self._value
+        if value is not None and self._autoclear:
+            self._value = None
+        return value
 
     async def wait_for_result(self) -> M:
+        if self._autoclear:
+            while self._value is None:
+                await self.wait_for_update()
+            return cast(M, self.result())
         return await self._future
 
     async def wait_for_update(self):
@@ -228,8 +240,11 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     async def wait_for(self, condition: Callable[[M], bool], timeout_s: float) -> M:
         async with timeout(timeout_s):
             while True:
-                if (result := self.result()) and condition(result):
-                    return result
+                peek = self._value
+                if peek is not None and condition(peek):
+                    if self._autoclear:
+                        self._value = None
+                    return peek
                 await self.wait_for_update()
 
     def add_hook(self, hook: Callable[[M], object]):
@@ -381,6 +396,7 @@ class ControlChannels[
             module_name,
             type_topic="parameters",
             topic_suffix=config.mqtt_controller_topic_suffix,
+            autoclear=True,
         )
         connector._register_listener(parameters_mapping)
 
@@ -390,6 +406,7 @@ class ControlChannels[
             module_name,
             type_topic="automation-mode",
             topic_suffix=config.mqtt_controller_topic_suffix,
+            autoclear=True,
         )
         connector._register_listener(manual_mode_mapping)
         manual_controls_mapping = DirectMqttMapping[C].for_module(
@@ -398,6 +415,7 @@ class ControlChannels[
             module_name,
             type_topic="manual-values",
             topic_suffix=config.mqtt_controller_topic_suffix,
+            autoclear=True,
         )
         connector._register_listener(manual_controls_mapping)
 

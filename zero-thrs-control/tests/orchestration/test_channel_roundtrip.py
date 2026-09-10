@@ -178,17 +178,30 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
             await api_channels.send_parameters(expected_parameters)
             await api_channels.send_automation_mode(expected_mode)
 
-            await _wait_until(
-                lambda: (
-                    control_channels.get_manual_controls() is not None
-                    and control_channels.get_parameters() is not None
-                    and control_channels.get_automation_modes() is not None
-                )
-            )
+            # Values are autocleared, so store them as they are seen
+            seen: dict[str, object] = {}
 
-            manual_values = control_channels.get_manual_controls()
-            parameters = control_channels.get_parameters()
-            automation_modes = control_channels.get_automation_modes()
+            def _poll() -> bool:
+                manual_values = control_channels.get_manual_controls()
+                parameters = control_channels.get_parameters()
+                automation_modes = control_channels.get_automation_modes()
+                if manual_values is not None:
+                    seen["manual_values"] = manual_values
+                if parameters is not None:
+                    seen["parameters"] = parameters
+                if automation_modes is not None:
+                    seen["automation_modes"] = automation_modes
+                return (
+                    "manual_values" in seen
+                    and "parameters" in seen
+                    and "automation_modes" in seen
+                )
+
+            await _wait_until(_poll)
+
+            manual_values = seen["manual_values"]
+            parameters = seen["parameters"]
+            automation_modes = seen["automation_modes"]
 
             assert manual_values is not None
             assert parameters is not None
@@ -197,6 +210,10 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
             assert manual_values == expected_manual_values
             assert parameters == expected_parameters
             assert automation_modes == expected_mode
+
+            assert control_channels.get_manual_controls() is None
+            assert control_channels.get_parameters() is None
+            assert control_channels.get_automation_modes() is None
         finally:
             connector_task.cancel()
 
