@@ -52,7 +52,7 @@ const overhoist = computed(() => {
     v-if="isMastLock && type === 'graphical'"
     class="col-span-1 w-full max-w-full"
     :locked="!!variable.actual?.value"
-    :overhoist="!!overhoist?.actual?.value"
+    :overhoist="overhoist ? !!overhoist.actual?.value : undefined"
   >
     {{ variable?.variable?.name }}
   </MastLock>
@@ -60,7 +60,7 @@ const overhoist = computed(() => {
     v-else-if="isMastLock && type === 'numerical'"
     class="col-span-1 w-full max-w-full"
     :locked="!!variable.actual?.value"
-    :overhoist="!!overhoist?.actual?.value"
+    :overhoist="overhoist ? !!overhoist.actual?.value : undefined"
   >
     {{ variable?.variable?.name }}
   </MastLockCompact>

@@ -31,6 +31,7 @@ const delegatedProps = reactiveOmit(props, "class");
       {{ $t("locked") }}
     </MastLockPosition>
     <MastLockPosition
+      v-if="overhoist !== undefined"
       class="mt-1.5"
       :state="overhoist"
     >

@@ -114,9 +114,8 @@ class MachineStateLogger:
         await asyncio.wait(self._pending_tasks, timeout=timeout)
 
     async def _log_model_async(self, model: SQLModel):
-        async with self.postgres_db.session_factory() as session:
+        async with self.postgres_db.session_factory.begin() as session:
             session.add(model)
-            await session.commit()
 
 
 class StateLogger:

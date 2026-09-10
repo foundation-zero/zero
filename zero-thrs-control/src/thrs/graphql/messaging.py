@@ -20,8 +20,6 @@ class ControlMessaging[
     Mode: ThrsValues,
     ControllerState: ThrsValues,
 ]:
-    active: bool
-
     def __init__(
         self,
         channels: ControlApiChannels[
@@ -32,13 +30,9 @@ class ControlMessaging[
             ControllerState,
         ],
     ):
-        self.active = False
         self._channels = channels
 
     async def set_manual_control(self, name: str, value: Any) -> ControlValues:
-        if not self.active:
-            raise Exception("Cannot send manual controls to inactive module")
-
         control_values = self._channels.get_manual_values()
         if control_values is None:
             raise Exception("No control values available to modify")
@@ -84,7 +78,7 @@ class ControlMessaging[
 
     @property
     def control_values(self) -> ControlValues | None:
-        return self._channels.get_control_values() or self._channels.get_manual_values()
+        return self._channels.get_actuated_control_values()
 
     @property
     def controller_state(self) -> ControllerState | None:
@@ -167,9 +161,6 @@ class DirectiveMessaging:
             return
 
         self._simulation_status = status
-
-        for module in self._control_modules:
-            module.active = module._channels.module_name in status.control_modules
 
     async def play_simulation(self, playback_rate: float):
         simulation_status = self._directives_channels.get_simulation_status()

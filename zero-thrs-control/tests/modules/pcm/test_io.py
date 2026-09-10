@@ -45,4 +45,8 @@ def test_pcm_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(PcmSensorValues, PcmControlValues)
+    compare_yard_tags(
+        PcmSensorValues,
+        PcmControlValues,
+        exclude={"pcm_mode"},
+    )

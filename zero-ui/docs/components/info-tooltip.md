@@ -1,6 +1,6 @@
 # Info Tooltip
 
-A simple tooltip component that displays an info icon with additional information on hover or focus.
+A click/tap popover component that displays an info icon with additional information.
 
 <script setup>
 import { InfoTooltip } from '@/modules/common/components/info-tooltip'
@@ -8,7 +8,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
 
 ## Overview
 
-The InfoTooltip component provides a consistent way to display contextual help or additional information. It uses a ghost button with an info icon that triggers a tooltip when hovered or focused.
+The InfoTooltip component provides a consistent way to display contextual help or additional information. It uses a button with an info icon that toggles a popover when clicked or tapped.
 
 ### Basic Example
 
@@ -88,6 +88,13 @@ The InfoTooltip component provides a consistent way to display contextual help o
 | Slot | Description |
 |------|-------------|
 | `default` | The content to display in the tooltip |
+| `trigger` | Optional text displayed before the info icon |
+
+### Models
+
+| Model | Description |
+|-------|-------------|
+| `v-model:open` | Controls whether the popover is open |
 
 ## Usage Guidelines
 
@@ -108,12 +115,12 @@ The InfoTooltip component provides a consistent way to display contextual help o
 ## Accessibility
 
 - The component uses a button element, making it keyboard accessible
-- Supports focus and hover interactions
+- Supports keyboard focus and click/tap interactions
 - The info icon provides a visual indicator that additional information is available
 - Content should be concise and descriptive
 
 ## Design Notes
 
 - Info icon is sized at 5 units (size-5) for optimal visibility
-- Tooltip appears on hover or focus with appropriate positioning
-- Consistent with shadcn/ui tooltip patterns
+- Popover appears when the trigger is clicked or tapped
+- Consistent with shadcn/ui popover patterns

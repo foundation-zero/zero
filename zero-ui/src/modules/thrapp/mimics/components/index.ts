@@ -78,15 +78,18 @@ export interface MimicComponentContext {
   stateColor: Ref<string>;
   state: Ref<MimicComponentState | undefined>;
   strokeWidth: Ref<number>;
+  rotationDegrees: Ref<number>;
 }
 
 export const createMimicComponentContext = (
   state: Ref<MimicComponentState | undefined>,
+  rotationDegrees: MaybeRef<number> = 0,
   strokeWidth: number = 2,
 ): MimicComponentContext => ({
   stateColor: computed(() => stateColorMap[state.value!]),
   state,
   strokeWidth: computed(() => (state.value === MimicComponentState.Normal ? 1 : strokeWidth)),
+  rotationDegrees: computed(() => refValue(rotationDegrees)),
 });
 
 export const [getMimicComponentContext, provideMimicComponentContext] =
@@ -100,14 +103,26 @@ export const getNextOrientation = (orientation: ComponentOrientation, stepSize =
   return CLOCKWISE_ORIENTATIONS[nextOrientationIndex];
 };
 
-export const useOrientation = (
+export const useRotationDegrees = (
   orientation: MaybeRef<ComponentOrientation>,
   baseOrientation: MaybeRef<ComponentOrientation>,
   rotation: MaybeRef<Ratio> = 0,
 ) =>
-  computed(() => ({
-    transform: `rotate(${mmath.normalizeDegrees(refValue(orientation) - refValue(baseOrientation) - 90 * refValue(rotation))}deg)`,
-  }));
+  computed(() =>
+    mmath.normalizeDegrees(
+      refValue(orientation) - refValue(baseOrientation) - 90 * refValue(rotation),
+    ),
+  );
+
+export const useOrientation = (
+  orientation: MaybeRef<ComponentOrientation>,
+  baseOrientation: MaybeRef<ComponentOrientation>,
+  rotation: MaybeRef<Ratio> = 0,
+) => {
+  const degrees = useRotationDegrees(orientation, baseOrientation, rotation);
+
+  return computed(() => ({ transform: `rotate(${degrees.value}deg)` }));
+};
 
 export const createSizeAndViewbox = (
   width: number | string,

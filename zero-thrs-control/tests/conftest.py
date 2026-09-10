@@ -68,6 +68,8 @@ def postgres_db(mock_session: Mock) -> Mock:
     async def session_factory() -> AsyncIterator[Mock]:
         yield mock_session
 
+    session_factory.begin = session_factory  # type: ignore[attr-defined]
+
     postgres_db = Mock(spec=PostgresDatabase)
     postgres_db.session_factory = session_factory
     return postgres_db

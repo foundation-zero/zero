@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import FlowControlValveInstance from "../instances/FlowControlValveInstance.vue";
 import ControlValueForm from "../providers/ControlValueForm.vue";
@@ -31,6 +32,11 @@ const { labels, items, sources } = useTranslations();
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="valves"
+        field="position_rel"
+      />
       <Partials.ManualControl />
     </TooltipList>
 

@@ -20,6 +20,8 @@ const props = withDefaults(defineProps<PumpProps & MimicComponentBaseProps>(), {
   pumpState: PumpState.Active,
   orientation: PUMP_BASE_ORIENTATION,
   manual: false,
+  width: PUMP_WIDTH,
+  height: PUMP_HEIGHT,
 });
 
 const colors = computed(() =>
@@ -31,8 +33,9 @@ const colors = computed(() =>
 
 <template>
   <MimicComponent
-    :width="PUMP_WIDTH"
-    :height="PUMP_HEIGHT"
+    :width="props.width"
+    :height="props.height"
+    :viewBox="`0 0 ${PUMP_WIDTH} ${PUMP_HEIGHT}`"
     :base-orientation="PUMP_BASE_ORIENTATION"
     :orientation="orientation"
     :state="state"

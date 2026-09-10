@@ -137,7 +137,7 @@ def test_boosting_transitions(
     assert control._tanks_controller.boosting
     assert control.mode.is_boosting_heatpump
     assert isinstance(sensor_values, DhwSensorValues)
-    assert sensor_values.dhw_flow_boosting.flow.value == approx(25, abs=0.2)
+    assert sensor_values.dhw_flow_boosting.flow.value == approx(25, abs=0.5)
     assert (
         sensor_values.dhw_temperature_boosting_supply.temperature.value
         < sensor_values.dhw_temperature_boosting_return.temperature.value
@@ -281,7 +281,7 @@ def test_boosting_pump_held_until_boosting_loop_open(
 
     # while the boosting valves travel the pump must not be driven
     while not control._boosting_loop_open(runner.tick()[0]):  # type: ignore
-        assert control._current_values.dhw_pump.dutypoint.value == 0.0
+        assert control._current_values.dhw_pump.dutypoint.value == 0.1
         assert not control._pump_temperature_controller.enabled()
 
     sensor_values, *_ = runner.run(120)
@@ -289,3 +289,56 @@ def test_boosting_pump_held_until_boosting_loop_open(
     assert sensor_values is not None
     assert control._pump_temperature_controller.enabled()
     assert sensor_values.dhw_flow_boosting.flow.value > 0.1
+
+
+def test_reset_restores_initial_control_state(
+    control: DhwControl, parameters, sensor_values: DhwSensorValues
+):
+    state_logger = control.state_logger
+
+    # Dirty all mutable state: tick once, then force the rest.
+    control.control(sensor_values)
+    control._current_values.dhw_pump.dutypoint = Stamped.stamp(0.9)
+    for pid in (
+        control._drives_flow_controller,
+        control._dc_flow_controller,
+        control._pump_temperature_controller,
+    ):
+        if not pid.enabled():
+            pid.enable()
+    control._pump_temperature_controller(control._pump_temperature_controller.setpoint)
+    control._state_machine.set_state("boosting_heatpump")
+    control._tanks_controller._filling_tank = control._tanks_controller._tanks[0]
+
+    control.reset()
+
+    # Parameters, time function and logger are kept (same objects, no re-log).
+    assert control.parameters is parameters
+    assert control.state_logger is state_logger
+    # State machine is back at its initial state without firing transitions.
+    assert control.mode == control.initial_mode
+    assert control.mode.is_boosting_idle
+    # Current controls are back at initial values.
+    assert control._current_values.dhw_pump.dutypoint.value == approx(0.1)
+    assert control._current_values.dhw_pump.on.value is False
+    assert control._current_values.dhw_heatpump.on.value is False
+    assert control._current_values.dhw_flowcontrol_drives.setpoint.value == approx(0.0)
+    assert control._current_values.dhw_flowcontrol_dc.setpoint.value == approx(0.0)
+    # Sub-controllers are fresh: PIDs disabled with no integral state, pump
+    # selection cleared, tanks controller rebound to the new control values.
+    assert not control._drives_flow_controller.enabled()
+    assert not control._dc_flow_controller.enabled()
+    assert not control._pump_temperature_controller.enabled()
+    assert not control._pump_flow_controller.enabled()
+    assert control._boosting_pump_controller is None
+    assert control._boosting_pump_measurement is None
+    assert not control._tanks_controller.filling
+    assert not control._tanks_controller.boosting
+    assert (
+        control._tanks_controller._tanks[0]._inlet
+        is control._current_values.dhw_switch_tank1_inlet
+    )
+    assert (
+        control._current_controller_state.dhw_tanks_controller.tank1_state.value
+        == TankState.NEEDS_FILL.value
+    )

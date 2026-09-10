@@ -43,6 +43,8 @@ import {
   TEMPERATURE_THRESHOLDS,
 } from "../../domestic/lib/consts";
 
+export * from "./numbers";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -79,10 +81,16 @@ export const updateSetpointWhenControlsHaveChanged = <K extends string>(
     }
   });
 
-export const ratioAsPercentage = (ratio: MaybeRef<Maybe<number>>) =>
-  computed({
+export function ratioAsPercentage(ratio: MaybeRef<Maybe<number>>): Ref<number | undefined>;
+export function ratioAsPercentage(ratio: MaybeRef<Maybe<number>>, defaultToZero: true): Ref<number>;
+export function ratioAsPercentage(
+  ratio: MaybeRef<Maybe<number>>,
+  defaultToZero?: boolean,
+): Ref<number | undefined> {
+  return computed({
     get() {
-      return Number(unref(ratio)) * 100;
+      const value = unref(ratio);
+      return value !== undefined ? Number(value) * 100 : defaultToZero ? 0 : undefined;
     },
     set(percentage: number) {
       if (isRef(ratio)) {
@@ -90,8 +98,10 @@ export const ratioAsPercentage = (ratio: MaybeRef<Maybe<number>>) =>
       }
     },
   });
+}
 
-export const toInversedPercentage = (percentage: number) => 100 - percentage;
+export const toInversedPercentage = (percentage: MaybeRef<number>) => 100 - unref(percentage);
+
 export const separateDecimals = (
   value: Ref<Maybe<number>>,
   digits: number = 1,
@@ -137,38 +147,6 @@ export const writeProtected = <T>(value: Ref<T>, writeAllowed: Ref<boolean>) =>
       }
     },
   });
-
-export type NumberFormatter = (value: number, locale?: string) => string;
-
-export const formatNumber =
-  (digits: number): NumberFormatter =>
-  (value: number, locale: string = "en-US") => {
-    return new Intl.NumberFormat(locale, {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    }).format(value);
-  };
-
-formatNumber.default = formatNumber(1);
-formatNumber.int = formatNumber(0);
-
-export const getNumberSign = (value: number) => (value >= 0 ? "+" : "");
-
-export const formatRatio =
-  (digits: number): NumberFormatter =>
-  (value: number, locale: string = "en-US") =>
-    formatNumber(digits)(value * 100, locale);
-
-formatRatio.default = formatRatio(0);
-
-export const formatInt = formatNumber(0);
-export const formatFixed = (digits: number, value: number, locale: string = "en-US") =>
-  formatNumber(digits)(value, locale);
-
-export const toSignedNumber =
-  (formatFn: NumberFormatter): NumberFormatter =>
-  (value: number, locale?: string) =>
-    `${getNumberSign(value)}${formatFn(value, locale)}`;
 
 export const generateRandomValues = (amount: number, min: number = 0, max: number = 1000) =>
   new Array(amount).fill(0).map(() => Math.random() * (max - min + 1) + min);

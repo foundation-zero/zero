@@ -8,3 +8,4 @@
 - "!include thrs_machinestate_issue.yaml"
 - "!include thrs_machinestate_parameters.yaml"
 - "!include thrs_machinestate_transition.yaml"
+- "!include thrs_module_persistence.yaml"

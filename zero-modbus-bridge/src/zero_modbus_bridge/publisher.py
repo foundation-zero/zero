@@ -51,7 +51,9 @@ class MappingPublisher:
     ):
         self._inner = inner
         self._mapper = mapper
-        self._mappers: dict[str, Any] | None = mapper if isinstance(mapper, dict) else None
+        self._mappers: dict[str, Any] | None = (
+            mapper if isinstance(mapper, dict) else None
+        )
 
     async def publish(self, topic: str, payload: BaseModel) -> None:
         """Map ``payload`` then delegate to ``inner``."""

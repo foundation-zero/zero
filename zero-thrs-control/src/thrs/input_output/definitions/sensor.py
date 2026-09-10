@@ -39,8 +39,6 @@ class FlowSensor(ThrsValues):
 
 
 class Pump(ThrsValues):
-    dutypoint: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
-    on: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
@@ -63,15 +61,6 @@ class Pump(ThrsValues):
         )
     )
 
-    # TODO: Remove once marpower fixes this on their side
-    @field_validator("dutypoint")
-    @classmethod
-    def correct_marpower_range(cls, value: Stamped[Ratio]) -> Stamped[Ratio]:
-        if value.value > 1.0:
-            value.value /= 100
-
-        return value
-
 
 class TemperatureSensor(ThrsValues):
     temperature: Stamped[Celsius]
@@ -79,6 +68,15 @@ class TemperatureSensor(ThrsValues):
 
 class LevelSensor(ThrsValues):
     level: Stamped[Liter]
+
+    # TODO: Remove this when api is no longer coupled
+    @field_validator("level", mode="before")
+    @classmethod
+    def fix_nan(cls, value: Stamped[Liter] | dict) -> Stamped[Liter] | dict:
+        if isinstance(value, dict) and value["Value"] == "NaN":
+            value["Value"] = 0.0
+            value["TimeStamp"] = datetime.fromtimestamp(0, UTC)
+        return value
 
 
 class CalculatedTemperature(ThrsValues):
@@ -115,6 +113,18 @@ class CalculatedTemperature(ThrsValues):
 
 class CalculatedFlow(ThrsValues):
     flow: Stamped[LMin]
+
+    @classmethod
+    def from_sensors(cls, sensors: list[FlowSensor]):
+        flows = [sensor.flow for sensor in sensors]
+        total_flow = sum(flow.value for flow in flows)
+
+        return CalculatedFlow(
+            flow=Stamped.combine(
+                *flows,
+                value=total_flow,
+            )
+        )
 
     @classmethod
     def from_weighted_sensors(
@@ -167,15 +177,17 @@ class HeatTransferDevice(ThrsValues):
     @classmethod
     def from_sensors(
         cls,
-        temperature_supply: Stamped[Celsius],
-        temperature_return: Stamped[Celsius],
+        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
+        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
         flow: Stamped[LMin],
         heat_transfer_conversion: float,
     ) -> Self:
         delta_t = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=temperature_return.value - temperature_supply.value,
+            value=0.0
+            if temperature_supply.value is None or temperature_return.value is None
+            else temperature_return.value - temperature_supply.value,
         )
         heat = Stamped.combine(
             delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
@@ -192,6 +204,10 @@ class HeatPump(HeatTransferDevice):
 
 
 class HeatExchanger(HeatTransferDevice):
+    pass
+
+
+class Pvt(HeatTransferDevice):
     pass
 
 
@@ -382,6 +398,7 @@ __all__ = [
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
+    "Pvt",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

@@ -1,15 +1,15 @@
 import asyncio
 from asyncio import create_task
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest import mock
 
 import pytest
 from aiomqtt import Client as MqttClient
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
-from thrs.input_output.base import (
-    ThrsValues,
-)
+from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
+from thrs.input_output.definitions import sensor
+from thrs.input_output.definitions.control import Pump, Valve
 from thrs.orchestration.comms import (
     ControlApiChannels,
     ControlChannels,
@@ -32,6 +32,10 @@ class DemoSensorValues(ThrsValues):
 
 class DemoComponent(ThrsValues):
     value: float = 0.0
+
+
+class DemoMqttSensorValues(ThrsValues):
+    value: DemoComponent = DemoComponent()
 
 
 class DemoControlValues(ThrsValues):
@@ -96,6 +100,14 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
         )
 
         api_channels = ControlApiChannels(connector, settings, "thrusters", demo_module)
+        simulation_channels = SimulationChannels(
+            connector,
+            settings,
+            {"thrusters": DemoMqttSensorValues},
+            {"thrusters": DemoControlValues},
+            DemoSimulationInputs,
+            DemoSimulationOutputs,
+        )
 
         connector_task = create_task(await connector.run())
 
@@ -112,6 +124,14 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 automatic_mode=DemoMode(mode="automatic")
             )
 
+            await simulation_channels.send_sensor_values(
+                CombinedValues(
+                    {"thrusters": DemoMqttSensorValues(value=DemoComponent(value=1.0))}
+                )
+            )
+            await simulation_channels.send_actuated_control_values(
+                CombinedValues({"thrusters": expected_control_values})
+            )
             await control_channels.send_control_values(expected_control_values)
             await control_channels.send_manual_control(expected_manual_values)
             await control_channels.send_parameters(expected_parameters)
@@ -121,7 +141,8 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
 
             await _wait_until(
                 lambda: (
-                    api_channels.get_control_values() == expected_control_values
+                    api_channels.get_actuated_control_values()
+                    == expected_control_values
                     and api_channels.get_manual_values() == expected_manual_values
                     and api_channels.get_parameters() == expected_parameters
                     and api_channels.get_controller_state() == expected_state
@@ -176,6 +197,134 @@ async def test_control_api_channels_to_control_channels_roundtrip_shared_channel
             assert manual_values == expected_manual_values
             assert parameters == expected_parameters
             assert automation_modes == expected_mode
+        finally:
+            connector_task.cancel()
+
+
+async def test_actuated_control_values_roundtrip(
+    settings: Config,
+):
+    """The simulator merges sensor values and actuated control values into one
+    payload per component topic, like the AMCS publishes them. The control and
+    API sides pick both halves out of that shared payload, while sensors-only
+    payloads and plain-key commands on the Command topics must not complete
+    the actuated mapping."""
+
+    class SharedDemoSensorValues(ThrsValues):
+        pump: sensor.Pump
+        temperature: sensor.TemperatureSensor
+
+    class SharedDemoControlValues(ThrsValues):
+        pump: Pump
+        valve: Valve
+
+    shared_module = ModuleDescription(
+        SharedDemoSensorValues,
+        SharedDemoControlValues,
+        DemoParameters,
+        lambda *_args, **_kwargs: mock.Mock(),
+        DemoMode,
+        DemoControllerState,
+        mock.Mock,
+    )
+
+    shared_sensor_model = SharedDemoSensorValues(
+        pump=sensor.Pump(
+            speed=Stamped.stamp(50.0),
+            flow=Stamped.stamp(20.0),
+        ),
+        temperature=sensor.TemperatureSensor(temperature=Stamped.stamp(25.0)),
+    )
+    sensor_values = CombinedValues({"thrusters": shared_sensor_model})
+    shared_control_model = SharedDemoControlValues(
+        pump=Pump(
+            dutypoint=Stamped(
+                value=0.4,
+                timestamp=datetime(2026, 1, 2, tzinfo=UTC),
+            ),
+            on=Stamped(
+                value=True,
+                timestamp=datetime(2026, 1, 2, tzinfo=UTC),
+            ),
+        ),
+        valve=Valve(
+            setpoint=Stamped(
+                value=0.6,
+                timestamp=datetime(2026, 1, 2, tzinfo=UTC),
+            )
+        ),
+    )
+    actuated = CombinedValues({"thrusters": shared_control_model})
+    commanded_model = SharedDemoControlValues(
+        pump=Pump(
+            dutypoint=Stamped(
+                value=0.3,
+                timestamp=datetime(2026, 1, 1, tzinfo=UTC),
+            ),
+            on=Stamped(
+                value=True,
+                timestamp=datetime(2026, 1, 1, tzinfo=UTC),
+            ),
+        ),
+        valve=Valve(
+            setpoint=Stamped(
+                value=0.5,
+                timestamp=datetime(2026, 1, 1, tzinfo=UTC),
+            )
+        ),
+    )
+
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
+        connector = MqttConnector(mqtt_client)
+
+        simulation_channels = SimulationChannels(
+            connector,
+            settings,
+            {"thrusters": SharedDemoSensorValues},
+            {"thrusters": SharedDemoControlValues},
+            DemoSimulationInputs,
+            DemoSimulationOutputs,
+        )
+        control_channels = ControlChannels(
+            connector, settings, "thrusters", shared_module
+        )
+        api_channels = ControlApiChannels(
+            connector, settings, "thrusters", shared_module
+        )
+
+        connector_task = create_task(await connector.run())
+
+        try:
+            await simulation_channels.send_sensor_values(sensor_values)
+            await asyncio.sleep(0.1)
+            # Assert sensor values are not received, because the actuated control values have not been sent yet, so the merged payload is not complete.
+            assert control_channels.get_sensor_values() is None
+            assert api_channels.get_sensor_values() is None
+            assert control_channels.get_actuated_control_values() is None
+            assert api_channels.get_actuated_control_values() is None
+
+            # The merged publish completes both mappings on both sides.
+            await simulation_channels.send_actuated_control_values(actuated)
+            await _wait_until(
+                lambda: (
+                    control_channels.get_sensor_values() == shared_sensor_model
+                    and api_channels.get_sensor_values() == shared_sensor_model
+                    and api_channels.get_actuated_control_values() is not None
+                    and api_channels.get_actuated_control_values()
+                    == shared_control_model
+                    and control_channels.get_actuated_control_values() is not None
+                    and control_channels.get_actuated_control_values()
+                    == shared_control_model
+                )
+            )
+            # Plain-key commands on the Command topics are not actuated values:
+            # publishing one must leave the actuated mappings untouched.
+            await control_channels.send_control_values(commanded_model)
+            await asyncio.sleep(0.1)
+            assert (
+                control_channels.get_actuated_control_values() == shared_control_model
+            )
+            assert api_channels.get_actuated_control_values() == shared_control_model
         finally:
             connector_task.cancel()
 

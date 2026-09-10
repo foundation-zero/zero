@@ -52,11 +52,11 @@ class DrivesParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa: N802
     return DrivesControlValues(
         drives_pump1=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         drives_pump2=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         drives_mix_exchanger=Valve(
@@ -218,6 +218,7 @@ class DrivesControl(
             setpoint=lambda: self._parameters.shorepower_flow_setpoint,
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
+            output_limits=(0.1, 1),
         )
 
         self._pump_controller_propulsion = PidController[Ratio, LMin](
@@ -225,6 +226,7 @@ class DrivesControl(
             setpoint=0,  # gets overriden by flow balance controller
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
+            output_limits=(0.1, 1),
         )
 
         self._aft_flow_controller = PidController[Ratio, LMin](
@@ -263,6 +265,9 @@ class DrivesControl(
     def update_parameters(self, parameters: DrivesParameters):
         self._parameters = parameters
 
+    def update_controls(self, control_values: DrivesControlValues):
+        self._current_values.update_in_place(control_values)
+
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -278,6 +283,13 @@ class DrivesControl(
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
         return (_INITIAL_CONTROL_VALUES(self._time()), DrivesControllerState())
+
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers()
 
     @StateLogger.log_warnings
     def control(
@@ -408,7 +420,6 @@ class DrivesControl(
             raise Warning("No pump active when deactivating")
 
         self._active_pump.on = Stamped(value=False, timestamp=self._time())
-        self._active_pump.dutypoint = Stamped(value=0, timestamp=self._time())
         self._active_pump = None
 
     def _set_valves_to_shore_power(self, sensor_values: DrivesSensorValues):

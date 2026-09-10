@@ -47,10 +47,6 @@
           "description": "Seconds between Modbus reads.",
           "minimum": 1
         },
-        "bridgesPath": {
-          "type": "string",
-          "description": "Path to modbus_bridges.json inside the container."
-        },
         "panels": {
           "type": "object",
           "description": "Gateway per panel. Keys are sanitized panel names (panel 10P0.1 → key 10p0_1) rendered as MODBUS_PANELS__host_<key> / MODBUS_PANELS__port_<key> environment variables.",
@@ -74,11 +70,11 @@
         },
         "stub": {
           "type": "object",
-          "description": "Serve dummy Modbus data from a local stub deployment (no hardware dependency).",
+          "description": "Dummy-data mode: deploy a stub Modbus workload/Service (for envs without hardware). Point each panel's host at the stub Service with a distinct unprivileged port.",
           "properties": {
             "enabled": {
               "type": "boolean",
-              "description": "Render an extra stub Deployment running the `stub` subcommand plus a Service; point modbus.panels hosts at the stub Service with per-panel ports."
+              "description": "Deploy the stub workload/Service. Each panel's host should point at the stub Service on a distinct port (>= 1024, since the stub runs non-root)."
             }
           }
         }

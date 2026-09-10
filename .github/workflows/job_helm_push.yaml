@@ -18,15 +18,23 @@ jobs:
       id-token: "write"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: "0"
+          fetch-tags: true
+      - name: Git describe
+        id: ghd
+        uses: proudust/gh-describe@v2
+        with:
+          match: "v*.*.*" # Best-effort match for semver-ish tags like vX.Y.Z
       - name: Update Chart Versions
         id: chart_info
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
         env:
           VERSION_UPDATES: ${{ inputs.version_updates }}
         run: |
           # v1.2.3
-          export GIT_REF=${{github.ref_name}}
+          export GIT_REF=${{steps.ghd.outputs.describe}}
           # 1.2.3
           export VERSION=${GIT_REF#v}
           yq e -i '.version = strenv(VERSION)' ${{ inputs.helm_chart }}/Chart.yaml
@@ -40,7 +48,7 @@ jobs:
           fi
       - id: auth
         name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           token_format: access_token
           project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
@@ -48,13 +56,13 @@ jobs:
           service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 300s
       - name: Login to Artifact Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: europe-west1-docker.pkg.dev
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
       - name: Set up Helm repositories
         run: |
           helm repo add hasura https://hasura.github.io/helm-charts

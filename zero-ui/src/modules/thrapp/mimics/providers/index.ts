@@ -29,7 +29,7 @@ export { default as ParameterValue } from "./ParameterValue.vue";
 export { default as ParameterValueForm } from "./ParameterValueForm.vue";
 export { default as SensorValue } from "./SensorValue.vue";
 
-export type CustomFieldData = {
+export type SchemaDirectiveData = {
   title?: string;
   yardTag?: string;
   technicalName: string;
@@ -37,8 +37,8 @@ export type CustomFieldData = {
 
 export const getCustomField = <Module extends keyof ThrsDefinitions>(
   module: Module,
-  field: CustomFieldData,
-): ModuleField<"custom", Module> => ["custom", module, field.technicalName, field];
+  data: SchemaDirectiveData,
+): ModuleField<"custom", Module> => ["custom", module, data.technicalName, data];
 
 export const getField = <
   Type extends
@@ -65,7 +65,7 @@ export const getField = <
 >(
   type: Type,
   module: Module,
-  field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>>,
+  field: PickKeys<ThrsDefinitions[Module][Section], SchemaDefinition<Type>> | Placeholder,
 ): ModuleField<Type, Module> => [type, module, field, null] as ModuleField<Type, Module>;
 
 export type ModuleField<
@@ -83,7 +83,9 @@ export type ModuleField<
     | undefined
     | "custom",
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
-  CustomData extends CustomFieldData | null = Type extends "custom" ? CustomFieldData : null,
+  CustomData extends SchemaDirectiveData | null = Type extends "custom"
+    ? SchemaDirectiveData
+    : null,
 > = [type: Type, module: Module, field: string, customData: CustomData];
 
 export const isField = <
@@ -100,10 +102,25 @@ export const isField = <
   return field?.[0] !== undefined && (type === undefined || field[0] === type);
 };
 
+export type Placeholder = "placeholder";
+
 export const isCustomField = <Type extends "custom" = "custom">(
   field?: ModuleField,
 ): field is ModuleField<Type> => {
   return isField(field, "custom");
+};
+
+export const isPlaceholderField = <
+  Type extends
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType
+    | "custom",
+>(
+  field?: ModuleField<Type | undefined>,
+) => {
+  return isField(field) && field[2] === "placeholder";
 };
 
 export const isSensorField = <Type extends SensorComponentType = SensorComponentType>(
@@ -158,6 +175,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
+  [SensorComponentType.Irradiance]: "irradiance",
   [SensorComponentType.AmcsControlMode]: "mode",
 };
 
@@ -246,6 +264,9 @@ export const getFieldValue = <T>(
 export const getDefinition = (field: ModuleField) => {
   const [_, module, fieldName, customData] = field;
 
+  if (fieldName === "placeholder") {
+    return undefined;
+  }
   if (isSensorField(field)) {
     return getSensorDefinition(module, fieldName);
   } else if (isControlField(field)) {

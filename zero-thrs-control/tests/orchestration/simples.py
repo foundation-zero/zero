@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from datetime import UTC, datetime
+from typing import Annotated
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
@@ -7,7 +8,7 @@ from thrs.classes.machine_state_logger import (
     StateLogger,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.sensor_values import AmcsModeSensorValues
@@ -17,9 +18,9 @@ from thrs.orchestration.simulation import Simulation, SimulationResult
 class SimpleInOut(AmcsModeSensorValues):
     go_with_the: FlowSensor
 
-    @property
-    def mode(self) -> AmcsControlMode:
-        return AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = (
+        AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
+    )
 
 
 class SimpleSimulationInputs(ThrsValues):
@@ -82,10 +83,18 @@ class SimpleControl(
         SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode, SimpleControllerState
     ]
 ):
-    def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
+    def __init__(
+        self,
+        parameters: SimpleParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger | None = None,
+    ):
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger: StateLogger = MachineStateLoggingServiceNoop()
+        self.state_logger: StateLogger = (
+            state_logger or MachineStateLoggingServiceNoop()
+        )
+        self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (SimpleInOut.zero(), SimpleControllerState())
@@ -109,10 +118,44 @@ class SimpleControl(
 
     @property
     def parameters(self) -> SimpleParameters:
-        return SimpleParameters()
+        return self._parameters
 
     def update_parameters(self, parameters: SimpleParameters):
-        pass
+        self._parameters = parameters
+
+    def update_controls(self, control_values: SimpleInOut) -> None:
+        self._current_values.update_in_place(control_values)
+
+    def reset(self) -> None:
+        self._current_values = SimpleInOut.zero()
+
+
+def simple_advisory_values(flow: float) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        ),
+        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+    )
+
+
+def simple_non_advisory_values(
+    flow: float, mode: ControlMode = ControlMode.MANUAL
+) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        ),
+        mode=AmcsControlMode(mode=Stamped.stamp(mode)),
+    )
+
+
+def simple_control_values(flow: float) -> SimpleInOut:
+    return SimpleInOut(
+        go_with_the=FlowSensor(
+            flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
+        )
+    )
 
 
 class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters]):

@@ -1,27 +1,25 @@
+import logging
 from unittest import mock
 
-from thrs.classes.control import Control
+from tests.helpers.modules import (
+    ConfigurableParameters,
+    make_async_channels,
+    make_module,
+)
+from tests.orchestration.simples import (
+    simple_advisory_values,
+    simple_control_values,
+)
+from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.switching import AutomationMode
-from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.orchestration.module import Module
 
 
-async def test_module_returns_control_when_sensor_values_are_none():
-    mock_control = mock.Mock(Control)
+async def test_module_returns_control_when_sensor_values_are_none(
+    mock_control, mock_alarms, module_factory
+):
     mock_control.initial.return_value = (mock.sentinel.control_values, None)
 
-    mock_alarms = mock.Mock(BaseAlarms)
-
-    mock_channels = mock.AsyncMock()
-
-    module = Module(
-        "test",
-        mock_control,
-        mock_alarms,
-        mock_channels,
-    )
+    module = module_factory()
 
     control_values = await module.tick(None)
 
@@ -30,59 +28,228 @@ async def test_module_returns_control_when_sensor_values_are_none():
     assert mock_alarms.check.call_count == 0
 
 
-async def test_module_returns_initial_control_when_manual():
-    sensor_values = mock.Mock(
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
-    )
-
-    mock_control = mock.Mock(Control)
+async def test_module_returns_initial_control_when_manual(
+    advisory_sensor_values, mock_control, mock_alarms, module_factory
+):
     mock_control.initial.return_value = (mock.sentinel.control_values, None)
 
-    mock_alarms = mock.Mock(BaseAlarms)
+    module = module_factory()
 
-    mock_channels = mock.AsyncMock()
-
-    module = Module(
-        "test",
-        mock_control,
-        mock_alarms,
-        mock_channels,
-    )
-
-    control_values = await module.tick(sensor_values)
+    control_values = await module.tick(advisory_sensor_values)
 
     assert control_values == mock.sentinel.control_values
     assert mock_control.control.call_count == 0
     assert mock_alarms.check.call_args_list == [
-        mock.call(sensor_values, mock.sentinel.control_values, mock.ANY)
+        mock.call(advisory_sensor_values, mock.sentinel.control_values, mock.ANY)
     ]
 
 
-async def test_module_returns_control_when_automatic():
-    sensor_values = mock.Mock(
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
-    )
-    mock_control = mock.Mock(Control)
+async def test_module_returns_control_when_automatic(
+    advisory_sensor_values, mock_channels, mock_control, mock_alarms, module_factory
+):
     mock_control.initial.return_value = (mock.sentinel.initial_control_values, None)
     mock_control.control.return_value = (mock.sentinel.control_values, None)
 
-    mock_alarms = mock.Mock(BaseAlarms)
-
-    mock_channels = mock.AsyncMock()
     mock_channels.get_manual_controls.return_value = None
 
-    module = Module(
-        "test",
-        mock_control,
-        mock_alarms,
-        mock_channels,
-    )
+    module = module_factory()
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
-    control_values = await module.tick(sensor_values)
+    control_values = await module.tick(advisory_sensor_values)
 
     assert control_values == mock.sentinel.control_values
-    assert mock_control.control.call_args_list == [mock.call(sensor_values)]
+    assert mock_control.control.call_args_list == [mock.call(advisory_sensor_values)]
     assert mock_alarms.check.call_args_list == [
-        mock.call(sensor_values, mock.sentinel.control_values, mock.ANY)
+        mock.call(advisory_sensor_values, mock.sentinel.control_values, mock.ANY)
     ]
+
+
+async def test_module_forces_manual_and_seeds_actuated_when_not_advisory(
+    manual_values, mock_channels, mock_control, module_factory
+):
+    """Non-advisory means the AMCS is in control: the module must force manual
+    mode and seed the manual controls with the actuated control values so a
+    later takeover is bumpless."""
+    actuated = mock.sentinel.actuated_control_values
+
+    mock_control.initial.return_value = (mock.sentinel.initial_control_values, None)
+
+    mock_channels.get_actuated_control_values.return_value = actuated
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+
+    await module.tick(manual_values)
+
+    assert module._control.mode.automatic is False
+    assert module._control._manual_control._control_values == actuated
+
+
+async def test_module_forces_manual_even_without_actuated_values(
+    local_sensor_values, mock_channels, mock_control, module_factory
+):
+    """Without actuated feedback we can still not stay automatic when the
+    AMCS is in control; manual controls keep their last value."""
+    initial_control_values = {"dutypoint": 0.5}
+    mock_control.initial.return_value = (initial_control_values, None)
+    mock_control.control.return_value = (initial_control_values, None)
+
+    mock_channels.get_actuated_control_values.return_value = None
+    mock_channels.get_manual_controls.return_value = None
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+
+    await module.tick(local_sensor_values)
+
+    assert module._control.mode.automatic is False
+    assert mock_channels.get_actuated_control_values.call_count == 1
+    # The manual controls keep the initial value: without actuated feedback
+    # there is nothing to seed them with.
+    assert mock_channels.send_manual_control.await_args == mock.call(
+        initial_control_values
+    )
+
+
+async def test_tick_publishes_actuated_echo_when_not_advisory(
+    manual_values, mock_channels, mock_control, module_factory
+):
+    """While the AMCS is not in advisory mode the module must still publishes,
+    echoing the actuated values."""
+    actuated = simple_control_values(flow=6.0)
+
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+
+    mock_channels.get_actuated_control_values.return_value = actuated
+
+    module = module_factory()
+
+    control_values = await module.tick(manual_values)
+
+    assert control_values == actuated
+    assert mock_channels.send_control_values.await_args == mock.call(actuated)
+    assert mock_channels.send_manual_control.await_args == mock.call(actuated)
+
+
+async def test_automatic_control_resets_and_returns_first_control_tick(
+    advisory_sensor_values,
+    manual_values,
+    mock_channels,
+    mock_control,
+    mock_description,
+    module_factory,
+):
+    initial = simple_control_values(flow=1.0)
+    actuated = simple_control_values(flow=6.0)
+    fresh_values = simple_control_values(flow=9.0)
+    mock_control.initial.return_value = (initial, None)
+    mock_control.control.return_value = (fresh_values, None)
+    mock_channels.get_actuated_control_values.return_value = actuated
+
+    module = module_factory()
+    assert mock_description.control.call_count == 1  # initial build
+
+    manual_control_values = await module.tick(manual_values)
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+    automatic_control_values = await module.tick(advisory_sensor_values)
+
+    assert manual_control_values == actuated
+    assert mock_description.control.call_count == 1  # no rebuild, reset in place
+    assert module._control.automatic_control is mock_control
+    mock_control.reset.assert_called_once_with()
+    assert mock_control.control.call_args_list == [mock.call(advisory_sensor_values)]
+    assert automatic_control_values == fresh_values
+    assert automatic_control_values != initial
+    assert automatic_control_values != actuated
+
+
+async def test_parameters_changed_while_manual_survive_engage():
+    channels = make_async_channels()
+    module = make_module(channels=channels)
+    module._control.update_parameters(ConfigurableParameters(setpoint=77.0))
+    automatic = module._control.automatic_control
+    logger_before = module.control_state_logger
+
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+    await module.tick(simple_advisory_values(flow=2.0))
+
+    assert module._control.automatic_control is automatic
+    assert automatic.parameters.setpoint == 77.0
+    assert module._control.parameters.setpoint == 77.0
+    assert module.control_state_logger is logger_before
+
+
+async def test_snapshot_with_custom_params_restores_into_first_automatic_tick():
+    module = make_module(channels=make_async_channels())
+    module.apply_persistence_snapshot(
+        ModulePersistenceSnapshot(
+            parameters={"setpoint": 77.0},
+            manual_control_values=None,
+            control_mode="automatic",
+        )
+    )
+    assert module._control.parameters.setpoint == 77.0
+    automatic = module._control.automatic_control
+
+    await module.tick(simple_advisory_values(flow=2.0))
+
+    assert module._control.automatic_control is automatic
+    assert automatic.parameters.setpoint == 77.0
+    assert module._control.parameters.setpoint == 77.0
+
+
+async def test_automatic_to_manual_snaps_to_actuated_while_advisory(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    """Flipping to manual while advisory resumes from actuated values."""
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    auto_values = simple_control_values(flow=8.0)
+    actuated = simple_control_values(flow=6.0)
+    mock_control.control.return_value = (auto_values, None)
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+    assert await module.tick(advisory_sensor_values) == auto_values
+
+    module.set_automation_mode(AutomationMode(mode="manual"))
+    mock_channels.get_actuated_control_values.return_value = actuated
+    control_values = await module.tick(advisory_sensor_values)
+
+    assert control_values == actuated
+    assert mock_channels.send_manual_control.await_args == mock.call(actuated)
+
+
+async def test_disable_warning_names_module(
+    caplog, manual_values, mock_channels, mock_control, module_factory
+):
+    """When the advisory mode for a model is disabled, a warning is triggered"""
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+
+    mock_channels.get_actuated_control_values.return_value = simple_control_values(
+        flow=6.0
+    )
+
+    module = module_factory(name="dummy")
+
+    await module.tick(simple_advisory_values(flow=1.0))
+    with caplog.at_level(logging.WARNING, logger="thrs.control.switching"):
+        await module.tick(manual_values)
+
+    assert any(
+        "advisory was disabled for dummy" in record.message for record in caplog.records
+    )
+
+
+async def test_tick_without_sensors_echoes_actuated(manual_values):
+    """A sensor gap publishes the last actuated values"""
+    channels = make_async_channels()
+    actuated = simple_control_values(flow=6.0)
+    channels.get_actuated_control_values.return_value = actuated
+
+    module = make_module(channels=channels)
+
+    control_values = await module.tick(manual_values)
+    assert control_values == actuated
+
+    control_values = await module.tick(None)
+    assert control_values == actuated

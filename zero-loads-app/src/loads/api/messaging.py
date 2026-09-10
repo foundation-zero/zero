@@ -86,7 +86,7 @@ class Messaging:
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         try:
             return model.parse_message_payload(message.payload)
-        except ValidationError as e:
+        except (ValidationError, ValueError, TypeError) as e:
             logger.error(
                 f"Failed to parse message payload for topic {message.topic.value}: {e}"
             )

@@ -1,27 +1,28 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { MimicComponentInstanceProps } from ".";
+import type { LabelProps } from "../components/label";
 import { Label } from "../components/label";
 import { ValueList, ValueListDeltaTItem, ValueListHeatPowerItem } from "../components/value-list";
 import { ModuleField } from "../providers";
 
 defineProps<
-  MimicComponentInstanceProps & {
-    heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
-  }
+  MimicComponentInstanceProps &
+    LabelProps & {
+      heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
+    }
 >();
 </script>
 
 <template>
   <Label
-    :x="x"
-    :y="y"
+    v-bind="$props"
     height="70"
-    class="w-20 py-0.5"
+    class="py-0.5"
   >
     {{ tagId }}
     <template #value>
-      <ValueList>
+      <ValueList class="gap-0">
         <ValueListDeltaTItem
           class="text-sm"
           :source="heatExchanger"

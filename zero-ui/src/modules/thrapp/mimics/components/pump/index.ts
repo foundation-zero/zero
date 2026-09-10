@@ -11,6 +11,8 @@ export const enum PumpState {
 export interface PumpProps {
   pumpState?: PumpState | MimicComponentState;
   manual?: boolean;
+  width?: number;
+  height?: number;
 }
 
 interface PumpStateColors {

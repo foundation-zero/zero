@@ -10,14 +10,14 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { AmcsControlModeSensor } from "../types";
+import { AmcsControlModeSensor, PvtMode } from "../types";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };
 export type PvtAutomaticMode = {
-  aft: { mode: string };
-  fwd: { mode: string };
-  owners: { mode: string };
+  aft: { mode: PvtMode };
+  fwd: { mode: PvtMode };
+  owners: { mode: PvtMode };
 };
 export type AdsorptionAutomaticMode = { mode: string };
 export type ConsumersAutomaticMode = Record<string, never>;
@@ -59,8 +59,8 @@ export type ControlModes = {
 export type ControlStatus = {
   modules: {
     [K in keyof ControlModes]: {
-      controlMode: ControlMode<ControlModes[K]>;
-      sensorValues: Record<`${K}Mode`, AmcsControlModeSensor>;
+      controlMode: Nullable<ControlMode<ControlModes[K]>>;
+      sensorValues: Record<`mode`, AmcsControlModeSensor>;
     };
   };
 };
@@ -76,7 +76,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          thrustersMode {
+          mode {
             mode {
               value
             }
@@ -99,7 +99,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          pvtMode {
+          mode {
             mode {
               value
             }
@@ -114,7 +114,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          pcmMode {
+          mode {
             mode {
               value
             }
@@ -129,7 +129,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          adsorptionMode {
+          mode {
             mode {
               value
             }
@@ -141,7 +141,7 @@ export const CONTROL_QUERY = gql`
           automatic
         }
         sensorValues {
-          consumersMode {
+          mode {
             mode {
               value
             }
@@ -164,7 +164,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          dcMode {
+          mode {
             mode {
               value
             }
@@ -180,7 +180,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          dhwMode {
+          mode {
             mode {
               value
             }
@@ -195,7 +195,7 @@ export const CONTROL_QUERY = gql`
           }
         }
         sensorValues {
-          drivesMode {
+          mode {
             mode {
               value
             }

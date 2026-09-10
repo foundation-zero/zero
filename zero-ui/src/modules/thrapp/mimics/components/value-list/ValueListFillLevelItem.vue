@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatNumber } from "@/modules/common/lib/utils";
+import { formatUnit } from "@/modules/common/lib/utils";
 import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
 import { RiWaterPercentLine } from "@remixicon/vue";
 import { HTMLAttributes } from "vue";
@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const formatLevel = (value: number) => formatNumber.int((value / props.maxLevel) * 100);
+const formatLevel = formatUnit("percent", 0, {}, (value) => (value / props.maxLevel) * 100);
 </script>
 
 <template>

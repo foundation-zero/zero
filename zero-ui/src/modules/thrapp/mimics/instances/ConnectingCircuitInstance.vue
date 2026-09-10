@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
-import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
+import { RiArrowDownLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -42,15 +42,19 @@ const t = tScoped("labels");
       <ValueList>
         <ValueListSeparator />
         <ValueListHeader>
-          <RiArrowDownLine class="text-muted-foreground size-3" />
-          {{ t("to") }}
+          <slot name="from">
+            <RiArrowDownLine class="text-muted-foreground size-3" />
+            {{ t("from") }}
+          </slot>
         </ValueListHeader>
         <ValueListFlowItem :source="sensors.flowIn" />
         <ValueListTemperatureItem :source="sensors.tIn" />
         <ValueListSeparator />
         <ValueListHeader>
-          <RiArrowLeftLine class="text-muted-foreground size-3" />
-          {{ t("from") }}
+          <slot name="to">
+            <RiArrowDownLine class="text-muted-foreground size-3" />
+            {{ t("to") }}
+          </slot>
         </ValueListHeader>
         <ValueListFlowItem :source="sensors.flowOut" />
         <ValueListTemperatureItem :source="sensors.tOut" />

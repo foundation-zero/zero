@@ -24,9 +24,8 @@ TOPIC_PATTERN = f"{TOPIC_PREFIX}/{{panel}}/{{slug}}"
 class PowerTag(BaseModel):
     """One PowerTag breaker's readings.
 
-    The annotated ``ModbusField(register=…)`` addresses are absolute: every
-    breaker exposes the same register block on its own Modbus slave id, so
-    this model is the single source of truth for the register map.
+    ``ModbusField(register=…)`` values are 0-based protocol addresses — the
+    Schneider PAS600's 1-based register numbers minus one (3000 → 2999).
     """
 
     component: str | None = None
@@ -34,74 +33,74 @@ class PowerTag(BaseModel):
     consumer: str | None = None
     current_a: Annotated[
         float | None,
-        ModbusField(register=3000, data_type="float32", validator=is_finite_float),
+        ModbusField(register=2999, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "A"}),
     ]
     current_b: Annotated[
         float | None,
-        ModbusField(register=3002, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3001, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "A"}),
     ]
     current_c: Annotated[
         float | None,
-        ModbusField(register=3004, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3003, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "A"}),
     ]
     current_n: Annotated[
         float | None,
-        ModbusField(register=3006, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3005, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "A"}),
     ]
     voltage_an: Annotated[
         float | None,
-        ModbusField(register=3028, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3027, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "V"}),
     ]
     voltage_bn: Annotated[
         float | None,
-        ModbusField(register=3030, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3029, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "V"}),
     ]
     voltage_cn: Annotated[
         float | None,
-        ModbusField(register=3032, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3031, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "V"}),
     ]
     active_power_a: Annotated[
         float | None,
-        ModbusField(register=3054, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3053, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "W"}),
     ]
     active_power_b: Annotated[
         float | None,
-        ModbusField(register=3056, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3055, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "W"}),
     ]
     active_power_c: Annotated[
         float | None,
-        ModbusField(register=3058, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3057, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "W"}),
     ]
     active_power_total: Annotated[
         float | None,
-        ModbusField(register=3060, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3059, data_type="float32", validator=is_finite_float),
         Field(json_schema_extra={"x-unit": "W"}),
     ]
     power_factor_a: Annotated[
         float | None,
-        ModbusField(register=3078, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3077, data_type="float32", validator=is_finite_float),
     ]
     power_factor_b: Annotated[
         float | None,
-        ModbusField(register=3080, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3079, data_type="float32", validator=is_finite_float),
     ]
     power_factor_c: Annotated[
         float | None,
-        ModbusField(register=3082, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3081, data_type="float32", validator=is_finite_float),
     ]
     power_factor_total: Annotated[
         float | None,
-        ModbusField(register=3084, data_type="float32", validator=is_finite_float),
+        ModbusField(register=3083, data_type="float32", validator=is_finite_float),
     ]
 
 

@@ -6,6 +6,7 @@ export { default as FlowControlValveInstance } from "./FlowControlValveInstance.
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as HeatExchangerInstance } from "./HeatExchangerInstance.vue";
 export { default as HeatExchangerLabelInstance } from "./HeatExchangerLabelInstance.vue";
+export { default as IrradianceLabelInstance } from "./IrradianceLabelInstance.vue";
 export { default as LevelLabelInstance } from "./LevelLabelInstance.vue";
 export { default as LevelSensorInstance } from "./LevelSensorInstance.vue";
 export { default as LevelSwitchInstance } from "./LevelSwitchInstance.vue";
@@ -18,6 +19,7 @@ export { default as PressureGaugeInstance } from "./PressureGaugeInstance.vue";
 export { default as PressureLabelInstance } from "./PressureLabelInstance.vue";
 export { default as PressureSensorInstance } from "./PressureSensorInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
+export { default as PvtInstance } from "./PvtInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";
 export { default as TagLabelInstance } from "./TagLabelInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";

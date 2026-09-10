@@ -13,7 +13,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import Field
+from pydantic import AfterValidator, Field
 from typing_extensions import _AnnotatedAlias
 
 
@@ -118,7 +118,7 @@ LMin: TypeAlias = Annotated[float, UnitMeta(modelica_name="l_min")]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 Ratio: TypeAlias = Annotated[
     float,
-    # AfterValidator(validate_ratio_within_precision), # TODO: Reenable once fixed
+    AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
@@ -174,3 +174,14 @@ class TankControlMode(Enum):
     BOTH = 1
     COLD = 2
     HOT = 3
+
+
+class PvtMode(Enum):
+    IDLE = 0
+    HARVESTING = 1
+
+
+class PumpControlMode(Enum):
+    CONSTANT_SPEED = 1
+    CONSTANT_DIFFERENTIAL_PRESSURE = 3
+    VARIABLE_DIFFERENTIAL_PRESSURE = 4

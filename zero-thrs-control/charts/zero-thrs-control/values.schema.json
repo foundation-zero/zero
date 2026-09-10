@@ -135,6 +135,11 @@
                             "thrs"
                         ]
                     }
+                },
+                "modulePersistence": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Restore/persist module control config (parameters, manual control values, control mode) to Postgres across restarts. Off by default."
                 }
             }
         },

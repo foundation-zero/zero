@@ -2,6 +2,7 @@
 import { cn } from "@/modules/common/lib/utils";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
+import { FieldRenderer } from ".";
 import { getTooltipContext } from "../../components/tooltip";
 import {
   getDefinition,
@@ -27,7 +28,7 @@ const definition = computed(() => {
 
 const sourceName = computed(() => {
   if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
-  if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
+  else if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
 
   return definition.value.yardTag ?? source.value?.[2];
 });
@@ -74,6 +75,7 @@ const isParameter = computed(() => isParameterField(source.value));
       </slot>
     </RouterLink>
 
+    <FieldRenderer.Placeholder v-else-if="sourceName === 'placeholder'" />
     <slot v-else-if="sourceName">
       {{ snakeCase(sourceName) }}
     </slot>

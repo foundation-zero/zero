@@ -1,5 +1,6 @@
 [
   {
+    "_comment": "MANUALLY EDITED - reconciled against docs/Powertag adress list.xlsx (the definitive list): each address takes its component/consumer/name from that list (unit_id == its Adres), red rows and spares removed. Regenerating via scripts/excel_to_json.py will overwrite this; fold changes into the source Excel / patches.json before regenerating.",
     "panel": "10P0.1",
     "topics": [
       {
@@ -22,7 +23,7 @@
       },
       {
         "unit_id": 2,
-        "name": "main-propulsion-unit-offline-filter",
+        "name": "power-filter-pump",
         "extra_fields": [
           {
             "field_name": "component",
@@ -34,7 +35,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "MAIN PROPULSION UNIT OFFLINE FILTER"
+            "value": "POWER FILTER PUMP"
           }
         ]
       },
@@ -75,42 +76,6 @@
         ]
       },
       {
-        "unit_id": 5,
-        "name": "ahu-owners-state-room-135f01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "135F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "AHU OWNERS STATE ROOM"
-          }
-        ]
-      },
-      {
-        "unit_id": 6,
-        "name": "main-propulsion-unit-ac-heating",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "137F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "MAIN PROPULSION UNIT AC HEATING"
-          }
-        ]
-      },
-      {
         "unit_id": 7,
         "name": "potable-water",
         "extra_fields": [
@@ -130,7 +95,7 @@
       },
       {
         "unit_id": 8,
-        "name": "21001006-1-drain-pump-1-portside-deck-locker",
+        "name": "drain-pump-1-ps-deck-locker",
         "extra_fields": [
           {
             "field_name": "component",
@@ -142,13 +107,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "21001006-1 DRAIN PUMP 1 PORTSIDE DECK LOCKER"
+            "value": "DRAIN PUMP 1 PS DECK LOCKER"
           }
         ]
       },
       {
         "unit_id": 9,
-        "name": "21001006-3-drain-pump-3-portside-deck-locker",
+        "name": "drain-pump-3-ps-deck-locker",
         "extra_fields": [
           {
             "field_name": "component",
@@ -160,17 +125,17 @@
           },
           {
             "field_name": "consumer",
-            "value": "21001006-3 DRAIN PUMP 3 PORTSIDE DECK LOCKER"
+            "value": "DRAIN PUMP 3 PS DECK LOCKER"
           }
         ]
       },
       {
         "unit_id": 10,
-        "name": "21001007-bilge-water-separator",
+        "name": "discharge-pump-technical-space",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "141F01"
+            "value": "207F01"
           },
           {
             "field_name": "panel",
@@ -178,13 +143,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "21001007 BILGE WATER SEPARATOR"
+            "value": "DISCHARGE PUMP TECHNICAL SPACE"
           }
         ]
       },
       {
         "unit_id": 11,
-        "name": "drain-tank-mast-142f01",
+        "name": "bilge-water-separator",
         "extra_fields": [
           {
             "field_name": "component",
@@ -196,31 +161,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK MAST"
-          }
-        ]
-      },
-      {
-        "unit_id": 12,
-        "name": "drain-tank-mast-143f01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "143F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "DRAIN TANK MAST"
+            "value": "BILGE WATER SEPARATOR"
           }
         ]
       },
       {
         "unit_id": 13,
-        "name": "drain-tank-mast-144f01",
+        "name": "42ds-helm-console",
         "extra_fields": [
           {
             "field_name": "component",
@@ -232,49 +179,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK MAST"
-          }
-        ]
-      },
-      {
-        "unit_id": 14,
-        "name": "drain-tank-mast-145f01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "145F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "DRAIN TANK MAST"
-          }
-        ]
-      },
-      {
-        "unit_id": 15,
-        "name": "25001001-1-watermaker",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "146F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "25001001-1 WATERMAKER"
+            "value": "42DS HELM CONSOLE"
           }
         ]
       },
       {
         "unit_id": 16,
-        "name": "discharge-pumps-aft-technical-water",
+        "name": "discharge-pumps-aft-technical-water-no-power-tag",
         "extra_fields": [
           {
             "field_name": "component",
@@ -286,7 +197,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "DISCHARGE PUMPS AFT TECHNICAL WATER"
+            "value": "DISCHARGE PUMPS AFT TECHNICAL WATER ( NO POWER TAG)"
           }
         ]
       },
@@ -327,26 +238,8 @@
         ]
       },
       {
-        "unit_id": 19,
-        "name": "adsorption-unit",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "150F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "ADSORPTION UNIT"
-          }
-        ]
-      },
-      {
         "unit_id": 20,
-        "name": "25001008-1-hydrophore-1",
+        "name": "hydrophore-1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -358,13 +251,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "25001008-1 HYDROPHORE 1"
+            "value": "HYDROPHORE 1"
           }
         ]
       },
       {
         "unit_id": 21,
-        "name": "25004001-hydrophore-1",
+        "name": "hydrophore-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -376,13 +269,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "25004001 HYDROPHORE 1"
+            "value": "HYDROPHORE 2"
           }
         ]
       },
       {
         "unit_id": 22,
-        "name": "circulation-pump-adiabatic-pump-tech-water-purge-pump",
+        "name": "circulation-pump-adiabatic-pump",
         "extra_fields": [
           {
             "field_name": "component",
@@ -394,7 +287,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "CIRCULATION PUMP ADIABATIC PUMP (tech. water purge pump)"
+            "value": "CIRCULATION PUMP ADIABATIC PUMP"
           }
         ]
       },
@@ -418,7 +311,7 @@
       },
       {
         "unit_id": 24,
-        "name": "115v-distribution-panel",
+        "name": "distribution-panel-115v",
         "extra_fields": [
           {
             "field_name": "component",
@@ -430,13 +323,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "115V DISTRIBUTION PANEL"
+            "value": "DISTRIBUTION PANEL 115V"
           }
         ]
       },
       {
         "unit_id": 25,
-        "name": "340010041-discharge-pump-master-cabin-ps",
+        "name": "discharge-pump-master-cabin-ps",
         "extra_fields": [
           {
             "field_name": "component",
@@ -448,13 +341,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.1 DISCHARGE PUMP MASTER CABIN PS"
+            "value": "DISCHARGE PUMP MASTER CABIN PS"
           }
         ]
       },
       {
         "unit_id": 26,
-        "name": "340010042-discharge-pump-guest-ps",
+        "name": "discharge-pump-guest-ps",
         "extra_fields": [
           {
             "field_name": "component",
@@ -466,13 +359,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.2 DISCHARGE PUMP GUEST PS"
+            "value": "DISCHARGE PUMP GUEST PS"
           }
         ]
       },
       {
         "unit_id": 27,
-        "name": "340010043-discharge-pump-guest-ps-and-overflow",
+        "name": "discharge-pump-guest-ps-and-overflow",
         "extra_fields": [
           {
             "field_name": "component",
@@ -484,7 +377,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.3 DISCHARGE PUMP GUEST PS AND OVERFLOW"
+            "value": "DISCHARGE PUMP GUEST PS AND OVERFLOW"
           }
         ]
       },
@@ -543,26 +436,8 @@
         ]
       },
       {
-        "unit_id": 31,
-        "name": "ahu-exh2000-above-laundry",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "171F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "AHU EXH2000 ABOVE LAUNDRY"
-          }
-        ]
-      },
-      {
         "unit_id": 32,
-        "name": "340010044-discharge-pump-galleycrew-mess",
+        "name": "discharge-pump-galleycrew-mess",
         "extra_fields": [
           {
             "field_name": "component",
@@ -574,7 +449,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.4 DISCHARGE PUMP GALLEY/CREW MESS"
+            "value": "DISCHARGE PUMP GALLEY/CREW MESS"
           }
         ]
       },
@@ -593,24 +468,6 @@
           {
             "field_name": "consumer",
             "value": "DISPLAY SWITCHING SHIP OFFICE"
-          }
-        ]
-      },
-      {
-        "unit_id": 34,
-        "name": "display-switching-supply-helm-ps",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "176F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "DISPLAY SWITCHING SUPPLY HELM PS"
           }
         ]
       },
@@ -669,24 +526,6 @@
         ]
       },
       {
-        "unit_id": 38,
-        "name": "vhf-1-main",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "180F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "VHF 1 (MAIN)"
-          }
-        ]
-      },
-      {
         "unit_id": 39,
         "name": "ahu-technical-room",
         "extra_fields": [
@@ -723,62 +562,8 @@
         ]
       },
       {
-        "unit_id": 41,
-        "name": "bnwas",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "183F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "BNWAS"
-          }
-        ]
-      },
-      {
-        "unit_id": 42,
-        "name": "gps",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "184F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "GPS"
-          }
-        ]
-      },
-      {
-        "unit_id": 43,
-        "name": "locker-ventilation-230vac-4a",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "186F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "LOCKER VENTILATION 230VAC 4A"
-          }
-        ]
-      },
-      {
         "unit_id": 44,
-        "name": "5g-peplink",
+        "name": "peplink-5g",
         "extra_fields": [
           {
             "field_name": "component",
@@ -790,61 +575,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "5G PEPLINK"
-          }
-        ]
-      },
-      {
-        "unit_id": 45,
-        "name": "transfer-pump-1-greyblack-water-11-kw-2a",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "110Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "TRANSFER PUMP 1 GREY/BLACK WATER 1,1 kW / 2A"
-          }
-        ]
-      },
-      {
-        "unit_id": 46,
-        "name": "circulation-pump-system-water",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "116Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP SYSTEM WATER"
-          }
-        ]
-      },
-      {
-        "unit_id": 47,
-        "name": "sea-water-cooling-pump-1",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "117Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SEA WATER COOLING PUMP 1"
+            "value": "PEPLINK 5G"
           }
         ]
       },
@@ -867,44 +598,8 @@
         ]
       },
       {
-        "unit_id": 49,
-        "name": "fresh-air-unit-aft-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "133Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "FRESH AIR UNIT AFT SHIP"
-          }
-        ]
-      },
-      {
-        "unit_id": 50,
-        "name": "extraction-unit-aft-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "134Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "EXTRACTION UNIT AFT SHIP"
-          }
-        ]
-      },
-      {
         "unit_id": 51,
-        "name": "10p1-power-distr-panel-aft",
+        "name": "power-distr-panel-aft-10p1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -916,13 +611,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "10P1 - POWER DISTR. PANEL AFT"
+            "value": "POWER DISTR. PANEL AFT -10P1"
           }
         ]
       },
       {
         "unit_id": 52,
-        "name": "9427033-dishwasher",
+        "name": "dishwasher",
         "extra_fields": [
           {
             "field_name": "component",
@@ -934,43 +629,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427033 DISHWASHER"
-          }
-        ]
-      },
-      {
-        "unit_id": 53,
-        "name": "cooling-water-pump-main-propulsion-unit",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "151Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "COOLING WATER PUMP MAIN PROPULSION UNIT"
-          }
-        ]
-      },
-      {
-        "unit_id": 54,
-        "name": "29001001-a-compressor-1",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "155Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "29001001-a COMPRESSOR 1"
+            "value": "DISHWASHER"
           }
         ]
       },
@@ -994,11 +653,11 @@
       },
       {
         "unit_id": 56,
-        "name": "circulation-pump-pvt-panels-fwd-157q01",
+        "name": "fwd-rack-main-supply",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "157Q01"
+            "value": "157F01"
           },
           {
             "field_name": "panel",
@@ -1006,31 +665,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "CIRCULATION PUMP PVT PANELS FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 57,
-        "name": "circulation-pump-pvt-panels-fwd-158q01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "158Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP PVT PANELS FWD"
+            "value": "FWD RACK MAIN SUPPLY"
           }
         ]
       },
       {
         "unit_id": 58,
-        "name": "45008012-1-battery-room-ventilator-ps-fwd",
+        "name": "battery-room-ventilator-ps-fwd",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1042,13 +683,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "45008012-1 BATTERY ROOM VENTILATOR PS FWD"
+            "value": "BATTERY ROOM VENTILATOR PS FWD"
           }
         ]
       },
       {
         "unit_id": 59,
-        "name": "45008012-3-battery-room-ventilator-ps-aft",
+        "name": "battery-room-ventilator-ps-aft",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1060,7 +701,79 @@
           },
           {
             "field_name": "consumer",
-            "value": "45008012-3 BATTERY ROOM VENTILATOR PS AFT"
+            "value": "BATTERY ROOM VENTILATOR PS AFT"
+          }
+        ]
+      },
+      {
+        "unit_id": 60,
+        "name": "water-tight-door",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": ""
+          },
+          {
+            "field_name": "panel",
+            "value": "10P0.1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "WATER TIGHT DOOR"
+          }
+        ]
+      },
+      {
+        "unit_id": 61,
+        "name": "fire-panel",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": ""
+          },
+          {
+            "field_name": "panel",
+            "value": "10P0.1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "FIRE PANEL"
+          }
+        ]
+      },
+      {
+        "unit_id": 62,
+        "name": "main-supply-helm-console-sb",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": ""
+          },
+          {
+            "field_name": "panel",
+            "value": "10P0.1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "MAIN SUPPLY HELM CONSOLE SB"
+          }
+        ]
+      },
+      {
+        "unit_id": 100,
+        "name": "bnwas",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "183F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P0.1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "BNWAS"
           }
         ]
       }
@@ -1071,7 +784,7 @@
     "topics": [
       {
         "unit_id": 1,
-        "name": "34001011-sewage-treatment-plant",
+        "name": "sewage-treatment-plant",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1083,31 +796,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001011 SEWAGE TREATMENT PLANT"
-          }
-        ]
-      },
-      {
-        "unit_id": 2,
-        "name": "main-propulsion-unit-offline-filter",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "329F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "MAIN PROPULSION UNIT OFFLINE FILTER"
+            "value": "SEWAGE TREATMENT PLANT"
           }
         ]
       },
       {
         "unit_id": 3,
-        "name": "ahu-2000t-crew-mess-room",
+        "name": "ahu2000t-crew-mess-room",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1119,49 +814,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "AHU 2000T CREW MESS ROOM"
-          }
-        ]
-      },
-      {
-        "unit_id": 4,
-        "name": "fwd-main-propulsion-unit-ac-heating",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "337F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "FWD MAIN PROPULSION UNIT AC HEATING"
-          }
-        ]
-      },
-      {
-        "unit_id": 5,
-        "name": "spare",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "338F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SPARE"
+            "value": "AHU2000T CREW MESS ROOM"
           }
         ]
       },
       {
         "unit_id": 6,
-        "name": "21001006-3-submersible-bilge-pump-3",
+        "name": "submersible-bilge-pump-3",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1173,13 +832,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "21001006-3 SUBMERSIBLE BILGE PUMP 3"
+            "value": "SUBMERSIBLE BILGE PUMP 3"
           }
         ]
       },
       {
         "unit_id": 7,
-        "name": "drain-tank-airco-342f01",
+        "name": "drain-tank-airco-1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1191,13 +850,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO"
+            "value": "DRAIN TANK AIRCO 1"
           }
         ]
       },
       {
         "unit_id": 8,
-        "name": "drain-tank-airco-343f01",
+        "name": "drain-tank-airco-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1209,13 +868,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO"
+            "value": "DRAIN TANK AIRCO 2"
           }
         ]
       },
       {
         "unit_id": 9,
-        "name": "drain-tank-airco-344f01",
+        "name": "drain-tank-airco-3",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1227,13 +886,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO"
+            "value": "DRAIN TANK AIRCO 3"
           }
         ]
       },
       {
         "unit_id": 10,
-        "name": "drain-tank-airco-345f01",
+        "name": "fwd-rack-kvm",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1245,31 +904,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO"
-          }
-        ]
-      },
-      {
-        "unit_id": 11,
-        "name": "25001001-2-watermaker",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "346F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "25001001-2 WATERMAKER"
+            "value": "FWD RACK KVM"
           }
         ]
       },
       {
         "unit_id": 12,
-        "name": "25001140-2-hydrophore-2",
+        "name": "hydrophore-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1281,13 +922,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "25001140-2 HYDROPHORE 2"
+            "value": "HYDROPHORE 2"
           }
         ]
       },
       {
         "unit_id": 13,
-        "name": "250010017-chlorine-dosing-unit",
+        "name": "chlorine-dosing-unit",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1299,13 +940,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "250010017 CHLORINE DOSING UNIT"
+            "value": "CHLORINE DOSING UNIT"
           }
         ]
       },
       {
         "unit_id": 14,
-        "name": "9427024-3-quooker-salon",
+        "name": "quooker-salon",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1317,7 +958,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427024-3 QUOOKER SALON"
+            "value": "QUOOKER SALON"
           }
         ]
       },
@@ -1335,7 +976,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "MAIN SALON JB 2:"
+            "value": "MAIN SALON JB 2"
           }
         ]
       },
@@ -1359,7 +1000,7 @@
       },
       {
         "unit_id": 17,
-        "name": "34001005-galley-drain-pump",
+        "name": "galley-drain-pump",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1371,7 +1012,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001005 GALLEY DRAIN PUMP"
+            "value": "GALLEY DRAIN PUMP"
           }
         ]
       },
@@ -1448,24 +1089,6 @@
         ]
       },
       {
-        "unit_id": 22,
-        "name": "fan-coil-engine-office",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "371F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "FAN COIL ENGINE OFFICE"
-          }
-        ]
-      },
-      {
         "unit_id": 23,
         "name": "sockets-main-technical-space",
         "extra_fields": [
@@ -1502,42 +1125,6 @@
         ]
       },
       {
-        "unit_id": 25,
-        "name": "kvm-captains-cabin-ships-office",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "378F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "KVM CAPTAIN'S CABIN SHIP'S OFFICE"
-          }
-        ]
-      },
-      {
-        "unit_id": 26,
-        "name": "kvm-mission-room-navcomm-locker-fwd-rack",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "379F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "KVM MISSION ROOM NAV/COMM LOCKER FWD RACK"
-          }
-        ]
-      },
-      {
         "unit_id": 27,
         "name": "erec-2-power-supply-heat-recovery",
         "extra_fields": [
@@ -1556,80 +1143,8 @@
         ]
       },
       {
-        "unit_id": 28,
-        "name": "transfer-pump-2-black-water-11-kw-2a-310q01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "310Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "TRANSFER PUMP 2 BLACK WATER 1,1 kW / 2A"
-          }
-        ]
-      },
-      {
-        "unit_id": 29,
-        "name": "transfer-pump-3-greywater-11-kw-2a",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "311Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "TRANSFER PUMP 3 GREYWATER 1,1 kW / 2A"
-          }
-        ]
-      },
-      {
-        "unit_id": 30,
-        "name": "dirty-oil-pump-06kw-11a",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "312Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "DIRTY OIL PUMP 0,6kW / 1,1A"
-          }
-        ]
-      },
-      {
-        "unit_id": 31,
-        "name": "transfer-pump-2-black-water-11-kw-2a-317q01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "317Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "TRANSFER PUMP 2 BLACK WATER 1,1 kW / 2A"
-          }
-        ]
-      },
-      {
         "unit_id": 32,
-        "name": "technical-space-ventilator-out-extractor",
+        "name": "technical-space-ventilator-out",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1641,13 +1156,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "TECHNICAL SPACE VENTILATOR - OUT (EXTRACTOR)"
+            "value": "TECHNICAL SPACE VENTILATOR - OUT"
           }
         ]
       },
       {
         "unit_id": 33,
-        "name": "fresh-air-unit-fore-ship",
+        "name": "ahu-laundry",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1659,31 +1174,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "FRESH AIR UNIT FORE SHIP"
-          }
-        ]
-      },
-      {
-        "unit_id": 34,
-        "name": "extraction-unit-fore-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "334Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "EXTRACTION UNIT FORE SHIP"
+            "value": "AHU LAUNDRY"
           }
         ]
       },
       {
         "unit_id": 35,
-        "name": "10p2-power-distr-panel-galley",
+        "name": "power-distr-panel-galley-10p2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1695,67 +1192,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "10P2 - POWER DISTR. PANEL GALLEY"
-          }
-        ]
-      },
-      {
-        "unit_id": 36,
-        "name": "pressure-pump",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "349Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "PRESSURE PUMP"
-          }
-        ]
-      },
-      {
-        "unit_id": 37,
-        "name": "chilled-water-pump-adsorption-unit",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "350Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CHILLED WATER PUMP ADSORPTION UNIT"
-          }
-        ]
-      },
-      {
-        "unit_id": 38,
-        "name": "cooling-water-pump-fwd-propulsion-unit",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "351Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "COOLING WATER PUMP FWD PROPULSION UNIT"
+            "value": "POWER DISTR. PANEL GALLEY - 10P2"
           }
         ]
       },
       {
         "unit_id": 39,
-        "name": "29001001-b-compressor-2",
+        "name": "compressor-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1767,13 +1210,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "29001001-b COMPRESSOR 2"
+            "value": "COMPRESSOR 2"
           }
         ]
       },
       {
         "unit_id": 40,
-        "name": "circulation-pump-warm-water-adsorption-unit",
+        "name": "cooling-pump-fore-peak",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1785,13 +1228,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "CIRCULATION PUMP WARM WATER ADSORPTION UNIT"
+            "value": "COOLING PUMP  FORE PEAK"
           }
         ]
       },
       {
         "unit_id": 41,
-        "name": "cooling-water-pump-adsorption-unit",
+        "name": "cooling-pump-halyard-pit",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1803,13 +1246,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "COOLING WATER PUMP ADSORPTION UNIT"
+            "value": "COOLING PUMP HALYARD PIT"
           }
         ]
       },
       {
         "unit_id": 42,
-        "name": "circulation-pump-pvt-panels-aft",
+        "name": "cooling-pump-technical-space",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1821,49 +1264,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "CIRCULATION PUMP PVT PANELS AFT"
-          }
-        ]
-      },
-      {
-        "unit_id": 43,
-        "name": "circulation-pump-heating-water-fresh-hotwater-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "359Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP HEATING WATER FRESH HOTWATER SYSTEM"
-          }
-        ]
-      },
-      {
-        "unit_id": 44,
-        "name": "circulation-pump-cooling-water-electrical-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "360Q01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P0.3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP COOLING WATER ELECTRICAL SYSTEM"
+            "value": "COOLING PUMP TECHNICAL SPACE"
           }
         ]
       },
       {
         "unit_id": 45,
-        "name": "45008012-2-battery-room-ventilator-sb-fwd",
+        "name": "battery-room-ventilator-sb-fwd",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1875,13 +1282,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "45008012-2 BATTERY ROOM VENTILATOR SB FWD"
+            "value": "BATTERY ROOM VENTILATOR SB FWD"
           }
         ]
       },
       {
         "unit_id": 46,
-        "name": "45008012-4-battery-room-ventilator-sb-aft",
+        "name": "battery-room-ventilator-sb-aft",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1893,13 +1300,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "45008012-4 BATTERY ROOM VENTILATOR SB AFT"
+            "value": "BATTERY ROOM VENTILATOR SB AFT"
           }
         ]
       },
       {
         "unit_id": 47,
-        "name": "welding-socket-lazarette",
+        "name": "welding-socket-lazzarette",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1911,7 +1318,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "WELDING SOCKET LAZARETTE"
+            "value": "WELDING SOCKET LAZZARETTE"
           }
         ]
       }
@@ -1921,30 +1328,12 @@
     "panel": "10P1",
     "topics": [
       {
-        "unit_id": 1,
-        "name": "spare-10f01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "10F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SPARE"
-          }
-        ]
-      },
-      {
         "unit_id": 2,
-        "name": "spare-11f01",
+        "name": "discharge-pump-lazzarette",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "11F01"
+            "value": "67F01"
           },
           {
             "field_name": "panel",
@@ -1952,61 +1341,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "SPARE"
-          }
-        ]
-      },
-      {
-        "unit_id": 3,
-        "name": "spare-12f01",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "12F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SPARE"
-          }
-        ]
-      },
-      {
-        "unit_id": 4,
-        "name": "ventilator-aft-peak",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "19F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "VENTILATOR AFT PEAK"
-          }
-        ]
-      },
-      {
-        "unit_id": 5,
-        "name": "ventilator-bilge-aft-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "20F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P1"
-          },
-          {
-            "field_name": "consumer",
-            "value": "VENTILATOR BILGE AFT SHIP"
+            "value": "DISCHARGE PUMP LAZZARETTE"
           }
         ]
       },
@@ -2084,7 +1419,7 @@
       },
       {
         "unit_id": 10,
-        "name": "fcu-owners-bathhis-owners-state-room-sb",
+        "name": "fcu-owners-bathhis",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2096,7 +1431,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "FCU: OWNERS BATH.(HIS) OWNERS STATE ROOM SB"
+            "value": "FCU: OWNERS BATH.(HIS)"
           }
         ]
       },
@@ -2120,7 +1455,7 @@
       },
       {
         "unit_id": 12,
-        "name": "fcu-owners-deckhouse-main-salon-dining-main-salon-lounge",
+        "name": "fcu-owners-deckh-dining-main-salon-lounge",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2132,7 +1467,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "FCU: OWNERS DECKHOUSE MAIN SALON DINING MAIN SALON LOUNGE"
+            "value": "FCU: OWNERS DECKH. DINING MAIN SALON LOUNGE"
           }
         ]
       },
@@ -2156,7 +1491,7 @@
       },
       {
         "unit_id": 14,
-        "name": "25004002-1-discharge-pump-mast",
+        "name": "discharge-pump-mast",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2168,13 +1503,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "25004002-1 DISCHARGE PUMP MAST"
+            "value": "DISCHARGE PUMP MAST"
           }
         ]
       },
       {
         "unit_id": 15,
-        "name": "lights-technical-area-901jb004",
+        "name": "lights-technical-area",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2186,13 +1521,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "LIGHTS TECHNICAL AREA - 901JB004"
+            "value": "LIGHTS TECHNICAL AREA"
           }
         ]
       },
       {
         "unit_id": 16,
-        "name": "outlets-guest-cabin-2-emp120",
+        "name": "outlets-guest-cabin-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2204,13 +1539,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "OUTLETS GUEST CABIN 2 - EMP120"
+            "value": "OUTLETS GUEST CABIN 2"
           }
         ]
       },
       {
         "unit_id": 17,
-        "name": "outlets-guest-cabin-3-emp123",
+        "name": "outlets-guest-cabin-3",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2222,13 +1557,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "OUTLETS GUEST CABIN 3 - EMP123"
+            "value": "OUTLETS GUEST CABIN 3"
           }
         ]
       },
       {
         "unit_id": 18,
-        "name": "3400104209-toilet-captains-cabin",
+        "name": "outlets-owner-emp125",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2240,7 +1575,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001042.09 TOILET CAPTAIN'S CABIN"
+            "value": "OUTLETS OWNER - EMP125"
           }
         ]
       },
@@ -2336,11 +1671,11 @@
       },
       {
         "unit_id": 24,
-        "name": "supply-greenwall-15w",
+        "name": "sliding-window-private-salon",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "39F01"
+            "value": "64F01"
           },
           {
             "field_name": "panel",
@@ -2348,13 +1683,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "SUPPLY GREENWALL 15W"
+            "value": "SLIDING WINDOW PRIVATE SALON"
           }
         ]
       },
       {
         "unit_id": 25,
-        "name": "spare-40f01",
+        "name": "helm-station-sb",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2366,13 +1701,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "SPARE"
+            "value": "HELM STATION SB"
           }
         ]
       },
       {
         "unit_id": 26,
-        "name": "spare-41f01",
+        "name": "starlink-aft",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2384,13 +1719,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "SPARE"
+            "value": "STARLINK AFT"
           }
         ]
       },
       {
         "unit_id": 27,
-        "name": "starlink",
+        "name": "starlink-aft-mizzen-mast-jb",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2402,7 +1737,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "STARLINK"
+            "value": "STARLINK AFT MIZZEN MAST JB"
           }
         ]
       },
@@ -2462,11 +1797,11 @@
       },
       {
         "unit_id": 31,
-        "name": "sliding-window-private-salon",
+        "name": "sliding-window-bimini-private-salon",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "64F01"
+            "value": "65F01"
           },
           {
             "field_name": "panel",
@@ -2474,7 +1809,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "SLIDING WINDOW PRIVATE SALON"
+            "value": "SLIDING WINDOW BIMINI PRIVATE  SALON"
           }
         ]
       },
@@ -2484,7 +1819,7 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "107F01"
+            "value": "69F01"
           },
           {
             "field_name": "panel",
@@ -2495,6 +1830,42 @@
             "value": "SUPPLY GREENWALL"
           }
         ]
+      },
+      {
+        "unit_id": 33,
+        "name": "sliding-window-bimini-main-cockpit",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "66F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "SLIDING WINDOW BIMINI MAIN COCKPIT"
+          }
+        ]
+      },
+      {
+        "unit_id": 88,
+        "name": "aft-rack-wi-fi",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "39F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P1"
+          },
+          {
+            "field_name": "consumer",
+            "value": "AFT RACK WI-FI"
+          }
+        ]
       }
     ]
   },
@@ -2503,7 +1874,7 @@
     "topics": [
       {
         "unit_id": 1,
-        "name": "9427015-induction-cooktop-galley",
+        "name": "induction-cooktop-galley",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2515,13 +1886,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427015 INDUCTION COOKTOP GALLEY"
+            "value": "INDUCTION COOKTOP GALLEY"
           }
         ]
       },
       {
         "unit_id": 2,
-        "name": "9427013-1-dishwasher-galley",
+        "name": "dishwasher-galley-1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2533,13 +1904,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427013-1 DISHWASHER GALLEY"
+            "value": "DISHWASHER GALLEY-1"
           }
         ]
       },
       {
         "unit_id": 3,
-        "name": "9427013-2-dishwasher-galley",
+        "name": "dishwasher-galley-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2551,13 +1922,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427013-2 DISHWASHER GALLEY"
+            "value": "DISHWASHER GALLEY-2"
           }
         ]
       },
       {
         "unit_id": 4,
-        "name": "9427014-oven-galley",
+        "name": "oven-galley",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2569,13 +1940,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427014 OVEN GALLEY"
+            "value": "OVEN GALLEY"
           }
         ]
       },
       {
         "unit_id": 5,
-        "name": "9427016-steam-oven-galley",
+        "name": "warming-drawer",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2587,13 +1958,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427016 STEAM OVEN GALLEY"
+            "value": "WARMING DRAWER"
           }
         ]
       },
       {
         "unit_id": 6,
-        "name": "9427024-1-quooker-service-sink-galley",
+        "name": "quooker-service-sink-galley",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2605,13 +1976,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427024-1 QUOOKER SERVICE SINK GALLEY"
+            "value": "QUOOKER SERVICE SINK GALLEY"
           }
         ]
       },
       {
         "unit_id": 7,
-        "name": "9427024-2-quooker-chef-sink-galley",
+        "name": "quooker-chef-sink-galley",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2623,13 +1994,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427024-2 QUOOKER CHEF SINK GALLEY"
+            "value": "QUOOKER CHEF SINK GALLEY"
           }
         ]
       },
       {
         "unit_id": 8,
-        "name": "galley-jb-1",
+        "name": "steam-oven-vacuum-seal-blast-chiller",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2641,13 +2012,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "GALLEY JB 1"
+            "value": "STEAM OVEN, VACUUM SEAL, BLAST CHILLER"
           }
         ]
       },
       {
         "unit_id": 9,
-        "name": "galley-jb-2",
+        "name": "ice-maker-microwave",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2659,161 +2030,17 @@
           },
           {
             "field_name": "consumer",
-            "value": "GALLEY JB 2"
+            "value": "ICE MAKER, MICROWAVE"
           }
         ]
       },
       {
         "unit_id": 10,
-        "name": "9427028-walk-in-freezer",
+        "name": "evaporator-freeze-system-19f01",
         "extra_fields": [
           {
             "field_name": "component",
             "value": "19F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "9427028 WALK IN FREEZER"
-          }
-        ]
-      },
-      {
-        "unit_id": 11,
-        "name": "2x-fridge",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "20F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "2x FRIDGE"
-          }
-        ]
-      },
-      {
-        "unit_id": 12,
-        "name": "rf08x1-compressor-fridge-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "21F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "RF08X1 COMPRESSOR FRIDGE SYSTEM"
-          }
-        ]
-      },
-      {
-        "unit_id": 13,
-        "name": "rf08x1-compressor-freeze-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "22F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "RF08X1 COMPRESSOR FREEZE SYSTEM"
-          }
-        ]
-      },
-      {
-        "unit_id": 14,
-        "name": "340010044-discharge-pump-galleycrew-mess",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "23F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001004_4 DISCHARGE PUMP GALLEY/CREW MESS"
-          }
-        ]
-      },
-      {
-        "unit_id": 15,
-        "name": "socket-circuit-2",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "24F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SOCKET CIRCUIT 2"
-          }
-        ]
-      },
-      {
-        "unit_id": 16,
-        "name": "socket-circuit-3",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "25F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SOCKET CIRCUIT 3"
-          }
-        ]
-      },
-      {
-        "unit_id": 17,
-        "name": "evaporator-fridge-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "26F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "EVAPORATOR FRIDGE SYSTEM"
-          }
-        ]
-      },
-      {
-        "unit_id": 18,
-        "name": "evaporator-freeze-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "27F01"
           },
           {
             "field_name": "panel",
@@ -2826,8 +2053,98 @@
         ]
       },
       {
+        "unit_id": 11,
+        "name": "evaporator-freeze-system-20f01",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "20F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P2"
+          },
+          {
+            "field_name": "consumer",
+            "value": "EVAPORATOR FREEZE SYSTEM"
+          }
+        ]
+      },
+      {
+        "unit_id": 12,
+        "name": "compressor-fridge-system",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "21F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P2"
+          },
+          {
+            "field_name": "consumer",
+            "value": "COMPRESSOR FRIDGE SYSTEM"
+          }
+        ]
+      },
+      {
+        "unit_id": 13,
+        "name": "compressor-freeze-system",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "22F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P2"
+          },
+          {
+            "field_name": "consumer",
+            "value": "COMPRESSOR FREEZE SYSTEM"
+          }
+        ]
+      },
+      {
+        "unit_id": 14,
+        "name": "discharge-pump-galleycrew-mess",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "23F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P2"
+          },
+          {
+            "field_name": "consumer",
+            "value": "DISCHARGE PUMP GALLEY/CREW MESS"
+          }
+        ]
+      },
+      {
+        "unit_id": 16,
+        "name": "water-tight-hinge-door",
+        "extra_fields": [
+          {
+            "field_name": "component",
+            "value": "25F01"
+          },
+          {
+            "field_name": "panel",
+            "value": "10P2"
+          },
+          {
+            "field_name": "consumer",
+            "value": "WATER TIGHT HINGE DOOR"
+          }
+        ]
+      },
+      {
         "unit_id": 19,
-        "name": "circulation-pump-cooling-set",
+        "name": "ventilation-rack",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2839,25 +2156,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "CIRCULATION PUMP COOLING SET"
-          }
-        ]
-      },
-      {
-        "unit_id": 20,
-        "name": "34001005-drain-pump-galley",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "41F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P2"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001005 DRAIN PUMP GALLEY"
+            "value": "VENTILATION RACK"
           }
         ]
       },
@@ -2899,7 +2198,7 @@
       },
       {
         "unit_id": 23,
-        "name": "9427027-galley-hood",
+        "name": "galley-hood",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2911,13 +2210,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427027 GALLEY HOOD"
+            "value": "GALLEY HOOD"
           }
         ]
       },
       {
         "unit_id": 24,
-        "name": "outlets-galley-emp-111-60f01",
+        "name": "outlets-galley-emp-111-1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2929,13 +2228,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "OUTLETS GALLEY - EMP 111"
+            "value": "OUTLETS GALLEY - EMP 111-1"
           }
         ]
       },
       {
         "unit_id": 25,
-        "name": "outlets-galley-emp-111-61f01",
+        "name": "outlets-galley-emp-111-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2947,7 +2246,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "OUTLETS GALLEY - EMP 111"
+            "value": "OUTLETS GALLEY - EMP 111-2"
           }
         ]
       }
@@ -2958,7 +2257,7 @@
     "topics": [
       {
         "unit_id": 1,
-        "name": "9427004-1-washer",
+        "name": "washer-1",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2970,13 +2269,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427004-1 WASHER"
+            "value": "WASHER-1"
           }
         ]
       },
       {
         "unit_id": 2,
-        "name": "9427004-2-washer",
+        "name": "washer-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -2988,13 +2287,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427004-2 WASHER"
+            "value": "WASHER-2"
           }
         ]
       },
       {
         "unit_id": 3,
-        "name": "9427012-dishwasher-crew-mess",
+        "name": "dishwasher-crew-mess",
         "extra_fields": [
           {
             "field_name": "component",
@@ -3006,13 +2305,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427012 DISHWASHER CREW MESS"
+            "value": "DISHWASHER CREW MESS"
           }
         ]
       },
       {
         "unit_id": 4,
-        "name": "9427003-1-dryer-9427003-2-dryer",
+        "name": "dryer-1-and-dryer-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -3024,61 +2323,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "9427003-1 DRYER 9427003-2 DRYER"
-          }
-        ]
-      },
-      {
-        "unit_id": 5,
-        "name": "sockets-crew-cabins-ps",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "14F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SOCKETS CREW CABINS PS"
-          }
-        ]
-      },
-      {
-        "unit_id": 6,
-        "name": "sockets-crew-cabins-sb",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "15F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SOCKETS CREW CABINS SB"
-          }
-        ]
-      },
-      {
-        "unit_id": 7,
-        "name": "mfhf-ssb-main-supply",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "16F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "MF/HF SSB (MAIN SUPPLY)"
+            "value": "DRYER-1 AND DRYER-2"
           }
         ]
       },
@@ -3119,98 +2364,8 @@
         ]
       },
       {
-        "unit_id": 10,
-        "name": "interior-sliding-door-galley-fwd",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "19F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "INTERIOR SLIDING DOOR GALLEY FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 11,
-        "name": "interior-sliding-door-galley-aft",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "20F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "INTERIOR SLIDING DOOR GALLEY AFT"
-          }
-        ]
-      },
-      {
-        "unit_id": 12,
-        "name": "main-companion-way-door-system",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "21F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "MAIN COMPANION WAY DOOR SYSTEM"
-          }
-        ]
-      },
-      {
-        "unit_id": 13,
-        "name": "entrance-door-aft-deckhouse",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "22F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "ENTRANCE DOOR AFT DECKHOUSE"
-          }
-        ]
-      },
-      {
-        "unit_id": 14,
-        "name": "door-crew-entrance",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "23F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "DOOR CREW ENTRANCE"
-          }
-        ]
-      },
-      {
         "unit_id": 15,
-        "name": "340010046-discharge-pump-crew-sb-aftmid",
+        "name": "discharge-pump-crew-sb-aftmid",
         "extra_fields": [
           {
             "field_name": "component",
@@ -3222,13 +2377,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.6 DISCHARGE PUMP CREW SB AFT/MID"
+            "value": "DISCHARGE PUMP CREW SB AFT/MID"
           }
         ]
       },
       {
         "unit_id": 16,
-        "name": "340010047-discharge-pump-crew-ps-midsb-fwd",
+        "name": "discharge-pump-crew-ps-midsb-fwd",
         "extra_fields": [
           {
             "field_name": "component",
@@ -3240,179 +2395,17 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.7 DISCHARGE PUMP CREW PS MID/SB FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 17,
-        "name": "circulation-pump-wall-ceiling-cooling-aft",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "26F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP WALL & CEILING COOLING AFT"
-          }
-        ]
-      },
-      {
-        "unit_id": 18,
-        "name": "circulation-pump-wall-ceiling-cooling-fwd",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "27F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "CIRCULATION PUMP WALL & CEILING COOLING FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 19,
-        "name": "wall-ceiling-cooling-pump-section-2",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "28F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "WALL & CEILING COOLING PUMP SECTION 2"
-          }
-        ]
-      },
-      {
-        "unit_id": 20,
-        "name": "wall-ceiling-cooling-pump-section-4",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "29F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "WALL & CEILING COOLING PUMP SECTION 4"
-          }
-        ]
-      },
-      {
-        "unit_id": 21,
-        "name": "wall-ceiling-cooling-pump-section-5",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "30F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "WALL & CEILING COOLING PUMP SECTION 5"
-          }
-        ]
-      },
-      {
-        "unit_id": 22,
-        "name": "3400104207-toilet-guest-cabin-ps-fwd",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "31F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.07 TOILET GUEST CABIN PS FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 23,
-        "name": "3400104208-to-overflow-cabin",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "32F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.08 TO OVERFLOW CABIN"
-          }
-        ]
-      },
-      {
-        "unit_id": 24,
-        "name": "3400104209-toilet-captains-cabin",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "33F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.09 TOILET CAPTAIN'S CABIN"
-          }
-        ]
-      },
-      {
-        "unit_id": 25,
-        "name": "3400104210-toilet-crew-cabin-sb-aft",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "34F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.10 TOILET CREW CABIN SB AFT"
+            "value": "DISCHARGE PUMP CREW PS MID/SB FWD"
           }
         ]
       },
       {
         "unit_id": 26,
-        "name": "3400104211-toilet-crew-cabin-sb-mid",
+        "name": "handheld-vhfuhf",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "35F01"
+            "value": "35F01 - 112f01"
           },
           {
             "field_name": "panel",
@@ -3420,187 +2413,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001042.11 TOILET CREW CABIN SB MID"
-          }
-        ]
-      },
-      {
-        "unit_id": 27,
-        "name": "3400104212-toilet-crew-cabin-ps-mid",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "36F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.12 TOILET CREW CABIN PS MID"
-          }
-        ]
-      },
-      {
-        "unit_id": 28,
-        "name": "3400104213-toilet-crew-cabin-sb-fwd",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "37F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.13 TOILET CREW CABIN SB FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 29,
-        "name": "3400104214-toilet-crew-cabin-ps-fwd",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "38F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "34001042.14 TOILET CREW CABIN PS FWD"
-          }
-        ]
-      },
-      {
-        "unit_id": 30,
-        "name": "lighting-aft-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "39F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "LIGHTING AFT SHIP"
-          }
-        ]
-      },
-      {
-        "unit_id": 31,
-        "name": "lighting-fore-ship-section-5",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "40F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "LIGHTING FORE SHIP (SECTION 5)"
-          }
-        ]
-      },
-      {
-        "unit_id": 32,
-        "name": "lighting-fore-ship-section-4",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "41F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "LIGHTING FORE SHIP (SECTION 4)"
-          }
-        ]
-      },
-      {
-        "unit_id": 33,
-        "name": "spare-lighting",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "42F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SPARE (LIGHTING)"
-          }
-        ]
-      },
-      {
-        "unit_id": 34,
-        "name": "ventilator-fore-peak",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "51F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "VENTILATOR FORE PEAK"
-          }
-        ]
-      },
-      {
-        "unit_id": 35,
-        "name": "ventilator-bilge-fore-ship",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "52F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "VENTILATOR BILGE FORE SHIP"
-          }
-        ]
-      },
-      {
-        "unit_id": 36,
-        "name": "fcu-guest-fwd-cabin-ps",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "53F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "FCU GUEST FWD CABIN PS"
+            "value": "HANDHELD VHF/UHF"
           }
         ]
       },
@@ -3690,13 +2503,13 @@
           },
           {
             "field_name": "consumer",
-            "value": "FCU MAIN SALON BAR"
+            "value": "FCU: MAIN SALON BAR"
           }
         ]
       },
       {
         "unit_id": 42,
-        "name": "discharge-pumps-25004002-8910",
+        "name": "discharge-pumps-8910",
         "extra_fields": [
           {
             "field_name": "component",
@@ -3708,7 +2521,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "DISCHARGE PUMPS: 25004002-8/9/10"
+            "value": "DISCHARGE PUMPS-8/9/10"
           }
         ]
       },
@@ -3726,7 +2539,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "LIGHTS TECHNICAL AREA'S - 901JB003"
+            "value": "LIGHTS TECHNICAL AREAS - 901JB003"
           }
         ]
       },
@@ -3744,7 +2557,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "LIGHTS TECHNICAL AREA'S - EMP109"
+            "value": "LIGHTS TECHNICAL AREAS - EMP109"
           }
         ]
       },
@@ -3834,7 +2647,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "OUTLETS CAPTAIN'S CABIN - EMP105"
+            "value": "OUTLETS CAPTAINS CABIN - EMP105"
           }
         ]
       },
@@ -3978,7 +2791,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "- EMP110"
+            "value": "EMP110"
           }
         ]
       },
@@ -3997,24 +2810,6 @@
           {
             "field_name": "consumer",
             "value": "EMP113"
-          }
-        ]
-      },
-      {
-        "unit_id": 59,
-        "name": "spare",
-        "extra_fields": [
-          {
-            "field_name": "component",
-            "value": "97F01"
-          },
-          {
-            "field_name": "panel",
-            "value": "10P3"
-          },
-          {
-            "field_name": "consumer",
-            "value": "SPARE"
           }
         ]
       },
@@ -4056,7 +2851,7 @@
       },
       {
         "unit_id": 62,
-        "name": "340010045-discharge-pump-captainlaundry",
+        "name": "discharge-pump-captainlaundry",
         "extra_fields": [
           {
             "field_name": "component",
@@ -4068,7 +2863,7 @@
           },
           {
             "field_name": "consumer",
-            "value": "34001004.5 DISCHARGE PUMP CAPTAIN/LAUNDRY"
+            "value": "DISCHARGE PUMP CAPTAIN/LAUNDRY"
           }
         ]
       },

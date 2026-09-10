@@ -29,13 +29,15 @@
     "level": "Level",
     "estimatedTime": "Est. time",
     "degrees": "°",
-    "hertz": "Hz"
+    "hertz": "Hz",
+    "irradiance": "W/m²"
   },
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
     "thrsim": "THRSIM",
     "domestic": "Domestic Control",
+    "powerTags": "Power Tags",
     "grafana": "Grafana",
     "sailSystem": "Sail system"
   },
@@ -57,7 +59,7 @@
     "rooms": "Rooms",
     "water": "Water",
     "heating": "Heating",
-    "power": "Power",
+    "powerTags": "Power Tags",
     "ventilation": "Ventilation",
     "electricity": "Electricity",
     "thrs": "THRS",
@@ -94,7 +96,9 @@
       "upperdeck": "Upper Deck"
     },
     "to": "To",
-    "from": "From"
+    "from": "From",
+    "in": "In",
+    "out": "Out"
   },
   "views": {
     "splash": {
@@ -105,28 +109,25 @@
       "enter": "Enter",
       "apps": {
         "loads": {
-          "title": "Loads",
-          "description": "Live rigging loads, grouped dashboards, and sailing system feedback."
+          "title": "Loads"
         },
         "thrsim": {
-          "title": "THRSIM",
-          "description": "Thermal heat recovery monitoring, controls, simulation, and parameter tuning."
+          "title": "THRSim"
         },
         "thrs": {
-          "title": "THRS",
-          "description": "Thermal heat recovery monitoring, controls, mimics and parameter tuning."
+          "title": "THRS"
         },
         "domestic": {
-          "title": "Domestic",
-          "description": "Cabin comfort, lighting, blinds, climate, and onboard room controls."
+          "title": "Domestic"
         },
         "grafana": {
-          "title": "Grafana",
-          "description": "Operational dashboards and metrics visualized in Grafana."
+          "title": "Grafana"
         },
         "sailSystem": {
-          "title": "Sail system",
-          "description": "Vitters Sail System HMI."
+          "title": "Sail system"
+        },
+        "powerTags": {
+          "title": "Power Tags"
         }
       }
     },

@@ -30,12 +30,12 @@ export const pumpFlowController: PIDController<SensorComponentType.Flow> = {
   setpoint: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
 };
 
-export const pumpTemperatureController: PIDController<SensorComponentType.Flow> = {
-  type: SensorComponentType.Flow,
+export const pumpTemperatureController: PIDController<SensorComponentType.Temperature> = {
+  type: SensorComponentType.Temperature,
   controller: getField(
     ControllerStateComponentType.PIDController,
     "dhw",
     "dhwPumpTemperatureController",
   ),
-  setpoint: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
+  setpoint: getField(ParametersType.Temperature, "dhw", "htBoostingTemperatureSetpoint"),
 };

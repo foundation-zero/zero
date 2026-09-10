@@ -25,4 +25,8 @@ def test_cooling_panels_sheet_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(CoolingPanelsSensorValues, CoolingPanelsControlValues)
+    compare_yard_tags(
+        CoolingPanelsSensorValues,
+        CoolingPanelsControlValues,
+        exclude={"cooling_mode"},
+    )

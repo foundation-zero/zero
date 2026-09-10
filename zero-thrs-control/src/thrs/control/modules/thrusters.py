@@ -102,11 +102,11 @@ class ThrustersParameters(ThrsValues):
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # noqa: N802
     return ThrustersControlValues(
         thrusters_pump1=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         thrusters_pump2=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
             on=Stamped(value=False, timestamp=timestamp),
         ),
         thrusters_mix_recovery=Valve(
@@ -218,6 +218,7 @@ class ThrustersControl(
             0,  # Gets overridden by flow balance controller
             lambda: self._parameters.pump_tuning,
             self._time,
+            output_limits=(0.1, 1),
         )
 
         self._aft_recovery_temperature_controller = PidController[LMin, Celsius](
@@ -367,6 +368,9 @@ class ThrustersControl(
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
 
+    def update_controls(self, control_values: ThrustersControlValues):
+        self._current_control_values.update_in_place(control_values)
+
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -385,6 +389,13 @@ class ThrustersControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
+
+    def reset(self) -> None:
+        self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers(self._parameters)
 
     @StateLogger.log_warnings
     def control(
@@ -618,7 +629,6 @@ class ThrustersControl(
             self.raise_warning("No pump active when deactivating")
 
         self._active_pump.on = Stamped(value=False, timestamp=self._time())
-        self._active_pump.dutypoint = Stamped(value=0, timestamp=self._time())
         self._active_pump = None
 
     def raise_warning(self, message: str) -> NoReturn:

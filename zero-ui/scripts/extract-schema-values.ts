@@ -89,6 +89,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorHeatPumpType: "HeatExchanger",
   SensorHeatExchangerType: "HeatExchanger",
   SensorHvacExchangerType: "HeatExchanger",
+  SensorPvtType: "HeatExchanger",
   SensorAdsorptionChillerType: "AdsorptionChiller",
   SensorBrightloopType: "Brightloop",
   SensorUgridType: "Ugrid",
@@ -120,6 +121,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
   ControllerPidControllerValuesType: "PIDController",
   ControllerTanksControllerValuesType: "DhwTanksController",
+  ControllerPvtControllerValuesType: "PvtController",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {

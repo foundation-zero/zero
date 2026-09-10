@@ -7,6 +7,7 @@ import {
 } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import LevelSwitchInstance from "../instances/LevelSwitchInstance.vue";
 import { SensorValue } from "../providers";
@@ -28,6 +29,11 @@ const { items, labels } = useTranslations();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="level_switches"
+        field="empty"
+      />
     </TooltipList>
 
     <TooltipList>

@@ -1,4 +1,4 @@
-name: "Vector: Test"
+name: "Vector: Test and Deploy"
 on:
   pull_request:
     paths:
@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: "0"
       - name: Run Vector test
@@ -30,3 +30,13 @@ jobs:
       - name: Run Vector ATPX NMEA test
         working-directory: vector
         run: bash test-atpx-nmea.sh
+  helm-push:
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
+    needs: test
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "vector/"

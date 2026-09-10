@@ -2,9 +2,10 @@ import asyncio
 import json
 import logging
 import re
-from typing import Literal
+from typing import Any, Literal
 
 from faststream import FastStream
+from faststream.mqtt import MQTTBroker, ReconnectConfig
 from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
@@ -86,32 +87,39 @@ def configured_modbus_ports(
     }
 
 
+def deployed_specs(
+    settings: PowerTagsSettings, specs: list[BridgeSpec]
+) -> list[BridgeSpec]:
+    """Specs whose panel has a gateway host configured, i.e. is deployed."""
+    return [spec for spec in specs if settings.field_for(spec.panel, "host")]
+
+
 def resolve_bridge_endpoints(
     settings: PowerTagsSettings, specs: list[BridgeSpec], default_port: int
 ) -> list[BridgeEndpoint]:
-    """Resolve gateway addresses; every panel needs ``host_<PANEL>`` set."""
-    missing = sorted(
-        spec.panel for spec in specs if not settings.field_for(spec.panel, "host")
+    """Resolve gateway addresses for the panels that have a ``host_<PANEL>`` set."""
+    configured = deployed_specs(settings, specs)
+    configured_panels = {spec.panel for spec in configured}
+    skipped = sorted(
+        spec.panel for spec in specs if spec.panel not in configured_panels
     )
-    if missing:
-        expected = ", ".join(_panel_field_key(panel, "host") for panel in missing)
-        raise ValueError(f"Missing Modbus gateway configuration: {expected}")
-
-    ports = configured_modbus_ports(settings, specs)
-    endpoints: list[BridgeEndpoint] = []
-    for spec in specs:
-        host = settings.field_for(spec.panel, "host")
-        if host is None:  # unreachable: guaranteed non-missing above
-            raise ValueError(f"Missing host for panel {spec.panel}")
-        panel_port = ports[spec.panel]
-        endpoints.append(
-            BridgeEndpoint(
-                spec=spec,
-                host=host,
-                port=panel_port if panel_port is not None else default_port,
-            )
+    if skipped:
+        logger.warning(
+            f"Skipping panels with no configured gateway host: {', '.join(skipped)}"
         )
-    return endpoints
+    if not configured:
+        raise ValueError("No Modbus gateway hosts configured for any panel")
+
+    ports = configured_modbus_ports(settings, configured)
+    return [
+        BridgeEndpoint(
+            spec=spec,
+            host=host,
+            port=port if (port := ports[spec.panel]) is not None else default_port,
+        )
+        for spec in configured
+        if (host := settings.field_for(spec.panel, "host")) is not None
+    ]
 
 
 def stub_ports(
@@ -119,8 +127,8 @@ def stub_ports(
 ) -> dict[str, int]:
     """Local ports for the stub servers.
 
-    Honors explicit `MODBUS_PORT_<PANEL>` overrides; panels without one are
-    spread over consecutive ports starting at base_port so the servers can
+    Honors explicit `MODBUS_PANELS__port_<panel>` overrides; panels without one
+    are spread over consecutive ports starting at base_port so the servers can
     coexist on a single machine.
     """
     configured = configured_modbus_ports(settings, specs)
@@ -141,7 +149,15 @@ def local_topic_groups(
 
 class RunCmd(MqttSettings):
     modbus_port: int = 502
-    modbus_probe_interval: int = 10
+    modbus_probe_interval: int = 1
+
+    def make_broker(self, **extra: Any) -> MQTTBroker:
+        # Reconnect indefinitely (the default 5 attempts leaves us dark after a
+        # blip); ping every 15s, since 60s races RabbitMQ's keepalive window.
+        kwargs: dict[str, Any] = dict(extra)
+        kwargs.setdefault("reconnect", ReconnectConfig(max_attempts=None))
+        kwargs.setdefault("keepalive", 15)
+        return super().make_broker(**kwargs)
 
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
@@ -157,6 +173,10 @@ class RunCmd(MqttSettings):
                 publisher,
                 endpoint.spec.topics,
                 self.modbus_probe_interval,
+                # 1s cadence: cap each read below the interval, and drop rather
+                # than retry a failed publish (make_broker reconnects on its own).
+                modbus_timeout=0.5,
+                drop_failed_publishes=True,
             )
             for endpoint in endpoints
         ]
@@ -184,9 +204,13 @@ class StubCmd(BaseSettings):
     default_register_value: float = 0.0
 
     def cli_cmd(self) -> None:
+        settings = PowerTagsSettings()
         specs = read_modbus_bridge_specs()
+        # Serve only the deployed panels so their pinned ports line up with the
+        # run bridges; with no panels configured (local dev) serve every panel.
+        served = deployed_specs(settings, specs) or specs
         stub = Stub.from_topic_groups(
-            local_topic_groups(PowerTagsSettings(), specs, self.modbus_port),
+            local_topic_groups(settings, served, self.modbus_port),
             default_value=0,
             float_default=self.default_register_value,
         )

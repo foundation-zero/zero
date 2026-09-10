@@ -210,6 +210,9 @@ class AdsorptionControl(
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 
+    def update_controls(self, control_values: AdsorptionControlValues):
+        self._current_values.update_in_place(control_values)
+
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -228,6 +231,13 @@ class AdsorptionControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             AdsorptionControllerState(),
         )
+
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._init_controllers()
 
     @StateLogger.log_warnings
     def control(

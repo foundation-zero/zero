@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import ThrsValues, component_meta
@@ -275,13 +275,6 @@ class CoolingPanelsSensorValues(AmcsModeSensorValues):
     cooling_pump_sb_fwd: Annotated[
         sensor.Pump, component_meta(yard_tag="41006001-5", component_type="pump")
     ]
-    cooling_mode: Annotated[
-        AmcsControlMode, component_meta(included_in_fmu=False), Field(alias="mode")
-    ]
-
-    @property
-    def mode(self) -> AmcsControlMode:
-        return self.cooling_mode
 
 
 class CoolingPanelsControlValues(ThrsValues):
@@ -440,7 +433,7 @@ class CoolingPanelsControlValues(ThrsValues):
 
 
 class CoolingPanelsSimulationInputs(ThrsValues):
-    cooling_mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
 class CoolingPanelsSimulationOutputs(ThrsValues):

@@ -173,6 +173,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const active = useRandomizedBoolean();
     return computed(() => ({ active: stamp(active) }));
   },
+  [SensorComponentType.Irradiance]: () => {
+    const irradiance = useRandomizedNumber(0, 1000);
+    return computed(() => ({ irradiance: stamp(irradiance) }));
+  },
   [SensorComponentType.AmcsControlMode]: () => {
     return computed(() => ({ mode: stamp(AmcsControlMode.External) }));
   },

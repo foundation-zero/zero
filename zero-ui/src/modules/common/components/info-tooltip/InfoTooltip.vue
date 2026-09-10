@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { HTMLAttributes } from "vue";
+import { cn } from "../../lib/utils";
 import { InfoIcon } from "../icons";
+
+const props = defineProps<{ iconClass?: HTMLAttributes["class"] }>();
+const isOpen = defineModel<boolean>("open", { default: false });
 </script>
 
 <template>
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <button>
-          <InfoIcon class="size-5" />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <slot />
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+  <Popover v-model:open="isOpen">
+    <PopoverTrigger as-child>
+      <button
+        type="button"
+        class="flex cursor-pointer gap-1"
+        aria-label="More information"
+      >
+        <slot name="trigger" />
+        <InfoIcon :icon-class="cn('size-5', props.iconClass)" />
+      </button>
+    </PopoverTrigger>
+    <PopoverContent side="bottom">
+      <slot />
+    </PopoverContent>
+  </Popover>
 </template>
