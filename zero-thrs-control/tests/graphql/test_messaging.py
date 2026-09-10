@@ -96,7 +96,7 @@ async def test_control_messaging_set_automation_mode():
 
 async def test_directive_messaging_pause_simulation():
     mock_channels = mock.AsyncMock()
-    mock_channels.on_simulation_status.return_value = None
+    mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
         return_value=mock.Mock(status="running")
     )
@@ -121,7 +121,7 @@ async def test_directive_messaging_pause_simulation():
 
 async def test_directive_messaging_play_simulation():
     mock_channels = mock.AsyncMock()
-    mock_channels.on_simulation_status.return_value = None
+    mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
         return_value=mock.Mock(status="available")
     )
@@ -146,7 +146,7 @@ async def test_directive_messaging_play_simulation():
 
 async def test_directive_messaging_step_simulation():
     mock_channels = mock.AsyncMock()
-    mock_channels.on_simulation_status.return_value = None
+    mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
         return_value=mock.Mock(status="available")
     )
