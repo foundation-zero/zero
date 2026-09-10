@@ -10,7 +10,7 @@ export default toInstance<MimicComponentType.HeatPump>({
     heatpump: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
   },
   controllerState: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
+  source: getField(SensorComponentType.HeatPump, "dhw", "dhwHeatpump"),
   custom: { controller: pumpFlowController },
   parameters: {},
   sensors: {

@@ -129,6 +129,7 @@ export type SimulationFields = {
   [SimulationComponentType.HeatSource]: (keyof HeatSourceSimulation)[];
   [SimulationComponentType.Flow]: (keyof FlowSimulation)[];
   [SimulationComponentType.HvacExchanger]: (keyof HvacExchangerSimulation)[];
+  [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
 };
 
 export type PumpSensor = {
@@ -372,6 +373,9 @@ export const enum SensorComponentType {
   LevelSwitch = "sensor:levelSwitch",
   DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
+  HvacExchanger = "sensor:hvacExchanger",
+  HeatPump = "sensor:heatPump",
+  Pvt = "sensor:pvt",
   CalculatedFlow = "sensor:calculatedFlow",
   AdsorptionChiller = "sensor:adsorptionChiller",
   Brightloop = "sensor:brightloop",
@@ -395,6 +399,9 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.LevelSwitch,
   SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
+  SensorComponentType.HvacExchanger,
+  SensorComponentType.HeatPump,
+  SensorComponentType.Pvt,
   SensorComponentType.CalculatedFlow,
   SensorComponentType.Brightloop,
   SensorComponentType.Ugrid,
@@ -458,6 +465,9 @@ export type SensorDefinitionMap = {
   [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
+  [SensorComponentType.HvacExchanger]: HeatExchangerSensor;
+  [SensorComponentType.HeatPump]: HeatExchangerSensor;
+  [SensorComponentType.Pvt]: HeatExchangerSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
   [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
   [SensorComponentType.Brightloop]: BrightloopSensor;
@@ -598,6 +608,10 @@ export type AmcsControlModeSimulation = {
   mode: Stamped<AmcsControlMode>;
 };
 
+export type AdsorptionChillerSimulation = {
+  freeCooling: Stamped<boolean>;
+};
+
 export type PcsSimulation = ModeSelector<ThrusterMode>;
 
 export const enum SimulationComponentType {
@@ -610,6 +624,7 @@ export const enum SimulationComponentType {
   HeatSource = "heatSource",
   HvacExchanger = "hvacExchanger",
   AmcsControlMode = "amcsControlMode",
+  AdsorptionChiller = "adsorptionChiller",
 }
 
 export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =
@@ -636,6 +651,8 @@ export type SimulationDefinitionMap = {
   [SimulationComponentType.Pcs]: PcsSimulation;
   [SimulationComponentType.HeatSource]: HeatSourceSimulation;
   [SimulationComponentType.HvacExchanger]: HvacExchangerSimulation;
+  [SimulationComponentType.AmcsControlMode]: AmcsControlModeSimulation;
+  [SimulationComponentType.AdsorptionChiller]: AdsorptionChillerSimulation;
 };
 
 export type ExtractSimulationValues<T extends SimulationDefinitions> = ExtractValues<

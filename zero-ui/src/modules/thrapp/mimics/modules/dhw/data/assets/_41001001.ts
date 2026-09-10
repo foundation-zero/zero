@@ -9,7 +9,7 @@ export default toInstance<MimicComponentType.HVAC>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHvacExchanger"),
+  source: getField(SensorComponentType.HvacExchanger, "dhw", "dhwHvacExchanger"),
   sensors: {
     incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureAdsorptionReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureHvacExchangerReturn"),

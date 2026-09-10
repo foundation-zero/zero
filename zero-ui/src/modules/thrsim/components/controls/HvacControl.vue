@@ -32,7 +32,7 @@ const values = toRef(props, "values");
 const { submit, isSubmitting, error, heatFlow, maximumTemperature } = controlValuesForm(
   props.simulation,
   MutationType.Simulation,
-  "HeatSourceInputType!",
+  "HvacExchangerInputType!",
   props.componentName,
   values,
   ["heatFlow", "maximumTemperature"],

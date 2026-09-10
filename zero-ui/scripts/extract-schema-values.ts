@@ -86,10 +86,10 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorLevelSwitchType: "LevelSwitch",
   SensorTemperatureDeltaType: "DeltaT",
   SensorCalculatedFlowType: "CalculatedFlow",
-  SensorHeatPumpType: "HeatExchanger",
+  SensorHeatPumpType: "HeatPump",
   SensorHeatExchangerType: "HeatExchanger",
-  SensorHvacExchangerType: "HeatExchanger",
-  SensorPvtType: "HeatExchanger",
+  SensorHvacExchangerType: "HvacExchanger",
+  SensorPvtType: "Pvt",
   SensorAdsorptionChillerType: "AdsorptionChiller",
   SensorBrightloopType: "Brightloop",
   SensorUgridType: "Ugrid",
@@ -107,6 +107,7 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SimulationPcsType: "Pcs",
   SimulationHeatSourceType: "HeatSource",
   SimulationHvacExchangerType: "HvacExchanger",
+  SimulationAdsorptionChillerType: "AdsorptionChiller",
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 

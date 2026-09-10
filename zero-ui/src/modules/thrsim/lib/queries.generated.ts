@@ -130,6 +130,9 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
+  adsorptionChiller {
+    freeCooling { value timestamp }
+  }
   adsorptionConsumersSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -2223,6 +2226,9 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
+  adsorptionChiller {
+    freeCooling { value timestamp }
+  }
   dhwFreshwaterSupply {
     temperature { value timestamp }
     overpressure { value timestamp }
@@ -2237,6 +2243,30 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   dhwHotwaterDemand {
     flow { value timestamp }
   }
+  dcBrightloopFwd1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopFwd2 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid1 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid2 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft2 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft3 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopAft4 {
+    heatFlow { value timestamp }
+  }
   dcSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -2247,9 +2277,27 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   drivesOilCoolerFwd {
     heatFlow { value timestamp }
   }
+  drivesPropdriveAft1 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveAft2 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveFwd1 {
+    heatFlow { value timestamp }
+  }
+  drivesPropdriveFwd2 {
+    heatFlow { value timestamp }
+  }
+  drivesShorepower {
+    heatFlow { value timestamp }
+  }
   drivesSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  mode {
+    mode { value timestamp }
   }
 `;
 

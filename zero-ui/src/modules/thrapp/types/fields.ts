@@ -85,7 +85,11 @@ export type SensorFieldDefinitions = SensorFields<{
     outgoing: SensorComponentType.Temperature;
     flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     deltaT?: SensorComponentType.DeltaT;
-    heatExchanger: SensorComponentType.HeatExchanger;
+    heatExchanger:
+      | SensorComponentType.HeatExchanger
+      | SensorComponentType.HvacExchanger
+      | SensorComponentType.HeatPump
+      | SensorComponentType.Pvt;
   };
   [MimicComponentType.ConnectingCircuit]: {
     flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
@@ -294,13 +298,13 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.MixValve]: SensorComponentType.Valve;
   [MimicComponentType.CheckValve]: undefined;
   [MimicComponentType.ThreeWaySwitchValve]: SensorComponentType.Valve;
-  [MimicComponentType.HeatPump]: SensorComponentType.HeatExchanger;
-  [MimicComponentType.HVAC]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.HeatPump]: SensorComponentType.HeatPump;
+  [MimicComponentType.HVAC]: SensorComponentType.HvacExchanger;
   [MimicComponentType.SwitchValve]: SensorComponentType.Valve;
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: undefined;
-  [MimicComponentType.Pvt]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.ConnectingCircuit]: undefined;
 }>;
 

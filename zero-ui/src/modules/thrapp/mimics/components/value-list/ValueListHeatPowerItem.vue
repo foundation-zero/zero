@@ -10,7 +10,12 @@ import SensorValue from "../../providers/SensorValue.vue";
 
 const props = defineProps<{
   value?: number;
-  source: ModuleField<SensorComponentType.HeatExchanger>;
+  source: ModuleField<
+    | SensorComponentType.HeatExchanger
+    | SensorComponentType.HvacExchanger
+    | SensorComponentType.HeatPump
+    | SensorComponentType.Pvt
+  >;
   class?: HTMLAttributes["class"];
 }>();
 </script>

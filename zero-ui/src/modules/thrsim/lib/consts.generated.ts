@@ -188,6 +188,9 @@ export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SimulationComponentType.Temperature,
   },
+  adsorptionChiller: {
+    componentType: SimulationComponentType.AdsorptionChiller,
+  },
   adsorptionConsumersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
@@ -1202,11 +1205,11 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   },
   dhwHvacExchanger: {
     yardTag: "41001001",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HvacExchanger,
   },
   dhwHeatpump: {
     yardTag: "50001035",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatPump,
   },
   dhwAdsorptionExchanger: {
     yardTag: "50001004",
@@ -2438,15 +2441,15 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtPvtMainFwd: {
     yardTag: "50009001-01",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.Pvt,
   },
   pvtPvtMainAft: {
     yardTag: "50009002-01",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.Pvt,
   },
   pvtPvtOwners: {
     yardTag: "50009001-03",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.Pvt,
   },
   pvtReturnTemperature: {
     componentType: SensorComponentType.CalculatedTemperature,
@@ -2539,6 +2542,9 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SimulationComponentType.Temperature,
   },
+  adsorptionChiller: {
+    componentType: SimulationComponentType.AdsorptionChiller,
+  },
   dhwFreshwaterSupply: {
     componentType: SimulationComponentType.OverpressureTemperature,
   },
@@ -2551,6 +2557,30 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
   },
+  dcBrightloopFwd1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopFwd2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcUgrid1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcUgrid2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft3: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopAft4: {
+    componentType: SimulationComponentType.HeatSource,
+  },
   dcSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
@@ -2560,8 +2590,26 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   drivesOilCoolerFwd: {
     componentType: SimulationComponentType.HeatSource,
   },
+  drivesPropdriveAft1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveAft2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveFwd1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesPropdriveFwd2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesShorepower: {
+    componentType: SimulationComponentType.HeatSource,
+  },
   drivesSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  mode: {
+    componentType: SimulationComponentType.AmcsControlMode,
   },
 });
 

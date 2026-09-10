@@ -31,6 +31,7 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.HeatSource]: HeatSourceControl,
   [SimulationComponentType.HvacExchanger]: HvacControl,
   [SimulationComponentType.AmcsControlMode]: null,
+  [SimulationComponentType.AdsorptionChiller]: null,
 };
 
 const { data } = toRefs(useThrsHistory());

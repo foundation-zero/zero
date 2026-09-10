@@ -180,6 +180,7 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.HeatSource]: ["heatFlow"],
   [SimulationComponentType.Flow]: ["flow"],
   [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
+  [SimulationComponentType.AdsorptionChiller]: ["freeCooling"],
 };
 
 export const toQueries = <

@@ -53,10 +53,12 @@ export type InputType = {
   [MutationType.Simulation]: [
     "ThrusterInputType!",
     "BoundaryInputType!",
+    "FlowBoundaryInputType!",
     "PcsInputType!",
     "TemperatureBoundaryInputType!",
     "OverpressureTemperatureBoundaryInputType!",
     "HeatSourceInputType!",
+    "HvacExchangerInputType!",
   ];
 };
 
@@ -127,13 +129,21 @@ export const controlValuesForm = <
       error.value = null;
 
       const result = await client.mutation(query, { input });
-      const newControlValues = result.data[mutation];
+      if (result.error) {
+        error.value = result.error.message;
+        return;
+      }
+      const newControlValues = result.data?.[mutation];
+      if (newControlValues === undefined) {
+        error.value = "Failed to submit";
+        return;
+      }
       emit("update:controlValues", newControlValues);
       for (const ref in refs) {
         refs[ref].isDirty.value = false;
       }
-    } catch (_err) {
-      error.value = "Failed to submit";
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : "Failed to submit";
     } finally {
       isSubmitting.value = false;
     }
