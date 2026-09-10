@@ -8,7 +8,7 @@ use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-use zero_mqtt_graphql::asyncapi::{load_specs_and_groups, TopicDef, TopicGroupDef};
+use zero_mqtt_graphql::asyncapi::{load_specs_and_groups, ObjectTypeDef, TopicDef, TopicGroupDef};
 use zero_mqtt_graphql::cache::TopicCache;
 use zero_mqtt_graphql::config::AppConfig;
 use zero_mqtt_graphql::graphql::build_schema;
@@ -57,33 +57,40 @@ async fn main() -> Result<()> {
 
     let cli = Cli::parse();
     let config = AppConfig::load()?;
-    let (topics, groups) = load_specs_and_groups(&cli.spec_dir)?;
+    let (topics, groups, object_types) = load_specs_and_groups(&cli.spec_dir)?;
     match cli.command.unwrap_or(Command::Serve) {
-        Command::Validate => validate_command(&cli.spec_dir, &topics, &groups)?,
+        Command::Validate => validate_command(&cli.spec_dir, &topics, &groups, &object_types)?,
         Command::PrintSchema { output } => {
             let metadata = load_metadata_or_empty(&cli.spec_dir);
-            export_sdl(&topics, &groups, &metadata, output.as_deref())?;
+            export_sdl(&topics, &groups, &object_types, &metadata, output.as_deref())?;
         }
         Command::Listen => run_listen_only(cli.spec_dir, topics, groups, config).await?,
-        Command::Serve => run_serve(&cli.spec_dir, config, topics, groups).await?,
+        Command::Serve => run_serve(&cli.spec_dir, config, topics, groups, object_types).await?,
     }
     Ok(())
 }
 
 /// Strict validation for the `validate` subcommand: a missing or malformed
 /// metadata file must fail so CI catches it (serve/listen stay lenient).
-fn validate_command(spec_dir: &str, topics: &[TopicDef], groups: &[TopicGroupDef]) -> Result<()> {
+fn validate_command(
+    spec_dir: &str,
+    topics: &[TopicDef],
+    groups: &[TopicGroupDef],
+    object_types: &[ObjectTypeDef],
+) -> Result<()> {
     if topics.is_empty() && groups.is_empty() {
         anyhow::bail!("no topics found in '{spec_dir}'");
     }
     let metadata = load_metadata(spec_dir)?;
     zero_mqtt_graphql::graphql::validate_topics(topics)?;
     let cache = Arc::new(TopicCache::new());
-    let _schema = zero_mqtt_graphql::graphql::build_schema(topics, cache, groups, &metadata)?;
+    let _schema =
+        zero_mqtt_graphql::graphql::build_schema(topics, cache, groups, &metadata, object_types)?;
     println!(
-        "Validated {} topic(s), {} group(s) and {} metadata file(s) from '{}' — no sanitization collisions",
+        "Validated {} topic(s), {} group(s), {} composite object type(s) and {} metadata file(s) from '{}' — no sanitization collisions",
         topics.len(),
         groups.len(),
+        object_types.len(),
         metadata.len(),
         spec_dir
     );
@@ -97,6 +104,7 @@ async fn run_serve(
     config: AppConfig,
     topics: Vec<TopicDef>,
     groups: Vec<TopicGroupDef>,
+    object_types: Vec<ObjectTypeDef>,
 ) -> Result<()> {
     let metadata = load_metadata_or_empty(spec_dir);
     if topics.is_empty() {
@@ -111,7 +119,7 @@ async fn run_serve(
     zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
     let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &cache)?;
 
-    let schema = build_schema(&topics, cache, &groups, &metadata)?;
+    let schema = build_schema(&topics, cache, &groups, &metadata, &object_types)?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{}", addr);
     let listener = TcpListener::bind(addr).await?;
@@ -299,6 +307,7 @@ fn load_metadata_or_empty(spec_dir: &str) -> Vec<MetadataFile> {
 fn export_sdl(
     topics: &[zero_mqtt_graphql::asyncapi::TopicDef],
     groups: &[zero_mqtt_graphql::asyncapi::TopicGroupDef],
+    object_types: &[ObjectTypeDef],
     metadata: &[MetadataFile],
     output: Option<&str>,
 ) -> Result<()> {
@@ -306,7 +315,7 @@ fn export_sdl(
         anyhow::bail!("no topics found — nothing to export");
     }
     let cache = Arc::new(TopicCache::new());
-    let schema = build_schema(topics, cache, groups, metadata)?;
+    let schema = build_schema(topics, cache, groups, metadata, object_types)?;
     let sdl = schema.sdl();
     match output {
         Some(path) => {

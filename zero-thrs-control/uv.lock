@@ -481,6 +481,24 @@ wheels = [
 ]
 
 [[package]]
+name = "fast-depends"
+version = "3.0.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/6d/787a21ca8043a8fdb737cf28f645e94a46fc30b44a31de54573299156bad/fast_depends-3.0.8.tar.gz", hash = "sha256:896b16f79a512b6ea1df721b0aa1708a192a06f964be6597e01fcf5412559101", size = 18382, upload-time = "2026-03-02T19:54:28.649Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1d/1d/e4843e4eeb65f51447b8c22d200d12d8f94f27c97e77bb7162515cc8d61f/fast_depends-3.0.8-py3-none-any.whl", hash = "sha256:4c52c8a3907bca46d43e70e4364d6d016872d9a3aae4bc0c1c85e72e0a6a21c7", size = 25507, upload-time = "2026-03-02T19:54:27.594Z" },
+]
+
+[package.optional-dependencies]
+pydantic = [
+    { name = "pydantic" },
+]
+
+[[package]]
 name = "fastapi"
 version = "0.117.1"
 source = { registry = "https://pypi.org/simple" }
@@ -591,6 +609,25 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e4/98/474719c58eddaf77fa443b063693e76d49db32bbe851bcbaf58d2700119f/fastjsonschema-2.22.1.tar.gz", hash = "sha256:0b83d1ce8d7845b959dcb20e1a5c3c8883b6541d9c52ab02cce5166b75ec805f", size = 382291, upload-time = "2026-07-27T13:31:08.515Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/17/e1/62cc96341f01bdff2ba967441939178fcd1900d11ce7e6554d9954a5d7ec/fastjsonschema-2.22.1-py3-none-any.whl", hash = "sha256:cf377ff5c9a6f4f3125fb35f75a2c5767bd824ffbcf62c209a93cd48d1453999", size = 26239, upload-time = "2026-07-27T13:31:03.251Z" },
+]
+
+[[package]]
+name = "faststream"
+version = "0.7.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "fast-depends", extra = ["pydantic"] },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/0c/2b233cb66e8f776de24d8aa0f8fd0055fdeea65bff6daa902cb95f46e103/faststream-0.7.5.tar.gz", hash = "sha256:a8185385e4fe64f2f0420c8cd38a55a183f4599e5343b77bf16abc9f62ccaadf", size = 340955, upload-time = "2026-08-27T08:54:16.298Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/45/4f96ecafb94707364e283defca94798b47484d69bb77c15175592673568d/faststream-0.7.5-py3-none-any.whl", hash = "sha256:27d1bb3a2945cbd914b326d9b78d3e51d6678293835562be962a8a2189abe20b", size = 569912, upload-time = "2026-08-27T08:54:14.739Z" },
+]
+
+[package.optional-dependencies]
+mqtt = [
+    { name = "zmqtt" },
 ]
 
 [[package]]
@@ -2625,6 +2662,7 @@ dev = [
     { name = "seaborn" },
 ]
 test = [
+    { name = "faststream", extra = ["mqtt"] },
     { name = "httpx" },
     { name = "pyright" },
     { name = "pytest" },
@@ -2665,6 +2703,7 @@ dev = [
     { name = "seaborn", specifier = ">=0.13.2,<1.0.0" },
 ]
 test = [
+    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.0,<1.0.0" },
     { name = "httpx", specifier = ">=0.28.1,<0.29" },
     { name = "pyright", specifier = ">=1.1.392.post0,<2" },
     { name = "pytest", specifier = ">=8.3.4,<9" },
@@ -2942,4 +2981,13 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/bd/f4/c67440c7fb409a71b7404b7aefcd7569a9c0d6bd071299bf4198ae7a5d95/widgetsnbextension-4.0.15.tar.gz", hash = "sha256:de8610639996f1567952d763a5a41af8af37f2575a41f9852a38f947eb82a3b9", size = 1097402, upload-time = "2025-11-01T21:15:55.178Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3f/0e/fa3b193432cfc60c93b42f3be03365f5f909d2b3ea410295cf36df739e31/widgetsnbextension-4.0.15-py3-none-any.whl", hash = "sha256:8156704e4346a571d9ce73b84bee86a29906c9abfd7223b7228a28899ccf3366", size = 2196503, upload-time = "2025-11-01T21:15:53.565Z" },
+]
+
+[[package]]
+name = "zmqtt"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/5e/48979a39b03f82dbb9c35f17fba2f685d9f0078ebcb0f12a4abd907fc24c/zmqtt-0.2.2.tar.gz", hash = "sha256:58bd4b93d581de640504f41f881f68fa0b20192a28561fe14f2dc0024eb989d9", size = 44086, upload-time = "2026-09-08T13:32:34.198Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0a/d6/7bf9fa71c1a6d4ec56b2037e6026989d9b6aac8d15257a83afde81f4eb0d/zmqtt-0.2.2-py3-none-any.whl", hash = "sha256:44b0f03dc6bf8dcc3a0092ff036b6179dc247c9959c920dc9faf0379a35e8458", size = 55935, upload-time = "2026-09-08T13:32:32.905Z" },
 ]
