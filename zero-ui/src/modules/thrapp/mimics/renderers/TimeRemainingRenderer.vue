@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import { formatUnit } from "@/modules/common/lib/utils.ts";
+import { formatInt } from "@/modules/common/lib/utils.ts";
 import { FieldRenderer, FieldRendererProps } from ".";
+import { useTranslations } from "../tooltips";
 
 const props = defineProps<FieldRendererProps<number>>();
 
-const toSeconds = formatUnit("second", 0, {}, (value: number) => value % 60);
-const toMinutes = formatUnit("minute", 0, {}, (value: number) => Math.floor((value % 3600) / 60));
-const toHours = formatUnit("hour", 0, {}, (value: number) => Math.floor(value / 3600));
+const { units } = useTranslations();
+const seconds = (value: number) => formatInt(value % 60);
+const minutes = (value: number) => formatInt(Math.floor((value % 3600) / 60));
+const hours = (value: number) => formatInt(Math.floor(value / 3600));
 </script>
 
 <template>
   <span class="flex items-center gap-1">
     <FieldRenderer.Number
       v-bind="props"
-      :format="toHours"
+      :unit="units('hours')"
+      :format="hours"
     />
     <FieldRenderer.Number
       v-bind="props"
-      :format="toMinutes"
+      :unit="units('minutes')"
+      :format="minutes"
     />
     <FieldRenderer.Number
       v-bind="props"
-      :format="toSeconds"
+      :unit="units('seconds')"
+      :format="seconds"
     />
   </span>
 </template>
