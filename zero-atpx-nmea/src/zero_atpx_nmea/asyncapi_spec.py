@@ -30,6 +30,7 @@ _SPECIAL_FIELD_TYPES: dict[str, str] = {
     "data": "array",
     "nmea_time": "string",
 }
+_NMEA_PREFIXED_FIELDS = {"type", "sender", "talker", "raw", "table"}
 
 
 def _json_type_from_converter(converter: Any) -> str:
@@ -52,11 +53,11 @@ def _converter_type_for_field(field_name: str, msg_type: type) -> str | None:
     """
     if not hasattr(msg_type, "name_to_idx"):
         return None
-    field = next((f for f in msg_type.fields if f[1] == field_name), None)
-    if field is None:
-        return None
-    converter = field[2] if len(field) > 2 else None
-    return _json_type_from_converter(converter)
+    for _, name, *rest in msg_type.fields:
+        if name == field_name:
+            converter, *_ = rest or [None]
+            return _json_type_from_converter(converter)
+    return None
 
 
 def _gather_envelope_for_type(nmea_type: str) -> dict[str, str]:
@@ -78,13 +79,12 @@ def _gather_envelope_for_type(nmea_type: str) -> dict[str, str]:
 
     # Map each envelope key back to its original pynmea2 field name, so the
     # declared converter stays findable for fields parser.py renamed.
-    orig_name_by_env_key: dict[str, str] = {}
-    for _, name, *_ in msg_type.fields:
-        orig_name_by_env_key[name] = name
-        if name == "timestamp":
-            orig_name_by_env_key["nmea_time"] = name
-        if name in {"type", "sender", "talker", "raw", "table"}:
-            orig_name_by_env_key[f"nmea_{name}"] = name
+    names = [name for _, name, *_ in msg_type.fields]
+    orig_name_by_env_key = (
+        {name: name for name in names}
+        | {"nmea_time": name for name in names if name == "timestamp"}
+        | {f"nmea_{name}": name for name in names if name in _NMEA_PREFIXED_FIELDS}
+    )
 
     def type_for(env_key: str) -> str:
         if env_key in _SPECIAL_FIELD_TYPES:
