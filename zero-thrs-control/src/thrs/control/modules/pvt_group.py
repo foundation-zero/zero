@@ -174,8 +174,9 @@ class PvtGroupControl(
         return (self._current_values, PvtGroupControllerState())
 
     def reset(self) -> None:
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
-        self._init_controllers()
+        raise NotImplementedError(
+            "Reset is not implemented as this control is intended to be used as a subcontrol of PvtControl"
+        )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
