@@ -227,11 +227,10 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return value
 
     async def wait_for_result(self) -> M:
+        result = await self._future
         if self._autoclear:
-            while self._value is None:
-                await self.wait_for_update()
-            return cast(M, self.result())
-        return await self._future
+            self._value = None
+        return result
 
     async def wait_for_update(self):
         await self._update_event.wait()

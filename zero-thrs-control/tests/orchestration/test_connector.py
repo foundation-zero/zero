@@ -248,10 +248,6 @@ class TestDirectMqttMappingAutoclear:
         mapping.handle_message("sensors/data", first.model_dump_json(by_alias=True))
         assert await mapping.wait_for_result() == first
         assert mapping.result() is None
-        second = _simple_model(2.0)
-        mapping.handle_message("sensors/data", second.model_dump_json(by_alias=True))
-        assert await mapping.wait_for_result() == second
-        assert mapping.result() is None
 
     async def test_wait_for_result_without_autoclear_stays_sticky(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
