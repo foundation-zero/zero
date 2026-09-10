@@ -17,6 +17,10 @@ spec:
       labels:
         {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         fsGroup: 1001
       containers:
