@@ -24,11 +24,12 @@ uv sync --locked
 
 ## Configuration
 
-Settings are read from environment variables or a `.env` file. Base settings fields
+Settings are read from environment variables or a `.env` file. Both base settings fields
 (`mqtt_host`, `mqtt_port`, `mqtt_username`, `mqtt_password`, `modbus_host`, `modbus_port`)
-map to unprefixed variables (`MQTT_HOST`, `MQTT_PORT`, `MODBUS_HOST`, ...). Fields declared
-on a subcommand itself (e.g. `run`'s `activate_topic`) must be prefixed with the subcommand
-name using `__` as a delimiter (`RUN__ACTIVATE_TOPIC`).
+and fields declared on a subcommand itself (e.g. `run`/`stub`'s `activate_topic`) map to
+unprefixed, upper-cased variables (`MQTT_HOST`, `MODBUS_HOST`, `ACTIVATE_TOPIC`, ...).
+`CliApp` instantiates each subcommand as its own settings model with an empty `env_prefix`,
+so a subcommand prefix (e.g. `RUN__ACTIVATE_TOPIC`) is *not* recognised.
 
 For a full list of options for each subcommand, use `--help`:
 

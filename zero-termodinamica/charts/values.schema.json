@@ -45,6 +45,34 @@
           "description": "Modbus TCP port.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "probe_interval": {
+          "type": "integer",
+          "description": "Seconds between Modbus reads.",
+          "minimum": 1
+        },
+        "bridgesPath": {
+          "type": "string",
+          "description": "Path to modbus_bridges.json inside the container."
+        }
+      }
+    },
+    "stub": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Deploy an in-cluster stub Modbus server and point the bridge at it."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Port the stub binds and the bridge dials in stub mode; must be >= 1024 since the stub runs non-root.",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+        "defaultRegisterValue": {
+          "type": "integer",
+          "description": "Value the stub serves for registers."
         }
       }
     },

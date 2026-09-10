@@ -1,26 +1,21 @@
+{{- if .Values.stub.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-hull-temperature.name" . }}
+  name: {{ include "zero-hull-temperature.stub" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-hull-temperature.labels" . | nindent 4 }}
+    app.kubernetes.io/component: stub
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      {{- include "zero-hull-temperature.selectorLabels" . | nindent 6 }}
+      {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "zero-hull-temperature.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "zero-hull-temperature.stubSelectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -29,8 +24,8 @@ spec:
       securityContext:
         fsGroup: 1001
       containers:
-        - name: hull-temperature
-          args: ["run"]
+        - name: hull-temperature-stub
+          args: ["stub"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -60,21 +55,18 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
-            {{- if .Values.stub.enabled }}
             - name: MODBUS_HOST
-              value: {{ include "zero-hull-temperature.stub" . | quote }}
+              value: "0.0.0.0"
             - name: MODBUS_PORT
               value: {{ .Values.stub.port | quote }}
-            {{- else }}
-            - name: MODBUS_HOST
-              value: {{ .Values.modbus.host | quote }}
-            - name: MODBUS_PORT
-              value: {{ .Values.modbus.port | quote }}
-            {{- end }}
             - name: ACTIVATE_TOPIC
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
+            - name: TEMPERATURE
+              value: {{ .Values.stub.temperature | quote }}
+            - name: SECONDS
+              value: {{ .Values.stub.seconds | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -95,3 +87,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

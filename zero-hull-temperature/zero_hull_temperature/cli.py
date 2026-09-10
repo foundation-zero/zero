@@ -67,12 +67,14 @@ class ReadSkipMqttCmd(ModbusSettings):
 
 
 class StubCmd(ModbusSettings, MqttSettings):
+    activate_topic: str = TOPIC
+    activate_json_path: str = PATH
     temperature: float = 20
     seconds: int = -1
 
     async def cli_cmd(self) -> None:
         async with Stub.from_settings(
-            self, self, TOPIC, PATH, self.temperature
+            self, self, self.activate_topic, self.activate_json_path, self.temperature
         ) as stub:
             print("Running stub...")
             task = asyncio.create_task(await stub.run())

@@ -50,3 +50,18 @@ Selector labels
 app.kubernetes.io/name: {{ include "zero-hull-temperature.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Stub deployment/service name.
+*/}}
+{{- define "zero-hull-temperature.stub" -}}
+{{- printf "%s-stub" (include "zero-hull-temperature.name" .) -}}
+{{- end -}}
+
+{{/*
+Selector labels for the stub workload.
+*/}}
+{{- define "zero-hull-temperature.stubSelectorLabels" -}}
+{{ include "zero-hull-temperature.selectorLabels" . }}
+app.kubernetes.io/component: stub
+{{- end }}

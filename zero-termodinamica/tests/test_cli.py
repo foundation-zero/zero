@@ -37,7 +37,7 @@ def test_stub_cmd_from_env():
     """Test that ZeroTermodinamica stub command picks up settings from env and calls the subcommand."""
     os.environ["MODBUS_HOST"] = "127.0.0.1"
     os.environ["MODBUS_PORT"] = "502"
-    os.environ["DEFAULT_VALUE"] = "42"
+    os.environ["DEFAULT_REGISTER_VALUE"] = "42"
 
     try:
         with patch("zero_termodinamica.cli.StubCmd.cli_cmd") as mock_stub_command:
@@ -49,9 +49,9 @@ def test_stub_cmd_from_env():
             instance = mock_stub_command.call_args[0][0]
             assert instance.modbus_host == "127.0.0.1"
             assert instance.modbus_port == 502
-            assert instance.default_value == 42
+            assert instance.default_register_value == 42
     finally:
-        for key in ["MODBUS_HOST", "MODBUS_PORT", "DEFAULT_VALUE"]:
+        for key in ["MODBUS_HOST", "MODBUS_PORT", "DEFAULT_REGISTER_VALUE"]:
             if key in os.environ:
                 del os.environ[key]
 
@@ -65,14 +65,14 @@ def test_stub_cmd_from_args():
                 "stub",
                 "--modbus-host=192.168.1.1",
                 "--modbus-port=1502",
-                "--default-value=100",
+                "--default-register-value=100",
             ],
         )
         assert mock_stub_command.call_count == 1
         stub_cmd: StubCmd = mock_stub_command.call_args[0][0]
         assert stub_cmd.modbus_host == "192.168.1.1"
         assert stub_cmd.modbus_port == 1502
-        assert stub_cmd.default_value == 100
+        assert stub_cmd.default_register_value == 100
 
 
 def test_run_cmd_from_args():
