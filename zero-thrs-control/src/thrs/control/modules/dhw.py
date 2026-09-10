@@ -170,9 +170,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
 
-    pump_pid_zero = PidController.zero(timestamp)
-    pump_pid_zero.setpoint = Stamped(value=0.1, timestamp=timestamp)
-
     return DhwControllerState(
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -182,8 +179,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
         ),
         dhw_drives_flow_controller=PidController.zero(timestamp),
         dhw_dc_flow_controller=PidController.zero(timestamp),
-        dhw_pump_flow_controller=pump_pid_zero.model_copy(deep=True),
-        dhw_pump_temperature_controller=pump_pid_zero.model_copy(deep=True),
+        dhw_pump_flow_controller=PidController.zero(timestamp, setpoint=0.0),
+        dhw_pump_temperature_controller=PidController.zero(timestamp, setpoint=0.0),
     )
 
 

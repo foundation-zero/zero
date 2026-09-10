@@ -111,9 +111,9 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
         )
 
     @classmethod
-    def zero(cls, timestamp: datetime) -> PidControllerValues:
+    def zero(cls, timestamp: datetime, setpoint: float = 0.0) -> PidControllerValues:
         return PidControllerValues(
-            setpoint=Stamped(value=0.0, timestamp=timestamp),
+            setpoint=Stamped(value=setpoint, timestamp=timestamp),
             measurement=Stamped(value=None, timestamp=timestamp),
             output=Stamped(value=None, timestamp=timestamp),
             error=Stamped(value=None, timestamp=timestamp),
