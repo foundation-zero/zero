@@ -1,0 +1,103 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
+import { ComponentOrientation } from "../../../components/index.ts";
+import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
+import { FlowControlValveInstance } from "../../../instances/index.ts";
+import { PCM_MIMIC_DATA } from "../data/index.ts";
+
+const valves = PCM_MIMIC_DATA[MimicComponentType.FlowControlValve];
+</script>
+
+<template>
+  <FlowControlValveInstance
+    x="552"
+    y="101"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1064-04']"
+  >
+    <FlowControlLabelInstance
+      x="546"
+      y="70"
+      :tag-id="valves['1064-04'].tooltip?.yardTag"
+      :valve="valves['1064-04'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="552"
+    y="251"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1064-05']"
+  >
+    <FlowControlLabelInstance
+      x="546"
+      y="280"
+      :tag-id="valves['1064-05'].tooltip?.yardTag"
+      :valve="valves['1064-05'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="552"
+    y="448"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1064-06']"
+  >
+    <FlowControlLabelInstance
+      x="546"
+      y="479"
+      :tag-id="valves['1064-06'].tooltip?.yardTag"
+      :valve="valves['1064-06'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="552"
+    y="644"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1064-07']"
+  >
+    <FlowControlLabelInstance
+      x="546"
+      y="675"
+      :tag-id="valves['1064-07'].tooltip?.yardTag"
+      :valve="valves['1064-07'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="1118"
+    y="860"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1065-01']"
+  >
+    <FlowControlLabelInstance
+      x="1066"
+      y="826"
+      :tag-id="valves['1065-01'].tooltip?.yardTag"
+      :valve="valves['1065-01'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="1242"
+    y="860"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1061']"
+  >
+    <FlowControlLabelInstance
+      x="1194"
+      y="826"
+      :tag-id="valves['1061'].tooltip?.yardTag"
+      :valve="valves['1061'].source"
+    />
+  </FlowControlValveInstance>
+  <FlowControlValveInstance
+    x="1363"
+    y="860"
+    :orientation="ComponentOrientation.Down"
+    v-bind="valves['1062-01']"
+  >
+    <FlowControlLabelInstance
+      x="1313"
+      y="826"
+      :tag-id="valves['1062-01'].tooltip?.yardTag"
+      :valve="valves['1062-01'].source"
+    />
+  </FlowControlValveInstance>
+</template>

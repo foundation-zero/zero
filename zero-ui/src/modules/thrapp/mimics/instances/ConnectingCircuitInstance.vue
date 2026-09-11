@@ -43,7 +43,9 @@ const t = tScoped("labels");
         <ValueListSeparator />
         <ValueListHeader>
           <slot name="from">
-            <RiArrowDownLine class="text-muted-foreground size-3" />
+            <slot name="fromIcon">
+              <RiArrowDownLine class="text-muted-foreground size-3" />
+            </slot>
             {{ t("from") }}
           </slot>
         </ValueListHeader>
@@ -52,7 +54,9 @@ const t = tScoped("labels");
         <ValueListSeparator />
         <ValueListHeader>
           <slot name="to">
-            <RiArrowDownLine class="text-muted-foreground size-3" />
+            <slot name="toIcon">
+              <RiArrowDownLine class="text-muted-foreground size-3" />
+            </slot>
             {{ t("to") }}
           </slot>
         </ValueListHeader>

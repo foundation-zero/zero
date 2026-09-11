@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SolarPanelIcon } from "@/modules/common/components/icons";
+import { ZiSolarPanel } from "@/modules/common/components/icons";
 import { usePvtMode } from "@/modules/thrapp/state";
 import { RiDropLine, RiFireLine, RiFlashlightLine } from "@remixicon/vue";
 import { computed } from "vue";
@@ -54,7 +54,7 @@ const flowRate = computed(() => {
     >
       <YardTag>{{ props.tagId }}</YardTag>
       <PvtTitle class="gap-2 pb-1">
-        <SolarPanelIcon class="fill-brand-muted" />
+        <ZiSolarPanel class="fill-brand-muted" />
         {{ props.tooltip?.title }}
       </PvtTitle>
 

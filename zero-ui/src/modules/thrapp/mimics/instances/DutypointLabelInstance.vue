@@ -13,6 +13,7 @@ defineProps<MimicComponentInstanceProps & { pump: ModuleField<ControlComponentTy
   <Label
     :x="x"
     :y="y"
+    min-width="45"
   >
     {{ tagId }}
     <template #value>

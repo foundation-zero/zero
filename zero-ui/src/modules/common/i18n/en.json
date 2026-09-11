@@ -18,6 +18,7 @@
     "watts": "W",
     "joules": "J",
     "kilowatt": "kW",
+    "kilowatthours": "kWh",
     "deltaT": "ΔT",
     "Tin": "Tin",
     "Tout": "Tout",

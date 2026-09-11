@@ -14,6 +14,7 @@ export { default as LoopCircuitInstance } from "./LoopCircuitInstance.vue";
 export { default as ManualPumpInstance } from "./ManualPumpInstance.vue";
 export { default as ManualValveInstance } from "./ManualValveInstance.vue";
 export { default as MixValveInstance } from "./MixValveInstance.vue";
+export { default as PcmInstance } from "./PcmInstance.vue";
 export { default as PipeHeatExchangerInstance } from "./PipeHeatExchangerInstance.vue";
 export { default as PressureGaugeInstance } from "./PressureGaugeInstance.vue";
 export { default as PressureLabelInstance } from "./PressureLabelInstance.vue";

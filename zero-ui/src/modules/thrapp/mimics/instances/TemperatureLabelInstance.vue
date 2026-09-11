@@ -13,7 +13,10 @@ defineProps<
 </script>
 
 <template>
-  <Label v-bind="$props">
+  <Label
+    v-bind="$props"
+    min-width="55"
+  >
     {{ tagId }}
     <template #value>
       <SensorValue

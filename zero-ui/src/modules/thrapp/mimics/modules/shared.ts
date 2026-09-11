@@ -3,7 +3,13 @@ import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { PickKeys, SchemaDefinition, SensorComponentType } from "@/modules/thrsim/types";
 import { kebabCase } from "lodash";
-import { getSensorDefinition, isCustomField, isSensorField, ModuleField } from "../providers";
+import {
+  getSensorDefinition,
+  isCustomField,
+  isPlaceholderField,
+  isSensorField,
+  ModuleField,
+} from "../providers";
 
 const THRS_YARDTAG_PREFIX_REGEX = /^5000/;
 
@@ -21,7 +27,12 @@ export const fieldTooltip = <
   field: ModuleField<Type, Module>,
   content: Partial<TooltipContent>,
 ): TooltipContent => {
-  if (isCustomField(field)) {
+  if (isPlaceholderField(field)) {
+    return {
+      title: "Placeholder",
+      ...content,
+    };
+  } else if (isCustomField(field)) {
     return {
       yardTag: field[3].yardTag,
       technicalName: field[3].technicalName,
