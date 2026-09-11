@@ -59,7 +59,7 @@ runs:
             MAJOR=$(echo "$VERSION_NO_V" | cut -d. -f1)
             MINOR=$(echo "$VERSION_NO_V" | cut -d. -f2)
             PATCH=$(echo "$VERSION_NO_V" | cut -d. -f3 | cut -d- -f1)
-            EXTRA=$(echo "$VERSION_NO_V" | cut -d. -f3 | cut -d- -f2-)
+            EXTRA=$(echo "$VERSION_NO_V" | cut -d. -f3- | cut -d- -f2-)
 
             if [ "$INCREASE_PATCH" == "true" ]; then
               PATCH=$((PATCH + 1))
