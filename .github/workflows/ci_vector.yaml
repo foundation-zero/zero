@@ -23,7 +23,7 @@ jobs:
           fetch-depth: "0"
       - name: Run Vector test
         working-directory: vector
-        run: bash test.sh
+        run: bash test-process.sh
       - name: Run Vector ATPX test
         working-directory: vector
         run: bash test-atpx.sh

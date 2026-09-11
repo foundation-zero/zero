@@ -3,13 +3,12 @@ sources:
     type: exec
     command:
       - "cat"
-      - "tests/test-cases.json"
+      - "tests/process-test-cases.json"
     mode: streaming
     decoding:
       codec: json
     streaming:
       respawn_on_exit: false
-  
 transforms:
   take_msg:
     type: remap
@@ -24,16 +23,22 @@ transforms:
     type: remap
     inputs: ["take_msg"]
     files:
-      - "./processing/0_consts.vrl"
-      - "./processing/1_table.vrl"
-      - "./processing/2_flatten.vrl"
-      - "./processing/3_timestamp.vrl"
-      - "./processing/4_spell_fix.vrl"
-      - "./processing/5_snakecase.vrl"
-
+      - "./processing/process_0_consts.vrl"
+      - "./processing/process_1_ingest.vrl"
+      - "./processing/process_2_table.vrl"
+      - "./processing/process_3_flatten.vrl"
+      - "./processing/process_4_timestamp.vrl"
+      - "./processing/process_5_spell_fix.vrl"
+      - "./processing/process_6_snakecase.vrl"
+    drop_on_error: true
+  re_add_table:
+    type: remap
+    inputs: ["process"]
+    source: |
+      .table = %table
 sinks:
   output:
     type: console
-    inputs: ["process"]
+    inputs: ["re_add_table"]
     encoding:
       codec: json
