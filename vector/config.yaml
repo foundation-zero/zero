@@ -21,6 +21,24 @@ sources:
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840
+  mqtt_raw:
+    type: mqtt
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
+    client_id: vector-raw
+    decoding:
+      codec: bytes
+    topic:
+      - "marpower/#"
+      - "domestic/+"
+      - "hull-temperature/temperatures"
+      - "termodinamica/#"
+      - "sail-systems/#"
+      - "power-tags/#"
+      - "fiber-optics/values"
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
+    max_packet_size: 163840
   # A+T (ATPX) instrument bus: one raw float per message on
   # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
   # ATPX_MQTT_TOPIC is atpx_raw/# locally, defaulting to A+T's atpx/# in prod.
@@ -61,6 +79,10 @@ transforms:
       - "/etc/vector/3_timestamp.vrl"
       - "/etc/vector/4_spell_fix.vrl"
       - "/etc/vector/5_snakecase.vrl"
+    # Enable dead letter queue
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
   # Resolves each single-value ATPX message into one `atpx_raw` row (topic,
   # human-readable sender and field names, value).
   atpx_parse:
@@ -69,6 +91,9 @@ transforms:
     files:
       - "/etc/vector/atpx_0_consts.vrl"
       - "/etc/vector/atpx_1_parse.vrl"
+    # Enable dead letter queue
+    drop_on_error: true
+    reroute_dropped: true
   # Derives the Greptime table name from the parser's `type` field and stamps
   # ingestion time as the uniform time index. Each NMEA sentence is an
   # independent row - no reduce/merge step (ATPX lands raw, see atpx_parse).
@@ -77,7 +102,26 @@ transforms:
     inputs: ["atpx_nmea_mqtt"]
     files:
       - "/etc/vector/atpx_nmea_route.vrl"
-
+    # Enable dead letter queue
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
+  signal_mqtt_not_json:
+    type: remap
+    inputs: ["mqtt_raw"]
+    # We are only interested in parsing errors for the dead letter queue
+    source: |
+      parse_json!(string!(.message))
+      abort
+    drop_on_error: true
+    reroute_dropped: true
+  dropped_append_timestamp:
+    type: remap
+    inputs: ["*.dropped"]
+    source: |
+      if !exists(.timestamp) || is_null(.timestamp) {
+        .timestamp = now()
+      }
 sinks:
   greptimedb:
     type: greptimedb_logs
@@ -115,3 +159,11 @@ sinks:
     inputs:
       - vector_metrics
     address: 0.0.0.0:9090 # prom-exporter port from chart
+  dead_letter_queue:
+    type: greptimedb_logs
+    inputs: ["dropped_append_timestamp"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "vector_dead_letter_queue"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"
