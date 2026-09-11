@@ -10,7 +10,7 @@ import {
   provideFieldValue,
   provideFieldValueField,
 } from ".";
-import { useAutomaticMode } from "../../state";
+import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { injectValueForm, provideValueForm, ValueFormContext } from "./forms";
 
 export interface ControlValueFormContext<
@@ -40,6 +40,8 @@ export const createFormContext = <Control extends ControlComponentType>(
   const control = getControlValue(source);
 
   const automaticMode = useAutomaticMode();
+  const isAdvisoryEnabled = useAdvisoryEnabled();
+
   const dirtyValues = ref({} as Partial<ControlValues<Control>>);
   const currentValues = computed(
     () =>
@@ -50,7 +52,9 @@ export const createFormContext = <Control extends ControlComponentType>(
   const isDirty = computed(() => !isEmpty(dirtyValues.value));
   const error = ref<string>();
   const isPending = ref(false);
-  const isEditable = computed(() => control.value != undefined && !automaticMode.value);
+  const isEditable = computed(
+    () => control.value != undefined && !automaticMode.value && !!isAdvisoryEnabled.value,
+  );
 
   async function submit() {
     if (!isEditable.value || !control.value || automaticMode.value || isPending.value) return;
@@ -137,8 +141,9 @@ const getControlValue = <
   form?: ControlValueFormContext<Control>,
 ): Ref<Value | undefined> => {
   const automaticMode = useAutomaticMode();
+  const isAdvisoryEnabled = useAdvisoryEnabled();
 
-  if (!form || automaticMode.value) {
+  if (!form || automaticMode.value || !isAdvisoryEnabled.value) {
     const { getControlValue } = getMimicDataProvider();
     const control = getControlValue(source);
     return computed(() =>
