@@ -1,0 +1,82 @@
+name: "Generate Version"
+description: "Generates a version based on the latest git tag and any commits on top for release candidates"
+inputs:
+  increase-patch:
+    description: "Increase patch version for release candidates"
+    required: false
+    default: "true"
+  increase-minor:
+    description: "Increase minor version for release candidates"
+    required: false
+    default: "false"
+  increase-major:
+    description: "Increase major version for release candidates"
+    required: false
+    default: "false"
+  version_override:
+    description: "Just use the version specified"
+    required: false
+    default: ""
+outputs:
+  version:
+    description: "Version"
+    value: ${{ steps.version.outputs.version }}
+  git-ref:
+    description: "Version with 'v' prefix"
+    value: ${{ steps.version.outputs.git-ref }}
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: "0"
+        fetch-tags: true
+    - name: Generate Version
+      id: version
+      shell: bash
+      env:
+        VERSION_OVERRIDE: ${{ inputs.version_override }}
+        INCREASE_PATCH: ${{ inputs.increase-patch }}
+        INCREASE_MINOR: ${{ inputs.increase-minor }}
+        INCREASE_MAJOR: ${{ inputs.increase-major }}
+      run: |
+        if [ -n "$VERSION_OVERRIDE" ]; then
+          VERSION="$VERSION_OVERRIDE"
+        else
+          # Check if current commit points directly to an existing release tag
+          EXACT_TAG=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --points-at HEAD | sort -V | tail -n 1 || true)
+
+          if [ -n "$EXACT_TAG" ]; then
+            echo "Exact release tag detected on commit: $EXACT_TAG"
+            VERSION="${EXACT_TAG#v}"
+          else
+            # Get the latest reachable tag or fallback to v0.0.0
+            LATEST_TAG=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" 2>/dev/null || echo "v0.0.0")
+
+            VERSION_NO_V=${LATEST_TAG#v}
+
+            MAJOR=$(echo "$VERSION_NO_V" | cut -d. -f1)
+            MINOR=$(echo "$VERSION_NO_V" | cut -d. -f2)
+            PATCH=$(echo "$VERSION_NO_V" | cut -d. -f3 | cut -d- -f1)
+            EXTRA=$(echo "$VERSION_NO_V" | cut -d. -f3 | cut -d- -f2-)
+
+            if [ "$INCREASE_PATCH" == "true" ]; then
+              PATCH=$((PATCH + 1))
+            fi
+
+            if [ "$INCREASE_MINOR" == "true" ]; then
+              MINOR=$((MINOR + 1))
+            fi
+
+            if [ "$INCREASE_MAJOR" == "true" ]; then
+              MAJOR=$((MAJOR + 1))
+            fi
+
+            VERSION="${MAJOR}.${MINOR}.${PATCH}${EXTRA:+-${EXTRA}}"
+          fi
+        fi
+
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        echo "git-ref=v${VERSION}" >> "$GITHUB_OUTPUT"
+        echo "Version: ${VERSION}"

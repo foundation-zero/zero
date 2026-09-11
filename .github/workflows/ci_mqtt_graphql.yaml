@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,24 +88,9 @@ jobs:
         with:
           name: specs
           path: zero-mqtt-graphql/specs/
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            VERSION="${{ github.event.release.tag_name }}"
-            VERSION="${VERSION#v}"
-          elif [ "${{ github.ref_type }}" = "tag" ]; then
-            VERSION="${{ github.ref_name }}"
-            VERSION="${VERSION#v}"
-          else
-            VERSION_BASE=$(grep '^version = ' Cargo.toml | head -1 | sed -E 's/version = "(.*)"/\1/')
-            SHORT_SHA=$(git rev-parse --short=7 HEAD)
-            VERSION="${VERSION_BASE}-${SHORT_SHA}"
-          fi
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: zero-mqtt-graphql
+      - name: Generate Version
+        id: version
+        uses: ./.github/actions/generate-version
 
   docker-push:
     timeout-minutes: 10
@@ -138,16 +123,24 @@ jobs:
         with:
           name: specs
           path: zero-mqtt-graphql/specs
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.test.outputs.version }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: zero-mqtt-graphql
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
-
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   helm-push:
-    if: ${{ github.event_name == 'release' }}
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:

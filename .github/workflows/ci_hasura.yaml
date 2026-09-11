@@ -43,6 +43,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
+      - name: Generate Version
+        id: version
+        uses: ./.github/actions/generate-version
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v6
@@ -50,8 +53,7 @@ jobs:
           images: |
             ${{ env.IMAGE }}
           tags: |
-            type=sha
-            type=semver,pattern={{version}}
+            type=raw,value=${{ steps.version.outputs.version }}
       - name: Build and push
         uses: docker/build-push-action@v7
         with:

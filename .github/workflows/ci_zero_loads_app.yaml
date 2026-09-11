@@ -43,7 +43,7 @@ jobs:
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(uvx hatch version | sed 's/+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/-/g')
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
@@ -117,8 +117,10 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
 
   helm-push:
-    if: ${{ github.event_name == 'release' }}
-    needs: docker-push
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
+    needs:
+      - test
+      - docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
       contents: "read"
@@ -126,3 +128,4 @@ jobs:
     secrets: inherit
     with:
       helm_chart: "zero-loads-app/charts"
+      version_override: ${{ needs.test.outputs.image_tag }}

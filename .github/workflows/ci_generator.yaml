@@ -19,8 +19,6 @@ jobs:
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.image_tag.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v5
         with:
