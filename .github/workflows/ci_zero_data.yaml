@@ -36,7 +36,7 @@ jobs:
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(uvx hatch version | sed 's/+/_/g')
+          VERSION=$(uvx hatch version | sed 's/+/-/g')
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-data
@@ -93,6 +93,14 @@ jobs:
         working-directory: zero-data
         env:
           GSHEET_SA_KEY: ${{ secrets.GSHEET_SA_KEY }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.test.outputs.image_tag }}
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -100,14 +108,17 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
+            ${{ steps.meta.outputs.tags }}
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool:${{ needs.test.outputs.image_tag }}
+          labels: ${{ steps.meta.outputs.labels }}
           secret-files: |
             "gsheet_sa_key=./zero-data/.gsheet-sa-key.json"
 
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
-    needs: docker-push
+    needs:
+      - test
+      - docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
       contents: "read"
@@ -115,3 +126,4 @@ jobs:
     secrets: inherit
     with:
       helm_chart: "zero-data/charts/data_gen"
+      version_override: ${{ needs.test.outputs.image_tag }}
