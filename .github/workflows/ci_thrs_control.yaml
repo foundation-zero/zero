@@ -49,15 +49,6 @@ jobs:
       - run: uv sync --locked
         working-directory: zero-thrs-control
 
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(uvx hatch version | sed 's/+/-/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: zero-thrs-control
-
       - run: just type_check
         working-directory: zero-thrs-control
 
@@ -107,6 +98,9 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+      - name: Generate Version
+        id: version
+        uses: ./.github/actions/generate-version
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v6
@@ -114,7 +108,7 @@ jobs:
           images: |
             ${{ env.IMAGE_PREFIX }}${{matrix.target}}
           tags: |
-            type=raw,value=${{ needs.test.outputs.image_tag }}
+            type=raw,value=${{ steps.version.outputs.version }}
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -126,9 +120,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
-    needs:
-      - test
-      - docker-push
+    needs: docker-push
     uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
       contents: "read"
@@ -136,4 +128,3 @@ jobs:
     secrets: inherit
     with:
       helm_chart: "zero-thrs-control/charts/zero-thrs-control"
-      version_override: ${{ needs.test.outputs.image_tag }}
