@@ -93,6 +93,14 @@ jobs:
         working-directory: zero-data
         env:
           GSHEET_SA_KEY: ${{ secrets.GSHEET_SA_KEY }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.test.outputs.image_tag }}
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -100,8 +108,9 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
+            ${{ steps.meta.outputs.tags }}
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool:${{ needs.test.outputs.image_tag }}
+          labels: ${{ steps.meta.outputs.labels }}
           secret-files: |
             "gsheet_sa_key=./zero-data/.gsheet-sa-key.json"
 
