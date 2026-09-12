@@ -1,5 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use anyhow::Context;
 use log::{info, warn};
@@ -8,7 +9,7 @@ use roas_asyncapi::v3_0::channel::Channel;
 use roas_asyncapi::v3_0::message::Message;
 use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SubSchema};
 use roas_asyncapi::v3_0::Document;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use crate::graphql::graphql_type_for_subschema;
 use crate::naming::*;
@@ -37,8 +38,16 @@ pub struct TopicGroupDef {
     /// future use (e.g. per-parameter filtering); nothing reads it today.
     pub params: Vec<String>,
     pub fields: Vec<FieldDef>,
-    /// Raw JSON Schema value for the payload.
+    /// Raw JSON Schema for the payload. For a multi-type `{field}` group it's
+    /// the permissive `anyOf` of every branch, so it can't catch an out-of-bounds
+    /// value on a single field; `field_schemas` handles that.
     pub payload_schema: Option<Value>,
+    /// The exact schema per concrete topic (group pattern with its `+` filled
+    /// in), from the channel's `x-{param}-schema` extension. Lets each topic be
+    /// validated against its own schema instead of the group-wide union, like
+    /// thrs-api's per-field validation. Empty without that extension (single-type
+    /// groups, or multi-`+` patterns).
+    pub field_schemas: BTreeMap<String, Value>,
     /// Extension attributes per payload field (`x-*` schema extensions
     /// minus the prefix), keyed by raw field name.
     pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
@@ -70,7 +79,9 @@ pub type ObjectTypeRegistry = BTreeMap<String, ObjectTypeDef>;
 /// `(file name, path, document)` for each. Non-JSON files and topic-metadata
 /// files are skipped; unreadable or invalid `.json` files are an error —
 /// see [`read_asyncapi_document`].
-fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf, Document)>> {
+type SpecDocument = (String, PathBuf, Document, Option<Arc<Value>>);
+
+fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<SpecDocument>> {
     let dir = Path::new(spec_dir);
     if !dir.is_dir() {
         anyhow::bail!("spec_dir does not exist or is not a directory: {spec_dir}");
@@ -90,7 +101,11 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf, Docume
         .into_iter()
         .filter(|(_, path)| path.extension().and_then(|e| e.to_str()) == Some("json"))
         .filter(|(_, path)| !crate::metadata::is_metadata_file(path))
-        .map(|(file_name, path)| read_asyncapi_document(&path).map(|doc| (file_name, path, doc)))
+        .filter(|(_, path)| !crate::modules_view::is_module_view_file(path))
+        .map(|(file_name, path)| {
+            read_asyncapi_document(&path)
+                .map(|(doc, components)| (file_name, path, doc, components))
+        })
         .collect()
 }
 
@@ -99,27 +114,57 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf, Docume
 ///
 /// Consumers that only need one of the two should still use this loader and
 /// ignore the other half, so each spec file is read exactly once.
-pub fn load_specs_and_groups(
-    spec_dir: &str,
-) -> anyhow::Result<(Vec<TopicDef>, Vec<TopicGroupDef>, Vec<ObjectTypeDef>)> {
+/// A validator input: an MQTT topic (or wildcard pattern) and a self-contained
+/// JSON Schema for its payloads. Self-contained means the schema carries its
+/// document's `components` at the root, so `#/components/schemas/...` `$ref`s
+/// still resolve when it's compiled on its own.
+pub type ValidatorSpec = (String, Value);
+
+pub struct LoadedSpecs {
+    pub topics: Vec<TopicDef>,
+    pub groups: Vec<TopicGroupDef>,
+    pub object_types: Vec<ObjectTypeDef>,
+    /// Validator inputs: concrete topics, then group patterns, then per-field
+    /// topics, in that order, so a later exact-topic entry beats an earlier
+    /// wildcard one at validation time.
+    pub validators: Vec<ValidatorSpec>,
+}
+
+pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     let docs = spec_documents(spec_dir)?;
     let mut object_types: ObjectTypeRegistry = ObjectTypeRegistry::new();
 
-    let topics: Vec<TopicDef> = docs
-        .iter()
-        .map(|(_, path, doc)| topics_from_document(doc, path, &mut object_types))
-        .collect::<anyhow::Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .collect();
+    let mut topics: Vec<TopicDef> = Vec::new();
+    let mut groups: Vec<TopicGroupDef> = Vec::new();
+    let mut validators: Vec<ValidatorSpec> = Vec::new();
 
-    let groups: Vec<TopicGroupDef> = docs
-        .iter()
-        .map(|(_, path, doc)| groups_from_document(doc, path, &mut object_types))
-        .collect::<anyhow::Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .collect();
+    for (_, path, doc, components) in &docs {
+        let doc_topics = topics_from_document(doc, path, &mut object_types)?;
+        let doc_groups = groups_from_document(doc, path, &mut object_types)?;
+
+        // Wrap each spec with this doc's raw components so `$ref`s resolve.
+        // Topics and group patterns first, then per-field topics (which override
+        // the group pattern via the exact-topic-first lookup in
+        // `MqttSubscriber::validate_payload`).
+        for t in &doc_topics {
+            if let Some(schema) = &t.payload_schema {
+                validators.push((t.topic.clone(), self_contained(schema, components)));
+            }
+        }
+        for g in &doc_groups {
+            if let Some(schema) = &g.payload_schema {
+                validators.push((g.pattern.clone(), self_contained(schema, components)));
+            }
+        }
+        for g in &doc_groups {
+            for (topic, schema) in &g.field_schemas {
+                validators.push((topic.clone(), self_contained(schema, components)));
+            }
+        }
+
+        topics.extend(doc_topics);
+        groups.extend(doc_groups);
+    }
 
     info!(
         "Loaded {} topic(s), {} topic group(s) and {} composite object type(s) from {}",
@@ -128,7 +173,26 @@ pub fn load_specs_and_groups(
         object_types.len(),
         spec_dir
     );
-    Ok((topics, groups, object_types.into_values().collect()))
+    Ok(LoadedSpecs {
+        topics,
+        groups,
+        object_types: object_types.into_values().collect(),
+        validators,
+    })
+}
+
+/// Make a payload schema compilable on its own: put it under `allOf` and attach
+/// the document's raw `components` at the root, so its `#/components/schemas/...`
+/// `$ref`s resolve. Returned unchanged when there are no components (already
+/// self-contained, e.g. in tests).
+fn self_contained(schema: &Value, components: &Option<Arc<Value>>) -> Value {
+    match components {
+        Some(components) => json!({
+            "allOf": [schema],
+            "components": components.as_ref(),
+        }),
+        None => schema.clone(),
+    }
 }
 
 /// Extract concrete topics from one document, erroring on unresolvable
@@ -260,6 +324,7 @@ fn group_from_channel(
         .as_ref()
         .map(extensions_from_payload_schema)
         .unwrap_or_default();
+    let field_schemas = field_schemas_from_channel(channel, &params, &pattern);
 
     info!(
         "Loaded topic group '{}' ({}) from {}",
@@ -273,17 +338,52 @@ fn group_from_channel(
         params,
         fields,
         payload_schema,
+        field_schemas,
         value_extensions,
         ttl_secs: ttl_for_channel(channel, doc),
     }))
 }
 
-/// Read and parse one file into an AsyncAPI 3.x `Document`.
+/// Expand the channel's `x-{param}-schema` extension into a map of concrete
+/// topic to the schema that topic carries. Only single-parameter groups (one
+/// `+` in the pattern) are expanded: each value's schema is pinned to `pattern`
+/// with the `+` replaced by that value. Empty when there's no such extension or
+/// the pattern has more than one `+` (e.g. `power-tags/+/+`).
+fn field_schemas_from_channel(
+    channel: &Channel,
+    params: &[String],
+    pattern: &str,
+) -> BTreeMap<String, Value> {
+    let mut out = BTreeMap::new();
+    let [param] = params else { return out };
+    if pattern.matches('+').count() != 1 {
+        return out;
+    }
+    let Some(extensions) = channel.extensions.as_ref() else {
+        return out;
+    };
+    let Some(schema_map) = extensions
+        .get(&format!("x-{param}-schema"))
+        .and_then(Value::as_object)
+    else {
+        return out;
+    };
+    for (field_value, schema) in schema_map {
+        let concrete_topic = pattern.replacen('+', field_value, 1);
+        out.insert(concrete_topic, schema.clone());
+    }
+    out
+}
+
+/// Read and parse one file into an AsyncAPI 3.x `Document`, plus the file's raw
+/// `components` value. We keep components verbatim so JSON Schema constraints
+/// like `minimum`/`maximum` survive for the validators (the typed model drops
+/// them), and so payload schemas' `#/components/schemas/...` `$ref`s resolve.
 ///
 /// Errors when the file is unreadable, not valid JSON, lacks an `asyncapi`
 /// version, or is not an AsyncAPI 3.x document — a spec directory is
 /// expected to contain only loadable specs.
-fn read_asyncapi_document(path: &Path) -> anyhow::Result<Document> {
+fn read_asyncapi_document(path: &Path) -> anyhow::Result<(Document, Option<Arc<Value>>)> {
     let content =
         std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
 
@@ -305,8 +405,10 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<Document> {
         );
     }
 
-    serde_json::from_value::<Document>(spec_value)
-        .with_context(|| format!("parsing AsyncAPI document {}", path.display()))
+    let components = spec_value.get("components").cloned().map(Arc::new);
+    let doc = serde_json::from_value::<Document>(spec_value)
+        .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
+    Ok((doc, components))
 }
 
 /// Whether a channel describes a parametrized topic family rather than one
@@ -327,7 +429,14 @@ fn param_name(segment: &str) -> Option<&str> {
 }
 
 /// Parameter names in order: `power-tags/{panel}/{slug}` → `[panel, slug]`.
+///
+/// Strips the trailing `:<Role>` operation suffix first (like
+/// [`group_identity`]). Otherwise the last segment of `.../{field}:Publisher` is
+/// `{field}:Publisher`, which `param_name` doesn't see as a placeholder, so the
+/// param gets dropped and per-field schema pinning
+/// (`field_schemas_from_channel`) never fires.
 fn extract_params(address: &str) -> Vec<String> {
+    let address = address.rsplit_once(':').map_or(address, |(path, _role)| path);
     address
         .split('/')
         .filter_map(param_name)
@@ -774,8 +883,7 @@ mod tests {
 
     /// Test convenience wrapper extracting just the topics.
     fn loaded_topics(dir: &Path) -> anyhow::Result<Vec<TopicDef>> {
-        let (topics, _, _) = load_specs_and_groups(dir.to_str().unwrap())?;
-        Ok(topics)
+        Ok(load_specs_and_groups(dir.to_str().unwrap())?.topics)
     }
 
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
@@ -788,6 +896,27 @@ mod tests {
             properties,
             ..Default::default()
         }
+    }
+
+    #[test]
+    fn test_extract_params_strips_operation_role_suffix() {
+        // Channel addresses end in a `:<Role>` suffix (`{field}:Publisher`).
+        // Without stripping it the last placeholder reads as `{field}:Publisher`,
+        // not a param, so the list comes back empty and per-field pinning never
+        // fires (regression: group payloads then only hit the anyOf union).
+        assert_eq!(
+            extract_params("simulation/500000-thrs/thrusters/{field}:Publisher"),
+            vec!["field".to_string()],
+        );
+        // Mid-address params with a suffix, and addresses without one, both work.
+        assert_eq!(
+            extract_params("thrs/controller/{module}/parameters:Publisher"),
+            vec!["module".to_string()],
+        );
+        assert_eq!(
+            extract_params("power-tags/{panel}/{slug}"),
+            vec!["panel".to_string(), "slug".to_string()],
+        );
     }
 
     #[test]
@@ -805,7 +934,7 @@ mod tests {
         ]);
         let schema = schema_with_properties(props);
         let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, &doc, &mut ObjectTypeRegistry::new());
         assert_eq!(fields.len(), 4);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.iter().find(|f| f.name == name).unwrap();
@@ -929,7 +1058,7 @@ mod tests {
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
         let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, &doc, &mut ObjectTypeRegistry::new());
         assert_eq!(fields.len(), 0);
     }
 
@@ -1227,7 +1356,7 @@ mod tests {
         )]);
         let schema = schema_with_properties(props);
         let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, &doc, &mut ObjectTypeRegistry::new());
         assert_eq!(fields.len(), 1);
         assert_eq!(fields[0].name, "current_a");
         assert_eq!(fields[0].graphql_type, "Float");

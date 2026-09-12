@@ -20,6 +20,12 @@ pub struct AppConfig {
     /// may override this with an `x-ttl` extension.
     #[serde(default = "default_ttl")]
     pub default_ttl_secs: u64,
+    /// When true, serve mode drops payloads that fail JSON Schema validation
+    /// instead of caching them, so the last valid value survives, like thrs-api
+    /// rejecting out-of-bounds sensor values. Off by default: an incomplete
+    /// spec would otherwise drop valid live data. Env: `STRICT_VALIDATION`.
+    #[serde(default)]
+    pub strict_validation: bool,
 }
 
 // function indirect needed by serde

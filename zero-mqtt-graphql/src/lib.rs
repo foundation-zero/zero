@@ -4,5 +4,6 @@ pub mod config;
 pub mod graphql;
 pub mod http;
 pub mod metadata;
+pub mod modules_view;
 pub mod mqtt;
 pub mod naming;

@@ -2,6 +2,7 @@ import contextlib
 import json
 import logging
 from datetime import datetime, timedelta
+from typing import Literal
 
 from aiomqtt import Client as MqttClient
 from pydantic import BaseModel
@@ -220,6 +221,42 @@ class AsyncApiCmd(BaseModel):
         print(json.dumps(build_asyncapi(self.title, self.version), indent=2))  # noqa: T201 - CLI output, not logging
 
 
+class ModuleMetadataCmd(BaseModel):
+    """Print the metadata file for one THRS module's `{field}` topic group, so
+    zero-mqtt-graphql can expose a list query for it (build_module_metadata).
+    Same idea as zero-power-tags' `print-metadata`.
+
+    `module` is any key of `all_module_descriptions()`. `kind="controller"` only
+    produces output for modules with computed fields."""
+
+    module: str
+    kind: Literal["sensors", "controller"]
+
+    def cli_cmd(self) -> None:
+        # Imported lazily for the same reason as AsyncApiCmd above.
+        from thrs.spec.asyncapi import build_module_metadata  # noqa: PLC0415
+
+        print(json.dumps(build_module_metadata(self.module, self.kind), indent=2))  # noqa: T201 - CLI output, not logging
+
+
+class ModuleViewCmd(BaseModel):
+    """Print the nested per-module view so zero-mqtt-graphql can serve
+    ``modules.<module>.sensorValues`` 1:1 with thrs-api (build_module_view,
+    modules_view.rs). Unlike ``print-module-metadata`` (one flat ``{field}``
+    group), this lists every sensorValues field (raw and computed, overrides
+    included) with its topic and per-leaf GraphQL/wire names.
+
+    ``module`` is any key of ``all_module_descriptions()``."""
+
+    module: str
+
+    def cli_cmd(self) -> None:
+        # Imported lazily for the same reason as AsyncApiCmd above.
+        from thrs.spec.asyncapi import build_module_view  # noqa: PLC0415
+
+        print(json.dumps(build_module_view(self.module), indent=2))  # noqa: T201 - CLI output, not logging
+
+
 class ThrsCli(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -232,6 +269,8 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     simulation: CliSubCommand[SimulationCmd]
     control: CliSubCommand[ControlCmd]
     print_asyncapi: CliSubCommand[AsyncApiCmd]
+    print_module_metadata: CliSubCommand[ModuleMetadataCmd]
+    print_module_view: CliSubCommand[ModuleViewCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()
