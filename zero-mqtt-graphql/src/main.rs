@@ -8,12 +8,15 @@ use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-use zero_mqtt_graphql::asyncapi::{load_specs_and_groups, ObjectTypeDef, TopicDef, TopicGroupDef};
+use zero_mqtt_graphql::asyncapi::{
+    load_specs_and_groups, LoadedSpecs, ObjectTypeDef, TopicDef, TopicGroupDef, ValidatorSpec,
+};
 use zero_mqtt_graphql::cache::TopicCache;
 use zero_mqtt_graphql::config::AppConfig;
-use zero_mqtt_graphql::graphql::build_schema;
+use zero_mqtt_graphql::graphql::{build_schema, build_schema_with_module_views};
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::metadata::{load_metadata, MetadataFile};
+use zero_mqtt_graphql::modules_view::{load_module_views, ModuleView};
 use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
 
 /// A spawned MQTT subscriber task paired with a receiver that fires when
@@ -57,15 +60,22 @@ async fn main() -> Result<()> {
 
     let cli = Cli::parse();
     let config = AppConfig::load()?;
-    let (topics, groups, object_types) = load_specs_and_groups(&cli.spec_dir)?;
+    let LoadedSpecs {
+        topics,
+        groups,
+        object_types,
+        validators,
+    } = load_specs_and_groups(&cli.spec_dir)?;
     match cli.command.unwrap_or(Command::Serve) {
         Command::Validate => validate_command(&cli.spec_dir, &topics, &groups, &object_types)?,
         Command::PrintSchema { output } => {
             let metadata = load_metadata_or_empty(&cli.spec_dir);
             export_sdl(&topics, &groups, &object_types, &metadata, output.as_deref())?;
         }
-        Command::Listen => run_listen_only(cli.spec_dir, topics, groups, config).await?,
-        Command::Serve => run_serve(&cli.spec_dir, config, topics, groups, object_types).await?,
+        Command::Listen => run_listen_only(cli.spec_dir, topics, groups, validators, config).await?,
+        Command::Serve => {
+            run_serve(&cli.spec_dir, config, topics, groups, object_types, validators).await?
+        }
     }
     Ok(())
 }
@@ -105,8 +115,10 @@ async fn run_serve(
     topics: Vec<TopicDef>,
     groups: Vec<TopicGroupDef>,
     object_types: Vec<ObjectTypeDef>,
+    validator_specs: Vec<ValidatorSpec>,
 ) -> Result<()> {
     let metadata = load_metadata_or_empty(spec_dir);
+    let module_views = load_module_views_or_empty(spec_dir);
     if topics.is_empty() {
         info!("No MQTT topics found in spec directory '{spec_dir}'");
     }
@@ -117,9 +129,16 @@ async fn run_serve(
         config.default_ttl_secs,
     ));
     zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
-    let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &cache)?;
+    let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &validator_specs, &cache)?;
 
-    let schema = build_schema(&topics, cache, &groups, &metadata, &object_types)?;
+    let schema = build_schema_with_module_views(
+        &topics,
+        cache,
+        &groups,
+        &metadata,
+        &object_types,
+        &module_views,
+    )?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{}", addr);
     let listener = TcpListener::bind(addr).await?;
@@ -155,6 +174,7 @@ fn spawn_mqtt_subscriber(
     config: &AppConfig,
     topics: &[TopicDef],
     groups: &[TopicGroupDef],
+    validator_specs: &[ValidatorSpec],
     cache: &Arc<TopicCache>,
 ) -> Result<Option<MqttTask>> {
     let mqtt_topics: Vec<String> = topics
@@ -173,7 +193,13 @@ fn spawn_mqtt_subscriber(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache.clone(), false, topics, groups)?;
+    let mut sub = MqttSubscriber::new_with_mode(
+        connection,
+        cache.clone(),
+        false,
+        config.strict_validation,
+        validator_specs,
+    )?;
     sub.set_pending_subscriptions(&mqtt_topics);
     Ok(Some(spawn_subscriber(sub)))
 }
@@ -230,6 +256,7 @@ async fn run_listen_only(
     spec_dir: String,
     topics: Vec<TopicDef>,
     groups: Vec<TopicGroupDef>,
+    validator_specs: Vec<ValidatorSpec>,
     config: AppConfig,
 ) -> Result<()> {
     if topics.is_empty() && groups.is_empty() {
@@ -255,7 +282,8 @@ async fn run_listen_only(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, &topics, &groups)?;
+    // listen-only never caches, so strict validation is moot here.
+    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, false, &validator_specs)?;
     sub.set_pending_subscriptions(&mqtt_topics);
 
     let (handle, dead_rx) = spawn_subscriber(sub);
@@ -295,6 +323,30 @@ fn load_metadata_or_empty(spec_dir: &str) -> Vec<MetadataFile> {
         }
         Err(e) => {
             info!("No topic metadata loaded from '{}': {}", spec_dir, e);
+            Vec::new()
+        }
+    }
+}
+
+/// Load `*-module.json` view specs from the spec dir.
+///
+/// A missing or malformed file is logged and ignored (lenient, like
+/// `load_metadata_or_empty`); with none present the `modules { … }` query just
+/// isn't exposed.
+fn load_module_views_or_empty(spec_dir: &str) -> Vec<ModuleView> {
+    match load_module_views(spec_dir) {
+        Ok(views) => {
+            if !views.is_empty() {
+                let fields: usize = views.iter().map(|v| v.sensor_values.len()).sum();
+                info!(
+                    "Loaded {} module-view spec(s) ({fields} sensor field(s))",
+                    views.len()
+                );
+            }
+            views
+        }
+        Err(e) => {
+            info!("No module-view specs loaded from '{}': {}", spec_dir, e);
             Vec::new()
         }
     }
@@ -351,7 +403,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("schema.graphql");
 
-        export_sdl(&sample_topics(), &[], &[], path.to_str()).unwrap();
+        export_sdl(&sample_topics(), &[], &[], &[], path.to_str()).unwrap();
 
         let sdl = std::fs::read_to_string(&path).unwrap();
         assert!(sdl.contains("type Query"), "{sdl}");
@@ -362,12 +414,12 @@ mod tests {
 
     #[test]
     fn test_export_sdl_empty_specs_error() {
-        let err = export_sdl(&[], &[], &[], None).unwrap_err();
+        let err = export_sdl(&[], &[], &[], &[], None).unwrap_err();
         assert!(err.to_string().contains("no topics found"), "{err}");
     }
 
     #[test]
     fn test_export_sdl_stdout_does_not_fail() {
-        export_sdl(&sample_topics(), &[], &[], None).unwrap();
+        export_sdl(&sample_topics(), &[], &[], &[], None).unwrap();
     }
 }

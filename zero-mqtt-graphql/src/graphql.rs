@@ -36,6 +36,7 @@ use serde_json::Value as JsonValue;
 use crate::asyncapi::{FieldDef, ObjectTypeDef, TopicDef, TopicGroupDef};
 use crate::cache::TopicCache;
 use crate::metadata::{metadata_by_topic, MetadataByTopic, MetadataFile};
+use crate::modules_view::{ModuleFieldDef, ModuleLeafDef, ModuleView};
 use crate::naming::*;
 
 /// A group's rows partitioned into buckets by the `group_by` metadata
@@ -65,6 +66,22 @@ pub fn build_schema(
     groups: &[TopicGroupDef],
     metadata: &[MetadataFile],
     object_types: &[ObjectTypeDef],
+) -> anyhow::Result<Schema> {
+    build_schema_with_module_views(topics, cache, groups, metadata, object_types, &[])
+}
+
+/// Like [`build_schema`], but also adds the nested `modules { <module> {
+/// sensorValues { … } } }` view from `*-module.json` specs (see
+/// [`crate::modules_view`]) — the shape the THRS UI reads (zero-ui `QUERY_ALL`).
+/// `build_schema` passes `module_views = &[]`, so old callers keep the flat
+/// schema.
+pub fn build_schema_with_module_views(
+    topics: &[TopicDef],
+    cache: Arc<TopicCache>,
+    groups: &[TopicGroupDef],
+    metadata: &[MetadataFile],
+    object_types: &[ObjectTypeDef],
+    module_views: &[ModuleView],
 ) -> anyhow::Result<Schema> {
     validate_topics(topics)?;
 
@@ -102,7 +119,17 @@ pub fn build_schema(
         .flatten()
         .fold(query, Object::field);
 
-    let stamped_wrapper_objects = register_stamped_wrapper_objects(topics, groups);
+    // Nested per-module view. Additive: `module_views` is empty unless
+    // `*-module.json` specs are loaded, so the flat schema stays the same.
+    let module_objects = match register_modules_query(module_views, &cache, &mut used_query_fields) {
+        Some(parts) => {
+            query = query.field(parts.query_field);
+            parts.objects
+        }
+        None => Vec::new(),
+    };
+
+    let stamped_wrapper_objects = register_stamped_wrapper_objects(topics, groups, module_views);
     let composite_objects = register_composite_object_types(object_types);
 
     finish_schema(
@@ -112,6 +139,7 @@ pub fn build_schema(
         metadata_types,
         stamped_wrapper_objects,
         composite_objects,
+        module_objects,
     )
 }
 
@@ -176,6 +204,7 @@ fn finish_schema(
     metadata_types: Vec<(String, BTreeMap<String, JsonValue>)>,
     stamped_wrapper_objects: Vec<Object>,
     composite_objects: Vec<Object>,
+    module_objects: Vec<Object>,
 ) -> anyhow::Result<Schema> {
     let schema_builder = Schema::build(query.type_name(), None, None).register(query);
     let schema_builder = group_objects
@@ -183,6 +212,7 @@ fn finish_schema(
         .chain(concrete_objects)
         .chain(stamped_wrapper_objects)
         .chain(composite_objects)
+        .chain(module_objects)
         .chain(
             metadata_types
                 .into_iter()
@@ -1008,6 +1038,7 @@ fn stamped_wrapper_field(name: &str, raw_key: &str, type_ref: TypeRef) -> Field 
 fn register_stamped_wrapper_objects(
     topics: &[TopicDef],
     groups: &[TopicGroupDef],
+    module_views: &[ModuleView],
 ) -> Vec<Object> {
     let mut inner_types: BTreeSet<String> = BTreeSet::new();
     let all_fields = topics
@@ -1019,10 +1050,153 @@ fn register_stamped_wrapper_objects(
             inner_types.insert(inner.to_string());
         }
     }
+    // Module-view leaves are Stamped<Inner> too; the inner scalar comes
+    // straight from the spec (`ModuleLeafDef::type`).
+    for leaf in module_views
+        .iter()
+        .flat_map(|v| v.sensor_values.iter())
+        .flat_map(|f| f.leaves.iter())
+    {
+        inner_types.insert(leaf.r#type.clone());
+    }
     inner_types
         .into_iter()
         .map(|inner| stamped_wrapper_object(&inner))
         .collect()
+}
+
+// --- Nested per-module view (`modules { <module> { sensorValues { … } } }`) ---
+
+/// The query field plus every type it needs.
+struct ModulesSchemaParts {
+    query_field: Field,
+    objects: Vec<Object>,
+}
+
+/// Build the `modules { … }` query from the loaded specs, or `None` if there
+/// are none (or something already claimed the `modules` field).
+///
+/// Container levels resolve to a constant non-null object so their children
+/// run; each leaf resolver reads its own topic from the cache and projects the
+/// `{Value, TimeStamp}` leaves through the shared `Stamped<Inner>` wrappers.
+/// Type names get `_`-namespaced (`Module_<module>_…`) to avoid clashing with a
+/// payload model's title; only the field names have to match thrs-api.
+fn register_modules_query(
+    module_views: &[ModuleView],
+    cache: &Arc<TopicCache>,
+    used_query_fields: &mut BTreeSet<String>,
+) -> Option<ModulesSchemaParts> {
+    if module_views.is_empty() {
+        return None;
+    }
+    if !used_query_fields.insert("modules".to_string()) {
+        warn!("'modules' query field already claimed — skipping nested module view");
+        return None;
+    }
+
+    let mut objects: Vec<Object> = Vec::new();
+    let mut modules_obj = Object::new("Modules");
+
+    for view in module_views {
+        let module_type = module_object_type_name(&view.module);
+        modules_obj = modules_obj.field(constant_object_field(&view.module, &module_type));
+
+        let sensor_values_type = module_sensor_values_type_name(&view.module);
+        objects.push(
+            Object::new(module_type.as_str())
+                .field(constant_object_field("sensorValues", &sensor_values_type)),
+        );
+
+        let mut sensor_values_obj = Object::new(sensor_values_type.as_str());
+        for field in &view.sensor_values {
+            let field_type = module_field_type_name(&view.module, &field.gql_field);
+            sensor_values_obj =
+                sensor_values_obj.field(module_sensor_field(field, &field_type, cache));
+            objects.push(module_field_object(&field_type, field));
+        }
+        objects.push(sensor_values_obj);
+    }
+    objects.push(modules_obj);
+
+    Some(ModulesSchemaParts {
+        query_field: constant_object_field("modules", "Modules"),
+        objects,
+    })
+}
+
+fn module_object_type_name(module: &str) -> String {
+    format!("Module_{module}")
+}
+
+fn module_sensor_values_type_name(module: &str) -> String {
+    format!("Module_{module}_SensorValues")
+}
+
+fn module_field_type_name(module: &str, gql_field: &str) -> String {
+    format!("Module_{module}_{gql_field}")
+}
+
+/// A field that resolves to a constant empty (but non-null) object, so its
+/// children run and read the cache from their own topics. Used for the
+/// `modules` / `<module>` / `sensorValues` container levels.
+fn constant_object_field(name: &str, type_name: &str) -> Field {
+    Field::new(name.to_string(), TypeRef::named(type_name), |_ctx| {
+        async_graphql::dynamic::FieldFuture::new(async move {
+            Ok(Some(FieldValue::value(GraphQlValue::Object(
+                Default::default(),
+            ))))
+        })
+    })
+}
+
+/// The `<field>` resolver under `Module_<module>_SensorValues`: returns the
+/// whole cached payload of the field's topic (null when nothing is cached yet).
+fn module_sensor_field(field: &ModuleFieldDef, field_type: &str, cache: &Arc<TopicCache>) -> Field {
+    let topic = field.topic.clone();
+    let cache = cache.clone();
+    Field::new(
+        field.gql_field.clone(),
+        TypeRef::named(field_type),
+        move |_ctx| {
+            let topic = topic.clone();
+            let cache = cache.clone();
+            async_graphql::dynamic::FieldFuture::new(async move {
+                Ok(cache
+                    .get(&topic)
+                    .map(|json| FieldValue::value(json_to_graphql_value(&json))))
+            })
+        },
+    )
+}
+
+/// One per-field payload object: a `Stamped<Inner>` leaf per declared leaf,
+/// each projecting its raw PascalCase wire key off the cached payload.
+fn module_field_object(field_type: &str, field: &ModuleFieldDef) -> Object {
+    field
+        .leaves
+        .iter()
+        .map(module_leaf_field)
+        .fold(Object::new(field_type), Object::field)
+}
+
+/// One `{value, timestamp}` leaf: field `leaf.gql` reads wire key `leaf.raw`
+/// off the parent payload, typed as the shared `Stamped<Inner>` wrapper.
+fn module_leaf_field(leaf: &ModuleLeafDef) -> Field {
+    let raw_key = Name::new(&leaf.raw);
+    let type_ref = TypeRef::named(stamped_wrapper_type_name(&leaf.r#type));
+    Field::new(leaf.gql.clone(), type_ref, move |ctx| {
+        let raw_key = raw_key.clone();
+        async_graphql::dynamic::FieldFuture::new(async move {
+            let parent = ctx.parent_value.try_to_value()?;
+            let value = match parent {
+                GraphQlValue::Object(map) => {
+                    map.get(&raw_key).cloned().unwrap_or(GraphQlValue::Null)
+                }
+                _ => GraphQlValue::Null,
+            };
+            Ok(Some(FieldValue::value(value)))
+        })
+    })
 }
 
 /// Validate that sanitized topic and field names are unique and not reserved.
@@ -1363,6 +1537,105 @@ mod tests {
         assert_eq!(data["testChannel"]["label"], json!("hello"));
     }
 
+    fn thrusters_module_view() -> Vec<ModuleView> {
+        vec![ModuleView {
+            module: "thrusters".to_string(),
+            sensor_values: vec![ModuleFieldDef {
+                gql_field: "thrustersFlowcontrolAft".to_string(),
+                topic: "simulation/500000-thrs/thrusters/thrusters-flowcontrol-aft".to_string(),
+                leaves: vec![
+                    ModuleLeafDef {
+                        gql: "positionRel".to_string(),
+                        raw: "PositionRel".to_string(),
+                        r#type: "Float".to_string(),
+                    },
+                    ModuleLeafDef {
+                        gql: "positionAbs".to_string(),
+                        raw: "PositionAbs".to_string(),
+                        r#type: "Float".to_string(),
+                    },
+                ],
+                computed: false,
+            }],
+        }]
+    }
+
+    #[tokio::test]
+    async fn test_nested_module_view_returns_camelcase_leaves() {
+        // Leaf names must be thrs-api's camelCase (positionRel), not the flat
+        // schema's lowercased positionrel, and value/timestamp come from the
+        // cached PascalCase payload.
+        let topic = "simulation/500000-thrs/thrusters/thrusters-flowcontrol-aft";
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            topic,
+            json!({
+                "PositionRel": {"Value": 0.75, "TimeStamp": "2024-01-01T00:00:00Z"},
+                "PositionAbs": {"Value": 270.0, "TimeStamp": "2024-01-01T00:00:00Z"}
+            }),
+        );
+        let schema =
+            build_schema_with_module_views(&[], cache, &[], &[], &[], &thrusters_module_view())
+                .unwrap();
+
+        let response = schema
+            .execute(
+                "{ modules { thrusters { sensorValues { thrustersFlowcontrolAft { \
+                 positionRel { value timestamp } positionAbs { value } } } } } }",
+            )
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        let field = &data["modules"]["thrusters"]["sensorValues"]["thrustersFlowcontrolAft"];
+        assert_eq!(field["positionRel"]["value"], json!(0.75));
+        assert_eq!(field["positionRel"]["timestamp"], json!("2024-01-01T00:00:00Z"));
+        assert_eq!(field["positionAbs"]["value"], json!(270.0));
+    }
+
+    #[tokio::test]
+    async fn test_nested_module_view_null_when_uncached() {
+        // A field with no cached payload resolves to null (not an error).
+        let schema = build_schema_with_module_views(
+            &[],
+            Arc::new(TopicCache::new()),
+            &[],
+            &[],
+            &[],
+            &thrusters_module_view(),
+        )
+        .unwrap();
+        let response = schema
+            .execute(
+                "{ modules { thrusters { sensorValues { thrustersFlowcontrolAft { \
+                 positionRel { value } } } } } }",
+            )
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["modules"]["thrusters"]["sensorValues"]["thrustersFlowcontrolAft"],
+            json!(null)
+        );
+    }
+
+    #[test]
+    fn test_no_modules_query_without_module_views() {
+        // Without any module-view specs the flat schema is unchanged: no
+        // `modules` query field, no `Modules` type.
+        let topics = vec![TopicDef {
+            topic: "test/channel".to_string(),
+            fields: vec![FieldDef {
+                name: "value".to_string(),
+                graphql_type: "Float".to_string(),
+            }],
+            payload_schema: None,
+            ttl_secs: 300,
+        }];
+        let schema = build_schema(&topics, Arc::new(TopicCache::new()), &[], &[], &[]).unwrap();
+        let sdl = schema.sdl();
+        assert!(!sdl.contains("type Modules"), "{sdl}");
+    }
+
     #[tokio::test]
     async fn test_query_returns_null_for_missing_topic() {
         let topics = vec![TopicDef {
@@ -1499,6 +1772,7 @@ mod tests {
                 },
             ],
             payload_schema: None,
+            field_schemas: BTreeMap::new(),
             value_extensions: BTreeMap::from([
                 (
                     "active_power_total".to_string(),

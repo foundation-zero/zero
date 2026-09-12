@@ -13,6 +13,7 @@ from __future__ import annotations
 import re
 import warnings
 from collections import defaultdict
+from collections.abc import Mapping
 from dataclasses import dataclass
 from dataclasses import field as dataclass_field
 from functools import reduce
@@ -275,7 +276,7 @@ class _Group:
     param_name: str | None
     types: set[Any] = dataclass_field(default_factory=set)
     param_values: set[str] = dataclass_field(default_factory=set)
-    value_to_type_names: dict[str, set[str]] = dataclass_field(
+    value_to_types: dict[str, set[Any]] = dataclass_field(
         default_factory=lambda: defaultdict(set)
     )
     retain: bool = False
@@ -299,9 +300,7 @@ def _group(entries: list[_Entry]) -> dict[tuple[str, str], _Group]:
         group.example_topics.add(entry.topic)
         if entry.param_value is not None:
             group.param_values.add(entry.param_value)
-            group.value_to_type_names[entry.param_value].add(
-                getattr(entry.payload_type, "__name__", str(entry.payload_type))
-            )
+            group.value_to_types[entry.param_value].add(entry.payload_type)
     return groups
 
 
@@ -359,14 +358,13 @@ def build_asyncapi(
             )(_handler(schema))
 
         if group.param_name:
+            # Just the parameter enum here. `_rebuild_schemas_and_payloads`
+            # adds `x-{param}-schema` later, where it has `ref_for` to point
+            # each value at its exact component schema instead of a short (and
+            # possibly ambiguous) class name.
             metadata: dict[str, Any] = {
                 "parameters": {group.param_name: {"enum": sorted(group.param_values)}}
             }
-            if len(types) > 1:
-                metadata[f"x-{group.param_name}-schema"] = {
-                    value: sorted(names)
-                    for value, names in sorted(group.value_to_type_names.items())
-                }
             channel_metadata[(group.template, group.direction)] = metadata
 
     with warnings.catch_warnings():
@@ -462,6 +460,25 @@ def _rebuild_schemas_and_payloads(
                 payload["title"] = original_title
             message["payload"] = payload
 
+        # A multi-type `{param}` group's message payload is the anyOf of every
+        # branch, so validating a concrete topic against it can't catch an
+        # out-of-bounds value (it still matches some branch). `x-{param}-schema`
+        # pins each value to its own schema(s) as $refs, so zero-mqtt-graphql can
+        # validate per topic, like thrs-api's per-field validation.
+        if group.param_name and len(types) > 1:
+            channel[f"x-{group.param_name}-schema"] = {
+                value: _field_schema(sorted(vtypes, key=_type_sort_key), ref_for)
+                for value, vtypes in sorted(group.value_to_types.items())
+            }
+
+
+def _field_schema(types: list[Any], ref_for: dict[int, str]) -> dict[str, Any]:
+    """Schema for one `{param}` value: a single `$ref` if it has one payload
+    type, else an `anyOf` of the refs. Looks up `ref_for` by object identity,
+    same as the message payloads."""
+    refs = [{"$ref": ref_for[id(t)]} for t in types]
+    return refs[0] if len(refs) == 1 else {"anyOf": refs}
+
 
 def _combined_schemas(leaf_classes: list[Any]) -> tuple[dict[int, str], dict[str, Any]]:
     if len(leaf_classes) == 1:
@@ -538,3 +555,292 @@ def _apply_channel_metadata(
         bindings = channel.get("bindings", {}).get("mqtt")
         if bindings and "topic" in bindings:
             bindings["topic"] = re.sub(r"\{[^{}]+\}", "+", bindings["topic"])
+
+# --- Per-module `{field}` group metadata (for zero-mqtt-graphql list queries) ---
+
+
+def _strip_field_param(template: str) -> str:
+    """Group identity for a `.../{field}` template: everything before the final
+    `{field}` segment. Must match zero-mqtt-graphql's `group_identity()`
+    (src/asyncapi.rs) exactly, or it won't merge the metadata file in."""
+    prefix, _, param = template.rpartition("/")
+    if param != "{field}":
+        raise ValueError(f"expected a trailing {{field}} segment, got {template!r}")
+    return prefix
+
+
+def _module_metadata_entry(
+    field_name: str,
+    field: FieldInfo | ComputedFieldInfo,
+    topic: str,
+) -> dict[str, Any]:
+    extra = field.json_schema_extra
+    extra = extra if isinstance(extra, dict) else {}
+    return {
+        "topic": topic,
+        "metadata": {
+            "field": field_name,
+            "yard_tag": extra.get("yard_tag") or None,
+            "component_type": extra.get("component_type"),
+            "valve_type": extra.get("valve_type"),
+        },
+    }
+
+
+def _field_topics(
+    fields: Mapping[str, FieldInfo | ComputedFieldInfo],
+    topic_prefix: str,
+    module_prefix: str,
+) -> dict[str, str]:
+    """Map each field name to its MQTT topic the same way
+    ``PartialMqttMapping._topic`` does (src/thrs/orchestration/comms.py): a
+    ``topic_override`` skips ``module_prefix``, otherwise the topic is
+    ``{module_prefix}/{hyphenize(field_name)}``. Going forward (field -> topic)
+    avoids reverse-parsing a slug back into a field name, which breaks when
+    hyphenization isn't a plain underscore swap (both happen in DHW's
+    sensor-values model: an override pointing elsewhere, and a compound word)."""
+    from thrs.input_output.base import get_topic  # noqa: PLC0415
+    from thrs.utils.string import hyphenize  # noqa: PLC0415
+
+    return {
+        name: (
+            f"{topic_prefix}/"
+            f"{get_topic(field) or f'{module_prefix}/{hyphenize(name)}'}"
+        )
+        for name, field in fields.items()
+    }
+
+
+def build_module_metadata(
+    module_name: str,
+    kind: Literal["sensors", "controller"],
+) -> dict[str, Any]:
+    """Identity metadata for one THRS module's `{field}` topic group.
+
+    zero-mqtt-graphql only exposes a list query for a parametrized channel once
+    a ``*-metadata.json`` file enumerates its concrete topics (see
+    src/metadata.rs, and ``specs/power-tags-metadata.json`` for the same thing
+    from zero-power-tags). Each module publishes two such ``{field}`` channels:
+    raw sensor values (``{devices_prefix}/500000-thrs/{module}/{field}``, from
+    the ``SensorValues`` model fields, ``kind="sensors"``) and, for modules with
+    computed fields, the derived values (``{controller_prefix}/{module}/{field}``,
+    from the same model's ``computed_field``s, ``kind="controller"``). The UI
+    reads both (e.g. zero-ui's ``THRUSTERS_SENSOR_QUERY``) but can't query them
+    on zero-mqtt-graphql without this file.
+
+    Topics come from the real channel wiring (``_collect_registrations`` /
+    ``_flatten`` / ``_group``, same as ``build_asyncapi``) so they can't drift,
+    and each field's ``ComponentMeta``
+    (``yard_tag``/``component_type``/``valve_type``) is read off the model for a
+    bit more than the bare topic. The ``field`` attribute is the model's
+    snake_case name, not the hyphenized slug, so it lines up with thrs-api's
+    GraphQL field names when cross-checking.
+
+    Raises ``ValueError`` for an unknown module, ``RuntimeError`` for
+    ``kind="controller"`` on a module with no computed fields.
+    """
+    modules = all_module_descriptions()
+    if module_name not in modules:
+        raise ValueError(
+            f"unknown THRS module {module_name!r}; known modules: "
+            f"{sorted(modules)}"
+        )
+    sensor_values_cls = modules[module_name].sensor_values_cls
+
+    if kind == "sensors":
+        topic_prefix = DEFAULT_CONFIG.mqtt_devices_topic_prefix
+        module_prefix = f"500000-thrs/{module_name}"
+        template = f"{topic_prefix}/{module_prefix}/{{field}}"
+        fields: Mapping[str, FieldInfo | ComputedFieldInfo] = (
+            sensor_values_cls.model_fields
+        )
+    else:
+        topic_prefix = DEFAULT_CONFIG.mqtt_controller_topic_prefix
+        module_prefix = module_name
+        template = f"{topic_prefix}/{module_prefix}/{{field}}"
+        fields = sensor_values_cls.model_computed_fields
+
+    if not fields:
+        raise RuntimeError(
+            f"Module {module_name!r} has no {kind} fields to enumerate "
+            f"(kind='controller' only applies to modules with computed "
+            "fields - see modules_with_computed_fields())."
+        )
+
+    all_field_topics = _field_topics(fields, topic_prefix, module_prefix)
+
+    # A `topic_override` (see ComponentMeta) can put a field outside this
+    # group's `{module_prefix}/{field}` path (e.g. thrusters'
+    # `thrusters_thruster_aft` -> "dummy-pcs/thruster-aft-active", or some DC
+    # fields -> "dummy-pms/..."). Those are their own concrete topics elsewhere,
+    # already queryable without a metadata file, so drop them here.
+    group_prefix = f"{topic_prefix}/{module_prefix}/"
+    field_topics = {
+        name: topic
+        for name, topic in all_field_topics.items()
+        if topic.startswith(group_prefix)
+    }
+    if not field_topics:
+        raise RuntimeError(
+            f"Every {kind} field of module {module_name!r} has a "
+            "topic_override pointing outside this group - nothing to "
+            "enumerate here (they're already queryable as concrete topics)."
+        )
+
+    # Sanity check: every remaining topic should show up in the registered
+    # group for this template, so the metadata can't drift from what's
+    # actually published.
+    registrations = _collect_registrations()
+    entries = _flatten(registrations)
+    groups = _group(entries)
+    topic_group = groups.get((template, "send"))
+    if topic_group is None:
+        raise RuntimeError(
+            f"No published topic group found for template {template!r} "
+            f"(module={module_name!r}, kind={kind!r})."
+        )
+    missing = set(field_topics.values()) - topic_group.example_topics
+    if missing:
+        raise RuntimeError(
+            f"Computed topics for module {module_name!r} kind={kind!r} "
+            f"don't match the registered channel wiring: {sorted(missing)}"
+        )
+
+    return {
+        "group": _strip_field_param(template),
+        "topics": [
+            _module_metadata_entry(name, fields[name], topic)
+            for name, topic in sorted(field_topics.items(), key=lambda kv: kv[1])
+        ],
+    }
+
+
+def _view_gql_name(snake: str) -> str:
+    """``snake_case`` -> ``lowerCamelCase``, the way Strawberry names fields for
+    thrs-api (``use_pydantic_alias=False``): ``position_rel`` -> ``positionRel``."""
+    head, *tail = snake.split("_")
+    return head + "".join(word[:1].upper() + word[1:] for word in tail)
+
+
+def _view_leaf_scalar(value: Any) -> str:
+    """GraphQL scalar for a leaf, from its zeroed wire value (check ``bool``
+    before ``int``, since ``bool`` subclasses ``int``)."""
+    if isinstance(value, bool):
+        return "Boolean"
+    if isinstance(value, int):
+        return "Int"
+    if isinstance(value, float):
+        return "Float"
+    return "String"
+
+
+def build_module_view(module_name: str) -> dict[str, Any]:
+    """The nested per-module view zero-mqtt-graphql uses to serve
+    ``modules.<module>.sensorValues`` 1:1 with thrs-api (see
+    ``zero-mqtt-graphql/src/modules_view.rs``).
+
+    Where ``build_module_metadata`` covers one ``{field}`` group (and so leaves
+    out ``topic_override`` fields), this lists every ``sensorValues`` field the
+    UI reads, raw and computed, overrides included, since they all live under
+    ``modules.<module>.sensorValues`` on thrs-api. Per field it emits the GraphQL
+    name, the MQTT topic, and each ``{value, timestamp}`` leaf's GraphQL name and
+    raw PascalCase wire key. Names come from the pydantic model (snake -> camel
+    for GraphQL, the ``to_pascal`` alias for the wire key) so it can't drift from
+    thrs-api's schema; leaf types are read off a zeroed instance.
+
+    Computed fields (``model_computed_fields``) are published by THRS-control on
+    ``{controller_prefix}/<module>/<field>`` and just relayed (not re-derived);
+    they get ``"computed": true``.
+    """
+    from pydantic.alias_generators import to_pascal  # noqa: PLC0415
+
+    from thrs.input_output.base import Stamped, ThrsValues  # noqa: PLC0415
+
+    modules = all_module_descriptions()
+    if module_name not in modules:
+        raise ValueError(
+            f"unknown THRS module {module_name!r}; known modules: {sorted(modules)}"
+        )
+    sensor_cls = modules[module_name].sensor_values_cls
+
+    # A zeroed instance gives each leaf's scalar type (read off the live
+    # `Stamped.value`, so it doesn't depend on the model's `alias_generator` -
+    # SensorValues classes vary between to_snake and to_pascal). Computed props
+    # are evaluated on the zeros; any that choke on zeros fall back to Float.
+    model = sensor_cls.zero()
+
+    raw_topics = _field_topics(
+        sensor_cls.model_fields,
+        DEFAULT_CONFIG.mqtt_devices_topic_prefix,
+        f"500000-thrs/{module_name}",
+    )
+    computed_topics = (
+        _field_topics(
+            sensor_cls.model_computed_fields,
+            DEFAULT_CONFIG.mqtt_controller_topic_prefix,
+            module_name,
+        )
+        if sensor_cls.model_computed_fields
+        else {}
+    )
+
+    def _component_cls(annotation: Any) -> type | None:
+        inner = _strip_none(annotation)
+        if isinstance(inner, type) and issubclass(inner, ThrsValues):
+            return inner
+        return None
+
+    def _entry(name: str, annotation: Any, topic: str | None, computed: bool):
+        component_cls = _component_cls(annotation)
+        if component_cls is None or topic is None:
+            return None
+        try:
+            component = getattr(model, name)
+        except Exception:  # noqa: BLE001 - computed prop that chokes on zeros
+            component = None
+        leaves = []
+        for leaf_snake, leaf_field in component_cls.model_fields.items():
+            leaf_inner = _strip_none(leaf_field.annotation)
+            if not (isinstance(leaf_inner, type) and issubclass(leaf_inner, Stamped)):
+                continue
+            raw = leaf_field.alias or to_pascal(leaf_snake)
+            leaf_value = getattr(getattr(component, leaf_snake, None), "value", None)
+            leaves.append(
+                {
+                    "gql": _view_gql_name(leaf_snake),
+                    "raw": raw,
+                    "type": _view_leaf_scalar(leaf_value),
+                }
+            )
+        if not leaves:
+            return None
+        return {
+            "gqlField": _view_gql_name(name),
+            "topic": topic,
+            "leaves": leaves,
+            "computed": computed,
+        }
+
+    entries = [
+        entry
+        for name, field in sensor_cls.model_fields.items()
+        if (entry := _entry(name, field.annotation, raw_topics.get(name), False))
+    ]
+    entries += [
+        entry
+        for name, cfield in sensor_cls.model_computed_fields.items()
+        if (entry := _entry(name, cfield.return_type, computed_topics.get(name), True))
+    ]
+    entries.sort(key=lambda e: e["gqlField"])
+    return {"module": module_name, "sensorValues": entries}
+
+
+def modules_with_computed_fields() -> list[str]:
+    """THRS modules whose sensor-values model has a ``computed_field``, i.e.
+    those with a ``kind="controller"`` metadata group. The rest (currently pcm,
+    consumers, adsorption, drives, dc) have nothing to enumerate for that kind."""
+    return sorted(
+        name
+        for name, description in all_module_descriptions().items()
+        if description.sensor_values_cls.model_computed_fields
+    )
