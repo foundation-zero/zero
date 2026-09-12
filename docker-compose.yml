@@ -155,6 +155,9 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
+      # Drop schema-invalid payloads instead of caching them, so the last valid
+      # value survives (matches thrs-api). Set "false" to cache every payload.
+      STRICT_VALIDATION: "true"
     depends_on:
       vernemq:
         condition: service_healthy

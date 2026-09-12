@@ -222,6 +222,7 @@ mod tests {
             params: Vec::new(),
             fields: Vec::new(),
             payload_schema: None,
+            field_schemas: BTreeMap::new(),
             value_extensions: BTreeMap::new(),
             ttl_secs,
         }
