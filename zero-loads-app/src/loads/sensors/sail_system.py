@@ -850,10 +850,6 @@ class MainVang(LoadsModel, ABC):
 
 class MainTraveller(LoadsModel, ABC):
     TOPIC = "sail-systems/fe405-main-sheet-traveller-winch"
-    load: Annotated[Load, VariableMeta(display_name="Traveller")]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
     relative_position: Annotated[
         RelativePosition,
         Field(
