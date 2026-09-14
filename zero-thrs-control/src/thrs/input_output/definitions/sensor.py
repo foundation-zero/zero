@@ -256,13 +256,14 @@ def weighted_combined_measurement[
     weights: Sequence[Stamped[LMin | Ratio]],
     measurements: Sequence[Stamped[Measurement]],
     default_if_zero_weight: Default,
+    negative_weights_allowed: bool = False,
 ) -> Stamped[Default]:
-    """Calculates a weighted average of measurements based on valve positions.
+    """Calculates a weighted average of measurements, typically based on valve positions or flows.
 
     Args:
         weights: Sequence of Stamped objects containing containing a Flow or Ratio.
         measurements: Sequence of Stamped measurement values corresponding to each
-          valve.
+          valve or flow.
         default_if_zero_weight: value to return if total valve position weight
           is 0 (or empty).
 
@@ -272,6 +273,11 @@ def weighted_combined_measurement[
     Raises:
         ValueError: If the length of `weights` does not match `measurements`.
     """
+    if negative_weights_allowed is False and any(
+        weight.value < 0 for weight in weights
+    ):
+        value = default_if_zero_weight
+
     total_weight = sum(weight.value for weight in weights)
 
     if total_weight == 0:
