@@ -21,7 +21,7 @@ import { TagLabelInstance } from "../../../instances";
     tag-id="1041-04"
   />
   <TagLabelInstance
-    x="114"
+    x="1144"
     y="152"
     tag-id="1092"
   />
