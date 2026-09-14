@@ -8,7 +8,7 @@ import { getField } from "../../../providers";
   <g>
     <ThrusterInstance
       x="23"
-      y="183"
+      y="143"
       title-key="aftTitle"
       :source="getField(SensorComponentType.Thruster, 'thrusters', 'thrustersThrusterAft')"
       :mode-source="getField(SensorComponentType.Pcs, 'thrusters', 'thrustersPcs')"
@@ -19,7 +19,7 @@ import { getField } from "../../../providers";
 
     <ThrusterInstance
       x="23"
-      y="441"
+      y="401"
       title-key="fwdTitle"
       :source="getField(SensorComponentType.Thruster, 'thrusters', 'thrustersThrusterFwd')"
       :mode-source="getField(SensorComponentType.Pcs, 'thrusters', 'thrustersPcs')"

@@ -5,6 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
+import { ModeBadges, ModeBadgeSize } from "../components/mode-badge";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -38,6 +39,12 @@ const state = getComponentState();
       :state="state"
     >
       <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+
+      <ModeBadges
+        :module="custom.modeModule"
+        :size="ModeBadgeSize.Circuit"
+      />
+
       <ValueList>
         <ValueListDeltaTItem
           v-if="sensors.deltaT?.[0]"

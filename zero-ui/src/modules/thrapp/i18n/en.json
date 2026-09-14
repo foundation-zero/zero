@@ -279,6 +279,36 @@
             "manual": "Manual"
           }
         }
+      },
+      "modeBadge": {
+        "modes": {
+          "AdvisoryOff": "Advisory off",
+          "ManualControl": "Manual control",
+          "thrusters": {
+            "idle": "Idle",
+            "recovery": "Recovery",
+            "cooldown": "Cooldown",
+            "cooling": "Cooling"
+          },
+          "pcm": {
+            "idle": "Idle",
+            "supplying": "Supplying",
+            "boosting": "Boosting",
+            "charging": "Charging"
+          },
+          "consumers": "{mode}",
+          "pvt": {
+            "idle": "Idle",
+            "recovery": "Recovery"
+          },
+          "dhw": {
+            "boosting_high_temperature": "Boosting HT",
+            "boosting_low_temperature": "Boosting LT",
+            "boosting_heatpump": "Boosting HP",
+            "idle": "Idle",
+            "filling": "Filling"
+          }
+        }
       }
     },
     "legends": {

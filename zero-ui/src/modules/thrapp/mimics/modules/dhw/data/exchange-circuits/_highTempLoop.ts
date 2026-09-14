@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controllerState: {},
   custom: {
     circuitName: "High temperature",
+    modeModule: "pcm",
   },
   parameters: {},
   source: getCustomField("dhw", {

@@ -72,27 +72,7 @@
         "advisoryDisabledTooltip": "Advisory mode can be enabled through the AMCS. Until it is enabled, this screen is read-only.",
         "automatedControl": "Automated control",
         "manualControl": "Manual control",
-        "off": "Off",
-        "modes": {
-          "thrusters": {
-            "idle": "Idle",
-            "recovery": "Recovery",
-            "cooldown": "Cooldown",
-            "cooling": "Cooling"
-          },
-          "pcm": "{mode}",
-          "consumers": "{mode}",
-          "pvt": {
-            "idle": "Aft: Idle | Fwd: Idle | Owners: Idle",
-            "recovery": "Aft: Recovery | Fwd: Recovery | Owners: Recovery"
-          },
-          "dhw": {
-            "boosting_high_temperature": "Boosting HT",
-            "boosting_low_temperature": "Boosting LT",
-            "boosting_heatpump": "Boosting HP",
-            "idle": "Idle"
-          }
-        }
+        "off": "Off"
       }
     },
     "labels": {

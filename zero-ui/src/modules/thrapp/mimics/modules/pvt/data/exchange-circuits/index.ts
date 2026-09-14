@@ -35,7 +35,9 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
     pcm: toInstance<MimicComponentType.ConnectingCircuit>({
       controls: {},
       controllerState: {},
-      custom: {},
+      custom: {
+        modeModule: "pcm",
+      },
       parameters: {},
       source: getCustomField("pvt", { technicalName: "pvt-pcm-loop" }),
       sensors: {

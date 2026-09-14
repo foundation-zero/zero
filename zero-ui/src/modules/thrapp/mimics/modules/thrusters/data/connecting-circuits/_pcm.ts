@@ -7,7 +7,7 @@ import { fieldTooltip } from "../../../shared";
 export default toInstance<MimicComponentType.ConnectingCircuit>({
   controls: {},
   controllerState: {},
-  custom: {},
+  custom: { modeModule: "pcm" },
   parameters: {},
   source: getCustomField("thrusters", { technicalName: "thrusters-pcm-loop" }),
   sensors: {

@@ -1,3 +1,4 @@
+import { ControlStatus } from "@/modules/thrsim/stores/automation";
 import {
   ControlComponentType,
   ControllerStateComponentType,
@@ -251,10 +252,12 @@ export type CustomFieldDefinitions = CustomFields<{
     height?: number | string;
     forceHeight?: boolean;
     circuitName: string;
+    modeModule?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
+    modeModule?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;
