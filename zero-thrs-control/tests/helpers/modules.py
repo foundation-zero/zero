@@ -24,7 +24,9 @@ class ConfigurableParameters(ThrsValues):
     setpoint: float = Field(default=50.0, ge=0.0, le=100.0)
 
 
-class ConfigurableAlarms(BaseAlarms[SimpleInOut, SimpleInOut, ConfigurableParameters]):
+class ConfigurableAlarms(
+    BaseAlarms[SimpleInOut, SimpleInOut, ConfigurableParameters, SimpleControllerState]
+):
     pass
 
 

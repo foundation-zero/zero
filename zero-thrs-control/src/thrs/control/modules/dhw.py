@@ -225,12 +225,12 @@ class Tank:
     def enabled(self, value: bool):
         self._enabled = value
 
-    def above_temperature_setpoint(self, parameters: DhwParameters) -> bool:
+    def above_maximum_temperature(self, parameters: DhwParameters) -> bool:
         if self._temperature is None:
             return False
         return self._temperature >= parameters.maximum_tank_temperature
 
-    def below_temperature_setpoint(self, parameters: DhwParameters) -> bool:
+    def below_minimum_temperature(self, parameters: DhwParameters) -> bool:
         if self._temperature is None:
             return False
         return self._temperature < parameters.minimum_tank_temperature
@@ -254,7 +254,7 @@ class Tank:
             and not is_filling
             and self._temperature is not None
             and self.level_full(parameters)
-            and not self.below_temperature_setpoint(parameters)
+            and not self.below_minimum_temperature(parameters)
         )
 
     def boost(self, time: Callable[[], datetime]):
@@ -275,7 +275,14 @@ class Tank:
             self._enabled
             and not is_filling
             and self.level_full(parameters)
-            and self.below_temperature_setpoint(parameters)
+            and self.below_minimum_temperature(parameters)
+        )
+
+    def boost_sustainable(self, parameters: DhwParameters) -> bool:
+        return (
+            self._enabled
+            and self.level_full(parameters)
+            and not self.above_maximum_temperature(parameters)
         )
 
     def fill(self, time: Callable[[], datetime]):
@@ -351,6 +358,7 @@ class TanksController:
             tank.enabled = enabled
 
     def _select_tank_in_use(self, parameters: DhwParameters):
+        replacement = None
         if self._tank_in_use and (
             self._tank_in_use.empty(parameters) or not self._tank_in_use.enabled
         ):
@@ -359,13 +367,25 @@ class TanksController:
                 None  # Don't wait for valve to close as we always need water available
             )
 
+        elif self._tank_in_use and self._tank_in_use.below_minimum_temperature(
+            parameters
+        ):
+            # Only stop using a cold tank if a replacement is available
+            replacement = self._next_tank_in_use(parameters)
+            if replacement is not None:
+                self._tank_in_use.stop_use(self._time)
+                self._tank_in_use = None
+
         if self._tank_in_use is None:
-            self._tank_in_use = next(
-                (tank for tank in self.available_tanks if tank.standby(parameters)),
-                None,
-            )
+            self._tank_in_use = replacement or self._next_tank_in_use(parameters)
             if self._tank_in_use:
                 self._tank_in_use.use(self._time)
+
+    def _next_tank_in_use(self, parameters: DhwParameters) -> "Tank | None":
+        return next(
+            (tank for tank in self.available_tanks if tank.standby(parameters)),
+            None,
+        )
 
     def _select_filling_tank(
         self, parameters: DhwParameters, sensor_values: DhwSensorValues
@@ -414,14 +434,13 @@ class TanksController:
                 tank.stop_use(self._time)
 
     def _select_boost_candidate(self, parameters: DhwParameters):
-        if (
-            self._boosting_tank is not None
-            and self._boosting_tank.enabled
-            and not self._boosting_tank.above_temperature_setpoint(parameters)
+        if self._boosting_tank is not None and self._boosting_tank.boost_sustainable(
+            parameters
         ):
             self._boost_candidate = self._boosting_tank
             return
 
+        # Falls through so a tank that stopped qualifying is replaced in the same tick.
         self._boost_candidate = max(
             (tank for tank in self.available_tanks if tank.boostable(parameters)),
             key=lambda tank: tank.temperature if tank.temperature is not None else 0,
@@ -1110,12 +1129,46 @@ class DhwAlarms(BaseAlarms):
             return f"Tank {tank_number} level sensor {yard_tag} at {level:.1f}L, above maximum {maximum}L"
         return None
 
+    @alarm("Tank in use below minimum temperature", severity=Severity.WARNING)
+    def check_tank_in_use_below_minimum_temperature(
+        self,
+        sensor_values: DhwSensorValues,
+        control_values: DhwControlValues,
+        parameters: DhwParameters,
+        controller_state: DhwControllerState,
+    ) -> str | None:
+        tanks_controller = controller_state.dhw_tanks_controller
+        for tank_number, state, temperature in [
+            (
+                1,
+                tanks_controller.tank1_state.value,
+                sensor_values.dhw_temperature_tank1.temperature.value,
+            ),
+            (
+                2,
+                tanks_controller.tank2_state.value,
+                sensor_values.dhw_temperature_tank2.temperature.value,
+            ),
+            (
+                3,
+                tanks_controller.tank3_state.value,
+                sensor_values.dhw_temperature_tank3.temperature.value,
+            ),
+        ]:
+            if (
+                TankState(state) is TankState.IN_USE
+                and temperature < parameters.minimum_tank_temperature
+            ):
+                return f"Tank {tank_number} in use at {temperature:.1f}°C, below minimum {parameters.minimum_tank_temperature}°C, because no other tank is available"
+        return None
+
     @alarm("Tank 1 high temperature warning", severity=Severity.WARNING)
     def check_tank1_temperature_warning(
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
@@ -1131,6 +1184,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
@@ -1146,6 +1200,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
@@ -1161,6 +1216,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
@@ -1176,6 +1232,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
@@ -1191,6 +1248,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
@@ -1206,6 +1264,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             1,
@@ -1220,6 +1279,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             2,
@@ -1234,6 +1294,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             3,
@@ -1248,6 +1309,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             1,
@@ -1262,6 +1324,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             2,
@@ -1276,6 +1339,7 @@ class DhwAlarms(BaseAlarms):
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
         parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             3,

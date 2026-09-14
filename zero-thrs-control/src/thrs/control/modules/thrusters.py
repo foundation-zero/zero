@@ -642,6 +642,7 @@ class ThrustersAlarms(BaseAlarms):
         sensor_values: ThrustersSensorValues,
         control_values: ThrustersControlValues,
         parameters: ThrustersParameters,
+        controller_state: ThrustersControllerState,
     ) -> str | None:
         if sensor_values.thrusters_temperature_supply.temperature.value > 95:
             return "Thrusters supply temperature above 95 °C"

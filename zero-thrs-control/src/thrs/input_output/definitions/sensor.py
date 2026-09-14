@@ -276,7 +276,7 @@ def weighted_combined_measurement[
     if negative_weights_allowed is False and any(
         weight.value < 0 for weight in weights
     ):
-        value = default_if_zero_weight
+        return Stamped.combine(*weights, *measurements, value=default_if_zero_weight)
 
     total_weight = sum(weight.value for weight in weights)
 

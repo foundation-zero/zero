@@ -1,4 +1,5 @@
 from thrs.control.modules.dhw import DhwParameters, TanksController
+from thrs.input_output.definitions.units import TankState
 from thrs.input_output.modules.dhw import DhwSensorValues
 
 
@@ -357,3 +358,130 @@ def test_missing_temperature_never_boosts_or_stands_by(
 
     assert tanks_controller._tanks[0].standby(parameters) is False
     assert tanks_controller._tanks[0].boostable(parameters) is False
+
+
+def test_boosting_follows_full_level_bound_changes(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 0)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    boosting_tank = tanks_controller._tanks[2]
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
+
+    increased_fill_minimum = parameters.model_copy(
+        update={"full_level_lower_band": 255}
+    )
+    run_tick_boosting(tanks_controller, sensor_values, increased_fill_minimum)
+
+    assert tanks_controller._boosting_tank is None
+    assert boosting_tank._boosting_supply_valve.setpoint.value == 0.0
+    assert boosting_tank._boosting_return_valve.setpoint.value == 0.0
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._boosting_tank is boosting_tank
+
+
+def test_in_use_hands_over_when_it_goes_cold(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 60)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+
+    set_temps(sensor_values, 40, 60, 60)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._tanks[0]._outlet.setpoint.value == 0.0
+    assert tanks_controller._tanks[1]._outlet.setpoint.value == 1.0
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
+
+
+def test_in_use_kept_when_cold_without_replacement(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 40, 40)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    in_use = tanks_controller._tanks[0]
+    assert tanks_controller._tank_in_use is in_use
+
+    set_temps(sensor_values, 40, 40, 40)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is in_use
+    assert in_use._outlet.setpoint.value == 1.0
+    assert tanks_controller.tank_state(in_use, parameters) is TankState.IN_USE
+
+
+def test_lowering_minimum_temperature_keeps_tank_in_use(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 60)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    in_use = tanks_controller._tank_in_use
+    assert in_use is tanks_controller._tanks[0]
+    assert in_use is not None
+
+    # No tank clears the raised minimum, so there is nothing to hand over to.
+    increased_temperature_minimum = parameters.model_copy(
+        update={"minimum_tank_temperature": 70, "maximum_tank_temperature": 75}
+    )
+    run_tick_boosting(tanks_controller, sensor_values, increased_temperature_minimum)
+
+    assert tanks_controller._tank_in_use is in_use
+    assert (
+        tanks_controller.tank_state(in_use, increased_temperature_minimum)
+        is TankState.IN_USE
+    )
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is in_use
+    assert in_use._outlet.setpoint.value == 1.0
+    assert tanks_controller.tank_state(in_use, parameters) is TankState.IN_USE
+
+
+def test_raising_minimum_temperature_hands_over_in_use_tank(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 56, 60, 60)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+
+    increased_temperature_minimum = parameters.model_copy(
+        update={"minimum_tank_temperature": 58}
+    )
+    run_tick_boosting(tanks_controller, sensor_values, increased_temperature_minimum)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._tanks[0]._outlet.setpoint.value == 0.0
+    assert tanks_controller._tanks[1]._outlet.setpoint.value == 1.0
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
