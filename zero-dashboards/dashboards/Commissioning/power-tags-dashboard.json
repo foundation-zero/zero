@@ -1,0 +1,1975 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 0,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commissioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "mode": "html",
+        "content": "<center>\n  <h1>Power Tags</h1>\n</center>\n"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "panels": [],
+      "title": "Tag detail \u2014 latest sample per consumer",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false,
+            "footer": {
+              "reducers": []
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Panel"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Component"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Consumer"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last seen"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "left"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Age"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "gradient"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 15
+                    },
+                    {
+                      "color": "red",
+                      "value": 30
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Active power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Power factor"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ia"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ib"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ic"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Van"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "text",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vbn"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "text",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vcn"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "text",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "Panel",
+            "desc": false
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  panel AS \"Panel\",\n  component AS \"Component\",\n  consumer AS \"Consumer\",\n  active_power_total AS \"Active power\",\n  power_factor_total AS \"Power factor\",\n  current_a AS \"Ia\", current_b AS \"Ib\", current_c AS \"Ic\",\n  voltage_an AS \"Van\", voltage_bn AS \"Vbn\", voltage_cn AS \"Vcn\",\n  timestamp AS \"Last seen\",\n  extract(epoch from now()) - extract(epoch from timestamp) AS \"Age\"\nFROM (\n  SELECT *, row_number() OVER (PARTITION BY topic ORDER BY timestamp DESC) AS rn\n  FROM public.\"power_tags\"\n  WHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n) t WHERE rn = 1\nORDER BY panel, component",
+          "refId": "A"
+        }
+      ],
+      "title": "Power tags",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": true,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "axisColorMode": "text",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "barAlignment": 0,
+            "axisCenteredZero": false,
+            "insertNulls": false
+          },
+          "mappings": [],
+          "unit": "watt",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "maxHeight": 600
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Total active power\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Total active power",
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": true,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "axisColorMode": "text",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "barAlignment": 0,
+            "axisCenteredZero": false,
+            "insertNulls": false
+          },
+          "mappings": [],
+          "unit": "none",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "maxHeight": 600
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(power_factor_total) AS \"Power factor\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND power_factor_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Power factor",
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 7,
+      "options": {
+        "mode": "html",
+        "content": "<center>\n  <h2>3 phase powertags</h2>\n</center>\n"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 8,
+      "panels": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "watt",
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 33
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_a) AS \"Active power L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Active power L1",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "watt",
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 33
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_b) AS \"Active power L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Active power L2",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "watt",
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 33
+          },
+          "id": 11,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_c) AS \"Active power L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Active power L3",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Active power",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "amp",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 43
+          },
+          "id": 13,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_a) AS \"Current L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Current L1",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "amp",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 43
+          },
+          "id": 14,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_b) AS \"Current L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Current L2",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "amp",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 43
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_c) AS \"Current L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Current L3",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Current",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "volt",
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 53
+          },
+          "id": 17,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_an) AS \"Voltage L1-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_an IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Voltage L1-N",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "volt",
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 53
+          },
+          "id": 18,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_bn) AS \"Voltage L2-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_bn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Voltage L2-N",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "spanNulls": true,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "axisColorMode": "text",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                },
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "barAlignment": 0,
+                "axisCenteredZero": false,
+                "insertNulls": false
+              },
+              "mappings": [],
+              "unit": "volt",
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 53
+          },
+          "id": 19,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc",
+              "maxHeight": 600
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_cn) AS \"Voltage L3-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_cn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "refId": "A"
+            }
+          ],
+          "title": "Voltage L3-N",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "Consumer"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Voltage",
+      "type": "row"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 41,
+  "tags": [
+    "commissioning"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "info8fcc-greptimedb-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "name": "panel",
+        "label": "Panel",
+        "type": "custom",
+        "query": "All,10P0.1,10P0.3,10P1",
+        "current": {
+          "text": "All",
+          "value": "All"
+        },
+        "options": [
+          {
+            "text": "All",
+            "value": "All",
+            "selected": true
+          },
+          {
+            "text": "10P0.1",
+            "value": "10P0.1",
+            "selected": false
+          },
+          {
+            "text": "10P0.3",
+            "value": "10P0.3",
+            "selected": false
+          },
+          {
+            "text": "10P1",
+            "value": "10P1",
+            "selected": false
+          }
+        ],
+        "includeAll": false,
+        "multi": false
+      },
+      {
+        "name": "consumer",
+        "label": "Power tag",
+        "type": "query",
+        "datasource": {
+          "type": "info8fcc-greptimedb-datasource",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
+        "query": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "refresh": 1,
+        "regex": "",
+        "includeAll": true,
+        "multi": true,
+        "allowCustomValue": false,
+        "sort": 1
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Power tags",
+  "uid": "commissioning-power-tags",
+  "version": 1,
+  "weekStart": ""
+}
