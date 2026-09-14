@@ -19,6 +19,7 @@ defineProps<
     v-bind="$props"
     height="70"
     class="py-0.5"
+    min-width="80"
   >
     {{ tagId }}
     <template #value>

@@ -44,8 +44,12 @@ const borderColor = computed(() => {
           :style="{ 'background-color': borderColor }"
         />
         <div
-          class="bg-background pointer-events-none grow rounded-tr-md rounded-br-md border border-dashed p-2 pb-1 transition-all"
-          :style="{ 'border-color': borderColor, 'border-width': strokeWidth + 'px' }"
+          class="bg-background pointer-events-none grow overflow-hidden rounded-tr-md rounded-br-md border border-dashed p-2 pb-1 transition-all"
+          :style="{
+            'border-color': borderColor,
+            'border-width': strokeWidth + 'px',
+            maxWidth: `calc(${props.width}px - 1.25rem)`,
+          }"
         >
           <slot />
         </div>

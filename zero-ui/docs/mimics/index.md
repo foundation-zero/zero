@@ -9,6 +9,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 - [Actuated Valve](/mimics/actuated-valve) - Unified switch + flow-control valve component for mimic diagrams
 - [Check Valve](/mimics/check-valve) - Stateless directional check valve icon for mimic diagrams
 - [Pump](/mimics/pump) - Four-state pump icon for mimic diagrams (Active, Transient, Closed, Alarm)
+- [PCM](/mimics/pcm) - Thermal battery card with configurable pipe layouts
 - [Heat Exchanger](/mimics/heat-exchanger) - Three-state directional heat exchanger icon for mimic diagrams
 - [Pipe Heat Exchanger](/mimics/pipe-heat-exchanger) - Stateless directional pipe heat exchanger icon for mimic diagrams
 - [Manual Valve](/mimics/manual-valve) - Stateless switch, flow-control, and three-way manual valve icon for mimic diagrams

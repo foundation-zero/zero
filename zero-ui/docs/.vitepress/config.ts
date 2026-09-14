@@ -65,6 +65,7 @@ export default defineConfig({
         items: [
           { text: "Actuated Valve", link: "/mimics/actuated-valve" },
           { text: "Pump", link: "/mimics/pump" },
+          { text: "PCM", link: "/mimics/pcm" },
           { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
           { text: "Pipe Heat Exchanger", link: "/mimics/pipe-heat-exchanger" },
         ],

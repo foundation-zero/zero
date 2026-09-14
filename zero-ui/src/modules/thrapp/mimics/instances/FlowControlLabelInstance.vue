@@ -23,7 +23,7 @@ const { t } = useI18n();
   <Label
     :x="x"
     :y="y"
-    width="50"
+    min-width="55"
     height="50"
   >
     {{ tagId }}

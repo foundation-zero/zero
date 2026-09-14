@@ -13,6 +13,7 @@ defineProps<MimicComponentInstanceProps & { flow: ModuleField<SensorComponentTyp
   <Label
     :x="x"
     :y="y"
+    min-width="55"
   >
     {{ tagId }}
     <template #value>

@@ -13,6 +13,8 @@ const editor = computed(() => {
     return FieldRenderer.Placeholder;
   } else {
     switch (field) {
+      case "charge":
+        return FieldRenderer.Charge;
       case "temperature":
       case "temperatureSetpoint":
         return FieldRenderer.Temperature;

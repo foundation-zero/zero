@@ -1,3 +1,3 @@
 <template>
-  <span aria-label="placeholder">⁉️</span>
+  <span aria-label="placeholder">⚠️</span>
 </template>

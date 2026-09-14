@@ -15,6 +15,7 @@ const props = withDefaults(
     height: 60,
     targetX: 0,
     targetWidth: 0,
+    minWidth: 35,
   },
 );
 </script>
@@ -37,7 +38,10 @@ const props = withDefaults(
       >
         <hgroup
           xmlns="http://www.w3.org/1999/xhtml"
-          :class="cn('bg-background inline-flex flex-col rounded-[0.125rem] px-1', props.class)"
+          :class="
+            cn('bg-background inline-flex min-w-8 flex-col rounded-[0.125rem] px-1', props.class)
+          "
+          :style="{ minWidth: minWidth + 'px' }"
         >
           <header class="text-muted-foreground text-3xs">
             <slot />

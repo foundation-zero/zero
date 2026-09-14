@@ -3,6 +3,9 @@ import { HTMLAttributes } from "vue";
 import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
+import Charge from "./ChargeRenderer.vue";
+import ChargeState from "./ChargeStateRenderer.vue";
+import ChargingMode from "./ChargingModeRenderer.vue";
 import Degree from "./DegreeRenderer.vue";
 import DeltaT from "./DeltaTRenderer.vue";
 import Empty from "./EmptyRenderer.vue";
@@ -62,4 +65,7 @@ export const FieldRenderer = {
   Empty,
   PvtMode,
   Irradiance,
+  Charge,
+  ChargeState,
+  ChargingMode,
 };

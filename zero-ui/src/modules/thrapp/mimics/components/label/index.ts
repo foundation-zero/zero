@@ -7,4 +7,5 @@ export type LabelProps = Readonly<{
   y?: number | string;
   targetX?: number | string;
   targetWidth?: number | string;
+  minWidth?: number | string;
 }>;

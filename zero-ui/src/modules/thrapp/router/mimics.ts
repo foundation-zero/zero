@@ -2,6 +2,7 @@ import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 import { MimicComponentFieldsMap } from "../mimics/modules";
 import { DHW_MIMIC_DATA } from "../mimics/modules/dhw/data";
+import { PCM_MIMIC_DATA } from "../mimics/modules/pcm/data";
 import { PVT_MIMIC_DATA } from "../mimics/modules/pvt/data";
 import { THRUSTERS_MIMIC_DATA } from "../mimics/modules/thrusters/data";
 
@@ -32,5 +33,11 @@ export const MIMICS: Partial<Record<keyof ThrsModules, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/pvt/PvtModule.vue"),
     ),
     data: PVT_MIMIC_DATA,
+  },
+  pcm: {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/pcm/PcmModule.vue"),
+    ),
+    data: PCM_MIMIC_DATA,
   },
 };
