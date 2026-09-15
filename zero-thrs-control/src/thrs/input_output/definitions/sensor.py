@@ -273,9 +273,7 @@ def weighted_combined_measurement[
     Raises:
         ValueError: If the length of `weights` does not match `measurements`.
     """
-    if negative_weights_allowed is False and any(
-        weight.value < 0 for weight in weights
-    ):
+    if not negative_weights_allowed and any(weight.value < 0 for weight in weights):
         return Stamped.combine(*weights, *measurements, value=default_if_zero_weight)
 
     total_weight = sum(weight.value for weight in weights)
