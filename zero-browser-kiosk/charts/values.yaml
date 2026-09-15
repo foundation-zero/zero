@@ -54,3 +54,4 @@ nodeAffinity:
 
 env:
   KIOSK_URL: http://ui-local.zero.svc.cluster.local
+  ENABLE_VNC_CONTROL: "false"
