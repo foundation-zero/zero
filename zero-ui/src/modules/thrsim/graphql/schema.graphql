@@ -272,6 +272,7 @@ type ControllerTanksControllerValuesType {
   tank2State: TankStateStampedType!
   tank3State: TankStateStampedType!
   timeToFill: FloatOptionalStampedType!
+  timeToHot: FloatOptionalStampedType!
 }
 
 input ConverterInputType {

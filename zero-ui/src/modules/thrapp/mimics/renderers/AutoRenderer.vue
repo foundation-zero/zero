@@ -46,6 +46,7 @@ const editor = computed(() => {
       case "pressure":
         return FieldRenderer.Pressure;
       case "timeToFill":
+      case "timeToHot":
         return FieldRenderer.TimeRemaining;
       case "tank1State":
       case "tank2State":

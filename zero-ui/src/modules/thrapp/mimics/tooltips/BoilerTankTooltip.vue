@@ -179,6 +179,15 @@ const currentLevelPercentage = computed(
               {{ items("estimatedFillingTime") }}
             </Partials.ListItem>
           </ControllerStateValue>
+          <ControllerStateValue
+            v-if="value === BoilerTankState.Boosting"
+            :source="controllerState.controller"
+            field="timeToHot"
+          >
+            <Partials.ListItem size="sm">
+              {{ items("estimatedTimeToHeat") }}
+            </Partials.ListItem>
+          </ControllerStateValue>
         </template>
       </ControllerStateValue>
     </TooltipList>

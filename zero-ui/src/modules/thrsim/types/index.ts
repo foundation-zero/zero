@@ -35,6 +35,7 @@ export type DhwTankController = {
   tank2State: Stamped<BoilerTankState>;
   tank3State: Stamped<BoilerTankState>;
   timeToFill: Stamped<number>;
+  timeToHot: Stamped<number>;
 };
 
 export type PIDController = {
