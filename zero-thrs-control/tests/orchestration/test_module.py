@@ -40,7 +40,9 @@ async def test_module_returns_initial_control_when_manual(
     assert control_values == mock.sentinel.control_values
     assert mock_control.control.call_count == 0
     assert mock_alarms.check.call_args_list == [
-        mock.call(advisory_sensor_values, mock.sentinel.control_values, mock.ANY)
+        mock.call(
+            advisory_sensor_values, mock.sentinel.control_values, mock.ANY, mock.ANY
+        )
     ]
 
 
@@ -60,7 +62,9 @@ async def test_module_returns_control_when_automatic(
     assert control_values == mock.sentinel.control_values
     assert mock_control.control.call_args_list == [mock.call(advisory_sensor_values)]
     assert mock_alarms.check.call_args_list == [
-        mock.call(advisory_sensor_values, mock.sentinel.control_values, mock.ANY)
+        mock.call(
+            advisory_sensor_values, mock.sentinel.control_values, mock.ANY, mock.ANY
+        )
     ]
 
 

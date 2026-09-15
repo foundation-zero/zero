@@ -42,7 +42,7 @@ class ModuleDescription[
         control: "Callable[[P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]]",
         control_mode_cls: type[M],
         controller_state_cls: type[CS],
-        alarms: "Callable[[], BaseAlarms[S, C, P]]",
+        alarms: "Callable[[], BaseAlarms[S, C, P, CS]]",
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
@@ -109,7 +109,7 @@ class Module[
             sensor_values, self._channels.get_actuated_control_values()
         )
 
-        self._check_alarms(sensor_values, control_values)
+        self._check_alarms(sensor_values, control_values, controller_state)
 
         return control_values, controller_state
 
@@ -158,11 +158,14 @@ class Module[
         return parameters_cls.model_validate(snapshot.parameters)
 
     @StateLogger.log_alarms
-    def _check_alarms(self, sensor_values: S, control_values: C) -> list["Alarm"]:
+    def _check_alarms(
+        self, sensor_values: S, control_values: C, controller_state: CS
+    ) -> list["Alarm"]:
         alarms: list[Alarm] = self._alarms.check(
             sensor_values,
             control_values,
             self._control.parameters,
+            controller_state,
         )
 
         if alarms:

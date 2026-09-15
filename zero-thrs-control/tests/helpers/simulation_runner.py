@@ -104,6 +104,7 @@ class _CombinedAlarmsAdapter:
         sensor_values: CombinedValues,
         control_values: CombinedValues,
         parameters: CombinedValues,
+        controller_state: CombinedValues,
     ) -> list[Any]:
         return [
             result
@@ -111,7 +112,8 @@ class _CombinedAlarmsAdapter:
             if (s := sensor_values.values.get(name)) is not None
             and (c := control_values.values.get(name)) is not None
             and (p := parameters.values.get(name)) is not None
-            for result in alarms.check(s, c, p)
+            and (cs := controller_state.values.get(name)) is not None
+            for result in alarms.check(s, c, p, cs)
         ]
 
 
@@ -180,7 +182,10 @@ class SimulationTestRunner[
         result = self._simulation_module.execute_simulation_tick(self._control_values)
 
         self._alarms.check(
-            result.sensor_values, self._control_values, self._control.parameters
+            result.sensor_values,
+            self._control_values,
+            self._control.parameters,
+            self._controller_state,
         )
 
         if collector is not None:

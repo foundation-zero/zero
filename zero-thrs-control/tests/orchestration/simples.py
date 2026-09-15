@@ -158,5 +158,7 @@ def simple_control_values(flow: float) -> SimpleInOut:
     )
 
 
-class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters]):
+class SimpleAlarms(
+    BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters, SimpleControllerState]
+):
     pass
