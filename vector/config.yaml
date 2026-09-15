@@ -23,14 +23,14 @@ sources:
     max_packet_size: 163840
   # A+T (ATPX) instrument bus: one raw float per message on
   # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
-  # ATPX_MQTT_TOPIC is atpx_raw/# locally, defaulting to A+T's atpx/# in prod.
+  # ATPX_MQTT_TOPIC is atpx_raw/+/+ locally, defaulting to A+T's atpx/+/+ in prod.
   atpx_mqtt:
     type: mqtt
     host: "${ATPX_MQTT_HOST}"
     port: ${ATPX_MQTT_PORT}
     client_id: vector-atpx
     topic:
-      - "${ATPX_MQTT_TOPIC:-atpx/#}"
+      - "${ATPX_MQTT_TOPIC:-atpx/+/+}"
     decoding:
       codec: bytes
     user: "${ATPX_MQTT_USER:-}"
@@ -51,9 +51,15 @@ sources:
   vector_metrics:
     type: internal_metrics
 transforms:
-  process:
+  filter_ignored:
     type: remap
     inputs: ["mqtt"]
+    files:
+      - "/etc/vector/filter_ignored.vrl"
+    drop_on_abort: true
+  process:
+    type: remap
+    inputs: ["filter_ignored"]
     files:
       - "/etc/vector/process_0_consts.vrl"
       - "/etc/vector/process_1_ingest.vrl"
@@ -76,6 +82,7 @@ transforms:
       - "/etc/vector/atpx_1_parse.vrl"
     # Enable dead letter queue
     drop_on_error: true
+    drop_on_abort: true
     reroute_dropped: true
   # Derives the Greptime table name from the parser's `type` field and stamps
   # ingestion time as the uniform time index. Each NMEA sentence is an

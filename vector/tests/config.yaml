@@ -19,9 +19,15 @@ transforms:
       del(.pid)
       del(.source_type)
       del(.stream)
-  process:
+  filter_ignored:
     type: remap
     inputs: ["take_msg"]
+    files:
+      - "./processing/filter_ignored.vrl"
+    drop_on_abort: true
+  process:
+    type: remap
+    inputs: ["filter_ignored"]
     files:
       - "./processing/process_0_consts.vrl"
       - "./processing/process_1_ingest.vrl"

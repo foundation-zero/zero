@@ -10,3 +10,4 @@
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-tank1", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-switch-tank3", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-switch-tank1", "message": "{\"A }"}
+{ "timestamp": "2026-06-01T12:00:00Z", "topic": "sail-systems/sail-system-mqtt-adapter/alive", "message": "2026-06-01 12:00:00"}
