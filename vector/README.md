@@ -45,9 +45,9 @@ builds the wide, per-domain shapes later.
 It also republishes each parsed row back onto our own broker under
 `atpx/processed/<field>/<sender>` for other consumers.
 
-The topic it listens on is `${ATPX_MQTT_TOPIC}`. Locally that is `atpx_raw/#`
+The topic it listens on is `${ATPX_MQTT_TOPIC}`. Locally that is `atpx_raw/+/+`
 (so synthetic test data stays separate); in production the variable is unset and
-defaults to A+T's real `atpx/#` bus.
+defaults to A+T's real `atpx/+/+` bus.
 
 ### 3. A+T NMEA 0183 → `atpx__nmea_*`
 
@@ -94,7 +94,7 @@ Key environment variables (set in `docker-compose.yml`):
 | ---------- | --------------- | --------- |
 | `MQTT_HOST` / `MQTT_PORT` | `vernemq` / `1883` | Main broker. |
 | `ATPX_MQTT_HOST` / `ATPX_MQTT_PORT` | `vernemq` / `1883` | ATPX broker (real bus is `10.1.40.10` in prod). |
-| `ATPX_MQTT_TOPIC` | `atpx_raw/#` | ATPX topic filter; unset in prod → `atpx/#`. |
+| `ATPX_MQTT_TOPIC` | `atpx_raw/+/+` | ATPX topic filter; unset in prod → `atpx/+/+`. |
 | `GREPTIMEDB_HOST` / `GREPTIMEDB_PORT` | `greptimedb` / `4000` | Where rows are written. |
 
 ## Checking that it works, and running the tests

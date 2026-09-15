@@ -1,0 +1,7 @@
+ignored_topics = [
+  "sail-systems/sail-system-mqtt-adapter/alive"  # Not json
+]
+
+if includes(ignored_topics, .topic) {
+    abort
+}
