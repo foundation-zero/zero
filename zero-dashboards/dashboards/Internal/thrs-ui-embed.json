@@ -213,9 +213,9 @@
                             "table": "marpower__500000_thrs__pvt__pvt_flow_main_aft_recovery"
                         }
                     },
-                    "pluginVersion": "2.1.4",
+                    "pluginVersion": "3.0.2",
                     "queryType": "table",
-                    "rawSql": "SELECT\n\tdate_bin('$__interval', ${field}__timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(${field}__value) AS \"${field}\"\nFROM public.marpower__thrs__${type} AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '$device' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+                    "rawSql": "SELECT\n\tdate_bin('$__interval', ${field}__timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(${field}__value) AS \"${field}\"\nFROM public.marpower__thrs__${type} AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '$device' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
                     "refId": "A"
                 }
             ],
@@ -297,5 +297,5 @@
     "timezone": "browser",
     "title": "THRS ui embed",
     "uid": "adzxbs2",
-    "version": 16
+    "version": 17
 }
