@@ -298,15 +298,20 @@
           },
           "consumers": "{mode}",
           "pvt": {
-            "idle": "Idle",
-            "recovery": "Recovery"
+            "idle": "AFT - Idle | FWD - Idle | Owners - Idle",
+            "recovery": "AFT - Recovery | FWD - Recovery | Owners - Recovery"
           },
           "dhw": {
-            "boosting_high_temperature": "Boosting HT",
-            "boosting_low_temperature": "Boosting LT",
-            "boosting_heatpump": "Boosting HP",
-            "idle": "Idle",
-            "filling": "Filling"
+            "filling": {
+              "idle": "Not Filling",
+              "filling": "Filling"
+            },
+            "boosting": {
+              "boosting_high_temperature": "Boosting HT",
+              "boosting_low_temperature": "Boosting LT",
+              "boosting_heatpump": "Boosting Heatpump",
+              "idle": "Not Boosting"
+            }
           }
         }
       }
