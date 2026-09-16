@@ -67,6 +67,12 @@ impl MqttSubscriber {
         })
     }
 
+    /// A cloneable handle to the underlying MQTT client, used to build an
+    /// [`MqttPublisher`] for serving mutations.
+    pub fn client(&self) -> AsyncClient {
+        self.client.clone()
+    }
+
     /// Queue topics to subscribe to once the broker connection is up.
     pub fn set_pending_subscriptions(&mut self, topics: &[String]) {
         debug!("Queuing {} subscription(s)", topics.len());
@@ -251,13 +257,16 @@ fn build_validators(specs: &[ValidatorSpec]) -> HashMap<String, Validator> {
             Ok(validator) => {
                 validators.insert(key.clone(), validator);
             }
-            Err(e) => warn!(
-                "Failed to compile JSON Schema for '{key}': {e} — skipping validation for it"
-            ),
+            Err(e) => {
+                warn!("Failed to compile JSON Schema for '{key}': {e} — skipping validation for it")
+            }
         }
     }
     if !validators.is_empty() {
-        info!("Compiled JSON Schema validators for {} key(s)", validators.len());
+        info!(
+            "Compiled JSON Schema validators for {} key(s)",
+            validators.len()
+        );
     }
     validators
 }
@@ -300,6 +309,32 @@ fn flatten_payload(value: Value) -> Value {
         }
     }
     Value::Object(merged)
+}
+
+/// A [`TopicPublisher`](crate::graphql::TopicPublisher) backed by the
+/// subscriber's MQTT client, for serving mutations. Publishes non-retained at
+/// QoS AtLeastOnce, matching thrs-api's control/parameter publishes (its `/set`
+/// messages are transient commands, not retained state).
+pub struct MqttPublisher {
+    client: AsyncClient,
+}
+
+impl MqttPublisher {
+    pub fn new(client: AsyncClient) -> Self {
+        Self { client }
+    }
+}
+
+impl crate::graphql::TopicPublisher for MqttPublisher {
+    fn publish(&self, topic: String, payload: String) -> crate::graphql::PublishFuture {
+        let client = self.client.clone();
+        Box::pin(async move {
+            client
+                .publish(topic, QoS::AtLeastOnce, false, payload.into_bytes())
+                .await
+                .map_err(anyhow::Error::from)
+        })
+    }
 }
 
 #[cfg(test)]
@@ -464,11 +499,17 @@ mod tests {
 
         // Cache a valid payload,
         sub.handle_json_payload(topic, json!({"active_power_total": 42.0}));
-        assert_eq!(cache.get_field(topic, "active_power_total"), Some(json!(42.0)));
+        assert_eq!(
+            cache.get_field(topic, "active_power_total"),
+            Some(json!(42.0))
+        );
 
         // then a bad one gets dropped and the valid value stays.
         sub.handle_json_payload(topic, json!({"unexpected": 1.0}));
-        assert_eq!(cache.get_field(topic, "active_power_total"), Some(json!(42.0)));
+        assert_eq!(
+            cache.get_field(topic, "active_power_total"),
+            Some(json!(42.0))
+        );
     }
 
     /// Without strict validation (the serve-mode default) an invalid payload is
