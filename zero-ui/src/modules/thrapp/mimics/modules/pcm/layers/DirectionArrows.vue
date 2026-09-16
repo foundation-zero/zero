@@ -5,6 +5,8 @@
     viewBox="0 0 1263 856"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    x="115"
+    y="7"
   >
     <g
       class="stroke-flows-pipe-arrow"
