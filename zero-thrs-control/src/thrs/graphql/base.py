@@ -33,6 +33,9 @@ from thrs.control.modules.thrusters import (
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
+    PAUSE,
+    PLAY,
+    STEP,
     ControlMessaging,
     DirectiveMessaging,
     SimulationMessaging,
@@ -150,6 +153,13 @@ def get_members(module):
     return {name: getattr(module, name) for name in names}
 
 
+CONTROL_MUTATION_NAME = "{module}_control_set_{field}"
+PARAMETER_MUTATION_NAME = "{module}_parameter_set_{field}"
+SIMULATION_INPUT_MUTATION_NAME = "{mode}_simulation_set_{field}"
+AUTOMATION_MODE_MUTATION_NAME = "{module}_set_automation_mode"
+SIMULATION_DIRECTIVE_MUTATION_NAME = "simulation_{directive}"
+
+
 def convert_module(module, class_name_prefix: str):
     for name, cls in get_members(module).items():
         if isclass(cls) and issubclass(cls, ThrsValues):
@@ -255,7 +265,7 @@ def add_control_mutations(
         for name, field in control_values_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"{module}_control_set_{name}",
+                CONTROL_MUTATION_NAME.format(module=module, field=name),
                 name,
                 field,
                 "set_manual_control",
@@ -280,7 +290,7 @@ def add_parameter_mutations(
         for name, field in parameters_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"{module}_parameter_set_{name}",
+                PARAMETER_MUTATION_NAME.format(module=module, field=name),
                 name,
                 field,
                 "set_parameter",
@@ -308,7 +318,7 @@ def add_simulation_input_mutations(
         for name, field in inputs_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"{mode}_simulation_set_{name}",
+                SIMULATION_INPUT_MUTATION_NAME.format(mode=mode, field=name),
                 name,
                 field,
                 "set_simulation_input",
@@ -337,10 +347,43 @@ def add_automation_mode_mutation(
             return await mod.set_automation_mode(automatic)
 
         mutation = strawberry.mutation(set_automation_mode)
-        setattr(cls, f"{module}_set_automation_mode", mutation)
+        setattr(cls, AUTOMATION_MODE_MUTATION_NAME.format(module=module), mutation)
         return cls
 
     return _do
+
+
+async def _play(
+    self, info: "strawberry.Info[ThrsContext]", playback_rate: float = 1.0
+) -> None:
+    await info.context.messaging.play_simulation(playback_rate)
+
+
+async def _pause(self, info: "strawberry.Info[ThrsContext]") -> None:
+    await info.context.messaging.pause_simulation()
+
+
+async def _step(self, info: "strawberry.Info[ThrsContext]", seconds: float) -> None:
+    await info.context.messaging.step_simulation(seconds)
+
+
+SIMULATION_DIRECTIVE_RESOLVERS = {PLAY: _play, PAUSE: _pause, STEP: _step}
+
+
+def add_simulation_directive_mutations(cls):
+    for directive, resolver in SIMULATION_DIRECTIVE_RESOLVERS.items():
+        name = SIMULATION_DIRECTIVE_MUTATION_NAME.format(
+            directive=directive.message.subscribe_topic()
+        )
+        resolver.__name__ = name
+        setattr(cls, name, strawberry.mutation(resolver))
+    return cls
+
+
+@strawberry.type
+@add_simulation_directive_mutations
+class SimulationDirectiveMutations:
+    pass
 
 
 def resolve_module(
