@@ -9,6 +9,7 @@ import {
   ControllerStateDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
+  PcmChargingState,
   PID,
   SensorComponentType,
   SensorDefinitionMap,
@@ -94,13 +95,25 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
+    const chargingState = useRandomizedState([
+      PcmChargingState.Charging,
+      PcmChargingState.Discharging,
+      PcmChargingState.Idle,
+    ]);
+    const heat = useRandomizedNumber(-7000, 7000);
     const charge = useRandomizedNumber(0, 100);
     const deltaT = useRandomizedNumber(-20, 20);
     return computed(() => ({
       charged: stamp(charged),
+      chargingState: stamp(chargingState),
+      heat: stamp(heat),
       charge: stamp(charge),
       deltaT: stamp(deltaT),
     }));
+  },
+  [SensorComponentType.PcmInput]: () => {
+    const charged = useRandomizedBoolean();
+    return computed(() => ({ charged: stamp(charged) }));
   },
   [SensorComponentType.Pcs]: () => {
     const mode = useRandomizedState([

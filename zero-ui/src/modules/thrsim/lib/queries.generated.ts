@@ -1547,6 +1547,30 @@ export const PCM_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
+  pcmHeatModule1 {
+    charged { value timestamp }
+    heat { value timestamp }
+    deltaT { value timestamp }
+    chargingState { value timestamp }
+  }
+  pcmHeatModule2 {
+    charged { value timestamp }
+    heat { value timestamp }
+    deltaT { value timestamp }
+    chargingState { value timestamp }
+  }
+  pcmHeatModule3 {
+    charged { value timestamp }
+    heat { value timestamp }
+    deltaT { value timestamp }
+    chargingState { value timestamp }
+  }
+  pcmHeatModule4 {
+    charged { value timestamp }
+    heat { value timestamp }
+    deltaT { value timestamp }
+    chargingState { value timestamp }
+  }
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
