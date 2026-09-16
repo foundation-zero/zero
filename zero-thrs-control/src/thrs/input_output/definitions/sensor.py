@@ -343,15 +343,17 @@ class PcmInput(ThrsValues):
     charged: Stamped[Charged]
 
 
-class Pcm(HeatTransferDevice):
+class Pcm(ThrsValues):
+    delta_t: Stamped[DeltaT]
+    heat: Stamped[Watt]
     charged: Stamped[Charged]
     charging_state: Stamped[PcmChargingState]
 
     @classmethod
     def from_sensors(
         cls,
-        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
-        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
+        temperature_supply: Stamped[Celsius],
+        temperature_return: Stamped[Celsius],
         flow: Stamped[LMin],
         charged: Stamped[Charged],
         heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,

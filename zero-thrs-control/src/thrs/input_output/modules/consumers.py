@@ -16,6 +16,15 @@ class ConsumersSensorValues(AmcsModeSensorValues):
         validate_by_name=True,
     )
 
+    # Mode is mirrored from PCM: consumers has no AMCS mode of its own.
+    mode: Annotated[
+        AmcsControlMode,
+        component_meta(
+            included_in_fmu=False,
+            topic_override="500000-thrs/pcm/mode",
+        ),
+    ]
+
     consumers_temperature_dhw_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-48", component_type="temperature_sensor"),
