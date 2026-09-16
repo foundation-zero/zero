@@ -101,7 +101,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "tuning",
       "components",
     ],
-    DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill"],
+    DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill", "timeToHot"],
     PvtController: ["mode"],
   },
 

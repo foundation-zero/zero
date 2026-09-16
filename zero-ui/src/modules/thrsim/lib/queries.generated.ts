@@ -697,6 +697,7 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     tank2State { value timestamp }
     tank3State { value timestamp }
     timeToFill { value timestamp }
+    timeToHot { value timestamp }
   }
   dhwPumpFlowController {
     setpoint { value timestamp }

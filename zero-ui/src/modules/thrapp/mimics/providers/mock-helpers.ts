@@ -251,12 +251,14 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
     const tank2State = useRandomizedState(states);
     const tank3State = useRandomizedState(states);
     const timeToFill = useRandomizedNumber(0, 1000);
+    const timeToHot = useRandomizedNumber(0, 1000);
 
     return computed(() => ({
       tank1State: stamp(tank1State),
       tank2State: stamp(tank2State),
       tank3State: stamp(tank3State),
       timeToFill: stamp(timeToFill),
+      timeToHot: stamp(timeToHot),
     }));
   },
   [ControllerStateComponentType.PIDController]: () => {

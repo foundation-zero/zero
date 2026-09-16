@@ -146,6 +146,7 @@ export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
     "tank2State",
     "tank3State",
     "timeToFill",
+    "timeToHot",
   ],
   [ControllerStateComponentType.PIDController]: [
     "setpoint",

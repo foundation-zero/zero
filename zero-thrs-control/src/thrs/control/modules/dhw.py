@@ -19,6 +19,7 @@ from thrs.input_output.definitions.controllers import (
     TanksControllerValues,
 )
 from thrs.input_output.definitions.units import (
+    SPECIFIC_HEAT_WATER,
     Celsius,
     DeltaT,
     Liter,
@@ -27,6 +28,7 @@ from thrs.input_output.definitions.units import (
     Seconds,
     TankState,
     Tuning,
+    Watt,
 )
 from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.orchestration.module import ModuleDescription
@@ -176,6 +178,7 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
             tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
+            time_to_hot=Stamped(value=None, timestamp=timestamp),
         ),
         dhw_drives_flow_controller=PidController.zero(timestamp),
         dhw_dc_flow_controller=PidController.zero(timestamp),
@@ -504,14 +507,50 @@ class TanksController:
         if (
             self._filling_tank is None
             or self._filling_tank.level is None
-            or sensor_values.dhw_freshwater_flow_supply.flow.value == 0
+            or sensor_values.dhw_freshwater_flow_supply.flow.value <= 0
         ):
             return None
-        return (
+        return max(
+            0.0,
             (parameters.maximum_tank_level - self._filling_tank.level)
             / sensor_values.dhw_freshwater_flow_supply.flow.value
-            * 60
+            * 60,
         )
+
+    @staticmethod
+    def boosting_heat(
+        sensor_values: DhwSensorValues, boosting_mode: str
+    ) -> Watt | None:
+        if boosting_mode == "boosting_heatpump":
+            heat = sensor_values.dhw_heatpump.heat.value
+        elif boosting_mode == "boosting_high_temperature":
+            heat = sensor_values.dhw_consumers_exchanger.heat.value
+        else:
+            return None
+        return heat
+
+    def time_to_hot(
+        self,
+        sensor_values: DhwSensorValues,
+        parameters: DhwParameters,
+        boosting_mode: str,
+    ) -> Seconds | None:
+        if self._boosting_tank is None:
+            return None
+        level = self._boosting_tank.level
+        temperature = self._boosting_tank.temperature
+        if level is None or temperature is None:
+            return None
+        heat = self.boosting_heat(sensor_values, boosting_mode)
+        if heat is None or heat <= 0:
+            return None
+        # Level in liters approximates mass in kg for water.
+        energy = (
+            level
+            * SPECIFIC_HEAT_WATER
+            * (parameters.maximum_tank_temperature - temperature)
+        )
+        return max(0.0, energy / heat)
 
     def __call__(self, sensor_values: DhwSensorValues, parameters: DhwParameters):
         self._update_tank_states(sensor_values, parameters)
@@ -536,7 +575,10 @@ class TanksController:
         return TankState.STANDBY
 
     def values(
-        self, sensor_values: DhwSensorValues, parameters: DhwParameters
+        self,
+        sensor_values: DhwSensorValues,
+        parameters: DhwParameters,
+        control_mode: "DhwControlMode",
     ) -> TanksControllerValues:
         time = self._time()
         return TanksControllerValues(
@@ -551,6 +593,12 @@ class TanksController:
             ),
             time_to_fill=Stamped(
                 value=self.time_to_fill(sensor_values, parameters),
+                timestamp=time,
+            ),
+            time_to_hot=Stamped(
+                value=self.time_to_hot(
+                    sensor_values, parameters, control_mode.boosting_mode
+                ),
                 timestamp=time,
             ),
         )
@@ -749,7 +797,9 @@ class DhwControl(
     def update_controller_state(self, sensor_values: DhwSensorValues):
         self._current_controller_state.dhw_tanks_controller = (
             self._tanks_controller.values(
-                sensor_values=sensor_values, parameters=self._parameters
+                sensor_values=sensor_values,
+                parameters=self._parameters,
+                control_mode=self.mode,
             )
         )
         self._current_controller_state.dhw_drives_flow_controller = (
