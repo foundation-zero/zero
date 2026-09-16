@@ -10,7 +10,7 @@
 
 import { MimicComponentType } from "@/modules/thrapp/types";
 import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
-import { LoopCircuitInstance } from "../../../instances/index.ts";
+import { ExchangeCircuitInstance } from "../../../instances/index.ts";
 import { DHW_MIMIC_DATA } from "../data/index.ts";
 
 const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
@@ -19,39 +19,29 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
 
 <template>
   <g>
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="0"
-      y="25"
-      force-height
-      height="175"
+      y="0"
       v-bind="circuits['highTempLoop']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="397"
       y="708"
-      force-height
-      height="155"
       v-bind="circuits['dcConverters']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="650"
       y="708"
-      force-height
-      height="155"
       v-bind="circuits['drives']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="903"
       y="708"
-      force-height
-      height="155"
       v-bind="circuits['adsorption']"
     />
     <ConnectingCircuitInstance
       x="1215"
       y="455"
-      force-height
-      height="300"
       v-bind="connectingCircuits['freshwater']"
     />
   </g>

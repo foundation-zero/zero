@@ -2,7 +2,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowLeftLine, RiArrowRightLine, RiArrowUpLine } from "@remixicon/vue";
 import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
-import LoopCircuitInstance from "../../../instances/LoopCircuitInstance.vue";
+import LoopCircuitInstance from "../../../instances/ExchangeCircuitInstance.vue";
 import { PCM_MIMIC_DATA } from "../data";
 
 const circuits = PCM_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
@@ -42,7 +42,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <ConnectingCircuitInstance
     x="1400"
-    y="10"
+    y="0"
     force-height
     height="230"
     v-bind="circuits.freshwater"
@@ -57,7 +57,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <LoopCircuitInstance
     x="1400"
-    y="262"
+    y="235"
     force-height
     height="198"
     v-bind="exchangeCircuits.highTempLoop"
@@ -67,7 +67,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     x="1400"
     y="440"
     force-height
-    height="174"
+    height="198"
     v-bind="exchangeCircuits.adsorption"
     :tooltip="exchangeCircuits.adsorption.tooltip"
   />

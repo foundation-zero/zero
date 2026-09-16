@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
-import {
-  MimicTooltip,
-  NoopTooltipProvider,
-  TooltipComponentContext,
-} from "../../components/tooltip";
+import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
 import {
   TooltipList,
   TooltipListHeader,
@@ -13,7 +9,7 @@ import {
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import LoopCircuitInstance from "../instances/LoopCircuitInstance.vue";
+import ExchangeCircuit from "../instances/components/ExchangeCircuit.vue";
 import { ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
@@ -26,12 +22,10 @@ const { labels, items, actions } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <NoopTooltipProvider>
-        <LoopCircuitInstance
-          v-bind="props"
-          force-height
-        />
-      </NoopTooltipProvider>
+      <ExchangeCircuit
+        class="w-49"
+        v-bind="props"
+      />
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

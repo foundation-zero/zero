@@ -251,13 +251,14 @@ export type CustomFieldDefinitions = CustomFields<{
     width?: number | string;
     height?: number | string;
     forceHeight?: boolean;
-    circuitName: string;
     modeModule?: keyof ControlStatus["modules"];
+    consumingCircuit?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
     modeModule?: keyof ControlStatus["modules"];
+    consumingCircuit?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;

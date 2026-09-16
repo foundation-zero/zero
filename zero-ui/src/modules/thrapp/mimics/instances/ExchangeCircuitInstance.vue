@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { MimicComponentInstanceProps } from ".";
-import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
-import { MimicComponentType } from "../../types";
-import { HTMLWrapper } from "../components/html-wrapper";
-import ConnectingCircuit from "./components/ConnectingCircuit.vue";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
+import { MimicComponentType } from "../../types/index.ts";
+import { HTMLWrapper } from "../components/html-wrapper/index.ts";
+import ExchangeCircuit from "./components/ExchangeCircuit.vue";
+import { MimicComponentInstanceProps } from "./index.ts";
 
 const props = withDefaults(
   defineProps<
     MimicComponentInstanceProps &
-      TooltipComponentContext<MimicComponentType.ConnectingCircuit> & {
+      TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
         width?: number | string;
         height?: number | string;
         forceHeight?: boolean;
@@ -16,7 +16,7 @@ const props = withDefaults(
   >(),
   {
     width: 196,
-    height: 300,
+    height: 200,
     forceHeight: true,
   },
 );
@@ -24,14 +24,15 @@ const props = withDefaults(
 
 <template>
   <MimicTooltipTrigger
-    :type="MimicComponentType.ConnectingCircuit"
+    :type="MimicComponentType.ExchangeCircuit"
     :data="props"
   >
     <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
-      <ConnectingCircuit
+      <ExchangeCircuit
         class="w-full"
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
       />
     </HTMLWrapper>
+    <slot />
   </MimicTooltipTrigger>
 </template>

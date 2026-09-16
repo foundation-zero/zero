@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
-import { computed } from "vue";
-import { compute_module_mode, ModeBadge, ModeBadgeSize } from ".";
+import { HTMLAttributes } from "vue";
+import { ModeBadge, ModeBadgeSize, useModuleMode } from ".";
 
-const props = withDefaults(defineProps<{ module?: keyof ThrsModules; size: ModeBadgeSize }>(), {});
-
-const modes = computed(() => {
-  return compute_module_mode(props.module);
-});
+const props = withDefaults(
+  defineProps<{
+    module?: keyof ThrsModules;
+    size: ModeBadgeSize;
+    class?: HTMLAttributes["class"];
+  }>(),
+  {},
+);
+const modes = useModuleMode(props.module);
 </script>
 
 <template>
@@ -16,5 +20,6 @@ const modes = computed(() => {
     :key="index"
     v-bind="data"
     :size="size"
+    :class="props.class"
   />
 </template>

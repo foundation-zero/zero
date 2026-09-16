@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { LoopCircuitInstance } from "../../../instances";
+import { ExchangeCircuitInstance } from "../../../instances";
 import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
@@ -18,7 +18,7 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
       v-bind="connectingCircuits?.['pcm']"
     />
 
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="590"
       y="6"
       width="194"

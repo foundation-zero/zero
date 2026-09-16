@@ -85,7 +85,7 @@
     },
     "tooltips": {
       "actions": {
-        "viewCircuitMimic": "View circuit mimic",
+        "viewCircuitMimic": "Switch to circuit mimic",
         "viewControls": "View controls",
         "controlManually": "Switch to manual mode",
         "controlAutomatically": "Switch to auto control",
@@ -103,7 +103,9 @@
         "heatExchange": "Heat exchange",
         "thisCircuit": "This circuit",
         "exchangeCircuit": "Exchange circuit",
-        "connectingCircuit": "Connecting circuit"
+        "connectingCircuit": "Connecting circuit",
+        "consumingCircuit": "Consuming circuit",
+        "consuming": "Consuming"
       },
       "sources": {
         "calculated": "Calculated",
@@ -125,6 +127,7 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "mode": "Mode",
         "outputMinimum": "Output minimum",
         "tankState": "Tank state",
         "incomingFlow": "Incoming flow",
@@ -168,9 +171,9 @@
         "estimatedFillingTime": "Est. filling time",
         "estimatedTimeToHeat": "Est. time to heat",
         "tankController": "Tank controller",
-        "tank1": "Tank 1 AFT",
-        "tank2": "Tank 2 MID",
-        "tank3": "Tank 3 FWD",
+        "tank1": "Tank 1",
+        "tank2": "Tank 2",
+        "tank3": "Tank 3",
         "boostReturnValve": "Boost return valve",
         "boostSupplyValve": "Boost supply valve",
         "supplyValve": "Inlet valve",
