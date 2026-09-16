@@ -18,21 +18,13 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
 
 <template>
   <svg
-    width="1750"
-    height="935"
-    viewBox="-100 -25 1700 890"
+    viewBox="-100 -40 1700 940"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <Pipes />
-    <DirectionArrows
-      x="115"
-      y="7"
-    />
-    <ConnectingCircuits
-      x="968"
-      y="127"
-    />
+    <DirectionArrows />
+    <ConnectingCircuits />
     <CircuitBoxes />
     <HeatBatteries />
     <HeatExchangers />
