@@ -2,7 +2,7 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowRightLine } from "@remixicon/vue";
-import { LoopCircuitInstance } from "../../../instances";
+import { ExchangeCircuitInstance } from "../../../instances";
 import HotWaterCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
 import { PVT_MIMIC_DATA } from "../data";
 
@@ -31,8 +31,8 @@ const t = tScoped("labels");
       </template>
     </HotWaterCircuitInstance>
 
-    <LoopCircuitInstance
-      x="1110"
+    <ExchangeCircuitInstance
+      x="1093"
       y="355"
       width="194"
       height="145"

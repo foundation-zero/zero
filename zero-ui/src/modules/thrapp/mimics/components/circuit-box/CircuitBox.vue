@@ -2,20 +2,16 @@
 import { cn } from "@/modules/common/lib/utils";
 import { computed, HTMLAttributes, toRefs } from "vue";
 import { CIRCUIT_BOX_BORDER_COLOR } from ".";
-import { createMimicComponentContext, createSizeAndViewbox, MimicComponentState } from "..";
+import { createMimicComponentContext, MimicComponentState } from "..";
 
 const props = withDefaults(
   defineProps<{
     class?: HTMLAttributes["class"];
-    width?: string | number;
-    height?: string | number;
-    forceHeight?: boolean;
     state?: MimicComponentState;
+    width?: string | number;
   }>(),
   {
     width: 196,
-    height: 128,
-    forceHeight: false,
     state: MimicComponentState.Normal,
   },
 );
@@ -33,27 +29,19 @@ const borderColor = computed(() => {
 </script>
 
 <template>
-  <svg v-bind="createSizeAndViewbox(width, height, forceHeight)">
-    <foreignObject
-      :width="width"
-      :height="height"
+  <div :class="cn('flex gap-0.5', props.class)">
+    <div
+      class="w-3 rounded-tl-md rounded-bl-md transition-colors"
+      :style="{ 'background-color': borderColor }"
+    />
+    <div
+      class="bg-background pointer-events-none grow overflow-hidden rounded-tr-md rounded-br-md border border-dashed p-2 pb-1 transition-all"
+      :style="{
+        'border-color': borderColor,
+        'border-width': strokeWidth + 'px',
+      }"
     >
-      <div :class="cn('flex w-full gap-0.5', props.class)">
-        <div
-          class="w-3 rounded-tl-md rounded-bl-md transition-colors"
-          :style="{ 'background-color': borderColor }"
-        />
-        <div
-          class="bg-background pointer-events-none grow overflow-hidden rounded-tr-md rounded-br-md border border-dashed p-2 pb-1 transition-all"
-          :style="{
-            'border-color': borderColor,
-            'border-width': strokeWidth + 'px',
-            maxWidth: `calc(${props.width}px - 1.25rem)`,
-          }"
-        >
-          <slot />
-        </div>
-      </div>
-    </foreignObject>
-  </svg>
+      <slot />
+    </div>
+  </div>
 </template>

@@ -1,15 +1,14 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import {
-  DcAutomaticMode,
   DhwAutomaticMode,
   PcmAutomaticMode,
   PvtAutomaticMode,
   ThrustersAutomaticMode,
   useAutomationStore,
 } from "@/modules/thrsim/stores/automation";
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
-import { computed, MaybeRef, unref } from "vue";
+import { AmcsControlMode, PvtMode } from "@/modules/thrsim/types";
+import { computed } from "vue";
 
 export { default as ModeBadge } from "./ModeBadge.vue";
 export { default as ModeBadges } from "./ModeBadges.vue";
@@ -34,6 +33,8 @@ export const enum ModeBadgeMode {
 
   FillingLow = "FillingLow",
   Filling = "Filling",
+
+  Consuming = "Consuming",
 }
 
 export const enum ModeBadgeSize {
@@ -63,18 +64,16 @@ export const MODE_COLORS: Record<ModeBadgeMode, string> = {
   [ModeBadgeMode.ManualControl]: "var(--warning)",
   [ModeBadgeMode.AdvisoryOff]: "var(--destructive)",
   [ModeBadgeMode.Disabled]: "var(--destructive-muted)",
+  [ModeBadgeMode.Consuming]: "var(--flows-pipe)",
 };
 
-export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined>) => {
+export const useModuleMode = (module?: keyof ThrsModules) => {
   const t = tScoped("thrapp.mimics.modeBadge");
 
   return computed(() => {
-    const module = unref(moduleRef);
-
     if (!module) {
       return [];
     }
-
     const { control } = useAutomationStore();
 
     const automaticMode = control?.modules?.[module]?.controlMode?.automaticMode;
@@ -93,14 +92,14 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       };
 
       return [
-        { mode: MODES[pvtMode.aft.mode], label: t(`modes.pvt.${pvtMode.aft.mode}`, { count: 0 }) },
+        { mode: MODES[pvtMode.aft.mode], label: t(`modes.pvt.${pvtMode.aft.mode}`) },
         {
           mode: MODES[pvtMode.fwd.mode],
-          label: t(`modes.pvt.${pvtMode.fwd.mode}`, { count: 1 }),
+          label: t(`modes.pvt.${pvtMode.fwd.mode}`),
         },
         {
           mode: MODES[pvtMode.owners.mode],
-          label: t(`modes.pvt.${pvtMode.owners.mode}`, { count: 2 }),
+          label: t(`modes.pvt.${pvtMode.owners.mode}`),
         },
       ];
     } else if (module === "pcm") {
@@ -117,7 +116,7 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       const dhwMode = automaticMode as DhwAutomaticMode;
 
       const BOOSTING_MODES: Record<string, ModeBadgeMode> = {
-        idle: ModeBadgeMode.Idle,
+        idle: ModeBadgeMode.Active,
         boosting_low_temperature: ModeBadgeMode.BoostingLow,
         boosting_high_temperature: ModeBadgeMode.Boosting,
         boosting_heatpump: ModeBadgeMode.BoostingHigh,
@@ -131,12 +130,9 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       return [
         {
           mode: BOOSTING_MODES[dhwMode.boostingMode],
-          label: t(`modes.dhw.boosting.${dhwMode.boostingMode}`),
+          label: t(`modes.dhw.${dhwMode.boostingMode}`),
         },
-        {
-          mode: FILLING_MODES[dhwMode.fillingMode],
-          label: t(`modes.dhw.filling.${dhwMode.fillingMode}`),
-        },
+        { mode: FILLING_MODES[dhwMode.fillingMode], label: t(`modes.dhw.${dhwMode.fillingMode}`) },
       ];
     } else if (module === "thrusters") {
       const thrustersMode = automaticMode as ThrustersAutomaticMode;
@@ -148,28 +144,6 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       };
       return [
         { mode: MODES[thrustersMode.mode], label: t(`modes.thrusters.${thrustersMode.mode}`) },
-      ];
-    } else if (module === "dc") {
-      const { brightloopsAft, brightloopsFwd, ugrids } = automaticMode as DcAutomaticMode;
-
-      const MODES: Record<DcMode, ModeBadgeMode> = {
-        [DcMode.Idle]: ModeBadgeMode.Idle,
-        [DcMode.Recovery]: ModeBadgeMode.Using,
-      };
-
-      return [
-        {
-          mode: MODES[brightloopsAft.mode],
-          label: t(`modes.dc.${brightloopsAft.mode}`, { count: 0 }),
-        },
-        {
-          mode: MODES[brightloopsFwd.mode],
-          label: t(`modes.dc.${brightloopsFwd.mode}`, { count: 1 }),
-        },
-        {
-          mode: MODES[ugrids.mode],
-          label: t(`modes.dc.${ugrids.mode}`, { count: 2 }),
-        },
       ];
     } else {
       return [{ mode: ModeBadgeMode.Active, label: t(`modes.${module}`, automaticMode) }];

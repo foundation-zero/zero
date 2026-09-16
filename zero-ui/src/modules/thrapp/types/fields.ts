@@ -255,8 +255,8 @@ export type CustomFieldDefinitions = CustomFields<{
     width?: number | string;
     height?: number | string;
     forceHeight?: boolean;
-    circuitName: string;
     modeModule?: keyof ControlStatus["modules"];
+    consumingCircuit?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.DcConverter]: {
     converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
@@ -266,6 +266,7 @@ export type CustomFieldDefinitions = CustomFields<{
     width?: number | string;
     height?: number | string;
     modeModule?: keyof ControlStatus["modules"];
+    consumingCircuit?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;
