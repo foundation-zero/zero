@@ -89,6 +89,10 @@ export default defineConfig({
         ],
       },
       {
+        text: "PVT Components",
+        items: [{ text: "PVT String", link: "/mimics/pvt-string" }],
+      },
+      {
         text: "Modules",
         items: [
           { text: "Overview", link: "/mimics/modules/" },
