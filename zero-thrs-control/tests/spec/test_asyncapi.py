@@ -61,6 +61,57 @@ def test_build_asyncapi_has_no_broken_refs() -> None:
     assert broken == []
 
 
+def _all_strings(node: Any) -> list[str]:
+    if isinstance(node, dict):
+        out: list[str] = []
+        for key, value in node.items():
+            out.append(key)
+            out += _all_strings(value)
+        return out
+    if isinstance(node, list):
+        return [s for item in node for s in _all_strings(item)]
+    return [node] if isinstance(node, str) else []
+
+
+def test_build_asyncapi_default_prefix_is_a_noop() -> None:
+    """Passing the historical prefixes changes nothing."""
+    assert build_asyncapi(devices_prefix="simulation", controller_prefix="thrs/controller") == (
+        build_asyncapi()
+    )
+
+
+def test_build_asyncapi_reprefix_swaps_every_topic_form_without_breaking_refs() -> None:
+    """Every channel address, key, MQTT binding and $ref moves to the chosen
+    prefix (both `/` and `.` forms), nothing keeps the old prefix, unrelated
+    (simulator) channels are untouched, and no ref breaks."""
+    doc = build_asyncapi(devices_prefix="xsim", controller_prefix="xctrl")
+    strings = _all_strings(doc)
+    assert not any(
+        s.startswith(("simulation/", "simulation.", "thrs/controller/", "thrs.controller."))
+        for s in strings
+    ), "an old prefix survived the reprefix"
+    assert any(s.startswith("xsim/") for s in strings)
+    assert any(s.startswith("xctrl/") for s in strings)
+    # Unrelated simulator channels keep their own prefix.
+    assert any(s.startswith("thrs/simulator/") or s.startswith("thrs.simulator.") for s in strings)
+
+    def walk(node: Any, path: str) -> list[str]:
+        broken: list[str] = []
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == "$ref" and isinstance(value, str):
+                    if _resolve(doc, value) is None:
+                        broken.append(value)
+                else:
+                    broken += walk(value, f"{path}/{key}")
+        elif isinstance(node, list):
+            for index, item in enumerate(node):
+                broken += walk(item, f"{path}[{index}]")
+        return broken
+
+    assert walk(doc, "") == []
+
+
 def _resolve(doc: dict[str, Any], ref: str) -> Any:
     assert ref.startswith("#/")
     node: Any = doc
@@ -122,12 +173,14 @@ def test_send_and_receive_on_the_same_address_get_independent_metadata() -> None
     handler = doc["channels"]["thrs.controller.{module}.control-mode:Handler"]
     publisher = doc["channels"]["thrs.controller.{module}.control-mode:Publisher"]
 
-    handler_schema = handler["x-module-schema"]["thrusters"]
-    publisher_schema = publisher["x-module-schema"]["thrusters"]
-
-    assert handler_schema == ["SwitchingControlMode[ThrustersControlMode]"]
-    assert publisher_schema == ["ThrustersControlMode"]
-    assert handler_schema != publisher_schema
+    # Each direction keeps its own metadata block ...
+    assert handler is not publisher
+    assert handler["parameters"]["module"]["enum"] == publisher["parameters"]["module"]["enum"]
+    assert set(handler["x-module-schema"]) == set(publisher["x-module-schema"])
+    # ... and the publisher describes the switching wrapper actually on the
+    # wire (`_wire_type`), not the bare mode class it is declared with.
+    ref = publisher["x-module-schema"]["thrusters"]["$ref"].rsplit("/", 1)[-1]
+    assert set(doc["components"]["schemas"][ref]["properties"]) == {"AutomaticMode"}
 
 
 def test_every_registered_topic_is_covered_by_exactly_one_channel() -> None:

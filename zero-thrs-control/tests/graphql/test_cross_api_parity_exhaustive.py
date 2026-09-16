@@ -58,8 +58,9 @@ import pytest
 from aiomqtt import Client as MqttClient
 from pydantic import ValidationError
 
+from tests.graphql.stack_config import mqtt_graphql_config, thrs_api_config
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.orchestration.comms import PartialMqttMapping
+from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 from thrs.spec.asyncapi import all_module_descriptions
 
 MQTT_HOST = "localhost"
@@ -69,23 +70,50 @@ THRS_API_URL = "http://localhost:5102/graphql"
 MQTT_GRAPHQL_URL = "http://localhost:5103/graphql"
 
 # Prefixes differ in the running stack (see module docstring); publish to both.
-THRS_API_DEVICES_PREFIX = "devices_topic"
-MQTT_GRAPHQL_DEVICES_PREFIX = "simulation"
+THRS_API_DEVICES_PREFIX = thrs_api_config().mqtt_devices_topic_prefix
+MQTT_GRAPHQL_DEVICES_PREFIX = mqtt_graphql_config().mqtt_devices_topic_prefix
 PUBLISH_PREFIXES = (THRS_API_DEVICES_PREFIX, MQTT_GRAPHQL_DEVICES_PREFIX)
 
 # --- Migration switches (the "disable what we know we must still fix" knobs) ---
 
 # Modules whose nested `modules { <module> { sensorValues { ... } } }` view is
-# implemented and verified on zero-mqtt-graphql. Empty until HANDOVER item 1 (the
-# nested-module schema) lands: while a module is missing here its mqtt-graphql
-# parity assertions skip (the thrs-api-side contract still runs). Add a module's
-# name once `cargo test` and a live parity run pass for it.
-MQTT_GRAPHQL_READY_MODULES: frozenset[str] = frozenset()
+# implemented and verified on zero-mqtt-graphql: while a module is missing here
+# its mqtt-graphql parity assertions skip (the thrs-api-side contract still runs).
+# `pvt` stays out of *this* suite only: it derives its field cases from the model
+# with its own snake->camel conversion, so pvt's colliding pair
+# (pvt_flow_main_string1_2 / pvt_flow_main_string12 -> pvtFlowMainString12)
+# would select a field thrs-api doesn't serve. The sections suite, which selects
+# from the spec (shadowed field flagged `inputOnly`), covers pvt.
+MQTT_GRAPHQL_READY_MODULES: frozenset[str] = frozenset(
+    {"adsorption", "consumers", "dc", "dhw", "drives", "pcm", "thrusters"}
+)
 
 # Computed/controller fields are relayed, not derived, and this harness never
 # publishes them (no control loop). Their parity is out of scope here whatever
 # MQTT_GRAPHQL_READY_MODULES says. See the docstring.
 COMPUTED_PARITY_IN_SCOPE = False
+
+# Float leaves: require byte-exact string equality of the serialized number, or
+# accept values that agree to a tolerance. thrs-api (Python/Strawberry) and
+# mqtt-graphql (Rust/async-graphql) format f64s independently, so a value like
+# 1.0 + 14*0.01 comes back as `1.1400000000000001` from one and `1.14` from the
+# other -- the same number to ~15 significant digits (a 1-ULP formatting
+# artifact the UI cannot observe), not a relay error. Default tolerant. Flip to
+# True to demand identical serialization, which needs mqtt-graphql to preserve
+# the exact wire number token (serde_json `arbitrary_precision`) end to end.
+FLOAT_EXACT_MATCH = False
+FLOAT_REL_TOL = 1e-9
+
+
+def _values_equal(a: Any, b: Any) -> bool:
+    """Parity comparison for one leaf value. Floats compare within
+    ``FLOAT_REL_TOL`` unless ``FLOAT_EXACT_MATCH`` is set; everything else
+    (enum name strings, bools, ints) compares exactly."""
+    import math
+
+    if not FLOAT_EXACT_MATCH and isinstance(a, float) and isinstance(b, float):
+        return math.isclose(a, b, rel_tol=FLOAT_REL_TOL, abs_tol=1e-12)
+    return a == b
 
 
 def _snake_to_camel(name: str) -> str:
@@ -149,7 +177,9 @@ def _component_is_stamped(annotation: Any) -> bool:
     return isinstance(inner, type) and issubclass(inner, Stamped)
 
 
-def _field_cases_for_module(module: str, sensor_cls: type[ThrsValues]) -> list[FieldCase]:
+def _field_cases_for_module(
+    module: str, sensor_cls: type[ThrsValues]
+) -> list[FieldCase]:
     """Build a ``FieldCase`` for every raw and computed field of a module whose
     component we can introspect into ``Stamped`` leaves."""
     cases: list[FieldCase] = []
@@ -194,6 +224,7 @@ MODULES: list[str] = sorted({case.module for case in ALL_FIELD_CASES})
 
 # --- Model building / publishing -------------------------------------------
 
+
 # A distinct in-bounds value stamped onto leaves so parity is non-trivial (a
 # field showing another field's value is caught). Some units reject arbitrary
 # values (Ratio 0..1, Degree 0..360, ...); assignment is attempted and silently
@@ -223,10 +254,12 @@ def _build_model(sensor_cls: type[ThrsValues]) -> ThrsValues:
     return model
 
 
-async def _publish_module(mqtt_client: MqttClient, module: str, model: ThrsValues) -> None:
+async def _publish_module(
+    mqtt_client: MqttClient, module: str, model: ThrsValues
+) -> None:
     """Publish every raw per-field topic of a module's model to both prefixes,
     using the production splitter (same as the control service)."""
-    module_prefix = f"500000-thrs/{module}"
+    module_prefix = device_module_prefix(module)
     for prefix in PUBLISH_PREFIXES:
         mapping = PartialMqttMapping(type(model), prefix, module_prefix)
         for topic, payload in mapping.split_to_topics(model).items():
@@ -293,7 +326,9 @@ def published_models() -> dict[str, ThrsValues]:
 
 
 @pytest.mark.parametrize("module", MODULES)
-def test_thrs_api_exposes_full_sensor_shape(module: str, published_models: dict[str, ThrsValues]) -> None:
+def test_thrs_api_exposes_full_sensor_shape(
+    module: str, published_models: dict[str, ThrsValues]
+) -> None:
     """Contract check (thrs-api side, always on): every raw field the UI reads
     is present and non-null under ``modules.<module>.sensorValues`` once the
     complete model is published. This is what mqtt-graphql must match 1:1."""
@@ -318,7 +353,9 @@ def test_thrs_api_exposes_full_sensor_shape(module: str, published_models: dict[
     [c for c in ALL_FIELD_CASES if not c.computed],
     ids=lambda c: f"{c.module}.{c.gql_field}",
 )
-def test_raw_field_parity(case: FieldCase, published_models: dict[str, ThrsValues]) -> None:
+def test_raw_field_parity(
+    case: FieldCase, published_models: dict[str, ThrsValues]
+) -> None:
     """Exhaustive 1:1 read parity for one raw sensor field: thrs-api and
     mqtt-graphql must return equal ``{value, timestamp}`` for every leaf."""
     if case.module not in MQTT_GRAPHQL_READY_MODULES:
@@ -329,8 +366,12 @@ def test_raw_field_parity(case: FieldCase, published_models: dict[str, ThrsValue
         )
 
     query = _module_query(case.module, [case])
-    thrs_api = _query_graphql(THRS_API_URL, query)["modules"][case.module]["sensorValues"]
-    mqtt_graphql = _query_graphql(MQTT_GRAPHQL_URL, query)["modules"][case.module]["sensorValues"]
+    thrs_api = _query_graphql(THRS_API_URL, query)["modules"][case.module][
+        "sensorValues"
+    ]
+    mqtt_graphql = _query_graphql(MQTT_GRAPHQL_URL, query)["modules"][case.module][
+        "sensorValues"
+    ]
 
     assert thrs_api is not None, f"thrs-api {case.module}.sensorValues null"
     assert mqtt_graphql is not None, f"mqtt-graphql {case.module}.sensorValues null"
@@ -340,7 +381,7 @@ def test_raw_field_parity(case: FieldCase, published_models: dict[str, ThrsValue
     for leaf in case.leaves:
         thrs_leaf = thrs_component[leaf.gql]
         mqtt_leaf = mqtt_component[leaf.gql]
-        assert thrs_leaf["value"] == mqtt_leaf["value"], (
+        assert _values_equal(thrs_leaf["value"], mqtt_leaf["value"]), (
             f"{case.module}.{case.gql_field}.{leaf.gql}: value differs: "
             f"thrs-api={thrs_leaf['value']!r} mqtt-graphql={mqtt_leaf['value']!r}"
         )
@@ -355,7 +396,9 @@ def test_raw_field_parity(case: FieldCase, published_models: dict[str, ThrsValue
     [c for c in ALL_FIELD_CASES if c.computed],
     ids=lambda c: f"{c.module}.{c.gql_field}",
 )
-def test_computed_field_parity(case: FieldCase, published_models: dict[str, ThrsValues]) -> None:
+def test_computed_field_parity(
+    case: FieldCase, published_models: dict[str, ThrsValues]
+) -> None:
     """Computed/controller fields: thrs-api derives them, mqtt-graphql relays
     what THRS-control publishes to controller topics. Skipped here because this
     harness runs no control loop, so nothing is published for mqtt-graphql to
@@ -368,9 +411,14 @@ def test_computed_field_parity(case: FieldCase, published_models: dict[str, Thrs
     # When brought in scope: publish the module through a control tick so the
     # controller topics carry the derived values, then compare 1:1 as above.
     query = _module_query(case.module, [case])
-    thrs_api = _query_graphql(THRS_API_URL, query)["modules"][case.module]["sensorValues"]
-    mqtt_graphql = _query_graphql(MQTT_GRAPHQL_URL, query)["modules"][case.module]["sensorValues"]
+    thrs_api = _query_graphql(THRS_API_URL, query)["modules"][case.module][
+        "sensorValues"
+    ]
+    mqtt_graphql = _query_graphql(MQTT_GRAPHQL_URL, query)["modules"][case.module][
+        "sensorValues"
+    ]
     for leaf in case.leaves:
-        assert thrs_api[case.gql_field][leaf.gql]["value"] == (
-            mqtt_graphql[case.gql_field][leaf.gql]["value"]
+        assert (
+            thrs_api[case.gql_field][leaf.gql]["value"]
+            == (mqtt_graphql[case.gql_field][leaf.gql]["value"])
         )
