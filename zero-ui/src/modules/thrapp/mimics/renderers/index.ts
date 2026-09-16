@@ -28,6 +28,7 @@ import PvtMode from "./PvtModeRenderer.vue";
 import QuantityLiters from "./QuantityLitersRenderer.vue";
 import Source from "./SourceRenderer.vue";
 import Temperature from "./TemperatureRenderer.vue";
+import ThreeWayValveState from "./ThreeWayValveStateRenderer.vue";
 import TimeRemaining from "./TimeRemainingRenderer.vue";
 import ValveState from "./ValveStateRenderer.vue";
 
@@ -45,6 +46,7 @@ export const FieldRenderer = {
   BoilerTankMode,
   BoilerTankControllerMode,
   ValveState,
+  ThreeWayValveState,
   Percentage,
   FlowRate,
   Degree,
