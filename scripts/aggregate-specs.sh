@@ -13,6 +13,24 @@ echo "Generating AsyncAPI specs from all services..."
 STRICT="${AGGREGATE_STRICT:-0}"
 warnings=0
 
+# Bake a chosen MQTT topic prefix into the THRS module-view/mutation specs at
+# generation time. Set THRS_SPEC_DEVICES_PREFIX and/or THRS_SPEC_CONTROLLER_PREFIX
+# to override; unset keeps the historical prefixes (simulation / thrs/controller).
+# zero-mqtt-graphql's PREFIX_STRATEGY=runtime does the same rewrite at load instead.
+view_prefix_args=()
+mutation_prefix_args=()
+simulation_prefix_args=()
+if [ -n "${THRS_SPEC_SIMULATOR_PREFIX:-}" ]; then
+  simulation_prefix_args+=(--simulator-prefix "$THRS_SPEC_SIMULATOR_PREFIX")
+fi
+if [ -n "${THRS_SPEC_DEVICES_PREFIX:-}" ]; then
+  view_prefix_args+=(--devices-prefix "$THRS_SPEC_DEVICES_PREFIX")
+fi
+if [ -n "${THRS_SPEC_CONTROLLER_PREFIX:-}" ]; then
+  view_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
+  mutation_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
+fi
+
 fail_or_warn() {
   local label="$1"
   echo "WARNING: failed to generate spec for $label" >&2
@@ -108,7 +126,7 @@ fi
 THRS_CONTROL_ENABLED=false
 
 echo "  -> thrs-control"
-if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi) | filter_thrs_spec > "$SPECS_DIR/thrs-control.json"; then
+if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi "${view_prefix_args[@]}") | filter_thrs_spec > "$SPECS_DIR/thrs-control.json"; then
   fail_or_warn "thrs-control" || exit 1
 fi
 
@@ -122,12 +140,12 @@ thrs_computed_modules=$(cd "$REPO_ROOT/zero-thrs-control" && uv run python -c   
 
 for module in $thrs_modules; do
   echo "     - $module sensors"
-  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind sensors) > "$SPECS_DIR/thrs-$module-sensors-metadata.json"; then
+  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind sensors "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-sensors-metadata.json"; then
     fail_or_warn "thrs-control $module sensors metadata" || exit 1
   fi
   if [[ " $thrs_computed_modules " == *" $module "* ]]; then
     echo "     - $module controller"
-    if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind controller) > "$SPECS_DIR/thrs-$module-controller-metadata.json"; then
+    if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind controller "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-controller-metadata.json"; then
       fail_or_warn "thrs-control $module controller metadata" || exit 1
     fi
   fi
@@ -138,10 +156,29 @@ echo "  -> thrs-control module views"
 # zero-mqtt-graphql 1:1 with thrs-api (build_module_view, modules_view.rs).
 for module in $thrs_modules; do
   echo "     - $module view"
-  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-view --module "$module") > "$SPECS_DIR/thrs-$module-module.json"; then
+  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-view --module "$module" "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-module.json"; then
     fail_or_warn "thrs-control $module module view" || exit 1
   fi
 done
+
+echo "  -> thrs-control module mutations"
+# Write-path contract (parameter mutations -> MQTT publish); build_module_mutations
+# in mutations_view.rs uses this to serve thrs-api's mutations 1:1. Only
+# consumed when ENABLE_MUTATIONS is set on the service.
+for module in $thrs_modules; do
+  echo "     - $module mutations"
+  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-mutations --module "$module" "${mutation_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-mutations.json"; then
+    fail_or_warn "thrs-control $module mutations" || exit 1
+  fi
+done
+
+echo "  -> thrs-control simulation view"
+# Simulation contract (status/inputs/outputs relay, play/pause/step directives,
+# per-simulation input mutations); build_simulation_view in simulation_view.rs
+# uses this to serve thrs-api's `simulation` query and simulation mutations 1:1.
+if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-simulation-view "${simulation_prefix_args[@]}") > "$SPECS_DIR/thrs-simulation.json"; then
+  fail_or_warn "thrs-control simulation view" || exit 1
+fi
 
 if [ "$warnings" -gt 0 ]; then
   echo "Done with $warnings warning(s). Specs in $SPECS_DIR/" >&2

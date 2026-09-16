@@ -1,4 +1,6 @@
-from collections.abc import Coroutine
+from collections.abc import Awaitable, Callable, Coroutine
+from dataclasses import dataclass
+from functools import partial
 from typing import Any, Literal, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
@@ -8,9 +10,56 @@ from thrs.orchestration.comms import (
     DirectivesApiChannels,
     SimulationApiChannels,
 )
-from thrs.runtime.messages import SimulationStatusMessage
+from thrs.runtime.messages import (
+    IncomingMessage,
+    PauseMessage,
+    PlayMessage,
+    SimulationStatus,
+    SimulationStatusMessage,
+    StepMessage,
+)
 
 WAIT_TIMEOUT = 5
+
+NO_CONTROL_VALUES_ERROR = "No control values available to modify"
+NO_PARAMETERS_ERROR = "No parameters available to update"
+NO_SIMULATION_INPUTS_ERROR = "No simulation inputs available to modify"
+PARAMETERS_TIMEOUT_ERROR = "Timeout when setting parameters"
+
+
+@dataclass(frozen=True)
+class SimulationDirective:
+    """How the API guards one simulation directive: the statuses it may be
+    issued from, the status it then waits for, and the exact errors otherwise."""
+
+    message: type[IncomingMessage]
+    allowed_from: tuple[SimulationStatus, ...]
+    expect_status: SimulationStatus
+    precondition_error: str
+    missing_error: str
+
+
+PLAY = SimulationDirective(
+    PlayMessage,
+    allowed_from=("available", "running"),
+    expect_status="running",
+    precondition_error="Can only play an available or running simulation",
+    missing_error="No simulation status available, cannot play",
+)
+PAUSE = SimulationDirective(
+    PauseMessage,
+    allowed_from=("running",),
+    expect_status="available",
+    precondition_error="Can only pause a running simulation",
+    missing_error="No simulation status available, cannot pause",
+)
+STEP = SimulationDirective(
+    StepMessage,
+    allowed_from=("available",),
+    expect_status="stepping",
+    precondition_error="Can only step an available simulation",
+    missing_error="No simulation status available, cannot step",
+)
 
 
 class ControlMessaging[
@@ -35,7 +84,7 @@ class ControlMessaging[
     async def set_manual_control(self, name: str, value: Any) -> ControlValues:
         control_values = self._channels.get_manual_values()
         if control_values is None:
-            raise Exception("No control values available to modify")
+            raise Exception(NO_CONTROL_VALUES_ERROR)
 
         control_values = control_values.model_copy()
         setattr(control_values, name, value)
@@ -54,7 +103,7 @@ class ControlMessaging[
     async def set_parameter(self, name: str, value: Any) -> Parameters:
         parameters = self._channels.get_parameters()
         if parameters is None:
-            raise Exception("No parameters available to update")
+            raise Exception(NO_PARAMETERS_ERROR)
 
         parameters = parameters.model_copy()
         setattr(parameters, name, value)
@@ -68,7 +117,7 @@ class ControlMessaging[
         try:
             await expect
         except TimeoutError as e:
-            raise Exception("Timeout when setting parameters") from e
+            raise Exception(PARAMETERS_TIMEOUT_ERROR) from e
 
         return parameters
 
@@ -89,8 +138,7 @@ class ControlMessaging[
         return self._channels.get_parameters()
 
     async def set_automation_mode(self, enabled: bool) -> bool:
-        mode = AutomationMode(mode="automatic" if enabled else "manual")
-        await self._channels.send_automation_mode(mode)
+        await self._channels.send_automation_mode(AutomationMode.for_automatic(enabled))
 
         try:
             await self._channels.wait_for_control_modes(
@@ -127,7 +175,7 @@ class SimulationMessaging:
     async def set_simulation_input(self, name: str, value: Any) -> ThrsValues:
         inputs = self._channels.get_simulation_inputs()
         if inputs is None:
-            raise Exception("No simulation inputs available to modify")
+            raise Exception(NO_SIMULATION_INPUTS_ERROR)
 
         inputs = inputs.model_copy()
         setattr(inputs, name, value)
@@ -163,42 +211,27 @@ class DirectiveMessaging:
         self._simulation_status = status
 
     async def play_simulation(self, playback_rate: float):
-        simulation_status = self._directives_channels.get_simulation_status()
-        if simulation_status is None:
-            raise Exception("No simulation status available, cannot play")
-        if simulation_status.status not in ("available", "running"):
-            raise Exception("Can only play an available or running simulation")
-
-        expect_status = self._wait_for_simulation_status(
-            "running", timeout=WAIT_TIMEOUT
-        )
-        await self._directives_channels.send_play(playback_rate)
-        await expect_status
+        await self._direct(PLAY, partial(self._directives_channels.send_play, playback_rate))
 
     async def pause_simulation(self):
-        simulation_status = self._directives_channels.get_simulation_status()
-        if simulation_status is None:
-            raise Exception("No simulation status available, cannot pause")
-        if simulation_status.status != "running":
-            raise Exception("Can only pause a running simulation")
-
-        expect_status = self._wait_for_simulation_status(
-            "available", timeout=WAIT_TIMEOUT
-        )
-        await self._directives_channels.send_pause()
-        await expect_status
+        await self._direct(PAUSE, self._directives_channels.send_pause)
 
     async def step_simulation(self, seconds: float):
+        await self._direct(STEP, partial(self._directives_channels.send_step, seconds))
+
+    async def _direct(
+        self, directive: SimulationDirective, send: Callable[[], Awaitable[None]]
+    ):
         simulation_status = self._directives_channels.get_simulation_status()
         if simulation_status is None:
-            raise Exception("No simulation status available, cannot step")
-        if simulation_status.status != "available":
-            raise Exception("Can only step an available simulation")
+            raise Exception(directive.missing_error)
+        if simulation_status.status not in directive.allowed_from:
+            raise Exception(directive.precondition_error)
 
         expect_status = self._wait_for_simulation_status(
-            "stepping", timeout=WAIT_TIMEOUT
+            directive.expect_status, timeout=WAIT_TIMEOUT
         )
-        await self._directives_channels.send_step(seconds)
+        await send()
         await expect_status
 
     def _wait_for_simulation_status(

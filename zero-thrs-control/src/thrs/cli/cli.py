@@ -211,6 +211,12 @@ class LockstepCmd(BaseSettings):
 class AsyncApiCmd(BaseModel):
     title: str = "THRS Control"
     version: str = "1.0.0"
+    # Bake a chosen MQTT topic prefix into the emitted channels, so this doc
+    # (zero-mqtt-graphql's subscribe source) targets the same broker prefix as
+    # the module-view/metadata/mutation specs. Defaults reproduce the
+    # historical prefixes.
+    devices_prefix: str | None = None
+    controller_prefix: str | None = None
 
     def cli_cmd(self) -> None:
         # Imported lazily: faststream is a dev/test-only dependency (see
@@ -218,7 +224,17 @@ class AsyncApiCmd(BaseModel):
         # not part of the runtime this image actually ships to run control.
         from thrs.spec.asyncapi import build_asyncapi  # noqa: PLC0415
 
-        print(json.dumps(build_asyncapi(self.title, self.version), indent=2))  # noqa: T201 - CLI output, not logging
+        print(  # noqa: T201 - CLI output, not logging
+            json.dumps(
+                build_asyncapi(
+                    self.title,
+                    self.version,
+                    self.devices_prefix,
+                    self.controller_prefix,
+                ),
+                indent=2,
+            )
+        )
 
 
 class ModuleMetadataCmd(BaseModel):
@@ -227,16 +243,33 @@ class ModuleMetadataCmd(BaseModel):
     Same idea as zero-power-tags' `print-metadata`.
 
     `module` is any key of `all_module_descriptions()`. `kind="controller"` only
-    produces output for modules with computed fields."""
+    produces output for modules with computed fields.
+
+    --devices-prefix/--controller-prefix bake a chosen MQTT topic prefix into
+    the group pattern and topics; match the prefixes given to
+    print-module-view so the subscribe group and view topics line up. Omit to
+    keep the historical prefixes."""
 
     module: str
     kind: Literal["sensors", "controller"]
+    devices_prefix: str | None = None
+    controller_prefix: str | None = None
 
     def cli_cmd(self) -> None:
         # Imported lazily for the same reason as AsyncApiCmd above.
         from thrs.spec.asyncapi import build_module_metadata  # noqa: PLC0415
 
-        print(json.dumps(build_module_metadata(self.module, self.kind), indent=2))  # noqa: T201 - CLI output, not logging
+        print(  # noqa: T201 - CLI output, not logging
+            json.dumps(
+                build_module_metadata(
+                    self.module,
+                    self.kind,
+                    self.devices_prefix,
+                    self.controller_prefix,
+                ),
+                indent=2,
+            )
+        )
 
 
 class ModuleViewCmd(BaseModel):
@@ -246,15 +279,73 @@ class ModuleViewCmd(BaseModel):
     group), this lists every sensorValues field (raw and computed, overrides
     included) with its topic and per-leaf GraphQL/wire names.
 
-    ``module`` is any key of ``all_module_descriptions()``."""
+    module is one of THRS's module names (thrusters, dhw, pvt, ...).
+
+    --devices-prefix/--controller-prefix bake a chosen MQTT topic prefix into
+    the emitted topics; omit them to keep the historical spec prefixes
+    (simulation/thrs/controller)."""
 
     module: str
+    devices_prefix: str | None = None
+    controller_prefix: str | None = None
 
     def cli_cmd(self) -> None:
         # Imported lazily for the same reason as AsyncApiCmd above.
         from thrs.spec.asyncapi import build_module_view  # noqa: PLC0415
 
-        print(json.dumps(build_module_view(self.module), indent=2))  # noqa: T201 - CLI output, not logging
+        print(  # noqa: T201 - CLI output, not logging
+            json.dumps(
+                build_module_view(
+                    self.module, self.devices_prefix, self.controller_prefix
+                ),
+                indent=2,
+            )
+        )
+
+
+class ModuleMutationsCmd(BaseModel):
+    """Print the write-path contract so zero-mqtt-graphql can serve thrs-api's
+    mutations 1:1. Per module: every parameter, control and automation-mode
+    mutation with its GraphQL name, argument, by-alias payload key and MQTT
+    state/set topics (build_module_mutations).
+
+    module is one of THRS's module names (thrusters, dhw, pvt, ...).
+
+    --controller-prefix bakes a chosen controller topic prefix into the
+    state/set topics; omit it to keep the historical thrs/controller
+    prefix."""
+
+    module: str
+    controller_prefix: str | None = None
+
+    def cli_cmd(self) -> None:
+        # Imported lazily for the same reason as AsyncApiCmd above.
+        from thrs.spec.asyncapi import build_module_mutations  # noqa: PLC0415
+
+        print(  # noqa: T201 - CLI output, not logging
+            json.dumps(
+                build_module_mutations(self.module, self.controller_prefix), indent=2
+            )
+        )
+
+
+class SimulationViewCmd(BaseModel):
+    """Print the simulation contract so zero-mqtt-graphql can serve thrs-api's
+    simulation query, its play/pause/step directives and its per-simulation
+    input mutations 1:1.
+
+    --simulator-prefix bakes a chosen simulator topic prefix into the topics;
+    omit it to keep the historical thrs/simulator prefix."""
+
+    simulator_prefix: str | None = None
+
+    def cli_cmd(self) -> None:
+        # Imported lazily for the same reason as AsyncApiCmd above.
+        from thrs.spec.asyncapi import build_simulation_view  # noqa: PLC0415
+
+        print(  # noqa: T201 - CLI output, not logging
+            json.dumps(build_simulation_view(self.simulator_prefix), indent=2)
+        )
 
 
 class ThrsCli(BaseSettings, cli_kebab_case=True):
@@ -271,6 +362,8 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     print_asyncapi: CliSubCommand[AsyncApiCmd]
     print_module_metadata: CliSubCommand[ModuleMetadataCmd]
     print_module_view: CliSubCommand[ModuleViewCmd]
+    print_module_mutations: CliSubCommand[ModuleMutationsCmd]
+    print_simulation_view: CliSubCommand[SimulationViewCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()
