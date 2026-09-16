@@ -56,17 +56,15 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
 from typing import Any
 
 import httpx
 import pytest
 from aiomqtt import Client as MqttClient
 
+from tests.graphql.stack_config import REPO_ROOT, mqtt_graphql_config, thrs_api_config
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
-from thrs.orchestration.comms import PartialMqttMapping
-
-REPO_ROOT = Path(__file__).resolve().parents[3]
+from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 
 MQTT_HOST = "localhost"
 MQTT_PORT = 1883
@@ -76,14 +74,12 @@ MQTT_GRAPHQL_URL = "http://localhost:5103/graphql"
 
 # See the module docstring's prefix caveat: these differ in the running stack
 # (docker-compose env vs. the specs' default), so we publish to both.
-THRS_API_DEVICES_PREFIX = "devices_topic"
-THRS_API_CONTROLLER_PREFIX = "controller_topic"
-MQTT_GRAPHQL_DEVICES_PREFIX = "simulation"
-MQTT_GRAPHQL_CONTROLLER_PREFIX = "thrs/controller"
+THRS_API_DEVICES_PREFIX = thrs_api_config().mqtt_devices_topic_prefix
+THRS_API_CONTROLLER_PREFIX = thrs_api_config().mqtt_controller_topic_prefix
+MQTT_GRAPHQL_DEVICES_PREFIX = mqtt_graphql_config().mqtt_devices_topic_prefix
+MQTT_GRAPHQL_CONTROLLER_PREFIX = mqtt_graphql_config().mqtt_controller_topic_prefix
 
-# The module prefix baked into every thrusters topic (see
-# ``ModuleMqttMapping`` / ``ControlApiChannels`` in ``thrs.orchestration.comms``).
-MODULE_PREFIX = "500000-thrs/thrusters"
+MODULE_PREFIX = device_module_prefix("thrusters")
 
 
 @dataclass(frozen=True)
