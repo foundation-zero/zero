@@ -12,9 +12,9 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
 <template>
   <ConnectingCircuitInstance
     x="-93"
-    y="300"
+    y="288"
     force-height
-    height="224"
+    height="250"
     v-bind="circuits.pvt"
     :tooltip="{ ...circuits.pvt.tooltip, title: 'PVT' }"
   >
@@ -27,9 +27,9 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <ConnectingCircuitInstance
     x="112"
-    y="300"
+    y="288"
     force-height
-    height="224"
+    height="250"
     v-bind="circuits.thrusters"
     :tooltip="{ ...circuits.thrusters.tooltip, title: 'Thrusters' }"
   >
@@ -44,7 +44,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     x="1400"
     y="10"
     force-height
-    height="224"
+    height="230"
     v-bind="circuits.freshwater"
     :tooltip="circuits.freshwater.tooltip"
   >

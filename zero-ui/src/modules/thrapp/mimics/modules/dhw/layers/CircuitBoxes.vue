@@ -21,27 +21,30 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
   <g>
     <LoopCircuitInstance
       x="0"
-      y="0"
+      y="25"
       force-height
-      height="150"
+      height="175"
       v-bind="circuits['highTempLoop']"
     />
     <LoopCircuitInstance
       x="397"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['dcConverters']"
     />
     <LoopCircuitInstance
       x="650"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['drives']"
     />
     <LoopCircuitInstance
       x="903"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['adsorption']"
     />
     <ConnectingCircuitInstance

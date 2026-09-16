@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controllerState: {},
   custom: {
     circuitName: "DC Converters",
+    modeModule: "dc",
   },
   parameters: {},
   source: getCustomField("dhw", {

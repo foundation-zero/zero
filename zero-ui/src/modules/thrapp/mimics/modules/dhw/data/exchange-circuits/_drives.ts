@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controllerState: {},
   custom: {
     circuitName: "Drives & shore",
+    modeModule: "drives",
   },
   parameters: {},
   source: getCustomField("dhw", {

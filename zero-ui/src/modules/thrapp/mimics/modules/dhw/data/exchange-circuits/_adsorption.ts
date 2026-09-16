@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controllerState: {},
   custom: {
     circuitName: "Adsorption circuit",
+    modeModule: "adsorption",
   },
   parameters: {},
   source: getCustomField("dhw", {

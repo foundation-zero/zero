@@ -25,8 +25,8 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     aria-hidden="true"
   >
     <Bypasses />
-    <ExpansionTanks />
     <Pipes />
+    <ExpansionTanks />
     <HeatExchangers />
     <CheckValves />
     <ActuatedValves />

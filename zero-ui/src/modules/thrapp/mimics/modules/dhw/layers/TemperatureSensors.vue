@@ -54,13 +54,13 @@ const temperatureSensors = DHW_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       />
     </TemperatureSensorInstance>
     <TemperatureSensorInstance
-      x="185"
+      x="210"
       y="196.2099609375"
       v-bind="temperatureSensors['1038-65']"
       :orientation="ComponentOrientation.Down"
     >
       <TemperatureLabelInstance
-        :target-x="185"
+        :target-x="210"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="158"
         :tag-id="temperatureSensors['1038-65'].tooltip?.yardTag"

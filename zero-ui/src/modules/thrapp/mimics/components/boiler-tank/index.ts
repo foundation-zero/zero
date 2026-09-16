@@ -1,5 +1,6 @@
 import { BoilerTankState } from "@/modules/thrsim/types/index.ts";
 import { MimicComponentState } from "../index.ts";
+import { ModeBadgeMode } from "../mode-badge";
 
 export { default as BoilerTankTitle } from "../circuit-box/CircuitBoxTitle.vue";
 export { default as BoilerTank } from "./BoilerTank.vue";
@@ -25,4 +26,17 @@ export const DHW_TANK_MODE_COLORS: Record<BoilerTankState | MimicComponentState,
   [BoilerTankState.Filling]: "var(--constructive)",
   [BoilerTankState.NeedsBoost]: "var(--muted-foreground)",
   [BoilerTankState.NeedsFill]: "var(--muted-foreground)",
+};
+
+export const DHW_TANK_MODE_MODES: Record<BoilerTankState | MimicComponentState, ModeBadgeMode> = {
+  [BoilerTankState.InUse]: ModeBadgeMode.Using,
+  [BoilerTankState.Boosting]: ModeBadgeMode.Boosting,
+  [BoilerTankState.Standby]: ModeBadgeMode.Idle,
+  [BoilerTankState.Disabled]: ModeBadgeMode.Disabled,
+  [MimicComponentState.Manual]: ModeBadgeMode.ManualControl,
+  [MimicComponentState.Alarm]: ModeBadgeMode.Active,
+  [MimicComponentState.Normal]: ModeBadgeMode.Active,
+  [BoilerTankState.Filling]: ModeBadgeMode.Filling,
+  [BoilerTankState.NeedsBoost]: ModeBadgeMode.BoostingLow,
+  [BoilerTankState.NeedsFill]: ModeBadgeMode.FillingLow,
 };

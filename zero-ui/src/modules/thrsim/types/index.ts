@@ -48,8 +48,8 @@ export type PIDController = {
 };
 
 export const enum PvtMode {
-  Idle = "IDLE",
-  Recovery = "RECOVERY",
+  Idle = "idle",
+  Recovery = "recovery",
 }
 
 export type PumpControl = {
