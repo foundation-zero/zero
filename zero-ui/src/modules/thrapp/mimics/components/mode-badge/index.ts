@@ -89,14 +89,14 @@ export const useModuleMode = (module?: keyof ThrsModules) => {
       };
 
       return [
-        { mode: MODES[pvtMode.aft.mode], label: t(`modes.pvt.${pvtMode.aft.mode}`) },
+        { mode: MODES[pvtMode.aft.mode], label: t(`modes.pvt.${pvtMode.aft.mode}`, { count: 0 }) },
         {
           mode: MODES[pvtMode.fwd.mode],
-          label: t(`modes.pvt.${pvtMode.fwd.mode}`),
+          label: t(`modes.pvt.${pvtMode.fwd.mode}`, { count: 1 }),
         },
         {
           mode: MODES[pvtMode.owners.mode],
-          label: t(`modes.pvt.${pvtMode.owners.mode}`),
+          label: t(`modes.pvt.${pvtMode.owners.mode}`, { count: 2 }),
         },
       ];
     } else if (module === "pcm") {
@@ -113,7 +113,7 @@ export const useModuleMode = (module?: keyof ThrsModules) => {
       const dhwMode = automaticMode as DhwAutomaticMode;
 
       const BOOSTING_MODES: Record<string, ModeBadgeMode> = {
-        idle: ModeBadgeMode.Active,
+        idle: ModeBadgeMode.Idle,
         boosting_low_temperature: ModeBadgeMode.BoostingLow,
         boosting_high_temperature: ModeBadgeMode.Boosting,
         boosting_heatpump: ModeBadgeMode.BoostingHigh,
@@ -127,9 +127,12 @@ export const useModuleMode = (module?: keyof ThrsModules) => {
       return [
         {
           mode: BOOSTING_MODES[dhwMode.boostingMode],
-          label: t(`modes.dhw.${dhwMode.boostingMode}`),
+          label: t(`modes.dhw.boosting.${dhwMode.boostingMode}`),
         },
-        { mode: FILLING_MODES[dhwMode.fillingMode], label: t(`modes.dhw.${dhwMode.fillingMode}`) },
+        {
+          mode: FILLING_MODES[dhwMode.fillingMode],
+          label: t(`modes.dhw.filling.${dhwMode.fillingMode}`),
+        },
       ];
     } else if (module === "thrusters") {
       const thrustersMode = automaticMode as ThrustersAutomaticMode;

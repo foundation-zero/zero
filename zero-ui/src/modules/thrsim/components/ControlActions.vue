@@ -62,7 +62,9 @@ const toggleAutomaticMode = async () => {
           />
         </template>
       </Switch>
+    </div>
 
+    <div class="ml-2 flex items-center gap-2">
       <ModeBadges
         v-if="isAutomatic"
         :module="activeModule"
