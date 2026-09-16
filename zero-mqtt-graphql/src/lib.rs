@@ -6,4 +6,8 @@ pub mod http;
 pub mod metadata;
 pub mod modules_view;
 pub mod mqtt;
+pub mod mutations_view;
 pub mod naming;
+pub mod prefix;
+pub mod recompute;
+pub mod simulation_view;

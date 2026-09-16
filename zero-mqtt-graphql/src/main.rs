@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use anyhow::{Context, Result};
 use clap::Parser;
-use log::{error, info};
+use log::{error, info, warn};
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
@@ -13,11 +13,13 @@ use zero_mqtt_graphql::asyncapi::{
 };
 use zero_mqtt_graphql::cache::TopicCache;
 use zero_mqtt_graphql::config::AppConfig;
-use zero_mqtt_graphql::graphql::{build_schema, build_schema_with_module_views};
+use zero_mqtt_graphql::graphql::{build_schema, SchemaInputs, TopicPublisher};
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::metadata::{load_metadata, MetadataFile};
 use zero_mqtt_graphql::modules_view::{load_module_views, ModuleView};
-use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
+use zero_mqtt_graphql::mqtt::{MqttConnection, MqttPublisher, MqttSubscriber};
+use zero_mqtt_graphql::mutations_view::{load_mutations, ModuleMutations};
+use zero_mqtt_graphql::simulation_view::SimulationView;
 
 /// A spawned MQTT subscriber task paired with a receiver that fires when
 /// the task exits.
@@ -70,11 +72,27 @@ async fn main() -> Result<()> {
         Command::Validate => validate_command(&cli.spec_dir, &topics, &groups, &object_types)?,
         Command::PrintSchema { output } => {
             let metadata = load_metadata_or_empty(&cli.spec_dir);
-            export_sdl(&topics, &groups, &object_types, &metadata, output.as_deref())?;
+            export_sdl(
+                &topics,
+                &groups,
+                &object_types,
+                &metadata,
+                output.as_deref(),
+            )?;
         }
-        Command::Listen => run_listen_only(cli.spec_dir, topics, groups, validators, config).await?,
+        Command::Listen => {
+            run_listen_only(cli.spec_dir, topics, groups, validators, config).await?
+        }
         Command::Serve => {
-            run_serve(&cli.spec_dir, config, topics, groups, object_types, validators).await?
+            run_serve(
+                &cli.spec_dir,
+                config,
+                topics,
+                groups,
+                object_types,
+                validators,
+            )
+            .await?
         }
     }
     Ok(())
@@ -94,8 +112,16 @@ fn validate_command(
     let metadata = load_metadata(spec_dir)?;
     zero_mqtt_graphql::graphql::validate_topics(topics)?;
     let cache = Arc::new(TopicCache::new());
-    let _schema =
-        zero_mqtt_graphql::graphql::build_schema(topics, cache, groups, &metadata, object_types)?;
+    let _schema = build_schema(
+        cache,
+        SchemaInputs {
+            topics,
+            groups,
+            metadata: &metadata,
+            object_types,
+            ..Default::default()
+        },
+    )?;
     println!(
         "Validated {} topic(s), {} group(s), {} composite object type(s) and {} metadata file(s) from '{}' — no sanitization collisions",
         topics.len(),
@@ -112,13 +138,57 @@ fn validate_command(
 async fn run_serve(
     spec_dir: &str,
     config: AppConfig,
-    topics: Vec<TopicDef>,
-    groups: Vec<TopicGroupDef>,
+    mut topics: Vec<TopicDef>,
+    mut groups: Vec<TopicGroupDef>,
     object_types: Vec<ObjectTypeDef>,
     validator_specs: Vec<ValidatorSpec>,
 ) -> Result<()> {
     let metadata = load_metadata_or_empty(spec_dir);
-    let module_views = load_module_views_or_empty(spec_dir);
+    let mut module_views = load_module_views_or_empty(spec_dir);
+    // Mutations (write-path) are only served when ENABLE_MUTATIONS is set; the
+    // specs load either way so a misconfig is visible, but with the toggle off
+    // no publisher is built and the schema stays read-only.
+    let mut mutations = load_mutations_or_empty(spec_dir);
+    // The simulation spec (status/inputs/outputs relay, directives, input
+    // mutations). Read side is always served; the write side follows
+    // ENABLE_MUTATIONS like the module mutations.
+    let mut simulation = load_simulation_view_or_none(spec_dir);
+    // When PREFIX_STRATEGY=runtime, rewrite every subscribe/cache/publish
+    // topic from the spec prefix to the live-broker prefix before anything
+    // consumes them, so the subscribe set, the cache keys, and the resolver
+    // reads all move together. No-op under the default build_time strategy,
+    // which bakes the prefix into the spec instead.
+    let rewriter = zero_mqtt_graphql::prefix::PrefixRewriter::from_config(&config);
+    if !rewriter.is_noop() {
+        info!("Prefix strategy: runtime — rewriting spec topic prefixes to live-broker prefixes");
+        rewriter.apply_to_topics(&mut topics);
+        rewriter.apply_to_groups(&mut groups);
+        rewriter.apply_to_views(&mut module_views);
+        rewriter.apply_to_mutations(&mut mutations);
+        if let Some(sim) = &mut simulation {
+            rewriter.apply_to_simulation(sim);
+        }
+    }
+    // The whole-object read sections (controlValues/parameters/controllerState)
+    // are each one MQTT topic carrying the section object; subscribe to them so
+    // the nested resolvers can read them from the cache. Always subscribed (the
+    // read-path is on regardless of ENABLE_MUTATIONS); deduped against the
+    // mutation state topics, which include the same `.../parameters` topic.
+    let mut extra_topics = module_section_topics(&module_views);
+    if let Some(sim) = &simulation {
+        for topic in sim.read_topics() {
+            if !extra_topics.contains(&topic) {
+                extra_topics.push(topic);
+            }
+        }
+    }
+    if config.enable_mutations {
+        for topic in mutation_state_topics(&mutations) {
+            if !extra_topics.contains(&topic) {
+                extra_topics.push(topic);
+            }
+        }
+    }
     if topics.is_empty() {
         info!("No MQTT topics found in spec directory '{spec_dir}'");
     }
@@ -129,15 +199,42 @@ async fn run_serve(
         config.default_ttl_secs,
     ));
     zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
-    let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &validator_specs, &cache)?;
-
-    let schema = build_schema_with_module_views(
+    let (mut mqtt, publisher) = spawn_mqtt_subscriber(
+        &config,
         &topics,
-        cache,
         &groups,
-        &metadata,
-        &object_types,
-        &module_views,
+        &validator_specs,
+        &cache,
+        &extra_topics,
+    )?;
+
+    // The write side is served only with ENABLE_MUTATIONS; without it no
+    // publisher reaches the schema and it stays read-only.
+    let publisher = publisher.filter(|_| config.enable_mutations);
+    if publisher.is_some() {
+        info!(
+            "Mutations enabled: serving {} module(s) of mutations{}",
+            mutations.iter().filter(|m| !m.mutations.is_empty()).count(),
+            if simulation.is_some() {
+                " + simulation directives/input mutations"
+            } else {
+                ""
+            }
+        );
+    }
+    let schema = build_schema(
+        cache,
+        SchemaInputs {
+            topics: &topics,
+            groups: &groups,
+            metadata: &metadata,
+            object_types: &object_types,
+            module_views: &module_views,
+            mutations: &mutations,
+            simulation: simulation.as_ref(),
+            publisher,
+            computed_mode: config.computed_mode,
+        },
     )?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{}", addr);
@@ -176,15 +273,21 @@ fn spawn_mqtt_subscriber(
     groups: &[TopicGroupDef],
     validator_specs: &[ValidatorSpec],
     cache: &Arc<TopicCache>,
-) -> Result<Option<MqttTask>> {
+    extra_topics: &[String],
+) -> Result<(Option<MqttTask>, Option<Arc<dyn TopicPublisher>>)> {
+    // `extra_topics` are the mutation state topics (e.g.
+    // `controller_prefix/<module>/parameters`) whose cached objects the
+    // mutations read-modify-republish; subscribing to them keeps that state
+    // fresh. Empty unless mutations are enabled.
     let mqtt_topics: Vec<String> = topics
         .iter()
         .map(|t| t.topic.clone())
         .chain(groups.iter().map(|g| g.pattern.clone()))
+        .chain(extra_topics.iter().cloned())
         .collect();
     if mqtt_topics.is_empty() {
         info!("No MQTT topics to subscribe to");
-        return Ok(None);
+        return Ok((None, None));
     }
 
     let connection = MqttConnection {
@@ -201,7 +304,84 @@ fn spawn_mqtt_subscriber(
         validator_specs,
     )?;
     sub.set_pending_subscriptions(&mqtt_topics);
-    Ok(Some(spawn_subscriber(sub)))
+    // A publish handle on the same client, for serving mutations. Cheap to make
+    // even when mutations are off (the schema builder just won't use it).
+    let publisher: Arc<dyn TopicPublisher> = Arc::new(MqttPublisher::new(sub.client()));
+    Ok((Some(spawn_subscriber(sub)), Some(publisher)))
+}
+
+/// Load the simulation spec leniently (serve mode): a malformed file is logged
+/// and the simulation surface is just not served.
+fn load_simulation_view_or_none(spec_dir: &str) -> Option<SimulationView> {
+    match zero_mqtt_graphql::simulation_view::load_simulation_view(spec_dir) {
+        Ok(Some(sim)) => {
+            info!(
+                "Loaded simulation view: {} simulation(s), {} input mutation(s)",
+                sim.simulations.len(),
+                sim.mutations().count()
+            );
+            Some(sim)
+        }
+        Ok(None) => None,
+        Err(e) => {
+            warn!("Failed to load simulation view from '{spec_dir}': {e:#}");
+            None
+        }
+    }
+}
+
+/// Load `*-mutations.json` write-path specs from the spec dir. Lenient, like
+/// `load_module_views_or_empty`: a missing or malformed file is logged and
+/// ignored, leaving the schema read-only.
+fn load_mutations_or_empty(spec_dir: &str) -> Vec<ModuleMutations> {
+    match load_mutations(spec_dir) {
+        Ok(mutations) => {
+            let count: usize = mutations.iter().map(|m| m.mutations.len()).sum();
+            if count > 0 {
+                info!(
+                    "Loaded {count} mutation(s) from {} module(s)",
+                    mutations.len()
+                );
+            }
+            mutations
+        }
+        Err(e) => {
+            info!("No mutation specs loaded from '{}': {}", spec_dir, e);
+            Vec::new()
+        }
+    }
+}
+
+/// The distinct state topics the mutations read from, so the subscriber can
+/// keep their cached objects current.
+fn mutation_state_topics(mutations: &[ModuleMutations]) -> Vec<String> {
+    let mut topics: Vec<String> = mutations
+        .iter()
+        .flat_map(|m| m.mutations.iter().map(|def| def.state_topic.clone()))
+        .collect();
+    topics.sort();
+    topics.dedup();
+    topics
+}
+
+/// The distinct whole-object section topics (controlValues/parameters/
+/// controllerState) across all module views, so the subscriber caches them for
+/// the nested read resolvers.
+fn module_section_topics(views: &[ModuleView]) -> Vec<String> {
+    let mut topics: Vec<String> = views
+        .iter()
+        .flat_map(|v| {
+            [&v.control_values, &v.parameters, &v.controller_state]
+                .into_iter()
+                .flatten()
+                .map(|s| s.topic.clone())
+                .chain(v.control_mode.iter().map(|cm| cm.topic.clone()))
+        })
+        .filter(|t| !t.is_empty())
+        .collect();
+    topics.sort();
+    topics.dedup();
+    topics
 }
 
 /// Spawn a prepared subscriber, returning its task handle plus its exit
@@ -367,7 +547,16 @@ fn export_sdl(
         anyhow::bail!("no topics found — nothing to export");
     }
     let cache = Arc::new(TopicCache::new());
-    let schema = build_schema(topics, cache, groups, metadata, object_types)?;
+    let schema = build_schema(
+        cache,
+        SchemaInputs {
+            topics,
+            groups,
+            metadata,
+            object_types,
+            ..Default::default()
+        },
+    )?;
     let sdl = schema.sdl();
     match output {
         Some(path) => {

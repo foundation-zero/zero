@@ -158,6 +158,21 @@ services:
       # Drop schema-invalid payloads instead of caching them, so the last valid
       # value survives (matches thrs-api). Set "false" to cache every payload.
       STRICT_VALIDATION: "true"
+      # Serve thrs-api's parameter mutations (write-path) and publish their
+      # changes to MQTT. Off keeps zero-mqtt-graphql read-only.
+      ENABLE_MUTATIONS: "true"
+      # How computed sensor fields are served: "recompute" derives them
+      # in-process with thrs-api's formula (thrusters, dhw, pvt), matching its
+      # live value even when the loop hasn't ticked - this is the 1:1 default.
+      # "relay" instead serves whatever the control loop publishes; a module's
+      # sensorValues then stays null until the loop has published every
+      # computed field, like thrs-api's incomplete model.
+      COMPUTED_MODE: "recompute"
+      # Specs are generated with the default THRS prefixes (simulation /
+      # thrs/controller / thrs/simulator). Point at a broker using other
+      # prefixes by regenerating the specs (THRS_SPEC_*_PREFIX, build-time) or
+      # with PREFIX_STRATEGY=runtime plus
+      # RUNTIME_{DEVICES,CONTROLLER,SIMULATOR}_PREFIX (runtime rewrite).
     depends_on:
       vernemq:
         condition: service_healthy

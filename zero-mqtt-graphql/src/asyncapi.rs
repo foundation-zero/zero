@@ -102,6 +102,8 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<SpecDocument>> {
         .filter(|(_, path)| path.extension().and_then(|e| e.to_str()) == Some("json"))
         .filter(|(_, path)| !crate::metadata::is_metadata_file(path))
         .filter(|(_, path)| !crate::modules_view::is_module_view_file(path))
+        .filter(|(_, path)| !crate::mutations_view::is_mutations_file(path))
+        .filter(|(_, path)| !crate::simulation_view::is_simulation_view_file(path))
         .map(|(file_name, path)| {
             read_asyncapi_document(&path)
                 .map(|(doc, components)| (file_name, path, doc, components))
@@ -217,7 +219,13 @@ fn topics_from_document(
                     path.display()
                 )
             })?;
-            Ok(topic_from_channel(channel_name, channel, doc, path, object_types))
+            Ok(topic_from_channel(
+                channel_name,
+                channel,
+                doc,
+                path,
+                object_types,
+            ))
         })
         .collect::<anyhow::Result<Vec<_>>>()
         .map(|topics| topics.into_iter().flatten().collect())
@@ -436,7 +444,9 @@ fn param_name(segment: &str) -> Option<&str> {
 /// param gets dropped and per-field schema pinning
 /// (`field_schemas_from_channel`) never fires.
 fn extract_params(address: &str) -> Vec<String> {
-    let address = address.rsplit_once(':').map_or(address, |(path, _role)| path);
+    let address = address
+        .rsplit_once(':')
+        .map_or(address, |(path, _role)| path);
     address
         .split('/')
         .filter_map(param_name)
@@ -459,7 +469,9 @@ fn group_identity(address: &str) -> Option<String> {
     // Addresses end in `:<Role>` (`controller-state:Publisher`,
     // `{field}:Handler`) that names the AsyncAPI operation kind, not part
     // of the topic path, so strip it first or it leaks into the group name.
-    let address = address.rsplit_once(':').map_or(address, |(path, _role)| path);
+    let address = address
+        .rsplit_once(':')
+        .map_or(address, |(path, _role)| path);
     let segments: Vec<&str> = address
         .split('/')
         .filter(|segment| param_name(segment).is_none())
@@ -654,7 +666,9 @@ fn extract_fields_from_schema_or_multi(
     object_types: &mut ObjectTypeRegistry,
 ) -> Vec<FieldDef> {
     match schema_or_multi {
-        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc, object_types),
+        SchemaOrMultiFormat::Schema(schema) => {
+            extract_fields_from_schema(schema, doc, object_types)
+        }
         SchemaOrMultiFormat::MultiFormat(mf) => {
             // Try to deserialize the raw schema value as a Schema
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
