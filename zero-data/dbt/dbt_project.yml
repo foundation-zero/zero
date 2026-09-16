@@ -16,3 +16,7 @@ models:
   zero_data_greptime:
     staging:
       +materialized: view
+    silver:
+      +materialized: view
+    gold:
+      +materialized: table

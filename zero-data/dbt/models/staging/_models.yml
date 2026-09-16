@@ -1,21 +1,46 @@
 version: 2
 
 models:
-  - name: stg_marpower__150000_propulsion__pcs_fwd
+  - name: stg_marpower__power_tags
     description: >
-      Cleaned forward-PCS propulsion telemetry: a curated set of measures with stable
-      names, the `__value`/`__is_valid` clumps and Vector transport metadata dropped.
-      Materialized as a view in the `views` database.
+      Cleaned power-tag telemetry: a curated set of electrical consumption measures with
+      transport metadata dropped. Materialized as a view in the `views` database.
     columns:
       - name: ts
         description: "Ingest time index (renamed from the raw `timestamp`)."
         tests:
           - not_null
-      - name: device_state
-        description: "Device state measure."
-      - name: drive_thermal_state
-        description: "Drive thermal state measure."
-      - name: command_register
-        description: "Command register measure."
-      - name: azimuth_setpoint_not_reached
-        description: "Azimuth setpoint-not-reached flag."
+      - name: active_power_total
+        description: "Total active power consumption."
+      - name: component
+        description: "Component identifier associated with the tag."
+      - name: consumer
+        description: "Consumer identifier associated with the tag."
+      - name: current_a
+        description: "Phase A current."
+      - name: current_b
+        description: "Phase B current."
+      - name: current_c
+        description: "Phase C current."
+      - name: panel
+        description: "Electrical panel identifier."
+      - name: power_factor_total
+        description: "Total power factor."
+      - name: source_type
+        description: "Source type reported by the device."
+      - name: table
+        description: "Table name associated with the raw message."
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+      - name: active_power_a
+        description: "Phase A active power."
+      - name: voltage_an
+        description: "Phase A-to-neutral voltage."
+      - name: active_power_b
+        description: "Phase B active power."
+      - name: active_power_c
+        description: "Phase C active power."
+      - name: voltage_bn
+        description: "Phase B-to-neutral voltage."
+      - name: voltage_cn
+        description: "Phase C-to-neutral voltage."
