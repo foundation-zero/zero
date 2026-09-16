@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
@@ -100,6 +101,7 @@ export default defineConfig({
   },
 
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       alias: {
         "@": new URL("../../src", import.meta.url).pathname,

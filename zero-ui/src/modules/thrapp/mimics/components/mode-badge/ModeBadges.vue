@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
-import { computed } from "vue";
-import { compute_module_mode, ModeBadge, ModeBadgeSize } from ".";
+import { ModeBadge, ModeBadgeSize, useModuleMode } from ".";
 
 const props = withDefaults(defineProps<{ module?: keyof ThrsModules; size: ModeBadgeSize }>(), {});
-
-const modes = computed(() => {
-  return compute_module_mode(props.module);
-});
+const modes = useModuleMode(props.module);
 </script>
 
 <template>
