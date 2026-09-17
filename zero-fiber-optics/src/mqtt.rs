@@ -103,7 +103,12 @@ impl MqttHandler {
                         }
                     }
                     Ok(Event::Incoming(Incoming::PubAck(ack))) => {
-                        if ack.reason == PubAckReason::Success {
+                        // NoMatchingSubscribers is the broker accepting the message
+                        // with nothing subscribed to the topic, not a rejection.
+                        if matches!(
+                            ack.reason,
+                            PubAckReason::Success | PubAckReason::NoMatchingSubscribers
+                        ) {
                             metrics_for_loop.incr_acked();
                         } else {
                             metrics_for_loop.incr_puback_denied();

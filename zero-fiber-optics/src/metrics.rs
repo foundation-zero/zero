@@ -154,9 +154,12 @@ impl MqttMetrics {
         increment(&self.enqueued)
     }
 
-    /// Count a PUBACK the broker returned with a success reason code.
+    /// Count a PUBACK the broker returned with a success reason code, or with
+    /// `NoMatchingSubscribers`.
     ///
-    /// The only counter that reflects the broker having taken the message.
+    /// Both mean the broker took the message; `NoMatchingSubscribers` only adds
+    /// that nothing was subscribed to the topic. The only counter that reflects
+    /// the broker having taken the message.
     pub fn incr_acked(&self) -> u64 {
         increment(&self.acked)
     }
