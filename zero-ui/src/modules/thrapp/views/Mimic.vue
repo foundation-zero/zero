@@ -56,7 +56,7 @@ watch(currentMimic, (mimic) => {
       >
         <component
           :is="currentMimic.component"
-          class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
+          class="z-1 mx-auto max-h-[calc(100svh-14em)] lg:my-auto portrait:my-auto"
         />
       </MimicTooltipProvider>
     </section>
