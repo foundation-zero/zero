@@ -8,7 +8,7 @@ import {
   useAutomationStore,
 } from "@/modules/thrsim/stores/automation";
 import { AmcsControlMode, PvtMode } from "@/modules/thrsim/types";
-import { computed } from "vue";
+import { computed, MaybeRef, unref } from "vue";
 
 export { default as ModeBadge } from "./ModeBadge.vue";
 export { default as ModeBadges } from "./ModeBadges.vue";
@@ -64,13 +64,16 @@ export const MODE_COLORS: Record<ModeBadgeMode, string> = {
   [ModeBadgeMode.Disabled]: "var(--destructive-muted)",
 };
 
-export const useModuleMode = (module?: keyof ThrsModules) => {
+export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined>) => {
   const t = tScoped("thrapp.mimics.modeBadge");
 
   return computed(() => {
+    const module = unref(moduleRef);
+
     if (!module) {
       return [];
     }
+
     const { control } = useAutomationStore();
 
     const automaticMode = control?.modules?.[module]?.controlMode?.automaticMode;
