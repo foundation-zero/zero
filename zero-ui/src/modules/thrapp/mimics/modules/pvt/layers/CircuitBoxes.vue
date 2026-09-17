@@ -32,7 +32,7 @@ const t = tScoped("labels");
     </HotWaterCircuitInstance>
 
     <LoopCircuitInstance
-      x="1093"
+      x="1110"
       y="355"
       width="194"
       height="145"

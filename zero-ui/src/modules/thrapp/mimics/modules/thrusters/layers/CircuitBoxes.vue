@@ -20,7 +20,7 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
 
     <LoopCircuitInstance
       x="590"
-      y="6"
+      y="-10"
       width="194"
       height="130"
       force-height
