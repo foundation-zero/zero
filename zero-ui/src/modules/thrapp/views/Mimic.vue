@@ -7,6 +7,7 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ENV } from "@/settings";
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -25,6 +26,8 @@ watch(currentMimic, (mimic) => {
   data.value = undefined;
   nextTick(() => (data.value = mimic?.data));
 });
+
+const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
 </script>
 <template>
   <component :is="provider">
@@ -34,8 +37,12 @@ watch(currentMimic, (mimic) => {
       <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
       <aside
         class="z-1 flex w-full flex-row-reverse items-center justify-between landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
+        :class="{ 'justify-between': showDemoMode, 'justify-end': !showDemoMode }"
       >
-        <div class="flex items-center gap-3">
+        <div
+          v-if="showDemoMode"
+          class="flex items-center gap-3"
+        >
           <Switch v-model="demoMode" />
           <Label>{{ t("thrapp.labels.demoMode") }}</Label>
         </div>
