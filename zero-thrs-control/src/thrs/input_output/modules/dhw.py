@@ -4,7 +4,13 @@ from typing import Annotated
 from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
@@ -87,105 +93,75 @@ class DhwSensorValues(AmcsModeSensorValues):
     ]
     dhw_flowcontrol_dc: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_flowcontrol_drives: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_switch_tank3_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-03", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-04", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-05", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-06", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-07", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-08", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-09", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-10", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-10", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-11", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-11", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-12", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-12", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-13", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-13", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-14", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-14", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_low_temperature: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-16", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-16", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_heatpump: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-17", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-17", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_high_temperature: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-18", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-18", component_type="valve", valve_type="switch"),
     ]
     dhw_level_switch_tank1: Annotated[
         sensor.LevelSwitch,
@@ -221,25 +197,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/drives/drives-temperature-recovery",
         ),
     ]
-    drives_temperature_recovery_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-59",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/drives/drives-temperature-recovery-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def drives_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.drives_temperature_recovery.temperature,
-            temperature_return=self.drives_temperature_recovery_return.temperature,
-        )
 
     dc_flow_recovery: Annotated[
         sensor.FlowSensor,
@@ -259,25 +216,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/dc/dc-temperature-recovery",
         ),
     ]
-    dc_temperature_recovery_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-58",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/dc/dc-temperature-recovery-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def dc_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.dc_temperature_recovery.temperature,
-            temperature_return=self.dc_temperature_recovery_return.temperature,
-        )
 
     consumers_flow_dhw: Annotated[
         sensor.FlowSensor,
@@ -298,75 +236,25 @@ class DhwSensorValues(AmcsModeSensorValues):
         ),
     ]
 
-    consumers_temperature_dhw_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-48",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/consumers/consumers-temperature-dhw-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def consumers_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.consumers_temperature_dhw_supply.temperature,
-            temperature_return=self.consumers_temperature_dhw_return.temperature,
-        )
-
-    adsorption_flow_dhw: Annotated[
+    freshwater_hotwater_flow: Annotated[
         sensor.FlowSensor,
         component_meta(
-            yard_tag="50001058-10",
-            component_type="flow_sensor",
+            yard_tag="25001123-1",
             included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-flow-dhw",
+            topic_override="250000-fresh-water/hot/hot-flow-main-technical-space-bilge-area",
         ),
-    ]
-    adsorption_temperature_waste_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-38",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-temperature-waste-return",
-        ),
-    ]
-
-    adsorption_temperature_dhw_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-56",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-temperature-dhw-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def adsorption_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.adsorption_temperature_waste_return.temperature,
-            temperature_return=self.adsorption_temperature_dhw_return.temperature,
-        )
-
-    freshwater_hotwater_flow: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
-    ] = sensor.FlowSensor(  # TODO: Remove default
+    ] = sensor.FlowSensor(  # TODO: Remove default when topic works
         flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
         temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
     )
     freshwater_hotwater_temperature: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ] = sensor.TemperatureSensor(  # TODO: Remove default
+        component_meta(
+            yard_tag="25001038-1",
+            included_in_fmu=False,
+            topic_override="250000-fresh-water/hot/hot-temperature-from-tank",
+        ),
+    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
         temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
     )
 
@@ -519,105 +407,75 @@ class DhwControlValues(ThrsValues):
     )  # TODO: Fix when heatpump is available on MQTT
     dhw_flowcontrol_dc: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_flowcontrol_drives: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_switch_tank3_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-03", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-04", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-05", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-06", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-07", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-08", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-09", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-10", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-10", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-11", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-11", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-12", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-12", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-13", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-13", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-14", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-14", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_low_temperature: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-16", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-16", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_heatpump: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-17", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-17", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_high_temperature: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-18", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-18", component_type="valve", valve_type="switch"),
     ]
 
 
@@ -713,50 +571,6 @@ class DhwSimulationOutputs(ThrsValues):
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.Boundary
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_drives_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_dc_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_adsorption_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_consumers_exchanger.temperature_return
-        )
 
     @computed_field(
         json_schema_extra=computed_meta(

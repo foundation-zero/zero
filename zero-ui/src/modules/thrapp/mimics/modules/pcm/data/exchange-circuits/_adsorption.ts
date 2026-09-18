@@ -12,26 +12,26 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "adsorption",
   },
   parameters: {},
-  source: getCustomField("dhw", {
+  source: getCustomField("pcm", {
     title: "Adsorption",
     technicalName: "adsorption",
   }),
   sensors: {
-    flow: getField(SensorComponentType.Flow, "adsorption", "adsorptionFlowDhw"),
+    flow: getField(SensorComponentType.Flow, "adsorption", "adsorptionFlowHt"),
     incoming: getField(
       SensorComponentType.Temperature,
       "adsorption",
-      "adsorptionTemperatureWasteReturn",
+      "adsorptionTemperatureHtReturn",
     ),
     outgoing: getField(
       SensorComponentType.Temperature,
       "adsorption",
-      "adsorptionTemperatureDhwReturn",
+      "adsorptionTemperatureHtSupply",
     ),
     heatExchanger: getField(
       SensorComponentType.HeatExchanger,
       "adsorption",
-      "adsorptionDhwExchanger",
+      "adsorptionHtExchanger",
     ),
   },
   get tooltip() {

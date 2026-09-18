@@ -86,7 +86,6 @@ export type SensorFieldDefinitions = SensorFields<{
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
     flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
-    deltaT?: SensorComponentType.DeltaT;
     heatExchanger:
       | SensorComponentType.HeatExchanger
       | SensorComponentType.HvacExchanger
@@ -96,7 +95,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ConnectingCircuit]: {
     flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
-    tIn: SensorComponentType.Temperature;
+    tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatPump]: {

@@ -8,19 +8,19 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
   controllerState: {},
   custom: {
-    circuitName: "DC Converters",
-    modeModule: "dc",
+    circuitName: "Domestic hot water",
+    modeModule: "dhw",
   },
   parameters: {},
   source: getCustomField("dhw", {
-    title: "DC converters",
-    technicalName: "dc-converters",
+    title: "Domestic hot water",
+    technicalName: "dhw",
   }),
   sensors: {
-    flow: getField(SensorComponentType.Flow, "dc", "dcFlowRecovery"),
-    incoming: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecovery"),
-    outgoing: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecoveryReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dc", "dcDhwExchanger"),
+    flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
+    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
+    outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
+    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwConsumersExchanger"),
   },
   get tooltip() {
     return tooltip(this.source);

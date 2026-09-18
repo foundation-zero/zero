@@ -389,7 +389,6 @@ export const enum SensorComponentType {
   PcmInput = "sensor:pcmInput",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
-  DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   HvacExchanger = "sensor:hvacExchanger",
   HeatPump = "sensor:heatPump",
@@ -416,7 +415,6 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.PcmInput,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
-  SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
   SensorComponentType.HvacExchanger,
   SensorComponentType.HeatPump,
@@ -465,7 +463,6 @@ export type PcmInputSensorDefinition = SensorDefinition<SensorComponentType.PcmI
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
-export type DeltaTSensorDefinition = SensorDefinition<SensorComponentType.DeltaT>;
 export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
@@ -484,7 +481,6 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
-  [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.HvacExchanger]: HeatExchangerSensor;
   [SensorComponentType.HeatPump]: HeatExchangerSensor;

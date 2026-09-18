@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -14,7 +13,7 @@ import {
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
 import LoopCircuitInstance from "../instances/LoopCircuitInstance.vue";
-import { ModuleField, SensorValue } from "../providers";
+import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import Circuit from "./partials/Circuit.vue";
@@ -65,7 +64,7 @@ const { labels, items, actions } = useTranslations();
       <Circuit
         :incoming="sensors.incoming"
         :outgoing="sensors.outgoing"
-        :delta-t="sensors.deltaT as ModuleField<SensorComponentType.DeltaT>"
+        :delta-t="sensors.heatExchanger"
         :flow="sensors.flow"
       />
     </TooltipList>
