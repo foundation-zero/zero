@@ -118,6 +118,7 @@ export type SensorFields = {
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
+  [SensorComponentType.PcmInput]: (keyof PcmInputSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
   [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
@@ -186,10 +187,22 @@ export type ModeSelector<T> = {
   mode: Stamped<T>;
 };
 
+export const enum PcmChargingState {
+  Charging = "CHARGING",
+  Discharging = "DISCHARGING",
+  Idle = "IDLE",
+}
+
 export type PcmSensor = {
   charged: Stamped<boolean>;
+  chargingState: Stamped<PcmChargingState>;
+  heat: Stamped<number>;
   charge: Stamped<number>;
   deltaT: Stamped<number>;
+};
+
+export type PcmInputSensor = {
+  charged: Stamped<boolean>;
 };
 
 export type LevelSensor = {
@@ -373,6 +386,7 @@ export const enum SensorComponentType {
   Thruster = "sensor:thruster",
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
+  PcmInput = "sensor:pcmInput",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
   DeltaT = "sensor:deltaT",
@@ -399,6 +413,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Thruster,
   SensorComponentType.Pcs,
   SensorComponentType.Pcm,
+  SensorComponentType.PcmInput,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
   SensorComponentType.DeltaT,
@@ -446,6 +461,7 @@ export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> 
   valveType: ValveType;
 };
 export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
+export type PcmInputSensorDefinition = SensorDefinition<SensorComponentType.PcmInput>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
@@ -463,6 +479,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
   [SensorComponentType.Pcm]: PcmSensor;
+  [SensorComponentType.PcmInput]: PcmInputSensor;
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;

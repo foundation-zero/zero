@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from datetime import UTC, datetime
+from enum import Enum
 from typing import Annotated, Self, cast
 
 from pydantic import field_validator
@@ -7,6 +8,7 @@ from pydantic import field_validator
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
+    WATER_HEAT_TRANSFER_CONVERSION,
     Bar,
     Celsius,
     Charged,
@@ -325,8 +327,51 @@ class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
 
-class Pcm(ThrsValues):
+class PcmChargingState(Enum):
+    CHARGING = "charging"
+    DISCHARGING = "discharging"
+    IDLE = "idle"
+
+
+PCM_CHARGING_DEADBAND: Watt = 100
+
+
+# Temporary helper for the FMU charged input that control depends on.
+class PcmInput(ThrsValues):
     charged: Stamped[Charged]
+
+
+class Pcm(ThrsValues):
+    delta_t: Stamped[DeltaT]
+    heat: Stamped[Watt]
+    charged: Stamped[Charged]
+    charging_state: Stamped[PcmChargingState]
+
+    @classmethod
+    def from_sensors(
+        cls,
+        temperature_supply: Stamped[Celsius],
+        temperature_return: Stamped[Celsius],
+        flow: Stamped[LMin],
+        charged: Stamped[Charged],
+        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
+    ) -> Self:
+        heat_transfer = HeatTransferDevice.from_sensors(
+            temperature_supply, temperature_return, flow, heat_transfer_conversion
+        )
+        if heat_transfer.heat.value < -PCM_CHARGING_DEADBAND:
+            state = PcmChargingState.CHARGING
+        elif heat_transfer.heat.value > PCM_CHARGING_DEADBAND:
+            state = PcmChargingState.DISCHARGING
+        else:
+            state = PcmChargingState.IDLE
+        charging_state = Stamped.combine(heat_transfer.heat, value=state)
+        return cls(
+            delta_t=heat_transfer.delta_t,
+            heat=heat_transfer.heat,
+            charged=charged,
+            charging_state=charging_state,
+        )
 
 
 class LevelSwitch(ThrsValues):
@@ -397,6 +442,8 @@ __all__ = [
     "LevelSensor",
     "LevelSwitch",
     "Pcm",
+    "PcmChargingState",
+    "PcmInput",
     "Pcs",
     "PowerSensor",
     "PressureSensor",

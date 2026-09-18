@@ -1781,19 +1781,19 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmModule1: {
     yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule2: {
     yardTag: "50001050",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule3: {
     yardTag: "50001051",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule4: {
     yardTag: "50001052",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmFlowModule1: {
     yardTag: "50001057-18",
@@ -1850,6 +1850,22 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001071-02",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
+  },
+  pcmHeatModule1: {
+    yardTag: "50001049",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule2: {
+    yardTag: "50001050",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule3: {
+    yardTag: "50001051",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule4: {
+    yardTag: "50001052",
+    componentType: SensorComponentType.Pcm,
   },
 });
 

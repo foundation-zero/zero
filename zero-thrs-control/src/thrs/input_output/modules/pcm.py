@@ -1,9 +1,10 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.sensor_values import AmcsModeSensorValues
@@ -44,17 +45,25 @@ class PcmSensorValues(AmcsModeSensorValues):
         component_meta(yard_tag="50001038-35", component_type="temperature_sensor"),
     ]
     pcm_module1: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
-    ]
+        sensor.PcmInput, component_meta(yard_tag="50001049", component_type="pcm_input")
+    ] = sensor.PcmInput(
+        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     pcm_module2: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001050", component_type="pcm")
-    ]
+        sensor.PcmInput, component_meta(yard_tag="50001050", component_type="pcm_input")
+    ] = sensor.PcmInput(
+        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     pcm_module3: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001051", component_type="pcm")
-    ]
+        sensor.PcmInput, component_meta(yard_tag="50001051", component_type="pcm_input")
+    ] = sensor.PcmInput(
+        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     pcm_module4: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001052", component_type="pcm")
-    ]
+        sensor.PcmInput, component_meta(yard_tag="50001052", component_type="pcm_input")
+    ] = sensor.PcmInput(
+        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     pcm_flow_module1: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-18", component_type="flow_sensor"),
@@ -119,6 +128,62 @@ class PcmSensorValues(AmcsModeSensorValues):
             yard_tag="50001071-02", component_type="valve", valve_type="switch"
         ),
     ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001049", component_type="pcm", included_in_fmu=False
+        )
+    )
+    @property
+    def pcm_heat_module1(self) -> sensor.Pcm:
+        return sensor.Pcm.from_sensors(
+            temperature_supply=self.pcm_temperature_producers_return.temperature,
+            temperature_return=self.pcm_temperature_module1.temperature,
+            flow=self.pcm_flow_module1.flow,
+            charged=self.pcm_module1.charged,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001050", component_type="pcm", included_in_fmu=False
+        )
+    )
+    @property
+    def pcm_heat_module2(self) -> sensor.Pcm:
+        return sensor.Pcm.from_sensors(
+            temperature_supply=self.pcm_temperature_producers_return.temperature,
+            temperature_return=self.pcm_temperature_module2.temperature,
+            flow=self.pcm_flow_module2.flow,
+            charged=self.pcm_module2.charged,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001051", component_type="pcm", included_in_fmu=False
+        )
+    )
+    @property
+    def pcm_heat_module3(self) -> sensor.Pcm:
+        return sensor.Pcm.from_sensors(
+            temperature_supply=self.pcm_temperature_producers_return.temperature,
+            temperature_return=self.pcm_temperature_module3.temperature,
+            flow=self.pcm_flow_module3.flow,
+            charged=self.pcm_module3.charged,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001052", component_type="pcm", included_in_fmu=False
+        )
+    )
+    @property
+    def pcm_heat_module4(self) -> sensor.Pcm:
+        return sensor.Pcm.from_sensors(
+            temperature_supply=self.pcm_temperature_producers_return.temperature,
+            temperature_return=self.pcm_temperature_module4.temperature,
+            flow=self.pcm_flow_module4.flow,
+            charged=self.pcm_module4.charged,
+        )
 
 
 class PcmControlValues(ThrsValues):

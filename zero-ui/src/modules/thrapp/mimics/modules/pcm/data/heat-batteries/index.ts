@@ -27,22 +27,22 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
     "1049": createHeatBattery(
       "Heat battery 1",
       "1049",
-      getField(SensorComponentType.Pcm, "pcm", "pcmModule1"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule1"),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
       "1050",
-      getField(SensorComponentType.Pcm, "pcm", "pcmModule2"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule2"),
     ),
     "1051": createHeatBattery(
       "Heat battery 3",
       "1051",
-      getField(SensorComponentType.Pcm, "pcm", "pcmModule3"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule3"),
     ),
     "1052": createHeatBattery(
       "Heat battery 4",
       "1052",
-      getField(SensorComponentType.Pcm, "pcm", "pcmModule4"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule4"),
     ),
   },
 });
