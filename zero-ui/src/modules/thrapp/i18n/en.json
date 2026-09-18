@@ -64,7 +64,7 @@
         "confirm": "OK",
         "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
         "password": "Password",
-        "advisoryDisabled": "Attention: Circuit is not in advisory mode. There are no controls active from the THRS. You are unable to request manual control."
+        "advisoryDisabled": "Advisory mode off. Control through AMCS."
       },
       "advisoryModeDisabled": {
         "title": "Advisory mode disabled",
