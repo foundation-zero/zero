@@ -199,6 +199,7 @@
           "NEEDS_BOOST": "Needs boost",
           "NEEDS_FILL": "Needs fill",
           "STANDBY": "Standby",
+          "ON_TEMPERATURE": "On temperature",
           "manual": "Manual",
           "alarm": "Alarm"
         }

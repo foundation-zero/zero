@@ -72,10 +72,23 @@ const currentLevelPercentage = computed(
 
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <TooltipListItem>
-        <TooltipListItemTitle>{{ items("temperature") }}</TooltipListItemTitle>
-        <TooltipListItemValue>On temperature</TooltipListItemValue>
-      </TooltipListItem>
+      <ControllerStateValue
+        :source="controllerState.controller"
+        :field="custom.tankStateField"
+      >
+        <Partials.ListItem no-source>
+          {{ items("temperature") }}
+
+          <template #value>
+            <TooltipListItemValue>
+              <FieldRenderer.BoilerTankTemperature
+                :temperature="sensors.temperature"
+                :minimum-temperature="parameters.minimumTemperature"
+              />
+            </TooltipListItemValue>
+          </template>
+        </Partials.ListItem>
+      </ControllerStateValue>
 
       <SensorValue
         :source="sensors.temperature"

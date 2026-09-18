@@ -3,6 +3,7 @@ import { HTMLAttributes } from "vue";
 import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
+import BoilerTankTemperature from "./BoilerTankTemperatureRenderer.vue";
 import Charge from "./ChargeRenderer.vue";
 import ChargeState from "./ChargeStateRenderer.vue";
 import ChargingMode from "./ChargingModeRenderer.vue";
@@ -45,6 +46,7 @@ export const FieldRenderer = {
   Temperature,
   HeatPumpMode,
   BoilerTankMode,
+  BoilerTankTemperature,
   BoilerTankControllerMode,
   ValveState,
   ThreeWayValveState,

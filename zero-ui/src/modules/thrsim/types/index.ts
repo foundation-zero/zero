@@ -28,6 +28,7 @@ export const enum BoilerTankState {
   NeedsBoost = "NEEDS_BOOST",
   NeedsFill = "NEEDS_FILL",
   Standby = "STANDBY",
+  OnTemperature = "ON_TEMPERATURE",
 }
 
 export type DhwTankController = {
