@@ -2613,6 +2613,16 @@ asgi = [
     { name = "python-multipart" },
     { name = "starlette" },
 ]
+cli = [
+    { name = "libcst" },
+    { name = "pygments" },
+    { name = "python-multipart" },
+    { name = "rich" },
+    { name = "starlette" },
+    { name = "typer" },
+    { name = "uvicorn" },
+    { name = "websockets" },
+]
 fastapi = [
     { name = "fastapi" },
     { name = "python-multipart" },
@@ -2650,7 +2660,6 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "fmpy" },
     { name = "jupyter" },
-    { name = "libcst" },
     { name = "matplotlib" },
     { name = "pandas" },
     { name = "plotly" },
@@ -2662,7 +2671,7 @@ dependencies = [
     { name = "pytransitions" },
     { name = "simple-pid" },
     { name = "sqlmodel" },
-    { name = "strawberry-graphql", extra = ["asgi", "fastapi"] },
+    { name = "strawberry-graphql", extra = ["asgi", "cli", "fastapi"] },
     { name = "uvicorn" },
 ]
 
@@ -2691,7 +2700,6 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.117.1,<0.118.0" },
     { name = "fmpy", specifier = ">=0.3.22,<0.4.0" },
     { name = "jupyter", specifier = ">=1.1.1,<2.0.0" },
-    { name = "libcst", specifier = ">=1.9.0" },
     { name = "matplotlib", specifier = ">=3.10.0,<4.0.0" },
     { name = "pandas", specifier = ">=2.2.3,<3.0.0" },
     { name = "plotly", specifier = ">=5.24.1,<6.0.0" },
@@ -2703,7 +2711,7 @@ requires-dist = [
     { name = "pytransitions", specifier = ">=0.9.2,<1.0.0" },
     { name = "simple-pid", specifier = ">=2.0.1,<3.0.0" },
     { name = "sqlmodel", specifier = ">=0.0.24,<0.1.0" },
-    { name = "strawberry-graphql", extras = ["asgi", "debug-server", "fastapi"], git = "https://github.com/foundation-zero/strawberry.git?rev=feature%2Fallow-pydantic-generics" },
+    { name = "strawberry-graphql", extras = ["asgi", "cli", "debug-server", "fastapi"], git = "https://github.com/foundation-zero/strawberry.git?rev=feature%2Fallow-pydantic-generics" },
     { name = "uvicorn", specifier = ">=0.40.0,<0.41.0" },
 ]
 
