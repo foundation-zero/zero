@@ -170,6 +170,14 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SensorComponentType.Temperature,
   },
+  adsorptionHtExchanger: {
+    yardTag: "50001003",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  adsorptionDhwExchanger: {
+    yardTag: "50001004",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
@@ -327,6 +335,14 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001067-15",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
+  },
+  consumersAdsorptionExchanger: {
+    yardTag: "50001003",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  consumersDhwExchanger: {
+    yardTag: "50001007",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 
@@ -1779,6 +1795,14 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-35",
     componentType: SensorComponentType.Temperature,
   },
+  freshwaterTemperaturePcmSupply: {
+    yardTag: "25001038-5",
+    componentType: SensorComponentType.Temperature,
+  },
+  freshwaterTemperaturePcmReturn: {
+    yardTag: "25001038-3",
+    componentType: SensorComponentType.Temperature,
+  },
   pcmModule1: {
     yardTag: "50001049",
     componentType: SensorComponentType.PcmInput,
@@ -1809,6 +1833,10 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmFlowModule4: {
     yardTag: "50001057-21",
+    componentType: SensorComponentType.Flow,
+  },
+  freshwaterFlowPcm: {
+    yardTag: "25001139",
     componentType: SensorComponentType.Flow,
   },
   pcmSwitchChargingReturn: {

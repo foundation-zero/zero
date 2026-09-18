@@ -16,7 +16,6 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     force-height
     height="250"
     v-bind="circuits.pvt"
-    :tooltip="{ ...circuits.pvt.tooltip, title: 'PVT' }"
   >
     <template #fromIcon>
       <RiArrowUpLine class="text-muted-foreground size-3" />
@@ -31,7 +30,6 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     force-height
     height="250"
     v-bind="circuits.thrusters"
-    :tooltip="{ ...circuits.thrusters.tooltip, title: 'Thrusters' }"
   >
     <template #fromIcon>
       <RiArrowUpLine class="text-muted-foreground size-3" />
@@ -46,7 +44,6 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     force-height
     height="230"
     v-bind="circuits.freshwater"
-    :tooltip="circuits.freshwater.tooltip"
   >
     <template #fromIcon>
       <RiArrowRightLine class="text-muted-foreground size-3" />
@@ -60,8 +57,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     y="262"
     force-height
     height="198"
-    v-bind="exchangeCircuits.highTempLoop"
-    :tooltip="{ ...exchangeCircuits.highTempLoop.tooltip, title: 'Domestic hot water' }"
+    v-bind="exchangeCircuits.dhw"
   />
   <LoopCircuitInstance
     x="1400"

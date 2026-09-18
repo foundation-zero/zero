@@ -111,6 +111,14 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
+  adsorptionHtExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  adsorptionDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
@@ -244,6 +252,14 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersSwitchDhw {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+  }
+  consumersAdsorptionExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  consumersDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 
@@ -1484,6 +1500,12 @@ export const PCM_SENSOR_QUERY = `
   pcmTemperatureModule4 {
     temperature { value timestamp }
   }
+  freshwaterTemperaturePcmSupply {
+    temperature { value timestamp }
+  }
+  freshwaterTemperaturePcmReturn {
+    temperature { value timestamp }
+  }
   pcmModule1 {
     charged { value timestamp }
   }
@@ -1512,6 +1534,11 @@ export const PCM_SENSOR_QUERY = `
     quantity { value timestamp }
   }
   pcmFlowModule4 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  freshwaterFlowPcm {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
