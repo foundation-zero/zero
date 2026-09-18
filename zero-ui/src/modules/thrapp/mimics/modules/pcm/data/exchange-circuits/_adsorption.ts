@@ -17,7 +17,6 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     technicalName: "adsorption",
   }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "adsorption", "placeholder"),
     flow: getField(SensorComponentType.Flow, "adsorption", "adsorptionFlowHt"),
     incoming: getField(
       SensorComponentType.Temperature,

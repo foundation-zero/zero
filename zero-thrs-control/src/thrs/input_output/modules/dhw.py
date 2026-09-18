@@ -197,25 +197,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/drives/drives-temperature-recovery",
         ),
     ]
-    drives_temperature_recovery_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-59",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/drives/drives-temperature-recovery-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def drives_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.drives_temperature_recovery.temperature,
-            temperature_return=self.drives_temperature_recovery_return.temperature,
-        )
 
     dc_flow_recovery: Annotated[
         sensor.FlowSensor,
@@ -235,25 +216,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/dc/dc-temperature-recovery",
         ),
     ]
-    dc_temperature_recovery_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-58",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/dc/dc-temperature-recovery-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def dc_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.dc_temperature_recovery.temperature,
-            temperature_return=self.dc_temperature_recovery_return.temperature,
-        )
 
     consumers_flow_dhw: Annotated[
         sensor.FlowSensor,
@@ -273,65 +235,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/consumers/consumers-temperature-dhw-supply",
         ),
     ]
-
-    consumers_temperature_dhw_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-48",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/consumers/consumers-temperature-dhw-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def consumers_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.consumers_temperature_dhw_supply.temperature,
-            temperature_return=self.consumers_temperature_dhw_return.temperature,
-        )
-
-    adsorption_flow_dhw: Annotated[
-        sensor.FlowSensor,
-        component_meta(
-            yard_tag="50001058-10",
-            component_type="flow_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-flow-dhw",
-        ),
-    ]
-    adsorption_temperature_waste_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-38",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-temperature-waste-return",
-        ),
-    ]
-
-    adsorption_temperature_dhw_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-56",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/adsorption/adsorption-temperature-dhw-return",
-        ),
-    ]
-
-    @computed_field(
-        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
-    )
-    @property
-    def adsorption_delta(self) -> sensor.TemperatureDelta:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.adsorption_temperature_waste_return.temperature,
-            temperature_return=self.adsorption_temperature_dhw_return.temperature,
-        )
 
     freshwater_hotwater_flow: Annotated[
         sensor.FlowSensor,
@@ -668,50 +571,6 @@ class DhwSimulationOutputs(ThrsValues):
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.Boundary
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_drives_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_dc_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_adsorption_exchanger.temperature_return
-        )
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=self.dhw_consumers_exchanger.temperature_return
-        )
 
     @computed_field(
         json_schema_extra=computed_meta(

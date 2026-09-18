@@ -86,7 +86,6 @@ export type SensorFieldDefinitions = SensorFields<{
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
     flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
-    deltaT?: SensorComponentType.DeltaT;
     heatExchanger:
       | SensorComponentType.HeatExchanger
       | SensorComponentType.HvacExchanger

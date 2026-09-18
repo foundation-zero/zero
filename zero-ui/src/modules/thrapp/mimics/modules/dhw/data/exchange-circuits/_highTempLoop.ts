@@ -17,7 +17,6 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     technicalName: "high-temperature",
   }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "dhw", "consumersDelta"),
     flow: getField(SensorComponentType.Flow, "consumers", "consumersFlowDhw"),
     incoming: getField(
       SensorComponentType.Temperature,

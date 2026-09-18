@@ -17,7 +17,6 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     technicalName: "dc-converters",
   }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "dhw", "dcDelta"),
     flow: getField(SensorComponentType.Flow, "dc", "dcFlowRecovery"),
     incoming: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecovery"),
     outgoing: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecoveryReturn"),
