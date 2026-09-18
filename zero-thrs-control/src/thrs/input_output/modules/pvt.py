@@ -4,7 +4,13 @@ from typing import Annotated, cast
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION, Celsius
@@ -53,18 +59,14 @@ class PvtSensorValues(AmcsModeSensorValues):
     ]
     pvt_mix_main_fwd: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001044-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001044-01", component_type="valve", valve_type="mix"),
     ]
     pvt_mix_main_aft: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001044-02", valve_type="mix")
+        sensor.Valve, valve_meta(yard_tag="50001044-02", valve_type="mix")
     ]
     pvt_mix_owners: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001043-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001043-01", component_type="valve", valve_type="mix"),
     ]
     pvt_flow_main_fwd_recovery: Annotated[
         sensor.FlowSensor,
@@ -116,27 +118,19 @@ class PvtSensorValues(AmcsModeSensorValues):
     )
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-01", component_type="valve", valve_type="switch"),
     ]
     pvt_switch_main_aft: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-02", component_type="valve", valve_type="switch"),
     ]
     pvt_switch_owners: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-01", component_type="valve", valve_type="switch"),
     ]
     pvt_mix_exchanger: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001047-02", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001047-02", component_type="valve", valve_type="mix"),
     ]
     pvt_temperature_supply: Annotated[
         sensor.TemperatureSensor,
@@ -879,7 +873,9 @@ class PvtSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001002", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001002",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
         )
     )
     @property
@@ -910,45 +906,31 @@ class PvtControlValues(ThrsValues):
     ]
     pvt_mix_main_fwd: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001044-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001044-01", component_type="valve", valve_type="mix"),
     ]
     pvt_mix_main_aft: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001044-02", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001044-02", component_type="valve", valve_type="mix"),
     ]
     pvt_mix_owners: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001043-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001043-01", component_type="valve", valve_type="mix"),
     ]
     pvt_switch_main_fwd: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-01", component_type="valve", valve_type="switch"),
     ]
     pvt_switch_main_aft: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-02", component_type="valve", valve_type="switch"),
     ]
     pvt_switch_owners: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-01", component_type="valve", valve_type="switch"),
     ]
     pvt_mix_exchanger: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001047-02", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001047-02", component_type="valve", valve_type="mix"),
     ]
 
 

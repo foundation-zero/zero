@@ -4,7 +4,13 @@ from typing import Annotated
 from pydantic import ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
@@ -87,105 +93,75 @@ class DhwSensorValues(AmcsModeSensorValues):
     ]
     dhw_flowcontrol_dc: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_flowcontrol_drives: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_switch_tank3_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-03", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-04", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-05", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-06", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-07", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-08", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-09", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-10", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-10", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_inlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-11", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-11", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-12", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-12", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_outlet: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-13", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-13", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-14", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-14", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_low_temperature: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-16", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-16", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_heatpump: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-17", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-17", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_high_temperature: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001067-18", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-18", component_type="valve", valve_type="switch"),
     ]
     dhw_level_switch_tank1: Annotated[
         sensor.LevelSwitch,
@@ -519,105 +495,75 @@ class DhwControlValues(ThrsValues):
     )  # TODO: Fix when heatpump is available on MQTT
     dhw_flowcontrol_dc: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_flowcontrol_drives: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     dhw_switch_tank3_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-03", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-04", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-05", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank3_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-06", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-07", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-08", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-09", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank2_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-10", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-10", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_inlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-11", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-11", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-12", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-12", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_outlet: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-13", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-13", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_tank1_boosting_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-14", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-14", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_low_temperature: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-16", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-16", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_heatpump: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-17", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-17", component_type="valve", valve_type="switch"),
     ]
     dhw_switch_high_temperature: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001067-18", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001067-18", component_type="valve", valve_type="switch"),
     ]
 
 

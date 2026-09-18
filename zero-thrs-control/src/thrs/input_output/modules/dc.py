@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta
+from thrs.input_output.base import ThrsValues, component_meta, valve_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.sensor_values import AmcsModeSensorValues
@@ -99,33 +99,23 @@ class DcSensorValues(AmcsModeSensorValues):
     ]
     dc_mix_fwd: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001042-03", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001042-03", component_type="valve", valve_type="mix"),
     ]
     dc_mix_aft: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001043-02", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001043-02", component_type="valve", valve_type="mix"),
     ]
     dc_mix_ugrid: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001045-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001045-01", component_type="valve", valve_type="mix"),
     ]
     dc_mix_recovery: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001046-04", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-04", component_type="valve", valve_type="mix"),
     ]
     dc_mix_exchanger: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001046-05", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-05", component_type="valve", valve_type="mix"),
     ]
     dc_flow_aft4: Annotated[
         sensor.FlowSensor,
@@ -177,51 +167,35 @@ class DcSensorValues(AmcsModeSensorValues):
     ]
     dc_switch_aft4: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-01", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft3: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-02", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft2: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-03", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft1: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-04", component_type="valve", valve_type="switch"),
     ]
     dc_switch_fwd2: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-05", component_type="valve", valve_type="switch"),
     ]
     dc_switch_fwd1: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001068-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-06", component_type="valve", valve_type="switch"),
     ]
     dc_switch_ugrid2: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-02", component_type="valve", valve_type="switch"),
     ]
     dc_switch_ugrid1: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-03", component_type="valve", valve_type="switch"),
     ]
     dc_pressure_aft: Annotated[
         sensor.PressureSensor,
@@ -327,81 +301,55 @@ class DcControlValues(ThrsValues):
     ]
     dc_mix_aft: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001043-02", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001043-02", component_type="valve", valve_type="mix"),
     ]
     dc_mix_fwd: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001042-03", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001042-03", component_type="valve", valve_type="mix"),
     ]
     dc_mix_ugrid: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001045-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001045-01", component_type="valve", valve_type="mix"),
     ]
     dc_mix_recovery: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001046-04", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-04", component_type="valve", valve_type="mix"),
     ]
     dc_mix_exchanger: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001046-05", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-05", component_type="valve", valve_type="mix"),
     ]
     dc_switch_aft4: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-01", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft3: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-02", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft2: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-03", component_type="valve", valve_type="switch"),
     ]
     dc_switch_aft1: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-04", component_type="valve", valve_type="switch"),
     ]
     dc_switch_fwd2: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-05", component_type="valve", valve_type="switch"),
     ]
     dc_switch_fwd1: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001068-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001068-06", component_type="valve", valve_type="switch"),
     ]
     dc_switch_ugrid2: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-02", component_type="valve", valve_type="switch"),
     ]
     dc_switch_ugrid1: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-03", component_type="valve", valve_type="switch"),
     ]
 
 
