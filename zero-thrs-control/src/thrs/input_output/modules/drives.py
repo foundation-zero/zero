@@ -1,11 +1,19 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta, valve_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
@@ -146,7 +154,9 @@ class DrivesSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/esi_active",
         ),
-    ]
+    ] = sensor.PropulsionDrive(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     drives_propdrive_aft2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -155,7 +165,9 @@ class DrivesSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/aradex-aft2-active",
         ),
-    ]
+    ] = sensor.PropulsionDrive(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     drives_propdrive_fwd1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -164,7 +176,9 @@ class DrivesSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/aradex-fwd1-active",
         ),
-    ]
+    ] = sensor.PropulsionDrive(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     drives_propdrive_fwd2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -173,7 +187,9 @@ class DrivesSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/aradex-fwd2-active",
         ),
-    ]
+    ] = sensor.PropulsionDrive(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     drives_shorepower: Annotated[
         sensor.ShorePowerConverter,
         component_meta(
@@ -182,7 +198,25 @@ class DrivesSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pcs/shorepower-active",
         ),
-    ]
+    ] = sensor.ShorePowerConverter(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001009",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_dhw_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.drives_temperature_recovery_mix.temperature,
+            temperature_return=self.drives_temperature_recovery_return.temperature,
+            flow=self.drives_flow_recovery.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
 
 
 class DrivesControlValues(ThrsValues):

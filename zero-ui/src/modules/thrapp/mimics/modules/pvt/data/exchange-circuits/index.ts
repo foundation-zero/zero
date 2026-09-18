@@ -43,8 +43,8 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       sensors: {
         flowIn: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtTotalFlow"),
         flowOut: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtTotalFlow"),
-        tIn: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-        tOut: getField(SensorComponentType.Temperature, "pvt", "pcmTemperatureProducersSupply"),
+        tIn: getField(SensorComponentType.CalculatedTemperature, "pvt", "pvtReturnTemperature"),
+        tOut: getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersSupply"),
       },
       get tooltip() {
         return fieldTooltip(this.source, { title: "PCM", componentType: "PCM loop" });
