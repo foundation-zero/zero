@@ -234,6 +234,7 @@ async fn run_serve(
             simulation: simulation.as_ref(),
             publisher,
             computed_mode: config.computed_mode,
+            enable_optional_sensor_values: config.enable_optional_sensor_values,
         },
     )?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));

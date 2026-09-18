@@ -26,6 +26,15 @@ pub struct AppConfig {
     /// spec would otherwise drop valid live data. Env: `STRICT_VALIDATION`.
     #[serde(default)]
     pub strict_validation: bool,
+    /// When true, `modules { <m> { sensorValues { … } } }` serves each sensor
+    /// field independently: a field whose topic is cached (and carries every
+    /// required leaf) resolves, the others resolve null, so a query for one
+    /// field answers as soon as that one topic has arrived. Off by default:
+    /// thrs-api serves `sensorValues` all-or-nothing (null until its whole
+    /// pydantic model validates) and the 1:1 parity mirrors that. Changes the
+    /// schema: the sensor fields become nullable. Env: `ENABLE_OPTIONAL_SENSOR_VALUES`.
+    #[serde(default)]
+    pub enable_optional_sensor_values: bool,
     /// When true, expose thrs-api's parameter mutations (from
     /// `*-mutations.json`) and publish their changes to MQTT. Off by default:
     /// zero-mqtt-graphql is read-only until the write-path is switched on.

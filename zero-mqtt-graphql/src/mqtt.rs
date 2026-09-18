@@ -214,7 +214,7 @@ impl MqttSubscriber {
         } else {
             debug!("Caching payload for topic '{}': {}", topic, rendered);
         }
-        self.cache.insert(topic, flatten_payload(value));
+        self.cache.insert(topic, value);
     }
 
     /// Validate a payload against its topic's compiled schema, logging
@@ -287,30 +287,6 @@ fn rand_u64() -> u64 {
     x
 }
 
-/// Flatten nested objects one level deep into the payload root.
-///
-/// Services such as hull-temperature publish `{"temperatures": {sensor: value}}`
-/// while their AsyncAPI spec lists the nested keys as top-level fields, so the
-/// GraphQL schema expects them at the top level. Existing top-level keys win on
-/// collision; the wrapper key is kept so the raw payload stays visible.
-fn flatten_payload(value: Value) -> Value {
-    let Value::Object(map) = &value else {
-        return value;
-    };
-
-    let mut merged = map.clone();
-    for nested in map.values() {
-        if let Value::Object(nested_map) = nested {
-            for (nested_key, nested_value) in nested_map {
-                if !merged.contains_key(nested_key) {
-                    merged.insert(nested_key.clone(), nested_value.clone());
-                }
-            }
-        }
-    }
-    Value::Object(merged)
-}
-
 /// A [`TopicPublisher`](crate::graphql::TopicPublisher) backed by the
 /// subscriber's MQTT client, for serving mutations. Publishes non-retained at
 /// QoS AtLeastOnce, matching thrs-api's control/parameter publishes (its `/set`
@@ -341,6 +317,7 @@ impl crate::graphql::TopicPublisher for MqttPublisher {
 mod tests {
     use super::*;
     use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
+    use crate::cache::flatten_payload;
     use serde_json::json;
     use std::collections::BTreeMap;
 

@@ -71,6 +71,27 @@ fn default_true() -> bool {
     true
 }
 
+/// Where one leaf of a derived field comes from: copied from a component of
+/// the same object and one of its stamped leaves (by-alias wire keys), or a
+/// constant the model leaves at its default (`FlowSensor.quantity`).
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase", untagged)]
+pub enum DerivedLeaf {
+    Source { component: String, leaf: String },
+    Constant { constant: serde_json::Value },
+}
+
+/// A field of the whole object that is a plain mirror of other components'
+/// stamped leaves (see [`MutationDef::derived`]).
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct DerivedFieldDef {
+    /// By-alias key of the derived field in the whole object.
+    pub key: String,
+    /// By-alias leaf key -> where its value comes from.
+    pub leaves: BTreeMap<String, DerivedLeaf>,
+}
+
 /// One mutation. Kinds: `parameter` (read-modify-republish one parameters
 /// field), `automationMode` (publish a fresh `{"Mode": ...}`), `control`
 /// (restamp a composite input into one manual-values component and republish)
@@ -114,6 +135,14 @@ pub struct MutationDef {
     /// component.
     #[serde(default)]
     pub input_fields: Vec<InputFieldDef>,
+    /// `control`/`simulation`: fields of the whole object that thrs-api's
+    /// model derives from other components (pydantic `computed_field`s that
+    /// mirror a component's stamped leaves, e.g. dhw's `DrivesFlowRecovery`
+    /// = `DhwDrivesSupply`'s flow and temperature). thrs-api re-serializes
+    /// them from the modified model; the republish mirrors them the same way
+    /// so the payload is identical.
+    #[serde(default)]
+    pub derived: Vec<DerivedFieldDef>,
     /// `control`/`simulation`: thrs-api's name for the composite input type
     /// (`PumpInputType`, shared across modules and simulations). zero-ui uses
     /// these names as GraphQL variable types, so they must match exactly.

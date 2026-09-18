@@ -210,7 +210,9 @@ pub(super) fn union_member_field(
         let cache = cache.clone();
         let index = index.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            let Some(JsonValue::Object(map)) = cache.get(&topic) else {
+            // The object as published: the flattened field view would carry
+            // the components' leaf keys too and never match a member exactly.
+            let Some(JsonValue::Object(map)) = cache.get_raw(&topic) else {
                 return Ok(None);
             };
             let keys: BTreeSet<String> = map.keys().cloned().collect();

@@ -1402,6 +1402,56 @@ def _input_fields(leaves: list[LeafSpec]) -> list[InputFieldSpec]:
     ]
 
 
+def _derived_fields(object_cls: type[ThrsValues]) -> list[DerivedFieldSpec]:
+    """The ``computed_field``s of a whole object that are plain mirrors of
+    other components' stamped leaves, with where each leaf comes from.
+
+    thrs-api serializes a modified model, so such a field follows the
+    component it mirrors (dhw's ``drives_flow_recovery`` is a ``FlowSensor``
+    built from ``dhw_drives_supply``'s own ``Stamped`` objects). Found by
+    identity, not by reading code: build a zero instance (every leaf a distinct
+    ``Stamped``), evaluate each computed field and match its leaves against the
+    components' leaves with ``is``. A computed field whose leaves are not all
+    such copies is left out (mqtt-graphql then republishes it as cached)."""
+    instance = object_cls.zero()
+    sources: dict[int, SourceRefSpec] = {}
+    for name, fld in object_cls.model_fields.items():
+        component = getattr(instance, name)
+        if not isinstance(component, ThrsValues) or isinstance(component, Stamped):
+            continue
+        for leaf_name, leaf_fld in type(component).model_fields.items():
+            leaf = getattr(component, leaf_name)
+            if isinstance(leaf, Stamped):
+                sources[id(leaf)] = SourceRefSpec(
+                    component=_wire_key(name, fld), leaf=_wire_key(leaf_name, leaf_fld)
+                )
+    derived: list[DerivedFieldSpec] = []
+    for name, info in object_cls.model_computed_fields.items():
+        value = getattr(instance, name)
+        if not isinstance(value, ThrsValues) or isinstance(value, Stamped):
+            continue
+        leaves: dict[str, SourceRefSpec | ConstantSpec] = {}
+        for leaf_name, leaf_fld in type(value).model_fields.items():
+            leaf = getattr(value, leaf_name)
+            source = sources.get(id(leaf))
+            if source is not None:
+                leaves[_wire_key(leaf_name, leaf_fld)] = source
+            elif isinstance(leaf, Stamped) and leaf == leaf_fld.default:
+                # A leaf the mirror leaves at its (constant) default, e.g.
+                # FlowSensor.quantity: serialized as-is by thrs-api.
+                leaves[_wire_key(leaf_name, leaf_fld)] = ConstantSpec(
+                    constant=leaf.model_dump(by_alias=True, mode="json")
+                )
+            else:
+                break
+        else:
+            if leaves:
+                derived.append(
+                    DerivedFieldSpec(key=_wire_key(name, info), leaves=leaves)
+                )
+    return derived
+
+
 class _Spec(BaseModel):
     """A spec object as zero-mqtt-graphql reads it: camelCase keys, a None
     field left out. Every JSON key mqtt-graphql's Rust structs deserialize is
@@ -1530,6 +1580,33 @@ class MutationSpec(_Spec):
     set_topic: str
     bounds: BoundsSpec | None = None
     missing_error: str | None = None
+    derived: list[DerivedFieldSpec] | None = None
+
+
+class SourceRefSpec(_Spec):
+    """Where a derived leaf is copied from (mirrors mutations_view.rs
+    ``SourceRef``)."""
+
+    component: str
+    leaf: str
+
+
+class ConstantSpec(_Spec):
+    """A derived leaf the mirror keeps at a constant default (mirrors
+    mutations_view.rs ``DerivedLeaf::Constant``)."""
+
+    constant: dict[str, Any]
+
+
+class DerivedFieldSpec(_Spec):
+    """A ``computed_field`` of a whole object that mirrors other components'
+    stamped leaves (mirrors mutations_view.rs ``DerivedFieldDef``)."""
+
+    key: str
+    leaves: dict[str, SourceRefSpec | ConstantSpec]
+
+
+MutationSpec.model_rebuild()
 
 
 class DirectiveSpec(_Spec):
@@ -1740,6 +1817,7 @@ def build_module_mutations(
     # controlValues read section, though both are the same GraphQL type.
     cv_state, cv_set = _topics("manual-values")
     manual_values = _object_section(control_values_cls, cv_state)
+    cv_derived = _derived_fields(control_values_cls)
     cv_by_gql = {f.gql_field: f for f in manual_values.fields}
     for name, cfield in control_values_cls.model_fields.items():
         vf = cv_by_gql.get(to_camel_case(name))
@@ -1760,6 +1838,7 @@ def build_module_mutations(
                 state_topic=cv_state,
                 set_topic=cv_set,
                 missing_error=NO_CONTROL_VALUES_ERROR,
+                derived=cv_derived or None,
             )
         )
 
@@ -1820,6 +1899,7 @@ def build_simulation_view(simulator_prefix: str | None = None) -> dict[str, Any]
     for mode, (inputs_cls, outputs_cls) in io_mapping.items():
         inputs = _object_section(inputs_cls, "")
         by_gql = {f.gql_field: f for f in inputs.fields}
+        derived = _derived_fields(inputs_cls)
         mutations: list[MutationSpec] = []
         for name, fld in inputs_cls.model_fields.items():
             vf = by_gql.get(to_camel_case(name))
@@ -1840,6 +1920,7 @@ def build_simulation_view(simulator_prefix: str | None = None) -> dict[str, Any]
                     state_topic=inputs_topic,
                     set_topic=f"{inputs_topic}/{suffix}" if suffix else inputs_topic,
                     missing_error=NO_SIMULATION_INPUTS_ERROR,
+                    derived=derived or None,
                 )
             )
         simulations.append(

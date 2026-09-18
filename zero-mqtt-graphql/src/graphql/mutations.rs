@@ -133,13 +133,14 @@ fn mutation_return_type(return_type: Option<&str>) -> TypeRef {
     }
 }
 
-/// The cached object a mutation modifies, or thrs-api's error when nothing is
-/// cached at its state topic.
+/// The cached object a mutation modifies (exactly as the controller published
+/// it - the flattened field view would add spurious top-level keys to the
+/// republish), or thrs-api's error when nothing is cached at its state topic.
 fn cached_state(
     cache: &TopicCache,
     def: &MutationDef,
 ) -> async_graphql::Result<serde_json::Map<String, JsonValue>> {
-    match cache.get(&def.state_topic) {
+    match cache.get_raw(&def.state_topic) {
         Some(JsonValue::Object(map)) => Ok(map),
         Some(_) => Err(async_graphql::Error::new(format!(
             "cached state at '{}' is not a JSON object",
@@ -155,13 +156,15 @@ fn cached_state(
 
 /// Publish the (modified) object to the mutation's set topic and produce the
 /// field's result: the object itself when the field returns an object type
-/// (its fields are projected off it by the section objects), else `true`
-/// (thrs-api's Boolean).
+/// (its fields are projected off it by the section objects), else the given
+/// Boolean (thrs-api returns `true` for a parameter/control mutation without
+/// an object type, and the `automatic` argument itself for automation mode).
 async fn publish_result(
     publisher: &dyn TopicPublisher,
     def: &MutationDef,
     payload: JsonValue,
     returns_object: bool,
+    boolean_result: bool,
 ) -> async_graphql::Result<Option<FieldValue<'static>>> {
     let serialized =
         serde_json::to_string(&payload).map_err(|e| async_graphql::Error::new(e.to_string()))?;
@@ -172,7 +175,7 @@ async fn publish_result(
     Ok(Some(if returns_object {
         FieldValue::value(json_to_graphql_value(&payload))
     } else {
-        FieldValue::value(true)
+        FieldValue::value(boolean_result)
     }))
 }
 
@@ -209,8 +212,13 @@ pub(super) fn mutation_field(
         let publisher = publisher.clone();
         let def = def.clone();
         FieldFuture::new(async move {
+            // thrs-api's Boolean result: `set_automation_mode` returns the
+            // `automatic` it was given; a parameter mutation without an object
+            // type returns true.
+            let mut boolean_result = true;
             let payload = if def.kind == "automationMode" {
                 let on = ctx.args.try_get(&def.arg_name)?.boolean()?;
+                boolean_result = on;
                 let mode = if on {
                     def.true_value.clone().unwrap_or_else(|| "automatic".into())
                 } else {
@@ -249,7 +257,14 @@ pub(super) fn mutation_field(
                 map.insert(def.payload_key.clone(), new_value);
                 JsonValue::Object(map)
             };
-            publish_result(publisher.as_ref(), &def, payload, returns_object).await
+            publish_result(
+                publisher.as_ref(),
+                &def,
+                payload,
+                returns_object,
+                boolean_result,
+            )
+            .await
         })
     })
     .argument(InputValue::new(arg_name, arg_type_ref))
@@ -323,11 +338,29 @@ pub(super) fn control_mutation_field(
 
             let mut map = cached_state(&cache, &def)?;
             map.insert(def.payload_key.clone(), JsonValue::Object(component));
+            // Re-derive the object's mirror fields from the (possibly just
+            // replaced) components, as thrs-api's model does on serialization.
+            for derived in &def.derived {
+                let mut mirrored = serde_json::Map::new();
+                for (leaf, origin) in &derived.leaves {
+                    let value = match origin {
+                        DerivedLeaf::Source { component, leaf } => map
+                            .get(component)
+                            .and_then(|c| c.get(leaf))
+                            .cloned()
+                            .unwrap_or(JsonValue::Null),
+                        DerivedLeaf::Constant { constant } => constant.clone(),
+                    };
+                    mirrored.insert(leaf.clone(), value);
+                }
+                map.insert(derived.key.clone(), JsonValue::Object(mirrored));
+            }
             publish_result(
                 publisher.as_ref(),
                 &def,
                 JsonValue::Object(map),
                 returns_object,
+                true,
             )
             .await
         })

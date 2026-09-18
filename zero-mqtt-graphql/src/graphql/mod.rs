@@ -41,7 +41,7 @@ use crate::modules_view::{
     ControlModeDef, ModuleFieldDef, ModuleLeafDef, ModuleView, ObjectFieldDef, ObjectSectionDef,
     PlainFieldDef, PlainObjectDef,
 };
-use crate::mutations_view::{Bounds, ModuleMutations, MutationDef};
+use crate::mutations_view::{Bounds, DerivedLeaf, ModuleMutations, MutationDef};
 use crate::simulation_view::{DirectiveDef, SimulationView};
 
 mod modules;
@@ -107,6 +107,9 @@ pub struct SchemaInputs<'a> {
     pub publisher: Option<Arc<dyn TopicPublisher>>,
     /// How computed sensor fields are served (see [`crate::recompute`]).
     pub computed_mode: ComputedMode,
+    /// Serve `sensorValues` per field instead of all-or-nothing (see
+    /// [`crate::config::AppConfig::enable_optional_sensor_values`]).
+    pub enable_optional_sensor_values: bool,
 }
 
 /// Build a dynamic GraphQL schema over the cache from [`SchemaInputs`].
@@ -139,6 +142,7 @@ pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow:
         simulation,
         publisher,
         computed_mode,
+        enable_optional_sensor_values,
     } = inputs;
     validate_topics(topics)?;
 
@@ -178,9 +182,13 @@ pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow:
 
     // Nested per-module view. Additive: `module_views` is empty unless
     // `*-module.json` specs are loaded, so the flat schema stays the same.
-    if let Some(parts) =
-        register_modules_query(module_views, &cache, &mut used_query_fields, computed_mode)
-    {
+    if let Some(parts) = register_modules_query(
+        module_views,
+        &cache,
+        &mut used_query_fields,
+        computed_mode,
+        enable_optional_sensor_values,
+    ) {
         query = query.field(parts.query_field);
         types.extend(parts.objects.into_iter().map(Type::from));
     }
@@ -367,9 +375,24 @@ fn finish_schema(
 ) -> anyhow::Result<Schema> {
     let mutation_name = mutation.as_ref().map(|m| m.type_name().to_string());
     let builder = Schema::build(query.type_name(), mutation_name.as_deref(), None).register(query);
-    let builder = types
-        .into_iter()
-        .fold(builder, |builder, ty| builder.register(ty));
+    // thrs-api names a component's input type after its Python class
+    // (`AdsorptionChillerInputType`), and two different components can share a
+    // class name (control vs. simulation `AdsorptionChiller`). Strawberry then
+    // serves the first definition it registered (the module's control input);
+    // the later, differently-shaped one is silently dropped and its mutation
+    // takes the winner's shape. Mirror that: keep the first input object per
+    // name instead of letting a later registration replace it.
+    let mut seen_inputs: BTreeSet<String> = BTreeSet::new();
+    let builder = types.into_iter().fold(builder, |builder, ty| match ty {
+        Type::InputObject(input) if !seen_inputs.insert(input.type_name().to_string()) => {
+            warn!(
+                "input type '{}' defined twice — keeping the first definition (thrs-api's Strawberry does the same)",
+                input.type_name()
+            );
+            builder
+        }
+        ty => builder.register(ty),
+    });
     let builder = match mutation {
         Some(mutation) => builder.register(mutation),
         None => builder,
@@ -2123,6 +2146,7 @@ mod tests {
         vec![ModuleMutations {
             module: "thrusters".to_string(),
             mutations: vec![MutationDef {
+                derived: Vec::new(),
                 gql_name: "thrustersParameterSetCoolingFlow".to_string(),
                 kind: "parameter".to_string(),
                 arg_type: "Float".to_string(),
@@ -2231,6 +2255,7 @@ mod tests {
         let mutations = vec![ModuleMutations {
             module: "thrusters".to_string(),
             mutations: vec![MutationDef {
+                derived: Vec::new(),
                 gql_name: "thrustersControlSetThrustersPump1".to_string(),
                 kind: "control".to_string(),
                 arg_type: "Float".to_string(),
@@ -2307,6 +2332,17 @@ mod tests {
             published["thrusters_flowcontrol_aft"]["Setpoint"]["Value"],
             json!(0.0)
         );
+        // The republished object has exactly the seeded components as
+        // top-level keys: the cache's flattened field view (which also holds
+        // the leaf keys `Dutypoint`/`Setpoint` at the top level) must not
+        // leak into what the controller receives.
+        let mut keys: Vec<&String> = published.as_object().unwrap().keys().collect();
+        keys.sort();
+        assert_eq!(
+            keys,
+            vec!["thrusters_flowcontrol_aft", "thrusters_pump_1"],
+            "republished object carries flattened keys: {published}"
+        );
     }
 
     #[tokio::test]
@@ -2324,6 +2360,7 @@ mod tests {
             module: "thrusters".to_string(),
             mutations: vec![
                 MutationDef {
+                    derived: Vec::new(),
                     gql_name: "thrustersParameterSetCoolingFlow".to_string(),
                     kind: "parameter".to_string(),
                     arg_type: "Float".to_string(),
@@ -2339,6 +2376,7 @@ mod tests {
                     missing_error: None,
                 },
                 MutationDef {
+                    derived: Vec::new(),
                     gql_name: "thrustersSetAutomationMode".to_string(),
                     kind: "automationMode".to_string(),
                     arg_type: "Boolean".to_string(),
@@ -2413,7 +2451,8 @@ mod tests {
             .await;
         assert!(resp.errors.is_empty(), "{:?}", resp.errors);
         let data: serde_json::Value = resp.data.into_json().unwrap();
-        assert_eq!(data["thrustersSetAutomationMode"], json!(true));
+        // thrs-api's set_automation_mode returns the `automatic` it was given.
+        assert_eq!(data["thrustersSetAutomationMode"], json!(false));
         let sent = sent.lock().unwrap();
         let am = sent
             .iter()
@@ -2423,6 +2462,153 @@ mod tests {
             serde_json::from_str::<serde_json::Value>(&am.1).unwrap(),
             json!({"Mode": "manual"})
         );
+    }
+
+    #[tokio::test]
+    async fn test_simulation_mutation_rederives_mirror_fields_from_the_new_component() {
+        use crate::mutations_view::{DerivedFieldDef, DerivedLeaf, InputFieldDef};
+        // dhw's inputs: `DrivesFlowRecovery` mirrors `DhwDrivesSupply`'s flow
+        // and temperature (a pydantic computed_field thrs-api re-serializes).
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "thrs/simulator/simulation-inputs",
+            json!({
+                "DhwDrivesSupply": {
+                    "Flow": {"Value": 1.0, "TimeStamp": "old"},
+                    "Temperature": {"Value": 2.0, "TimeStamp": "old"}
+                },
+                "DrivesFlowRecovery": {
+                    "Flow": {"Value": 1.0, "TimeStamp": "old"},
+                    "Temperature": {"Value": 2.0, "TimeStamp": "old"}
+                },
+                "Mode": {"Value": 0, "TimeStamp": "old"}
+            }),
+        );
+        let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let publisher: Arc<dyn TopicPublisher> =
+            Arc::new(CapturingPublisher { sent: sent.clone() });
+        let leaf = |arg: &str, wire: &str| InputFieldDef {
+            arg_name: arg.to_string(),
+            wire_key: wire.to_string(),
+            r#type: "Float".to_string(),
+            enum_values: None,
+            enum_type: None,
+            required: true,
+        };
+        let mut leaves = BTreeMap::new();
+        for (k, v) in [("Flow", "Flow"), ("Temperature", "Temperature")] {
+            leaves.insert(
+                k.to_string(),
+                DerivedLeaf::Source {
+                    component: "DhwDrivesSupply".to_string(),
+                    leaf: v.to_string(),
+                },
+            );
+        }
+        let mutations = vec![ModuleMutations {
+            module: "dhw".to_string(),
+            mutations: vec![MutationDef {
+                gql_name: "dhwSimulationSetDhwDrivesSupply".to_string(),
+                kind: "control".to_string(),
+                arg_type: String::new(),
+                arg_name: "value".to_string(),
+                payload_key: "DhwDrivesSupply".to_string(),
+                state_topic: "thrs/simulator/simulation-inputs".to_string(),
+                set_topic: "thrs/simulator/simulation-inputs/set".to_string(),
+                bounds: None,
+                true_value: None,
+                false_value: None,
+                input_type_name: Some("BoundaryInputType".to_string()),
+                missing_error: None,
+                input_fields: vec![leaf("flow", "Flow"), leaf("temperature", "Temperature")],
+                derived: vec![DerivedFieldDef {
+                    key: "DrivesFlowRecovery".to_string(),
+                    leaves,
+                }],
+            }],
+            parameters_object: Default::default(),
+            control_values_object: Default::default(),
+        }];
+        let schema = build_schema(
+            cache,
+            SchemaInputs {
+                mutations: &mutations,
+                publisher: Some(publisher),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let resp = schema
+            .execute(
+                "mutation { dhwSimulationSetDhwDrivesSupply(value: { flow: 0.5, temperature: 0.25 }) }",
+            )
+            .await;
+        assert!(resp.errors.is_empty(), "{:?}", resp.errors);
+        let sent = sent.lock().unwrap();
+        let published: serde_json::Value = serde_json::from_str(&sent[0].1).unwrap();
+        // The mirror carries the new component's leaves verbatim (value and
+        // the fresh timestamp), exactly like thrs-api's re-serialized model.
+        assert_eq!(
+            published["DrivesFlowRecovery"],
+            published["DhwDrivesSupply"]
+        );
+        assert_eq!(published["DrivesFlowRecovery"]["Flow"]["Value"], json!(0.5));
+        assert_ne!(
+            published["DrivesFlowRecovery"]["Flow"]["TimeStamp"],
+            json!("old")
+        );
+        assert_eq!(published["Mode"]["Value"], json!(0));
+    }
+
+    #[test]
+    fn test_duplicate_input_type_keeps_first_definition() {
+        // Two mutations naming their input `AdsorptionChillerInputType` with
+        // different fields (control vs. simulation component): the schema
+        // serves the first one, like thrs-api's Strawberry.
+        let control = InputObject::new("AdsorptionChillerInputType")
+            .field(InputValue::new(
+                "enable",
+                TypeRef::named_nn(TypeRef::BOOLEAN),
+            ))
+            .field(InputValue::new(
+                "coolingSetpoint",
+                TypeRef::named_nn(TypeRef::FLOAT),
+            ));
+        let simulation = InputObject::new("AdsorptionChillerInputType").field(InputValue::new(
+            "freeCooling",
+            TypeRef::named_nn(TypeRef::BOOLEAN),
+        ));
+        let mutation = Object::new("Mutation").field(
+            Field::new("set", TypeRef::named_nn(TypeRef::BOOLEAN), |_| {
+                FieldFuture::new(async { Ok(Some(FieldValue::value(true))) })
+            })
+            .argument(InputValue::new(
+                "value",
+                TypeRef::named_nn("AdsorptionChillerInputType"),
+            )),
+        );
+        let query = Object::new("Query").field(Field::new(
+            "ok",
+            TypeRef::named_nn(TypeRef::BOOLEAN),
+            |_| FieldFuture::new(async { Ok(Some(FieldValue::value(true))) }),
+        ));
+        let schema = finish_schema(
+            query,
+            Some(mutation),
+            vec![control.into(), simulation.into()],
+        )
+        .unwrap();
+        let sdl = schema.sdl();
+        let def = sdl
+            .split("input AdsorptionChillerInputType")
+            .nth(1)
+            .expect("input type in SDL");
+        let def = &def[..def.find('}').unwrap()];
+        assert!(
+            def.contains("enable") && def.contains("coolingSetpoint"),
+            "{def}"
+        );
+        assert!(!def.contains("freeCooling"), "{def}");
     }
 
     #[test]
@@ -3179,6 +3365,68 @@ mod tests {
             data["modules"]["thrusters"]["sensorValues"]["thrustersFlowAft"]["flow"]["value"],
             json!(1.0)
         );
+    }
+
+    #[tokio::test]
+    async fn test_enable_optional_sensor_values_serves_cached_fields_and_nulls_the_rest() {
+        // ENABLE_OPTIONAL_SENSOR_VALUES: each sensor field answers on its own topic.
+        let cache = Arc::new(TopicCache::new());
+        let a = "simulation/x/flow-aft";
+        let b = "simulation/x/flow-fwd";
+        let views = vec![ModuleView {
+            module: "thrusters".to_string(),
+            modules_type_name: "ControlModules".into(),
+            type_name: "ThrustersControlModule".into(),
+            sensor_values_type_name: "ThrustersSensorValuesType".into(),
+            sensor_values: vec![
+                sensor_field("thrustersFlowAft", a),
+                sensor_field("thrustersFlowFwd", b),
+            ],
+            ..Default::default()
+        }];
+        let schema = build_schema(
+            cache.clone(),
+            SchemaInputs {
+                module_views: &views,
+                enable_optional_sensor_values: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        // The sensor fields are nullable in this mode (schema change).
+        let sdl = schema.sdl();
+        assert!(
+            sdl.contains("thrustersFlowAft: thrustersFlowAftType\n"),
+            "expected nullable sensor field in:\n{sdl}"
+        );
+        let query = "{ modules { thrusters { sensorValues { \
+                     thrustersFlowAft { flow { value } } \
+                     thrustersFlowFwd { flow { value } } } } } }";
+        // Nothing cached yet: the container itself is null, like thrs-api.
+        let data: serde_json::Value = schema.execute(query).await.data.into_json().unwrap();
+        assert_eq!(data["modules"]["thrusters"]["sensorValues"], json!(null));
+        // One topic cached: that field serves, the other is null, no errors.
+        cache.insert(
+            a,
+            json!({"Flow": {"Value": 1.0, "TimeStamp": "2024-01-01T00:00:00Z"}}),
+        );
+        let response = schema.execute(query).await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        let sv = &data["modules"]["thrusters"]["sensorValues"];
+        assert_eq!(sv["thrustersFlowAft"]["flow"]["value"], json!(1.0));
+        assert_eq!(sv["thrustersFlowFwd"], json!(null));
+        // A cached payload missing a required leaf value nulls only its field.
+        cache.insert(
+            b,
+            json!({"Flow": {"Value": null, "TimeStamp": "2024-01-01T00:00:00Z"}}),
+        );
+        let response = schema.execute(query).await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        let sv = &data["modules"]["thrusters"]["sensorValues"];
+        assert_eq!(sv["thrustersFlowAft"]["flow"]["value"], json!(1.0));
+        assert_eq!(sv["thrustersFlowFwd"], json!(null));
     }
 
     #[tokio::test]

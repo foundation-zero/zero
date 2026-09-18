@@ -67,6 +67,7 @@ pub(super) fn register_modules_query(
     cache: &Arc<TopicCache>,
     used_query_fields: &mut BTreeSet<String>,
     computed_mode: ComputedMode,
+    enable_optional_sensor_values: bool,
 ) -> Option<ModulesSchemaParts> {
     let modules_type = &module_views.first()?.modules_type_name;
     if !used_query_fields.insert("modules".to_string()) {
@@ -87,9 +88,13 @@ pub(super) fn register_modules_query(
         // The module object carries every read section the UI queries:
         // `sensorValues` (constant container, one topic per field) plus the
         // whole-object sections when the spec declares them.
-        let mut module_obj = Object::new(view.type_name.as_str()).field(
-            sensor_values_container_field(&view.sensor_values_type_name, &served, cache),
-        );
+        let mut module_obj =
+            Object::new(view.type_name.as_str()).field(sensor_values_container_field(
+                &view.sensor_values_type_name,
+                &served,
+                cache,
+                enable_optional_sensor_values,
+            ));
         for (name, section) in module_object_sections(view) {
             let Some(section) = section else { continue };
             module_obj = module_obj.field(object_section_container_field(name, section, cache));
@@ -116,7 +121,7 @@ pub(super) fn register_modules_query(
             let sensor_field = if recompute {
                 module_recompute_field(field, cache, &view.module, field_topics.clone())
             } else {
-                module_sensor_field(field, cache)
+                module_sensor_field(field, cache, enable_optional_sensor_values)
             };
             sensor_values_obj = sensor_values_obj.field(sensor_field);
             if seen_types.insert(field.type_name.clone()) {
@@ -151,10 +156,15 @@ pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
 /// arrived, never a partial object. Mirror that: resolve the (empty, constant)
 /// container only when every relayed field's topic is cached; a recomputed
 /// computed field needs no topic of its own. Its children are non-null.
+///
+/// With `partial` (`ENABLE_OPTIONAL_SENSOR_VALUES`) the container resolves as soon as
+/// any relayed field's topic is complete (or when there is nothing to relay),
+/// and each child serves or nulls itself (see [`module_sensor_field`]).
 pub(super) fn sensor_values_container_field(
     type_name: &str,
     served: &[ServedSensorField<'_>],
     cache: &Arc<TopicCache>,
+    partial: bool,
 ) -> Field {
     let required: Arc<Vec<RequiredTopic>> = Arc::new(
         served
@@ -168,8 +178,12 @@ pub(super) fn sensor_values_container_field(
         let required = required.clone();
         let cache = cache.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(section_complete(&cache, &required)
-                .then(|| FieldValue::value(GraphQlValue::Object(Default::default()))))
+            let complete = if partial {
+                section_any_complete(&cache, &required)
+            } else {
+                section_complete(&cache, &required)
+            };
+            Ok(complete.then(|| FieldValue::value(GraphQlValue::Object(Default::default()))))
         })
     })
 }
@@ -178,22 +192,34 @@ pub(super) fn sensor_values_container_field(
 /// cached payload of the field's topic. Non-null like thrs-api; the container
 /// only resolves when every field is cached (see
 /// `sensor_values_container_field`).
-pub(super) fn module_sensor_field(field: &ModuleFieldDef, cache: &Arc<TopicCache>) -> Field {
+///
+/// With `partial` the field is nullable and resolves null unless its own
+/// topic is cached with every required leaf present, so one missing sensor
+/// never takes its siblings down.
+pub(super) fn module_sensor_field(
+    field: &ModuleFieldDef,
+    cache: &Arc<TopicCache>,
+    partial: bool,
+) -> Field {
     let topic = field.topic.clone();
+    let required = partial.then(|| Arc::new(RequiredTopic::new(&field.topic, &field.leaves)));
     let cache = cache.clone();
-    Field::new(
-        field.gql_field.clone(),
-        TypeRef::named_nn(&field.type_name),
-        move |_ctx| {
-            let topic = topic.clone();
-            let cache = cache.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                Ok(cache
-                    .get(&topic)
-                    .map(|json| FieldValue::value(json_to_graphql_value(&json))))
-            })
-        },
-    )
+    let type_ref = if partial {
+        TypeRef::named(&field.type_name)
+    } else {
+        TypeRef::named_nn(&field.type_name)
+    };
+    Field::new(field.gql_field.clone(), type_ref, move |_ctx| {
+        let topic = topic.clone();
+        let required = required.clone();
+        let cache = cache.clone();
+        async_graphql::dynamic::FieldFuture::new(async move {
+            Ok(cache
+                .get(&topic)
+                .filter(|json| required.as_ref().is_none_or(|r| r.satisfied_by(json)))
+                .map(|json| FieldValue::value(json_to_graphql_value(&json))))
+        })
+    })
 }
 
 /// The recompute variant of [`module_sensor_field`]: instead of relaying the
@@ -488,6 +514,15 @@ pub(super) fn section_complete(cache: &TopicCache, required: &[RequiredTopic]) -
     required
         .iter()
         .all(|r| cache.get(&r.topic).is_some_and(|p| r.satisfied_by(&p)))
+}
+
+/// The partial counterpart of [`section_complete`]: at least one required
+/// topic is cached and complete, or there is nothing to relay at all.
+pub(super) fn section_any_complete(cache: &TopicCache, required: &[RequiredTopic]) -> bool {
+    required.is_empty()
+        || required
+            .iter()
+            .any(|r| cache.get(&r.topic).is_some_and(|p| r.satisfied_by(&p)))
 }
 
 /// The section object type plus any per-field component object types. A flat
