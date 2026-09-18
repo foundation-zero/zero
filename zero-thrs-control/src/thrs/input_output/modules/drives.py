@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta
+from thrs.input_output.base import ThrsValues, component_meta, valve_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.sensor_values import AmcsModeSensorValues
@@ -68,15 +68,11 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ]
     drives_mix_exchanger: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001046-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-01", component_type="valve", valve_type="mix"),
     ]
     drives_mix_recovery: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001046-03", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-03", component_type="valve", valve_type="mix"),
     ]
     drives_flow_shorepower: Annotated[
         sensor.FlowSensor,
@@ -104,51 +100,39 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ]
     drives_flowcontrol_propdrive_aft: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001065-02", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     drives_flowcontrol_propdrive_fwd: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001065-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     drives_switch_shorepower_supply: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-04", component_type="valve", valve_type="switch"),
     ]
     drives_switch_shorepower_return: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-05", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_aft1: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-06", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_aft2: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-09", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_fwd1: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-07", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_fwd2: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001069-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-08", component_type="valve", valve_type="switch"),
     ]
     drives_pressure: Annotated[
         sensor.PressureSensor,
@@ -216,63 +200,47 @@ class DrivesControlValues(ThrsValues):
     ]
     drives_mix_exchanger: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001046-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-01", component_type="valve", valve_type="mix"),
     ]
     drives_mix_recovery: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001046-03", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001046-03", component_type="valve", valve_type="mix"),
     ]
     drives_flowcontrol_propdrive_aft: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001065-02", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     drives_flowcontrol_propdrive_fwd: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001065-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     drives_switch_shorepower_supply: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-04", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-04", component_type="valve", valve_type="switch"),
     ]
     drives_switch_shorepower_return: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-05", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-05", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_aft1: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-06", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-06", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_aft2: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-09", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-09", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_fwd1: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-07", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-07", component_type="valve", valve_type="switch"),
     ]
     drives_switch_propdrive_fwd2: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001069-08", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001069-08", component_type="valve", valve_type="switch"),
     ]
 
 
