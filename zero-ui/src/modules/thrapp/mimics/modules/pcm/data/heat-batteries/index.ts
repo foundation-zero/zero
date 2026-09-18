@@ -2,12 +2,9 @@ import { getField, ModuleField } from "@/modules/thrapp/mimics/providers";
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
+import { fieldTooltip } from "../../../shared";
 
-const createHeatBattery = (
-  title: string,
-  yardTag: string,
-  source: ModuleField<SensorComponentType.Pcm>,
-) =>
+const createHeatBattery = (title: string, source: ModuleField<SensorComponentType.Pcm>) =>
   toInstance<MimicComponentType.Pcm>({
     source,
     sensors: {},
@@ -15,10 +12,11 @@ const createHeatBattery = (
     controllerState: {},
     parameters: {},
     custom: {},
-    tooltip: {
-      title,
-      yardTag,
-      componentType: "PCM",
+    get tooltip() {
+      return fieldTooltip(this.source, {
+        title: title,
+        componentType: "PCM",
+      });
     },
   });
 
@@ -26,22 +24,18 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
   [MimicComponentType.Pcm]: {
     "1049": createHeatBattery(
       "Heat battery 1",
-      "1049",
       getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule1"),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
-      "1050",
       getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule2"),
     ),
     "1051": createHeatBattery(
       "Heat battery 3",
-      "1051",
       getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule3"),
     ),
     "1052": createHeatBattery(
       "Heat battery 4",
-      "1052",
       getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule4"),
     ),
   },

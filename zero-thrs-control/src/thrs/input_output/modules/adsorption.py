@@ -1,11 +1,13 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
@@ -43,11 +45,37 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
     adsorption_chiller: Annotated[
         sensor.AdsorptionChiller,
         component_meta(yard_tag="50001034", component_type="adsorption_chiller"),
-    ]
+    ] = sensor.AdsorptionChiller(
+        operating=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)),
+        no_error=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)),
+        free_cooling=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature_hot_in=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature_hot_out=Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        temperature_waste_in=Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        temperature_waste_out=Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        temperature_cold_in=Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        temperature_cold_out=Stamped(
+            value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        pump_speed_hot=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        pump_speed_cold=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        pump_speed_waste=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     adsorption_flow_ht: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-09", component_type="flow_sensor"),
-    ]
+    ] = sensor.FlowSensor(
+        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     adsorption_flow_hot: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-02", component_type="flow_sensor"),
@@ -93,19 +121,57 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
         component_meta(
             component_type="external_sensor", included_in_fmu=False
         ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
-    ]
+    ] = sensor.TemperatureSensor(
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     adsorption_available_cold_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(
             component_type="external_sensor", included_in_fmu=False
         ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
-    ]
+    ] = sensor.TemperatureSensor(
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     adsorption_available_seawater_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(
             component_type="external_sensor", included_in_fmu=False
         ),  # TODO: figure out how to deal with Fahrenheit here. Is this a sensor value or should this be a parameter?
-    ]
+    ] = sensor.TemperatureSensor(
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001003",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_ht_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.adsorption_temperature_ht_supply.temperature,
+            temperature_return=self.adsorption_temperature_ht_return.temperature,
+            flow=self.adsorption_flow_ht.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001004",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_dhw_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.adsorption_temperature_waste_supply.temperature,
+            temperature_return=self.adsorption_temperature_dhw_return.temperature,
+            flow=self.adsorption_flow_dhw.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
 
 
 class AdsorptionControlValues(ThrsValues):

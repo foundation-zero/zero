@@ -7,23 +7,19 @@ import { fieldTooltip } from "../../../shared";
 export default toInstance<MimicComponentType.ConnectingCircuit>({
   controls: {},
   controllerState: {},
-  custom: { modeModule: "pcm" },
+  custom: { modeModule: "thrusters" },
   parameters: {},
-  source: getCustomField("thrusters", { technicalName: "thrusters-pcm-loop" }),
+  source: getCustomField("thrusters", { technicalName: "pcm-thrusters-loop" }),
   sensors: {
     flowIn: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowRecovery"),
     flowOut: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowRecovery"),
-    tIn: getField(
-      SensorComponentType.CalculatedTemperature,
-      "thrusters",
-      "thrustersTemperatureRecovery",
-    ),
     tOut: getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersSupply"),
+    tIn: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
   },
   get tooltip() {
     return fieldTooltip(this.source, {
-      title: "PCM",
-      componentType: "Exchange circuit",
+      title: "Thrusters",
+      componentType: "Thruster loop",
     });
   },
 });

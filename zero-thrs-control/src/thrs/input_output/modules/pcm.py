@@ -44,6 +44,30 @@ class PcmSensorValues(AmcsModeSensorValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-35", component_type="temperature_sensor"),
     ]
+    freshwater_temperature_pcm_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="25001038-5",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+            topic_override="250000-fresh-water/hot/hot-temperature-to-pcm",
+        ),
+    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
+
+    freshwater_temperature_pcm_return: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="25001038-3",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+            topic_override="250000-fresh-water/hot/hot-temperature-from-pcm",
+        ),
+    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
+
     pcm_module1: Annotated[
         sensor.PcmInput, component_meta(yard_tag="50001049", component_type="pcm_input")
     ] = sensor.PcmInput(
@@ -80,6 +104,18 @@ class PcmSensorValues(AmcsModeSensorValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-21", component_type="flow_sensor"),
     ]
+    freshwater_flow_pcm: Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="25001139",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic_override="250000-fresh-water/tech/tech-flow-technical-room-energy-recovery",  # must be 250000-fresh-water/hot/hot-flow-technical-room-energy-recovery
+        ),
+    ] = sensor.FlowSensor(  # TODO: Remove default when topic is correct
+        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
+    )
     pcm_switch_charging_return: Annotated[
         sensor.Valve,
         component_meta(
