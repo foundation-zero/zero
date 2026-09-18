@@ -17,7 +17,6 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     technicalName: "drives-and-shore",
   }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "dhw", "drivesDelta"),
     flow: getField(SensorComponentType.Flow, "drives", "drivesFlowRecovery"),
     incoming: getField(SensorComponentType.Temperature, "drives", "drivesTemperatureRecovery"),
     outgoing: getField(

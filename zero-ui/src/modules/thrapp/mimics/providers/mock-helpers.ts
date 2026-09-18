@@ -173,10 +173,6 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const heat = useRandomizedNumber(0, 100);
     return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
   },
-  [SensorComponentType.DeltaT]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    return computed(() => ({ deltaT: stamp(deltaT) }));
-  },
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
     return computed(() => ({ flow: stamp(flow) }));

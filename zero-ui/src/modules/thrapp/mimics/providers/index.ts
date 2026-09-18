@@ -168,7 +168,6 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.PcmInput]: "charged",
   [SensorComponentType.Level]: "level",
   [SensorComponentType.LevelSwitch]: "empty",
-  [SensorComponentType.DeltaT]: "deltaT",
   [SensorComponentType.HeatExchanger]: "deltaT",
   [SensorComponentType.HvacExchanger]: "deltaT",
   [SensorComponentType.HeatPump]: "deltaT",

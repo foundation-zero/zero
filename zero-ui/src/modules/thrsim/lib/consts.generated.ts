@@ -1160,20 +1160,12 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-16",
     componentType: SensorComponentType.Temperature,
   },
-  drivesTemperatureRecoveryReturn: {
-    yardTag: "50001038-59",
-    componentType: SensorComponentType.Temperature,
-  },
   dcFlowRecovery: {
     yardTag: "50001058-04",
     componentType: SensorComponentType.Flow,
   },
   dcTemperatureRecovery: {
     yardTag: "50001038-52",
-    componentType: SensorComponentType.Temperature,
-  },
-  dcTemperatureRecoveryReturn: {
-    yardTag: "50001038-58",
     componentType: SensorComponentType.Temperature,
   },
   consumersFlowDhw: {
@@ -1184,22 +1176,6 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureDhwReturn: {
-    yardTag: "50001038-48",
-    componentType: SensorComponentType.Temperature,
-  },
-  adsorptionFlowDhw: {
-    yardTag: "50001058-10",
-    componentType: SensorComponentType.Flow,
-  },
-  adsorptionTemperatureWasteReturn: {
-    yardTag: "50001038-38",
-    componentType: SensorComponentType.Temperature,
-  },
-  adsorptionTemperatureDhwReturn: {
-    yardTag: "50001038-56",
-    componentType: SensorComponentType.Temperature,
-  },
   freshwaterHotwaterFlow: {
     yardTag: "25001123-1",
     componentType: SensorComponentType.Flow,
@@ -1207,18 +1183,6 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   freshwaterHotwaterTemperature: {
     yardTag: "25001038-1",
     componentType: SensorComponentType.Temperature,
-  },
-  drivesDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  dcDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  consumersDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  adsorptionDelta: {
-    componentType: SensorComponentType.DeltaT,
   },
   dhwFreshwaterFlowSupply: {
     componentType: SensorComponentType.CalculatedFlow,

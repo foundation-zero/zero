@@ -936,18 +936,12 @@ export const DHW_SENSOR_QUERY = `
   drivesTemperatureRecovery {
     temperature { value timestamp }
   }
-  drivesTemperatureRecoveryReturn {
-    temperature { value timestamp }
-  }
   dcFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
   dcTemperatureRecovery {
-    temperature { value timestamp }
-  }
-  dcTemperatureRecoveryReturn {
     temperature { value timestamp }
   }
   consumersFlowDhw {
@@ -958,20 +952,6 @@ export const DHW_SENSOR_QUERY = `
   consumersTemperatureDhwSupply {
     temperature { value timestamp }
   }
-  consumersTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  adsorptionFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  adsorptionTemperatureWasteReturn {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
   freshwaterHotwaterFlow {
     flow { value timestamp }
     temperature { value timestamp }
@@ -979,18 +959,6 @@ export const DHW_SENSOR_QUERY = `
   }
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
-  }
-  drivesDelta {
-    deltaT { value timestamp }
-  }
-  dcDelta {
-    deltaT { value timestamp }
-  }
-  consumersDelta {
-    deltaT { value timestamp }
-  }
-  adsorptionDelta {
-    deltaT { value timestamp }
   }
   dhwFreshwaterFlowSupply {
     flow { value timestamp }
