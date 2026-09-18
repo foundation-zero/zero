@@ -596,6 +596,10 @@ export const DC_SENSOR_QUERY = `
   dcUgrid2 {
     active { value timestamp }
   }
+  dcDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
@@ -1276,6 +1280,10 @@ export const DRIVES_SENSOR_QUERY = `
   }
   drivesShorepower {
     active { value timestamp }
+  }
+  drivesDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 

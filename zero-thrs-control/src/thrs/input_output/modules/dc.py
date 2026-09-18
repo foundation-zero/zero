@@ -1,11 +1,19 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta, valve_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
@@ -217,7 +225,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-aft1-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_brightloop_aft2: Annotated[
         sensor.Brightloop,
         component_meta(
@@ -226,7 +236,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-aft2-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_brightloop_aft3: Annotated[
         sensor.Brightloop,
         component_meta(
@@ -235,7 +247,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-aft3-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_brightloop_aft4: Annotated[
         sensor.Brightloop,
         component_meta(
@@ -244,7 +258,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-aft4-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_brightloop_fwd1: Annotated[
         sensor.Brightloop,
         component_meta(
@@ -253,7 +269,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-fwd1-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_brightloop_fwd2: Annotated[
         sensor.Brightloop,
         component_meta(
@@ -262,7 +280,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/brightloop-fwd2-active",
         ),
-    ]
+    ] = sensor.Brightloop(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_ugrid1: Annotated[
         sensor.Ugrid,
         component_meta(
@@ -271,7 +291,9 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/ugrid1-active",
         ),
-    ]
+    ] = sensor.Ugrid(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
     dc_ugrid2: Annotated[
         sensor.Ugrid,
         component_meta(
@@ -280,7 +302,25 @@ class DcSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="dummy-pms/ugrid2-active",
         ),
-    ]
+    ] = sensor.Ugrid(
+        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001008",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_dhw_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            temperature_supply=self.dc_temperature_recovery_mix.temperature,
+            temperature_return=self.dc_temperature_recovery_return.temperature,
+            flow=self.dc_flow_recovery.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
 
 
 class DcControlValues(ThrsValues):

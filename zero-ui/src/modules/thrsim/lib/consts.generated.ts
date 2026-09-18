@@ -745,6 +745,10 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
   },
+  dcDhwExchanger: {
+    yardTag: "50001008",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
@@ -1548,6 +1552,10 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesShorepower: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
+  },
+  drivesDhwExchanger: {
+    yardTag: "50001009",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 

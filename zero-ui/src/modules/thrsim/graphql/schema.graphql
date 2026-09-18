@@ -396,6 +396,7 @@ type DcSensorValuesType {
   dcBrightloopFwd2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop", valveType: null)
   dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
   dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
+  dcDhwExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_exchanger", valveType: null)
 }
 
 type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule {
@@ -684,6 +685,7 @@ type DrivesSensorValuesType {
   drivesPropdriveFwd1: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
   drivesPropdriveFwd2: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
   drivesShorepower: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesDhwExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001009", componentType: "heat_exchanger", valveType: null)
 }
 
 type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesControlModeTypeDrivesControllerStateTypeControlModule {
