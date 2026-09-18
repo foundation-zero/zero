@@ -7,9 +7,39 @@ use serde_json::Value;
 use crate::asyncapi::{TopicDef, TopicGroupDef};
 
 struct Entry {
+    /// The payload as the GraphQL field resolvers read it (nested objects
+    /// flattened one level, see [`flatten_payload`]).
     value: Value,
+    /// The payload exactly as published, for consumers that republish or
+    /// type-match the whole object (mutations, union resolution).
+    raw: Value,
     inserted: Instant,
     ttl_secs: u64,
+}
+
+/// Flatten one level of nested objects into the top-level payload for field
+/// resolution.
+///
+/// Services such as hull-temperature publish `{"temperatures": {sensor: value}}`
+/// while their AsyncAPI spec lists the nested keys as top-level fields, so the
+/// GraphQL schema expects them at the top level. Existing top-level keys win on
+/// collision; the wrapper key is kept so the raw payload stays visible.
+pub(crate) fn flatten_payload(value: Value) -> Value {
+    let Value::Object(map) = &value else {
+        return value;
+    };
+
+    let mut merged = map.clone();
+    for nested in map.values() {
+        if let Value::Object(nested_map) = nested {
+            for (nested_key, nested_value) in nested_map {
+                if !merged.contains_key(nested_key) {
+                    merged.insert(nested_key.clone(), nested_value.clone());
+                }
+            }
+        }
+    }
+    Value::Object(merged)
 }
 
 pub struct TopicCache {
@@ -74,23 +104,36 @@ impl TopicCache {
             .unwrap_or(self.default_ttl_secs)
     }
 
-    /// Insert or overwrite the cached payload for a topic.
+    /// Insert or overwrite the cached payload for a topic. The payload is
+    /// kept as published ([`get_raw`](Self::get_raw)) and, for field
+    /// resolution, flattened one level ([`get`](Self::get)).
     pub fn insert(&self, topic: &str, payload: Value) {
         let ttl = self.ttl_for(topic);
         self.data.insert(
             topic.to_string(),
             Entry {
-                value: payload,
+                value: flatten_payload(payload.clone()),
+                raw: payload,
                 inserted: Instant::now(),
                 ttl_secs: ttl,
             },
         );
     }
 
-    /// Get the full cached payload for a topic, or `None` if missing or expired.
+    /// Get the full cached payload for a topic (nested objects flattened one
+    /// level for field resolution), or `None` if missing or expired.
     pub fn get(&self, topic: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         Some(entry.value.clone())
+    }
+
+    /// Get the cached payload exactly as it was published (no flattening),
+    /// or `None` if missing or expired. A whole-object republish (a mutation)
+    /// must start from this, not from the flattened view, or it would add the
+    /// flattened keys as spurious top-level fields.
+    pub fn get_raw(&self, topic: &str) -> Option<Value> {
+        let entry = self.get_entry_if_fresh(topic)?;
+        Some(entry.raw.clone())
     }
 
     /// Get a specific field from a topic's cached payload.
@@ -284,17 +327,21 @@ mod tests {
     }
 
     #[test]
-    fn test_get_field_returns_raw_nested_payload() {
+    fn test_get_field_reads_flattened_view_and_get_raw_the_published_payload() {
         let cache = TopicCache::new();
-        cache.insert("test/topic", json!({"nested": {"v": 1.0}, "flat": 2}));
+        let payload = json!({"nested": {"v": 1.0}, "flat": 2});
+        cache.insert("test/topic", payload.clone());
 
         assert_eq!(cache.get_field("test/topic", "flat").unwrap(), json!(2));
         assert_eq!(
             cache.get_field("test/topic", "nested").unwrap(),
             json!({"v": 1.0})
         );
-        // The cache stores payloads verbatim; flattening happens at insert time upstream
-        assert!(cache.get_field("test/topic", "v").is_none());
+        // Field resolution sees one level of nesting flattened in...
+        assert_eq!(cache.get_field("test/topic", "v").unwrap(), json!(1.0));
+        assert_eq!(cache.get("test/topic").unwrap()["v"], json!(1.0));
+        // ...while the raw payload stays exactly as published.
+        assert_eq!(cache.get_raw("test/topic").unwrap(), payload);
     }
 
     #[test]

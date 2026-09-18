@@ -23,6 +23,7 @@ from thrs.spec.asyncapi import (
     _group,
     all_module_descriptions,
     build_asyncapi,
+    build_simulation_view,
     describe_mapping,
 )
 
@@ -217,3 +218,41 @@ def test_field_level_parameter_enum_matches_the_real_field_names() -> None:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_simulation_derived_fields_mirror_their_source_components() -> None:
+    """A simulation inputs ``computed_field`` that merely mirrors another
+    component's stamped leaves (dhw's recovery sensors) is emitted on every
+    input mutation of that simulation as ``derived`` with, per leaf, the
+    component and leaf it copies; the mapping is found by object identity on
+    a zero instance, so it can't drift from the model. Simulations without
+    such fields emit none."""
+    from thrs.graphql.simulation import io_mapping  # noqa: PLC0415
+
+    view = build_simulation_view()
+    by_name = {s["name"]: s for s in view["simulations"]}
+    dhw = by_name["dhw"]
+    assert dhw["mutations"], "dhw declares input mutations"
+    for mutation in dhw["mutations"]:
+        derived = {d["key"]: d["leaves"] for d in mutation["derived"]}
+        assert derived["DrivesFlowRecovery"] == {
+            "Flow": {"component": "DhwDrivesSupply", "leaf": "Flow"},
+            "Temperature": {"component": "DhwDrivesSupply", "leaf": "Temperature"},
+            # FlowSensor.quantity keeps its constant default; thrs-api serializes it.
+            "Quantity": {
+                "constant": {"Value": 0.0, "TimeStamp": "1970-01-01T00:00:00Z"}
+            },
+        }
+        assert derived["DrivesTemperatureRecovery"] == {
+            "Temperature": {"component": "DhwDrivesSupply", "leaf": "Temperature"},
+        }
+        # One entry per mirroring computed field, keyed by its wire alias.
+        inputs_cls, _ = io_mapping["dhw"]
+        assert set(derived) == {
+            inputs_cls.model_computed_fields[name].alias or name
+            for name in inputs_cls.model_computed_fields
+        }
+    for name, sim in by_name.items():
+        if name == "dhw":
+            continue
+        assert all("derived" not in m for m in sim["mutations"]), name

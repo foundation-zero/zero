@@ -158,6 +158,11 @@ services:
       # Drop schema-invalid payloads instead of caching them, so the last valid
       # value survives (matches thrs-api). Set "false" to cache every payload.
       STRICT_VALIDATION: "true"
+      # Serve modules{}.sensorValues per field: a field answers as soon as its
+      # own topic is cached, the rest resolve null (sensor fields become
+      # nullable). Off mirrors thrs-api's all-or-nothing sensorValues, which
+      # the 1:1 parity tests assume.
+      ENABLE_OPTIONAL_SENSOR_VALUES: "false"
       # Serve thrs-api's parameter mutations (write-path) and publish their
       # changes to MQTT. Off keeps zero-mqtt-graphql read-only.
       ENABLE_MUTATIONS: "true"

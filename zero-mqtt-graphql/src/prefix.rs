@@ -183,6 +183,7 @@ mod tests {
             listen_port: 5103,
             default_ttl_secs: 300,
             strict_validation: false,
+            enable_optional_sensor_values: false,
             enable_mutations: false,
             prefix_strategy: strategy,
             spec_devices_prefix: "simulation".into(),
