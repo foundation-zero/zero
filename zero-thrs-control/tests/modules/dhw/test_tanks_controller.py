@@ -70,15 +70,15 @@ def test_all_full_none_hot(
     sensor_values: DhwSensorValues,
     parameters: DhwParameters,
 ):
-    # none in use -> none in use, none filling, one boosting
+    # none in use -> fallback keeps the warmest (tie: tank1) in use, next boosts
     set_temps(sensor_values, 0, 0, 0)
     set_levels(sensor_values, 250, 250, 250)
 
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is None
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
-    assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[1]
 
 
 def test_none_full(
@@ -86,14 +86,14 @@ def test_none_full(
     sensor_values: DhwSensorValues,
     parameters: DhwParameters,
 ):
-    # none full -> one filling, none boosting, none in use
+    # none full but hot -> fallback keeps warmest (tie: tank1) in use; next fills
     set_temps(sensor_values, 60, 60, 60)
     set_levels(sensor_values, 100, 100, 100)
 
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is None
-    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[1]
     assert tanks_controller._boosting_tank is None
 
 
@@ -202,19 +202,20 @@ def test_disabling_filling_tank_overrides_fill(
     sensor_values: DhwSensorValues,
     parameters: DhwParameters,
 ):
-    # one filling -> disabled, other selected filling
+    # one filling -> disabled, other selected filling. tank1 is the fallback
+    # in-use tank (warmest, tie), so tank2 is the one filling.
     set_temps(sensor_values, 60, 60, 60)
     set_levels(sensor_values, 100, 100, 100)
 
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
-    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[1]
 
-    parameters = parameters.model_copy(update={"tank1_enabled": False})
+    parameters = parameters.model_copy(update={"tank2_enabled": False})
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
-    assert tanks_controller._filling_tank is tanks_controller._tanks[1]
-    assert tanks_controller._tanks[0]._inlet.setpoint.value == 0.0
+    assert tanks_controller._filling_tank is tanks_controller._tanks[2]
+    assert tanks_controller._tanks[1]._inlet.setpoint.value == 0.0
 
 
 def test_disabling_boosting_tank_overrides_boost(
@@ -268,8 +269,9 @@ def test_filling_tank_not_counted_full(
 
     run_tick_boosting(tanks_controller, sensor_values, parameters)
 
+    # tank1 is the fallback in-use tank (warmest, tie), so tank2 fills.
     filling = tanks_controller._filling_tank
-    assert filling is tanks_controller._tanks[0]
+    assert filling is tanks_controller._tanks[1]
     assert filling is not None
     assert not filling.is_full(parameters, is_filling=True)
     assert filling.level_full(parameters) is False
@@ -485,3 +487,106 @@ def test_raising_minimum_temperature_hands_over_in_use_tank(
     assert tanks_controller._tanks[0]._outlet.setpoint.value == 0.0
     assert tanks_controller._tanks[1]._outlet.setpoint.value == 1.0
     assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
+
+
+def test_fallback_warmest_non_empty_ignores_full(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    # No standby: a partial-but-hot tank is preferred over a full-but-cold one.
+    set_temps(sensor_values, 20, 58, 20)
+    set_levels(sensor_values, 250, 100, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+
+
+def test_fallback_takes_over_boosting_tank(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    # tank1 hot (in use), tank2 warmer-cold (boosting), tank3 coldest.
+    set_temps(sensor_values, 60, 40, 20)
+    set_levels(sensor_values, 250, 250, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[1]
+
+    # Disabling the in-use tank leaves no standby, so the fallback takes over the
+    # warmest remaining tank - the boosting one - and stops its boost.
+    disabled_tank1 = parameters.model_copy(update={"tank1_enabled": False})
+    run_tick_boosting(tanks_controller, sensor_values, disabled_tank1)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._tanks[1]._outlet.setpoint.value == 1.0
+    assert tanks_controller._tanks[1]._boosting_supply_valve.setpoint.value == 0.0
+    assert tanks_controller._tanks[1]._boosting_return_valve.setpoint.value == 0.0
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
+
+
+def test_fallback_takes_over_filling_tank(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    # tank1 hot+full (in use), tank2 hot+partial (filling), tank3 empty.
+    set_temps(sensor_values, 60, 58, 20)
+    set_levels(sensor_values, 250, 100, 10)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[1]
+
+    # tank1 empties, no standby: the fallback takes over the warmest remaining
+    # tank, which is the one that was filling; another tank takes the fill slot.
+    set_levels(sensor_values, 10, 100, 10)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._tanks[1]._outlet.setpoint.value == 1.0
+    assert tanks_controller._filling_tank is not tanks_controller._tanks[1]
+
+
+def test_fallback_does_not_preempt_cold_in_use_with_hotter_partial(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 58, 20)
+    set_levels(sensor_values, 250, 100, 250)
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+
+    # tank1 goes cold; tank2 is hotter but not full (not a standby replacement),
+    # so the serving tank is kept rather than preempted by the fallback.
+    set_temps(sensor_values, 40, 58, 20)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
+    assert tanks_controller._tanks[0]._outlet.setpoint.value == 1.0
+
+
+def test_fallback_excludes_disabled_and_unknown_temperature(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 40, 40, 40)
+    set_levels(sensor_values, 250, 250, 250)
+    tanks_controller(sensor_values, parameters)
+
+    # tank1 disabled and tank3 temperature unknown, so only tank2 is eligible.
+    tanks_controller._tanks[0].enabled = False
+    tanks_controller._tanks[2].temperature = None
+
+    assert (
+        tanks_controller._fallback_tank_in_use(parameters)
+        is (tanks_controller._tanks[1])
+    )

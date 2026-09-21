@@ -380,14 +380,40 @@ class TanksController:
                 self._tank_in_use = None
 
         if self._tank_in_use is None:
-            self._tank_in_use = replacement or self._next_tank_in_use(parameters)
-            if self._tank_in_use:
+            chosen = (
+                replacement
+                or self._next_tank_in_use(parameters)
+                or self._fallback_tank_in_use(parameters)
+            )
+            if chosen is not None:
+                # Reset filling/boosting tank if it is chosen as fallback tank
+                if chosen is self._filling_tank:
+                    self._filling_tank = None
+                if chosen is self._boosting_tank:
+                    chosen.stop_boosting(self._time)
+                    self._boosting_tank = None
+                self._tank_in_use = chosen
                 self._tank_in_use.use(self._time)
 
     def _next_tank_in_use(self, parameters: DhwParameters) -> "Tank | None":
         return next(
             (tank for tank in self.available_tanks if tank.standby(parameters)),
             None,
+        )
+
+    def _fallback_tank_in_use(self, parameters: DhwParameters) -> "Tank | None":
+        # Last resort when no tank qualifies as standby: keep hot water available
+        # by serving the warmest tank that still holds water
+        return max(
+            (
+                tank
+                for tank in self._tanks
+                if tank.enabled
+                and tank.temperature is not None
+                and not tank.empty(parameters)
+            ),
+            key=lambda tank: tank.temperature if tank.temperature is not None else 0,
+            default=None,
         )
 
     def _select_filling_tank(
