@@ -36,6 +36,16 @@ def slugify(text: str, code: str) -> str:
     return s
 
 
+def normalize_panel(sheet_name: str) -> str:
+    """Panel identifier for the MQTT topic segment.
+
+    Excel sheet names carry dotted panels (`10P0.1`), but a dot reads as a
+    topic-level separator downstream, so dasherize it (`10P0-1`) to keep the
+    panel a single segment.
+    """
+    return sheet_name.replace(".", "-")
+
+
 def load_patches(patches_path: Path | None) -> dict[str, dict[str, object]]:
     if patches_path is None or not patches_path.exists():
         return {}
@@ -162,8 +172,9 @@ def _process_excel_file(xlsx_path: Path, patches: dict) -> dict | None:
         print(f"Warning: no sheets in {xlsx_path.name}", file=sys.stderr)
         return None
 
-    panel = list(sheets.keys())[0]
-    df = sheets[panel]
+    sheet_name = list(sheets.keys())[0]
+    df = sheets[sheet_name]
+    panel = normalize_panel(sheet_name)
 
     raw = _read_breakers(df, panel, patches)
     final = _deduplicate_slugs(raw)

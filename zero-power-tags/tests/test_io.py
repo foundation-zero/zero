@@ -24,7 +24,7 @@ class TestParseTopic:
             "name": "t1",
             "unit_id": 1,
             "extra_fields": [
-                {"field_name": "panel", "value": "10P0.1"},
+                {"field_name": "panel", "value": "10P0-1"},
                 {"field_name": "component", "value": "ABC"},
             ],
         }
@@ -34,16 +34,16 @@ class TestParseTopic:
         assert topic.unit_id == 1
         assert topic.fields[0].register == 2999
         assert topic.model is PowerTag
-        assert topic.extra_fields == {"panel": "10P0.1", "component": "ABC"}
+        assert topic.extra_fields == {"panel": "10P0-1", "component": "ABC"}
 
     def test_extra_fields_as_dict(self):
         raw: dict = {
             "name": "t2",
             "unit_id": 2,
-            "extra_fields": {"panel": "10P0.2", "component": "DEF"},
+            "extra_fields": {"panel": "10P0-2", "component": "DEF"},
         }
         topic = parse_topic(raw, panel="test")
-        assert topic.extra_fields == {"panel": "10P0.2", "component": "DEF"}
+        assert topic.extra_fields == {"panel": "10P0-2", "component": "DEF"}
 
     def test_extra_fields_empty_list(self):
         raw: dict = {
@@ -99,10 +99,10 @@ class TestModbusEnvNames:
     """Panel names map to sanitized env var suffixes."""
 
     def test_host_env_name(self):
-        assert modbus_host_env("10P0.1") == "MODBUS_HOST_10P0_1"
+        assert modbus_host_env("10P0-1") == "MODBUS_HOST_10P0_1"
 
     def test_port_env_name(self):
-        assert modbus_port_env("10P0.3") == "MODBUS_PORT_10P0_3"
+        assert modbus_port_env("10P0-3") == "MODBUS_PORT_10P0_3"
 
     def test_plain_panel_name_unchanged(self):
         assert modbus_host_env("10P1") == "MODBUS_HOST_10P1"
@@ -118,11 +118,11 @@ class TestReadModbusBridgeSpecs:
         with pytest.MonkeyPatch.context() as mp:
             mp.setenv("MODBUS_BRIDGES_PATH", str(bridges_json))
             specs = read_modbus_bridge_specs()
-        assert [spec.panel for spec in specs] == ["10P0.1", "10P0.2"]
+        assert [spec.panel for spec in specs] == ["10P0-1", "10P0-2"]
         assert [topic.unit_id for spec in specs for topic in spec.topics] == [1, 2]
         assert [spec.topics[0].topic for spec in specs] == [
-            "power-tags/10P0.1/test-device",
-            "power-tags/10P0.2/test-device",
+            "power-tags/10P0-1/test-device",
+            "power-tags/10P0-2/test-device",
         ]
         assert all(
             isinstance(topic, ModbusTopic) for spec in specs for topic in spec.topics
@@ -173,8 +173,8 @@ class TestReadModbusBridgeSpecs:
             mp.delenv("MODBUS_BRIDGES_PATH", raising=False)
             specs = read_modbus_bridge_specs()
         assert {spec.panel for spec in specs} == {
-            "10P0.1",
-            "10P0.3",
+            "10P0-1",
+            "10P0-3",
             "10P1",
             "10P2",
             "10P3",
@@ -372,8 +372,8 @@ class TestBuildAsyncapi:
         assert channel["address"] == "power-tags/{panel}/{slug}"
         assert channel["bindings"]["mqtt"]["topic"] == "power-tags/+/+"
         assert channel["parameters"]["panel"]["enum"] == [
-            "10P0.1",
-            "10P0.3",
+            "10P0-1",
+            "10P0-3",
             "10P1",
             "10P2",
             "10P3",
