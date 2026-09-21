@@ -17,7 +17,15 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof ThrsModules> = ["dhw", "thrusters", "pvt", "pcm", "consumers"];
+const modules: Array<keyof ThrsModules> = [
+  "dhw",
+  "thrusters",
+  "pvt",
+  "pcm",
+  "dc",
+  "drives",
+  "adsorption",
+];
 const currentModuleKey = computed(() => currentRoute.params.module as string);
 
 provide("currentModule", currentModuleKey);
