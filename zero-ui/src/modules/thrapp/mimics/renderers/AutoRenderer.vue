@@ -16,6 +16,8 @@ const editor = computed(() => {
       case "charge":
         return FieldRenderer.Charge;
       case "temperature":
+      case "temperatureSupply":
+      case "temperatureReturn":
       case "temperatureSetpoint":
         return FieldRenderer.Temperature;
       case "on":

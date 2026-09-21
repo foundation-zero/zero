@@ -13,15 +13,11 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   custom: {
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
-    exchangeCircuit: PVT_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.sensors,
+    exchangeCircuit: PVT_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.source,
   },
   source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtSeawaterExchanger"),
   parameters: {},
-  sensors: {
-    incoming: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureSupply"),
-    outgoing: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-    flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowMainFwdRecovery"),
-  },
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

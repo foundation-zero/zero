@@ -8,11 +8,21 @@ import SensorValue from "../../providers/SensorValue.vue";
 import { FieldRenderer } from "../../renderers";
 import ValueListItem from "./ValueListItem.vue";
 
-const props = defineProps<{
-  setpoint?: number;
-  source: ModuleField<SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature>;
-  class?: HTMLAttributes["class"];
-}>();
+type Field = "temperature" | "temperatureReturn" | "temperatureSupply";
+
+const props = withDefaults(
+  defineProps<{
+    setpoint?: number;
+    source: ModuleField<
+      | SensorComponentType.Temperature
+      | SensorComponentType.CalculatedTemperature
+      | SensorComponentType.HeatExchanger
+    >;
+    class?: HTMLAttributes["class"];
+    field?: Field;
+  }>(),
+  { field: "temperature" as Field },
+);
 
 const { t } = useI18n();
 </script>
@@ -20,7 +30,7 @@ const { t } = useI18n();
 <template>
   <SensorValue
     :source="source"
-    field="temperature"
+    :field="field as unknown as undefined"
   >
     <ValueListItem :class="props.class">
       <span class="flex items-center gap-0.5">

@@ -72,12 +72,7 @@ const { labels, actions, items, sources } = useTranslations();
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <Circuit
-        :incoming="sensors.incoming"
-        :outgoing="sensors.outgoing"
-        :delta-t="source"
-        :flow="sensors.flow"
-      />
+      <Circuit :source="source" />
     </TooltipList>
 
     <TooltipList>
@@ -85,12 +80,7 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Circuit
-        :incoming="custom.exchangeCircuit.incoming"
-        :outgoing="custom.exchangeCircuit.outgoing"
-        :delta-t="custom.exchangeCircuit.heatExchanger"
-        :flow="custom.exchangeCircuit.flow"
-      />
+      <Circuit :source="custom.exchangeCircuit" />
     </TooltipList>
   </MimicTooltip>
 </template>

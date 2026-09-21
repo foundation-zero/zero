@@ -56,12 +56,7 @@ const mode = usePvtMode(props.custom.group);
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <Circuit
-        :incoming="sensors.incoming"
-        :outgoing="sensors.outgoing"
-        :delta-t="source"
-        :flow="sensors.flow"
-      />
+      <Circuit :source="sensors.heatExchanger" />
     </TooltipList>
   </MimicTooltip>
 </template>

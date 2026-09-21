@@ -32,13 +32,12 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const flow = getSensorValue(props.sensors.flow);
-const pvt = getSensorValue(props.source);
+const heatExchanger = getSensorValue(props.sensors.heatExchanger);
 const state = getComponentState();
 const modeKey = usePvtMode(props.custom.group);
 
 const flowRate = computed(() => {
-  return flow.value?.flow?.value;
+  return heatExchanger.value?.flow?.value;
 });
 </script>
 
@@ -70,13 +69,13 @@ const flowRate = computed(() => {
             <RiFireLine class="text-heating-medium size-3.5" />
           </span>
           <span class="text-foreground font-medium">
-            <FieldRenderer.Heat :value="pvt?.heat.value" />
+            <FieldRenderer.Heat :value="heatExchanger?.heat.value" />
           </span>
         </ValueListItem>
         <ValueListItem>
           <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
           <span class="text-foreground font-medium">
-            <FieldRenderer.Temperature :value="pvt?.deltaT.value" />
+            <FieldRenderer.Temperature :value="heatExchanger?.deltaT.value" />
           </span>
         </ValueListItem>
         <ValueListItem>
