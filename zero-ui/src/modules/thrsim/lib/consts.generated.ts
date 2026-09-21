@@ -912,8 +912,20 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   maximumTankTemperature: {
     componentType: ParametersType.Temperature,
   },
-  boostingDelta: {
+  htBoostingMinimumDelta: {
     componentType: ParametersType.dT,
+  },
+  boostingStartupGrace: {
+    componentType: ParametersType.Duration,
+  },
+  boostingStallWindow: {
+    componentType: ParametersType.Duration,
+  },
+  boostingStallCooldown: {
+    componentType: ParametersType.Duration,
+  },
+  boostingMinimumHeat: {
+    componentType: ParametersType.Power,
   },
   drivesFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,

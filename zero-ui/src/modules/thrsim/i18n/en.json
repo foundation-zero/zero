@@ -134,6 +134,14 @@
         "label": "Level",
         "unit": "l"
       },
+      "parameter:duration": {
+        "label": "Duration",
+        "unit": "s"
+      },
+      "parameter:power": {
+        "label": "Power",
+        "unit": "W"
+      },
       "parameter:disabled": {
         "label": "Disabled",
         "unit": ""

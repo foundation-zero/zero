@@ -543,6 +543,8 @@ export const enum ParametersType {
   Dutypoint = "parameter:dutypoint",
   dT = "parameter:dT",
   Level = "parameter:level",
+  Duration = "parameter:duration",
+  Power = "parameter:power",
 }
 
 export const PARAMETERS_TYPES = [
@@ -555,6 +557,8 @@ export const PARAMETERS_TYPES = [
   ParametersType.Dutypoint,
   ParametersType.dT,
   ParametersType.Level,
+  ParametersType.Duration,
+  ParametersType.Power,
 ];
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
@@ -582,6 +586,8 @@ export type ParameterDefinitionMap = {
   [ParametersType.Dutypoint]: Ratio;
   [ParametersType.dT]: number;
   [ParametersType.Level]: number;
+  [ParametersType.Duration]: number;
+  [ParametersType.Power]: number;
 };
 
 export type ExtractParameterValues<T extends ParameterDefinitions> = ExtractValues<
