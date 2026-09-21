@@ -13,7 +13,12 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.definitions.units import (
+    WATER_HEAT_TRANSFER_CONVERSION,
+    AdsorptionChillerMode,
+    FreeCoolingMode,
+    TankControlMode,
+)
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
 
@@ -202,7 +207,32 @@ class AdsorptionControlValues(ThrsValues):
     adsorption_chiller: Annotated[
         control.AdsorptionChiller,
         component_meta(yard_tag="50001034", component_type="adsorption_chiller"),
-    ]
+    ] = control.AdsorptionChiller(  # TODO: Remove once control readout from mqtt is finalized
+        enable=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)),
+        mode=Stamped(
+            value=AdsorptionChillerMode.OFF, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        cooling_setpoint=Stamped(value=17.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        free_cooling_mode=Stamped(
+            value=FreeCoolingMode.AUTO, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        available_seawater_temperature=Stamped(
+            value=20.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        available_hot_temperature=Stamped(
+            value=20.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        available_cold_temperature=Stamped(
+            value=20.0, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+        cold_minimum=Stamped(value=15.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        hot_minimum=Stamped(value=53.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        cold_hysteresis=Stamped(value=2.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        hot_hysteresis=Stamped(value=2.0, timestamp=datetime.fromtimestamp(0, UTC)),
+        tank_control_mode=Stamped(
+            value=TankControlMode.BOTH, timestamp=datetime.fromtimestamp(0, UTC)
+        ),
+    )
 
 
 class AdsorptionSimulationInputs(ThrsValues):

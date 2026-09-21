@@ -272,7 +272,9 @@ class PcmControlValues(ThrsValues):
     ]
     pcm_module1: Annotated[
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
-    ]
+    ] = control.Pcm(  # TODO: Remove
+        on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
 
 
 class PcmSimulationInputs(ThrsValues):
