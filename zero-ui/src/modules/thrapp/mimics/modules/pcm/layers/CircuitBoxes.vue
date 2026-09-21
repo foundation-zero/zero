@@ -14,14 +14,14 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     x="-93"
     y="288"
     force-height
-    height="250"
+    height="300"
     v-bind="circuits.pvt"
   >
     <template #fromIcon>
       <RiArrowUpLine class="text-muted-foreground size-3" />
     </template>
     <template #toIcon>
-      <RiArrowUpLine class="text-muted-foreground size-3" />
+      <RiArrowLeftLine class="text-muted-foreground size-3" />
     </template>
   </ConnectingCircuitInstance>
   <ConnectingCircuitInstance
