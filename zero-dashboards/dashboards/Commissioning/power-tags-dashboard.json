@@ -437,7 +437,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\n  panel AS \"Panel\",\n  component AS \"Component\",\n  consumer AS \"Consumer\",\n  active_power_total AS \"Active power\",\n  power_factor_total AS \"Power factor\",\n  current_a AS \"Ia\", current_b AS \"Ib\", current_c AS \"Ic\",\n  voltage_an AS \"Van\", voltage_bn AS \"Vbn\", voltage_cn AS \"Vcn\",\n  timestamp AS \"Last seen\",\n  extract(epoch from now()) - extract(epoch from timestamp) AS \"Age\"\nFROM (\n  SELECT *, row_number() OVER (PARTITION BY topic ORDER BY timestamp DESC) AS rn\n  FROM public.\"power_tags\"\n  WHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n) t WHERE rn = 1\nORDER BY panel, component",
+          "rawSql": "SELECT\n  panel AS \"Panel\",\n  component AS \"Component\",\n  consumer AS \"Consumer\",\n  active_power_total AS \"Active power\",\n  power_factor_total AS \"Power factor\",\n  current_a AS \"Ia\", current_b AS \"Ib\", current_c AS \"Ic\",\n  voltage_an AS \"Van\", voltage_bn AS \"Vbn\", voltage_cn AS \"Vcn\",\n  timestamp AS \"Last seen\",\n  extract(epoch from now()) - extract(epoch from timestamp) AS \"Age\"\nFROM (\n  SELECT *, row_number() OVER (PARTITION BY topic ORDER BY timestamp DESC) AS rn\n  FROM public.\"power_tags\"\n  WHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n) t WHERE rn = 1\nORDER BY panel, component",
           "refId": "A"
         }
       ],
@@ -560,7 +560,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Total active power\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Total active power\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
           "refId": "A"
         }
       ],
@@ -684,7 +684,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(power_factor_total) AS \"Power factor\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND power_factor_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+          "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(power_factor_total) AS \"Power factor\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND power_factor_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
           "refId": "A"
         }
       ],
@@ -835,7 +835,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_a) AS \"Active power L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_a) AS \"Active power L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -959,7 +959,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_b) AS \"Active power L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_b) AS \"Active power L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1083,7 +1083,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_c) AS \"Active power L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_c) AS \"Active power L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND active_power_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1221,7 +1221,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_a) AS \"Current L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_a) AS \"Current L1\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_a IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1345,7 +1345,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_b) AS \"Current L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_b) AS \"Current L2\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_b IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1469,7 +1469,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_c) AS \"Current L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(current_c) AS \"Current L3\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND current_c IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1607,7 +1607,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_an) AS \"Voltage L1-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_an IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_an) AS \"Voltage L1-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_an IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1731,7 +1731,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_bn) AS \"Voltage L2-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_bn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_bn) AS \"Voltage L2-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_bn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1855,7 +1855,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_cn) AS \"Voltage L3-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_cn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n  date_bin('$__interval', timestamp) AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(voltage_cn) AS \"Voltage L3-N\"\nFROM public.\"power_tags\"\nWHERE $__timeFilter(timestamp) AND (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel') AND ',' || '${consumer:csv}' || ',' LIKE '%,' || topic || ',%'\n  AND voltage_cn IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1904,7 +1904,7 @@
         "name": "panel",
         "label": "Panel",
         "type": "custom",
-        "query": "All,10P0.1,10P0.3,10P1",
+        "query": "All,10P0.1,10P0.3,10P1,10P2,10P3",
         "current": {
           "text": "All",
           "value": "All"
@@ -1929,6 +1929,16 @@
             "text": "10P1",
             "value": "10P1",
             "selected": false
+          },
+          {
+            "text": "10P2",
+            "value": "10P2",
+            "selected": false
+          },
+          {
+            "text": "10P3",
+            "value": "10P3",
+            "selected": false
           }
         ],
         "includeAll": false,
@@ -1942,8 +1952,8 @@
           "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
-        "query": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
+        "definition": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
+        "query": "SELECT topic AS __value, CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' \u00b7 ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS __text\nFROM public.\"power_tags\"\nWHERE (('$panel' = 'All' AND panel IN ('10P0.1', '10P0.3', '10P1', '10P2', '10P3')) OR panel = '$panel')\nGROUP BY topic, component, consumer\nORDER BY 2",
         "current": {
           "text": [
             "All"
