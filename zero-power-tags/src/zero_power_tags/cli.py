@@ -41,7 +41,7 @@ dynamic_settings_config = SettingsConfigDict(
 
 
 def _panel_field_key(panel: str, field: Literal["host", "port"]) -> str:
-    """Env key for one gateway field (`10P0.1` → `host_10p0_1`)."""
+    """Env key for one gateway field (`10P0-1` → `host_10p0_1`)."""
     suffix = re.sub(r"[^a-z0-9]+", "_", panel.lower()).strip("_")
     return f"{field}_{suffix}"
 

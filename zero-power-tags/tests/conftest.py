@@ -6,25 +6,25 @@ import pytest
 
 SAMPLE_BRIDGES: list[dict[str, Any]] = [
     {
-        "panel": "10P0.1",
+        "panel": "10P0-1",
         "topics": [
             {
                 "unit_id": 1,
                 "name": "test-device",
                 "extra_fields": [
                     {"field_name": "component", "value": "TEST01"},
-                    {"field_name": "panel", "value": "10P0.1"},
+                    {"field_name": "panel", "value": "10P0-1"},
                 ],
             }
         ],
     },
     {
-        "panel": "10P0.2",
+        "panel": "10P0-2",
         "topics": [
             {
                 "unit_id": 2,
                 "name": "test-device",
-                "extra_fields": {"component": "TEST02", "panel": "10P0.2"},
+                "extra_fields": {"component": "TEST02", "panel": "10P0-2"},
             }
         ],
     },

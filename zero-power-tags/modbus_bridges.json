@@ -1,7 +1,7 @@
 [
   {
     "_comment": "MANUALLY EDITED - reconciled against docs/Powertag adress list.xlsx (the definitive list): each address takes its component/consumer/name from that list (unit_id == its Adres), red rows and spares removed. Regenerating via scripts/excel_to_json.py will overwrite this; fold changes into the source Excel / patches.json before regenerating.",
-    "panel": "10P0.1",
+    "panel": "10P0-1",
     "topics": [
       {
         "unit_id": 1,
@@ -13,7 +13,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -31,7 +31,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -49,7 +49,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -67,7 +67,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -85,7 +85,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -103,7 +103,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -121,7 +121,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -139,7 +139,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -157,7 +157,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -175,7 +175,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -185,7 +185,7 @@
       },
       {
         "unit_id": 16,
-        "name": "discharge-pumps-aft-technical-water-no-power-tag",
+        "name": "discharge-pumps-aft-technical-water",
         "extra_fields": [
           {
             "field_name": "component",
@@ -193,17 +193,17 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
-            "value": "DISCHARGE PUMPS AFT TECHNICAL WATER ( NO POWER TAG)"
+            "value": "DISCHARGE PUMPS AFT TECHNICAL WATER"
           }
         ]
       },
       {
         "unit_id": 17,
-        "name": "co2",
+        "name": "locker-ventilation",
         "extra_fields": [
           {
             "field_name": "component",
@@ -211,11 +211,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
-            "value": "CO2"
+            "value": "LOCKER VENTILATION"
           }
         ]
       },
@@ -229,7 +229,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -247,7 +247,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -265,7 +265,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -283,7 +283,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -293,7 +293,7 @@
       },
       {
         "unit_id": 23,
-        "name": "main-salon-jb",
+        "name": "refrigerator-whine-coolerfridge-drawer",
         "extra_fields": [
           {
             "field_name": "component",
@@ -301,11 +301,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
-            "value": "MAIN SALON JB"
+            "value": "REFRIGERATOR, WHINE COOLER,FRIDGE DRAWER"
           }
         ]
       },
@@ -319,7 +319,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -337,7 +337,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -355,7 +355,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -373,7 +373,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -391,7 +391,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -409,7 +409,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -427,7 +427,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -445,7 +445,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -455,7 +455,7 @@
       },
       {
         "unit_id": 33,
-        "name": "display-switching-ship-office",
+        "name": "gps",
         "extra_fields": [
           {
             "field_name": "component",
@@ -463,11 +463,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
-            "value": "DISPLAY SWITCHING SHIP OFFICE"
+            "value": "GPS"
           }
         ]
       },
@@ -481,7 +481,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -499,7 +499,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -517,7 +517,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -535,7 +535,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -553,7 +553,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -571,7 +571,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -585,11 +585,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "131Q01"
+            "value": "131F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -607,7 +607,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -625,7 +625,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -643,7 +643,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -661,7 +661,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -679,7 +679,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -697,7 +697,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -715,7 +715,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -733,7 +733,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -751,7 +751,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -769,7 +769,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.1"
+            "value": "10P0-1"
           },
           {
             "field_name": "consumer",
@@ -780,7 +780,7 @@
     ]
   },
   {
-    "panel": "10P0.3",
+    "panel": "10P0-3",
     "topics": [
       {
         "unit_id": 1,
@@ -792,7 +792,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -802,7 +802,7 @@
       },
       {
         "unit_id": 3,
-        "name": "ahu2000t-crew-mess-room",
+        "name": "exhaust-crew-mess-room",
         "extra_fields": [
           {
             "field_name": "component",
@@ -810,11 +810,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "AHU2000T CREW MESS ROOM"
+            "value": "EXHAUST CREW MESS ROOM"
           }
         ]
       },
@@ -828,7 +828,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -838,7 +838,7 @@
       },
       {
         "unit_id": 7,
-        "name": "drain-tank-airco-1",
+        "name": "chlorine-dosing-unit-25004035",
         "extra_fields": [
           {
             "field_name": "component",
@@ -846,17 +846,17 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO 1"
+            "value": "CHLORINE DOSING UNIT 25004035"
           }
         ]
       },
       {
         "unit_id": 8,
-        "name": "drain-tank-airco-2",
+        "name": "kvm-aft-rack",
         "extra_fields": [
           {
             "field_name": "component",
@@ -864,17 +864,17 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO 2"
+            "value": "KVM AFT RACK"
           }
         ]
       },
       {
         "unit_id": 9,
-        "name": "drain-tank-airco-3",
+        "name": "kvm-captains-cabin-ships-office",
         "extra_fields": [
           {
             "field_name": "component",
@@ -882,11 +882,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "DRAIN TANK AIRCO 3"
+            "value": "KVM CAPTAIN'S CABIN SHIPS OFFICE"
           }
         ]
       },
@@ -900,7 +900,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -918,7 +918,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -936,7 +936,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -954,7 +954,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -972,7 +972,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -990,7 +990,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1008,7 +1008,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1026,7 +1026,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1044,7 +1044,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1062,7 +1062,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1080,7 +1080,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1098,7 +1098,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1116,7 +1116,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1134,7 +1134,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1148,11 +1148,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "331Q01"
+            "value": "331F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1166,11 +1166,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "333Q01"
+            "value": "333F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1188,7 +1188,7 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1198,7 +1198,7 @@
       },
       {
         "unit_id": 39,
-        "name": "compressor-2",
+        "name": "compressor-1-and-2",
         "extra_fields": [
           {
             "field_name": "component",
@@ -1206,11 +1206,11 @@
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "COMPRESSOR 2"
+            "value": "COMPRESSOR 1 AND 2"
           }
         ]
       },
@@ -1220,11 +1220,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "356Q01"
+            "value": "356F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1238,11 +1238,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "357Q01"
+            "value": "357F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1256,11 +1256,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "358Q01"
+            "value": "358F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1274,11 +1274,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "374Q01"
+            "value": "374F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1292,11 +1292,11 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "375Q01"
+            "value": "375F01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
@@ -1306,19 +1306,19 @@
       },
       {
         "unit_id": 47,
-        "name": "welding-socket-lazzarette",
+        "name": "10p3-power-distr-panel-fwd",
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "376Q01"
+            "value": "336Q01"
           },
           {
             "field_name": "panel",
-            "value": "10P0.3"
+            "value": "10P0-3"
           },
           {
             "field_name": "consumer",
-            "value": "WELDING SOCKET LAZZARETTE"
+            "value": "10P3 – POWER DISTR. PANEL FWD"
           }
         ]
       }
@@ -2405,7 +2405,7 @@
         "extra_fields": [
           {
             "field_name": "component",
-            "value": "35F01 - 112f01"
+            "value": "112F01"
           },
           {
             "field_name": "panel",
