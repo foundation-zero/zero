@@ -10,37 +10,65 @@ models:
         description: "Ingest time index (renamed from the raw `timestamp`)."
         tests:
           - not_null
-      - name: active_power_total
-        description: "Total active power consumption."
       - name: component
         description: "Component identifier associated with the tag."
+      - name: panel
+        description: "Electrical panel identifier."
       - name: consumer
         description: "Consumer identifier associated with the tag."
+      - name: source_type
+        description: "Source type reported by the device."
+      - name: active_power_total
+        description: "Total active power consumption."
+      - name: power_factor_total
+        description: "Total power factor."
       - name: current_a
         description: "Phase A current."
       - name: current_b
         description: "Phase B current."
       - name: current_c
         description: "Phase C current."
-      - name: panel
-        description: "Electrical panel identifier."
-      - name: power_factor_total
-        description: "Total power factor."
-      - name: source_type
-        description: "Source type reported by the device."
-      - name: table
-        description: "Table name associated with the raw message."
-      - name: topic
-        description: "MQTT topic associated with the raw message."
       - name: active_power_a
         description: "Phase A active power."
-      - name: voltage_an
-        description: "Phase A-to-neutral voltage."
       - name: active_power_b
         description: "Phase B active power."
       - name: active_power_c
         description: "Phase C active power."
+      - name: voltage_an
+        description: "Phase A-to-neutral voltage."
       - name: voltage_bn
         description: "Phase B-to-neutral voltage."
       - name: voltage_cn
         description: "Phase C-to-neutral voltage."
+      - name: table
+        description: "Table name associated with the raw message."
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+  - name: stg_power_tag_metadata
+    description: "Static metadata for power tags."
+    columns:
+      - name: ts
+        description: "Mandatory timestamp without valid value."
+      - name: power_tag_id
+        description: "Power tag identifier."
+      - name: panel
+        description: "Panel the power tag is located in."
+      - name: breaker
+        description: "Breaker the power tag is associated with."
+      - name: description
+        description: "Description of the power tag."
+      - name: name
+        description: "Name of the power tag."
+      - name: topic
+        description: "MQTT topic of the power tag."
+        tests:
+          - unique
+          - not_null
+      - name: panel
+        description: "The panel where the power tag is located."
+      - name: breaker
+        description: "The breaker associated with the power tag."
+      - name: main_group
+        description: "The main group classification of the power tag."
+      - name: sub_group
+        description: "The sub group classification, within the main group, of the power tag."

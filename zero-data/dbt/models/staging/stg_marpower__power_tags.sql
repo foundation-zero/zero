@@ -1,20 +1,20 @@
 select
   "timestamp" as ts,
-  "active_power_total",
   "component",
+  "panel",
   "consumer",
+  "source_type",
+  "active_power_total",
+  "power_factor_total",
   "current_a",
   "current_b",
   "current_c",
-  "panel",
-  "power_factor_total",
-  "source_type",
-  "table",
-  "topic",
   "active_power_a",
-  "voltage_an",
   "active_power_b",
   "active_power_c",
+  "voltage_an",
   "voltage_bn",
-  "voltage_cn"
+  "voltage_cn",
+  "table",
+  "topic"
 from {{ source('raw', 'power_tags') }}
