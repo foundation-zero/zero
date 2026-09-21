@@ -57,6 +57,8 @@ from thrs.input_output.base import ThrsValues
 from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 from thrs.spec.asyncapi import all_module_descriptions
 
+pytestmark = pytest.mark.migration
+
 PUBLISH_PREFIXES = sorted(
     {
         thrs_api_config().mqtt_devices_topic_prefix,

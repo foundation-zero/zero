@@ -37,6 +37,8 @@ from tests.graphql.seeding import seed_state
 from tests.graphql.stack_config import MQTT_GRAPHQL_URL, THRS_API_URL
 from thrs.spec import contract
 
+pytestmark = pytest.mark.migration
+
 # A few computed fields carry a ``now()`` timestamp (``Stamped.stamp(0)`` for
 # a heat-transfer device whose valve gate is off): thrs-api stamps them at read
 # time, the control loop (here: the seed) when it publishes them. Two such

@@ -72,6 +72,8 @@ from thrs.spec.asyncapi import all_module_descriptions
 from thrs.spec.extension import component_class
 from thrs.spec.naming import field_name
 
+pytestmark = pytest.mark.migration
+
 _THRS_CFG = thrs_api_config()
 _MQTT_CFG = mqtt_graphql_config()
 CONTROLLER_PREFIX = {

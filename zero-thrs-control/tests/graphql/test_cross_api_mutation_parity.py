@@ -60,6 +60,8 @@ from tests.graphql.stack_config import (
 from thrs.spec import contract
 from thrs.spec.asyncapi import all_module_descriptions
 
+pytestmark = pytest.mark.migration
+
 THRS_API_CONTROLLER_PREFIX = thrs_api_config().mqtt_controller_topic_prefix
 MQTT_GRAPHQL_CONTROLLER_PREFIX = mqtt_graphql_config().mqtt_controller_topic_prefix
 

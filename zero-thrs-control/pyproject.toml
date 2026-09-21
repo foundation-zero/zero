@@ -60,6 +60,7 @@ markers = [
   "io: tests that check code against IOlist outside this repo",
   "mqtt: tests requiring a running MQTT broker",
   "slow: Slow tests",
+  "migration: heavy cross-API (thrs-api vs mqtt-graphql) parity suites; run manually, excluded from default CI",
 ]
 
 [tool.ruff]

@@ -41,6 +41,8 @@ from tests.graphql.resolved import ResolvedSpec, section_of
 from tests.graphql.seeding import seed_state
 from tests.graphql.stack_config import MQTT_GRAPHQL_URL, THRS_API_URL, thrs_api_config
 
+pytestmark = pytest.mark.migration
+
 CONTRACT = ResolvedSpec(thrs_api_config())
 MODULES = sorted(CONTRACT.members)
 

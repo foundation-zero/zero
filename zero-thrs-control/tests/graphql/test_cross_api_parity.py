@@ -64,6 +64,8 @@ from tests.graphql.stack_config import (
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 
+pytestmark = pytest.mark.migration
+
 # Each service reads its own prefixes; publish under both.
 DEVICES_PREFIXES = sorted(
     {
