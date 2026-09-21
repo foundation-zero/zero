@@ -1,35 +1,32 @@
-//! Write-path spec (`thrs-<module>-mutations.json`, from `print-module-mutations`).
+//! Write-path contract: GraphQL mutations that publish to MQTT. This is the
+//! runtime model the resolvers work from, produced from the `x-mqtt-graphql`
+//! extension by [`crate::extension`].
 //!
-//! zero-mqtt-graphql is read-only by default; when `ENABLE_MUTATIONS` is set it
-//! also serves thrs-api's module mutations 1:1 (see `build_module_mutations` in
-//! `thrs.spec.asyncapi`, and `graphql::mutations` for the resolvers):
+//! zero-mqtt-graphql is read-only by default; when `ENABLE_MUTATIONS` is set
+//! it serves every declared mutation. Each one names the `receive` operation
+//! of the document it publishes to (the target) and, for the kinds that
+//! modify a cached object, the `send` operation whose messages carry that
+//! object (the state). Three kinds:
 //!
-//! * `parameter`: reads the current parameters object from `state_topic` in
-//!   the cache, overwrites one by-alias key with the (bounds-checked) argument,
-//!   and republishes the whole object to `set_topic`.
-//! * `automationMode`: publishes a fresh `{"Mode": "automatic"|"manual"}`.
-//! * `control`: restamps a composite unstamped input into one manual-values
-//!   component and republishes the whole object.
+//! * `setField`: read the cached state object, overwrite one key with the
+//!   (bounds-checked) scalar argument, republish the whole object.
+//! * `setComponent`: restamp a composite input into one component of the
+//!   cached state object (`{WireKey: {Value, TimeStamp}}`), re-derive any
+//!   mirror fields, republish the whole object.
+//! * `setFlag`: publish a fresh `{payloadKey: trueValue|falseValue}` object
+//!   from a Boolean argument; nothing is read.
 //!
-//! The simulation spec reuses [`MutationDef`] for its `simulation` input
-//! mutations, which behave like `control`.
+//! A mutation belongs to a view member (or a lifecycle member) and returns
+//! the `object` section of that member named by `returns` (so read and
+//! write share one type), or `Boolean!` when it names none.
 
 use std::collections::BTreeMap;
-use std::path::Path;
 
-use anyhow::Context;
 use serde::Deserialize;
 
-use crate::modules_view::ObjectSectionDef;
+use crate::extension::OperationRef;
 
-/// Suffix identifying a mutations spec file inside a spec directory.
-pub const MUTATIONS_SUFFIX: &str = "-mutations.json";
-
-/// Single-field numeric bounds a `parameter` mutation's value must satisfy,
-/// mirroring the unit type's `Field(ge=/le=/gt=/lt=)` so mqtt-graphql rejects an
-/// out-of-range value the way thrs-api's `validate_assignment` does. Cross-field
-/// invariants (a parameter model's `model_validator`) are *not* represented here
-/// - they are per-module domain logic still enforced by the control loop.
+/// Single-field numeric bounds a `setField` value must satisfy.
 #[derive(Debug, Clone, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Bounds {
@@ -39,41 +36,32 @@ pub struct Bounds {
     pub exclusive_max: Option<f64>,
 }
 
-/// One field of a `control` mutation's composite input: an unstamped leaf of the
-/// control component (`dutypoint`, `on`, `setpoint`, `controlMode`, ...). The
-/// server restamps it with `now()` and writes `{wire_key: {Value, TimeStamp}}`.
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
+/// One field of a `setComponent` mutation's composite input: an unstamped
+/// leaf of the component (`dutypoint`, `on`, `setpoint`, `controlMode`, ...).
+/// The server restamps it with `now()` and writes `{key: {Value,
+/// TimeStamp}}`.
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputFieldDef {
-    /// GraphQL input-field / argument name, e.g. `dutypoint`.
-    pub arg_name: String,
+    /// GraphQL input-field name, e.g. `dutypoint`.
+    pub gql: String,
     /// By-alias wire key written into the component object, e.g. `Dutypoint`.
-    pub wire_key: String,
+    pub key: String,
     /// GraphQL scalar: `Float`, `Int`, `Boolean`, or `String` for an enum leaf.
     pub r#type: String,
     /// For an enum leaf: wire-value -> member-name map. The input accepts the
-    /// member name (a GraphQL enum); the wire stores the value (thrs-api's
-    /// `use_enum_values`). `None` for a plain scalar.
-    #[serde(default)]
+    /// member name (a GraphQL enum); the wire stores the value. `None` for a
+    /// plain scalar.
     pub enum_values: Option<BTreeMap<String, String>>,
-    /// For an enum leaf: thrs-api's enum type name (`PumpControlMode`), used as
-    /// the input field's type so the schema matches thrs-api's. Present exactly
-    /// when `enum_values` is (checked by [`validate_mutation`]).
-    #[serde(default)]
+    /// For an enum leaf: the enum type name (`PumpControlMode`), used as the
+    /// input field's type. Present exactly when `enum_values` is.
     pub enum_type: Option<String>,
-    /// Non-null in thrs-api's input type (a leaf with a nullable value or a
-    /// default is nullable). Defaults to true for older specs.
-    #[serde(default = "default_true")]
+    /// Non-null in the API's input type.
     pub required: bool,
-}
-
-fn default_true() -> bool {
-    true
 }
 
 /// Where one leaf of a derived field comes from: copied from a component of
 /// the same object and one of its stamped leaves (by-alias wire keys), or a
-/// constant the model leaves at its default (`FlowSensor.quantity`).
+/// constant the model leaves at its default.
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase", untagged)]
 pub enum DerivedLeaf {
@@ -92,265 +80,171 @@ pub struct DerivedFieldDef {
     pub leaves: BTreeMap<String, DerivedLeaf>,
 }
 
-/// One mutation. Kinds: `parameter` (read-modify-republish one parameters
-/// field), `automationMode` (publish a fresh `{"Mode": ...}`), `control`
-/// (restamp a composite input into one manual-values component and republish)
-/// and `simulation` (the same for a simulation inputs component).
+/// The comparison of an [`InvariantDef`].
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum Comparison {
+    Lt,
+    Le,
+    Gt,
+    Ge,
+}
+
+impl Comparison {
+    pub fn holds(self, lhs: f64, rhs: f64) -> bool {
+        match self {
+            Comparison::Lt => lhs < rhs,
+            Comparison::Le => lhs <= rhs,
+            Comparison::Gt => lhs > rhs,
+            Comparison::Ge => lhs >= rhs,
+        }
+    }
+}
+
+/// A cross-field invariant of the whole object a `setField` mutation
+/// modifies (the schema's `x-invariants`): `object[lhs] <op> object[rhs]`
+/// must hold, else the modified object is rejected with `error`.
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
+pub struct InvariantDef {
+    pub lhs: String,
+    pub op: Comparison,
+    pub rhs: String,
+    pub error: String,
+}
+
+impl InvariantDef {
+    /// The invariant's error when it is violated by `object`; a key that is
+    /// missing or not a number does not violate it.
+    pub fn violation(&self, object: &serde_json::Map<String, serde_json::Value>) -> Option<&str> {
+        let number = |key: &str| object.get(key).and_then(serde_json::Value::as_f64);
+        match (number(&self.lhs), number(&self.rhs)) {
+            (Some(lhs), Some(rhs)) if !self.op.holds(lhs, rhs) => Some(&self.error),
+            _ => None,
+        }
+    }
+}
+
+/// How a mutation is confirmed before it returns: the published change must
+/// show up on the confirm topic (the `send` operation `operation`, default
+/// the mutation's state) under `key` (default the mutation's key) within
+/// `timeout_s`, else the mutation fails with `timeout_error`. With
+/// `presence` the Boolean argument is compared with whether `key` holds a
+/// value (a switch whose object is null when off) instead of the written
+/// value.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConfirmDef {
+    pub operation: Option<OperationRef>,
+    pub topic: String,
+    pub key: Option<String>,
+    pub presence: bool,
+    pub timeout_s: f64,
+    pub timeout_error: String,
+}
+
+/// The mutation families (see the module docs).
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum MutationKind {
+    SetField,
+    SetComponent,
+    SetFlag,
+}
+
+/// One mutation.
+#[derive(Debug, Clone, PartialEq)]
 pub struct MutationDef {
-    /// GraphQL mutation field name, e.g. `thrustersParameterSetCoolingFlow`
-    /// (identical to thrs-api's Strawberry name).
-    pub gql_name: String,
-    /// Mutation family: `parameter`, `automationMode`, `control` or
-    /// `simulation` (see the module docs).
-    pub kind: String,
-    /// GraphQL type of the argument: `Float`, `Int`, `Boolean`, or a list like
-    /// `[Float!]` (a PID tuning tuple, non-null list arg). Unused by `control`
-    /// (which has a composite input), so it defaults to empty there.
-    #[serde(default)]
+    /// GraphQL mutation field name, e.g. `thrustersParameterSetCoolingFlow`.
+    pub gql: String,
+    pub kind: MutationKind,
+    /// `setField`: GraphQL type of the argument: `Float`, `Int`, `Boolean`, or
+    /// a list like `[Float!]` (a non-null list argument). Empty otherwise.
     pub arg_type: String,
-    /// Name of the GraphQL argument (thrs-api's: `value`, or `automatic` for
-    /// `automationMode`).
+    /// Name of the GraphQL argument.
     pub arg_name: String,
-    /// By-alias key in the cached payload to overwrite, e.g. `CoolingFlow`, or
-    /// `Mode` for `automationMode`.
-    pub payload_key: String,
-    /// Topic whose cached payload holds the current object to modify
-    /// (`parameter`). Unused by `automationMode`, which builds a fresh object.
+    /// By-alias key in the object to overwrite (`setField`/`setComponent`), or
+    /// the key of the fresh object (`setFlag`).
+    pub key: String,
+    /// `setField`/`setComponent`: the `send` operation whose messages carry
+    /// the object to modify.
+    pub state: Option<OperationRef>,
+    /// The `receive` operation the object is published to.
+    pub target: Option<OperationRef>,
+    /// The resolved topic of `state` (empty for `setFlag`).
     pub state_topic: String,
-    /// Topic the object is published to.
+    /// The resolved topic of `target`.
     pub set_topic: String,
-    /// Per-field numeric bounds (`parameter` only); `None` when the unit type
-    /// declares no bound.
-    #[serde(default)]
+    /// The `object` section of the member the mutation returns. None returns
+    /// `Boolean!`.
+    pub returns: Option<String>,
+    /// `setField`: per-field numeric bounds; `None` when unconstrained.
     pub bounds: Option<Bounds>,
-    /// `automationMode`: the `payload_key` value when the Boolean arg is true.
-    #[serde(default)]
+    /// `setFlag`: the `key` value when the Boolean argument is true.
     pub true_value: Option<String>,
-    /// `automationMode`: the `payload_key` value when the Boolean arg is false.
-    #[serde(default)]
+    /// `setFlag`: the `key` value when the Boolean argument is false.
     pub false_value: Option<String>,
-    /// `control`/`simulation`: the composite input leaves to restamp into the
+    /// `setComponent`: the composite input leaves to restamp into the
     /// component.
-    #[serde(default)]
     pub input_fields: Vec<InputFieldDef>,
-    /// `control`/`simulation`: fields of the whole object that thrs-api's
-    /// model derives from other components (pydantic `computed_field`s that
-    /// mirror a component's stamped leaves, e.g. dhw's `DrivesFlowRecovery`
-    /// = `DhwDrivesSupply`'s flow and temperature). thrs-api re-serializes
-    /// them from the modified model; the republish mirrors them the same way
-    /// so the payload is identical.
-    #[serde(default)]
+    /// `setComponent`: fields of the whole object the producer's model derives
+    /// from other components (mirrors of a component's stamped leaves). The
+    /// republish mirrors them the same way so the payload is identical to what
+    /// the producer's own API would publish.
     pub derived: Vec<DerivedFieldDef>,
-    /// `control`/`simulation`: thrs-api's name for the composite input type
-    /// (`PumpInputType`, shared across modules and simulations). zero-ui uses
-    /// these names as GraphQL variable types, so they must match exactly.
-    /// `None` for the other kinds (checked by [`validate_mutation`]).
-    #[serde(default)]
+    /// `setComponent`: the composite input type name (`PumpInputType`, shared
+    /// across groups). `None` for the other kinds.
     pub input_type_name: Option<String>,
-    /// thrs-api's error when nothing is cached at `state_topic` to modify
-    /// (`parameter`/`control`/`simulation`).
-    #[serde(default)]
+    /// The error when nothing is cached at the state topic to modify.
     pub missing_error: Option<String>,
+    /// How the change is confirmed before the mutation returns; `None`
+    /// returns right after the publish.
+    pub confirm: Option<ConfirmDef>,
+    /// `setField`: cross-field invariants of the modified object.
+    pub invariants: Vec<InvariantDef>,
 }
 
 impl MutationDef {
     /// Whether this kind takes a composite component input.
     pub fn has_composite_input(&self) -> bool {
-        matches!(self.kind.as_str(), "control" | "simulation")
+        self.kind == MutationKind::SetComponent
     }
 
-    /// The composite input type name of a `control`/`simulation` mutation.
-    /// Panics for other kinds or an unvalidated spec, which
-    /// [`validate_mutation`] rules out.
+    /// Whether this kind reads a cached state object.
+    pub fn reads_state(&self) -> bool {
+        self.kind != MutationKind::SetFlag
+    }
+
+    /// The composite input type name of a `setComponent` mutation. Panics for
+    /// other kinds, which the resolvers never ask.
     pub fn input_type_name(&self) -> &str {
-        self.input_type_name.as_deref().expect(
-            "composite mutation carries thrs-api's input type name (spec validated on load)",
-        )
+        self.input_type_name
+            .as_deref()
+            .expect("composite mutation carries its input type name (spec validated on load)")
+    }
+
+    /// The topic a confirmation is awaited on, if any.
+    pub fn confirm_topic(&self) -> Option<&str> {
+        self.confirm.as_ref().map(|c| c.topic.as_str())
+    }
+
+    /// Rewrite the resolved topics in place (runtime prefix strategy).
+    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
+        if !self.state_topic.is_empty() {
+            self.state_topic = rewrite(&self.state_topic);
+        }
+        self.set_topic = rewrite(&self.set_topic);
+        if let Some(confirm) = &mut self.confirm {
+            confirm.topic = rewrite(&confirm.topic);
+        }
     }
 }
 
-/// The spec invariants the resolvers rely on: a composite mutation names its
-/// input type, and an enum input field names its enum type.
-pub fn validate_mutation(def: &MutationDef) -> anyhow::Result<()> {
-    if def.has_composite_input() && def.input_type_name.is_none() {
-        anyhow::bail!("mutation '{}' has no inputTypeName", def.gql_name);
-    }
-    for f in &def.input_fields {
-        if f.enum_values.is_some() != f.enum_type.is_some() {
-            anyhow::bail!(
-                "mutation '{}': enum input '{}' needs both enumType and enumValues",
-                def.gql_name,
-                f.arg_name
-            );
+/// `returns` must name one of the member's `object` sections.
+pub fn validate_mutation(def: &MutationDef, sections: &[&str]) -> anyhow::Result<()> {
+    if let Some(returns) = &def.returns {
+        if !sections.contains(&returns.as_str()) {
+            anyhow::bail!("mutation '{}' returns unknown section '{returns}'", def.gql);
         }
     }
     Ok(())
-}
-
-/// A mutations spec file: every mutation of one THRS module, plus the objects
-/// its mutations return: thrs-api returns the whole `Parameters` /
-/// `ControlValues` model (the same `<Module>ParametersType` /
-/// `<Module>ControlValuesType` the read sections serve), so both are the
-/// module-view section shape and mqtt-graphql registers one type for read and
-/// write. `control_values_object` is the manual-values object (plain aliases),
-/// not the actuated read section.
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-#[serde(rename_all = "camelCase")]
-pub struct ModuleMutations {
-    pub module: String,
-    #[serde(default)]
-    pub mutations: Vec<MutationDef>,
-    #[serde(default)]
-    pub parameters_object: ObjectSectionDef,
-    #[serde(default)]
-    pub control_values_object: ObjectSectionDef,
-}
-
-/// Whether this path is a mutations spec file (not an AsyncAPI document, a
-/// topic-metadata file, nor a module-view file).
-pub fn is_mutations_file(path: &Path) -> bool {
-    path.file_name()
-        .and_then(|name| name.to_str())
-        .is_some_and(|name| name.ends_with(MUTATIONS_SUFFIX))
-}
-
-/// Load every `*-mutations.json` file from a spec directory, sorted by path so
-/// schema output is deterministic. Missing directory or a malformed file is an
-/// error (callers can downgrade to lenient).
-pub fn load_mutations(spec_dir: &str) -> anyhow::Result<Vec<ModuleMutations>> {
-    let dir = Path::new(spec_dir);
-    if !dir.is_dir() {
-        anyhow::bail!("spec_dir does not exist or is not a directory: {spec_dir}");
-    }
-
-    let mut paths: Vec<_> = std::fs::read_dir(dir)?
-        .filter_map(|entry| entry.ok().map(|e| e.path()))
-        .filter(|path| is_mutations_file(path))
-        .collect();
-    paths.sort();
-
-    paths
-        .into_iter()
-        .map(|path| {
-            let display = path.display().to_string();
-            let content = std::fs::read_to_string(&path)
-                .with_context(|| format!("failed to read {display}"))?;
-            let module: ModuleMutations = serde_json::from_str(&content)
-                .with_context(|| format!("failed to parse {display}"))?;
-            for def in &module.mutations {
-                validate_mutation(def).with_context(|| format!("invalid mutation in {display}"))?;
-            }
-            Ok(module)
-        })
-        .collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::io::Write;
-
-    #[test]
-    fn test_is_mutations_file() {
-        assert!(is_mutations_file(Path::new(
-            "/specs/thrs-thrusters-mutations.json"
-        )));
-        assert!(!is_mutations_file(Path::new(
-            "/specs/thrs-thrusters-module.json"
-        )));
-        assert!(!is_mutations_file(Path::new(
-            "/specs/thrs-thrusters-sensors-metadata.json"
-        )));
-        assert!(!is_mutations_file(Path::new("/specs/thrs-control.json")));
-    }
-
-    #[test]
-    fn test_load_mutations() {
-        let dir = std::env::temp_dir().join("mqtt-graphql-mutations-test");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let mut file = std::fs::File::create(dir.join("thrs-thrusters-mutations.json")).unwrap();
-        file.write_all(
-            br#"{
-              "module": "thrusters",
-              "mutations": [
-                {
-                  "gqlName": "thrustersParameterSetCoolingFlow",
-                  "kind": "parameter",
-                  "argType": "Float",
-                  "argName": "value",
-                  "payloadKey": "CoolingFlow",
-                  "stateTopic": "thrs/controller/thrusters/parameters",
-                  "setTopic": "thrs/controller/thrusters/parameters/set"
-                }
-              ]
-            }"#,
-        )
-        .unwrap();
-        // A module-view file next to it must be ignored by this loader.
-        std::fs::File::create(dir.join("thrs-thrusters-module.json"))
-            .unwrap()
-            .write_all(br#"{"module":"thrusters","sensorValues":[]}"#)
-            .unwrap();
-
-        let loaded = load_mutations(dir.to_str().unwrap()).unwrap();
-        assert_eq!(loaded.len(), 1);
-        assert_eq!(loaded[0].module, "thrusters");
-        assert_eq!(loaded[0].mutations.len(), 1);
-        let m = &loaded[0].mutations[0];
-        assert_eq!(m.gql_name, "thrustersParameterSetCoolingFlow");
-        assert_eq!(m.payload_key, "CoolingFlow");
-        assert_eq!(m.set_topic, "thrs/controller/thrusters/parameters/set");
-
-        let _ = std::fs::remove_dir_all(&dir);
-    }
-
-    #[test]
-    fn test_load_mutations_missing_dir_errors() {
-        assert!(load_mutations("/nonexistent-specs-xyz").is_err());
-    }
-
-    #[test]
-    fn test_parameter_mutation_parses_bounds() {
-        let m: MutationDef = serde_json::from_str(
-            r#"{
-              "gqlName": "thrustersParameterSetCoolingTemperature",
-              "kind": "parameter",
-              "argType": "Float",
-              "argName": "value",
-              "payloadKey": "CoolingTemperature",
-              "stateTopic": "thrs/controller/thrusters/parameters",
-              "setTopic": "thrs/controller/thrusters/parameters/set",
-              "bounds": {"min": -273.15}
-            }"#,
-        )
-        .unwrap();
-        assert_eq!(m.arg_name, "value");
-        assert_eq!(m.bounds.unwrap().min, Some(-273.15));
-        assert!(m.true_value.is_none());
-    }
-
-    #[test]
-    fn test_automation_mode_mutation_parses() {
-        let m: MutationDef = serde_json::from_str(
-            r#"{
-              "gqlName": "thrustersSetAutomationMode",
-              "kind": "automationMode",
-              "argType": "Boolean",
-              "argName": "automatic",
-              "payloadKey": "Mode",
-              "trueValue": "automatic",
-              "falseValue": "manual",
-              "stateTopic": "thrs/controller/thrusters/automation-mode",
-              "setTopic": "thrs/controller/thrusters/automation-mode/set"
-            }"#,
-        )
-        .unwrap();
-        assert_eq!(m.kind, "automationMode");
-        assert_eq!(m.arg_name, "automatic");
-        assert_eq!(m.true_value.as_deref(), Some("automatic"));
-        assert_eq!(m.false_value.as_deref(), Some("manual"));
-    }
 }

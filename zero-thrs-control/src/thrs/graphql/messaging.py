@@ -1,5 +1,4 @@
 from collections.abc import Awaitable, Callable, Coroutine
-from dataclasses import dataclass
 from functools import partial
 from typing import Any, Literal, cast
 
@@ -10,55 +9,20 @@ from thrs.orchestration.comms import (
     DirectivesApiChannels,
     SimulationApiChannels,
 )
-from thrs.runtime.messages import (
-    IncomingMessage,
-    PauseMessage,
-    PlayMessage,
-    SimulationStatus,
-    SimulationStatusMessage,
-    StepMessage,
-)
-
-WAIT_TIMEOUT = 5
-
-NO_CONTROL_VALUES_ERROR = "No control values available to modify"
-NO_PARAMETERS_ERROR = "No parameters available to update"
-NO_SIMULATION_INPUTS_ERROR = "No simulation inputs available to modify"
-PARAMETERS_TIMEOUT_ERROR = "Timeout when setting parameters"
-
-
-@dataclass(frozen=True)
-class SimulationDirective:
-    """How the API guards one simulation directive: the statuses it may be
-    issued from, the status it then waits for, and the exact errors otherwise."""
-
-    message: type[IncomingMessage]
-    allowed_from: tuple[SimulationStatus, ...]
-    expect_status: SimulationStatus
-    precondition_error: str
-    missing_error: str
-
-
-PLAY = SimulationDirective(
-    PlayMessage,
-    allowed_from=("available", "running"),
-    expect_status="running",
-    precondition_error="Can only play an available or running simulation",
-    missing_error="No simulation status available, cannot play",
-)
-PAUSE = SimulationDirective(
-    PauseMessage,
-    allowed_from=("running",),
-    expect_status="available",
-    precondition_error="Can only pause a running simulation",
-    missing_error="No simulation status available, cannot pause",
-)
-STEP = SimulationDirective(
-    StepMessage,
-    allowed_from=("available",),
-    expect_status="stepping",
-    precondition_error="Can only step an available simulation",
-    missing_error="No simulation status available, cannot step",
+from thrs.runtime.messages import SimulationStatusMessage
+from thrs.spec.contract import (
+    AUTOMATION_MODE_TIMEOUT_ERROR,
+    CONTROL_VALUES_TIMEOUT_ERROR,
+    NO_CONTROL_VALUES_ERROR,
+    NO_PARAMETERS_ERROR,
+    NO_SIMULATION_INPUTS_ERROR,
+    PARAMETERS_TIMEOUT_ERROR,
+    PAUSE,
+    PLAY,
+    SIMULATION_INPUTS_TIMEOUT_ERROR,
+    STEP,
+    WAIT_TIMEOUT,
+    SimulationDirective,
 )
 
 
@@ -96,7 +60,7 @@ class ControlMessaging[
         try:
             await expect
         except TimeoutError as e:
-            raise Exception("Timeout when setting control values") from e
+            raise Exception(CONTROL_VALUES_TIMEOUT_ERROR) from e
 
         return control_values
 
@@ -146,7 +110,7 @@ class ControlMessaging[
                 timeout_s=WAIT_TIMEOUT,
             )
         except TimeoutError as e:
-            raise Exception("Timeout when setting automation mode") from e
+            raise Exception(AUTOMATION_MODE_TIMEOUT_ERROR) from e
         return enabled
 
     @property
@@ -188,7 +152,7 @@ class SimulationMessaging:
         try:
             await expect
         except TimeoutError as e:
-            raise Exception("Timeout when setting simulation inputs") from e
+            raise Exception(SIMULATION_INPUTS_TIMEOUT_ERROR) from e
         return inputs
 
 
@@ -211,7 +175,9 @@ class DirectiveMessaging:
         self._simulation_status = status
 
     async def play_simulation(self, playback_rate: float):
-        await self._direct(PLAY, partial(self._directives_channels.send_play, playback_rate))
+        await self._direct(
+            PLAY, partial(self._directives_channels.send_play, playback_rate)
+        )
 
     async def pause_simulation(self):
         await self._direct(PAUSE, self._directives_channels.send_pause)

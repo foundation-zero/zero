@@ -40,42 +40,37 @@ from __future__ import annotations
 import asyncio
 import json
 import math
+import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
 
-import httpx
 import pytest
 from aiomqtt import Client as MqttClient
 from pydantic import TypeAdapter, ValidationError
-from strawberry.utils.str_converters import to_camel_case
 
-from tests.graphql.stack_config import mqtt_graphql_config, thrs_api_config
-from tests.graphql.test_cross_api_ui_parity import _control_mode_instance, _seeded
-from thrs.control.switching import AutomationMode, SwitchingControlMode
-from thrs.graphql.base import SIMULATION_DIRECTIVE_RESOLVERS
-from thrs.graphql.messaging import PARAMETERS_TIMEOUT_ERROR
-from thrs.graphql.simulation import io_mapping
-from thrs.input_output.base import Stamped, ThrsValues
-from thrs.runtime.messages import SimulationStatusMessage
-from thrs.spec.asyncapi import (
-    _bare_type,
-    all_module_descriptions,
-    build_module_mutations,
-    build_simulation_view,
+from tests.graphql.parity import diff, graphql_literal, post, query_data, recent
+from tests.graphql.resolved import ResolvedSpec, section_of
+from tests.graphql.seeding import control_mode_instance, seeded
+from tests.graphql.stack_config import (
+    APIS,
+    MQTT_GRAPHQL,
+    MQTT_HOST,
+    MQTT_PORT,
+    THRS_API,
+    URLS,
+    mqtt_graphql_config,
+    thrs_api_config,
 )
-
-MQTT_HOST = "localhost"
-MQTT_PORT = 1883
-
-THRS_API = "thrs-api"
-MQTT_GRAPHQL = "mqtt-graphql"
-URLS = {
-    THRS_API: "http://localhost:5102/graphql",
-    MQTT_GRAPHQL: "http://localhost:5103/graphql",
-}
-APIS = (THRS_API, MQTT_GRAPHQL)
+from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.input_output.base import Stamped, ThrsValues
+from thrs.runtime.descriptions.simulation import simulation_io_classes
+from thrs.runtime.messages import SimulationStatusMessage
+from thrs.spec import contract
+from thrs.spec.asyncapi import all_module_descriptions
+from thrs.spec.extension import component_class
+from thrs.spec.naming import field_name
 
 _THRS_CFG = thrs_api_config()
 _MQTT_CFG = mqtt_graphql_config()
@@ -98,71 +93,58 @@ NOW_WINDOW_S = 30.0
 FLOAT_REL_TOL = 1e-9
 
 
-# --- Spec-derived case model -------------------------------------------------
+# --- Contract-derived case model -----------------------------------------------
 
 
 @dataclass(frozen=True)
 class Api:
-    """One API under test with the spec generated for *its* prefixes."""
+    """One API under test with the contract generated for *its* prefixes."""
 
     name: str
     url: str
-    module_mutations: dict[str, dict[str, Any]]
-    simulation: dict[str, Any]
+    contract: ResolvedSpec
+
+    @property
+    def members(self) -> dict[str, dict[str, Any]]:
+        return self.contract.members
+
+    @property
+    def simulation(self) -> dict[str, Any]:
+        return self.contract.lifecycle
 
 
-def _apis() -> dict[str, Api]:
-    modules = sorted(all_module_descriptions())
-    return {
-        THRS_API: Api(
-            THRS_API,
-            URLS[THRS_API],
-            {
-                m: build_module_mutations(
-                    m, controller_prefix=CONTROLLER_PREFIX[THRS_API]
-                )
-                for m in modules
-            },
-            build_simulation_view(simulator_prefix=SIMULATOR_PREFIX[THRS_API]),
-        ),
-        MQTT_GRAPHQL: Api(
-            MQTT_GRAPHQL,
-            URLS[MQTT_GRAPHQL],
-            {
-                m: build_module_mutations(
-                    m, controller_prefix=CONTROLLER_PREFIX[MQTT_GRAPHQL]
-                )
-                for m in modules
-            },
-            build_simulation_view(simulator_prefix=SIMULATOR_PREFIX[MQTT_GRAPHQL]),
-        ),
-    }
-
-
-API_SPECS = _apis()
+API_SPECS = {
+    THRS_API: Api(THRS_API, URLS[THRS_API], ResolvedSpec(_THRS_CFG)),
+    MQTT_GRAPHQL: Api(MQTT_GRAPHQL, URLS[MQTT_GRAPHQL], ResolvedSpec(_MQTT_CFG)),
+}
 MODULES = all_module_descriptions()
-SIM_MODE_BY_CAMEL = {to_camel_case(mode): mode for mode in io_mapping}
+SIM_MODE_BY_CAMEL = {field_name(mode): mode for mode in simulation_io_classes()}
+
+
+def _topic(api: str, ref: dict[str, Any]) -> str:
+    """The MQTT topic an operation reference resolves to in this API's document."""
+    return API_SPECS[api].contract.topic(ref)
 
 
 def _spec_mutation(api: str, module: str, gql_name: str) -> dict[str, Any]:
-    for m in API_SPECS[api].module_mutations[module]["mutations"]:
-        if m["gqlName"] == gql_name:
+    for m in API_SPECS[api].members[module]["mutations"]:
+        if m["gql"] == gql_name:
             return m
     raise KeyError(f"{api}: {module} has no mutation {gql_name}")
 
 
 def _spec_sim_mutation(api: str, sim: str, gql_name: str) -> dict[str, Any]:
-    for s in API_SPECS[api].simulation["simulations"]:
+    for s in API_SPECS[api].simulation["members"]:
         if s["name"] == sim:
             for m in s["mutations"]:
-                if m["gqlName"] == gql_name:
+                if m["gql"] == gql_name:
                     return m
     raise KeyError(f"{api}: simulation {sim} has no mutation {gql_name}")
 
 
 def _spec_directive(api: str, gql_name: str) -> dict[str, Any]:
     for d in API_SPECS[api].simulation["directives"]:
-        if d["gqlName"] == gql_name:
+        if d["gql"] == gql_name:
             return d
     raise KeyError(f"{api}: no directive {gql_name}")
 
@@ -178,18 +160,6 @@ def _now_ts() -> datetime:
 
 
 # --- Picking a value the models accept ----------------------------------------
-
-
-def _literal(value: Any) -> str:
-    if value is True:
-        return "true"
-    if value is False:
-        return "false"
-    if isinstance(value, (list, tuple)):
-        return "[" + ", ".join(_literal(v) for v in value) + "]"
-    if isinstance(value, str):
-        return value  # enum member name (unquoted GraphQL enum literal)
-    return repr(value)
 
 
 def _parameter_candidates(default: Any) -> list[Any]:
@@ -261,13 +231,13 @@ def _pick_component_input(
 ) -> tuple[dict[str, Any], ThrsValues]:
     """For a control/simulation component: one accepted, changed value per
     input field (validated through the field's own ``Stamped[T]`` annotation),
-    returned as {argName: value} plus the stamped component it must become."""
-    by_gql = {to_camel_case(n): n for n in component_cls.model_fields}
+    returned as {gql: value} plus the stamped component it must become."""
+    by_gql = {field_name(n): n for n in component_cls.model_fields}
     args: dict[str, Any] = {}
     stamped: dict[str, Any] = {}
     now = _now_ts()
     for leaf in leaves:
-        name = by_gql[leaf["argName"]]
+        name = by_gql[leaf["gql"]]
         annotation = component_cls.model_fields[name].annotation
         current_value = getattr(current, name).value
         chosen = None
@@ -283,18 +253,18 @@ def _pick_component_input(
         assert chosen is not None, (
             f"no accepted candidate for {component_cls.__name__}.{name}"
         )
-        args[leaf["argName"]] = chosen
+        args[leaf["gql"]] = chosen
         stamped[name] = Stamped(value=chosen, timestamp=now)
     return args, component_cls(**stamped)
 
 
-def _input_literal(args: dict[str, Any], leaves: list[dict[str, Any]]) -> str:
+def _inputgraphql_literal(args: dict[str, Any], leaves: list[dict[str, Any]]) -> str:
     parts = []
     for leaf in leaves:
-        v = args[leaf["argName"]]
+        v = args[leaf["gql"]]
         if leaf.get("enumValues"):
             v = leaf["enumValues"][str(v)]  # wire value -> member name
-        parts.append(f"{leaf['argName']}: {_literal(v)}")
+        parts.append(f"{leaf['gql']}: {graphql_literal(v)}")
     return "{" + ", ".join(parts) + "}"
 
 
@@ -303,10 +273,10 @@ def _expected_leaf_values(
 ) -> dict[str, Any]:
     """What the GraphQL response must show per leaf (enum -> member name)."""
     return {
-        leaf["argName"]: (
-            leaf["enumValues"][str(args[leaf["argName"]])]
+        leaf["gql"]: (
+            leaf["enumValues"][str(args[leaf["gql"]])]
             if leaf.get("enumValues")
-            else args[leaf["argName"]]
+            else args[leaf["gql"]]
         )
         for leaf in leaves
     }
@@ -323,9 +293,9 @@ def _selectable_leaves(
     ``heatFlow``), so the read section's leaves for the component - the same
     ones the spec's section builder emits - bound the response selection."""
     for f in section["fields"]:
-        if f["gqlField"] == component_gql_field:
+        if f["gql"] == component_gql_field:
             served = {leaf["gql"] for leaf in f.get("leaves", [])}
-            return [leaf for leaf in input_fields if leaf["argName"] in served]
+            return [leaf for leaf in input_fields if leaf["gql"] in served]
     raise KeyError(f"{component_gql_field} not in section {section.get('typeName')}")
 
 
@@ -338,12 +308,10 @@ def _input_type_definitions() -> dict[str, list[list[dict[str, Any]]]]:
     declared: list[dict[str, Any]] = [
         m
         for module in sorted(MODULES)
-        for m in API_SPECS[MQTT_GRAPHQL].module_mutations[module]["mutations"]
-        if m["kind"] == "control"
+        for m in API_SPECS[MQTT_GRAPHQL].members[module]["mutations"]
+        if m["kind"] == "setComponent"
     ] + [
-        m
-        for s in API_SPECS[MQTT_GRAPHQL].simulation["simulations"]
-        for m in s["mutations"]
+        m for s in API_SPECS[MQTT_GRAPHQL].simulation["members"] for m in s["mutations"]
     ]
     for m in declared:
         seen = shapes.setdefault(m["inputTypeName"], [])
@@ -359,7 +327,7 @@ def _loses_input_type_collision(m: dict[str, Any]) -> bool:
     return _input_type_definitions()[m["inputTypeName"]][0] != m["inputFields"]
 
 
-def _generic_input_literal(input_fields: list[dict[str, Any]]) -> str:
+def _generic_inputgraphql_literal(input_fields: list[dict[str, Any]]) -> str:
     """A syntactically valid input literal for any field shape."""
     parts = []
     for leaf in input_fields:
@@ -371,7 +339,7 @@ def _generic_input_literal(input_fields: list[dict[str, Any]]) -> str:
             v = 1
         else:
             v = 0.5
-        parts.append(f"{leaf['argName']}: {_literal(v)}")
+        parts.append(f"{leaf['gql']}: {graphql_literal(v)}")
     return "{" + ", ".join(parts) + "}"
 
 
@@ -379,7 +347,7 @@ def _restamped_keys(spec: dict[str, Any]) -> set[str]:
     """Top-level keys whose timestamps the API stamps itself: the mutated
     component and every derived field that mirrors it (see the spec's
     ``derived``)."""
-    return {spec["payloadKey"]} | {d["key"] for d in spec.get("derived") or []}
+    return {spec["key"]} | {d["key"] for d in spec.get("derived") or []}
 
 
 # --- MQTT harness -------------------------------------------------------------
@@ -449,25 +417,11 @@ async def _run(
 
         task = asyncio.create_task(_drain())
         await asyncio.sleep(SEED_SETTLE_S)
-        response = await asyncio.to_thread(_post, url, query, variables)
+        response = await asyncio.to_thread(post, url, query, variables)
         capture.response = response
         await asyncio.sleep(POST_SETTLE_S)
         task.cancel()
     return capture
-
-
-def _post(url: str, query: str, variables: dict[str, Any] | None) -> dict[str, Any]:
-    r = httpx.post(
-        url, json={"query": query, "variables": variables or {}}, timeout=20.0
-    )
-    r.raise_for_status()
-    return r.json()
-
-
-def _query(url: str, query: str) -> dict[str, Any]:
-    body = _post(url, query, None)
-    assert "errors" not in body, f"{url}: {body.get('errors')}"
-    return body["data"]
 
 
 def _dump(model: ThrsValues) -> dict[str, Any]:
@@ -477,63 +431,29 @@ def _dump(model: ThrsValues) -> dict[str, Any]:
 # --- Comparing payloads --------------------------------------------------------
 
 
-def _recent(ts: Any) -> bool:
-    try:
-        t = datetime.fromisoformat(str(ts))
-    except ValueError:
-        return False
-    return abs((_now_ts() - t).total_seconds()) <= NOW_WINDOW_S
+def recent_(ts: Any) -> bool:
+    return recent(ts, NOW_WINDOW_S)
 
 
-def _diff(
+def diff_(
     a: Any, b: Any, path: str = "$", *, restamped: set[str] | None = None
 ) -> list[str]:
-    """Paths where two JSON documents differ. Floats compare within tolerance.
-    Under ``restamped`` (a top-level key whose component the API restamped with
-    its own now()), a ``TimeStamp`` only has to be recent on both sides."""
-    if isinstance(a, dict) and isinstance(b, dict):
-        out: list[str] = []
-        for k in sorted(set(a) | set(b)):
-            if k not in a or k not in b:
-                out.append(f"{path}.{k}: only in {'left' if k in a else 'right'}")
-                continue
-            if (
-                k == "TimeStamp"
-                and restamped
-                and any(path.startswith(f"$.{r}") for r in restamped)
-            ):
-                if a[k] != b[k] and not (_recent(a[k]) and _recent(b[k])):
-                    out.append(
-                        f"{path}.{k}: not a recent timestamp ({a[k]!r} / {b[k]!r})"
-                    )
-                continue
-            out += _diff(a[k], b[k], f"{path}.{k}", restamped=restamped)
-        return out
-    if isinstance(a, list) and isinstance(b, list):
-        if len(a) != len(b):
-            return [f"{path}: length {len(a)} != {len(b)}"]
-        return [
-            d
-            for i, (x, y) in enumerate(zip(a, b, strict=True))
-            for d in _diff(x, y, f"{path}[{i}]", restamped=restamped)
-        ]
-    if (
-        isinstance(a, (int, float))
-        and isinstance(b, (int, float))
-        and not isinstance(a, bool)
-        and not isinstance(b, bool)
-        and math.isclose(float(a), float(b), rel_tol=FLOAT_REL_TOL, abs_tol=1e-12)
-    ):
-        return []
-    if a == b:
-        return []
-    return [f"{path}: {a!r} != {b!r}"]
+    """Paths where two JSON documents differ (see ``parity.diff``); under
+    ``restamped`` a ``TimeStamp`` only has to be recent on both sides."""
+    return diff(
+        a,
+        b,
+        path,
+        labels=("actual", "expected"),
+        now_window_s=NOW_WINDOW_S,
+        restamped=restamped,
+    )
 
 
 def _assert_same(
     label: str, actual: Any, expected: Any, *, restamped: set[str] | None = None
 ) -> None:
-    diffs = _diff(actual, expected, restamped=restamped)
+    diffs = diff_(actual, expected, restamped=restamped)
     assert not diffs, f"{label}: {len(diffs)} difference(s):\n  " + "\n  ".join(
         diffs[:40]
     )
@@ -551,10 +471,10 @@ def _value_at(data: Any, *keys: str) -> Any:
 
 def _parameter_ids() -> list[tuple[str, str]]:
     return [
-        (module, m["gqlName"])
+        (module, m["gql"])
         for module in sorted(MODULES)
-        for m in API_SPECS[MQTT_GRAPHQL].module_mutations[module]["mutations"]
-        if m["kind"] == "parameter"
+        for m in API_SPECS[MQTT_GRAPHQL].members[module]["mutations"]
+        if m["kind"] == "setField"
     ]
 
 
@@ -569,10 +489,10 @@ def _bounded_parameter_ids() -> list[tuple[str, str, str]]:
 
 def _control_ids() -> list[tuple[str, str]]:
     return [
-        (module, m["gqlName"])
+        (module, m["gql"])
         for module in sorted(MODULES)
-        for m in API_SPECS[MQTT_GRAPHQL].module_mutations[module]["mutations"]
-        if m["kind"] == "control"
+        for m in API_SPECS[MQTT_GRAPHQL].members[module]["mutations"]
+        if m["kind"] == "setComponent"
     ]
 
 
@@ -586,8 +506,8 @@ def _simulation_ids() -> list[tuple[str, str]]:
     """Simulation input mutations whose input type the schema really serves
     (see ``_colliding_simulation_ids`` for the rest)."""
     return [
-        (s["name"], m["gqlName"])
-        for s in API_SPECS[MQTT_GRAPHQL].simulation["simulations"]
+        (s["name"], m["gql"])
+        for s in API_SPECS[MQTT_GRAPHQL].simulation["members"]
         for m in s["mutations"]
         if not _loses_input_type_collision(m)
     ]
@@ -599,18 +519,18 @@ def _colliding_simulation_ids() -> list[tuple[str, str]]:
     is the 12-field control chiller, so ``{sim}SimulationSetAdsorptionChiller``
     can never be given its own one-field shape)."""
     return [
-        (s["name"], m["gqlName"])
-        for s in API_SPECS[MQTT_GRAPHQL].simulation["simulations"]
+        (s["name"], m["gql"])
+        for s in API_SPECS[MQTT_GRAPHQL].simulation["members"]
         for m in s["mutations"]
         if _loses_input_type_collision(m)
     ]
 
 
 def _directive_specs() -> dict[str, Any]:
-    """gqlName -> thrs-api's SimulationDirective (message class + guards)."""
-    by_topic = {d.message.subscribe_topic(): d for d in SIMULATION_DIRECTIVE_RESOLVERS}
+    """gql -> thrs-api's SimulationDirective (message class + guards)."""
+    by_topic = {d.message.subscribe_topic(): d for d in contract.SIMULATION_DIRECTIVES}
     return {
-        d["gqlName"]: by_topic[d["topic"].rsplit("/", 1)[1]]
+        d["gql"]: by_topic[_topic(MQTT_GRAPHQL, d["target"]).rsplit("/", 1)[1]]
         for d in API_SPECS[MQTT_GRAPHQL].simulation["directives"]
     }
 
@@ -651,33 +571,32 @@ def test_parameter_mutation_publishes_changed_object(module: str, name: str) -> 
     desc = MODULES[module]
     params_cls = desc.parameters_cls
     spec = _spec_mutation(MQTT_GRAPHQL, module, name)
-    py_name = _alias_to_name(params_cls)[spec["payloadKey"]]
+    py_name = _alias_to_name(params_cls)[spec["key"]]
     value, modified, changed = _pick_parameter_value(params_cls, py_name)
     seed = _dump(params_cls())
     expected = _dump(modified)
     if changed:
-        assert seed[spec["payloadKey"]] != expected[spec["payloadKey"]]
+        assert seed[spec["key"]] != expected[spec["key"]]
     gql_field = next(
-        f["gqlField"]
-        for f in API_SPECS[MQTT_GRAPHQL].module_mutations[module]["parametersObject"][
+        f["gql"]
+        for f in section_of(API_SPECS[MQTT_GRAPHQL].members[module], "parameters")[
             "fields"
         ]
-        if f["key"] == spec["payloadKey"]
+        if f["key"] == spec["key"]
     )
     is_list = spec["argType"].startswith("[")
-    query = (
-        f"mutation {{ {name}({spec['argName']}: {_literal(value)}) {{ {gql_field} }} }}"
-    )
+    query = f"mutation {{ {name}({spec['argName']}: {graphql_literal(value)}) {{ {gql_field} }} }}"
 
     problems: list[str] = []
     for api in APIS:
         s = _spec_mutation(api, module, name)
+        state, target = _topic(api, s["state"]), _topic(api, s["target"])
         cap = asyncio.run(
             _run(
                 URLS[api],
                 query,
-                seeds={s["stateTopic"]: json.dumps(seed)},
-                echo={s["setTopic"]: lambda p, t=s["stateTopic"]: (t, json.dumps(p))},
+                seeds={state: json.dumps(seed)},
+                echo={target: lambda p, t=state: (t, json.dumps(p))},
             )
         )
         errors = cap.response.get("errors")
@@ -685,38 +604,38 @@ def test_parameter_mutation_publishes_changed_object(module: str, name: str) -> 
             # thrs-api quirk: a tuning tuple never compares equal to the list
             # argument in its echo check, so it reports a timeout after
             # publishing (see test_cross_api_mutation_parity).
-            if errors[0]["message"] != PARAMETERS_TIMEOUT_ERROR:
+            if errors[0]["message"] != contract.PARAMETERS_TIMEOUT_ERROR:
                 problems.append(f"{api}: unexpected error {errors}")
         elif errors:
             problems.append(f"{api}: mutation errored: {errors}")
         else:
             got = _value_at(cap.response, "data", name, gql_field)
-            if _diff(got, expected[spec["payloadKey"]]):
+            if diff_(got, expected[spec["key"]]):
                 problems.append(
-                    f"{api}: response {gql_field}={got!r}, expected {expected[spec['payloadKey']]!r}"
+                    f"{api}: response {gql_field}={got!r}, expected {expected[spec['key']]!r}"
                 )
         try:
-            published = cap.only(s["setTopic"])
+            published = cap.only(_topic(api, s["target"]))
         except AssertionError as e:
             problems.append(f"{api}: {e}")
             continue
-        stray = sorted(set(cap.published) - {s["setTopic"]})
+        stray = sorted(set(cap.published) - {_topic(api, s["target"])})
         if stray:
             problems.append(f"{api}: stray publishes on {stray}")
-        diffs = _diff(published, expected)
+        diffs = diff_(published, expected)
         if diffs:
             problems.append(
                 f"{api}: published payload differs:\n    " + "\n    ".join(diffs[:20])
             )
         # Read-after-write: the echoed state is what both APIs now serve.
-        data = _query(
+        data = query_data(
             URLS[api],
             f"{{ modules {{ {module} {{ parameters {{ {gql_field} }} }} }} }}",
         )
         read = _value_at(data, "modules", module, "parameters", gql_field)
-        if _diff(read, expected[spec["payloadKey"]]):
+        if diff_(read, expected[spec["key"]]):
             problems.append(
-                f"{api}: read-after-write {gql_field}={read!r}, expected {expected[spec['payloadKey']]!r}"
+                f"{api}: read-after-write {gql_field}={read!r}, expected {expected[spec['key']]!r}"
             )
     assert not problems, (
         f"{module}.{name} (value={value!r}, changed={changed}):\n" + "\n".join(problems)
@@ -740,14 +659,12 @@ def test_parameter_out_of_bounds_rejected_without_publish(
         "exclusiveMax": bound,
     }[side]
     seed = _dump(MODULES[module].parameters_cls())
-    query = (
-        f"mutation {{ {name}({spec['argName']}: {_literal(value)}) {{ __typename }} }}"
-    )
+    query = f"mutation {{ {name}({spec['argName']}: {graphql_literal(value)}) {{ __typename }} }}"
     problems = []
     for api in APIS:
         s = _spec_mutation(api, module, name)
         cap = asyncio.run(
-            _run(URLS[api], query, seeds={s["stateTopic"]: json.dumps(seed)})
+            _run(URLS[api], query, seeds={_topic(api, s["state"]): json.dumps(seed)})
         )
         if not cap.response.get("errors"):
             problems.append(
@@ -760,6 +677,154 @@ def test_parameter_out_of_bounds_rejected_without_publish(
     assert not problems, (
         f"{module}.{name} {side}={bound} value={value!r}:\n" + "\n".join(problems)
     )
+
+
+def _invariant_ids() -> list[tuple[str, str]]:
+    return [
+        (module, name)
+        for module, name in _parameter_ids()
+        if _spec_mutation(MQTT_GRAPHQL, module, name).get("invariants")
+    ]
+
+
+def _pick_invariant_violation(
+    params_cls: type[ThrsValues], name: str, invariants: list[dict[str, Any]]
+) -> tuple[Any, str] | None:
+    """A value for parameter ``name`` the parameters model rejects on
+    assignment through one of its cross-field invariants, with that
+    invariant's error; None when no far-off value trips one (the field is
+    not part of any)."""
+    aliases = _alias_to_name(params_cls)
+    errors = [
+        i["error"] for i in invariants if name in (aliases[i["lhs"]], aliases[i["rhs"]])
+    ]
+    if not errors:
+        return None
+    base = params_cls()
+    default = getattr(base, name)
+    if isinstance(default, bool) or not isinstance(default, int | float):
+        return None
+    for delta in (1000.0, -1000.0, 100.0, -100.0, 10.0, -10.0, 1.0, -1.0):
+        try:
+            modified = base.model_copy()
+            setattr(modified, name, default + delta)
+        except ValidationError as e:
+            message = str(e)
+            hit = next((err for err in errors if err in message), None)
+            if hit is not None:
+                return default + delta, hit
+    return None
+
+
+@pytest.mark.parametrize(("module", "name"), _invariant_ids(), ids=lambda x: x)
+def test_parameter_invariant_violation_rejected_without_publish(
+    module: str, name: str
+) -> None:
+    """A value that breaks one of the parameters model's cross-field
+    invariants is rejected by both APIs with that invariant's error, and
+    nothing is published."""
+    desc = MODULES[module]
+    params_cls = desc.parameters_cls
+    spec = _spec_mutation(MQTT_GRAPHQL, module, name)
+    py_name = _alias_to_name(params_cls)[spec["key"]]
+    violation = _pick_invariant_violation(params_cls, py_name, spec["invariants"])
+    if violation is None:
+        pytest.skip(f"{py_name} is not part of an invariant")
+    value, error = violation
+    seed = _dump(params_cls())
+    query = f"mutation {{ {name}({spec['argName']}: {graphql_literal(value)}) {{ __typename }} }}"
+    problems = []
+    for api in APIS:
+        s = _spec_mutation(api, module, name)
+        cap = asyncio.run(
+            _run(URLS[api], query, seeds={_topic(api, s["state"]): json.dumps(seed)})
+        )
+        errors = cap.response.get("errors") or []
+        if not errors:
+            problems.append(f"{api}: accepted {value!r}: {cap.response}")
+        elif error not in errors[0]["message"]:
+            problems.append(f"{api}: error {errors[0]['message']!r} lacks {error!r}")
+        if (cap.response.get("data") or {}).get(name) is not None:
+            problems.append(f"{api}: data.{name} not null: {cap.response.get('data')}")
+        if cap.published:
+            problems.append(f"{api}: published despite rejection: {cap.published}")
+    assert not problems, f"{module}.{name} value={value!r}:\n" + "\n".join(problems)
+
+
+def _unconfirmed_ids() -> list[tuple[str, str, str]]:
+    """One mutation of every kind per module: the first parameter, the first
+    control component and the automation switch."""
+    cases = []
+    for module in sorted(MODULES):
+        for kind in ("setField", "setComponent", "setFlag"):
+            first = next(
+                (
+                    m
+                    for m in API_SPECS[MQTT_GRAPHQL].members[module]["mutations"]
+                    if m["kind"] == kind and m.get("confirm")
+                ),
+                None,
+            )
+            if first is not None:
+                cases.append((module, kind, first["gql"]))
+    return cases
+
+
+@pytest.mark.parametrize(
+    ("module", "kind", "name"), _unconfirmed_ids(), ids=lambda x: x
+)
+def test_mutation_without_controller_echo_times_out_on_both(
+    module: str, kind: str, name: str
+) -> None:
+    """Without a controller echoing the change, both APIs publish exactly once
+    and then fail with the same timeout error after ``confirm.timeoutS``,
+    returning no data."""
+    desc = MODULES[module]
+    spec = _spec_mutation(MQTT_GRAPHQL, module, name)
+    if kind == "setField":
+        py_name = _alias_to_name(desc.parameters_cls)[spec["key"]]
+        value, _, _ = _pick_parameter_value(desc.parameters_cls, py_name)
+        argument = graphql_literal(value)
+        seed_model: ThrsValues = desc.parameters_cls()
+        selection = " { __typename }"
+    elif kind == "setComponent":
+        cv_cls = desc.control_values_cls
+        py_name = _alias_to_name(cv_cls)[spec["key"]]
+        component_cls = component_class(cv_cls.model_fields[py_name].annotation)
+        seed_model = seeded(cv_cls)
+        args, _ = _pick_component_input(
+            component_cls, getattr(seed_model, py_name), spec["inputFields"]
+        )
+        argument = _inputgraphql_literal(args, spec["inputFields"])
+        selection = " { __typename }"
+    else:
+        argument = graphql_literal(True)
+        seed_model = SwitchingControlMode[desc.control_mode_cls](automatic_mode=None)
+        selection = ""
+    query = f"mutation {{ {name}({spec['argName']}: {argument}){selection} }}"
+    problems = []
+    for api in APIS:
+        s = _spec_mutation(api, module, name)
+        state = _topic(api, s["confirm"].get("operation") or s["state"])
+        started = time.monotonic()
+        cap = asyncio.run(_run(URLS[api], query, seeds={state: _dump_json(seed_model)}))
+        elapsed = time.monotonic() - started
+        errors = cap.response.get("errors") or []
+        if [e["message"] for e in errors] != [spec["confirm"]["timeoutError"]]:
+            problems.append(f"{api}: errors {errors!r}")
+        if (cap.response.get("data") or {}).get(name) is not None:
+            problems.append(f"{api}: data.{name} not null: {cap.response.get('data')}")
+        if elapsed < spec["confirm"]["timeoutS"]:
+            problems.append(f"{api}: returned after {elapsed:.1f}s, before the timeout")
+        try:
+            cap.only(_topic(api, s["target"]))
+        except AssertionError as e:
+            problems.append(f"{api}: {e}")
+    assert not problems, f"{module}.{name}:\n" + "\n".join(problems)
+
+
+def _dump_json(model: ThrsValues) -> str:
+    return model.model_dump_json(by_alias=True)
 
 
 # --- Tests: manual control (manual-values) ----------------------------------------
@@ -775,9 +840,9 @@ def test_control_mutation_restamps_component(module: str, name: str) -> None:
     desc = MODULES[module]
     cv_cls = desc.control_values_cls
     spec = _spec_mutation(MQTT_GRAPHQL, module, name)
-    py_name = _alias_to_name(cv_cls)[spec["payloadKey"]]
-    component_cls = _bare_type(cv_cls.model_fields[py_name].annotation)
-    seed_model = _seeded(cv_cls)
+    py_name = _alias_to_name(cv_cls)[spec["key"]]
+    component_cls = component_class(cv_cls.model_fields[py_name].annotation)
+    seed_model = seeded(cv_cls)
     args, component = _pick_component_input(
         component_cls, getattr(seed_model, py_name), spec["inputFields"]
     )
@@ -785,14 +850,14 @@ def test_control_mutation_restamps_component(module: str, name: str) -> None:
     setattr(modified, py_name, component)
     seed, expected = _dump(seed_model), _dump(modified)
     shown = _selectable_leaves(
-        API_SPECS[MQTT_GRAPHQL].module_mutations[module]["controlValuesObject"],
-        spec["componentGqlField"],
+        section_of(API_SPECS[MQTT_GRAPHQL].members[module], "controlValues"),
+        spec["component"],
         spec["inputFields"],
     )
-    leaves_sel = " ".join(f"{leaf['argName']} {{ value timestamp }}" for leaf in shown)
+    leaves_sel = " ".join(f"{leaf['gql']} {{ value timestamp }}" for leaf in shown)
     query = (
-        f"mutation {{ {name}({spec['argName']}: {_input_literal(args, spec['inputFields'])}) "
-        f"{{ {spec['componentGqlField']} {{ {leaves_sel} }} }} }}"
+        f"mutation {{ {name}({spec['argName']}: {_inputgraphql_literal(args, spec['inputFields'])}) "
+        f"{{ {spec['component']} {{ {leaves_sel} }} }} }}"
     )
     want_leaves = _expected_leaf_values(args, shown)
 
@@ -800,44 +865,45 @@ def test_control_mutation_restamps_component(module: str, name: str) -> None:
     payloads: dict[str, Any] = {}
     for api in APIS:
         s = _spec_mutation(api, module, name)
+        state, target = _topic(api, s["state"]), _topic(api, s["target"])
         cap = asyncio.run(
             _run(
                 URLS[api],
                 query,
-                seeds={s["stateTopic"]: json.dumps(seed)},
-                echo={s["setTopic"]: lambda p, t=s["stateTopic"]: (t, json.dumps(p))},
+                seeds={state: json.dumps(seed)},
+                echo={target: lambda p, t=state: (t, json.dumps(p))},
             )
         )
         if cap.response.get("errors"):
             problems.append(f"{api}: mutation errored: {cap.response['errors']}")
         else:
-            comp = _value_at(cap.response, "data", name, spec["componentGqlField"])
+            comp = _value_at(cap.response, "data", name, spec["component"])
             for arg, want in want_leaves.items():
                 got = comp.get(arg) or {}
-                if _diff(got.get("value"), want):
+                if diff_(got.get("value"), want):
                     problems.append(
                         f"{api}: response {arg}.value={got.get('value')!r}, expected {want!r}"
                     )
-                if not _recent(got.get("timestamp")):
+                if not recent_(got.get("timestamp")):
                     problems.append(
                         f"{api}: response {arg}.timestamp={got.get('timestamp')!r} not recent"
                     )
         try:
-            published = cap.only(s["setTopic"])
+            published = cap.only(_topic(api, s["target"]))
         except AssertionError as e:
             problems.append(f"{api}: {e}")
             continue
         payloads[api] = published
-        stray = sorted(set(cap.published) - {s["setTopic"]})
+        stray = sorted(set(cap.published) - {_topic(api, s["target"])})
         if stray:
             problems.append(f"{api}: stray publishes on {stray}")
-        diffs = _diff(published, expected, restamped=_restamped_keys(spec))
+        diffs = diff_(published, expected, restamped=_restamped_keys(spec))
         if diffs:
             problems.append(
                 f"{api}: published payload differs:\n    " + "\n    ".join(diffs[:20])
             )
     if len(payloads) == 2:
-        diffs = _diff(
+        diffs = diff_(
             payloads[THRS_API], payloads[MQTT_GRAPHQL], restamped=_restamped_keys(spec)
         )
         if diffs:
@@ -860,25 +926,25 @@ def test_automation_mode_publishes_mode(module: str, automatic: bool) -> None:
     desc = MODULES[module]
     expected = _dump(AutomationMode.for_automatic(automatic))
     spec = _spec_mutation(
-        MQTT_GRAPHQL, module, f"{to_camel_case(module)}SetAutomationMode"
+        MQTT_GRAPHQL, module, f"{field_name(module)}SetAutomationMode"
     )
     query = (
-        f"mutation {{ {spec['gqlName']}({spec['argName']}: {_literal(automatic)}) }}"
+        f"mutation {{ {spec['gql']}({spec['argName']}: {graphql_literal(automatic)}) }}"
     )
     control_mode = SwitchingControlMode[desc.control_mode_cls](
-        automatic_mode=_control_mode_instance(desc.control_mode_cls)
+        automatic_mode=control_mode_instance(desc.control_mode_cls)
         if automatic
         else None
     )
     problems = []
     for api in APIS:
-        s = _spec_mutation(api, module, spec["gqlName"])
-        state = s["stateTopic"].rsplit("/", 1)[0] + "/control-mode"
+        s = _spec_mutation(api, module, spec["gql"])
+        state = _topic(api, s["confirm"]["operation"])
         # Start from the opposite mode so the read-after-write proves a change.
         opposite = SwitchingControlMode[desc.control_mode_cls](
             automatic_mode=None
             if automatic
-            else _control_mode_instance(desc.control_mode_cls)
+            else control_mode_instance(desc.control_mode_cls)
         )
         cap = asyncio.run(
             _run(
@@ -886,7 +952,7 @@ def test_automation_mode_publishes_mode(module: str, automatic: bool) -> None:
                 query,
                 seeds={state: opposite.model_dump_json(by_alias=True)},
                 echo={
-                    s["setTopic"]: lambda _p, t=state: (
+                    _topic(api, s["target"]): lambda _p, t=state: (
                         t,
                         control_mode.model_dump_json(by_alias=True),
                     )
@@ -895,21 +961,21 @@ def test_automation_mode_publishes_mode(module: str, automatic: bool) -> None:
         )
         if cap.response.get("errors"):
             problems.append(f"{api}: errored: {cap.response['errors']}")
-        elif _value_at(cap.response, "data", spec["gqlName"]) is not automatic:
+        elif _value_at(cap.response, "data", spec["gql"]) is not automatic:
             problems.append(
                 f"{api}: returned {cap.response['data']!r}, expected {automatic}"
             )
         try:
-            published = cap.only(s["setTopic"])
+            published = cap.only(_topic(api, s["target"]))
         except AssertionError as e:
             problems.append(f"{api}: {e}")
             continue
-        stray = sorted(set(cap.published) - {s["setTopic"]})
+        stray = sorted(set(cap.published) - {_topic(api, s["target"])})
         if stray:
             problems.append(f"{api}: stray publishes on {stray}")
-        if _diff(published, expected):
+        if diff_(published, expected):
             problems.append(f"{api}: published {published!r}, expected {expected!r}")
-        data = _query(
+        data = query_data(
             URLS[api], f"{{ modules {{ {module} {{ controlMode {{ automatic }} }} }} }}"
         )
         read = _value_at(data, "modules", module, "controlMode")
@@ -930,7 +996,9 @@ def _seed_status(api: str, mode: str, status: str) -> tuple[str, str]:
         control_modules=[mode],
         simulation_time=datetime(2026, 1, 2, 3, 4, 5, 678901, tzinfo=UTC),
     )
-    return API_SPECS[api].simulation["statusTopic"], msg.model_dump_json(by_alias=True)
+    return _topic(
+        api, API_SPECS[api].simulation["status"]["operation"]
+    ), msg.model_dump_json(by_alias=True)
 
 
 @pytest.mark.parametrize(("sim", "name"), _simulation_ids(), ids=lambda x: x)
@@ -941,14 +1009,14 @@ def test_simulation_input_mutation_restamps_component(sim: str, name: str) -> No
     the new leaves; after the echo ``simulation.inputs`` reads them back typed
     as that simulation on both APIs."""
     mode = SIM_MODE_BY_CAMEL[sim]
-    inputs_cls, _ = io_mapping[mode]
+    inputs_cls, _ = simulation_io_classes()[mode]
     spec = _spec_sim_mutation(MQTT_GRAPHQL, sim, name)
     sim_spec = next(
-        s for s in API_SPECS[MQTT_GRAPHQL].simulation["simulations"] if s["name"] == sim
+        s for s in API_SPECS[MQTT_GRAPHQL].simulation["members"] if s["name"] == sim
     )
-    py_name = _alias_to_name(inputs_cls)[spec["payloadKey"]]
-    component_cls = _bare_type(inputs_cls.model_fields[py_name].annotation)
-    seed_model = _seeded(inputs_cls)
+    py_name = _alias_to_name(inputs_cls)[spec["key"]]
+    component_cls = component_class(inputs_cls.model_fields[py_name].annotation)
+    seed_model = seeded(inputs_cls)
     args, component = _pick_component_input(
         component_cls, getattr(seed_model, py_name), spec["inputFields"]
     )
@@ -956,17 +1024,17 @@ def test_simulation_input_mutation_restamps_component(sim: str, name: str) -> No
     setattr(modified, py_name, component)
     seed, expected = _dump(seed_model), _dump(modified)
     shown = _selectable_leaves(
-        sim_spec["inputs"], spec["componentGqlField"], spec["inputFields"]
+        section_of(sim_spec, "inputs"), spec["component"], spec["inputFields"]
     )
-    leaves_sel = " ".join(f"{leaf['argName']} {{ value timestamp }}" for leaf in shown)
+    leaves_sel = " ".join(f"{leaf['gql']} {{ value timestamp }}" for leaf in shown)
     query = (
-        f"mutation {{ {name}({spec['argName']}: {_input_literal(args, spec['inputFields'])}) "
-        f"{{ {spec['componentGqlField']} {{ {leaves_sel} }} }} }}"
+        f"mutation {{ {name}({spec['argName']}: {_inputgraphql_literal(args, spec['inputFields'])}) "
+        f"{{ {spec['component']} {{ {leaves_sel} }} }} }}"
     )
     want_leaves = _expected_leaf_values(args, shown)
     read_query = (
-        f"{{ simulation {{ inputs {{ __typename ... on {sim_spec['inputs']['typeName']} "
-        f"{{ {spec['componentGqlField']} {{ {leaves_sel} }} }} }} }} }}"
+        f"{{ simulation {{ inputs {{ __typename ... on {section_of(sim_spec, 'inputs')['typeName']} "
+        f"{{ {spec['component']} {{ {leaves_sel} }} }} }} }} }}"
     )
 
     problems: list[str] = []
@@ -974,58 +1042,62 @@ def test_simulation_input_mutation_restamps_component(sim: str, name: str) -> No
     for api in APIS:
         s = _spec_sim_mutation(api, sim, name)
         status_topic, status_payload = _seed_status(api, mode, "available")
+        state, target = _topic(api, s["state"]), _topic(api, s["target"])
         cap = asyncio.run(
             _run(
                 URLS[api],
                 query,
-                seeds={s["stateTopic"]: json.dumps(seed), status_topic: status_payload},
-                echo={s["setTopic"]: lambda p, t=s["stateTopic"]: (t, json.dumps(p))},
+                seeds={state: json.dumps(seed), status_topic: status_payload},
+                echo={target: lambda p, t=state: (t, json.dumps(p))},
             )
         )
         if cap.response.get("errors"):
             problems.append(f"{api}: mutation errored: {cap.response['errors']}")
         else:
-            comp = _value_at(cap.response, "data", name, spec["componentGqlField"])
+            comp = _value_at(cap.response, "data", name, spec["component"])
             for arg, want in want_leaves.items():
                 got = comp.get(arg) or {}
-                if _diff(got.get("value"), want):
+                if diff_(got.get("value"), want):
                     problems.append(
                         f"{api}: response {arg}.value={got.get('value')!r}, expected {want!r}"
                     )
-                if not _recent(got.get("timestamp")):
+                if not recent_(got.get("timestamp")):
                     problems.append(
                         f"{api}: response {arg}.timestamp={got.get('timestamp')!r} not recent"
                     )
         try:
-            published = cap.only(s["setTopic"])
+            published = cap.only(_topic(api, s["target"]))
         except AssertionError as e:
             problems.append(f"{api}: {e}")
             continue
         payloads[api] = published
-        stray = sorted(set(cap.published) - {s["setTopic"]})
+        stray = sorted(set(cap.published) - {_topic(api, s["target"])})
         if stray:
             problems.append(f"{api}: stray publishes on {stray}")
-        diffs = _diff(published, expected, restamped=_restamped_keys(spec))
+        diffs = diff_(published, expected, restamped=_restamped_keys(spec))
         if diffs:
             problems.append(
                 f"{api}: published payload differs:\n    " + "\n    ".join(diffs[:20])
             )
-        data = _query(URLS[api], read_query)
+        data = query_data(URLS[api], read_query)
         inputs = _value_at(data, "simulation", "inputs")
-        if inputs is None or inputs.get("__typename") != sim_spec["inputs"]["typeName"]:
+        if (
+            inputs is None
+            or inputs.get("__typename") != section_of(sim_spec, "inputs")["typeName"]
+        ):
             problems.append(
-                f"{api}: read-after-write inputs={inputs!r}, expected {sim_spec['inputs']['typeName']}"
+                f"{api}: read-after-write inputs={inputs!r}, expected {section_of(sim_spec, 'inputs')['typeName']}"
             )
         else:
-            comp = inputs.get(spec["componentGqlField"]) or {}
+            comp = inputs.get(spec["component"]) or {}
             for arg, want in want_leaves.items():
                 got = (comp.get(arg) or {}).get("value")
-                if _diff(got, want):
+                if diff_(got, want):
                     problems.append(
                         f"{api}: read-after-write {arg}.value={got!r}, expected {want!r}"
                     )
     if len(payloads) == 2:
-        diffs = _diff(
+        diffs = diff_(
             payloads[THRS_API], payloads[MQTT_GRAPHQL], restamped=_restamped_keys(spec)
         )
         if diffs:
@@ -1044,15 +1116,15 @@ def test_colliding_input_type_simulation_mutation_rejected(sim: str, name: str) 
     shape fails the simulation model's validation. mqtt-graphql must mirror
     both outcomes: an error and no publish, never a spurious inputs object."""
     mode = SIM_MODE_BY_CAMEL[sim]
-    inputs_cls, _ = io_mapping[mode]
+    inputs_cls, _ = simulation_io_classes()[mode]
     spec = _spec_sim_mutation(MQTT_GRAPHQL, sim, name)
     served_shape = _input_type_definitions()[spec["inputTypeName"]][0]
-    seed = _dump(_seeded(inputs_cls))
+    seed = _dump(seeded(inputs_cls))
     queries = {
         "own shape": f"mutation {{ {name}({spec['argName']}: "
-        f"{_generic_input_literal(spec['inputFields'])}) {{ __typename }} }}",
+        f"{_generic_inputgraphql_literal(spec['inputFields'])}) {{ __typename }} }}",
         "served shape": f"mutation {{ {name}({spec['argName']}: "
-        f"{_generic_input_literal(served_shape)}) {{ __typename }} }}",
+        f"{_generic_inputgraphql_literal(served_shape)}) {{ __typename }} }}",
     }
     problems = []
     for label, query in queries.items():
@@ -1064,7 +1136,7 @@ def test_colliding_input_type_simulation_mutation_rejected(sim: str, name: str) 
                     URLS[api],
                     query,
                     seeds={
-                        s["stateTopic"]: json.dumps(seed),
+                        _topic(api, s["state"]): json.dumps(seed),
                         status_topic: status_payload,
                     },
                 )
@@ -1081,7 +1153,7 @@ def test_colliding_input_type_simulation_mutation_rejected(sim: str, name: str) 
 # --- Tests: simulation directives ------------------------------------------------
 
 
-def _directive_query(
+def _directivequery_data(
     name: str, spec: dict[str, Any], arg: float | None
 ) -> tuple[str, dict[str, Any]]:
     if arg is None or spec.get("argName") is None:
@@ -1118,7 +1190,7 @@ def test_directive_publishes_and_waits_for_status(name: str, status: str) -> Non
             {} if arg is None else {next(iter(directive.message.model_fields)): arg}
         )
         expected = _dump(directive.message(**message_kwargs))
-        query, variables = _directive_query(name, spec, arg)
+        query, variables = _directivequery_data(name, spec, arg)
         for api in APIS:
             s = _spec_directive(api, name)
             status_topic, seed_payload = _seed_status(api, "thrusters", status)
@@ -1129,7 +1201,9 @@ def test_directive_publishes_and_waits_for_status(name: str, status: str) -> Non
                     query,
                     seeds={status_topic: seed_payload},
                     echo={
-                        s["topic"]: lambda _p, t=status_topic, pl=expect_payload: (
+                        _topic(
+                            api, s["target"]
+                        ): lambda _p, t=status_topic, pl=expect_payload: (
                             t,
                             pl,
                         )
@@ -1141,14 +1215,14 @@ def test_directive_publishes_and_waits_for_status(name: str, status: str) -> Non
             if cap.response.get("errors"):
                 problems.append(f"{label}: errored: {cap.response['errors']}")
             try:
-                published = cap.only(s["topic"])
+                published = cap.only(_topic(api, s["target"]))
             except AssertionError as e:
                 problems.append(f"{label}: {e}")
                 continue
-            stray = sorted(set(cap.published) - {s["topic"]})
+            stray = sorted(set(cap.published) - {_topic(api, s["target"])})
             if stray:
                 problems.append(f"{label}: stray publishes on {stray}")
-            if _diff(published, expected):
+            if diff_(published, expected):
                 problems.append(
                     f"{label}: published {published!r}, expected {expected!r}"
                 )
@@ -1161,7 +1235,7 @@ def test_directive_precondition_rejects_without_publish(name: str, status: str) 
     thrs-api's exact precondition error and publish nothing."""
     directive = DIRECTIVES[name]
     spec = _spec_directive(MQTT_GRAPHQL, name)
-    query, variables = _directive_query(name, spec, _directive_arg(name, spec))
+    query, variables = _directivequery_data(name, spec, _directive_arg(name, spec))
     problems = []
     for api in APIS:
         status_topic, seed_payload = _seed_status(api, "thrusters", status)
@@ -1208,7 +1282,7 @@ def test_directive_out_of_bounds_rejected_without_publish(name: str, side: str) 
         "exclusiveMin": bound,
         "exclusiveMax": bound,
     }[side]
-    query, variables = _directive_query(name, spec, value)
+    query, variables = _directivequery_data(name, spec, value)
     problems = []
     for api in APIS:
         status_topic, seed_payload = _seed_status(
@@ -1241,21 +1315,21 @@ def test_every_spec_mutation_is_covered() -> None:
     to one of the parametrized tests above, and the two APIs' specs list the
     same mutations (only prefixes differ)."""
     covered = {n for _, n in _parameter_ids()} | {n for _, n in _control_ids()}
-    covered |= {f"{to_camel_case(m)}SetAutomationMode" for m in MODULES}
+    covered |= {f"{field_name(m)}SetAutomationMode" for m in MODULES}
     covered |= {n for _, n in _simulation_ids()} | set(DIRECTIVES)
     covered |= {n for _, n in _colliding_simulation_ids()}
     declared: set[str] = set()
     for api in APIS:
-        for module, spec in API_SPECS[api].module_mutations.items():
+        for module, spec in API_SPECS[api].members.items():
             for m in spec["mutations"]:
-                assert m["kind"] in ("parameter", "control", "automationMode"), (
+                assert m["kind"] in ("setField", "setComponent", "setFlag"), (
                     module,
                     m,
                 )
-                declared.add(m["gqlName"])
-        for s in API_SPECS[api].simulation["simulations"]:
-            declared |= {m["gqlName"] for m in s["mutations"]}
-        declared |= {d["gqlName"] for d in API_SPECS[api].simulation["directives"]}
+                declared.add(m["gql"])
+        for s in API_SPECS[api].simulation["members"]:
+            declared |= {m["gql"] for m in s["mutations"]}
+        declared |= {d["gql"] for d in API_SPECS[api].simulation["directives"]}
     assert declared == covered, {
         "not covered": sorted(declared - covered),
         "not declared": sorted(covered - declared),

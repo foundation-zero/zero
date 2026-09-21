@@ -11,10 +11,9 @@
 //! the generator's `--devices-prefix`/`--controller-prefix` flags, and leaving
 //! this rewriter disabled.
 
-use crate::asyncapi::{TopicDef, TopicGroupDef};
+use crate::asyncapi::{TopicDef, TopicGroupDef, ValidatorSpec};
 use crate::config::{AppConfig, PrefixStrategy};
-use crate::modules_view::ModuleView;
-use crate::mutations_view::ModuleMutations;
+use crate::extension::GraphqlExtension;
 
 /// A set of leading-prefix substitutions applied to MQTT topics.
 ///
@@ -100,65 +99,24 @@ impl PrefixRewriter {
         }
     }
 
-    /// Rewrite every sensor-field topic and whole-object section topic in the
-    /// loaded module views in place.
-    pub fn apply_to_views(&self, views: &mut [ModuleView]) {
+    /// Rewrite the topic (or pattern) each validator is keyed by in place, so
+    /// payloads on the live-broker topics are checked against their schemas.
+    pub fn apply_to_validators(&self, validators: &mut [ValidatorSpec]) {
         if self.is_noop() {
             return;
         }
-        for view in views {
-            for field in &mut view.sensor_values {
-                field.topic = self.rewrite(&field.topic);
-            }
-            for section in [
-                &mut view.control_values,
-                &mut view.parameters,
-                &mut view.controller_state,
-            ]
-            .into_iter()
-            .flatten()
-            {
-                section.topic = self.rewrite(&section.topic);
-            }
-            if let Some(cm) = &mut view.control_mode {
-                cm.topic = self.rewrite(&cm.topic);
-            }
+        for (topic, _) in validators {
+            *topic = self.rewrite(topic);
         }
     }
 
-    /// Rewrite every simulation topic (status/inputs/outputs, the inputs set
-    /// topic, the directive topics, and each input mutation's state/set topic)
-    /// in place.
-    pub fn apply_to_simulation(&self, sim: &mut crate::simulation_view::SimulationView) {
+    /// Rewrite every resolved topic of the extension (view sections, mutation
+    /// state/target topics, lifecycle status/objects/directives) in place.
+    pub fn apply_to_extension(&self, extension: &mut GraphqlExtension) {
         if self.is_noop() {
             return;
         }
-        sim.status_topic = self.rewrite(&sim.status_topic);
-        sim.inputs_topic = self.rewrite(&sim.inputs_topic);
-        sim.outputs_topic = self.rewrite(&sim.outputs_topic);
-        sim.inputs_set_topic = self.rewrite(&sim.inputs_set_topic);
-        for d in &mut sim.directives {
-            d.topic = self.rewrite(&d.topic);
-        }
-        for s in &mut sim.simulations {
-            for def in &mut s.mutations {
-                def.state_topic = self.rewrite(&def.state_topic);
-                def.set_topic = self.rewrite(&def.set_topic);
-            }
-        }
-    }
-
-    /// Rewrite every mutation state/set topic in the loaded mutations in place.
-    pub fn apply_to_mutations(&self, mutations: &mut [ModuleMutations]) {
-        if self.is_noop() {
-            return;
-        }
-        for module in mutations {
-            for def in &mut module.mutations {
-                def.state_topic = self.rewrite(&def.state_topic);
-                def.set_topic = self.rewrite(&def.set_topic);
-            }
-        }
+        extension.rewrite_topics(&|topic| self.rewrite(topic));
     }
 }
 
@@ -192,7 +150,6 @@ mod tests {
             runtime_controller_prefix: ctrl.map(str::to_string),
             spec_simulator_prefix: "thrs/simulator".into(),
             runtime_simulator_prefix: None,
-            computed_mode: crate::config::ComputedMode::Relay,
         }
     }
 
@@ -250,6 +207,23 @@ mod tests {
         assert_eq!(
             r.rewrite("thrs/controller/thrusters/parameters"),
             "controller_topic/thrusters/parameters"
+        );
+    }
+
+    #[test]
+    fn runtime_rewrites_validator_topics_and_patterns() {
+        let rewriter =
+            PrefixRewriter::from_config(&cfg(PrefixStrategy::Runtime, Some("devices_topic"), None));
+        let mut validators = vec![
+            ("simulation/a/b".to_string(), serde_json::json!({})),
+            ("simulation/+/b".to_string(), serde_json::json!({})),
+            ("other/x".to_string(), serde_json::json!({})),
+        ];
+        rewriter.apply_to_validators(&mut validators);
+        let topics: Vec<&str> = validators.iter().map(|(t, _)| t.as_str()).collect();
+        assert_eq!(
+            topics,
+            vec!["devices_topic/a/b", "devices_topic/+/b", "other/x"]
         );
     }
 

@@ -1,125 +1,91 @@
-//! thrs-api's simulation surface: the `simulation { status time inputs
-//! outputs }` query, the play/pause/step directives and the per-simulation
-//! input mutations, served from the simulation spec (see
-//! [`crate::simulation_view`]).
+//! Lifecycles: a status query, whole-object relays typed by a union, the
+//! directives that transition the status and the member mutations, served
+//! from a declared lifecycle (see [`crate::lifecycle_view`]).
 
 use super::*;
 
-// --- Simulation (`simulation { status time inputs outputs }`, directives, input mutations) ---
+use crate::lifecycle_view::StatusFieldDef;
 
-/// Schema contributions of the simulation spec.
-pub(super) struct SimulationSchemaParts {
-    pub(super) query_field: Field,
+// --- Lifecycle (`<queryField> { <status fields> <objects> }`, directives, member mutations) ---
+
+/// Schema contributions of one lifecycle.
+pub(super) struct LifecycleSchemaParts {
+    pub(super) gql: Field,
     pub(super) types: Vec<Type>,
     pub(super) mutation_fields: Vec<Field>,
 }
 
-/// Build thrs-api's simulation surface over the cache: the `simulation` query
-/// (the retained status object; null until a simulator has published one, like
-/// thrs-api), the inputs/outputs unions typed by whichever simulation's fields
-/// match the cached object, and - with a publisher - the play/pause/step
-/// directives plus every `{sim}SimulationSet{Component}` input mutation (same
-/// restamp-and-republish semantics as a `control` mutation, returning the
-/// simulation's inputs type).
-pub(super) fn register_simulation(
-    sim: &SimulationView,
+/// Build one lifecycle over the cache: the status query (the retained status
+/// object; null until one has been published), the relayed objects typed by
+/// whichever member object matches the cached payload, and - with a publisher
+/// - the directives plus every member mutation.
+pub(super) fn register_lifecycle(
+    def: &LifecycleDef,
     cache: &Arc<TopicCache>,
     publisher: Option<Arc<dyn TopicPublisher>>,
-) -> SimulationSchemaParts {
+) -> LifecycleSchemaParts {
     let mut types: Vec<Type> = Vec::new();
-    let mut inputs_union = Union::new(&sim.inputs_union_type);
-    let mut outputs_union = Union::new(&sim.outputs_union_type);
-    // (type name, by-alias keys) per simulation, to resolve the union member.
-    let mut inputs_index: Vec<(String, BTreeSet<String>)> = Vec::new();
-    let mut outputs_index: Vec<(String, BTreeSet<String>)> = Vec::new();
-    let mut seen_types: BTreeSet<String> = BTreeSet::new();
-    for s in &sim.simulations {
-        for (io, union, index) in [
-            (&s.inputs, &mut inputs_union, &mut inputs_index),
-            (&s.outputs, &mut outputs_union, &mut outputs_index),
-        ] {
-            if seen_types.insert(io.type_name.clone()) {
+    let mut registered: BTreeSet<String> = BTreeSet::new();
+    let mut state_obj = Object::new(&def.state_type_name);
+
+    for field in &def.status.fields {
+        state_obj = state_obj.field(status_field(field));
+    }
+
+    for object in &def.objects {
+        let mut union = Union::new(&object.union_type);
+        // (type name, by-alias keys) per member, to resolve the union member.
+        let mut index: Vec<(String, BTreeSet<String>)> = Vec::new();
+        for member in &def.members {
+            let Some(io) = member.section(&object.member_section) else {
+                continue;
+            };
+            if registered.insert(io.type_name.clone()) {
                 types.extend(
-                    object_section_objects(&s.name, io)
+                    object_section_objects(&member.name, io)
                         .into_iter()
                         .map(Type::from),
                 );
-                *union =
-                    std::mem::replace(union, Union::new("_")).possible_type(io.type_name.clone());
+            }
+            if !index.iter().any(|(t, _)| *t == io.type_name) {
+                union = union.possible_type(io.type_name.clone());
             }
             index.push((
                 io.type_name.clone(),
                 io.fields.iter().map(|f| f.key.clone()).collect(),
             ));
         }
-    }
-    types.push(inputs_union.into());
-    types.push(outputs_union.into());
-
-    // `SimulationState { status: String!, time: DateTime!, inputs, outputs }`,
-    // resolved off the cached status object (thrs-api's `SimulationState`).
-    let status_key = Name::new(&sim.status_keys.status);
-    let time_key = Name::new(&sim.status_keys.time);
-    let status_field = plain_field(&PlainFieldDef {
-        gql_field: "status".into(),
-        key: sim.status_keys.status.clone(),
-        r#type: Some("String".into()),
-        object: None,
-        optional: false,
-    });
-    let time_field = Field::new("time", TypeRef::named_nn(DATETIME_SCALAR), {
-        let time_key = time_key.clone();
-        move |ctx| {
-            let time_key = time_key.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => match map.get(&time_key) {
-                        Some(GraphQlValue::String(t)) => {
-                            GraphQlValue::String(normalize_timestamp(t))
-                        }
-                        Some(other) => other.clone(),
-                        None => GraphQlValue::Null,
-                    },
-                    _ => GraphQlValue::Null,
-                };
-                Ok(Some(FieldValue::value(value)))
-            })
-        }
-    });
-    let state_obj = Object::new(&sim.state_type_name)
-        .field(status_field)
-        .field(time_field)
-        .field(union_member_field(
-            "inputs",
-            &sim.inputs_union_type,
-            &sim.inputs_topic,
-            inputs_index,
-            cache,
-        ))
-        .field(union_member_field(
-            "outputs",
-            &sim.outputs_union_type,
-            &sim.outputs_topic,
-            outputs_index,
+        types.push(union.into());
+        state_obj = state_obj.field(union_member_field(
+            &object.gql,
+            &object.union_type,
+            &object.topic,
+            index,
             cache,
         ));
+    }
     types.push(state_obj.into());
 
-    // `simulation`: the cached status object, or null when none is retained or
-    // it carries no simulation time (thrs-api's `resolve simulation` guard).
-    let status_topic = sim.status_topic.clone();
+    // The query field: the cached status object, or null when none is
+    // retained or it lacks one of the status fields.
+    let status_topic = def.status.topic.clone();
+    let status_keys: Arc<Vec<Name>> = Arc::new(
+        def.status
+            .fields
+            .iter()
+            .map(|f| Name::new(&f.key))
+            .collect(),
+    );
     let cache_q = cache.clone();
-    let query_field = Field::new(
-        "simulation",
-        TypeRef::named(&sim.state_type_name),
+    let gql = Field::new(
+        def.gql.clone(),
+        TypeRef::named(&def.state_type_name),
         move |_ctx| {
             let status_topic = status_topic.clone();
             let cache = cache_q.clone();
-            let status_key = status_key.clone();
-            let time_key = time_key.clone();
+            let status_keys = status_keys.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
-                let value = cache_q_status(&cache, &status_topic, &status_key, &time_key);
+                let value = cache_q_status(&cache, &status_topic, &status_keys);
                 Ok(value.map(FieldValue::value))
             })
         },
@@ -127,60 +93,95 @@ pub(super) fn register_simulation(
 
     let mut mutation_fields = Vec::new();
     if let Some(publisher) = publisher {
-        let wait = std::time::Duration::from_secs_f64(sim.wait_timeout_s);
-        for def in &sim.directives {
+        let wait = std::time::Duration::from_secs_f64(def.wait_timeout_s);
+        for directive in &def.directives {
             mutation_fields.push(directive_field(
-                def,
-                &sim.status_topic,
-                &sim.status_keys.status,
+                directive,
+                &def.status.topic,
+                &def.status.key,
                 wait,
                 cache,
                 publisher.clone(),
             ));
         }
         let mut seen: BTreeSet<String> = BTreeSet::new();
-        for (s, def) in sim.mutations() {
-            if !seen.insert(def.gql_name.clone()) {
-                warn!(
-                    "duplicate simulation mutation '{}' — skipping",
-                    def.gql_name
-                );
+        for (member, mutation) in def.mutations() {
+            if !seen.insert(mutation.gql.clone()) {
+                warn!("duplicate lifecycle mutation '{}' — skipping", mutation.gql);
                 continue;
             }
-            types.push(control_input_type(def).into());
-            mutation_fields.push(control_mutation_field(
-                def,
+            let return_type = mutation_result_type(
+                &member.name,
+                mutation.returns.as_deref().and_then(|r| member.section(r)),
+                &mut registered,
+                &mut types,
+            );
+            mutation_fields.push(mutation_field_of(
+                mutation,
                 cache,
                 publisher.clone(),
-                Some(s.inputs.type_name.clone()),
+                return_type,
+                &mut types,
             ));
         }
     }
 
-    SimulationSchemaParts {
-        query_field,
+    LifecycleSchemaParts {
+        gql,
         types,
         mutation_fields,
     }
 }
 
-/// The cached simulation status object when it is usable (has a status and a
-/// simulation time), converted for the resolvers.
+/// One field of the status object: a `DateTime` field serves the cached
+/// timestamp as-is (RFC 3339); any other scalar reads its key straight off
+/// the object.
+fn status_field(def: &StatusFieldDef) -> Field {
+    if def.r#type != "DateTime" {
+        return plain_field(&PlainFieldDef {
+            gql: def.gql.clone(),
+            key: def.key.clone(),
+            r#type: Some(def.r#type.clone()),
+            object: None,
+            optional: false,
+        });
+    }
+    let time_key = Name::new(&def.key);
+    Field::new(
+        def.gql.clone(),
+        TypeRef::named_nn(DATETIME_SCALAR),
+        move |ctx| {
+            let time_key = time_key.clone();
+            async_graphql::dynamic::FieldFuture::new(async move {
+                let parent = ctx.parent_value.try_to_value()?;
+                let value = match parent {
+                    GraphQlValue::Object(map) => {
+                        map.get(&time_key).cloned().unwrap_or(GraphQlValue::Null)
+                    }
+                    _ => GraphQlValue::Null,
+                };
+                Ok(Some(FieldValue::value(value)))
+            })
+        },
+    )
+}
+
+/// The cached status object when it is usable (carries every status field),
+/// converted for the resolvers.
 pub(super) fn cache_q_status(
     cache: &TopicCache,
     topic: &str,
-    status_key: &Name,
-    time_key: &Name,
+    keys: &[Name],
 ) -> Option<GraphQlValue> {
     let value = json_to_graphql_value(&cache.get(topic)?);
     let GraphQlValue::Object(map) = &value else {
         return None;
     };
     let has = |k: &Name| !matches!(map.get(k), None | Some(GraphQlValue::Null));
-    (has(status_key) && has(time_key)).then_some(value)
+    keys.iter().all(has).then_some(value)
 }
 
-/// The current simulation status string from the cache, if any.
+/// The current status string from the cache, if any.
 pub(super) fn cached_status(cache: &TopicCache, topic: &str, status_key: &str) -> Option<String> {
     match cache.get(topic)? {
         JsonValue::Object(map) => map
@@ -192,9 +193,9 @@ pub(super) fn cached_status(cache: &TopicCache, topic: &str, status_key: &str) -
 }
 
 /// A field resolving a whole cached object to one member of a union: the
-/// simulation whose by-alias field keys equal the object's keys (pydantic's
-/// union validation picks the model the payload fits), else the one whose keys
-/// are the largest subset of the object's, else null.
+/// member whose by-alias field keys equal the object's keys (a pydantic
+/// union picks the model the payload fits), else the one whose keys are the
+/// largest subset of the object's, else null.
 pub(super) fn union_member_field(
     name: &str,
     union_type: &str,
@@ -233,10 +234,10 @@ pub(super) fn union_member_field(
     })
 }
 
-/// One simulation directive (`simulationPlay(playbackRate: Float): Void` etc.):
-/// checks the cached status against the directive's preconditions (thrs-api's
+/// One directive (`simulationPlay(playbackRate: Float): Void` etc.): checks
+/// the cached status against the directive's preconditions (the producer's
 /// exact error strings), publishes the message, then waits up to the timeout
-/// for the status to become the expected one (`DirectiveMessaging`).
+/// for the status to become the expected one.
 pub(super) fn directive_field(
     def: &DirectiveDef,
     status_topic: &str,
@@ -245,7 +246,7 @@ pub(super) fn directive_field(
     cache: &Arc<TopicCache>,
     publisher: Arc<dyn TopicPublisher>,
 ) -> Field {
-    let name = def.gql_name.clone();
+    let name = def.gql.clone();
     let def = def.clone();
     let status_topic = status_topic.to_string();
     let status_key = status_key.to_string();
@@ -261,19 +262,19 @@ pub(super) fn directive_field(
         let publisher = publisher.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
             let mut payload = serde_json::Map::new();
-            if let (Some(arg_name), Some(payload_key)) = (&def.arg_name, &def.payload_key) {
+            if let (Some(arg_name), Some(key)) = (&def.arg_name, &def.key) {
                 let given = ctx.args.get(arg_name).map(|v| v.f64()).transpose()?;
                 let value = given.or(def.default);
                 if let Some(v) = value {
                     if let Some(bounds) = &def.bounds {
                         check_bounds(bounds, v).map_err(async_graphql::Error::new)?;
                     }
-                    payload.insert(payload_key.clone(), JsonValue::from(v));
+                    payload.insert(key.clone(), JsonValue::from(v));
                 }
             }
             let status = cached_status(&cache, &status_topic, &status_key)
                 .ok_or_else(|| async_graphql::Error::new(def.missing_error.clone()))?;
-            if !def.allowed_from.iter().any(|s| *s == status) {
+            if !def.allowed_from.contains(&status) {
                 return Err(async_graphql::Error::new(def.precondition_error.clone()));
             }
             let serialized = serde_json::to_string(&JsonValue::Object(payload))
@@ -291,7 +292,7 @@ pub(super) fn directive_field(
                 }
                 if tokio::time::Instant::now() >= deadline {
                     return Err(async_graphql::Error::new(format!(
-                        "Timeout waiting for simulation status '{}'",
+                        "Timeout waiting for status '{}'",
                         def.expect_status
                     )));
                 }
@@ -301,8 +302,8 @@ pub(super) fn directive_field(
         })
     });
     if let Some(arg_name) = arg {
-        // thrs-api: a required arg, or one with a default (`playbackRate: Float!
-        // = 1`) is non-null; only an argument with neither is nullable.
+        // A required arg, or one with a default (`playbackRate: Float! = 1`)
+        // is non-null; only an argument with neither is nullable.
         let mut input = if required || default.is_some() {
             InputValue::new(arg_name, TypeRef::named_nn(TypeRef::FLOAT))
         } else {

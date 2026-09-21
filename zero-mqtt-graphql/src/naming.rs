@@ -57,6 +57,35 @@ fn split_to_words(raw: &str) -> Vec<String> {
     words
 }
 
+/// The GraphQL field name of a payload wire key, as the producers' own
+/// APIs name it: lowerCamelCase with the key's internal capitals kept, so a
+/// PascalCase key (`AvailableSeawaterTemperature`) and a snake_case one
+/// (`adsorption_chiller`) both map to what their snake_case source names
+/// map to (`availableSeawaterTemperature`, `adsorptionChiller`). Unlike
+/// [`sanitize_to_graphql_name`] (topic names, which lowercase every word),
+/// this never lowercases a letter that is not the first.
+pub fn field_name(key: &str) -> String {
+    let mut out = String::new();
+    for (i, word) in key
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|w| !w.is_empty())
+        .enumerate()
+    {
+        let mut chars = word.chars();
+        let Some(first) = chars.next() else { continue };
+        if i == 0 {
+            out.extend(first.to_lowercase());
+        } else {
+            out.extend(first.to_uppercase());
+        }
+        out.push_str(chars.as_str());
+    }
+    if out.chars().next().is_some_and(|c| c.is_ascii_digit()) {
+        out.insert(0, '_');
+    }
+    out
+}
+
 /// PascalCase form of a group id (`power-tags` → `PowerTags`).
 pub fn pascal_case(name: &str) -> String {
     let camel = sanitize_to_graphql_name(name);
@@ -133,6 +162,19 @@ mod tests {
         assert_eq!(sanitize_to_graphql_name("---"), "");
         assert_eq!(sanitize_to_graphql_name("hello"), "hello");
         assert_eq!(sanitize_to_graphql_name("Hello"), "hello");
+    }
+
+    #[test]
+    fn test_field_name_keeps_internal_capitals() {
+        assert_eq!(
+            field_name("AvailableSeawaterTemperature"),
+            "availableSeawaterTemperature"
+        );
+        assert_eq!(field_name("adsorption_chiller"), "adsorptionChiller");
+        assert_eq!(field_name("Status"), "status");
+        assert_eq!(field_name("pvt_flow_main_string1_2"), "pvtFlowMainString12");
+        assert_eq!(field_name("94455001-26"), "_9445500126");
+        assert_eq!(field_name("flow"), "flow");
     }
 
     #[test]

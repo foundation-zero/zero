@@ -1,13 +1,14 @@
 pub mod asyncapi;
 pub mod cache;
 pub mod config;
+pub mod extension;
 pub mod graphql;
 pub mod http;
+pub mod lifecycle_view;
 pub mod metadata;
-pub mod modules_view;
 pub mod mqtt;
 pub mod mutations_view;
 pub mod naming;
 pub mod prefix;
-pub mod recompute;
-pub mod simulation_view;
+pub mod schema;
+pub mod views;

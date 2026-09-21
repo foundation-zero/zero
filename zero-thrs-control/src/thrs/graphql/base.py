@@ -33,9 +33,6 @@ from thrs.control.modules.thrusters import (
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
 from thrs.graphql.messaging import (
-    PAUSE,
-    PLAY,
-    STEP,
     ControlMessaging,
     DirectiveMessaging,
     SimulationMessaging,
@@ -70,6 +67,16 @@ from thrs.input_output.modules.pvt import (
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
+)
+from thrs.spec.contract import (
+    AUTOMATION_MODE_MUTATION_NAME,
+    CONTROL_MUTATION_NAME,
+    PARAMETER_MUTATION_NAME,
+    PAUSE,
+    PLAY,
+    SIMULATION_DIRECTIVE_MUTATION_NAME,
+    SIMULATION_INPUT_MUTATION_NAME,
+    STEP,
 )
 
 type ThrustersMessaging = ControlMessaging[
@@ -151,13 +158,6 @@ class StampedType[T]:
 def get_members(module):
     names = module.__all__ if hasattr(module, "__all__") else dir(module)
     return {name: getattr(module, name) for name in names}
-
-
-CONTROL_MUTATION_NAME = "{module}_control_set_{field}"
-PARAMETER_MUTATION_NAME = "{module}_parameter_set_{field}"
-SIMULATION_INPUT_MUTATION_NAME = "{mode}_simulation_set_{field}"
-AUTOMATION_MODE_MUTATION_NAME = "{module}_set_automation_mode"
-SIMULATION_DIRECTIVE_MUTATION_NAME = "simulation_{directive}"
 
 
 def convert_module(module, class_name_prefix: str):

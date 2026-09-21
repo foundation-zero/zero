@@ -272,6 +272,8 @@ $RECYCLE.BIN/
 
 # Generated AsyncAPI specs (scripts/aggregate-specs.sh)
 /specs/
+# Same specs copied into the zero-mqtt-graphql Docker build context by CI
+/zero-mqtt-graphql/specs/
 
 # Overrides for zero-ui
 !zero-ui/**/lib

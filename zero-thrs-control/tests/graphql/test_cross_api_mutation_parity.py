@@ -4,9 +4,8 @@ and to zero-mqtt-graphql (5103), must publish the *same thing* to MQTT.
 Where ``test_cross_api_parity*.py`` prove read parity, this proves the write
 half of the migration: zero-ui issues the same mutations against whichever API
 it points at, so both must translate a mutation into an identical MQTT publish
-(same topic, same payload). The mqtt-graphql side runs for every module in
-``MQTT_GRAPHQL_MUTATIONS_READY`` (all of them today); the thrs-api side always
-runs, so the contract each mutation must meet is pinned here regardless.
+(same topic, same payload). The thrs-api side runs on its own as well, so the
+contract each mutation must meet is pinned here regardless.
 
 The contract (confirmed empirically against the running stack, see
 ``ControlApiChannels`` in ``thrs.orchestration.comms``):
@@ -48,29 +47,23 @@ import httpx
 import pytest
 from aiomqtt import Client as MqttClient
 
-from tests.graphql.stack_config import mqtt_graphql_config, thrs_api_config
-from thrs.graphql.messaging import PARAMETERS_TIMEOUT_ERROR
-from thrs.spec.asyncapi import all_module_descriptions, build_module_mutations
-
-MQTT_HOST = "localhost"
-MQTT_PORT = 1883
-THRS_API_URL = "http://localhost:5102/graphql"
-MQTT_GRAPHQL_URL = "http://localhost:5103/graphql"
+from tests.graphql.parity import graphql_literal, values_equal
+from tests.graphql.resolved import ResolvedSpec
+from tests.graphql.stack_config import (
+    MQTT_GRAPHQL_URL,
+    MQTT_HOST,
+    MQTT_PORT,
+    THRS_API_URL,
+    mqtt_graphql_config,
+    thrs_api_config,
+)
+from thrs.spec import contract
+from thrs.spec.asyncapi import all_module_descriptions
 
 THRS_API_CONTROLLER_PREFIX = thrs_api_config().mqtt_controller_topic_prefix
 MQTT_GRAPHQL_CONTROLLER_PREFIX = mqtt_graphql_config().mqtt_controller_topic_prefix
 
-# Modules whose zero-mqtt-graphql mutation (write) path is implemented and
-# verified. Empty until the write-path lands: while a module is missing here its
-# mqtt-graphql assertions skip and only the thrs-api contract is checked.
-MQTT_GRAPHQL_MUTATIONS_READY: frozenset[str] = frozenset(
-    {"thrusters", "adsorption", "consumers", "dc", "dhw", "drives", "pcm", "pvt"}
-)
-
-# Float leaves in a published payload: tolerant compare (Python vs Rust format
-# f64s differently by ~1 ULP). Mirrors the read suite's FLOAT_EXACT_MATCH.
-FLOAT_EXACT_MATCH = False
-FLOAT_REL_TOL = 1e-9
+CONTRACT = ResolvedSpec(thrs_api_config())
 
 
 # --- The mutation contract cases -------------------------------------------
@@ -103,22 +96,13 @@ class MutationCase:
     the contract; mqtt-graphql needn't reproduce the spurious error."""
 
 
-THRS_API_ECHO_TIMEOUT = PARAMETERS_TIMEOUT_ERROR
-
-
-def _literal(value: Any) -> str:
-    """GraphQL literal for a mutation argument."""
-    if value is True:
-        return "true"
-    if value is False:
-        return "false"
-    return repr(value)
+THRS_API_ECHO_TIMEOUT = contract.PARAMETERS_TIMEOUT_ERROR
 
 
 def _all_cases() -> tuple[MutationCase, ...]:
-    """Every scalar parameter mutation of every module, built from
-    ``build_module_mutations`` (the same contract mqtt-graphql consumes) and the
-    module's default parameters object. Exhaustive by construction, like the read
+    """Every scalar parameter mutation of every module, built from the
+    contract (the same one mqtt-graphql consumes) and the module's default
+    parameters object. Exhaustive by construction, like the read
     parity suite: a new scalar parameter is covered the moment it appears.
 
     Each mutation sets its field to that field's own default value. That is the
@@ -127,36 +111,30 @@ def _all_cases() -> tuple[MutationCase, ...]:
     which thrs-api enforces on assignment and would reject for an arbitrary
     number. This checks the write mechanism end to end -- read the state,
     republish the whole object to the right topic, byte-for-byte alike on both
-    APIs. That mqtt-graphql *changes* a field is covered by its Rust unit test;
-    that it rejects the same out-of-range values thrs-api does is covered by the
-    ``bounds`` in the mutations spec (Rust unit test); the cross-field
-    invariants a parameters model enforces in a ``model_validator`` are not
-    reproduced by mqtt-graphql (known gap).
+    APIs. That mqtt-graphql *changes* a field, rejects out-of-range values and
+    enforces the cross-field invariants is covered by
+    ``test_mutation_mqtt_effects``.
 
     The seed state carries the (unchanged) default object, so the API's
     ``wait_for_parameters`` matches at once without a running controller."""
     cases: list[MutationCase] = []
     for module, desc in sorted(all_module_descriptions().items()):
-        try:
-            base = json.loads(desc.parameters_cls().model_dump_json(by_alias=True))
-        except Exception:  # noqa: BLE001 - a params model that needs args; skip
-            continue
-        for m in build_module_mutations(module)["mutations"]:
+        base = json.loads(desc.parameters_cls().model_dump_json(by_alias=True))
+        for m in CONTRACT.members[module]["mutations"]:
             # This exhaustive byte-compare suite covers only `parameter`
             # mutations (single scalar into the parameters object). `control`
             # (composite input) and `automationMode` are a different shape -
             # control payloads carry read-time `now()` timestamps that can't be
-            # byte-compared - and are covered by the Rust unit tests and the live
-            # probes instead.
-            if m["kind"] != "parameter":
+            # byte-compared - and are covered by ``test_mutation_mqtt_effects``.
+            if m["kind"] != "setField":
                 continue
-            target = base[m["payloadKey"]]  # the field's own default: always valid
-            expected = {**base, m["payloadKey"]: target}
+            target = base[m["key"]]  # the field's own default: always valid
+            expected = {**base, m["key"]: target}
             cases.append(
                 MutationCase(
-                    name=f"{module}_{m['payloadKey']}",
+                    name=f"{module}_{m['key']}",
                     module=module,
-                    mutation=f"{m['gqlName']}(value: {_literal(target)})",
+                    mutation=f"{m['gql']}(value: {graphql_literal(target)})",
                     selection="__typename",
                     set_topic_suffix="parameters/set",
                     seed_state_suffix="parameters",
@@ -168,10 +146,6 @@ def _all_cases() -> tuple[MutationCase, ...]:
     return tuple(cases)
 
 
-# Only `parameter` mutations so far. Extension points (validated contract):
-#   * manual-control: `{module}ControlSet{Field}` -> `manual-values/set`.
-#   * automation-mode: `{module}SetAutomationMode(automatic:)` ->
-#     `automation-mode/set` (seed `control-mode` state).
 CASES: tuple[MutationCase, ...] = _all_cases()
 
 
@@ -211,26 +185,12 @@ def _post(url: str, query: str) -> httpx._models.Response:
 
 
 def _mutation_query(case: MutationCase, *, with_selection: bool = True) -> str:
-    """Build the mutation query. A parameter mutation now returns the parameters
-    object on *both* APIs (mqtt-graphql builds a per-module return type resolved
-    off the object it just published), so both take the same selection set. The
-    mutation's asserted contract is the MQTT publish it makes; the selection only
-    has to make the query valid for an object return."""
+    """Build the mutation query. A parameter mutation returns the parameters
+    object on both APIs, so both take the same selection set. The mutation's
+    asserted contract is the MQTT publish it makes; the selection only has to
+    make the query valid for an object return."""
     body = f"{{ {case.selection} }}" if with_selection and case.selection else ""
     return f"mutation {{ {case.mutation} {body} }}"
-
-
-def _payloads_equal(a: Any, b: Any) -> bool:
-    """Deep compare two JSON values, floats within tolerance unless exact."""
-    import math
-
-    if isinstance(a, dict) and isinstance(b, dict):
-        return a.keys() == b.keys() and all(_payloads_equal(a[k], b[k]) for k in a)
-    if isinstance(a, list) and isinstance(b, list):
-        return len(a) == len(b) and all(_payloads_equal(x, y) for x, y in zip(a, b))
-    if not FLOAT_EXACT_MATCH and isinstance(a, float) and isinstance(b, float):
-        return math.isclose(a, b, rel_tol=FLOAT_REL_TOL, abs_tol=1e-12)
-    return a == b
 
 
 # --- Tests ------------------------------------------------------------------
@@ -246,6 +206,7 @@ def _assert_thrs_api_response(case: MutationCase, body: dict[str, Any]) -> None:
     assert not errors, f"thrs-api mutation errored: {errors}"
 
 
+@pytest.mark.usefixtures("docker_stack")
 @pytest.mark.parametrize("case", CASES, ids=lambda c: c.name)
 def test_thrs_api_mutation_publishes_expected(case: MutationCase) -> None:
     """Contract (thrs-api side, always on): the mutation publishes the expected
@@ -272,22 +233,17 @@ def test_thrs_api_mutation_publishes_expected(case: MutationCase) -> None:
     )
     published = json.loads(captured[set_topic])
     expected = case.expected_payload()
-    assert _payloads_equal(published, expected), (
+    assert values_equal(published, expected), (
         f"{case.name}: published payload != expected\n"
         f"published={published!r}\nexpected={expected!r}"
     )
 
 
+@pytest.mark.usefixtures("docker_stack")
 @pytest.mark.parametrize("case", CASES, ids=lambda c: c.name)
 def test_mutation_parity_thrs_api_vs_mqtt_graphql(case: MutationCase) -> None:
     """1:1 write parity: the same mutation publishes an identical payload from
-    both APIs. Skipped per module until its mqtt-graphql write-path lands."""
-    if case.module not in MQTT_GRAPHQL_MUTATIONS_READY:
-        pytest.skip(
-            f"mqtt-graphql write-path for {case.module!r} not implemented yet; add "
-            f"it to MQTT_GRAPHQL_MUTATIONS_READY once its mutations publish 1:1."
-        )
-
+    both APIs."""
     thrs_set = f"{THRS_API_CONTROLLER_PREFIX}/{case.module}/{case.set_topic_suffix}"
     mqtt_set = f"{MQTT_GRAPHQL_CONTROLLER_PREFIX}/{case.module}/{case.set_topic_suffix}"
 
@@ -302,7 +258,6 @@ def test_mutation_parity_thrs_api_vs_mqtt_graphql(case: MutationCase) -> None:
     )
     mqtt_captured, mqtt_resp = asyncio.run(
         _capture_during(
-            # Parameter mutations now return the parameters object on both APIs.
             lambda: _post(MQTT_GRAPHQL_URL, _mutation_query(case)),
             f"{MQTT_GRAPHQL_CONTROLLER_PREFIX}/{case.module}/{case.seed_state_suffix}"
             if case.seed_state_suffix
@@ -314,7 +269,7 @@ def test_mutation_parity_thrs_api_vs_mqtt_graphql(case: MutationCase) -> None:
     assert "errors" not in json.loads(mqtt_resp), mqtt_resp
     assert thrs_set in thrs_captured, sorted(thrs_captured)
     assert mqtt_set in mqtt_captured, sorted(mqtt_captured)
-    assert _payloads_equal(
+    assert values_equal(
         json.loads(thrs_captured[thrs_set]), json.loads(mqtt_captured[mqtt_set])
     ), (
         f"{case.name}: payloads differ between APIs\n"

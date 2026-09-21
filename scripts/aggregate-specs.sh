@@ -13,22 +13,20 @@ echo "Generating AsyncAPI specs from all services..."
 STRICT="${AGGREGATE_STRICT:-0}"
 warnings=0
 
-# Bake a chosen MQTT topic prefix into the THRS module-view/mutation specs at
-# generation time. Set THRS_SPEC_DEVICES_PREFIX and/or THRS_SPEC_CONTROLLER_PREFIX
-# to override; unset keeps the historical prefixes (simulation / thrs/controller).
-# zero-mqtt-graphql's PREFIX_STRATEGY=runtime does the same rewrite at load instead.
-view_prefix_args=()
-mutation_prefix_args=()
-simulation_prefix_args=()
-if [ -n "${THRS_SPEC_SIMULATOR_PREFIX:-}" ]; then
-  simulation_prefix_args+=(--simulator-prefix "$THRS_SPEC_SIMULATOR_PREFIX")
-fi
+# Bake a chosen MQTT topic prefix into the THRS spec at generation time. Set
+# THRS_SPEC_DEVICES_PREFIX, THRS_SPEC_CONTROLLER_PREFIX and/or
+# THRS_SPEC_SIMULATOR_PREFIX to override; unset keeps the historical prefixes
+# (simulation / thrs/controller / thrs/simulator). zero-mqtt-graphql's
+# PREFIX_STRATEGY=runtime does the same rewrite at load instead.
+thrs_prefix_args=()
 if [ -n "${THRS_SPEC_DEVICES_PREFIX:-}" ]; then
-  view_prefix_args+=(--devices-prefix "$THRS_SPEC_DEVICES_PREFIX")
+  thrs_prefix_args+=(--devices-prefix "$THRS_SPEC_DEVICES_PREFIX")
 fi
 if [ -n "${THRS_SPEC_CONTROLLER_PREFIX:-}" ]; then
-  view_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
-  mutation_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
+  thrs_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
+fi
+if [ -n "${THRS_SPEC_SIMULATOR_PREFIX:-}" ]; then
+  thrs_prefix_args+=(--simulator-prefix "$THRS_SPEC_SIMULATOR_PREFIX")
 fi
 
 fail_or_warn() {
@@ -39,59 +37,6 @@ fail_or_warn() {
     return 1
   fi
   return 0
-}
-
-# Drop write/command channels that zero-mqtt-graphql can't yet handle
-# (it's read-only today, no GraphQL mutations):
-#   - ":Handler" channels (action=receive) share their MQTT topic with a
-#     sibling ":Publisher" channel -> "duplicate sanitized topic name".
-#   - parametrized ".../Command" topic groups carry actuator setpoint
-#     payloads (Valve/Pump/HeatPump/...) it can't resolve into fields ->
-#     "no payload fields".
-# Also strips any logging line(s) print-asyncapi may emit on stdout
-# before the JSON body, by scanning for the first '{'.
-# TODO: drop this filtering once zero-mqtt-graphql supports mutations.
-filter_thrs_spec() {
-  python3 -c '
-import json
-import sys
-
-raw = sys.stdin.read()
-idx = raw.find("{")
-if idx == -1:
-    sys.exit("no JSON object found in input")
-doc = json.loads(raw[idx:])
-
-channels = doc.get("channels", {})
-operations = doc.get("operations", {})
-messages = doc.get("components", {}).get("messages", {})
-
-
-def topic_of(channel):
-    return channel.get("bindings", {}).get("mqtt", {}).get("topic", "")
-
-
-removed = {
-    key
-    for key, channel in channels.items()
-    if ":Handler" in key or topic_of(channel).endswith("/Command")
-}
-for key in removed:
-    del channels[key]
-    messages.pop(f"{key}:Message", None)
-    messages.pop(f"{key}:SubscribeMessage", None)
-
-removed_refs = {f"#/channels/{key}" for key in removed}
-for key in [
-    k
-    for k, op in operations.items()
-    if op.get("channel", {}).get("$ref", "") in removed_refs
-]:
-    del operations[key]
-
-json.dump(doc, sys.stdout, indent=2)
-sys.stdout.write("\n")
-'
 }
 
 echo "  -> termodinamica"
@@ -122,62 +67,15 @@ if ! (cd "$REPO_ROOT/zero-atpx-nmea" && uv run python -m zero_atpx_nmea asyncapi
   fail_or_warn "atpx-nmea" || exit 1
 fi
 
-# TODO: remove enabled=false once zero-mqtt-graphql can handle thrs-control spec
-THRS_CONTROL_ENABLED=false
-
+# One document (`thrs print-asyncapi`, thrs.spec): the channels of the THRS
+# applications plus the root `x-mqtt-graphql` extension. Sidecar files from
+# earlier generators would be read as AsyncAPI documents, so they are removed
+# first.
 echo "  -> thrs-control"
-if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi "${view_prefix_args[@]}") | filter_thrs_spec > "$SPECS_DIR/thrs-control.json"; then
+rm -f "$SPECS_DIR"/thrs-*-module.json "$SPECS_DIR"/thrs-*-mutations.json \
+  "$SPECS_DIR"/thrs-*-metadata.json "$SPECS_DIR"/thrs-simulation.json
+if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi "${thrs_prefix_args[@]}") > "$SPECS_DIR/thrs-control.json"; then
   fail_or_warn "thrs-control" || exit 1
-fi
-
-echo "  -> thrs-control module metadata"
-# List each module's sensor (and, where present, computed) {field} topics so
-# zero-mqtt-graphql can expose list queries for them (build_module_metadata).
-# Same idea as power-tags' print-metadata, but per module: THRS has one {field}
-# group per module, not a single flat namespace.
-thrs_modules=$(cd "$REPO_ROOT/zero-thrs-control" && uv run python -c   'from thrs.spec.asyncapi import all_module_descriptions; print(" ".join(sorted(all_module_descriptions())))')
-thrs_computed_modules=$(cd "$REPO_ROOT/zero-thrs-control" && uv run python -c   'from thrs.spec.asyncapi import modules_with_computed_fields; print(" ".join(modules_with_computed_fields()))')
-
-for module in $thrs_modules; do
-  echo "     - $module sensors"
-  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind sensors "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-sensors-metadata.json"; then
-    fail_or_warn "thrs-control $module sensors metadata" || exit 1
-  fi
-  if [[ " $thrs_computed_modules " == *" $module "* ]]; then
-    echo "     - $module controller"
-    if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-metadata --module "$module" --kind controller "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-controller-metadata.json"; then
-      fail_or_warn "thrs-control $module controller metadata" || exit 1
-    fi
-  fi
-done
-
-echo "  -> thrs-control module views"
-# The nested view (modules.<module>.sensorValues) that lets the UI query
-# zero-mqtt-graphql 1:1 with thrs-api (build_module_view, modules_view.rs).
-for module in $thrs_modules; do
-  echo "     - $module view"
-  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-view --module "$module" "${view_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-module.json"; then
-    fail_or_warn "thrs-control $module module view" || exit 1
-  fi
-done
-
-echo "  -> thrs-control module mutations"
-# Write-path contract (parameter mutations -> MQTT publish); build_module_mutations
-# in mutations_view.rs uses this to serve thrs-api's mutations 1:1. Only
-# consumed when ENABLE_MUTATIONS is set on the service.
-for module in $thrs_modules; do
-  echo "     - $module mutations"
-  if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-module-mutations --module "$module" "${mutation_prefix_args[@]}") > "$SPECS_DIR/thrs-$module-mutations.json"; then
-    fail_or_warn "thrs-control $module mutations" || exit 1
-  fi
-done
-
-echo "  -> thrs-control simulation view"
-# Simulation contract (status/inputs/outputs relay, play/pause/step directives,
-# per-simulation input mutations); build_simulation_view in simulation_view.rs
-# uses this to serve thrs-api's `simulation` query and simulation mutations 1:1.
-if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-simulation-view "${simulation_prefix_args[@]}") > "$SPECS_DIR/thrs-simulation.json"; then
-  fail_or_warn "thrs-control simulation view" || exit 1
 fi
 
 if [ "$warnings" -gt 0 ]; then

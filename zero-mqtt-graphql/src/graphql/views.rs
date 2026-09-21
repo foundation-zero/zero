@@ -1,146 +1,124 @@
-//! The nested per-module read view: `modules { <module> { sensorValues
-//! controlValues parameters controllerState controlMode } }`, thrs-api's shape
-//! served over the cache from the module-view specs (see
-//! [`crate::modules_view`]).
+//! Composite read views: `<queryField> { <member> { <section> { … } } }`,
+//! served over the cache from the declared views (see [`crate::views`]).
+//! Every name and type here is the producer's own; nothing is hardcoded.
 
 use super::*;
 
-// --- Nested per-module view (`modules { <module> { sensorValues { … } } }`) ---
+// --- Composite views (`<queryField> { <member> { <section> { … } } }`) ---
 
 /// The query field plus every type it needs.
-pub(super) struct ModulesSchemaParts {
-    pub(super) query_field: Field,
+pub(super) struct ViewSchemaParts {
+    pub(super) gql: Field,
     pub(super) objects: Vec<Object>,
 }
 
-/// A sensor field a module serves, with whether it is recomputed from raw
-/// inputs (see [`crate::recompute`]) rather than relayed from its own topic.
-pub(super) struct ServedSensorField<'a> {
-    pub(super) field: &'a ModuleFieldDef,
-    pub(super) recompute: bool,
-}
-
-/// The sensor fields a module serves, in spec order. Drops the `input_only`
-/// collision shadows (a raw sensor thrs-api serves no query field for - it
-/// stays in the view only as a recompute input) and, belt-and-suspenders, any
-/// later duplicate of a camelCase name (async-graphql panics on a duplicate
-/// field, which would take every module down). A computed field is recomputed
-/// when `COMPUTED_MODE` is recompute and its formula is ported; otherwise it
-/// relays its own topic like any sensor field.
-pub(super) fn served_sensor_fields(
-    view: &ModuleView,
-    computed_mode: ComputedMode,
-) -> Vec<ServedSensorField<'_>> {
+/// The fields a stamped section serves, in spec order: every field relays
+/// its own topic. Belt-and-suspenders, drops any later duplicate of a
+/// camelCase name (async-graphql panics on a duplicate field, which would
+/// take the whole view down).
+pub(super) fn served_sensor_fields<'a>(
+    member: &str,
+    section: &'a StampedFieldsSection,
+) -> Vec<&'a StampedFieldDef> {
     let mut seen: BTreeSet<&str> = BTreeSet::new();
-    view.sensor_values
+    section
+        .fields
         .iter()
-        .filter(|f| !f.input_only)
         .filter(|f| {
-            let first = seen.insert(f.gql_field.as_str());
+            let first = seen.insert(f.gql.as_str());
             if !first {
                 warn!(
-                    "module '{}': duplicate sensorValues field '{}' (snake->camel \
+                    "member '{member}': duplicate {} field '{}' (snake->camel \
                      collision); keeping first, skipping topic '{}'",
-                    view.module, f.gql_field, f.topic
+                    section.gql, f.gql, f.topic
                 );
             }
             first
         })
-        .map(|field| ServedSensorField {
-            field,
-            recompute: computed_mode == ComputedMode::Recompute
-                && field.computed
-                && crate::recompute::is_recomputable(&view.module, &field.gql_field),
-        })
         .collect()
 }
 
-/// Build the `modules { … }` query from the loaded specs, or `None` if there
-/// are none (or something already claimed the `modules` field).
+/// Build every declared view: the query field plus every type it needs.
+/// A view whose query field is already claimed is skipped with a warning.
 ///
 /// Container levels resolve to a constant non-null object so their children
 /// run; each leaf resolver reads its own topic from the cache and projects the
-/// `{Value, TimeStamp}` leaves through the `Stamped<Inner>` wrappers. Every
-/// type carries thrs-api's own name, so the two schemas match by name.
-pub(super) fn register_modules_query(
-    module_views: &[ModuleView],
+/// `{Value, TimeStamp}` leaves through the `Stamped<Inner>` wrappers.
+pub(super) fn register_views(
+    views: &[ViewDef],
     cache: &Arc<TopicCache>,
     used_query_fields: &mut BTreeSet<String>,
-    computed_mode: ComputedMode,
     enable_optional_sensor_values: bool,
-) -> Option<ModulesSchemaParts> {
-    let modules_type = &module_views.first()?.modules_type_name;
-    if !used_query_fields.insert("modules".to_string()) {
-        warn!("'modules' query field already claimed — skipping nested module view");
-        return None;
-    }
-
-    let mut objects: Vec<Object> = Vec::new();
-    let mut modules_obj = Object::new(modules_type.as_str());
-    // Component/section types named after the pydantic class are shared across
-    // modules (`ControlPumpType`); register each once.
-    let mut seen_types: BTreeSet<String> = BTreeSet::new();
-
-    for view in module_views {
-        modules_obj = modules_obj.field(constant_object_field(&view.module, &view.type_name));
-        let served = served_sensor_fields(view, computed_mode);
-
-        // The module object carries every read section the UI queries:
-        // `sensorValues` (constant container, one topic per field) plus the
-        // whole-object sections when the spec declares them.
-        let mut module_obj =
-            Object::new(view.type_name.as_str()).field(sensor_values_container_field(
-                &view.sensor_values_type_name,
-                &served,
-                cache,
-                enable_optional_sensor_values,
-            ));
-        for (name, section) in module_object_sections(view) {
-            let Some(section) = section else { continue };
-            module_obj = module_obj.field(object_section_container_field(name, section, cache));
-            objects.extend(object_section_objects(&view.module, section));
+) -> Vec<ViewSchemaParts> {
+    let mut parts = Vec::new();
+    for view in views {
+        if !used_query_fields.insert(view.gql.clone()) {
+            warn!("'{}' query field already claimed — skipping view", view.gql);
+            continue;
         }
-        if let Some(cm) = &view.control_mode {
-            let (field, cm_objects) = control_mode_section(cm, cache);
-            module_obj = module_obj.field(field);
-            objects.extend(cm_objects);
-        }
-        objects.push(module_obj);
+        let mut objects: Vec<Object> = Vec::new();
+        let mut view_obj = Object::new(view.type_name.as_str());
+        // Component/section types named after the producer's class are shared
+        // across members (`ControlPumpType`); register each once.
+        let mut seen_types: BTreeSet<String> = BTreeSet::new();
 
-        // gqlField -> topic for every sensor field (shadows included), so a
-        // recomputed computed field can read its raw inputs by name.
-        let field_topics: Arc<BTreeMap<String, String>> = Arc::new(
-            view.sensor_values
-                .iter()
-                .map(|f| (f.gql_field.clone(), f.topic.clone()))
-                .collect(),
-        );
-
-        let mut sensor_values_obj = Object::new(view.sensor_values_type_name.as_str());
-        for ServedSensorField { field, recompute } in served {
-            let sensor_field = if recompute {
-                module_recompute_field(field, cache, &view.module, field_topics.clone())
-            } else {
-                module_sensor_field(field, cache, enable_optional_sensor_values)
-            };
-            sensor_values_obj = sensor_values_obj.field(sensor_field);
-            if seen_types.insert(field.type_name.clone()) {
-                objects.push(module_field_object(field));
+        for member in &view.members {
+            view_obj = view_obj.field(constant_object_field(&member.gql, &member.type_name));
+            let mut member_obj = Object::new(member.type_name.as_str());
+            for section in &member.sections {
+                match section {
+                    SectionDef::StampedFields(stamped) => {
+                        let served = served_sensor_fields(&member.gql, stamped);
+                        member_obj = member_obj.field(sensor_values_container_field(
+                            &stamped.gql,
+                            &stamped.type_name,
+                            &served,
+                            cache,
+                            enable_optional_sensor_values,
+                        ));
+                        let mut section_obj = Object::new(stamped.type_name.as_str());
+                        for field in served {
+                            section_obj = section_obj.field(module_sensor_field(
+                                field,
+                                cache,
+                                enable_optional_sensor_values,
+                            ));
+                            if seen_types.insert(field.type_name.clone()) {
+                                objects.push(module_field_object(field));
+                            }
+                        }
+                        objects.push(section_obj);
+                    }
+                    SectionDef::Object(object) => {
+                        member_obj = member_obj.field(object_section_container_field(
+                            &object.gql,
+                            &object.section,
+                            cache,
+                        ));
+                        objects.extend(object_section_objects(&member.gql, &object.section));
+                    }
+                    SectionDef::Switch(switch) => {
+                        let (field, switch_objects) =
+                            control_mode_section(&switch.gql, &switch.section, cache);
+                        member_obj = member_obj.field(field);
+                        objects.extend(switch_objects);
+                    }
+                }
             }
+            objects.push(member_obj);
         }
-        objects.push(sensor_values_obj);
+        objects.push(view_obj);
+        parts.push(ViewSchemaParts {
+            gql: constant_object_field(&view.gql, &view.type_name),
+            objects,
+        });
     }
-    objects.push(modules_obj);
-
-    Some(ModulesSchemaParts {
-        query_field: constant_object_field("modules", modules_type),
-        objects,
-    })
+    parts
 }
 
 /// A field that resolves to a constant empty (but non-null) object, so its
 /// children run and read the cache from their own topics. Used for the
-/// `modules` / `<module>` container levels.
+/// view / member container levels.
 pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
     Field::new(name.to_string(), TypeRef::named_nn(type_name), |_ctx| {
         async_graphql::dynamic::FieldFuture::new(async move {
@@ -154,38 +132,41 @@ pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
 /// The `sensorValues` container: thrs-api builds the whole SensorValues model
 /// from its per-field topics and serves null until every (required) field has
 /// arrived, never a partial object. Mirror that: resolve the (empty, constant)
-/// container only when every relayed field's topic is cached; a recomputed
-/// computed field needs no topic of its own. Its children are non-null.
+/// container only when every field's topic is cached. Its children are non-null.
 ///
 /// With `partial` (`ENABLE_OPTIONAL_SENSOR_VALUES`) the container resolves as soon as
 /// any relayed field's topic is complete (or when there is nothing to relay),
 /// and each child serves or nulls itself (see [`module_sensor_field`]).
 pub(super) fn sensor_values_container_field(
+    field_name: &str,
     type_name: &str,
-    served: &[ServedSensorField<'_>],
+    served: &[&StampedFieldDef],
     cache: &Arc<TopicCache>,
     partial: bool,
 ) -> Field {
     let required: Arc<Vec<RequiredTopic>> = Arc::new(
         served
             .iter()
-            .filter(|s| !s.recompute)
-            .map(|s| RequiredTopic::new(&s.field.topic, &s.field.leaves))
+            .map(|f| RequiredTopic::new(&f.topic, &f.leaves))
             .collect(),
     );
     let cache = cache.clone();
-    Field::new("sensorValues", TypeRef::named(type_name), move |_ctx| {
-        let required = required.clone();
-        let cache = cache.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let complete = if partial {
-                section_any_complete(&cache, &required)
-            } else {
-                section_complete(&cache, &required)
-            };
-            Ok(complete.then(|| FieldValue::value(GraphQlValue::Object(Default::default()))))
-        })
-    })
+    Field::new(
+        field_name.to_string(),
+        TypeRef::named(type_name),
+        move |_ctx| {
+            let required = required.clone();
+            let cache = cache.clone();
+            async_graphql::dynamic::FieldFuture::new(async move {
+                let complete = if partial {
+                    section_any_complete(&cache, &required)
+                } else {
+                    section_complete(&cache, &required)
+                };
+                Ok(complete.then(|| FieldValue::value(GraphQlValue::Object(Default::default()))))
+            })
+        },
+    )
 }
 
 /// The `<field>` resolver under the sensorValues object: returns the whole
@@ -197,7 +178,7 @@ pub(super) fn sensor_values_container_field(
 /// topic is cached with every required leaf present, so one missing sensor
 /// never takes its siblings down.
 pub(super) fn module_sensor_field(
-    field: &ModuleFieldDef,
+    field: &StampedFieldDef,
     cache: &Arc<TopicCache>,
     partial: bool,
 ) -> Field {
@@ -209,7 +190,7 @@ pub(super) fn module_sensor_field(
     } else {
         TypeRef::named_nn(&field.type_name)
     };
-    Field::new(field.gql_field.clone(), type_ref, move |_ctx| {
+    Field::new(field.gql.clone(), type_ref, move |_ctx| {
         let topic = topic.clone();
         let required = required.clone();
         let cache = cache.clone();
@@ -222,42 +203,9 @@ pub(super) fn module_sensor_field(
     })
 }
 
-/// The recompute variant of [`module_sensor_field`]: instead of relaying the
-/// computed field's own topic, it derives the payload from the module's raw
-/// sensor topics with thrs-api's formula (see [`crate::recompute`]). Returns
-/// null when the formula isn't ported or its inputs aren't cached, so children
-/// resolve null just like a relayed empty topic.
-pub(super) fn module_recompute_field(
-    field: &ModuleFieldDef,
-    cache: &Arc<TopicCache>,
-    module: &str,
-    field_topics: Arc<BTreeMap<String, String>>,
-) -> Field {
-    let module = module.to_string();
-    let gql_field = field.gql_field.clone();
-    let cache = cache.clone();
-    Field::new(
-        field.gql_field.clone(),
-        TypeRef::named_nn(&field.type_name),
-        move |_ctx| {
-            let module = module.clone();
-            let gql_field = gql_field.clone();
-            let cache = cache.clone();
-            let field_topics = field_topics.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let reader = crate::recompute::InputReader::new(&cache, &field_topics);
-                Ok(
-                    crate::recompute::recompute_field(&module, &gql_field, &reader)
-                        .map(|json| FieldValue::value(json_to_graphql_value(&json))),
-                )
-            })
-        },
-    )
-}
-
 /// One per-field payload object: a `Stamped<Inner>` leaf per declared leaf,
 /// each projecting its raw PascalCase wire key off the cached payload.
-pub(super) fn module_field_object(field: &ModuleFieldDef) -> Object {
+pub(super) fn module_field_object(field: &StampedFieldDef) -> Object {
     field
         .leaves
         .iter()
@@ -272,52 +220,62 @@ pub(super) fn module_field_object(field: &ModuleFieldDef) -> Object {
 /// `automatic: Boolean!` derived from `AutomaticMode` being non-null and
 /// `automaticMode` the module's plain mode object (or null in manual mode).
 pub(super) fn control_mode_section(
-    def: &ControlModeDef,
+    name: &str,
+    def: &SwitchSectionDef,
     cache: &Arc<TopicCache>,
 ) -> (Field, Vec<Object>) {
     let key = Name::new(&def.key);
-    let automatic = Field::new("automatic", TypeRef::named_nn(TypeRef::BOOLEAN), {
-        let key = key.clone();
+    let automatic = Field::new(
+        def.flag_field.clone(),
+        TypeRef::named_nn(TypeRef::BOOLEAN),
+        {
+            let key = key.clone();
+            move |ctx| {
+                let key = key.clone();
+                async_graphql::dynamic::FieldFuture::new(async move {
+                    let parent = ctx.parent_value.try_to_value()?;
+                    let on = match parent {
+                        GraphQlValue::Object(map) => {
+                            !matches!(map.get(&key), None | Some(GraphQlValue::Null))
+                        }
+                        _ => false,
+                    };
+                    Ok(Some(FieldValue::value(on)))
+                })
+            }
+        },
+    );
+    let mode_type = def.object.type_name.clone();
+    let automatic_mode = Field::new(
+        def.object_field.clone(),
+        TypeRef::named(&mode_type),
         move |ctx| {
             let key = key.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
                 let parent = ctx.parent_value.try_to_value()?;
-                let on = match parent {
-                    GraphQlValue::Object(map) => {
-                        !matches!(map.get(&key), None | Some(GraphQlValue::Null))
-                    }
-                    _ => false,
+                let value = match parent {
+                    GraphQlValue::Object(map) => match map.get(&key) {
+                        None | Some(GraphQlValue::Null) => None,
+                        Some(v) => Some(v.clone()),
+                    },
+                    _ => None,
                 };
-                Ok(Some(FieldValue::value(on)))
+                Ok(value.map(FieldValue::value))
             })
-        }
-    });
-    let mode_type = def.automatic_mode.type_name.clone();
-    let automatic_mode = Field::new("automaticMode", TypeRef::named(&mode_type), move |ctx| {
-        let key = key.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => match map.get(&key) {
-                    None | Some(GraphQlValue::Null) => None,
-                    Some(v) => Some(v.clone()),
-                },
-                _ => None,
-            };
-            Ok(value.map(FieldValue::value))
-        })
-    });
+        },
+    );
     let mut objects = vec![Object::new(def.type_name.as_str())
         .field(automatic)
         .field(automatic_mode)];
-    objects.extend(plain_object_types(&def.automatic_mode));
+    objects.extend(plain_object_types(&def.object));
     let section = ObjectSectionDef {
+        operation: None,
         topic: def.topic.clone(),
         type_name: def.type_name.clone(),
         fields: Vec::new(),
     };
     (
-        object_section_container_field("controlMode", &section, cache),
+        object_section_container_field(name, &section, cache),
         objects,
     )
 }
@@ -357,7 +315,7 @@ pub(super) fn plain_field(field: &PlainFieldDef) -> Field {
             other => other,
         }
     };
-    Field::new(field.gql_field.clone(), type_ref, move |ctx| {
+    Field::new(field.gql.clone(), type_ref, move |ctx| {
         let key = key.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
@@ -370,18 +328,6 @@ pub(super) fn plain_field(field: &PlainFieldDef) -> Field {
     })
 }
 
-/// The three optional whole-object sections of a module view, paired with the
-/// GraphQL field name the UI queries them under.
-pub(super) fn module_object_sections(
-    view: &ModuleView,
-) -> [(&'static str, &Option<ObjectSectionDef>); 3] {
-    [
-        ("controlValues", &view.control_values),
-        ("parameters", &view.parameters),
-        ("controllerState", &view.controller_state),
-    ]
-}
-
 /// The `<section>` field under the module object: resolves to the whole cached
 /// object on the section topic, or null when nothing is cached — matching
 /// thrs-api returning null for a section the controller hasn't published.
@@ -391,7 +337,7 @@ pub(super) fn object_section_container_field(
     cache: &Arc<TopicCache>,
 ) -> Field {
     let type_name = section.type_name.as_str();
-    if section.topic.is_empty() && section.fields.iter().any(|f| f.topic.is_some()) {
+    if section.is_per_topic() {
         // Per-topic section (actuated controlValues): assemble the section
         // object from one cached payload per component, keyed like the
         // whole-object form (`{ByAliasKey: payload}`), and only once every
@@ -456,17 +402,17 @@ pub(super) struct RequiredTopic {
 }
 
 impl RequiredTopic {
-    fn new(topic: &str, leaves: &[ModuleLeafDef]) -> Self {
+    fn new(topic: &str, leaves: &[LeafDef]) -> Self {
         Self {
             topic: topic.to_string(),
             keys: leaves
                 .iter()
                 .filter(|l| !l.optional)
-                .map(|l| l.actuated_raw.clone().unwrap_or_else(|| l.raw.clone()))
+                .map(|l| l.actuated_key.clone().unwrap_or_else(|| l.key.clone()))
                 .collect(),
             rekey: leaves
                 .iter()
-                .filter_map(|l| l.actuated_raw.as_ref().map(|a| (a.clone(), l.raw.clone())))
+                .filter_map(|l| l.actuated_key.as_ref().map(|a| (a.clone(), l.key.clone())))
                 .collect(),
         }
     }
@@ -535,11 +481,11 @@ pub(super) fn object_section_objects(module: &str, section: &ObjectSectionDef) -
     let mut seen: BTreeSet<&str> = BTreeSet::new();
     let mut added = 0usize;
     for field in &section.fields {
-        if !seen.insert(field.gql_field.as_str()) {
+        if !seen.insert(field.gql.as_str()) {
             warn!(
-                "module '{module}': duplicate {} field '{}' (snake->camel \
+                "member '{module}': duplicate {} field '{}' (snake->camel \
                  collision); keeping first",
-                section.type_name, field.gql_field
+                section.type_name, field.gql
             );
             continue;
         }
@@ -584,7 +530,7 @@ pub(super) fn object_flat_field(field: &ObjectFieldDef) -> Field {
     } else {
         TypeRef::NonNull(Box::new(base))
     };
-    Field::new(field.gql_field.clone(), type_ref, move |ctx| {
+    Field::new(field.gql.clone(), type_ref, move |ctx| {
         let key = key.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
@@ -606,7 +552,7 @@ pub(super) fn object_flat_field(field: &ObjectFieldDef) -> Field {
 pub(super) fn object_component_field(field: &ObjectFieldDef) -> Field {
     let key = field.key.clone();
     Field::new(
-        field.gql_field.clone(),
+        field.gql.clone(),
         TypeRef::named_nn(field.component_type_name()),
         move |ctx| {
             let key = key.clone();
@@ -650,10 +596,10 @@ pub(super) fn flat_scalar_name(typ: &str) -> String {
     .to_string()
 }
 
-/// One `{value, timestamp}` leaf: field `leaf.gql` reads wire key `leaf.raw`
+/// One `{value, timestamp}` leaf: field `leaf.gql` reads wire key `leaf.key`
 /// off the parent payload, typed as the shared `Stamped<Inner>` wrapper.
-pub(super) fn module_leaf_field(leaf: &ModuleLeafDef) -> Field {
-    let raw_key = Name::new(&leaf.raw);
+pub(super) fn module_leaf_field(leaf: &LeafDef) -> Field {
+    let raw_key = Name::new(&leaf.key);
     let enum_values = leaf.enum_values.clone();
     let default = leaf.default.as_ref().map(json_to_graphql_value);
     // Non-null like thrs-api: a section is null as a whole when incomplete
@@ -691,7 +637,7 @@ pub(super) fn module_leaf_field(leaf: &ModuleLeafDef) -> Field {
 /// The `Stamped<Inner>` wrapper key for a leaf: the enum type name for an enum
 /// leaf (`ControlMode`), `<Scalar>List` for a tuple leaf (`[Float!]` ->
 /// `FloatList`), else the scalar itself.
-pub(super) fn stamped_inner_key(leaf: &ModuleLeafDef) -> String {
+pub(super) fn stamped_inner_key(leaf: &LeafDef) -> String {
     if let Some(name) = &leaf.enum_type {
         return name.clone();
     }
@@ -711,7 +657,7 @@ pub(super) fn stamped_inner_key(leaf: &ModuleLeafDef) -> String {
 /// `PumpControlModeOptionalStampedType`. Distinct from the flat-topic wrappers
 /// (`Stamped<Inner>`) because these carry thrs-api's nullability: `value` is
 /// non-null unless the leaf is optional, `timestamp` always.
-pub(super) fn view_stamped_type_name(leaf: &ModuleLeafDef) -> String {
+pub(super) fn view_stamped_type_name(leaf: &LeafDef) -> String {
     let inner = match stamped_inner_key(leaf).as_str() {
         "Boolean" => "Bool".to_string(),
         "BooleanList" => "BoolList".to_string(),
@@ -722,7 +668,7 @@ pub(super) fn view_stamped_type_name(leaf: &ModuleLeafDef) -> String {
 }
 
 /// The wrapper object for a view leaf (see [`view_stamped_type_name`]).
-pub(super) fn view_stamped_object(leaf: &ModuleLeafDef) -> Object {
+pub(super) fn view_stamped_object(leaf: &LeafDef) -> Object {
     let inner = stamped_inner_key(leaf);
     let value_ref = match stamped_value_type_ref(&inner) {
         r if leaf.optional => r,

@@ -4,50 +4,9 @@ from strawberry.types.union import StrawberryUnion
 
 from thrs.graphql.base import add_simulation_input_mutations
 from thrs.graphql.helpers import pydantic_to_strawberry_type
-from thrs.input_output.modules.adsorption import (
-    AdsorptionSimulationInputs,
-    AdsorptionSimulationOutputs,
-)
-from thrs.input_output.modules.consumers import (
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
-)
-from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
-from thrs.input_output.modules.dhw import (
-    DhwSimulationInputs,
-    DhwSimulationOutputs,
-)
-from thrs.input_output.modules.drives import (
-    DrivesSimulationInputs,
-    DrivesSimulationOutputs,
-)
-from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
-)
-from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
-from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
-from thrs.input_output.modules.thrs import ThrsSimulationInputs, ThrsSimulationOutputs
-from thrs.input_output.modules.thrusters import (
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
-)
+from thrs.runtime.descriptions.simulation import simulation_io_classes
 
-io_mapping = {
-    "thrusters": (ThrustersSimulationInputs, ThrustersSimulationOutputs),
-    "pcm": (PcmSimulationInputs, PcmSimulationOutputs),
-    "pvt": (PvtSimulationInputs, PvtSimulationOutputs),
-    "consumers": (ConsumersSimulationInputs, ConsumersSimulationOutputs),
-    "adsorption": (AdsorptionSimulationInputs, AdsorptionSimulationOutputs),
-    "drives": (DrivesSimulationInputs, DrivesSimulationOutputs),
-    "dc": (DcSimulationInputs, DcSimulationOutputs),
-    "dhw": (DhwSimulationInputs, DhwSimulationOutputs),
-    "high_temperature": (
-        HighTemperatureSimulationInputs,
-        HighTemperatureSimulationOutputs,
-    ),
-    "thrs": (ThrsSimulationInputs, ThrsSimulationOutputs),
-}
+io_mapping = simulation_io_classes()
 
 inputs_strawberry_type_mapping = {
     name: pydantic_to_strawberry_type(inputs)

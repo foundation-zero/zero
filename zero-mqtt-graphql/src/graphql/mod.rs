@@ -7,7 +7,8 @@
 //! - **Group** (`TopicGroupDef`): a parametrized topic family declared by one
 //!   AsyncAPI channel whose address contains `{param}` placeholders, e.g.
 //!   `power-tags/{panel}/{slug}` with MQTT pattern `power-tags/+/+`. A group
-//!   is enumerated by a `*-metadata.json` file listing its concrete topics and
+//!   is enumerated by a `*-metadata.json` file (or an `x-mqtt-graphql` metadata group,
+//!   see `crate::extension`) listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
 //!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
 //!   with live values from the cache.
@@ -35,25 +36,24 @@ use serde_json::Value as JsonValue;
 
 use crate::asyncapi::{FieldDef, ObjectTypeDef, TopicDef, TopicGroupDef};
 use crate::cache::TopicCache;
-use crate::config::ComputedMode;
+use crate::lifecycle_view::{DirectiveDef, LifecycleDef};
 use crate::metadata::{metadata_by_topic, MetadataByTopic, MetadataFile};
-use crate::modules_view::{
-    ControlModeDef, ModuleFieldDef, ModuleLeafDef, ModuleView, ObjectFieldDef, ObjectSectionDef,
-    PlainFieldDef, PlainObjectDef,
+use crate::mutations_view::{Bounds, ConfirmDef, DerivedLeaf, MutationDef, MutationKind};
+use crate::views::{
+    LeafDef, ObjectFieldDef, ObjectSectionDef, PlainFieldDef, PlainObjectDef, SectionDef,
+    StampedFieldDef, StampedFieldsSection, SwitchSectionDef, ViewDef,
 };
-use crate::mutations_view::{Bounds, DerivedLeaf, ModuleMutations, MutationDef};
-use crate::simulation_view::{DirectiveDef, SimulationView};
 
-mod modules;
+mod lifecycle;
 mod mutations;
-mod simulation;
+mod views;
 
-use modules::*;
+use lifecycle::*;
 use mutations::*;
-use simulation::*;
+use views::*;
 
-/// thrs-api's timestamp scalar (Strawberry `DateTime`). Values are ISO-8601
-/// strings, normalized to Python `isoformat` shape (see `normalize_timestamp`).
+/// The timestamp scalar: an RFC 3339 string, served exactly as the wire
+/// carries it.
 const DATETIME_SCALAR: &str = "DateTime";
 /// thrs-api's `Void` scalar: the type of an `Empty` placeholder field and of
 /// the simulation directive mutations. Always resolves to null.
@@ -91,22 +91,15 @@ pub struct SchemaInputs<'a> {
     pub groups: &'a [TopicGroupDef],
     pub metadata: &'a [MetadataFile],
     pub object_types: &'a [ObjectTypeDef],
-    /// The nested `modules { <module> { … } }` view (`*-module.json`, see
-    /// [`crate::modules_view`]) - the shape the THRS UI reads.
-    pub module_views: &'a [ModuleView],
-    /// thrs-api's module mutations (`*-mutations.json`, see
-    /// [`crate::mutations_view`]); served only with a `publisher`.
-    pub mutations: &'a [ModuleMutations],
-    /// thrs-api's `simulation` query, directives and input mutations
-    /// (`thrs-simulation.json`, see [`crate::simulation_view`]). The read side
-    /// is always served; the write side needs a `publisher`.
-    pub simulation: Option<&'a SimulationView>,
+    /// Composite read views (`x-mqtt-graphql` views, see [`crate::views`]).
+    pub views: &'a [ViewDef],
+    /// Lifecycles (`x-mqtt-graphql` lifecycles, see [`crate::lifecycle_view`]).
+    /// The read side is always served; the write side needs a `publisher`.
+    pub lifecycles: &'a [LifecycleDef],
     /// Where mutations publish. `None` keeps the schema read-only whatever
     /// `mutations`/`simulation` declare (`ENABLE_MUTATIONS` gates this at the
     /// call site).
     pub publisher: Option<Arc<dyn TopicPublisher>>,
-    /// How computed sensor fields are served (see [`crate::recompute`]).
-    pub computed_mode: ComputedMode,
     /// Serve `sensorValues` per field instead of all-or-nothing (see
     /// [`crate::config::AppConfig::enable_optional_sensor_values`]).
     pub enable_optional_sensor_values: bool,
@@ -129,19 +122,17 @@ pub struct SchemaInputs<'a> {
 /// attribute. Concrete topics annotated in the metadata store gain an additive
 /// `metadata { … }` field on their own object type.
 ///
-/// The module views, mutations and simulation spec add thrs-api's nested
-/// surface on top, named exactly as thrs-api names it.
+/// The views and lifecycles of the `x-mqtt-graphql` extension add a nested
+/// surface on top, named as the extension names it.
 pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow::Result<Schema> {
     let SchemaInputs {
         topics,
         groups,
         metadata,
         object_types,
-        module_views,
-        mutations,
-        simulation,
+        views,
+        lifecycles,
         publisher,
-        computed_mode,
         enable_optional_sensor_values,
     } = inputs;
     validate_topics(topics)?;
@@ -180,21 +171,20 @@ pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow:
     }
     types.extend(objects.into_iter().map(Type::from));
 
-    // Nested per-module view. Additive: `module_views` is empty unless
-    // `*-module.json` specs are loaded, so the flat schema stays the same.
-    if let Some(parts) = register_modules_query(
-        module_views,
+    // Composite views. Additive: without declared views the flat schema stays
+    // the same.
+    for parts in register_views(
+        views,
         &cache,
         &mut used_query_fields,
-        computed_mode,
         enable_optional_sensor_values,
     ) {
-        query = query.field(parts.query_field);
+        query = query.field(parts.gql);
         types.extend(parts.objects.into_iter().map(Type::from));
     }
 
     types.extend(
-        register_stamped_wrapper_objects(topics, groups, module_views, simulation)
+        register_stamped_wrapper_objects(topics, groups, views, lifecycles)
             .into_iter()
             .map(Type::from),
     );
@@ -212,29 +202,27 @@ pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow:
     // Types shared by the read and write side and named exactly as thrs-api
     // names them: the enum types every enum leaf/input uses (`ControlMode`,
     // `PumpControlMode`, ...), and the `DateTime`/`Void` scalars.
-    types.extend(shared_types(module_views, mutations, simulation));
+    types.extend(shared_types(views, lifecycles));
 
     // Mutation type (write-path). Only built when a publisher is present and at
     // least one mutation is declared, so read-only deployments stay read-only.
     // Mutations bring their own supporting types: parameter/control return
     // objects and control input types.
-    let has_mutations = mutations.iter().any(|m| !m.mutations.is_empty());
+    let has_mutations = views.iter().any(|v| v.mutations().next().is_some());
     let mut mutation = match &publisher {
         Some(publisher) if has_mutations => {
-            let (mutation, mutation_types) =
-                register_mutations(mutations, &cache, publisher.clone());
+            let (mutation, mutation_types) = register_mutations(views, &cache, publisher.clone());
             types.extend(mutation_types);
             Some(mutation)
         }
         _ => None,
     };
 
-    // Simulation (thrs-api `simulation { status time inputs outputs }`, the
-    // play/pause/step directives and the input mutations). Read side always;
-    // write side only with a publisher, joining the Mutation type.
-    if let Some(sim) = simulation {
-        let parts = register_simulation(sim, &cache, publisher.clone());
-        query = query.field(parts.query_field);
+    // Lifecycles (a status query, its directives and member mutations). Read
+    // side always; write side only with a publisher, joining the Mutation type.
+    for lifecycle in lifecycles {
+        let parts = register_lifecycle(lifecycle, &cache, publisher.clone());
+        query = query.field(parts.gql);
         types.extend(parts.types);
         if !parts.mutation_fields.is_empty() {
             let obj = mutation.take().unwrap_or_else(|| Object::new("Mutation"));
@@ -248,13 +236,9 @@ pub fn build_schema(cache: Arc<TopicCache>, inputs: SchemaInputs<'_>) -> anyhow:
 /// The types both the read and the write side refer to by thrs-api's exact
 /// names: one GraphQL `Enum` per Python enum class (members = the member names
 /// in `enum_values`), plus the `DateTime` and `Void` scalars. Collected across
-/// every module view, mutation spec and the simulation spec, deduped by name
-/// (the same class is reused across modules and simulations).
-fn shared_types(
-    module_views: &[ModuleView],
-    mutations: &[ModuleMutations],
-    simulation: Option<&SimulationView>,
-) -> Vec<Type> {
+/// every view (sections and mutations) and lifecycle, deduped by name (the
+/// same class is reused across members and lifecycles).
+fn shared_types(views: &[ViewDef], lifecycles: &[LifecycleDef]) -> Vec<Type> {
     let mut enums: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
     let mut add = |name: &Option<String>, values: &Option<BTreeMap<String, String>>| {
         if let (Some(name), Some(values)) = (name, values) {
@@ -264,40 +248,24 @@ fn shared_types(
                 .extend(values.values().cloned());
         }
     };
-    for view in module_views {
-        for leaf in view.sensor_values.iter().flat_map(|f| f.leaves.iter()) {
-            add(&leaf.enum_type, &leaf.enum_values);
-        }
-        for leaf in [
-            &view.control_values,
-            &view.parameters,
-            &view.controller_state,
-        ]
-        .into_iter()
-        .flatten()
-        .flat_map(|s| s.fields.iter())
-        .flat_map(|f| f.leaves.iter())
-        {
-            add(&leaf.enum_type, &leaf.enum_values);
-        }
+    for leaf in views.iter().flat_map(|v| v.leaves()) {
+        add(&leaf.enum_type, &leaf.enum_values);
     }
-    for f in mutations
+    for f in views
         .iter()
-        .flat_map(|m| m.mutations.iter())
-        .flat_map(|d| d.input_fields.iter())
+        .flat_map(|v| v.mutations())
+        .flat_map(|(_, d)| d.input_fields.iter())
     {
         add(&f.enum_type, &f.enum_values);
     }
-    if let Some(sim) = simulation {
-        for leaf in sim
-            .simulations
-            .iter()
-            .flat_map(|s| s.inputs.fields.iter().chain(s.outputs.fields.iter()))
-            .flat_map(|f| f.leaves.iter())
-        {
+    for lifecycle in lifecycles {
+        for leaf in lifecycle.leaves() {
             add(&leaf.enum_type, &leaf.enum_values);
         }
-        for f in sim.mutations().flat_map(|(_, d)| d.input_fields.iter()) {
+        for f in lifecycle
+            .mutations()
+            .flat_map(|(_, d)| d.input_fields.iter())
+        {
             add(&f.enum_type, &f.enum_values);
         }
     }
@@ -375,18 +343,13 @@ fn finish_schema(
 ) -> anyhow::Result<Schema> {
     let mutation_name = mutation.as_ref().map(|m| m.type_name().to_string());
     let builder = Schema::build(query.type_name(), mutation_name.as_deref(), None).register(query);
-    // thrs-api names a component's input type after its Python class
-    // (`AdsorptionChillerInputType`), and two different components can share a
-    // class name (control vs. simulation `AdsorptionChiller`). Strawberry then
-    // serves the first definition it registered (the module's control input);
-    // the later, differently-shaped one is silently dropped and its mutation
-    // takes the winner's shape. Mirror that: keep the first input object per
-    // name instead of letting a later registration replace it.
+    // Two components can share an input type name (control vs. simulation
+    // `AdsorptionChiller`); the first definition wins, as in Strawberry.
     let mut seen_inputs: BTreeSet<String> = BTreeSet::new();
     let builder = types.into_iter().fold(builder, |builder, ty| match ty {
         Type::InputObject(input) if !seen_inputs.insert(input.type_name().to_string()) => {
             warn!(
-                "input type '{}' defined twice — keeping the first definition (thrs-api's Strawberry does the same)",
+                "input type '{}' defined twice — keeping the first definition",
                 input.type_name()
             );
             builder
@@ -1201,11 +1164,9 @@ fn stamped_wrapper_object(inner: &str) -> Object {
         .field(stamped_timestamp_field(false))
 }
 
-/// The `timestamp` leaf field. Reads the raw `TimeStamp` wire key and normalizes
-/// it to thrs-api's shape: thrs-api parses the wire timestamp into a datetime and
-/// re-serializes it, so a UTC `...Z` becomes `...+00:00` (Strawberry/Python
-/// `datetime.isoformat`). We match that so the two APIs' timestamps are byte
-/// identical; timestamps that already carry an explicit offset pass through.
+/// The `timestamp` leaf field: the raw `TimeStamp` wire value, served as-is.
+/// The wire carries RFC 3339 and so does the `DateTime` scalar; no rendering
+/// is imposed on top (`Z` and `+00:00` are the same instant to a consumer).
 fn stamped_timestamp_field(non_null: bool) -> Field {
     let type_ref = if non_null {
         TypeRef::named_nn(DATETIME_SCALAR)
@@ -1216,33 +1177,15 @@ fn stamped_timestamp_field(non_null: bool) -> Field {
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
             let value = match parent {
-                GraphQlValue::Object(map) => match map.get(&Name::new("TimeStamp")) {
-                    Some(GraphQlValue::String(s)) => GraphQlValue::String(normalize_timestamp(s)),
-                    Some(other) => other.clone(),
-                    None => GraphQlValue::Null,
-                },
+                GraphQlValue::Object(map) => map
+                    .get(&Name::new("TimeStamp"))
+                    .cloned()
+                    .unwrap_or(GraphQlValue::Null),
                 _ => GraphQlValue::Null,
             };
             Ok(Some(FieldValue::value(value)))
         })
     })
-}
-
-/// Normalize a wire timestamp to Python `datetime.isoformat` shape, matching
-/// thrs-api. A trailing `Z` (UTC) becomes `+00:00`; an all-zero fractional part
-/// is dropped (Python omits microseconds when zero). Anything already carrying a
-/// numeric offset is returned unchanged.
-fn normalize_timestamp(s: &str) -> String {
-    let Some(body) = s.strip_suffix('Z') else {
-        return s.to_string();
-    };
-    // Drop a fractional second that is entirely zeros (`.0`, `.000000`, ...),
-    // which Python's isoformat leaves off.
-    let body = match body.split_once('.') {
-        Some((head, frac)) if frac.chars().all(|c| c == '0') => head,
-        _ => body,
-    };
-    format!("{body}+00:00")
 }
 
 /// One `Stamped<T>` field: reads `raw_key` (the published JSON key, e.g.
@@ -1280,8 +1223,8 @@ fn nullable(value: GraphQlValue) -> Option<FieldValue<'static>> {
 fn register_stamped_wrapper_objects(
     topics: &[TopicDef],
     groups: &[TopicGroupDef],
-    module_views: &[ModuleView],
-    simulation: Option<&SimulationView>,
+    views: &[ViewDef],
+    lifecycles: &[LifecycleDef],
 ) -> Vec<Object> {
     let mut inner_types: BTreeSet<String> = BTreeSet::new();
     let all_fields = topics
@@ -1293,34 +1236,16 @@ fn register_stamped_wrapper_objects(
             inner_types.insert(inner.to_string());
         }
     }
-    // Module-view leaves are Stamped<Inner> too; the inner scalar comes
-    // straight from the spec (`ModuleLeafDef::type`). This covers sensorValues
-    // fields and the component fields of the whole-object sections
-    // (controlValues/controllerState), which share the same leaf shape.
-    let section_leaves = module_views
+    // View and lifecycle leaves are Stamped<Inner> too; the inner scalar comes
+    // straight from the spec (`LeafDef::type`).
+    let view_leaves = views
         .iter()
-        .flat_map(|v| {
-            [&v.control_values, &v.parameters, &v.controller_state]
-                .into_iter()
-                .flatten()
-        })
-        .flat_map(|s| s.fields.iter())
-        .flat_map(|f| f.leaves.iter());
-    let simulation_leaves = simulation
-        .into_iter()
-        .flat_map(|sim| sim.simulations.iter())
-        .flat_map(|s| s.inputs.fields.iter().chain(s.outputs.fields.iter()))
-        .flat_map(|f| f.leaves.iter());
-    // View leaves get thrs-api's own wrapper types (named and nullable exactly
-    // like Strawberry's `FloatStampedType` etc.), one per distinct name.
+        .flat_map(|v| v.leaves())
+        .chain(lifecycles.iter().flat_map(|l| l.leaves()));
+    // View leaves get the producer's own wrapper types (named and nullable
+    // exactly like its API's `FloatStampedType` etc.), one per distinct name.
     let mut view_wrappers: BTreeMap<String, Object> = BTreeMap::new();
-    for leaf in module_views
-        .iter()
-        .flat_map(|v| v.sensor_values.iter())
-        .flat_map(|f| f.leaves.iter())
-        .chain(section_leaves)
-        .chain(simulation_leaves)
-    {
+    for leaf in view_leaves {
         view_wrappers
             .entry(view_stamped_type_name(leaf))
             .or_insert_with(|| view_stamped_object(leaf));
@@ -1486,9 +1411,137 @@ mod tests {
     use super::*;
     use crate::asyncapi::FieldDef;
     use crate::http::router;
+    use crate::views::{MemberDef, ObjectSection, SwitchSection};
     use axum::http::StatusCode;
     use serde_json::json;
     use tower::ServiceExt;
+
+    // Per-module fixture shapes, converted into the view/member/section
+    // model by `schema_views`.
+    #[derive(Default, Clone)]
+    struct ModuleView {
+        module: String,
+        modules_type_name: String,
+        type_name: String,
+        sensor_values_type_name: String,
+        sensor_values: Vec<StampedFieldDef>,
+        control_values: Option<ObjectSectionDef>,
+        parameters: Option<ObjectSectionDef>,
+        controller_state: Option<ObjectSectionDef>,
+        control_mode: Option<ControlModeDef>,
+    }
+
+    #[derive(Default, Clone)]
+    struct ControlModeDef {
+        topic: String,
+        operation: Option<crate::extension::OperationRef>,
+        type_name: String,
+        key: String,
+        automatic_mode: PlainObjectDef,
+    }
+
+    fn member_of(v: &ModuleView) -> MemberDef {
+        let mut sections = vec![SectionDef::StampedFields(StampedFieldsSection {
+            gql: "sensorValues".into(),
+            type_name: v.sensor_values_type_name.clone(),
+            fields: v.sensor_values.clone(),
+        })];
+        for (name, section) in [
+            ("controlValues", &v.control_values),
+            ("parameters", &v.parameters),
+            ("controllerState", &v.controller_state),
+        ] {
+            if let Some(section) = section {
+                sections.push(SectionDef::Object(ObjectSection {
+                    gql: name.into(),
+                    section: section.clone(),
+                }));
+            }
+        }
+        if let Some(cm) = &v.control_mode {
+            sections.push(SectionDef::Switch(SwitchSection {
+                gql: "controlMode".into(),
+                section: SwitchSectionDef {
+                    operation: cm.operation.clone(),
+                    topic: cm.topic.clone(),
+                    type_name: cm.type_name.clone(),
+                    key: cm.key.clone(),
+                    flag_field: "automatic".into(),
+                    object_field: "automaticMode".into(),
+                    object: cm.automatic_mode.clone(),
+                },
+            }));
+        }
+        MemberDef {
+            gql: v.module.clone(),
+            type_name: v.type_name.clone(),
+            sections,
+            mutations: Vec::new(),
+        }
+    }
+
+    /// The `modules` view of the fixtures: each mutation group joins the
+    /// member of its module (created from the group's objects when no view
+    /// fixture declares it) and returns the section matching its kind.
+    fn schema_views(views: &[ModuleView], groups: &[ModuleMutations]) -> Vec<ViewDef> {
+        let mut members: Vec<MemberDef> = views.iter().map(member_of).collect();
+        let type_name = views
+            .first()
+            .map(|v| v.modules_type_name.clone())
+            .unwrap_or_else(|| "ControlModules".into());
+        for g in groups {
+            let position = members.iter().position(|m| m.gql == g.module);
+            let member = match position {
+                Some(i) => &mut members[i],
+                None => {
+                    members.push(MemberDef {
+                        gql: g.module.clone(),
+                        type_name: format!("{}ControlModule", g.module),
+                        sections: Vec::new(),
+                        mutations: Vec::new(),
+                    });
+                    members.last_mut().unwrap()
+                }
+            };
+            for (name, section) in [
+                ("parameters", &g.parameters_object),
+                ("controlValues", &g.control_values_object),
+            ] {
+                if member.object_section(name).is_none() {
+                    member.sections.push(SectionDef::Object(ObjectSection {
+                        gql: name.into(),
+                        section: section.clone(),
+                    }));
+                }
+            }
+            member
+                .mutations
+                .extend(g.mutations.iter().map(|m| MutationDef {
+                    returns: match m.kind {
+                        MutationKind::SetField => Some("parameters".into()),
+                        MutationKind::SetComponent => Some("controlValues".into()),
+                        MutationKind::SetFlag => None,
+                    },
+                    ..m.clone()
+                }));
+        }
+        if members.is_empty() {
+            return Vec::new();
+        }
+        vec![ViewDef {
+            gql: "modules".into(),
+            type_name,
+            members,
+        }]
+    }
+
+    #[derive(Default, Clone)]
+    struct ModuleMutations {
+        module: String,
+        mutations: Vec<MutationDef>,
+        parameters_object: ObjectSectionDef,
+        control_values_object: ObjectSectionDef,
+    }
 
     #[test]
     fn test_check_bounds_accepts_in_range_and_rejects_out_of_range() {
@@ -1754,34 +1807,34 @@ mod tests {
             control_values: None,
             parameters: None,
             controller_state: None,
-            sensor_values: vec![ModuleFieldDef {
-                gql_field: "thrustersFlowcontrolAft".to_string(),
+            sensor_values: vec![StampedFieldDef {
+                gql: "thrustersFlowcontrolAft".to_string(),
                 type_name: "thrustersFlowcontrolAftType".into(),
                 topic: "simulation/500000-thrs/thrusters/thrusters-flowcontrol-aft".to_string(),
+                operation: None,
                 leaves: vec![
-                    ModuleLeafDef {
+                    LeafDef {
                         gql: "positionRel".to_string(),
-                        raw: "PositionRel".to_string(),
+                        key: "PositionRel".to_string(),
                         r#type: "Float".to_string(),
                         enum_values: None,
                         enum_type: None,
                         optional: false,
-                        actuated_raw: None,
+                        actuated_key: None,
                         default: None,
                     },
-                    ModuleLeafDef {
+                    LeafDef {
                         gql: "positionAbs".to_string(),
-                        raw: "PositionAbs".to_string(),
+                        key: "PositionAbs".to_string(),
                         r#type: "Float".to_string(),
                         enum_values: None,
                         enum_type: None,
                         optional: false,
-                        actuated_raw: None,
+                        actuated_key: None,
                         default: None,
                     },
                 ],
                 computed: false,
-                input_only: false,
             }],
         }]
     }
@@ -1803,7 +1856,7 @@ mod tests {
         let schema = build_schema(
             cache,
             SchemaInputs {
-                module_views: &thrusters_module_view(),
+                views: &schema_views(&thrusters_module_view(), &[]),
                 ..Default::default()
             },
         )
@@ -1819,11 +1872,10 @@ mod tests {
         let data: serde_json::Value = response.data.into_json().unwrap();
         let field = &data["modules"]["thrusters"]["sensorValues"]["thrustersFlowcontrolAft"];
         assert_eq!(field["positionRel"]["value"], json!(0.75));
-        // Timestamps are normalized to thrs-api's `+00:00` shape (a UTC `Z` on
-        // the wire becomes `+00:00`), so the two APIs match byte for byte.
+        // The wire timestamp is served as-is (RFC 3339, no re-rendering).
         assert_eq!(
             field["positionRel"]["timestamp"],
-            json!("2024-01-01T00:00:00+00:00")
+            json!("2024-01-01T00:00:00Z")
         );
         assert_eq!(field["positionAbs"]["value"], json!(270.0));
     }
@@ -1834,7 +1886,7 @@ mod tests {
         let schema = build_schema(
             Arc::new(TopicCache::new()),
             SchemaInputs {
-                module_views: &thrusters_module_view(),
+                views: &schema_views(&thrusters_module_view(), &[]),
                 ..Default::default()
             },
         )
@@ -1867,14 +1919,14 @@ mod tests {
             json!({"Flow": {"Value": 1.5, "TimeStamp": "2024-01-01T00:00:00Z"}}),
         );
         let leaf = || {
-            vec![ModuleLeafDef {
+            vec![LeafDef {
                 gql: "flow".to_string(),
-                raw: "Flow".to_string(),
+                key: "Flow".to_string(),
                 r#type: "Float".to_string(),
                 enum_values: None,
                 enum_type: None,
                 optional: false,
-                actuated_raw: None,
+                actuated_key: None,
                 default: None,
             }]
         };
@@ -1888,28 +1940,28 @@ mod tests {
             parameters: None,
             controller_state: None,
             sensor_values: vec![
-                ModuleFieldDef {
-                    gql_field: "pvtFlowMainString12".to_string(),
+                StampedFieldDef {
+                    gql: "pvtFlowMainString12".to_string(),
                     type_name: "pvtFlowMainString12Type".into(),
                     topic: first_topic.to_string(),
+                    operation: None,
                     leaves: leaf(),
                     computed: false,
-                    input_only: false,
                 },
-                ModuleFieldDef {
-                    gql_field: "pvtFlowMainString12".to_string(),
+                StampedFieldDef {
+                    gql: "pvtFlowMainString12".to_string(),
                     type_name: "pvtFlowMainString12Type".into(),
                     topic: "simulation/500000-thrs/pvt/pvt-flow-main-string12".to_string(),
+                    operation: None,
                     leaves: leaf(),
                     computed: false,
-                    input_only: false,
                 },
             ],
         }];
         let schema = build_schema(
             cache,
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -1925,28 +1977,6 @@ mod tests {
         assert_eq!(
             data["modules"]["pvt"]["sensorValues"]["pvtFlowMainString12"]["flow"]["value"],
             json!(1.5)
-        );
-    }
-
-    #[test]
-    fn test_normalize_timestamp_matches_thrs_api_shape() {
-        // A UTC `Z` becomes `+00:00`; an all-zero fractional is dropped; an
-        // explicit offset is left untouched.
-        assert_eq!(
-            normalize_timestamp("2026-09-12T19:34:51.561515Z"),
-            "2026-09-12T19:34:51.561515+00:00"
-        );
-        assert_eq!(
-            normalize_timestamp("2026-09-12T19:34:51Z"),
-            "2026-09-12T19:34:51+00:00"
-        );
-        assert_eq!(
-            normalize_timestamp("2026-09-12T19:34:51.000000Z"),
-            "2026-09-12T19:34:51+00:00"
-        );
-        assert_eq!(
-            normalize_timestamp("2026-09-11T09:45:40.697018+00:00"),
-            "2026-09-11T09:45:40.697018+00:00"
         );
     }
 
@@ -1970,21 +2000,24 @@ mod tests {
             control_mode: None,
             parameters: Some(ObjectSectionDef {
                 topic: params_topic.to_string(),
+                operation: None,
                 type_name: "ThrustersParametersType".into(),
                 fields: vec![
                     ObjectFieldDef {
-                        gql_field: "coolingFlow".to_string(),
+                        gql: "coolingFlow".to_string(),
                         key: "CoolingFlow".to_string(),
                         topic: None,
+                        operation: None,
                         type_name: None,
                         optional: false,
                         r#type: Some("Float".to_string()),
                         leaves: vec![],
                     },
                     ObjectFieldDef {
-                        gql_field: "pumpTuning".to_string(),
+                        gql: "pumpTuning".to_string(),
                         key: "PumpTuning".to_string(),
                         topic: None,
+                        operation: None,
                         type_name: None,
                         optional: false,
                         r#type: Some("[Float!]".to_string()),
@@ -1994,34 +2027,35 @@ mod tests {
             }),
             controller_state: Some(ObjectSectionDef {
                 topic: "thrs/controller/thrusters/controller-state".to_string(),
+                operation: None,
                 type_name: "ThrustersControllerStateType".into(),
                 fields: vec![],
             }),
             // Every real module has sensor fields; one keeps the SensorValues
             // object non-empty (an empty GraphQL object is invalid).
-            sensor_values: vec![ModuleFieldDef {
-                gql_field: "thrustersFlowAft".to_string(),
+            sensor_values: vec![StampedFieldDef {
+                gql: "thrustersFlowAft".to_string(),
                 type_name: "thrustersFlowAftType".into(),
                 topic: "simulation/500000-thrs/thrusters/thrusters-flow-aft".to_string(),
-                leaves: vec![ModuleLeafDef {
+                operation: None,
+                leaves: vec![LeafDef {
                     gql: "flow".to_string(),
-                    raw: "Flow".to_string(),
+                    key: "Flow".to_string(),
                     r#type: "Float".to_string(),
                     enum_values: None,
                     enum_type: None,
                     optional: false,
-                    actuated_raw: None,
+                    actuated_key: None,
                     default: None,
                 }],
                 computed: false,
-                input_only: false,
             }],
             ..Default::default()
         }];
         let schema = build_schema(
             cache,
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -2059,9 +2093,9 @@ mod tests {
             pcs_topic,
             json!({"Mode": {"Value": "off", "TimeStamp": "2024-01-01T00:00:00Z"}}),
         );
-        let enum_leaf = |enum_type: &str, raw_to_name: &[(&str, &str)]| ModuleLeafDef {
+        let enum_leaf = |enum_type: &str, raw_to_name: &[(&str, &str)]| LeafDef {
             gql: "mode".to_string(),
-            raw: "Mode".to_string(),
+            key: "Mode".to_string(),
             r#type: "String".to_string(),
             enum_values: Some(
                 raw_to_name
@@ -2071,7 +2105,7 @@ mod tests {
             ),
             enum_type: Some(enum_type.to_string()),
             optional: false,
-            actuated_raw: None,
+            actuated_key: None,
             default: None,
         };
         let views = vec![ModuleView {
@@ -2084,28 +2118,28 @@ mod tests {
             parameters: None,
             controller_state: None,
             sensor_values: vec![
-                ModuleFieldDef {
-                    gql_field: "mode".to_string(),
+                StampedFieldDef {
+                    gql: "mode".to_string(),
                     type_name: "modeType".into(),
                     topic: mode_topic.to_string(),
+                    operation: None,
                     leaves: vec![enum_leaf("ControlMode", &[("0", "LOCAL"), ("1", "MANUAL")])],
                     computed: false,
-                    input_only: false,
                 },
-                ModuleFieldDef {
-                    gql_field: "thrustersPcs".to_string(),
+                StampedFieldDef {
+                    gql: "thrustersPcs".to_string(),
                     type_name: "thrustersPcsType".into(),
                     topic: pcs_topic.to_string(),
+                    operation: None,
                     leaves: vec![enum_leaf("PcsMode", &[("off", "OFF"), ("on", "ON")])],
                     computed: false,
-                    input_only: false,
                 },
             ],
         }];
         let schema = build_schema(
             cache,
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -2123,7 +2157,7 @@ mod tests {
         assert_eq!(sv["mode"]["mode"]["value"], json!("LOCAL"));
         assert_eq!(
             sv["mode"]["mode"]["timestamp"],
-            json!("2024-01-01T00:00:00+00:00")
+            json!("2024-01-01T00:00:00Z")
         );
         assert_eq!(sv["thrustersPcs"]["mode"]["value"], json!("OFF"));
     }
@@ -2147,23 +2181,44 @@ mod tests {
             module: "thrusters".to_string(),
             mutations: vec![MutationDef {
                 derived: Vec::new(),
-                gql_name: "thrustersParameterSetCoolingFlow".to_string(),
-                kind: "parameter".to_string(),
+                gql: "thrustersParameterSetCoolingFlow".to_string(),
+                kind: MutationKind::SetField,
                 arg_type: "Float".to_string(),
                 arg_name: "value".to_string(),
-                payload_key: "CoolingFlow".to_string(),
+                key: "CoolingFlow".to_string(),
                 state_topic: "thrs/controller/thrusters/parameters".to_string(),
                 set_topic: "thrs/controller/thrusters/parameters/set".to_string(),
+                state: None,
+                target: None,
+                returns: None,
                 bounds: None,
                 true_value: None,
                 false_value: None,
                 input_fields: Vec::new(),
                 input_type_name: None,
                 missing_error: Some("No parameters available to update".to_string()),
+                confirm: None,
+                invariants: Vec::new(),
             }],
             parameters_object: Default::default(),
             control_values_object: Default::default(),
         }]
+    }
+
+    fn automation_mode_mutation() -> Vec<ModuleMutations> {
+        let mut groups = cooling_flow_mutation();
+        let def = &mut groups[0].mutations[0];
+        def.gql = "thrustersSetAutomationMode".to_string();
+        def.kind = MutationKind::SetFlag;
+        def.arg_type = "Boolean".to_string();
+        def.arg_name = "automatic".to_string();
+        def.key = "Mode".to_string();
+        def.state_topic = String::new();
+        def.set_topic = "thrs/controller/thrusters/automation-mode/set".to_string();
+        def.true_value = Some("automatic".to_string());
+        def.false_value = Some("manual".to_string());
+        def.missing_error = None;
+        groups
     }
 
     #[tokio::test]
@@ -2182,7 +2237,7 @@ mod tests {
         let schema = build_schema(
             cache,
             SchemaInputs {
-                mutations: &cooling_flow_mutation(),
+                views: &schema_views(&[], &cooling_flow_mutation()),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -2208,6 +2263,210 @@ mod tests {
         );
     }
 
+    /// A publisher that echoes every publish back into the cache at the
+    /// state topic, as a control loop that accepts the object would.
+    struct EchoingPublisher {
+        cache: Arc<TopicCache>,
+        state_topic: String,
+        sent: Arc<std::sync::Mutex<Vec<(String, String)>>>,
+    }
+
+    impl TopicPublisher for EchoingPublisher {
+        fn publish(&self, topic: String, payload: String) -> PublishFuture {
+            let cache = self.cache.clone();
+            let state_topic = self.state_topic.clone();
+            let sent = self.sent.clone();
+            Box::pin(async move {
+                sent.lock().unwrap().push((topic, payload.clone()));
+                let echoed: serde_json::Value = serde_json::from_str(&payload).unwrap();
+                tokio::spawn(async move {
+                    tokio::time::sleep(std::time::Duration::from_millis(60)).await;
+                    cache.insert(&state_topic, echoed);
+                });
+                Ok(())
+            })
+        }
+    }
+
+    fn confirmed(mut groups: Vec<ModuleMutations>, timeout_s: f64) -> Vec<ModuleMutations> {
+        for def in groups.iter_mut().flat_map(|g| g.mutations.iter_mut()) {
+            def.confirm = Some(ConfirmDef {
+                operation: None,
+                topic: def.state_topic.clone(),
+                key: None,
+                presence: false,
+                timeout_s,
+                timeout_error: "Timeout when setting parameters".to_string(),
+            });
+        }
+        groups
+    }
+
+    #[tokio::test]
+    async fn test_confirmed_mutation_returns_once_the_state_echoes_the_change() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "thrs/controller/thrusters/parameters",
+            json!({"CoolingFlow": 25.0, "WarmupTemperature": 60.0}),
+        );
+        let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let publisher: Arc<dyn TopicPublisher> = Arc::new(EchoingPublisher {
+            cache: cache.clone(),
+            state_topic: "thrs/controller/thrusters/parameters".to_string(),
+            sent: sent.clone(),
+        });
+        let schema = build_schema(
+            cache.clone(),
+            SchemaInputs {
+                views: &schema_views(&[], &confirmed(cooling_flow_mutation(), 2.0)),
+                publisher: Some(publisher),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
+        let response = schema
+            .execute("mutation { thrustersParameterSetCoolingFlow(value: 12) }")
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        // The echo carries the same value as the publish (`12` vs `12.0` is one
+        // wire value), and the cache holds it by the time the mutation returns.
+        assert_eq!(
+            cache.get_field("thrs/controller/thrusters/parameters", "CoolingFlow"),
+            Some(json!(12.0))
+        );
+        assert_eq!(sent.lock().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_confirmed_mutation_times_out_without_an_echo() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "thrs/controller/thrusters/parameters",
+            json!({"CoolingFlow": 25.0}),
+        );
+        let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let publisher: Arc<dyn TopicPublisher> =
+            Arc::new(CapturingPublisher { sent: sent.clone() });
+        let schema = build_schema(
+            cache,
+            SchemaInputs {
+                views: &schema_views(&[], &confirmed(cooling_flow_mutation(), 0.15)),
+                publisher: Some(publisher),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
+        let response = schema
+            .execute("mutation { thrustersParameterSetCoolingFlow(value: 12.34) }")
+            .await;
+        assert_eq!(response.errors.len(), 1, "{:?}", response.errors);
+        assert_eq!(
+            response.errors[0].message,
+            "Timeout when setting parameters"
+        );
+        assert_eq!(sent.lock().unwrap().len(), 1, "published, then timed out");
+    }
+
+    #[tokio::test]
+    async fn test_flag_mutation_is_confirmed_by_the_presence_of_the_switched_object() {
+        let cache = Arc::new(TopicCache::new());
+        let control_mode = "thrs/controller/thrusters/control-mode";
+        cache.insert(control_mode, json!({"AutomaticMode": null}));
+        let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let publisher: Arc<dyn TopicPublisher> = Arc::new(EchoingPublisher {
+            cache: cache.clone(),
+            state_topic: "thrs/controller/thrusters/automation-mode".to_string(),
+            sent: sent.clone(),
+        });
+        let mut groups = automation_mode_mutation();
+        groups[0].mutations[0].confirm = Some(ConfirmDef {
+            operation: None,
+            topic: control_mode.to_string(),
+            key: Some("AutomaticMode".to_string()),
+            presence: true,
+            timeout_s: 0.15,
+            timeout_error: "Timeout when setting automation mode".to_string(),
+        });
+        let schema = build_schema(
+            cache.clone(),
+            SchemaInputs {
+                views: &schema_views(&[], &groups),
+                publisher: Some(publisher),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
+        // Off: the switched object is already null, confirmed at once.
+        let response = schema
+            .execute("mutation { thrustersSetAutomationMode(automatic: false) }")
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        // On: nothing turns the mode on, so the switch never confirms.
+        let response = schema
+            .execute("mutation { thrustersSetAutomationMode(automatic: true) }")
+            .await;
+        assert_eq!(response.errors.len(), 1, "{:?}", response.errors);
+        assert_eq!(
+            response.errors[0].message,
+            "Timeout when setting automation mode"
+        );
+        assert_eq!(sent.lock().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_invariant_violation_errors_and_publishes_nothing() {
+        use crate::mutations_view::{Comparison, InvariantDef};
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "thrs/controller/thrusters/parameters",
+            json!({"CoolingFlow": 25.0, "WarmupTemperature": 60.0, "CoolingTemperature": 40.0}),
+        );
+        let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let publisher: Arc<dyn TopicPublisher> =
+            Arc::new(CapturingPublisher { sent: sent.clone() });
+        let mut groups = cooling_flow_mutation();
+        let def = &mut groups[0].mutations[0];
+        def.key = "WarmupTemperature".to_string();
+        // Warmup must stay above cooling; setting it to 30 breaks that.
+        def.invariants = vec![InvariantDef {
+            lhs: "WarmupTemperature".to_string(),
+            op: Comparison::Ge,
+            rhs: "CoolingTemperature".to_string(),
+            error: "Warmup temperature must be greater than cooling temperature".to_string(),
+        }];
+        let schema = build_schema(
+            cache,
+            SchemaInputs {
+                views: &schema_views(&[], &groups),
+                publisher: Some(publisher),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+
+        let response = schema
+            .execute("mutation { thrustersParameterSetCoolingFlow(value: 30) }")
+            .await;
+        assert_eq!(response.errors.len(), 1, "{:?}", response.errors);
+        assert_eq!(
+            response.errors[0].message,
+            "Warmup temperature must be greater than cooling temperature"
+        );
+        assert!(
+            sent.lock().unwrap().is_empty(),
+            "nothing should be published"
+        );
+
+        let response = schema
+            .execute("mutation { thrustersParameterSetCoolingFlow(value: 45) }")
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        assert_eq!(sent.lock().unwrap().len(), 1);
+    }
+
     #[tokio::test]
     async fn test_mutation_errors_and_publishes_nothing_when_state_uncached() {
         // With no cached parameters object, the mutation errors (like thrs-api's
@@ -2218,7 +2477,7 @@ mod tests {
         let schema = build_schema(
             Arc::new(TopicCache::new()),
             SchemaInputs {
-                mutations: &cooling_flow_mutation(),
+                views: &schema_views(&[], &cooling_flow_mutation()),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -2256,38 +2515,43 @@ mod tests {
             module: "thrusters".to_string(),
             mutations: vec![MutationDef {
                 derived: Vec::new(),
-                gql_name: "thrustersControlSetThrustersPump1".to_string(),
-                kind: "control".to_string(),
+                gql: "thrustersControlSetThrustersPump1".to_string(),
+                kind: MutationKind::SetComponent,
                 arg_type: "Float".to_string(),
                 arg_name: "value".to_string(),
-                payload_key: "thrusters_pump_1".to_string(),
+                key: "thrusters_pump_1".to_string(),
                 state_topic: "thrs/controller/thrusters/manual-values".to_string(),
                 set_topic: "thrs/controller/thrusters/manual-values/set".to_string(),
+                state: None,
+                target: None,
+                returns: None,
                 bounds: None,
                 true_value: None,
                 false_value: None,
                 input_type_name: Some("PumpInputType".to_string()),
                 missing_error: None,
+                confirm: None,
+                invariants: Vec::new(),
                 input_fields: vec![
                     InputFieldDef {
-                        arg_name: "dutypoint".to_string(),
-                        wire_key: "Dutypoint".to_string(),
+                        gql: "dutypoint".to_string(),
+                        key: "Dutypoint".to_string(),
                         r#type: "Float".to_string(),
                         enum_values: None,
                         enum_type: None,
                         required: true,
                     },
                     InputFieldDef {
-                        arg_name: "on".to_string(),
-                        wire_key: "On".to_string(),
+                        gql: "on".to_string(),
+                        key: "On".to_string(),
                         r#type: "Boolean".to_string(),
                         enum_values: None,
                         enum_type: None,
                         required: true,
                     },
                     InputFieldDef {
-                        arg_name: "controlMode".to_string(),
-                        wire_key: "ControlMode".to_string(),
+                        gql: "controlMode".to_string(),
+                        key: "ControlMode".to_string(),
                         r#type: "String".to_string(),
                         enum_values: Some(enum_values),
                         enum_type: Some("PumpControlMode".to_string()),
@@ -2301,7 +2565,7 @@ mod tests {
         let schema = build_schema(
             cache,
             SchemaInputs {
-                mutations: &mutations,
+                views: &schema_views(&[], &mutations),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -2347,7 +2611,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_parameter_mutation_returns_modified_object_and_automation_mode() {
-        use crate::modules_view::ObjectFieldDef;
+        use crate::views::ObjectFieldDef;
         let cache = Arc::new(TopicCache::new());
         cache.insert(
             "thrs/controller/thrusters/parameters",
@@ -2361,54 +2625,67 @@ mod tests {
             mutations: vec![
                 MutationDef {
                     derived: Vec::new(),
-                    gql_name: "thrustersParameterSetCoolingFlow".to_string(),
-                    kind: "parameter".to_string(),
+                    gql: "thrustersParameterSetCoolingFlow".to_string(),
+                    kind: MutationKind::SetField,
                     arg_type: "Float".to_string(),
                     arg_name: "value".to_string(),
-                    payload_key: "CoolingFlow".to_string(),
+                    key: "CoolingFlow".to_string(),
                     state_topic: "thrs/controller/thrusters/parameters".to_string(),
                     set_topic: "thrs/controller/thrusters/parameters/set".to_string(),
+                    state: None,
+                    target: None,
+                    returns: None,
                     bounds: None,
                     true_value: None,
                     false_value: None,
                     input_fields: Vec::new(),
                     input_type_name: None,
                     missing_error: None,
+                    confirm: None,
+                    invariants: Vec::new(),
                 },
                 MutationDef {
                     derived: Vec::new(),
-                    gql_name: "thrustersSetAutomationMode".to_string(),
-                    kind: "automationMode".to_string(),
+                    gql: "thrustersSetAutomationMode".to_string(),
+                    kind: MutationKind::SetFlag,
                     arg_type: "Boolean".to_string(),
                     arg_name: "automatic".to_string(),
-                    payload_key: "Mode".to_string(),
+                    key: "Mode".to_string(),
                     state_topic: "thrs/controller/thrusters/automation-mode".to_string(),
                     set_topic: "thrs/controller/thrusters/automation-mode/set".to_string(),
+                    state: None,
+                    target: None,
+                    returns: None,
                     bounds: None,
                     true_value: Some("automatic".to_string()),
                     false_value: Some("manual".to_string()),
                     input_fields: Vec::new(),
                     input_type_name: None,
                     missing_error: None,
+                    confirm: None,
+                    invariants: Vec::new(),
                 },
             ],
             parameters_object: ObjectSectionDef {
                 topic: String::new(),
+                operation: None,
                 type_name: "ThrustersParametersType".into(),
                 fields: vec![
                     ObjectFieldDef {
-                        gql_field: "coolingFlow".to_string(),
+                        gql: "coolingFlow".to_string(),
                         key: "CoolingFlow".to_string(),
                         topic: None,
+                        operation: None,
                         r#type: Some("Float".to_string()),
                         type_name: None,
                         optional: false,
                         leaves: Vec::new(),
                     },
                     ObjectFieldDef {
-                        gql_field: "warmupTemperature".to_string(),
+                        gql: "warmupTemperature".to_string(),
                         key: "WarmupTemperature".to_string(),
                         topic: None,
+                        operation: None,
                         r#type: Some("Float".to_string()),
                         type_name: None,
                         optional: false,
@@ -2421,7 +2698,7 @@ mod tests {
         let schema = build_schema(
             cache,
             SchemaInputs {
-                mutations: &mutations,
+                views: &schema_views(&[], &mutations),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -2488,8 +2765,8 @@ mod tests {
         let publisher: Arc<dyn TopicPublisher> =
             Arc::new(CapturingPublisher { sent: sent.clone() });
         let leaf = |arg: &str, wire: &str| InputFieldDef {
-            arg_name: arg.to_string(),
-            wire_key: wire.to_string(),
+            gql: arg.to_string(),
+            key: wire.to_string(),
             r#type: "Float".to_string(),
             enum_values: None,
             enum_type: None,
@@ -2508,18 +2785,23 @@ mod tests {
         let mutations = vec![ModuleMutations {
             module: "dhw".to_string(),
             mutations: vec![MutationDef {
-                gql_name: "dhwSimulationSetDhwDrivesSupply".to_string(),
-                kind: "control".to_string(),
+                gql: "dhwSimulationSetDhwDrivesSupply".to_string(),
+                kind: MutationKind::SetComponent,
                 arg_type: String::new(),
                 arg_name: "value".to_string(),
-                payload_key: "DhwDrivesSupply".to_string(),
+                key: "DhwDrivesSupply".to_string(),
                 state_topic: "thrs/simulator/simulation-inputs".to_string(),
                 set_topic: "thrs/simulator/simulation-inputs/set".to_string(),
+                state: None,
+                target: None,
+                returns: None,
                 bounds: None,
                 true_value: None,
                 false_value: None,
                 input_type_name: Some("BoundaryInputType".to_string()),
                 missing_error: None,
+                confirm: None,
+                invariants: Vec::new(),
                 input_fields: vec![leaf("flow", "Flow"), leaf("temperature", "Temperature")],
                 derived: vec![DerivedFieldDef {
                     key: "DrivesFlowRecovery".to_string(),
@@ -2532,7 +2814,7 @@ mod tests {
         let schema = build_schema(
             cache,
             SchemaInputs {
-                mutations: &mutations,
+                views: &schema_views(&[], &mutations),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -2618,7 +2900,7 @@ mod tests {
         let schema = build_schema(
             Arc::new(TopicCache::new()),
             SchemaInputs {
-                mutations: &cooling_flow_mutation(),
+                views: &schema_views(&[], &cooling_flow_mutation()),
                 ..Default::default()
             },
         )
@@ -3192,27 +3474,27 @@ mod tests {
         assert_eq!(data["data"]["testChannel"]["value"], json!(42.0));
     }
 
-    fn leaf(gql: &str, raw: &str, ty: &str) -> ModuleLeafDef {
-        ModuleLeafDef {
+    fn leaf(gql: &str, raw: &str, ty: &str) -> LeafDef {
+        LeafDef {
             gql: gql.to_string(),
-            raw: raw.to_string(),
+            key: raw.to_string(),
             r#type: ty.to_string(),
             enum_values: None,
             enum_type: None,
             optional: false,
-            actuated_raw: None,
+            actuated_key: None,
             default: None,
         }
     }
 
-    fn sensor_field(gql: &str, topic: &str) -> ModuleFieldDef {
-        ModuleFieldDef {
-            gql_field: gql.to_string(),
+    fn sensor_field(gql: &str, topic: &str) -> StampedFieldDef {
+        StampedFieldDef {
+            gql: gql.to_string(),
             type_name: format!("{gql}Type"),
             topic: topic.to_string(),
+            operation: None,
             leaves: vec![leaf("flow", "Flow", "Float")],
             computed: false,
-            input_only: false,
         }
     }
 
@@ -3234,11 +3516,11 @@ mod tests {
             }),
         );
         let mut dutypoint = leaf("dutypoint", "Dutypoint", "Float");
-        dutypoint.actuated_raw = Some("CC_DutyPoint".to_string());
+        dutypoint.actuated_key = Some("CC_DutyPoint".to_string());
         let mut on = leaf("on", "On", "Boolean");
-        on.actuated_raw = Some("CC_OnOff".to_string());
+        on.actuated_key = Some("CC_OnOff".to_string());
         let mut setpoint = leaf("setpoint", "Setpoint", "Float");
-        setpoint.actuated_raw = Some("CC_Setpoint".to_string());
+        setpoint.actuated_key = Some("CC_Setpoint".to_string());
         let views = vec![ModuleView {
             module: "thrusters".to_string(),
             modules_type_name: "ControlModules".into(),
@@ -3246,21 +3528,24 @@ mod tests {
             sensor_values_type_name: "ThrustersSensorValuesType".into(),
             control_values: Some(ObjectSectionDef {
                 topic: String::new(),
+                operation: None,
                 type_name: "ThrustersControlValuesType".to_string(),
                 fields: vec![
                     ObjectFieldDef {
-                        gql_field: "thrustersPump1".to_string(),
+                        gql: "thrustersPump1".to_string(),
                         key: "thrusters_pump1".to_string(),
                         topic: Some(pump_topic.to_string()),
+                        operation: None,
                         type_name: Some("ControlPumpType".to_string()),
                         optional: false,
                         r#type: None,
                         leaves: vec![dutypoint, on],
                     },
                     ObjectFieldDef {
-                        gql_field: "thrustersFlowcontrolAft".to_string(),
+                        gql: "thrustersFlowcontrolAft".to_string(),
                         key: "thrusters_flowcontrol_aft".to_string(),
                         topic: Some(valve_topic.to_string()),
+                        operation: None,
                         type_name: Some("ControlValveType".to_string()),
                         optional: false,
                         r#type: None,
@@ -3274,7 +3559,7 @@ mod tests {
         let schema = build_schema(
             cache.clone(),
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -3338,7 +3623,7 @@ mod tests {
         let schema = build_schema(
             cache.clone(),
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -3387,7 +3672,7 @@ mod tests {
         let schema = build_schema(
             cache.clone(),
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 enable_optional_sensor_values: true,
                 ..Default::default()
             },
@@ -3440,7 +3725,7 @@ mod tests {
         let group = PlainObjectDef {
             type_name: "PvtGroupControlModeType".to_string(),
             fields: vec![PlainFieldDef {
-                gql_field: "mode".to_string(),
+                gql: "mode".to_string(),
                 key: "Mode".to_string(),
                 r#type: Some("String".to_string()),
                 object: None,
@@ -3454,20 +3739,21 @@ mod tests {
             sensor_values_type_name: "PvtSensorValuesType".into(),
             control_mode: Some(ControlModeDef {
                 topic: topic.to_string(),
+                operation: None,
                 type_name: "PvtSwitchingControlModeType".into(),
                 key: "AutomaticMode".to_string(),
                 automatic_mode: PlainObjectDef {
                     type_name: "PvtControlModeType".to_string(),
                     fields: vec![
                         PlainFieldDef {
-                            gql_field: "aft".to_string(),
+                            gql: "aft".to_string(),
                             key: "Aft".to_string(),
                             r#type: None,
                             object: Some(group.clone()),
                             optional: false,
                         },
                         PlainFieldDef {
-                            gql_field: "empty".to_string(),
+                            gql: "empty".to_string(),
                             key: "Empty".to_string(),
                             r#type: None,
                             object: Some(PlainObjectDef {
@@ -3485,7 +3771,7 @@ mod tests {
         let schema = build_schema(
             cache.clone(),
             SchemaInputs {
-                module_views: &views,
+                views: &schema_views(&views, &[]),
                 ..Default::default()
             },
         )
@@ -3514,68 +3800,164 @@ mod tests {
         );
     }
 
-    fn simulation_view() -> SimulationView {
-        serde_json::from_value(json!({
-            "stateTypeName": "SimulationState",
-            "statusTopic": "thrs/simulator/status",
-            "statusKeys": {"status": "Status", "time": "SimulationTime"},
-            "inputsTopic": "thrs/simulator/simulation-inputs",
-            "outputsTopic": "thrs/simulator/simulation-outputs",
-            "inputsSetTopic": "thrs/simulator/simulation-inputs/set",
-            "inputsUnionType": "SimulationInputsType",
-            "outputsUnionType": "SimulationOutputsType",
-            "waitTimeoutS": 0.2,
-            "directives": [
-                {"gqlName": "simulationPlay", "topic": "thrs/simulator/play",
-                         "argName": "playbackRate",
-                         "payloadKey": "PlaybackRate", "default": 1.0,
-                         "bounds": {"min": 0.25, "max": 10},
-                         "allowedFrom": ["available", "running"], "expectStatus": "running",
-                         "preconditionError": "Can only play an available or running simulation",
-                         "missingError": "No simulation status available, cannot play"},
-                {"gqlName": "simulationPause", "topic": "thrs/simulator/pause",
-                          "allowedFrom": ["running"],
-                          "expectStatus": "available",
-                          "preconditionError": "Can only pause a running simulation",
-                          "missingError": "No simulation status available, cannot pause"},
-                {"gqlName": "simulationStep", "topic": "thrs/simulator/step",
-                         "argName": "seconds",
-                         "payloadKey": "Seconds", "argRequired": true,
-                         "allowedFrom": ["available"], "expectStatus": "stepping",
-                         "preconditionError": "Can only step an available simulation",
-                         "missingError": "No simulation status available, cannot step"}
-            ],
-            "simulations": [
-                {"name": "thrusters",
-                 "inputs": {"typeName": "ThrustersSimulationInputsType", "fields": [
-                     {"gqlField": "thrustersPcs", "key": "ThrustersPcs",
-                      "typeName": "SimulationPcsType", "leaves": [
-                         {"gql": "mode", "raw": "Mode", "type": "String", "enumType": "PcsMode",
-                          "enumValues": {"0": "OFF", "1": "PROPULSION"}}]}]},
-                 "outputs": {"typeName": "ThrustersSimulationOutputsType", "fields": [
-                     {"gqlField": "thrustersPcmSupply", "key": "ThrustersPcmSupply",
-                      "typeName": "SimulationFlowBoundaryType", "leaves": [
-                         {"gql": "flow", "raw": "Flow", "type": "Float"}]}]},
-                 "mutations": [{"gqlName": "thrustersSimulationSetThrustersPcs",
-                     "kind": "simulation", "argName": "value", "payloadKey": "ThrustersPcs",
-                     "inputTypeName": "PcsInputType",
-                     "inputFields": [{"argName": "mode", "wireKey": "Mode", "type": "String",
-                         "enumType": "PcsMode", "enumValues": {"0": "OFF", "1": "PROPULSION"}}],
-                     "stateTopic": "thrs/simulator/simulation-inputs",
-                     "setTopic": "thrs/simulator/simulation-inputs/set"}]},
-                {"name": "pcm",
-                 "inputs": {"typeName": "PcmSimulationInputsType", "fields": [
-                     {"gqlField": "pcmPvtSupply", "key": "PcmPvtSupply",
-                      "typeName": "SimulationBoundaryType", "leaves": [
-                         {"gql": "flow", "raw": "Flow", "type": "Float"}]}]},
-                 "outputs": {"typeName": "PcmSimulationOutputsType", "fields": [
-                     {"gqlField": "pcmConsumersSupply", "key": "PcmConsumersSupply",
-                      "typeName": "SimulationFlowBoundaryType", "leaves": [
-                         {"gql": "flow", "raw": "Flow", "type": "Float"}]}]},
-                 "mutations": []}
-            ]
-        }))
-        .unwrap()
+    /// The simulation lifecycle as the loader builds it from a document:
+    /// two simulations (thrusters, pcm) with their inputs/outputs types, the
+    /// status object and the play/pause/step directives.
+    fn simulation_view() -> LifecycleDef {
+        use crate::asyncapi::OperationIndex;
+        use crate::extension::fixtures::{op, DOCUMENT};
+        use crate::extension::parse_extension;
+        use roas_asyncapi::v3_0::operation::OperationAction;
+
+        let reference = |name: &str| json!({"$ref": format!("#/components/schemas/{name}")});
+        let components = json!({"schemas": {
+            "PcsMode": {"title": "PcsMode", "type": "integer", "enum": [0, 1],
+                        "x-enum-varnames": ["OFF", "PROPULSION"]},
+            "StampedPcsMode": {"type": "object", "properties": {
+                "Value": reference("PcsMode"), "TimeStamp": {"type": "string"}}},
+            "StampedFloat": {"type": "object", "properties": {
+                "Value": {"type": "number"}, "TimeStamp": {"type": "string"}}},
+            "Pcs": {"title": "Pcs", "type": "object", "properties": {"Mode": reference("StampedPcsMode")}},
+            "Boundary": {"title": "Boundary", "type": "object", "properties": {"Flow": reference("StampedFloat")}},
+            "FlowBoundary": {"title": "FlowBoundary", "type": "object", "properties": {"Flow": reference("StampedFloat")}},
+            "ThrustersInputs": {"type": "object", "properties": {"ThrustersPcs": reference("Pcs")}},
+            "ThrustersOutputs": {"type": "object", "properties": {"ThrustersPcmSupply": reference("FlowBoundary")}},
+            "PcmInputs": {"type": "object", "properties": {"PcmPvtSupply": reference("Boundary")}},
+            "PcmOutputs": {"type": "object", "properties": {"PcmConsumersSupply": reference("FlowBoundary")}},
+            "Status": {"type": "object", "properties": {
+                "Status": {"type": "string"}, "SimulationTime": {"type": "string", "format": "date-time"}}},
+            "Play": {"type": "object", "properties": {
+                "PlaybackRate": {"type": "number", "default": 1.0, "minimum": 0.25, "maximum": 10}}},
+            "Pause": {"type": "object", "properties": {}},
+            "Step": {"type": "object", "properties": {"Seconds": {"type": "number"}}}
+        }});
+        let inputs = json!({"anyOf": [reference("ThrustersInputs"), reference("PcmInputs")]});
+        let outputs = json!({"anyOf": [reference("ThrustersOutputs"), reference("PcmOutputs")]});
+        let operations = OperationIndex::from([
+            (
+                "status.send".to_string(),
+                op(
+                    OperationAction::Send,
+                    "thrs/simulator/status",
+                    "thrs/simulator/status",
+                    reference("Status"),
+                ),
+            ),
+            (
+                "inputs.send".to_string(),
+                op(
+                    OperationAction::Send,
+                    "thrs/simulator/simulation-inputs",
+                    "thrs/simulator/simulation-inputs",
+                    inputs.clone(),
+                ),
+            ),
+            (
+                "inputs.set.receive".to_string(),
+                op(
+                    OperationAction::Receive,
+                    "thrs/simulator/simulation-inputs/set",
+                    "thrs/simulator/simulation-inputs/set",
+                    inputs,
+                ),
+            ),
+            (
+                "outputs.send".to_string(),
+                op(
+                    OperationAction::Send,
+                    "thrs/simulator/simulation-outputs",
+                    "thrs/simulator/simulation-outputs",
+                    outputs,
+                ),
+            ),
+            (
+                "play.receive".to_string(),
+                op(
+                    OperationAction::Receive,
+                    "thrs/simulator/play",
+                    "thrs/simulator/play",
+                    reference("Play"),
+                ),
+            ),
+            (
+                "pause.receive".to_string(),
+                op(
+                    OperationAction::Receive,
+                    "thrs/simulator/pause",
+                    "thrs/simulator/pause",
+                    reference("Pause"),
+                ),
+            ),
+            (
+                "step.receive".to_string(),
+                op(
+                    OperationAction::Receive,
+                    "thrs/simulator/step",
+                    "thrs/simulator/step",
+                    reference("Step"),
+                ),
+            ),
+        ]);
+        let extension = json!({
+            "version": crate::extension::EXTENSION_VERSION,
+            "types": {
+                "SimulationPcsType": {"schema": reference("Pcs")},
+                "SimulationBoundaryType": {"schema": reference("Boundary")},
+                "SimulationFlowBoundaryType": {"schema": reference("FlowBoundary")},
+                "ThrustersSimulationInputsType": {"schema": reference("ThrustersInputs")},
+                "ThrustersSimulationOutputsType": {"schema": reference("ThrustersOutputs")},
+                "PcmSimulationInputsType": {"schema": reference("PcmInputs")},
+                "PcmSimulationOutputsType": {"schema": reference("PcmOutputs")}
+            },
+            "lifecycles": [{
+                "gql": "simulation",
+                "stateTypeName": "SimulationState",
+                "status": {"operation": {"operation": "status.send"}, "key": "Status",
+                           "fields": [{"key": "Status"}, {"key": "SimulationTime", "gql": "time"}]},
+                "objects": [
+                    {"gql": "inputs", "operation": {"operation": "inputs.send"},
+                     "unionType": "SimulationInputsType", "memberSection": "inputs"},
+                    {"gql": "outputs", "operation": {"operation": "outputs.send"},
+                     "unionType": "SimulationOutputsType", "memberSection": "outputs"}
+                ],
+                "waitTimeoutS": 0.2,
+                "directives": [
+                    {"gql": "simulationPlay", "target": {"operation": "play.receive"}, "key": "PlaybackRate",
+                     "allowedFrom": ["available", "running"], "expectStatus": "running",
+                     "preconditionError": "Can only play an available or running simulation",
+                     "missingError": "No simulation status available, cannot play"},
+                    {"gql": "simulationPause", "target": {"operation": "pause.receive"},
+                     "allowedFrom": ["running"], "expectStatus": "available",
+                     "preconditionError": "Can only pause a running simulation",
+                     "missingError": "No simulation status available, cannot pause"},
+                    {"gql": "simulationStep", "target": {"operation": "step.receive"}, "key": "Seconds",
+                     "allowedFrom": ["available"], "expectStatus": "stepping",
+                     "preconditionError": "Can only step an available simulation",
+                     "missingError": "No simulation status available, cannot step"}
+                ],
+                "members": [
+                    {"name": "thrusters",
+                     "sections": [
+                         {"kind": "object", "gql": "inputs", "typeName": "ThrustersSimulationInputsType"},
+                         {"kind": "object", "gql": "outputs", "typeName": "ThrustersSimulationOutputsType"}],
+                     "mutations": [{"gql": "thrustersSimulationSetThrustersPcs",
+                         "kind": "setComponent", "argName": "value", "key": "ThrustersPcs",
+                         "returns": "inputs", "inputTypeName": "PcsInputType",
+                         "state": {"operation": "inputs.send"}, "target": {"operation": "inputs.set.receive"}}]},
+                    {"name": "pcm",
+                     "sections": [
+                         {"kind": "object", "gql": "inputs", "typeName": "PcmSimulationInputsType"},
+                         {"kind": "object", "gql": "outputs", "typeName": "PcmSimulationOutputsType"}],
+                     "mutations": []}
+                ]
+            }]
+        });
+        let root = BTreeMap::from([(crate::extension::EXTENSION_KEY.to_string(), extension)]);
+        let mut ext = parse_extension(Some(&root), Some(&components), DOCUMENT)
+            .unwrap()
+            .unwrap();
+        ext.resolve(&operations, &[]).unwrap();
+        ext.lifecycles.remove(0)
     }
 
     #[tokio::test]
@@ -3588,7 +3970,7 @@ mod tests {
         let schema = build_schema(
             cache.clone(),
             SchemaInputs {
-                simulation: Some(&sim),
+                lifecycles: std::slice::from_ref(&sim),
                 publisher: Some(publisher),
                 ..Default::default()
             },
@@ -3617,7 +3999,7 @@ mod tests {
         assert_eq!(data["simulation"]["status"], json!("available"));
         assert_eq!(
             data["simulation"]["time"],
-            json!("2026-01-02T03:04:05.678901+00:00")
+            json!("2026-01-02T03:04:05.678901Z")
         );
         assert_eq!(
             data["simulation"]["inputs"]["__typename"],
@@ -3656,7 +4038,7 @@ mod tests {
         );
         assert!(response.errors[0]
             .message
-            .starts_with("Timeout waiting for simulation status"));
+            .starts_with("Timeout waiting for status"));
 
         // Input mutation: restamps the component into the cached inputs object
         // and republishes it; returns the simulation's inputs type.

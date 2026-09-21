@@ -7,10 +7,12 @@ use log::{info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use roas_asyncapi::v3_0::channel::Channel;
 use roas_asyncapi::v3_0::message::Message;
+use roas_asyncapi::v3_0::operation::OperationAction;
 use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SubSchema};
 use roas_asyncapi::v3_0::Document;
 use serde_json::{json, Value};
 
+use crate::extension::{parse_extension, GraphqlExtension};
 use crate::graphql::graphql_type_for_subschema;
 use crate::naming::*;
 
@@ -75,6 +77,284 @@ pub struct ObjectTypeDef {
 /// from multiple fields. Threaded as `&mut` through the schema walk.
 pub type ObjectTypeRegistry = BTreeMap<String, ObjectTypeDef>;
 
+/// A topic (or wildcard pattern) some described application *receives* on,
+/// i.e. one this bridge may publish to. Declared by a channel with a
+/// `receive` operation. Not a query field: the bridge only subscribes to
+/// what an application sends.
+#[derive(Debug, Clone)]
+pub struct PublishTargetDef {
+    pub pattern: String,
+    /// Raw JSON Schema of the payload the receiver expects.
+    pub payload_schema: Option<Value>,
+}
+
+/// One operation of a document, resolved to its channel's topic template so
+/// an extension can name the operation it binds to instead of a raw topic,
+/// and to the payload schema its messages carry so the extension can derive
+/// the GraphQL shape of what it reads or writes there.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OperationDef {
+    pub action: OperationAction,
+    /// The channel's address template without the `:<Role>` suffix, e.g.
+    /// `thrs/controller/{module}/parameters`.
+    pub address: String,
+    /// The MQTT pattern (`{param}` -> `+`).
+    pub pattern: String,
+    /// The document that declares the operation; `$ref`s in `payload` and
+    /// `parameter_schemas` are relative to it.
+    pub document: String,
+    /// The payload schema of the operation's message, as the document
+    /// declares it (a `$ref` into `components.schemas`, or inline).
+    pub payload: Option<Value>,
+    /// For a single-parameter address: the payload schema per parameter
+    /// value (the message's `x-{param}-schema`), which pins each concrete
+    /// topic to the one schema it carries instead of the channel's union.
+    pub parameter_schemas: BTreeMap<String, Value>,
+}
+
+impl OperationDef {
+    /// The payload schema of the concrete topic `parameters` select: the
+    /// per-value schema when the message declares one, else the message's.
+    pub fn schema(&self, parameters: &BTreeMap<String, String>) -> Option<&Value> {
+        parameters
+            .values()
+            .find_map(|value| self.parameter_schemas.get(value))
+            .or(self.payload.as_ref())
+    }
+
+    /// The concrete topic for the given parameter values: every `{param}`
+    /// segment of the address must be supplied, and only those.
+    pub fn topic(&self, parameters: &BTreeMap<String, String>) -> anyhow::Result<String> {
+        let mut used: BTreeSet<&str> = BTreeSet::new();
+        let segments = self
+            .address
+            .split('/')
+            .map(|segment| match param_name(segment) {
+                Some(name) => {
+                    used.insert(name);
+                    parameters.get(name).map(String::as_str).ok_or_else(|| {
+                        anyhow::anyhow!("operation on '{}' needs parameter '{name}'", self.address)
+                    })
+                }
+                None => Ok(segment),
+            })
+            .collect::<anyhow::Result<Vec<_>>>()?;
+        if let Some(extra) = parameters.keys().find(|k| !used.contains(k.as_str())) {
+            anyhow::bail!("operation on '{}' has no parameter '{extra}'", self.address);
+        }
+        Ok(segments.join("/"))
+    }
+}
+
+/// Every operation of every loaded document, by operation key.
+pub type OperationIndex = BTreeMap<String, OperationDef>;
+
+/// Whether an MQTT topic matches a subscription pattern (`+` one level, `#`
+/// the rest); a pattern without wildcards matches only itself.
+pub fn topic_matches(pattern: &str, topic: &str) -> bool {
+    let mut topic_segments = topic.split('/');
+    for pattern_segment in pattern.split('/') {
+        if pattern_segment == "#" {
+            return true;
+        }
+        match topic_segments.next() {
+            Some(segment) if pattern_segment == "+" || pattern_segment == segment => {}
+            _ => return false,
+        }
+    }
+    topic_segments.next().is_none()
+}
+
+/// How a document's operations use one channel: whether some described
+/// application sends on it (so the bridge subscribes) and/or receives on it
+/// (so the bridge may publish). A channel no operation names counts as sent:
+/// older specs declare channels only.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+struct ChannelUse {
+    send: bool,
+    receive: bool,
+    /// Keys of the channel messages the send operations name, in
+    /// operation order: the payloads sent on the channel.
+    send_messages: Vec<String>,
+    /// Keys of the channel messages the receive operations name.
+    receive_messages: Vec<String>,
+}
+
+impl ChannelUse {
+    fn subscribed(&self) -> bool {
+        self.send || !self.receive
+    }
+}
+
+/// The message an operation of one direction carries: the first of the
+/// channel's messages its operations name, else the channel's first message
+/// (a channel with one message needs no operation to say so).
+fn select_message<'a>(
+    channel: &'a Channel,
+    doc: &'a Document,
+    preferred: &[String],
+) -> Option<&'a Message> {
+    preferred
+        .iter()
+        .find_map(|key| channel.messages.get(key))
+        .and_then(|message| resolve_message(message, doc))
+        .or_else(|| channel_messages(channel, doc).into_iter().next())
+}
+
+/// The [`ChannelUse`] of every channel a document's operations name.
+fn channel_uses(doc: &Document) -> BTreeMap<String, ChannelUse> {
+    let mut uses: BTreeMap<String, ChannelUse> = BTreeMap::new();
+    for operation in doc.operations.values() {
+        let RefOr::Item(operation) = operation else {
+            continue;
+        };
+        let Some(key) = operation.channel.local_key() else {
+            continue;
+        };
+        let entry = uses.entry(key).or_default();
+        let messages = operation.messages.iter().filter_map(|r| r.local_key());
+        match operation.action {
+            OperationAction::Send => {
+                entry.send = true;
+                entry.send_messages.extend(messages);
+            }
+            OperationAction::Receive => {
+                entry.receive = true;
+                entry.receive_messages.extend(messages);
+            }
+        }
+    }
+    uses
+}
+
+/// The operations of one document, resolved to their channels' templates.
+/// An operation whose channel is missing or has no address is an error: an
+/// extension may bind to it, and nothing could be resolved for it.
+fn operations_from_document(doc: &Document, path: &Path) -> anyhow::Result<OperationIndex> {
+    let mut index = OperationIndex::new();
+    for (key, operation) in &doc.operations {
+        let RefOr::Item(operation) = operation else {
+            continue;
+        };
+        let channel_key = operation
+            .channel
+            .local_key()
+            .with_context(|| format!("operation '{key}' in {} has no channel", path.display()))?;
+        let channel = doc
+            .channels
+            .get(&channel_key)
+            .and_then(|c| resolve_channel(c, doc))
+            .with_context(|| {
+                format!(
+                    "operation '{key}' in {} names unknown channel '{channel_key}'",
+                    path.display()
+                )
+            })?;
+        let address = channel.address().map(strip_role_suffix).with_context(|| {
+            format!(
+                "channel '{channel_key}' in {} has no address",
+                path.display()
+            )
+        })?;
+        let pattern =
+            mqtt_topic_from_channel(channel).unwrap_or_else(|| wildcard_from_address(&address));
+        let preferred: Vec<String> = operation
+            .messages
+            .iter()
+            .filter_map(|r| r.local_key())
+            .collect();
+        let message = select_message(channel, doc, &preferred);
+        let payload = message.and_then(payload_value);
+        let parameter_schemas = match extract_params(&address).as_slice() {
+            [param] => message
+                .and_then(|m| m.extensions.as_ref())
+                .and_then(|e| e.get(&format!("x-{param}-schema")))
+                .and_then(Value::as_object)
+                .map(|schemas| {
+                    schemas
+                        .iter()
+                        .map(|(k, v)| (k.clone(), v.clone()))
+                        .collect()
+                })
+                .unwrap_or_default(),
+            _ => BTreeMap::new(),
+        };
+        index.insert(
+            key.clone(),
+            OperationDef {
+                action: operation.action,
+                address,
+                pattern,
+                document: path.display().to_string(),
+                payload,
+                parameter_schemas,
+            },
+        );
+    }
+    Ok(index)
+}
+
+/// A message's payload schema as the document declares it: the `$ref` kept
+/// as a reference (so it can be matched against the extension's types), an
+/// inline schema as its JSON.
+fn payload_value(message: &Message) -> Option<Value> {
+    match message.payload.as_ref()? {
+        RefOr::Reference(reference) => Some(json!({"$ref": reference.reference})),
+        RefOr::Item(schema) => serde_json::to_value(schema).ok(),
+    }
+}
+
+/// The channel address without the trailing `:<Role>` (`:Publisher`,
+/// `:Handler`) FastStream appends to name the operation kind; it is not part
+/// of the topic path.
+fn strip_role_suffix(address: &str) -> String {
+    address
+        .rsplit_once(':')
+        .map_or(address, |(path, _role)| path)
+        .to_string()
+}
+
+/// The publish targets of one document: the topic/pattern and payload schema
+/// of every channel some application receives on.
+fn publish_targets_from_document(
+    doc: &Document,
+    path: &Path,
+    uses: &BTreeMap<String, ChannelUse>,
+) -> anyhow::Result<Vec<PublishTargetDef>> {
+    let mut targets: Vec<PublishTargetDef> = Vec::new();
+    for (channel_name, channel_ref) in &doc.channels {
+        let Some(channel_use) = uses.get(channel_name).filter(|u| u.receive) else {
+            continue;
+        };
+        let channel = resolve_channel(channel_ref, doc).with_context(|| {
+            format!(
+                "unresolvable channel $ref '{}' in {}",
+                channel_name,
+                path.display()
+            )
+        })?;
+        let Some(pattern) = mqtt_topic_from_channel(channel).or_else(|| {
+            channel
+                .address()
+                .map(|a| wildcard_from_address(&strip_role_suffix(a)))
+        }) else {
+            continue;
+        };
+        let payload_schema = select_message(channel, doc, &channel_use.receive_messages)
+            .and_then(|message| message.payload.as_ref())
+            .and_then(|payload| resolve_payload_schema(payload, doc))
+            .and_then(|schema| serde_json::to_value(schema).ok());
+        if targets.iter().any(|t| t.pattern == pattern) {
+            continue;
+        }
+        targets.push(PublishTargetDef {
+            pattern,
+            payload_schema,
+        });
+    }
+    Ok(targets)
+}
+
 /// Read and parse every AsyncAPI document in `spec_dir` once, returning
 /// `(file name, path, document)` for each. Non-JSON files and topic-metadata
 /// files are skipped; unreadable or invalid `.json` files are an error —
@@ -101,9 +381,6 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<SpecDocument>> {
         .into_iter()
         .filter(|(_, path)| path.extension().and_then(|e| e.to_str()) == Some("json"))
         .filter(|(_, path)| !crate::metadata::is_metadata_file(path))
-        .filter(|(_, path)| !crate::modules_view::is_module_view_file(path))
-        .filter(|(_, path)| !crate::mutations_view::is_mutations_file(path))
-        .filter(|(_, path)| !crate::simulation_view::is_simulation_view_file(path))
         .map(|(file_name, path)| {
             read_asyncapi_document(&path)
                 .map(|(doc, components)| (file_name, path, doc, components))
@@ -130,6 +407,16 @@ pub struct LoadedSpecs {
     /// topics, in that order, so a later exact-topic entry beats an earlier
     /// wildcard one at validation time.
     pub validators: Vec<ValidatorSpec>,
+    /// Topics/patterns some described application receives on (channels with
+    /// a `receive` operation): where the bridge may publish.
+    pub publish_targets: Vec<PublishTargetDef>,
+    /// Every operation of every document, for extensions that bind to one.
+    pub operations: OperationIndex,
+    /// The `x-mqtt-graphql` specification extension (views, mutations,
+    /// metadata and lifecycles) merged across the documents that carry one,
+    /// resolved against every document's operations; `None` when none does.
+    /// See [`crate::extension`].
+    pub extension: Option<GraphqlExtension>,
 }
 
 pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
@@ -139,10 +426,35 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     let mut topics: Vec<TopicDef> = Vec::new();
     let mut groups: Vec<TopicGroupDef> = Vec::new();
     let mut validators: Vec<ValidatorSpec> = Vec::new();
+    let mut publish_targets: Vec<PublishTargetDef> = Vec::new();
+    let mut operations = OperationIndex::new();
+    let mut extension: Option<GraphqlExtension> = None;
 
     for (_, path, doc, components) in &docs {
-        let doc_topics = topics_from_document(doc, path, &mut object_types)?;
-        let doc_groups = groups_from_document(doc, path, &mut object_types)?;
+        // Direction comes from the operations: the bridge subscribes to what
+        // the described applications send and may publish where they receive.
+        // One topic can be both (THRS's control and API sides are one document).
+        let uses = channel_uses(doc);
+        for (key, operation) in operations_from_document(doc, path)? {
+            if operations.insert(key.clone(), operation).is_some() {
+                anyhow::bail!("operation '{key}' is declared by more than one document");
+            }
+        }
+        publish_targets.extend(publish_targets_from_document(doc, path, &uses)?);
+        if let Some(doc_extension) = parse_extension(
+            doc.extensions.as_ref(),
+            components.as_deref(),
+            &path.display().to_string(),
+        )
+        .with_context(|| format!("in {}", path.display()))?
+        {
+            extension
+                .get_or_insert_with(GraphqlExtension::default)
+                .merge(doc_extension)
+                .with_context(|| format!("in {}", path.display()))?;
+        }
+        let doc_topics = topics_from_document(doc, path, &mut object_types, &uses)?;
+        let doc_groups = groups_from_document(doc, path, &mut object_types, &uses)?;
 
         // Wrap each spec with this doc's raw components so `$ref`s resolve.
         // Topics and group patterns first, then per-field topics (which override
@@ -169,17 +481,39 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     }
 
     info!(
-        "Loaded {} topic(s), {} topic group(s) and {} composite object type(s) from {}",
+        "Loaded {} topic(s), {} topic group(s), {} publish target(s) and {} composite object type(s) from {}",
         topics.len(),
         groups.len(),
+        publish_targets.len(),
         object_types.len(),
         spec_dir
     );
+    // The extension binds to operations of any loaded document, so it is
+    // resolved once every document is in.
+    if let Some(extension) = &mut extension {
+        extension.resolve(&operations, &groups).with_context(|| {
+            format!(
+                "invalid {} extension in {spec_dir}",
+                crate::extension::EXTENSION_KEY
+            )
+        })?;
+        info!(
+            "Loaded {} extension: {} view(s), {} mutation(s), {} lifecycle(s), {} metadata group(s)",
+            crate::extension::EXTENSION_KEY,
+            extension.views.len(),
+            extension.mutation_count(),
+            extension.lifecycles.len(),
+            extension.metadata.len()
+        );
+    }
     Ok(LoadedSpecs {
         topics,
         groups,
         object_types: object_types.into_values().collect(),
         validators,
+        publish_targets,
+        operations,
+        extension,
     })
 }
 
@@ -198,19 +532,23 @@ fn self_contained(schema: &Value, components: &Option<Arc<Value>>) -> Value {
 }
 
 /// Extract concrete topics from one document, erroring on unresolvable
-/// channel references.
+/// channel references. Only channels some application sends on become
+/// topics; a topic declared by several such channels is taken once.
 fn topics_from_document(
     doc: &Document,
     path: &Path,
     object_types: &mut ObjectTypeRegistry,
+    uses: &BTreeMap<String, ChannelUse>,
 ) -> anyhow::Result<Vec<TopicDef>> {
     if doc.channels.is_empty() {
         info!("File {} has no channels, skipping", path.display());
         return Ok(Vec::new());
     }
 
+    let mut seen: BTreeSet<String> = BTreeSet::new();
     doc.channels
         .iter()
+        .filter(|(channel_name, _)| uses.get(*channel_name).is_none_or(ChannelUse::subscribed))
         .map(|(channel_name, channel_ref)| {
             let channel = resolve_channel(channel_ref, doc).with_context(|| {
                 format!(
@@ -219,27 +557,30 @@ fn topics_from_document(
                     path.display()
                 )
             })?;
-            Ok(topic_from_channel(
-                channel_name,
-                channel,
-                doc,
-                path,
-                object_types,
-            ))
+            let preferred = uses.get(channel_name).map(|u| u.send_messages.as_slice());
+            Ok(
+                topic_from_channel(channel_name, channel, doc, path, object_types, preferred)
+                    .filter(|topic| seen.insert(topic.topic.clone())),
+            )
         })
         .collect::<anyhow::Result<Vec<_>>>()
         .map(|topics| topics.into_iter().flatten().collect())
 }
 
 /// Extract parametrized groups from one document, erroring on unresolvable
-/// channel references or malformed parametrized channels.
+/// channel references or malformed parametrized channels. Only channels some
+/// application sends on become groups; a pattern declared by several such
+/// channels is taken once.
 fn groups_from_document(
     doc: &Document,
     path: &Path,
     object_types: &mut ObjectTypeRegistry,
+    uses: &BTreeMap<String, ChannelUse>,
 ) -> anyhow::Result<Vec<TopicGroupDef>> {
+    let mut seen: BTreeSet<String> = BTreeSet::new();
     doc.channels
         .iter()
+        .filter(|(channel_name, _)| uses.get(*channel_name).is_none_or(ChannelUse::subscribed))
         .map(|(channel_name, channel_ref)| {
             let channel = resolve_channel(channel_ref, doc).with_context(|| {
                 format!(
@@ -248,7 +589,11 @@ fn groups_from_document(
                     path.display()
                 )
             })?;
-            group_from_channel(channel_name, channel, doc, path, object_types)
+            let preferred = uses.get(channel_name).map(|u| u.send_messages.as_slice());
+            Ok(
+                group_from_channel(channel_name, channel, doc, path, object_types, preferred)?
+                    .filter(|group| seen.insert(group.pattern.clone())),
+            )
         })
         .collect::<anyhow::Result<Vec<_>>>()
         .map(|groups| groups.into_iter().flatten().collect())
@@ -262,6 +607,7 @@ fn topic_from_channel(
     doc: &Document,
     path: &Path,
     object_types: &mut ObjectTypeRegistry,
+    preferred_messages: Option<&[String]>,
 ) -> Option<TopicDef> {
     // Parametrized channels are handled by groups_from_document.
     let binding_topic = mqtt_topic_from_channel(channel);
@@ -289,7 +635,8 @@ fn topic_from_channel(
         );
     }
 
-    let (fields, payload_schema) = message_fields(channel, doc, object_types);
+    let message = select_message(channel, doc, preferred_messages.unwrap_or_default());
+    let (fields, payload_schema) = message_fields(message, doc, object_types);
 
     Some(TopicDef {
         topic: mqtt_topic,
@@ -309,6 +656,7 @@ fn group_from_channel(
     doc: &Document,
     path: &Path,
     object_types: &mut ObjectTypeRegistry,
+    preferred_messages: Option<&[String]>,
 ) -> anyhow::Result<Option<TopicGroupDef>> {
     let binding_topic = mqtt_topic_from_channel(channel);
     if !is_parametrized_channel(channel.address(), binding_topic.as_deref()) {
@@ -327,12 +675,13 @@ fn group_from_channel(
         .filter(|topic| topic.contains('+') || topic.contains('#'))
         .unwrap_or_else(|| wildcard_from_address(&address));
 
-    let (fields, payload_schema) = message_fields(channel, doc, object_types);
+    let message = select_message(channel, doc, preferred_messages.unwrap_or_default());
+    let (fields, payload_schema) = message_fields(message, doc, object_types);
     let value_extensions = payload_schema
         .as_ref()
         .map(extensions_from_payload_schema)
         .unwrap_or_default();
-    let field_schemas = field_schemas_from_channel(channel, &params, &pattern);
+    let field_schemas = field_schemas_for(message, channel, &params, &pattern);
 
     info!(
         "Loaded topic group '{}' ({}) from {}",
@@ -352,12 +701,14 @@ fn group_from_channel(
     }))
 }
 
-/// Expand the channel's `x-{param}-schema` extension into a map of concrete
-/// topic to the schema that topic carries. Only single-parameter groups (one
-/// `+` in the pattern) are expanded: each value's schema is pinned to `pattern`
-/// with the `+` replaced by that value. Empty when there's no such extension or
-/// the pattern has more than one `+` (e.g. `power-tags/+/+`).
-fn field_schemas_from_channel(
+/// Expand the `x-{param}-schema` extension of the message (or, for older
+/// documents, of the channel) into a map of concrete topic to the schema that
+/// topic carries. Only single-parameter groups (one `+` in the pattern) are
+/// expanded: each value's schema is pinned to `pattern` with the `+` replaced
+/// by that value. Empty when there's no such extension or the pattern has
+/// more than one `+` (e.g. `power-tags/+/+`).
+fn field_schemas_for(
+    message: Option<&Message>,
     channel: &Channel,
     params: &[String],
     pattern: &str,
@@ -367,11 +718,11 @@ fn field_schemas_from_channel(
     if pattern.matches('+').count() != 1 {
         return out;
     }
-    let Some(extensions) = channel.extensions.as_ref() else {
-        return out;
-    };
-    let Some(schema_map) = extensions
-        .get(&format!("x-{param}-schema"))
+    let name = format!("x-{param}-schema");
+    let Some(schema_map) = message
+        .and_then(|m| m.extensions.as_ref())
+        .and_then(|e| e.get(&name))
+        .or_else(|| channel.extensions.as_ref().and_then(|e| e.get(&name)))
         .and_then(Value::as_object)
     else {
         return out;
@@ -454,17 +805,10 @@ fn extract_params(address: &str) -> Vec<String> {
         .collect()
 }
 
-/// Group identity from an address's static segments, all of them, not
-/// just the leading run before the first `{param}`. `power-tags/{panel}/{slug}`
-/// still gives `power-tags` (params are trailing there), but
-/// `thrs/controller/{module}/parameters` now gives
-/// `thrs/controller/parameters` instead of just `thrs/controller`.
-///
-/// Needed because THRS has several `thrs/controller/{module}/<suffix>`
-/// channels (controller-state, parameters, manual-values,
-/// automation-mode/set, ...) that all share the same prefix before
-/// `{module}`. Cutting at the first param collapsed them into one bogus
-/// group and tripped the duplicate-query-name check.
+/// Group identity of an address: all of its static segments, so that
+/// `thrs/controller/{module}/parameters` and
+/// `thrs/controller/{module}/manual-values` are distinct groups
+/// (`thrs/controller/parameters`, `thrs/controller/manual-values`).
 fn group_identity(address: &str) -> Option<String> {
     // Addresses end in `:<Role>` (`controller-state:Publisher`,
     // `{field}:Handler`) that names the AsyncAPI operation kind, not part
@@ -494,16 +838,13 @@ fn wildcard_from_address(address: &str) -> String {
         .join("/")
 }
 
-/// Extract scalar fields + payload schema from the channel's first message.
-///
-/// Channels with multiple messages are not yet union-typed; only the first
-/// message contributes fields and schema.
+/// Extract scalar fields + payload schema from one message of a channel.
 fn message_fields(
-    channel: &Channel,
+    message: Option<&Message>,
     doc: &Document,
     object_types: &mut ObjectTypeRegistry,
 ) -> (Vec<FieldDef>, Option<Value>) {
-    let Some(message) = channel_messages(channel, doc).into_iter().next() else {
+    let Some(message) = message else {
         return (Vec::new(), None);
     };
     // The message payload may be inline or a `$ref` into components; both are
@@ -859,11 +1200,15 @@ fn ttl_from_value(v: Option<&Value>) -> Option<u64> {
     }
 }
 
-/// Parse an `x-ttl` string: plain seconds (`"300"`) or a suffixed form
-/// (`"30s"`, `"5m"`, `"1h"`). Logs and returns `None` on unsupported values.
+/// Parse an `x-ttl` string: plain seconds (`"300"`), a suffixed form
+/// (`"30s"`, `"5m"`, `"1h"`) or `"unbounded"` (the value never expires).
+/// Logs and returns `None` on unsupported values.
 fn parse_ttl_str(s: &str) -> Option<u64> {
     if let Ok(n) = s.parse::<u64>() {
         return Some(n);
+    }
+    if s == "unbounded" {
+        return Some(crate::config::TTL_UNBOUNDED_SECS);
     }
     let (num, mult) = if let Some(num) = s.strip_suffix('h') {
         (num, 3600)
@@ -873,7 +1218,7 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
         (num, 1)
     } else {
         warn!(
-            "Unsupported x-ttl value '{s}' (expected seconds, '30s', '5m' or '1h') — using default"
+            "Unsupported x-ttl value '{s}' (expected seconds, '30s', '5m', '1h' or 'unbounded') — using default"
         );
         return None;
     };
@@ -1015,6 +1360,213 @@ mod tests {
         assert_eq!(topics[0].fields.len(), 3);
         assert_eq!(topics[0].fields[0].name, "celsius");
         assert_eq!(topics[0].fields[0].graphql_type, "Float");
+    }
+
+    /// A channel with only a `receive` operation is a publish target, not a
+    /// query topic; one with both directions is both, once each. Channels
+    /// without operations are query topics (older specs).
+    #[test]
+    fn test_operations_decide_direction() {
+        fn channel(address: &str, topic: &str) -> Value {
+            json!({
+                "address": address,
+                "messages": {"Message": {"payload": {"type": "object", "properties": {"x": {"type": "number"}}}}},
+                "bindings": {"mqtt": {"topic": topic, "qos": 0, "retain": false, "bindingVersion": "0.2.0"}}
+            })
+        }
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "T", "version": "1"},
+            "channels": {
+                "a.b:Publisher": channel("a/b:Publisher", "a/b"),
+                "a.b:Handler": channel("a/b:Handler", "a/b"),
+                "a.c:Handler": channel("a/c:Handler", "a/c"),
+                "legacy": channel("a/d", "a/d"),
+                "g.{p}.x:Publisher": channel("g/{p}/x:Publisher", "g/+/x"),
+                "g.{p}.x:Handler": channel("g/{p}/x:Handler", "g/+/x")
+            },
+            "operations": {
+                "a.b:Publisher": {"action": "send", "channel": {"$ref": "#/channels/a.b:Publisher"}},
+                "a.b:HandlerSubscribe": {"action": "receive", "channel": {"$ref": "#/channels/a.b:Handler"}},
+                "a.c:HandlerSubscribe": {"action": "receive", "channel": {"$ref": "#/channels/a.c:Handler"}},
+                "g.{p}.x:Publisher": {"action": "send", "channel": {"$ref": "#/channels/g.{p}.x:Publisher"}},
+                "g.{p}.x:HandlerSubscribe": {"action": "receive", "channel": {"$ref": "#/channels/g.{p}.x:Handler"}}
+            }
+        });
+        let dir = std::env::temp_dir().join("mqtt-graphql-test-directions");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("t.json"), spec.to_string()).unwrap();
+        let loaded = load_specs_and_groups(dir.to_str().unwrap()).unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+
+        let mut topics: Vec<&str> = loaded.topics.iter().map(|t| t.topic.as_str()).collect();
+        topics.sort();
+        assert_eq!(topics, vec!["a/b", "a/d"]);
+        assert_eq!(loaded.groups.len(), 1);
+        assert_eq!(loaded.groups[0].pattern, "g/+/x");
+        let mut targets: Vec<&str> = loaded
+            .publish_targets
+            .iter()
+            .map(|t| t.pattern.as_str())
+            .collect();
+        targets.sort();
+        assert_eq!(targets, vec!["a/b", "a/c", "g/+/x"]);
+        assert!(loaded.publish_targets[0].payload_schema.is_some());
+
+        let op = &loaded.operations["g.{p}.x:HandlerSubscribe"];
+        assert_eq!(op.action, OperationAction::Receive);
+        assert_eq!(op.address, "g/{p}/x");
+        assert_eq!(op.pattern, "g/+/x");
+        let params = BTreeMap::from([("p".to_string(), "one".to_string())]);
+        assert_eq!(op.topic(&params).unwrap(), "g/one/x");
+        assert!(op.topic(&BTreeMap::new()).is_err());
+        let extra = BTreeMap::from([
+            ("p".to_string(), "one".to_string()),
+            ("q".to_string(), "2".to_string()),
+        ]);
+        assert!(op.topic(&extra).is_err());
+        assert_eq!(
+            loaded.operations["a.b:Publisher"]
+                .topic(&BTreeMap::new())
+                .unwrap(),
+            "a/b"
+        );
+    }
+
+    /// With one channel per address, each direction's operation names the
+    /// message it carries: the query side takes the sent payload (and its
+    /// per-value schemas), the publish target the received one.
+    #[test]
+    fn test_operation_messages_select_the_payload_per_direction() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "T", "version": "1"},
+            "channels": {
+                "ctl.mode": {
+                    "address": "ctl/{module}/mode",
+                    "parameters": {"module": {"enum": ["a"]}},
+                    "messages": {
+                        "sent": {"payload": {"type": "object", "properties": {"Mode": {"type": "string"}}},
+                                 "x-module-schema": {"a": {"type": "object", "properties": {"Mode": {"type": "string"}}}}},
+                        "received": {"payload": {"type": "object", "properties": {"Wrapped": {"type": "number"}}}}
+                    }
+                }
+            },
+            "operations": {
+                "ctl.mode.send": {"action": "send", "channel": {"$ref": "#/channels/ctl.mode"},
+                                  "messages": [{"$ref": "#/channels/ctl.mode/messages/sent"}]},
+                "ctl.mode.receive": {"action": "receive", "channel": {"$ref": "#/channels/ctl.mode"},
+                                     "messages": [{"$ref": "#/channels/ctl.mode/messages/received"}]}
+            }
+        });
+        let dir = std::env::temp_dir().join("mqtt-graphql-test-messages");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("t.json"), spec.to_string()).unwrap();
+        let loaded = load_specs_and_groups(dir.to_str().unwrap()).unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+
+        assert_eq!(loaded.groups.len(), 1);
+        let group = &loaded.groups[0];
+        assert_eq!(group.pattern, "ctl/+/mode");
+        assert_eq!(group.fields[0].name, "Mode");
+        assert_eq!(
+            group.field_schemas.keys().collect::<Vec<_>>(),
+            vec!["ctl/a/mode"]
+        );
+        let target = &loaded.publish_targets[0];
+        assert_eq!(target.pattern, "ctl/+/mode");
+        assert!(target.payload_schema.as_ref().unwrap()["properties"]["Wrapped"].is_object());
+        assert_eq!(
+            loaded.operations["ctl.mode.send"].address,
+            "ctl/{module}/mode"
+        );
+    }
+
+    #[test]
+    fn test_topic_matches() {
+        assert!(topic_matches("a/b", "a/b"));
+        assert!(!topic_matches("a/b", "a/b/c"));
+        assert!(topic_matches("a/+/c", "a/x/c"));
+        assert!(!topic_matches("a/+/c", "a/x/y/c"));
+        assert!(topic_matches("a/#", "a/x/y"));
+        assert!(!topic_matches("a/+", "b/x"));
+    }
+
+    /// A document carrying the `x-mqtt-graphql` root extension yields it,
+    /// resolved against the document's operations, next to its channels; a
+    /// binding to an operation the document lacks fails the load like any
+    /// invalid spec.
+    #[test]
+    fn test_load_specs_reads_graphql_extension() {
+        let mut spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "THRS", "version": "1.0.0"},
+            "channels": {
+                "ctl.parameters": {
+                    "address": "ctl/{module}/parameters",
+                    "parameters": {"module": {"enum": ["thrusters"]}},
+                    "messages": {"message": {"payload": {"$ref": "#/components/schemas/Parameters"}}}
+                },
+                "ctl.parameters.set": {
+                    "address": "ctl/{module}/parameters/set",
+                    "parameters": {"module": {"enum": ["thrusters"]}},
+                    "messages": {"message": {"payload": {"$ref": "#/components/schemas/Parameters"}}}
+                }
+            },
+            "operations": {
+                "ctl.parameters.send": {"action": "send", "channel": {"$ref": "#/channels/ctl.parameters"}},
+                "ctl.parameters.set.receive": {"action": "receive", "channel": {"$ref": "#/channels/ctl.parameters.set"}}
+            },
+            "components": {"schemas": {"Parameters": {
+                "type": "object", "properties": {"CoolingFlow": {"type": "number"}}}}},
+            "x-mqtt-graphql": {
+                "version": 2,
+                "types": {"ThrustersParametersType": {"schema": {"$ref": "#/components/schemas/Parameters"}}},
+                "views": [{
+                    "gql": "modules", "typeName": "ControlModules",
+                    "members": [{
+                        "gql": "thrusters", "typeName": "ThrustersControlModule",
+                        "sections": [{"kind": "object", "gql": "parameters", "typeName": "ThrustersParametersType",
+                            "operation": {"operation": "ctl.parameters.send", "parameters": {"module": "thrusters"}}}],
+                        "mutations": [{"gql": "thrustersParameterSetCoolingFlow", "kind": "setField",
+                            "argName": "value", "key": "CoolingFlow", "returns": "parameters",
+                            "state": {"operation": "ctl.parameters.send", "parameters": {"module": "thrusters"}},
+                            "target": {"operation": "ctl.parameters.set.receive", "parameters": {"module": "thrusters"}}}]
+                    }]
+                }],
+                "metadata": [{"operation": "ctl.parameters.send", "instances": {"thrusters": {"module": "thrusters"}}}]
+            }
+        });
+        let dir = std::env::temp_dir().join("mqtt-graphql-test-x-mqtt-graphql");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("thrs-control.json");
+        std::fs::write(&path, spec.to_string()).unwrap();
+        let loaded = load_specs_and_groups(dir.to_str().unwrap()).unwrap();
+        let extension = loaded.extension.expect("x-mqtt-graphql extension");
+        let mutation = &extension.views[0].members[0].mutations[0];
+        assert_eq!(mutation.arg_type, "Float");
+        assert_eq!(mutation.state_topic, "ctl/thrusters/parameters");
+        assert_eq!(mutation.set_topic, "ctl/thrusters/parameters/set");
+        assert_eq!(extension.metadata_files[0].group, "ctl/parameters");
+        assert_eq!(
+            extension.metadata_files[0].topics[0].topic,
+            "ctl/thrusters/parameters"
+        );
+
+        spec["x-mqtt-graphql"]["views"][0]["members"][0]["mutations"][0]["target"]["operation"] =
+            json!("nope");
+        std::fs::write(&path, spec.to_string()).unwrap();
+        let err = load_specs_and_groups(dir.to_str().unwrap())
+            .err()
+            .expect("an unresolvable binding must fail the load");
+        assert!(
+            format!("{err:#}").contains("unknown operation 'nope'"),
+            "{err:#}"
+        );
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]
@@ -1392,6 +1944,10 @@ mod tests {
     fn test_ttl_from_value() {
         assert_eq!(ttl_from_value(Some(&json!(45))), Some(45));
         assert_eq!(ttl_from_value(Some(&json!("2m"))), Some(120));
+        assert_eq!(
+            ttl_from_value(Some(&json!("unbounded"))),
+            Some(crate::config::TTL_UNBOUNDED_SECS)
+        );
         assert_eq!(ttl_from_value(Some(&json!(-1.5))), None);
         assert_eq!(ttl_from_value(Some(&json!(true))), None);
         assert_eq!(ttl_from_value(None), None);

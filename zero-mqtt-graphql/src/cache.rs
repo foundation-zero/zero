@@ -391,6 +391,15 @@ mod tests {
     }
 
     #[test]
+    fn test_unbounded_ttl_never_expires() {
+        let cache = TopicCache::with_ttl(crate::config::TTL_UNBOUNDED_SECS, HashMap::new());
+        cache.insert("state", json!({"v": 1}));
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        cache.evict_expired();
+        assert_eq!(cache.get_field("state", "v"), Some(json!(1)));
+    }
+
+    #[test]
     fn test_evict_expired() {
         let cache = TopicCache::with_ttl(0, HashMap::new());
         cache.insert("a", json!(1));

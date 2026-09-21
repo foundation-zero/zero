@@ -1,13 +1,15 @@
-"""Checks that the Rust ``mqtt-graphql`` service (5103) returns the same data as
-the Python ``thrs-api`` service (5102) for the THRS ``thrusters`` module.
+"""Row-based read parity on the ``thrusters`` module: the Rust
+``mqtt-graphql`` service (5103) returns the same data as the Python
+``thrs-api`` service (5102) for a handful of raw sensor fields.
 
 Read-only end-to-end: publish a full known ``ThrustersSensorValues`` payload to
 MQTT, wait for both services to pick it up, then query each GraphQL API and
-assert they agree with each other and with the published values. Mutations are
-out of scope (mqtt-graphql doesn't have them yet).
+assert they agree with each other and with the published values. The module
+view (``modules.thrusters.sensorValues``) is covered exhaustively by
+``test_cross_api_parity_exhaustive``; this suite reads mqtt-graphql's flat
+topic-group query instead, so both of its read paths are compared.
 
-Two differences between the services shape the test, both found against the
-running stack:
+Two differences between the services shape the test:
 
 1. thrs-api's ``sensorValues`` is all-or-nothing. ``PartialModelBuilder``
    accumulates per-field messages and only goes non-null once the whole
@@ -18,24 +20,15 @@ running stack:
    same as the real control service.
 
 2. mqtt-graphql's group ``values`` use lowercase field names (``naming.rs``
-   lowercases every token, ``PositionRel`` -> ``positionrel``); thrs-api emits
-   camelCase. Single-word fields match, multi-word ones don't, so the comparison
-   is casing-tolerant: it matches the ``{value, timestamp}`` leaves per field and
-   compares timestamps as instants (thrs-api serializes ``+00:00``, the wire
-   payload carries ``Z``).
+   lowercases every token of a topic-derived name, ``PositionRel`` ->
+   ``positionrel``); thrs-api emits camelCase. The comparison matches the
+   ``{value, timestamp}`` leaves per field and compares timestamps as instants.
 
-Not covered: computed/controller fields. thrs-api derives those in pydantic;
-mqtt-graphql only relays whatever lands on ``thrs/controller/thrusters/*``.
-Making them agree would mean duplicating thrs-api's formulae, so this sticks to
-the raw sensor fields, where real device data flows.
+Not covered: computed/controller fields, which the control loop publishes on
+``thrs/controller/thrusters/*`` and both services relay.
 
-Prefix caveat: in the running stack thrs-api uses ``devices_topic`` /
-``controller_topic`` (docker-compose env) while mqtt-graphql's specs use the
-default ``simulation`` prefix, so neither service sees the other's values. That's
-a real bug on its own (placeholder prefixes never reconciled with the spec). To
-still get a parity check we publish to both prefixes;
-``test_thrs_api_and_mqtt_graphql_prefixes_currently_differ`` fails loudly once
-someone unifies them, which is the cue to publish just once.
+Each service reads its own topic prefixes (``stack_config``); the model is
+published under both so both see it.
 
 Run with the docker-compose stack up, or let the ``docker_stack`` fixture start
 it::
@@ -52,32 +45,33 @@ from __future__ import annotations
 
 import asyncio
 import json
-import shutil
-import subprocess
+import re
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Any
 
-import httpx
 import pytest
 from aiomqtt import Client as MqttClient
 
-from tests.graphql.stack_config import REPO_ROOT, mqtt_graphql_config, thrs_api_config
+from tests.graphql.parity import parse_ts, query_data
+from tests.graphql.stack_config import (
+    MQTT_GRAPHQL_URL,
+    MQTT_HOST,
+    MQTT_PORT,
+    THRS_API_URL,
+    mqtt_graphql_config,
+    thrs_api_config,
+)
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 
-MQTT_HOST = "localhost"
-MQTT_PORT = 1883
-
-THRS_API_URL = "http://localhost:5102/graphql"
-MQTT_GRAPHQL_URL = "http://localhost:5103/graphql"
-
-# See the module docstring's prefix caveat: these differ in the running stack
-# (docker-compose env vs. the specs' default), so we publish to both.
-THRS_API_DEVICES_PREFIX = thrs_api_config().mqtt_devices_topic_prefix
-THRS_API_CONTROLLER_PREFIX = thrs_api_config().mqtt_controller_topic_prefix
+# Each service reads its own prefixes; publish under both.
+DEVICES_PREFIXES = sorted(
+    {
+        thrs_api_config().mqtt_devices_topic_prefix,
+        mqtt_graphql_config().mqtt_devices_topic_prefix,
+    }
+)
 MQTT_GRAPHQL_DEVICES_PREFIX = mqtt_graphql_config().mqtt_devices_topic_prefix
-MQTT_GRAPHQL_CONTROLLER_PREFIX = mqtt_graphql_config().mqtt_controller_topic_prefix
 
 MODULE_PREFIX = device_module_prefix("thrusters")
 
@@ -146,6 +140,7 @@ SENSOR_CASES: tuple[SensorCase, ...] = (
     ),
 )
 
+
 @dataclass(frozen=True)
 class OutOfBoundsCase:
     """A raw sensor leaf pushed past its bound. Both APIs must reject the update
@@ -211,46 +206,15 @@ def _build_model() -> ThrustersSensorValues:
     return model
 
 
-async def _publish_full_model(mqtt_client: MqttClient, model: ThrustersSensorValues) -> None:
+async def _publish_full_model(
+    mqtt_client: MqttClient, model: ThrustersSensorValues
+) -> None:
     """Publish every per-field topic of ``model`` to both prefix variants, using
     the same production splitter the control service uses."""
-    for prefix in (THRS_API_DEVICES_PREFIX, MQTT_GRAPHQL_DEVICES_PREFIX):
+    for prefix in DEVICES_PREFIXES:
         mapping = PartialMqttMapping(ThrustersSensorValues, prefix, MODULE_PREFIX)
         for topic, payload in mapping.split_to_topics(model).items():
             await mqtt_client.publish(topic, payload=payload, retain=True)
-
-
-def _docker_compose_available() -> bool:
-    return shutil.which("docker") is not None
-
-
-@pytest.fixture(scope="session")
-def docker_stack() -> None:
-    """Ensure vernemq, postgres, thrs-api and mqtt-graphql are up.
-
-    If docker is unavailable in the current environment, the stack is assumed
-    to already be running (e.g. started manually before invoking pytest) and
-    this fixture is a no-op. Only these four services are waited on: grafana
-    (profile ``data``) has a broken healthcheck (probes port 3001 but serves on
-    3000) and would never become healthy, so it is deliberately not listed.
-    """
-    if not _docker_compose_available():
-        return
-    subprocess.run(
-        ["docker", "compose", "--profile", "thrs", "--profile", "data", "up", "-d", "--wait",
-         "vernemq", "postgres", "thrs-api", "mqtt-graphql"],
-        cwd=REPO_ROOT,
-        check=True,
-        timeout=300,
-    )
-
-
-def _query_graphql(url: str, query: str) -> dict[str, Any]:
-    response = httpx.post(url, json={"query": query}, timeout=10.0)
-    response.raise_for_status()
-    body = response.json()
-    assert "errors" not in body, f"GraphQL errors from {url}: {body.get('errors')}"
-    return body["data"]
 
 
 def _thrs_api_query() -> str:
@@ -270,36 +234,31 @@ def _mqtt_graphql_sensor_query() -> str:
     return f"{{ simulation500000ThrsThrusters {{ topic values {{ {values} }} }} }}"
 
 
-def _parse_ts(raw: str | None) -> datetime | None:
-    return datetime.fromisoformat(raw) if raw else None
-
-
-def _assert_leaf_equal(name: str, thrs_api_leaf: dict[str, Any], mqtt_graphql_leaf: dict[str, Any],
-                       published: float) -> None:
+def _assert_leaf_equal(
+    name: str,
+    thrs_api_leaf: dict[str, Any],
+    mqtt_graphql_leaf: dict[str, Any],
+    published: float,
+) -> None:
     assert thrs_api_leaf["value"] == published, (
         f"{name}: thrs-api value {thrs_api_leaf['value']!r} != published {published!r}"
     )
     assert mqtt_graphql_leaf["value"] == published, (
         f"{name}: mqtt-graphql value {mqtt_graphql_leaf['value']!r} != published {published!r}"
     )
-    # Compare timestamps as instants: thrs-api serializes '+00:00', the wire
-    # payload carries 'Z'. Same instant, different spelling.
-    assert _parse_ts(thrs_api_leaf["timestamp"]) == _parse_ts(mqtt_graphql_leaf["timestamp"]), (
+    # Timestamps compare as instants; their rendering is not part of the contract.
+    assert parse_ts(thrs_api_leaf["timestamp"]) == parse_ts(
+        mqtt_graphql_leaf["timestamp"]
+    ), (
         f"{name}: timestamps differ: thrs-api={thrs_api_leaf['timestamp']!r} "
         f"mqtt-graphql={mqtt_graphql_leaf['timestamp']!r}"
     )
 
 
-def test_thrs_api_and_mqtt_graphql_prefixes_currently_differ() -> None:
-    """Documents the topic-prefix mismatch (see the module docstring's prefix
-    caveat). Static, no broker; fails loudly once someone unifies the prefixes,
-    the cue to simplify this test to a single publish."""
-    assert THRS_API_DEVICES_PREFIX != MQTT_GRAPHQL_DEVICES_PREFIX
-    assert THRS_API_CONTROLLER_PREFIX != MQTT_GRAPHQL_CONTROLLER_PREFIX
-
-
 @pytest.mark.asyncio
-async def test_thrs_api_and_mqtt_graphql_agree_on_raw_sensor_fields(docker_stack: None) -> None:
+async def test_thrs_api_and_mqtt_graphql_agree_on_raw_sensor_fields(
+    docker_stack: None,
+) -> None:
     """Publish one complete ``ThrustersSensorValues`` and assert both APIs
     return the same value/timestamp for each raw sensor field under test.
 
@@ -313,8 +272,8 @@ async def test_thrs_api_and_mqtt_graphql_agree_on_raw_sensor_fields(docker_stack
         # retained messages before querying their GraphQL APIs.
         await asyncio.sleep(2.0)
 
-    thrs_api_data = _query_graphql(THRS_API_URL, _thrs_api_query())
-    mqtt_graphql_data = _query_graphql(MQTT_GRAPHQL_URL, _mqtt_graphql_sensor_query())
+    thrs_api_data = query_data(THRS_API_URL, _thrs_api_query())
+    mqtt_graphql_data = query_data(MQTT_GRAPHQL_URL, _mqtt_graphql_sensor_query())
 
     sensor_values = thrs_api_data["modules"]["thrusters"]["sensorValues"]
     assert sensor_values is not None, (
@@ -329,7 +288,7 @@ async def test_thrs_api_and_mqtt_graphql_agree_on_raw_sensor_fields(docker_stack
         topic = _mqtt_graphql_sensor_topic(case.topic_segment)
         assert topic in rows_by_topic, (
             f"{case.name}: no row for topic {topic!r} in simulation500000ThrsThrusters "
-            f"(is specs/thrs-thrusters-*-metadata.json up to date?) "
+            f"(are the specs up to date?) "
             f"Rows: {sorted(rows_by_topic)!r}"
         )
         thrs_api_component = sensor_values[case.thrs_api_field]
@@ -383,8 +342,10 @@ async def test_thrs_api_and_mqtt_graphql_reject_out_of_bounds_sensor_values(
         await asyncio.sleep(2.0)
         # Now overwrite single leaves with out-of-bounds values on both prefixes.
         for case in OUT_OF_BOUNDS_CASES:
-            for prefix in (THRS_API_DEVICES_PREFIX, MQTT_GRAPHQL_DEVICES_PREFIX):
-                mapping = PartialMqttMapping(ThrustersSensorValues, prefix, MODULE_PREFIX)
+            for prefix in DEVICES_PREFIXES:
+                mapping = PartialMqttMapping(
+                    ThrustersSensorValues, prefix, MODULE_PREFIX
+                )
                 topics = mapping.split_to_topics(model)
                 topic = next(
                     t for t in topics if t.endswith(f"/{case.sensor.topic_segment}")
@@ -395,8 +356,8 @@ async def test_thrs_api_and_mqtt_graphql_reject_out_of_bounds_sensor_values(
                 await mqtt_client.publish(topic, payload=bad_payload, retain=True)
         await asyncio.sleep(2.0)
 
-    thrs_api_data = _query_graphql(THRS_API_URL, _thrs_api_query())
-    mqtt_graphql_data = _query_graphql(MQTT_GRAPHQL_URL, _mqtt_graphql_sensor_query())
+    thrs_api_data = query_data(THRS_API_URL, _thrs_api_query())
+    mqtt_graphql_data = query_data(MQTT_GRAPHQL_URL, _mqtt_graphql_sensor_query())
 
     sensor_values = thrs_api_data["modules"]["thrusters"]["sensorValues"]
     assert sensor_values is not None, (
@@ -408,7 +369,9 @@ async def test_thrs_api_and_mqtt_graphql_reject_out_of_bounds_sensor_values(
     }
 
     for case in OUT_OF_BOUNDS_CASES:
-        thrs_api_leaf = sensor_values[case.sensor.thrs_api_field][case.leaf.thrs_api_key]
+        thrs_api_leaf = sensor_values[case.sensor.thrs_api_field][
+            case.leaf.thrs_api_key
+        ]
         assert thrs_api_leaf["value"] == case.leaf.value, (
             f"{case.name}: thrs-api accepted out-of-bounds {case.invalid_value} "
             f"(bound {case.bound}); expected it to reject and keep {case.leaf.value}"
@@ -424,12 +387,29 @@ async def test_thrs_api_and_mqtt_graphql_reject_out_of_bounds_sensor_values(
 
 # --- Thruster active-flag field (concrete, non-wildcard topic) ---
 
-MQTT_GRAPHQL_THRUSTER_AFT_QUERY = """
-{
-    simulationDummyPcsThrusterAftActive {
-        active { value timestamp }
-    }
-}
+
+def _topic_query_field(topic: str) -> str:
+    """mqtt-graphql's query field for a concrete topic (``naming.rs``
+    ``sanitize_to_graphql_name``): lowerCamelCase over every non-alphanumeric
+    boundary, every other letter lowercased."""
+    words = [w for w in re.split(r"[^0-9A-Za-z]+", topic) if w]
+    return words[0].lower() + "".join(w[:1].upper() + w[1:].lower() for w in words[1:])
+
+
+THRUSTER_AFT_TOPIC = PartialMqttMapping(
+    ThrustersSensorValues, MQTT_GRAPHQL_DEVICES_PREFIX, MODULE_PREFIX
+)._topic(
+    "thrusters_thruster_aft",
+    ThrustersSensorValues.model_fields["thrusters_thruster_aft"],
+)
+THRUSTER_AFT_QUERY_FIELD = _topic_query_field(THRUSTER_AFT_TOPIC)
+
+MQTT_GRAPHQL_THRUSTER_AFT_QUERY = f"""
+{{
+    {THRUSTER_AFT_QUERY_FIELD} {{
+        active {{ value timestamp }}
+    }}
+}}
 """
 
 THRS_API_THRUSTER_AFT_QUERY = """
@@ -446,7 +426,9 @@ THRS_API_THRUSTER_AFT_QUERY = """
 
 
 @pytest.mark.asyncio
-async def test_thrs_api_and_mqtt_graphql_agree_on_thruster_active(docker_stack: None) -> None:
+async def test_thrs_api_and_mqtt_graphql_agree_on_thruster_active(
+    docker_stack: None,
+) -> None:
     """Same idea for the boolean ``Thruster.active`` field, which lives on a
     ``topic_override`` (``dummy-pcs/thruster-aft-active``) and so is a concrete
     query on mqtt-graphql rather than a group row."""
@@ -455,15 +437,13 @@ async def test_thrs_api_and_mqtt_graphql_agree_on_thruster_active(docker_stack: 
         await _publish_full_model(mqtt_client, model)
         await asyncio.sleep(2.0)
 
-    thrs_api_data = _query_graphql(THRS_API_URL, THRS_API_THRUSTER_AFT_QUERY)
-    mqtt_graphql_data = _query_graphql(MQTT_GRAPHQL_URL, MQTT_GRAPHQL_THRUSTER_AFT_QUERY)
+    thrs_api_data = query_data(THRS_API_URL, THRS_API_THRUSTER_AFT_QUERY)
+    mqtt_graphql_data = query_data(MQTT_GRAPHQL_URL, MQTT_GRAPHQL_THRUSTER_AFT_QUERY)
 
     sensor_values = thrs_api_data["modules"]["thrusters"]["sensorValues"]
     assert sensor_values is not None
     thrs_api_active = sensor_values["thrustersThrusterAft"]["active"]["value"]
-    mqtt_graphql_active = mqtt_graphql_data["simulationDummyPcsThrusterAftActive"]["active"][
-        "value"
-    ]
+    mqtt_graphql_active = mqtt_graphql_data[THRUSTER_AFT_QUERY_FIELD]["active"]["value"]
 
     assert thrs_api_active == THRUSTER_AFT_ACTIVE_VALUE
     assert mqtt_graphql_active == THRUSTER_AFT_ACTIVE_VALUE
