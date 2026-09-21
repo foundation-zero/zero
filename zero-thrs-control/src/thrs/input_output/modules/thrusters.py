@@ -208,21 +208,22 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     def thrusters_seawater_exchanger(self) -> sensor.HeatExchanger:
         temperature_supply = self.thrusters_temperature_pre_cooler.temperature
         temperature_return = self.thrusters_temperature_supply.temperature
-        flow = self.thrusters_flow.flow
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
+        actual_flow = Stamped.combine(
+            exchange_mix_ration,
+            value=1 / exchange_mix_ration.value
+            if exchange_mix_ration.value > 0
+            else 0.0,
+        )
+        heat_flow = self.thrusters_flow.flow
 
         # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
         delta_t = Stamped.combine(
             temperature_supply,
             temperature_return,
             value=(
-                (
-                    1
-                    / exchange_mix_ration.value
-                    * (temperature_return.value - temperature_supply.value)
-                )
-                if exchange_mix_ration.value > 0
-                else 0.0
+                actual_flow.value
+                * (temperature_return.value - temperature_supply.value)
             )
             if temperature_supply.value
             else 0.0,
@@ -232,8 +233,8 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         heat = Stamped.combine(
             temperature_return,
             temperature_supply,
-            flow,
-            value=flow.value
+            heat_flow,
+            value=heat_flow.value
             * (
                 (temperature_return.value - temperature_supply.value)
                 if temperature_supply.value
@@ -242,7 +243,13 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             * WATER_HEAT_TRANSFER_CONVERSION,
         )
 
-        return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
+        return sensor.HeatExchanger(
+            temperature_supply=temperature_supply,
+            temperature_return=temperature_return,  # type: ignore
+            delta_t=delta_t,
+            flow=actual_flow,
+            heat=heat,
+        )
 
 
 class ThrustersControlValues(ThrsValues):

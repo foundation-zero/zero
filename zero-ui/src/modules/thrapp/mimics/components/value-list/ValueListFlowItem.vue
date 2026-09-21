@@ -9,7 +9,11 @@ import { FieldRenderer } from "../../renderers";
 import ValueListItem from "./ValueListItem.vue";
 
 const props = defineProps<{
-  source: ModuleField<SensorComponentType.Flow | SensorComponentType.CalculatedFlow>;
+  source: ModuleField<
+    | SensorComponentType.Flow
+    | SensorComponentType.CalculatedFlow
+    | SensorComponentType.HeatExchanger
+  >;
   class?: HTMLAttributes["class"];
 }>();
 

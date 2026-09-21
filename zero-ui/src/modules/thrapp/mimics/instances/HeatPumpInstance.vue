@@ -54,8 +54,8 @@ const mode = computed(() => {
       />
       <ValueList class="gap-0">
         <ValueListSeparator />
-        <ValueListHeatPowerItem :source="source" />
-        <ValueListDeltaTItem :source="source" />
+        <ValueListHeatPowerItem :source="sensors.heatExchanger" />
+        <ValueListDeltaTItem :source="sensors.heatExchanger" />
         <ValueListSeparator />
       </ValueList>
     </HeatPump>

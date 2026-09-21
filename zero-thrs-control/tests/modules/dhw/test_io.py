@@ -96,7 +96,7 @@ def test_dhw_hvac_exchanger_computed_field():
     )
 
     exchanger = values.dhw_hvac_exchanger
-    assert isinstance(exchanger, sensor.HvacExchanger)
+    assert isinstance(exchanger, sensor.HeatExchanger)
     assert exchanger.delta_t.value == approx(-20.0)
     assert exchanger.heat.value == approx(30.0 * -20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
@@ -130,7 +130,7 @@ def test_dhw_heatpump_computed_field():
     )
 
     heatpump = values.dhw_heatpump
-    assert isinstance(heatpump, sensor.HeatPump)
+    assert isinstance(heatpump, sensor.HeatExchanger)
     assert heatpump.delta_t.value == approx(20.0)
     assert heatpump.heat.value == approx(20.0 * 20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 

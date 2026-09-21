@@ -1,7 +1,7 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
@@ -12,16 +12,8 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "dc",
   },
   parameters: {},
-  source: getCustomField("dhw", {
-    title: "DC converters",
-    technicalName: "dc-converters",
-  }),
-  sensors: {
-    flow: getField(SensorComponentType.Flow, "dc", "dcFlowRecovery"),
-    incoming: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecovery"),
-    outgoing: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecoveryReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dc", "dcDhwExchanger"),
-  },
+  source: getField(SensorComponentType.HeatExchanger, "dc", "dcDhwExchanger"),
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

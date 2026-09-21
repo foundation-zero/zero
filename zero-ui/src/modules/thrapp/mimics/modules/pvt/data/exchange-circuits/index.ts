@@ -11,21 +11,13 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       controllerState: {},
       custom: {
         circuitName: "Seawater",
-        width: 194,
-        height: 168,
-        forceHeight: true,
       },
       parameters: {},
-      source: getCustomField("pvt", { technicalName: "pvt-seawater-loop" }),
-      sensors: {
-        flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtSeawaterExchangerFlow"),
-        incoming: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureSupply"),
-        outgoing: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-        heatExchanger: getField(SensorComponentType.HeatExchanger, "pvt", "pvtSeawaterExchanger"),
-      },
+      source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtSeawaterExchanger"),
+      sensors: {},
       get tooltip() {
         return fieldTooltip(this.source, {
-          title: "Seawater",
+          title: "Exchange circuit",
           componentType: "Seawater loop",
         });
       },

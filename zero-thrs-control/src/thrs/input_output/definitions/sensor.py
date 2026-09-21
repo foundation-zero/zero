@@ -173,7 +173,10 @@ class TemperatureDelta(ThrsValues):
 
 
 class HeatTransferDevice(ThrsValues):
+    temperature_supply: Stamped[OptionalCelsius]
+    temperature_return: Stamped[OptionalCelsius]
     delta_t: Stamped[DeltaT]
+    flow: Stamped[LMin]
     heat: Stamped[Watt]
 
     @classmethod
@@ -194,7 +197,13 @@ class HeatTransferDevice(ThrsValues):
         heat = Stamped.combine(
             delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
         )
-        return cls(delta_t=delta_t, heat=heat)
+        return cls(
+            temperature_supply=temperature_supply,  # type: ignore
+            temperature_return=temperature_return,  # type: ignore
+            delta_t=delta_t,
+            flow=flow,
+            heat=heat,
+        )
 
 
 class HvacExchanger(HeatTransferDevice):
@@ -341,17 +350,15 @@ class PcmInput(ThrsValues):
     charged: Stamped[Charged]
 
 
-class Pcm(ThrsValues):
-    delta_t: Stamped[DeltaT]
-    heat: Stamped[Watt]
+class Pcm(HeatTransferDevice):
     charged: Stamped[Charged]
     charging_state: Stamped[PcmChargingState]
 
     @classmethod
-    def from_sensors(
+    def from_sensors(  # type: ignore
         cls,
-        temperature_supply: Stamped[Celsius],
-        temperature_return: Stamped[Celsius],
+        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
+        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
         flow: Stamped[LMin],
         charged: Stamped[Charged],
         heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
@@ -367,7 +374,10 @@ class Pcm(ThrsValues):
             state = PcmChargingState.IDLE
         charging_state = Stamped.combine(heat_transfer.heat, value=state)
         return cls(
+            temperature_supply=heat_transfer.temperature_supply,
+            temperature_return=heat_transfer.temperature_return,
             delta_t=heat_transfer.delta_t,
+            flow=heat_transfer.flow,
             heat=heat_transfer.heat,
             charged=charged,
             charging_state=charging_state,

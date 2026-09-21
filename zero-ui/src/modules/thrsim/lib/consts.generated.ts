@@ -1201,11 +1201,11 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   },
   dhwHvacExchanger: {
     yardTag: "41001001",
-    componentType: SensorComponentType.HvacExchanger,
+    componentType: SensorComponentType.HeatExchanger,
   },
   dhwHeatpump: {
     yardTag: "50001035",
-    componentType: SensorComponentType.HeatPump,
+    componentType: SensorComponentType.HeatExchanger,
   },
   dhwAdsorptionExchanger: {
     yardTag: "50001004",
@@ -2469,15 +2469,15 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtPvtMainFwd: {
     yardTag: "50009001-01",
-    componentType: SensorComponentType.Pvt,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pvtPvtMainAft: {
     yardTag: "50009002-01",
-    componentType: SensorComponentType.Pvt,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pvtPvtOwners: {
     yardTag: "50009001-03",
-    componentType: SensorComponentType.Pvt,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pvtReturnTemperature: {
     componentType: SensorComponentType.CalculatedTemperature,

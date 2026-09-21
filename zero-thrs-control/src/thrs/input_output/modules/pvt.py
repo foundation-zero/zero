@@ -776,8 +776,8 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_main_fwd(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_main_fwd(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
             flow=self.pvt_flow_main_fwd_strings.flow,
@@ -792,8 +792,8 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_main_aft(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_main_aft(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
             flow=self.pvt_flow_main_aft_strings.flow,
@@ -808,8 +808,8 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_owners(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_owners(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,
             flow=self.pvt_flow_owners_strings.flow,

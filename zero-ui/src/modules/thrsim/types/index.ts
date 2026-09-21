@@ -158,6 +158,9 @@ export type DeltaTSensor = {
 };
 
 export type HeatExchangerSensor = DeltaTSensor & {
+  temperatureSupply: Stamped<number | undefined>;
+  temperatureReturn: Stamped<number | undefined>;
+  flow: Stamped<Ratio>;
   heat: Stamped<number>;
 };
 

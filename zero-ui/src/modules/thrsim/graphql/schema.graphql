@@ -577,8 +577,8 @@ type DhwSensorValuesType {
   freshwaterHotwaterFlow: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "25001123-1", componentType: null, valveType: null)
   freshwaterHotwaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-1", componentType: null, valveType: null)
   dhwFreshwaterFlowSupply: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  dhwHvacExchanger: SensorHvacExchangerType! @jsonSchemaDirective(yardTag: "41001001", componentType: "hvac_exchanger", valveType: null)
-  dhwHeatpump: SensorHeatPumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
+  dhwHvacExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "41001001", componentType: "heat_exchanger", valveType: null)
+  dhwHeatpump: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heat_exchanger", valveType: null)
   dhwAdsorptionExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001004", componentType: "heat_exchanger", valveType: null)
   dhwConsumersExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001007", componentType: "heat_exchanger", valveType: null)
   dhwDcExchanger: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_exchanger", valveType: null)
@@ -1444,9 +1444,9 @@ type PvtSensorValuesType {
   pvtFlowMainAftStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtFlowMainFwdStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtFlowOwnersStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtPvtMainFwd: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_exchanger", valveType: null)
-  pvtPvtMainAft: SensorPvtType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_exchanger", valveType: null)
-  pvtPvtOwners: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_exchanger", valveType: null)
+  pvtPvtMainFwd: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_exchanger", valveType: null)
+  pvtPvtMainAft: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_exchanger", valveType: null)
+  pvtPvtOwners: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_exchanger", valveType: null)
   pvtReturnTemperature: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtSeawaterExchangerFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
@@ -1520,17 +1520,10 @@ type SensorFlowSensorType {
 }
 
 type SensorHeatExchangerType {
+  temperatureSupply: FloatOptionalStampedType!
+  temperatureReturn: FloatOptionalStampedType!
   deltaT: FloatStampedType!
-  heat: FloatStampedType!
-}
-
-type SensorHeatPumpType {
-  deltaT: FloatStampedType!
-  heat: FloatStampedType!
-}
-
-type SensorHvacExchangerType {
-  deltaT: FloatStampedType!
+  flow: FloatStampedType!
   heat: FloatStampedType!
 }
 
@@ -1547,7 +1540,10 @@ type SensorPcmInputType {
 }
 
 type SensorPcmType {
+  temperatureSupply: FloatOptionalStampedType!
+  temperatureReturn: FloatOptionalStampedType!
   deltaT: FloatStampedType!
+  flow: FloatStampedType!
   heat: FloatStampedType!
   charged: BoolStampedType!
   chargingState: PcmChargingStateStampedType!
@@ -1572,11 +1568,6 @@ type SensorPumpType {
   pressure: FloatStampedType!
   energyConsumption: FloatStampedType!
   powerInput: FloatStampedType!
-}
-
-type SensorPvtType {
-  deltaT: FloatStampedType!
-  heat: FloatStampedType!
 }
 
 type SensorShorePowerConverterType {
