@@ -34,7 +34,7 @@ const editor = computed(() => {
       case "dutypoint":
         return FieldRenderer.Percentage;
       case "heat":
-        return FieldRenderer.Heat;
+        return FieldRenderer.Power;
       case "level":
         return FieldRenderer.Level;
       case "quantity":

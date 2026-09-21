@@ -26,6 +26,7 @@ export const DHW_TANK_MODE_COLORS: Record<BoilerTankState | MimicComponentState,
   [BoilerTankState.Filling]: "var(--constructive)",
   [BoilerTankState.NeedsBoost]: "var(--muted-foreground)",
   [BoilerTankState.NeedsFill]: "var(--muted-foreground)",
+  [BoilerTankState.OnTemperature]: "var(--muted-foreground)",
 };
 
 export const DHW_TANK_MODE_MODES: Record<BoilerTankState | MimicComponentState, ModeBadgeMode> = {
@@ -39,4 +40,5 @@ export const DHW_TANK_MODE_MODES: Record<BoilerTankState | MimicComponentState, 
   [BoilerTankState.Filling]: ModeBadgeMode.Filling,
   [BoilerTankState.NeedsBoost]: ModeBadgeMode.BoostingLow,
   [BoilerTankState.NeedsFill]: ModeBadgeMode.FillingLow,
+  [BoilerTankState.OnTemperature]: ModeBadgeMode.Idle,
 };

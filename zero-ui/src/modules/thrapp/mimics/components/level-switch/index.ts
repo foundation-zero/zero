@@ -8,6 +8,6 @@ export const LEVEL_SWITCH_WIDTH = 32;
 export const LEVEL_SWITCH_HEIGHT = 32;
 export const LEVEL_SWITCH_BASE_ORIENTATION = ComponentOrientation.Down;
 
-export const LEVEL_SWITCH_BODY_FILL = "var(--muted)";
+export const LEVEL_SWITCH_BODY_FILL = "var(--background)";
 export const LEVEL_SWITCH_STROKE_COLOR = "var(--attention)";
 export const LEVEL_SWITCH_MARK_COLOR = "var(--foreground)";

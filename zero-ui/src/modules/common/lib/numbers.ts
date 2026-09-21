@@ -77,11 +77,18 @@ export const formatUnit = (
 formatNumber.default = formatNumber(1);
 formatNumber.int = formatNumber(0);
 
-export const formatRatio = (digits: number): NumberFormatter =>
-  formatUnit("percent", digits, {}, (value: number) => value * 100);
+export const formatPercentage = (digits: number): NumberFormatter => formatUnit("percent", digits);
 
-formatRatio.default = formatRatio(0);
+formatPercentage.default = formatPercentage(0);
 
 export const formatInt = formatNumber(0);
 export const formatFixed = (digits: number, value: number, locale: string = "en-US") =>
   formatNumber(digits)(value, locale);
+
+export const joulesToWatthours = (joules: number) => joules / 3600;
+export const scaleNumber = (unscaledValue: number): number => {
+  if (unscaledValue < 1_000) return unscaledValue;
+  else if (unscaledValue < 1_000_000) return unscaledValue / 1_000;
+  else return unscaledValue / 1_000_000;
+};
+export const ratioToPercentage = (value: number): number => value * 100;

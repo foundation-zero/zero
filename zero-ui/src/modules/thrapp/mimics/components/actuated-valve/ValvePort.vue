@@ -10,7 +10,7 @@ const { stateColor, state } = getMimicComponentContext();
 <template>
   <path
     :d="d"
-    class="fill-dull"
+    class="fill-background"
   />
   <path
     :d="d"

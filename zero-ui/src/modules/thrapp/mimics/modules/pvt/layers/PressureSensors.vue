@@ -62,7 +62,7 @@ const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
       <PressureLabelInstance
         :target-x="1044"
         :target-width="PRESSURE_SENSOR_WIDTH"
-        y="240"
+        y="245.5"
         :tag-id="pressureSensors['1097-06'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-06'].source"
       />
