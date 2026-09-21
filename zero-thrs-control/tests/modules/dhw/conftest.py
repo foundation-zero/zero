@@ -99,7 +99,7 @@ def parameters() -> DhwParameters:
         ht_boosting_temperature_setpoint=65,
         minimum_tank_temperature=55,
         maximum_tank_temperature=60,
-        boosting_delta=2,
+        ht_boosting_minimum_delta=2,
         drives_flowcontrol_minimum_setpoint=0.1,
         dc_flowcontrol_minimum_setpoint=0.1,
         filling_temperature_setpoint=40,
