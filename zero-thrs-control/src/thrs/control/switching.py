@@ -4,7 +4,7 @@ from typing import Literal
 from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
-from thrs.input_output.sensor_values import AmcsModeSensorValues
+from thrs.input_output.root_types import AmcsModeSensorValues
 
 type ControlModes = Literal["manual", "automatic"]
 

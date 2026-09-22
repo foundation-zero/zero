@@ -13,7 +13,8 @@ from thrs.control.switching import (
     SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
-from thrs.input_output.sensor_values import AmcsModeSensorValues
+from thrs.input_output.definitions.system import AmcsExternalAvailable
+from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 if TYPE_CHECKING:
     from thrs.classes.control import Control
@@ -55,7 +56,7 @@ class ModuleDescription[
 
 class Module[
     S: AmcsModeSensorValues,
-    C: ThrsValues,
+    C: AmcsWatchdogControlValues,
     P: ThrsValues,
     M: ThrsValues,
     CS: ThrsValues,
@@ -120,7 +121,9 @@ class Module[
         """Serialize the configuration a restart should be able to pick up again."""
         return ModulePersistenceSnapshot(
             parameters=self._control.parameters.model_dump(mode="json"),
-            manual_control_values=self._control.manual_controls.model_dump(mode="json"),
+            manual_control_values=self._control.manual_controls.model_dump(
+                mode="json", exclude={"external_available"}
+            ),
             control_mode=self._control.control_mode,
         )
 
@@ -197,6 +200,9 @@ class Module[
             _, controller_state = self._control.automatic_control.initial()
         else:
             control_values, controller_state = self.execute_control(sensor_values)
+
+        # Update amcs watchdog timestamp
+        control_values.external_available = AmcsExternalAvailable()
 
         await self.send_control_updates(sensor_values, control_values, controller_state)
 

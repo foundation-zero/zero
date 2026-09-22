@@ -18,7 +18,7 @@ from thrs.input_output.definitions.units import (
     OptionalCelsius,
     PcsMode,
 )
-from thrs.input_output.sensor_values import AmcsModeSensorValues
+from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
 class ThrustersSensorValues(AmcsModeSensorValues):
@@ -245,7 +245,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
 
 
-class ThrustersControlValues(ThrsValues):
+class ThrustersControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

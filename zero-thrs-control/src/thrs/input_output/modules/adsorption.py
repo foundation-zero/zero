@@ -19,7 +19,7 @@ from thrs.input_output.definitions.units import (
     FreeCoolingMode,
     TankControlMode,
 )
-from thrs.input_output.sensor_values import AmcsModeSensorValues
+from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
 class AdsorptionSensorValues(AmcsModeSensorValues):
@@ -179,7 +179,7 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
         )
 
 
-class AdsorptionControlValues(ThrsValues):
+class AdsorptionControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

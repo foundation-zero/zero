@@ -1,6 +1,10 @@
+from datetime import UTC, datetime
 from enum import Enum
 
+from pydantic import Field
+
 from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.definitions.units import Seconds
 
 
 class ControlMode(Enum):
@@ -22,6 +26,13 @@ class AmcsControlMode(ThrsValues):
         return self.mode.value == ControlMode.EXTERNAL.value
 
 
+class AmcsExternalAvailable(ThrsValues):
+    since: Stamped[Seconds] = Field(
+        default_factory=lambda: Stamped.stamp(datetime.now(UTC).timestamp())
+    )
+
+
 __all__ = [
     "AmcsControlMode",
+    "AmcsExternalAvailable",
 ]
