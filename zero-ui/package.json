@@ -17,6 +17,7 @@
     "extract-schema-values": "tsx scripts/extract-schema-values.ts",
     "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
     "extract-all-schemas": "tsx scripts/extract-all-schemas.ts",
+    "convert-direction-arrows": "tsx scripts/convert-direction-arrows.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
