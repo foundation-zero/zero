@@ -9,9 +9,9 @@ const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
 
 const { units } = useTranslations();
 
-const unit = (val: number) => {
-  if (val < 1_000) return units("watt");
-  else if (val < 1_000_000) return units("kilowatt");
+const unit = (absRawValue: number) => {
+  if (absRawValue < 1_000) return units("watt");
+  else if (absRawValue < 1_000_000) return units("kilowatt");
   else return units("megawatt");
 };
 </script>
