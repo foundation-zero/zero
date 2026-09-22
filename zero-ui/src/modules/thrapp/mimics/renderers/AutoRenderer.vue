@@ -4,7 +4,9 @@ import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField, injectFieldValueSource, isPlaceholderField } from "../providers";
 
-const field = injectFieldValueField<ControlValueFields | SensorValueFields | ControllerFields>();
+const field = injectFieldValueField<
+  ControlValueFields | SensorValueFields | ControllerFields | "charge"
+>();
 const source = injectFieldValueSource();
 
 const editor = computed(() => {

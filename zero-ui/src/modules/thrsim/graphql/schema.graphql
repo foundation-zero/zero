@@ -261,6 +261,11 @@ type ControlValveType {
   setpoint: FloatStampedType!
 }
 
+type ControllerChargeControllerValuesType {
+  charge: FloatStampedType!
+  chargingState: PcmChargingStateStampedType!
+}
+
 type ControllerPidControllerValuesType {
   setpoint: FloatStampedType!
   measurement: FloatOptionalStampedType!
@@ -1162,7 +1167,10 @@ type PcmControlValuesType {
 }
 
 type PcmControllerStateType {
-  Empty: Void
+  module1ChargeController: ControllerChargeControllerValuesType!
+  module2ChargeController: ControllerChargeControllerValuesType!
+  module3ChargeController: ControllerChargeControllerValuesType!
+  module4ChargeController: ControllerChargeControllerValuesType!
 }
 
 input PcmInputType {
@@ -1194,10 +1202,10 @@ type PcmSensorValuesType {
   pcmTemperatureModule4: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-35", componentType: "temperature_sensor", valveType: null)
   freshwaterTemperaturePcmSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-5", componentType: "temperature_sensor", valveType: null)
   freshwaterTemperaturePcmReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-3", componentType: "temperature_sensor", valveType: null)
-  pcmModule1: SensorPcmInputType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm_input", valveType: null)
-  pcmModule2: SensorPcmInputType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm_input", valveType: null)
-  pcmModule3: SensorPcmInputType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm_input", valveType: null)
-  pcmModule4: SensorPcmInputType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm_input", valveType: null)
+  pcmModule1: SensorPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm_input", valveType: null)
+  pcmModule2: SensorPcmType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm_input", valveType: null)
+  pcmModule3: SensorPcmType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm_input", valveType: null)
+  pcmModule4: SensorPcmType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm_input", valveType: null)
   pcmFlowModule1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-18", componentType: "flow_sensor", valveType: null)
   pcmFlowModule2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-19", componentType: "flow_sensor", valveType: null)
   pcmFlowModule3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-20", componentType: "flow_sensor", valveType: null)
@@ -1211,10 +1219,10 @@ type PcmSensorValuesType {
   pcmSwitchDischarging: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-01", componentType: "valve", valveType: "switch")
   pcmSwitchChargingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001190-01", componentType: "valve", valveType: "switch")
   pcmSwitchConsumers: SensorValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
-  pcmHeatModule1: SensorPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
-  pcmHeatModule2: SensorPcmType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
-  pcmHeatModule3: SensorPcmType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)
-  pcmHeatModule4: SensorPcmType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm", valveType: null)
+  pcmHeatModule1: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
+  pcmHeatModule2: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
+  pcmHeatModule3: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)
+  pcmHeatModule4: SensorHeatExchangerType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm", valveType: null)
 }
 
 type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule {
@@ -1535,18 +1543,8 @@ type SensorLevelSwitchType {
   empty: BoolStampedType!
 }
 
-type SensorPcmInputType {
-  charged: BoolStampedType!
-}
-
 type SensorPcmType {
-  temperatureSupply: FloatOptionalStampedType!
-  temperatureReturn: FloatOptionalStampedType!
-  deltaT: FloatStampedType!
-  flow: FloatStampedType!
-  heat: FloatStampedType!
   charged: BoolStampedType!
-  chargingState: PcmChargingStateStampedType!
 }
 
 type SensorPcsType {

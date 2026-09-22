@@ -165,7 +165,6 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Thruster]: "active",
   [SensorComponentType.Pcs]: "mode",
   [SensorComponentType.Pcm]: "charged",
-  [SensorComponentType.PcmInput]: "charged",
   [SensorComponentType.Level]: "level",
   [SensorComponentType.LevelSwitch]: "empty",
   [SensorComponentType.HeatExchanger]: "deltaT",

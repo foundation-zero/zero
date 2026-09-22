@@ -1709,7 +1709,20 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const PCM_CONTROLLER_STATE = toControllerStateDefinition({});
+export const PCM_CONTROLLER_STATE = toControllerStateDefinition({
+  module1ChargeController: {
+    componentType: ControllerStateComponentType.ChargeController,
+  },
+  module2ChargeController: {
+    componentType: ControllerStateComponentType.ChargeController,
+  },
+  module3ChargeController: {
+    componentType: ControllerStateComponentType.ChargeController,
+  },
+  module4ChargeController: {
+    componentType: ControllerStateComponentType.ChargeController,
+  },
+});
 
 export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
   pcmDischargeFlow: {
@@ -1789,19 +1802,19 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmModule1: {
     yardTag: "50001049",
-    componentType: SensorComponentType.PcmInput,
+    componentType: SensorComponentType.Pcm,
   },
   pcmModule2: {
     yardTag: "50001050",
-    componentType: SensorComponentType.PcmInput,
+    componentType: SensorComponentType.Pcm,
   },
   pcmModule3: {
     yardTag: "50001051",
-    componentType: SensorComponentType.PcmInput,
+    componentType: SensorComponentType.Pcm,
   },
   pcmModule4: {
     yardTag: "50001052",
-    componentType: SensorComponentType.PcmInput,
+    componentType: SensorComponentType.Pcm,
   },
   pcmFlowModule1: {
     yardTag: "50001057-18",
@@ -1865,19 +1878,19 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmHeatModule1: {
     yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pcmHeatModule2: {
     yardTag: "50001050",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pcmHeatModule3: {
     yardTag: "50001051",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.HeatExchanger,
   },
   pcmHeatModule4: {
     yardTag: "50001052",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 

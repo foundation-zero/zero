@@ -607,7 +607,22 @@ async def test_query_controller_state(app, test_client):
                     }
                     pcm {
                         controllerState {
-                            Empty
+                            module1ChargeController {
+                                charge { value }
+                                chargingState { value }
+                            }
+                            module2ChargeController {
+                                charge { value }
+                                chargingState { value }
+                            }
+                            module3ChargeController {
+                                charge { value }
+                                chargingState { value }
+                            }
+                            module4ChargeController {
+                                charge { value }
+                                chargingState { value }
+                            }
                         }
                     }
                 }
@@ -1110,7 +1125,40 @@ async def test_query_controller_state(app, test_client):
                     },
                 },
                 "pcm": {
-                    "controllerState": {"Empty": None},
+                    "controllerState": {
+                        "module1ChargeController": {
+                            "charge": {
+                                "value": 0.0,
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module2ChargeController": {
+                            "charge": {
+                                "value": 0.0,
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module3ChargeController": {
+                            "charge": {
+                                "value": 0.0,
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module4ChargeController": {
+                            "charge": {
+                                "value": 0.0,
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                    },
                 },
             }
         }

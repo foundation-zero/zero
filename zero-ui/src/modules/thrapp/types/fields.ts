@@ -136,7 +136,9 @@ export type ControlFieldDefinitions = ControlFields<{
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
-  [MimicComponentType.Pcm]: EmptyObject;
+  [MimicComponentType.Pcm]: {
+    chargeController: ControllerStateComponentType.ChargeController;
+  };
   [MimicComponentType.BoilerTank]: {
     controller: ControllerStateComponentType.DhwTanksController;
   };

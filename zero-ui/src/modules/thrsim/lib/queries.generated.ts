@@ -1469,7 +1469,22 @@ export const PCM_CONTROL_QUERY = `
 `;
 
 export const PCM_CONTROLLER_STATE_QUERY = `
-
+  module1ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module2ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module3ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module4ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
 `;
 
 export const PCM_PARAMETERS_QUERY = `
@@ -1592,28 +1607,32 @@ export const PCM_SENSOR_QUERY = `
     positionAbs { value timestamp }
   }
   pcmHeatModule1 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp }
+    temperatureReturn { value timestamp }
+    flow { value timestamp }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule2 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp }
+    temperatureReturn { value timestamp }
+    flow { value timestamp }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule3 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp }
+    temperatureReturn { value timestamp }
+    flow { value timestamp }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule4 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp }
+    temperatureReturn { value timestamp }
+    flow { value timestamp }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
 `;
 

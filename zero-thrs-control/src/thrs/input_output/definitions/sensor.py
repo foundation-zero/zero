@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 from datetime import UTC, datetime
-from enum import Enum
 from typing import Annotated, Self, cast
 
 from pydantic import field_validator
@@ -185,7 +184,7 @@ class HeatTransferDevice(ThrsValues):
         temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
         temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
         flow: Stamped[LMin],
-        heat_transfer_conversion: float,
+        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
     ) -> Self:
         delta_t = Stamped.combine(
             temperature_supply,
@@ -336,52 +335,9 @@ class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
 
-class PcmChargingState(Enum):
-    CHARGING = "charging"
-    DISCHARGING = "discharging"
-    IDLE = "idle"
-
-
-PCM_CHARGING_DEADBAND: Watt = 100
-
-
-# Temporary helper for the FMU charged input that control depends on.
-class PcmInput(ThrsValues):
+# Temporary helper for the FMU charged input that control depends on. This should come from a charge controller
+class Pcm(ThrsValues):
     charged: Stamped[Charged]
-
-
-class Pcm(HeatTransferDevice):
-    charged: Stamped[Charged]
-    charging_state: Stamped[PcmChargingState]
-
-    @classmethod
-    def from_sensors(  # type: ignore
-        cls,
-        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
-        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
-        flow: Stamped[LMin],
-        charged: Stamped[Charged],
-        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
-    ) -> Self:
-        heat_transfer = HeatTransferDevice.from_sensors(
-            temperature_supply, temperature_return, flow, heat_transfer_conversion
-        )
-        if heat_transfer.heat.value < -PCM_CHARGING_DEADBAND:
-            state = PcmChargingState.CHARGING
-        elif heat_transfer.heat.value > PCM_CHARGING_DEADBAND:
-            state = PcmChargingState.DISCHARGING
-        else:
-            state = PcmChargingState.IDLE
-        charging_state = Stamped.combine(heat_transfer.heat, value=state)
-        return cls(
-            temperature_supply=heat_transfer.temperature_supply,
-            temperature_return=heat_transfer.temperature_return,
-            delta_t=heat_transfer.delta_t,
-            flow=heat_transfer.flow,
-            heat=heat_transfer.heat,
-            charged=charged,
-            charging_state=charging_state,
-        )
 
 
 class LevelSwitch(ThrsValues):
@@ -452,8 +408,6 @@ __all__ = [
     "LevelSensor",
     "LevelSwitch",
     "Pcm",
-    "PcmChargingState",
-    "PcmInput",
     "Pcs",
     "PowerSensor",
     "PressureSensor",

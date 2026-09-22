@@ -122,7 +122,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
   ControllerPidControllerValuesType: "PIDController",
   ControllerTanksControllerValuesType: "DhwTanksController",
-  ControllerPvtControllerValuesType: "PvtController",
+  ControllerChargeControllerValuesType: "ChargeController",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {

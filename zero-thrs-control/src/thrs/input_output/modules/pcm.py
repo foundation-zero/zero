@@ -75,23 +75,23 @@ class PcmSensorValues(AmcsModeSensorValues):
     )
 
     pcm_module1: Annotated[
-        sensor.PcmInput, component_meta(yard_tag="50001049", component_type="pcm_input")
-    ] = sensor.PcmInput(
+        sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm_input")
+    ] = sensor.Pcm(
         charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pcm_module2: Annotated[
-        sensor.PcmInput, component_meta(yard_tag="50001050", component_type="pcm_input")
-    ] = sensor.PcmInput(
+        sensor.Pcm, component_meta(yard_tag="50001050", component_type="pcm_input")
+    ] = sensor.Pcm(
         charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pcm_module3: Annotated[
-        sensor.PcmInput, component_meta(yard_tag="50001051", component_type="pcm_input")
-    ] = sensor.PcmInput(
+        sensor.Pcm, component_meta(yard_tag="50001051", component_type="pcm_input")
+    ] = sensor.Pcm(
         charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pcm_module4: Annotated[
-        sensor.PcmInput, component_meta(yard_tag="50001052", component_type="pcm_input")
-    ] = sensor.PcmInput(
+        sensor.Pcm, component_meta(yard_tag="50001052", component_type="pcm_input")
+    ] = sensor.Pcm(
         charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
     pcm_flow_module1: Annotated[
@@ -169,12 +169,11 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module1(self) -> sensor.Pcm:
-        return sensor.Pcm.from_sensors(
+    def pcm_heat_module1(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module1.temperature,
             flow=self.pcm_flow_module1.flow,
-            charged=self.pcm_module1.charged,
         )
 
     @computed_field(
@@ -183,12 +182,11 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module2(self) -> sensor.Pcm:
-        return sensor.Pcm.from_sensors(
+    def pcm_heat_module2(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module2.temperature,
             flow=self.pcm_flow_module2.flow,
-            charged=self.pcm_module2.charged,
         )
 
     @computed_field(
@@ -197,12 +195,11 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module3(self) -> sensor.Pcm:
-        return sensor.Pcm.from_sensors(
+    def pcm_heat_module3(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module3.temperature,
             flow=self.pcm_flow_module3.flow,
-            charged=self.pcm_module3.charged,
         )
 
     @computed_field(
@@ -211,12 +208,11 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module4(self) -> sensor.Pcm:
-        return sensor.Pcm.from_sensors(
+    def pcm_heat_module4(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module4.temperature,
             flow=self.pcm_flow_module4.flow,
-            charged=self.pcm_module4.charged,
         )
 
 

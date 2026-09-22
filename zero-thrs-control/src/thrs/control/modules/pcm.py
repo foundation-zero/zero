@@ -5,10 +5,18 @@ from transitions import State
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
-from thrs.control.controllers import FlowBalanceController, PidController
+from thrs.control.controllers import (
+    ChargeController,
+    FlowBalanceController,
+    PidController,
+)
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
+from thrs.input_output.definitions.controllers import (
+    ChargeControllerValues,
+    PcmChargingState,
+)
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 from thrs.orchestration.module import ModuleDescription
@@ -26,6 +34,13 @@ class PcmParameters(ThrsValues):
     module2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+
+
+class PcmControllerState(ThrsValues):
+    module1_charge_controller: ChargeControllerValues
+    module2_charge_controller: ChargeControllerValues
+    module3_charge_controller: ChargeControllerValues
+    module4_charge_controller: ChargeControllerValues
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
@@ -62,6 +77,28 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N
     )
 
 
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
+
+    return PcmControllerState(
+        module1_charge_controller=ChargeControllerValues(
+            charge=Stamped(value=False, timestamp=timestamp),
+            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
+        ),
+        module2_charge_controller=ChargeControllerValues(
+            charge=Stamped(value=False, timestamp=timestamp),
+            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
+        ),
+        module3_charge_controller=ChargeControllerValues(
+            charge=Stamped(value=False, timestamp=timestamp),
+            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
+        ),
+        module4_charge_controller=ChargeControllerValues(
+            charge=Stamped(value=False, timestamp=timestamp),
+            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
+        ),
+    )
+
+
 class PcmControlMode(ControlMode):
     mode: str
 
@@ -80,10 +117,6 @@ class PcmControlMode(ControlMode):
     @property
     def is_boosting(self) -> bool:
         return self.mode == "boosting"
-
-
-class PcmControllerState(ThrsValues):
-    pass
 
 
 class PcmControl(
@@ -250,6 +283,11 @@ class PcmControl(
             self._time,
         )
 
+        self.module1_charge_controller = ChargeController(self._time)
+        self.module2_charge_controller = ChargeController(self._time)
+        self.module3_charge_controller = ChargeController(self._time)
+        self.module4_charge_controller = ChargeController(self._time)
+
     @property
     def parameters(self) -> PcmParameters:
         return self._parameters
@@ -268,7 +306,10 @@ class PcmControl(
         return PcmControlMode(mode=mode)
 
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), PcmControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            _INITIAL_CONTROLLER_STATE(self._time()),
+        )
 
     def reset(self) -> None:
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
@@ -298,9 +339,24 @@ class PcmControl(
             self._set_supplying_flow_setpoints(sensor_values)
             self._check_supplying_conditions(sensor_values)  # type: ignore
 
+        controller_state = self._update_controllers(sensor_values)
+
+        return (self._current_values, controller_state)
+
+    def _update_controllers(self, sensor_values: PcmSensorValues) -> PcmControllerState:
         self._control_flow_balance(sensor_values)
 
-        return (self._current_values, PcmControllerState())
+        self.module1_charge_controller(sensor_values.pcm_heat_module1)
+        self.module2_charge_controller(sensor_values.pcm_heat_module2)
+        self.module3_charge_controller(sensor_values.pcm_heat_module3)
+        self.module4_charge_controller(sensor_values.pcm_heat_module4)
+
+        return PcmControllerState(
+            module1_charge_controller=self.module1_charge_controller.values(),
+            module2_charge_controller=self.module2_charge_controller.values(),
+            module3_charge_controller=self.module3_charge_controller.values(),
+            module4_charge_controller=self.module4_charge_controller.values(),
+        )
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(
