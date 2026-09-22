@@ -63,7 +63,7 @@ const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
       >
         <component
           :is="currentMimic.component"
-          class="z-1 mx-auto max-h-[calc(100svh-14em)] lg:my-auto portrait:my-auto"
+          class="z-1 mx-auto max-h-[calc(100svh-14em)] xl:my-auto portrait:my-auto"
         />
       </MimicTooltipProvider>
     </section>
