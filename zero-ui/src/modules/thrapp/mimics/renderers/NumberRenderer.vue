@@ -7,24 +7,28 @@ import { FieldRendererProps } from "./index.ts";
 
 const props = defineProps<
   FieldRendererProps<number> & {
-    unit?: string | ((val: number) => string);
+    unit?: string | ((absRawValue: number, absTransformedValue: number) => string);
     dense?: boolean;
     transform?: (value: number) => number;
   }
 >();
 
 const fieldValue = getFieldValue<number>();
-const value = computed(() => {
-  const rawValue = props.value !== undefined ? props.value : fieldValue.value;
-  return props.transform && rawValue !== undefined ? props.transform(rawValue) : rawValue;
+const rawValue = computed(() => (props.value !== undefined ? props.value : fieldValue.value));
+const transformedValue = computed(() => {
+  return props.transform && rawValue.value !== undefined
+    ? props.transform(rawValue.value)
+    : rawValue.value;
 });
 
 const unit = computed(() => {
   if (typeof props.unit === "function") {
-    return value.value !== undefined ? props.unit(value.value) : undefined;
+    return transformedValue.value !== undefined && rawValue.value !== undefined
+      ? props.unit(Math.abs(rawValue.value), Math.abs(transformedValue.value))
+      : undefined;
+  } else {
+    return props.unit;
   }
-
-  return props.unit;
 });
 </script>
 
@@ -34,7 +38,7 @@ const unit = computed(() => {
     :class="cn('inline-flex items-center', { 'gap-0.5': !dense }, props.class)"
   >
     <AnimatedNumber
-      :to="value"
+      :to="transformedValue"
       :format="format"
     />
     <span v-if="unit">{{ unit }}</span>

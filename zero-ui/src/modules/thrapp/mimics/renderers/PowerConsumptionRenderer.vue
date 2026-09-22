@@ -11,7 +11,9 @@ const transform = (val: number) => scaleNumber(joulesToWatthours(val));
 
 const { units } = useTranslations();
 
-const unit = (val: number) => {
+const unit = (absRawValue: number) => {
+  const val = joulesToWatthours(absRawValue);
+
   if (val < 1_000) return units("watthours");
   else if (val < 1_000_000) return units("kilowatthours");
   else return units("megawatthours");

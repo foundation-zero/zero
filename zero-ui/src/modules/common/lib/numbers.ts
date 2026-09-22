@@ -87,8 +87,9 @@ export const formatFixed = (digits: number, value: number, locale: string = "en-
 
 export const joulesToWatthours = (joules: number) => joules / 3600;
 export const scaleNumber = (unscaledValue: number): number => {
-  if (unscaledValue < 1_000) return unscaledValue;
-  else if (unscaledValue < 1_000_000) return unscaledValue / 1_000;
-  else return unscaledValue / 1_000_000;
+  const absValue = Math.abs(unscaledValue);
+  if (absValue < 1_000) return unscaledValue;
+  else if (absValue < 1_000_000) return Math.sign(unscaledValue) * (absValue / 1_000);
+  else return Math.sign(unscaledValue) * (absValue / 1_000_000);
 };
 export const ratioToPercentage = (value: number): number => value * 100;

@@ -4,13 +4,13 @@ import { FieldRenderer, FieldRendererProps } from ".";
 
 const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
   format: formatPercentage.default,
+  transform: ratioToPercentage,
 });
 </script>
 
 <template>
   <FieldRenderer.Number
     v-bind="props"
-    :transform="ratioToPercentage"
     dense
   />
 </template>
