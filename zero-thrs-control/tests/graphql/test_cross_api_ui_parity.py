@@ -59,14 +59,20 @@ def _ui_source(relative: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _ui_match(pattern: str, src: str) -> str:
+    match = re.search(pattern, src, re.DOTALL)
+    assert match is not None, f"zero-ui source no longer matches {pattern!r}"
+    return match.group(1)
+
+
 def ui_control_query() -> str:
     src = _ui_source("stores/automation.ts")
-    return re.search(r"gql`\s*(query ControlStatus.*?)`", src, re.DOTALL).group(1)
+    return _ui_match(r"gql`\s*(query ControlStatus.*?)`", src)
 
 
 def ui_status_query() -> str:
     src = _ui_source("stores/simulation.ts")
-    return re.search(r"gql`\s*(query SimulationStatus.*?)`", src, re.DOTALL).group(1)
+    return _ui_match(r"gql`\s*(query SimulationStatus.*?)`", src)
 
 
 def ui_query_all() -> str:
@@ -81,12 +87,10 @@ def ui_query_all() -> str:
         m.group(1): m.group(2)
         for m in re.finditer(r"export const (\w+) = `(.*?)`;", generated, re.DOTALL)
     }
-    template = re.search(r"gql`\s*(query QueryAll.*?)`;", consts, re.DOTALL).group(1)
+    template = _ui_match(r"gql`\s*(query QueryAll.*?)`;", consts)
 
     def _map(name: str) -> list[tuple[str, str]]:
-        body = re.search(
-            rf"export const {name}[^=]*=\s*\{{(.*?)\}};", consts, re.DOTALL
-        ).group(1)
+        body = _ui_match(rf"export const {name}[^=]*=\s*\{{(.*?)\}};", consts)
         return re.findall(r"(\w+):\s*Queries\.(\w+)", body)
 
     def _union(map_name: str, suffix: str) -> str:
@@ -230,6 +234,7 @@ def test_ui_input_and_enum_types_parity() -> None:
     seen_enums: set[str] = set()
     for name in input_names:
         a, b = _named_type(THRS_API_URL, name), _named_type(MQTT_GRAPHQL_URL, name)
+        assert a is not None, f"input type {name} vanished from thrs-api"
         assert b is not None, f"input type {name} missing on mqtt-graphql"
         fa = sorted(
             (f["name"], _type_str(f["type"]), f["defaultValue"])
@@ -246,6 +251,7 @@ def test_ui_input_and_enum_types_parity() -> None:
                 seen_enums.add(base)
     for name in sorted(seen_enums):
         a, b = _named_type(THRS_API_URL, name), _named_type(MQTT_GRAPHQL_URL, name)
+        assert a is not None, f"enum {name} vanished from thrs-api"
         assert b is not None and b["kind"] == "ENUM", (
             f"enum {name} missing on mqtt-graphql"
         )

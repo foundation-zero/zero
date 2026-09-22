@@ -482,7 +482,7 @@ def _actuated_wire_keys(component_cls: type[ThrsValues]) -> dict[str, str]:
     return keys
 
 
-def _leaf_enum(annotation: Any) -> type | None:
+def _leaf_enum(annotation: Any) -> type[Enum] | None:
     """The Enum a Stamped[Enum] leaf wraps, or None."""
     inner = _bare_type(annotation)
     if not isinstance(inner, type):

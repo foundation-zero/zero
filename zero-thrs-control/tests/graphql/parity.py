@@ -11,7 +11,7 @@ from __future__ import annotations
 import contextlib
 import math
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, TypeGuard
 
 import httpx
 from pydantic import ValidationError
@@ -158,7 +158,7 @@ def diff(
     return [f"{path}: {labels[0]}={a!r} {labels[1]}={b!r}"]
 
 
-def _is_number(value: Any) -> bool:
+def _is_number(value: Any) -> TypeGuard[int | float]:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 

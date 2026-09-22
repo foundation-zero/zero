@@ -57,13 +57,12 @@ def _service_environment(service: str) -> dict[str, str]:
 
 def thrs_api_config() -> Config:
     environment = _service_environment("thrs-api")
-    return Config(
-        _env_file=None,
-        **{
+    return Config.model_validate(
+        {
             key.lower(): value
             for key, value in environment.items()
             if key.lower() in Config.model_fields
-        },
+        }
     )
 
 

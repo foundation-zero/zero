@@ -55,7 +55,8 @@ from thrs.runtime.descriptions.simulation import lookup_mode, simulation_io_clas
 
 # Only shapes the example topics printed in the spec -
 # the runtime always reads these from Config/env, never from here.
-DEFAULT_CONFIG = Config(_env_file=None)
+# model_validate skips the settings sources (.env, os.environ): pure defaults.
+DEFAULT_CONFIG = Config.model_validate({})
 
 # Topics with a fixed "kind" segment per module, e.g. thrs/controller/{module}/parameters.
 # Field names are always hyphenized so they never collide with these.
