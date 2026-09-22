@@ -6,7 +6,15 @@ from simple_pid import PID
 
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
+from thrs.input_output.definitions.controllers import (
+    PCM_CHARGE_EMPTY_TEMP,
+    PCM_CHARGE_FULL_TEMP,
+    PCM_CHARGING_DEADBAND,
+    ChargeControllerValues,
+    PcmChargingState,
+    PidControllerValues,
+)
+from thrs.input_output.definitions.sensor import HeatTransferDevice
 from thrs.input_output.definitions.units import LMin, Ratio
 
 
@@ -273,3 +281,40 @@ class FlowDistributionController:
         ]
         self._flow_balance_controller.set_setpoints(setpoints)
         self._flow_balance_controller(measurements)
+
+
+class ChargeController:
+    def __init__(self, time_fn: Callable[[], datetime]) -> None:
+        self._time = time_fn
+        self._charge = 0
+        self._charging_state = PcmChargingState.IDLE
+
+    def __call__(self, heat_transfer_device: HeatTransferDevice) -> None:
+        if heat_transfer_device.heat.value < -PCM_CHARGING_DEADBAND:
+            self._charging_state = PcmChargingState.CHARGING
+        elif heat_transfer_device.heat.value > PCM_CHARGING_DEADBAND:
+            self._charging_state = PcmChargingState.DISCHARGING
+        else:
+            self._charging_state = PcmChargingState.IDLE
+
+        # TODO: Improve this
+        if heat_transfer_device.temperature_return.value:
+            if (
+                heat_transfer_device.temperature_return.value > PCM_CHARGE_FULL_TEMP
+                and self._charging_state == PcmChargingState.IDLE
+            ):
+                self._charge = 0.0
+            elif (
+                heat_transfer_device.temperature_return.value > PCM_CHARGE_EMPTY_TEMP
+                and self._charging_state == PcmChargingState.IDLE
+            ):
+                self._charge = 1.0
+            else:
+                self._charge = 0.5
+
+    def values(self) -> ChargeControllerValues:
+        timestamp = self._time()
+        return ChargeControllerValues(
+            charge=Stamped(value=self._charge, timestamp=timestamp),
+            charging_state=Stamped(value=self._charging_state, timestamp=timestamp),
+        )

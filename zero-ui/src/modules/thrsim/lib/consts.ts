@@ -167,8 +167,7 @@ export const SENSOR_FIELDS: SensorFields = {
   [SensorComponentType.Thruster]: ["active"],
   [SensorComponentType.Pcs]: ["mode"],
   [SensorComponentType.Flow]: ["flow", "temperature", "quantity"],
-  [SensorComponentType.Pcm]: ["charged", "chargingState", "heat", "deltaT"],
-  [SensorComponentType.PcmInput]: ["charged"],
+  [SensorComponentType.Pcm]: ["charged"],
   [SensorComponentType.Level]: ["level"],
   [SensorComponentType.LevelSwitch]: ["empty"],
 };
@@ -318,8 +317,8 @@ export const QUERY_ALL = gql`
         parameters {
           ${Queries.PCM_PARAMETERS_QUERY}
         }
-        controllerState {
-          Empty
+          controllerState {
+          ${Queries.PCM_CONTROLLER_STATE_QUERY}
         }
       }
       pvt {
