@@ -43,6 +43,8 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
   [ParametersType.dT]: NumberParameter,
   [ParametersType.Level]: NumberParameter,
   [ParametersType.FlowControl]: RatioParameter,
+  [ParametersType.Duration]: NumberParameter,
+  [ParametersType.Power]: NumberParameter,
 };
 </script>
 <template>

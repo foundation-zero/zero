@@ -476,8 +476,30 @@ type DhwParametersType {
   minimumTankTemperature: Float!
   maximumTankTemperature: Float!
 
-  """Required delta T between boosting source and tank temperature"""
-  boostingDelta: Float!
+  """
+  Minimum delta T between the HT boosting source and the tank to start or continue HT boosting
+  """
+  htBoostingMinimumDelta: Float!
+
+  """
+  Grace period after entering a boosting mode before the stall guard checks heat transfer, covering valve travel, pump ramp and heatpump spin-up
+  """
+  boostingStartupGrace: Float!
+
+  """
+  How long boosting heat transfer must stay below boosting_minimum_heat before boosting is aborted as stalled
+  """
+  boostingStallWindow: Float!
+
+  """
+  Lockout before retrying heatpump boosting after a stall, since heat transfer cannot be measured with the boosting loop closed
+  """
+  boostingStallCooldown: Float!
+
+  """
+  Minimum heat transfer to the tank in Watt (~1 kW) below which boosting is considered stalled
+  """
+  boostingMinimumHeat: Float!
 
   """
   Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement
@@ -931,7 +953,11 @@ type Mutation {
   dhwParameterSetHtBoostingTemperatureSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumTankTemperature(value: Float!): DhwParametersType!
   dhwParameterSetMaximumTankTemperature(value: Float!): DhwParametersType!
-  dhwParameterSetBoostingDelta(value: Float!): DhwParametersType!
+  dhwParameterSetHtBoostingMinimumDelta(value: Float!): DhwParametersType!
+  dhwParameterSetBoostingStartupGrace(value: Float!): DhwParametersType!
+  dhwParameterSetBoostingStallWindow(value: Float!): DhwParametersType!
+  dhwParameterSetBoostingStallCooldown(value: Float!): DhwParametersType!
+  dhwParameterSetBoostingMinimumHeat(value: Float!): DhwParametersType!
   dhwParameterSetDrivesFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetDcFlowcontrolMinimumSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumPumpDutypoint(value: Float!): DhwParametersType!

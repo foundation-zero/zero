@@ -6,7 +6,9 @@
     "temperature": "Temperature",
     "liter": "Liter",
     "flow": "Flow",
-    "position": "Position"
+    "position": "Position",
+    "duration": "Duration",
+    "power": "Power"
   },
   "units": {
     "bar": "bar",

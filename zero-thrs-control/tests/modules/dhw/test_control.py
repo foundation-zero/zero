@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from pytest import approx
@@ -363,6 +363,9 @@ def test_reset_restores_initial_control_state(
     control._pump_temperature_controller(control._pump_temperature_controller.setpoint)
     control._state_machine.set_state("boosting_heatpump")
     control._tanks_controller._filling_tank = control._tanks_controller._tanks[0]
+    control._boosting_entered_at = datetime.now()
+    control._boosting_shortfall_since = datetime.now()
+    control._heatpump_stall_cooldown_until = datetime.now()
 
     control.reset()
 
@@ -386,6 +389,9 @@ def test_reset_restores_initial_control_state(
     assert not control._pump_flow_controller.enabled()
     assert control._boosting_pump_controller is None
     assert control._boosting_pump_measurement is None
+    assert control._boosting_entered_at is None
+    assert control._boosting_shortfall_since is None
+    assert control._heatpump_stall_cooldown_until is None
     assert not control._tanks_controller.filling
     assert not control._tanks_controller.boosting
     assert (
@@ -396,3 +402,169 @@ def test_reset_restores_initial_control_state(
         control._current_controller_state.dhw_tanks_controller.tank1_state.value
         == TankState.NEEDS_FILL.value
     )
+
+
+class _Clock:
+    def __init__(self, start: datetime):
+        self._now = start
+
+    def __call__(self) -> datetime:
+        return self._now
+
+    def advance(self, seconds: float) -> None:
+        self._now += timedelta(seconds=seconds)
+
+
+def _drive_heatpump_boosting_heat(
+    sensor_values: DhwSensorValues, flow: float, delta: float
+):
+    # Open only the heatpump source valve so the computed dhw_heatpump heat is
+    # non-zero. The heatpump heats the return, so heat into the tank is positive
+    # when boosting_return exceeds boosting_supply.
+    sensor_values.dhw_switch_heatpump.position_rel.value = 1.0
+    sensor_values.dhw_switch_high_temperature.position_rel.value = 0.0
+    sensor_values.dhw_switch_low_temperature.position_rel.value = 0.0
+    sensor_values.dhw_flow_boosting.flow.value = flow
+    sensor_values.dhw_temperature_boosting_supply.temperature.value = 45.0
+    sensor_values.dhw_temperature_boosting_return.temperature.value = 45.0 + delta
+
+
+def test_boosting_stall_grace_suppresses_check(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = DhwControl(parameters, clock)
+    sensor_values = DhwSensorValues.zero()  # heatpump heat reads zero (valves shut)
+    control._state_machine.set_state("boosting_heatpump")
+    control._boosting_entered_at = clock()
+
+    # No heat transfer, but still inside the startup grace -> not stalled.
+    clock.advance(parameters.boosting_startup_grace - 1)
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+    assert control._boosting_shortfall_since is None
+
+
+def test_boosting_stall_trips_after_window_and_sets_heatpump_cooldown(
+    parameters: DhwParameters,
+):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = DhwControl(parameters, clock)
+    sensor_values = DhwSensorValues.zero()
+    control._state_machine.set_state("boosting_heatpump")
+    control._boosting_entered_at = clock()
+
+    clock.advance(parameters.boosting_startup_grace + 1)
+    # First shortfall observation after grace starts the debounce timer.
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+    assert control._boosting_shortfall_since is not None
+
+    clock.advance(parameters.boosting_stall_window / 2)
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+
+    clock.advance(parameters.boosting_stall_window)
+    assert control._boosting_stalled(sensor_values, "boosting_heatpump")
+    assert control._boosting_shortfall_since is None
+    assert control._heatpump_stall_cooldown_until == clock() + timedelta(
+        seconds=parameters.boosting_stall_cooldown
+    )
+
+
+def test_boosting_stall_debounce_resets_on_recovery(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = DhwControl(parameters, clock)
+    sensor_values = DhwSensorValues.zero()
+    control._state_machine.set_state("boosting_heatpump")
+    control._boosting_entered_at = clock()
+    clock.advance(parameters.boosting_startup_grace + 1)
+
+    # Shortfall builds partway through the window...
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+    clock.advance(parameters.boosting_stall_window / 2)
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+
+    # ...then heat recovers, resetting the debounce.
+    _drive_heatpump_boosting_heat(sensor_values, flow=25, delta=5)
+    assert not control._boosting_stalled(sensor_values, "boosting_heatpump")
+    assert control._boosting_shortfall_since is None
+
+    # A fresh shortfall must run the full window again, not the leftover.
+    recovered = DhwSensorValues.zero()
+    assert not control._boosting_stalled(recovered, "boosting_heatpump")
+    clock.advance(parameters.boosting_stall_window / 2)
+    assert not control._boosting_stalled(recovered, "boosting_heatpump")
+    clock.advance(parameters.boosting_stall_window)
+    assert control._boosting_stalled(recovered, "boosting_heatpump")
+
+
+def test_boosting_stall_high_temperature_does_not_set_cooldown(
+    parameters: DhwParameters,
+):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = DhwControl(parameters, clock)
+    sensor_values = DhwSensorValues.zero()
+    control._state_machine.set_state("boosting_high_temperature")
+    control._boosting_entered_at = clock()
+    clock.advance(parameters.boosting_startup_grace + 1)
+
+    assert not control._boosting_stalled(sensor_values, "boosting_high_temperature")
+    clock.advance(parameters.boosting_stall_window / 2)
+    assert not control._boosting_stalled(sensor_values, "boosting_high_temperature")
+    clock.advance(parameters.boosting_stall_window)
+    assert control._boosting_stalled(sensor_values, "boosting_high_temperature")
+    # HT re-enters via its primary-side gate, so it takes no cooldown.
+    assert control._heatpump_stall_cooldown_until is None
+
+
+def test_heatpump_boosting_unavailable_during_cooldown(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = DhwControl(parameters, clock)
+    sensor_values = DhwSensorValues.zero()
+    control._tanks_controller._boost_candidate = control._tanks_controller._tanks[0]
+    _drive_heatpump_boosting_heat(sensor_values, flow=25, delta=5)
+    control._heatpump_stall_cooldown_until = clock() + timedelta(
+        seconds=parameters.boosting_stall_cooldown
+    )
+
+    # Demand and heat are fine, but a live cooldown blocks the heatpump.
+    assert not control._heatpump_boosting_available(sensor_values)
+
+    clock.advance(parameters.boosting_stall_cooldown + 1)
+    assert control._heatpump_boosting_available(sensor_values)
+    assert control._heatpump_stall_cooldown_until is None
+
+
+def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    fast = parameters.model_copy(
+        update={
+            "ht_boosting_enabled": False,
+            "heatpump_boosting_enabled": True,
+            "boosting_startup_grace": 3,
+            "boosting_stall_window": 3,
+            "boosting_stall_cooldown": 100,
+        }
+    )
+    control = DhwControl(fast, clock)
+    sensor_values = DhwSensorValues.zero()
+    # tank1 hot+full (kept in use), tank2 full+cold (boosts), tank3 empty. The
+    # boosting loop sensor valves stay shut, so heat transfer reads zero.
+    sensor_values.dhw_temperature_tank1.temperature.value = 60
+    sensor_values.dhw_temperature_tank2.temperature.value = 20
+    sensor_values.dhw_temperature_tank3.temperature.value = 0
+    sensor_values.dhw_level_tank1.level.value = 250
+    sensor_values.dhw_level_tank2.level.value = 250
+    sensor_values.dhw_level_tank3.level.value = 10
+
+    modes = []
+    for _ in range(20):
+        control.control(sensor_values)
+        modes.append(control.mode.boosting_mode)
+        clock.advance(1)
+
+    assert "boosting_heatpump" in modes  # it did start boosting the cold tank
+    assert control.mode.is_boosting_idle  # and gave up once it stalled
+    assert control._heatpump_stall_cooldown_until is not None
+    assert control._current_values.dhw_switch_heatpump.setpoint.value == 0.0
+
+
+def test_boosting_stall_window_rejects_negative(parameters: DhwParameters):
+    with pytest.raises(ValueError, match=r"greater than or equal to 0"):
+        DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})

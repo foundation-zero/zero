@@ -14,8 +14,10 @@ const t = tScoped("thrapp.parameters.dhw");
     <Parameters.Description>{{ t("boostingModeSelection.description") }}</Parameters.Description>
     <Parameters.Separator />
     <Parameters.List>
-      <ParameterItems.Temperature :source="getField(ParametersType.dT, 'dhw', 'boostingDelta')">
-        {{ t("items.boostingDelta") }}
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.dT, 'dhw', 'htBoostingMinimumDelta')"
+      >
+        {{ t("items.htBoostingMinimumDelta") }}
       </ParameterItems.Temperature>
       <ParameterItems.Temperature
         :source="getField(ParametersType.Temperature, 'dhw', 'minimumTankTemperature')"
@@ -42,6 +44,24 @@ const t = tScoped("thrapp.parameters.dhw");
       >
         {{ t("items.minimumPumpDutypoint") }}
       </ParameterItems.Dutypoint>
+      <ParameterItems.Power :source="getField(ParametersType.Power, 'dhw', 'boostingMinimumHeat')">
+        {{ t("items.boostingMinimumHeat") }}
+      </ParameterItems.Power>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStartupGrace')"
+      >
+        {{ t("items.boostingStartupGrace") }}
+      </ParameterItems.Duration>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallWindow')"
+      >
+        {{ t("items.boostingStallWindow") }}
+      </ParameterItems.Duration>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallCooldown')"
+      >
+        {{ t("items.boostingStallCooldown") }}
+      </ParameterItems.Duration>
     </Parameters.List>
   </Parameters.Card>
 </template>

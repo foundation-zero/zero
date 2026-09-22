@@ -207,6 +207,13 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("cold")) return "Temperature";
   if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
+  if (
+    lowerFieldName.includes("grace") ||
+    lowerFieldName.includes("window") ||
+    lowerFieldName.includes("cooldown")
+  )
+    return "Duration";
+  if (lowerFieldName.includes("heat")) return "Power";
   if (lowerFieldName.includes("disabled")) return "Disabled";
 
   throw new Error(

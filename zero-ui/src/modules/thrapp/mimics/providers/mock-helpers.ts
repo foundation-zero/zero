@@ -301,4 +301,6 @@ export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
   [ParametersType.Temperature]: () => useRandomizedNumber(20, 100),
   [ParametersType.Tuning]: () => computed(() => [1, 2, 3]),
   [ParametersType.dT]: () => useRandomizedNumber(-20, 20),
+  [ParametersType.Duration]: () => useRandomizedNumber(0, 900),
+  [ParametersType.Power]: () => useRandomizedNumber(0, 5000),
 };

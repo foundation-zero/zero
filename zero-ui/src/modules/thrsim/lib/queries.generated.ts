@@ -765,7 +765,11 @@ export const DHW_PARAMETERS_QUERY = `
   htBoostingTemperatureSetpoint
   minimumTankTemperature
   maximumTankTemperature
-  boostingDelta
+  htBoostingMinimumDelta
+  boostingStartupGrace
+  boostingStallWindow
+  boostingStallCooldown
+  boostingMinimumHeat
   drivesFlowcontrolMinimumSetpoint
   dcFlowcontrolMinimumSetpoint
   minimumPumpDutypoint
