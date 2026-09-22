@@ -46,7 +46,7 @@ const { items, labels } = useTranslations();
         :source="source"
         field="flow"
       >
-        <Partials.ListItem>
+        <Partials.ListItem no-source>
           {{ items("flow") }}
         </Partials.ListItem>
       </SensorValue>
@@ -65,7 +65,7 @@ const { items, labels } = useTranslations();
         :source="source"
         field="temperature"
       >
-        <Partials.ListItem>
+        <Partials.ListItem no-source>
           {{ items("temperature") }}
         </Partials.ListItem>
       </SensorValue>

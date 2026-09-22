@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { BypassArea } from "../../../components/bypass-area";
 import { PYRANO_METER_WIDTH, PyranoMeter } from "../../../components/pyrano-meter";
 import { IrradianceLabelInstance, PvtInstance } from "../../../instances";
+import { getField } from "../../../providers";
 import { PVT_MIMIC_DATA } from "../data";
 
 const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
@@ -31,6 +33,7 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     <IrradianceLabelInstance
       :target-x="-52"
       :target-width="PYRANO_METER_WIDTH"
+      :source="getField(SensorComponentType.Irradiance, 'pvt', 'placeholder')"
       y="290"
       tag-id="9044"
     />
@@ -40,6 +43,7 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     />
     <IrradianceLabelInstance
       :target-x="-52"
+      :source="getField(SensorComponentType.Irradiance, 'pvt', 'placeholder')"
       :target-width="PYRANO_METER_WIDTH"
       y="390"
       tag-id="9043"

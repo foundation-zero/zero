@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ZiHeatBatteryFull } from "@/modules/common/components/icons";
 import { RiFireLine } from "@remixicon/vue";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -23,8 +22,6 @@ const props = withDefaults(
     layout: PcmLayout.LeftTopBottom,
   },
 );
-
-const { t } = useI18n();
 </script>
 
 <template>
@@ -60,15 +57,6 @@ const { t } = useI18n();
             <SensorValue
               :source="source"
               field="heat"
-            >
-              <FieldRenderer.Auto />
-            </SensorValue>
-          </ValueListItem>
-          <ValueListItem>
-            <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-            <SensorValue
-              :source="source"
-              field="deltaT"
             >
               <FieldRenderer.Auto />
             </SensorValue>

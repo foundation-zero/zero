@@ -11,8 +11,8 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   controls: {},
   controllerState: {},
   custom: {
-    sideA: HeatExchangerPortOrientation.Top,
-    sideB: HeatExchangerPortOrientation.Side,
+    sideA: HeatExchangerPortOrientation.Side,
+    sideB: HeatExchangerPortOrientation.Top,
     exchangeCircuit: PVT_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.sensors,
   },
   source: getField(SensorComponentType.HeatExchanger, "pvt", "pvtSeawaterExchanger"),
