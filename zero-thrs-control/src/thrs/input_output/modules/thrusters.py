@@ -4,7 +4,13 @@ from typing import Annotated, cast
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
@@ -46,13 +52,11 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ]
     thrusters_mix_recovery: Annotated[
         sensor.Valve,
-        component_meta(yard_tag="50001074", component_type="valve", valve_type="mix"),
+        valve_meta(yard_tag="50001074", component_type="valve", valve_type="mix"),
     ]
     thrusters_mix_exchanger: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001214-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001214-01", component_type="valve", valve_type="mix"),
     ]
     thrusters_flow_fwd: Annotated[
         sensor.FlowSensor,
@@ -64,33 +68,27 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ]
     thrusters_flowcontrol_aft: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001215", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     thrusters_flowcontrol_fwd: Annotated[
         sensor.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-02", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     thrusters_switch_recovery: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001066-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001066-03", component_type="valve", valve_type="switch"),
     ]
     thrusters_switch_aft: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001091-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001091-01", component_type="valve", valve_type="switch"),
     ]
     thrusters_switch_fwd: Annotated[
         sensor.Valve,
-        component_meta(
-            yard_tag="50001091-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001091-02", component_type="valve", valve_type="switch"),
     ]
     thrusters_flow_recovery: Annotated[
         sensor.FlowSensor,
@@ -262,43 +260,35 @@ class ThrustersControlValues(ThrsValues):
     ]
     thrusters_mix_recovery: Annotated[
         control.Valve,
-        component_meta(yard_tag="50001074", component_type="valve", valve_type="mix"),
+        valve_meta(yard_tag="50001074", component_type="valve", valve_type="mix"),
     ]
     thrusters_mix_exchanger: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001214-01", component_type="valve", valve_type="mix"
-        ),
+        valve_meta(yard_tag="50001214-01", component_type="valve", valve_type="mix"),
     ]
     thrusters_flowcontrol_aft: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001215", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     thrusters_flowcontrol_fwd: Annotated[
         control.Valve,
-        component_meta(
+        valve_meta(
             yard_tag="50001064-02", component_type="valve", valve_type="flowcontrol"
         ),
     ]
     thrusters_switch_recovery: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001066-03", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001066-03", component_type="valve", valve_type="switch"),
     ]
     thrusters_switch_aft: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001091-01", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001091-01", component_type="valve", valve_type="switch"),
     ]
     thrusters_switch_fwd: Annotated[
         control.Valve,
-        component_meta(
-            yard_tag="50001091-02", component_type="valve", valve_type="switch"
-        ),
+        valve_meta(yard_tag="50001091-02", component_type="valve", valve_type="switch"),
     ]
 
 

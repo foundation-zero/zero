@@ -21,7 +21,7 @@ const t = tScoped("thrapp.mimics.modeBadge.modes");
 
 <template>
   <div
-    class="text-inverse-foreground bg-attention inline px-4 font-medium transition-colors"
+    class="text-inverse-foreground bg-attention inline-block px-4 font-medium text-nowrap transition-colors"
     :style="{
       backgroundColor: color,
     }"

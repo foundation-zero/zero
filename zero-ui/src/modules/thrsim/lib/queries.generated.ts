@@ -111,6 +111,14 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionAvailableSeawaterTemperature {
     temperature { value timestamp }
   }
+  adsorptionHtExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  adsorptionDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
@@ -244,6 +252,14 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersSwitchDhw {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+  }
+  consumersAdsorptionExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  consumersDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 
@@ -579,6 +595,10 @@ export const DC_SENSOR_QUERY = `
   }
   dcUgrid2 {
     active { value timestamp }
+  }
+  dcDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 
@@ -916,18 +936,12 @@ export const DHW_SENSOR_QUERY = `
   drivesTemperatureRecovery {
     temperature { value timestamp }
   }
-  drivesTemperatureRecoveryReturn {
-    temperature { value timestamp }
-  }
   dcFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
   dcTemperatureRecovery {
-    temperature { value timestamp }
-  }
-  dcTemperatureRecoveryReturn {
     temperature { value timestamp }
   }
   consumersFlowDhw {
@@ -938,20 +952,6 @@ export const DHW_SENSOR_QUERY = `
   consumersTemperatureDhwSupply {
     temperature { value timestamp }
   }
-  consumersTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  adsorptionFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  adsorptionTemperatureWasteReturn {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
   freshwaterHotwaterFlow {
     flow { value timestamp }
     temperature { value timestamp }
@@ -959,18 +959,6 @@ export const DHW_SENSOR_QUERY = `
   }
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
-  }
-  drivesDelta {
-    deltaT { value timestamp }
-  }
-  dcDelta {
-    deltaT { value timestamp }
-  }
-  consumersDelta {
-    deltaT { value timestamp }
-  }
-  adsorptionDelta {
-    deltaT { value timestamp }
   }
   dhwFreshwaterFlowSupply {
     flow { value timestamp }
@@ -1261,6 +1249,10 @@ export const DRIVES_SENSOR_QUERY = `
   drivesShorepower {
     active { value timestamp }
   }
+  drivesDhwExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
 `;
 
 export const DRIVES_SIMULATION_INPUTS_QUERY = `
@@ -1484,6 +1476,12 @@ export const PCM_SENSOR_QUERY = `
   pcmTemperatureModule4 {
     temperature { value timestamp }
   }
+  freshwaterTemperaturePcmSupply {
+    temperature { value timestamp }
+  }
+  freshwaterTemperaturePcmReturn {
+    temperature { value timestamp }
+  }
   pcmModule1 {
     charged { value timestamp }
   }
@@ -1512,6 +1510,11 @@ export const PCM_SENSOR_QUERY = `
     quantity { value timestamp }
   }
   pcmFlowModule4 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  freshwaterFlowPcm {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }

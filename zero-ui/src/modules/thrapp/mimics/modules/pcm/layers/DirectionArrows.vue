@@ -1,8 +1,8 @@
 <template>
   <svg
-    width="1263"
-    height="856"
-    viewBox="0 0 1263 856"
+    width="1400"
+    height="940"
+    viewBox="0 0 1400 940"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -199,9 +199,9 @@
       />
       <line
         x1="1125.84"
-        y1="560.025"
+        y1="780.025"
         x2="1125.84"
-        y2="620.025"
+        y2="840.025"
       />
       <line
         x1="1250.66"

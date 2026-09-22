@@ -44,7 +44,7 @@ export const enum ModeBadgeSize {
 export const SIZE_ATTRIBUTES: Record<ModeBadgeSize, string> = {
   [ModeBadgeSize.Asset]: "rounded-lg py-0.5 text-xs",
   [ModeBadgeSize.Tank]: "rounded-lg py-0.5 text-xs",
-  [ModeBadgeSize.Circuit]: "rounded-xl py-1 text-sm",
+  [ModeBadgeSize.Circuit]: "rounded-xl py-0.5 text-sm",
 };
 
 export const MODE_COLORS: Record<ModeBadgeMode, string> = {

@@ -119,7 +119,6 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     PcmInput: ["charged"],
     Level: ["level"],
     LevelSwitch: ["empty"],
-    DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
     HvacExchanger: ["heat", "deltaT"],
     HeatPump: ["heat", "deltaT"],
