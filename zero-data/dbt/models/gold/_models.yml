@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: gld_power_tags_active_power_per_minute
+    description: >
+      Active power values of power tags aggregated per minute.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated active power."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+      - name: consumer
+        description: "Consumer identifier associated with the tag."
+      - name: avg_power
+        description: "Average active power consumption aggregated per minute."
+      - name: main_group
+        description: "The main group classification of the power tag."
+      - name: sub_group
+        description: "The sub group classification, within the main group, of the power tag."
+  - name: gld_electrical_energy_consumption
+    description: >
+      Electrical energy consumption aggregated per main group and sub group.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the interval for the aggregated electrical energy consumption."
+        tests:
+          - not_null
+      - name: power_wh
+        description: "Electrical energy consumption in watt-hours aggregated per minute."
+      - name: main_group
+        description: "The main group classification of the power tag."
+      - name: sub_group
+        description: "The sub group classification, within the main group, of the power tag."

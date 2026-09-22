@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: slv_power_tags
+    description: >
+      Power-tag enriched with metadata: electrical consumption measures with main- and sub-group classifications.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: component
+        description: "Component identifier associated with the tag."
+      - name: panel
+        description: "Electrical panel identifier."
+      - name: consumer
+        description: "Consumer identifier associated with the tag."
+      - name: source_type
+        description: "Source type reported by the device."
+      - name: active_power_total
+        description: "Total active power consumption."
+      - name: power_factor_total
+        description: "Total power factor."
+      - name: current_a
+        description: "Phase A current."
+      - name: current_b
+        description: "Phase B current."
+      - name: current_c
+        description: "Phase C current."
+      - name: active_power_a
+        description: "Phase A active power."
+      - name: active_power_b
+        description: "Phase B active power."
+      - name: active_power_c
+        description: "Phase C active power."
+      - name: voltage_an
+        description: "Phase A-to-neutral voltage."
+      - name: voltage_bn
+        description: "Phase B-to-neutral voltage."
+      - name: voltage_cn
+        description: "Phase C-to-neutral voltage."
+      - name: table
+        description: "Table name associated with the raw message."
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+      - name: main_group
+        description: "The main group classification of the power tag."
+      - name: sub_group
+        description: "The sub group classification, within the main group, of the power tag."
