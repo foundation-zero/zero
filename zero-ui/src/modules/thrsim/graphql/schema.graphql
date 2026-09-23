@@ -261,7 +261,7 @@ type ControlValveType {
   setpoint: FloatStampedType!
 }
 
-type ControllerChargeControllerValuesType {
+type ControllerPcmChargeControllerValuesType {
   charge: FloatStampedType!
   chargingState: PcmChargingStateStampedType!
 }
@@ -1179,10 +1179,10 @@ type PcmControlValuesType {
 }
 
 type PcmControllerStateType {
-  module1ChargeController: ControllerChargeControllerValuesType!
-  module2ChargeController: ControllerChargeControllerValuesType!
-  module3ChargeController: ControllerChargeControllerValuesType!
-  module4ChargeController: ControllerChargeControllerValuesType!
+  module1ChargeController: ControllerPcmChargeControllerValuesType!
+  module2ChargeController: ControllerPcmChargeControllerValuesType!
+  module3ChargeController: ControllerPcmChargeControllerValuesType!
+  module4ChargeController: ControllerPcmChargeControllerValuesType!
 }
 
 input PcmInputType {

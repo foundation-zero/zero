@@ -6,15 +6,15 @@ from transitions import State
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import (
-    ChargeController,
     FlowBalanceController,
+    PcmChargeController,
     PidController,
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
-    ChargeControllerValues,
+    PcmChargeControllerValues,
     PcmChargingState,
 )
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
@@ -37,10 +37,10 @@ class PcmParameters(ThrsValues):
 
 
 class PcmControllerState(ThrsValues):
-    module1_charge_controller: ChargeControllerValues
-    module2_charge_controller: ChargeControllerValues
-    module3_charge_controller: ChargeControllerValues
-    module4_charge_controller: ChargeControllerValues
+    module1_charge_controller: PcmChargeControllerValues
+    module2_charge_controller: PcmChargeControllerValues
+    module3_charge_controller: PcmChargeControllerValues
+    module4_charge_controller: PcmChargeControllerValues
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
@@ -80,19 +80,19 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
 
     return PcmControllerState(
-        module1_charge_controller=ChargeControllerValues(
+        module1_charge_controller=PcmChargeControllerValues(
             charge=Stamped(value=False, timestamp=timestamp),
             charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
         ),
-        module2_charge_controller=ChargeControllerValues(
+        module2_charge_controller=PcmChargeControllerValues(
             charge=Stamped(value=False, timestamp=timestamp),
             charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
         ),
-        module3_charge_controller=ChargeControllerValues(
+        module3_charge_controller=PcmChargeControllerValues(
             charge=Stamped(value=False, timestamp=timestamp),
             charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
         ),
-        module4_charge_controller=ChargeControllerValues(
+        module4_charge_controller=PcmChargeControllerValues(
             charge=Stamped(value=False, timestamp=timestamp),
             charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
         ),
@@ -283,10 +283,10 @@ class PcmControl(
             self._time,
         )
 
-        self.module1_charge_controller = ChargeController(self._time)
-        self.module2_charge_controller = ChargeController(self._time)
-        self.module3_charge_controller = ChargeController(self._time)
-        self.module4_charge_controller = ChargeController(self._time)
+        self.module1_charge_controller = PcmChargeController(self._time)
+        self.module2_charge_controller = PcmChargeController(self._time)
+        self.module3_charge_controller = PcmChargeController(self._time)
+        self.module4_charge_controller = PcmChargeController(self._time)
 
     @property
     def parameters(self) -> PcmParameters:

@@ -359,7 +359,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
-  ChargeController = "chargeController",
+  PcmChargeController = "pcmChargeController",
 }
 
 export type ControllerStateDefinition<
@@ -371,7 +371,7 @@ export type DhwTankControllerDefinition =
 export type PIDControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.PIDController>;
 export type ChargeControllerDefinition =
-  ControllerStateDefinition<ControllerStateComponentType.ChargeController>;
+  ControllerStateDefinition<ControllerStateComponentType.PcmChargeController>;
 
 export type ControllerStateDefinitions = SchemaDefinitions<
   DhwTankControllerDefinition | PIDControllerDefinition | ChargeControllerDefinition
@@ -380,7 +380,7 @@ export type ControllerStateDefinitions = SchemaDefinitions<
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
-  [ControllerStateComponentType.ChargeController]: ChargeController;
+  [ControllerStateComponentType.PcmChargeController]: ChargeController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<

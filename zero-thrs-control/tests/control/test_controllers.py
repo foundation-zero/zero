@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from thrs.control.controllers import ChargeController
+from thrs.control.controllers import PcmChargeController
 from thrs.control.modules.pcm import PcmControllerState
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
@@ -29,7 +29,7 @@ def _heat_exchanger(
 def test_charging_when_heat_below_negative_deadband():
     heat_device = _heat_exchanger(supply=70.0, module=50.0)
 
-    controller = ChargeController(datetime.now)
+    controller = PcmChargeController(datetime.now)
     controller(heat_device)
 
     controller_values = controller.values()
@@ -40,7 +40,7 @@ def test_charging_when_heat_below_negative_deadband():
 def test_discharging_when_heat_above_deadband():
     heat_device = _heat_exchanger(supply=50.0, module=70.0)
 
-    controller = ChargeController(datetime.now)
+    controller = PcmChargeController(datetime.now)
     controller(heat_device)
 
     controller_values = controller.values()
@@ -53,7 +53,7 @@ def test_discharging_when_heat_above_deadband():
 def test_idle_within_deadband(module: float):
     heat_device = _heat_exchanger(supply=70.0, module=module)
 
-    controller = ChargeController(datetime.now)
+    controller = PcmChargeController(datetime.now)
     controller(heat_device)
 
     controller_values = controller.values()
@@ -64,7 +64,7 @@ def test_idle_within_deadband(module: float):
 def test_idle_at_zero_flow_despite_temperature_difference():
     heat_device = _heat_exchanger(supply=70.0, module=50.0, flow=0.0)
 
-    controller = ChargeController(datetime.now)
+    controller = PcmChargeController(datetime.now)
     controller(heat_device)
 
     controller_values = controller.values()
