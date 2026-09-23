@@ -604,7 +604,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (main_group)\r\n  time,\r\n  main_group,\r\n  power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power_wh) AS power_value\r\n  FROM views.gld_electrical_energy_consumption\r\n  WHERE $__timeFilter(time)\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nORDER BY \r\n  main_group, time DESC",
+          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_energy_consumption\r\n  WHERE time >= date_sub($__to::TIMESTAMP, '5 minutes') AND time < $__to::TIMESTAMP\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY\r\n  main_group",
           "refId": "A",
           "sql": {
             "columns": [

@@ -2,7 +2,7 @@
 
 select
     time,
-    sum(avg_power) / 60.0 as power_wh,
+    sum(avg_power) as power,
     main_group,
     sub_group
 from {{ ref('gld_power_tags_active_power_per_minute') }}
