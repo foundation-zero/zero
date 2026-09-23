@@ -771,13 +771,13 @@ class PvtSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009001-01",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_main_fwd(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pvt_pvt_main_fwd(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
             flow=self.pvt_flow_main_fwd_strings.flow,
@@ -787,13 +787,13 @@ class PvtSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009002-01",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_main_aft(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pvt_pvt_main_aft(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
             flow=self.pvt_flow_main_aft_strings.flow,
@@ -803,13 +803,13 @@ class PvtSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009001-03",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_owners(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pvt_pvt_owners(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,
             flow=self.pvt_flow_owners_strings.flow,
@@ -874,13 +874,13 @@ class PvtSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001002",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_seawater_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pvt_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_supply.temperature,
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,

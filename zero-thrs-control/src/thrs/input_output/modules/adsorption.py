@@ -149,13 +149,13 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001003",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def adsorption_ht_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def adsorption_ht_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.adsorption_temperature_ht_supply.temperature,
             temperature_return=self.adsorption_temperature_ht_return.temperature,
             flow=self.adsorption_flow_ht.flow,
@@ -165,13 +165,13 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001004",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def adsorption_dhw_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def adsorption_dhw_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.adsorption_temperature_waste_supply.temperature,
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
             flow=self.adsorption_flow_dhw.flow,

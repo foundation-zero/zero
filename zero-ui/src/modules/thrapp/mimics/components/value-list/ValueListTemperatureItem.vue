@@ -16,7 +16,7 @@ const props = withDefaults(
     source: ModuleField<
       | SensorComponentType.Temperature
       | SensorComponentType.CalculatedTemperature
-      | SensorComponentType.HeatExchanger
+      | SensorComponentType.HeatTransferDevice
     >;
     class?: HTMLAttributes["class"];
     field?: Field;

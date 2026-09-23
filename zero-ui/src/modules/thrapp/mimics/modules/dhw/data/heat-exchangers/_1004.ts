@@ -16,7 +16,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     exchangeCircuit:
       DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].adsorption.source,
   },
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwAdsorptionExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwAdsorptionExchanger"),
   parameters: {},
   sensors: {},
   get tooltip() {

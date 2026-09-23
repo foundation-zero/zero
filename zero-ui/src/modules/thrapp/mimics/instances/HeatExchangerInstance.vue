@@ -14,7 +14,7 @@ import { getMimicDataProvider, ModuleField } from "../providers";
 export type HeatExchangerInstanceProps = {
   sideA?: HeatExchangerPortOrientation;
   sideB?: HeatExchangerPortOrientation;
-  heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
+  heatExchanger: ModuleField<SensorComponentType.HeatTransferDevice>;
 };
 
 const props = withDefaults(

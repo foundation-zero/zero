@@ -17,7 +17,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
       DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].highTempLoop.source,
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwConsumersExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwConsumersExchanger"),
   sensors: {},
   get tooltip() {
     return tooltip(this.source);

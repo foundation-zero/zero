@@ -205,22 +205,6 @@ class HeatTransferDevice(ThrsValues):
         )
 
 
-class HvacExchanger(HeatTransferDevice):
-    pass
-
-
-class HeatPump(HeatTransferDevice):
-    pass
-
-
-class HeatExchanger(HeatTransferDevice):
-    pass
-
-
-class Pvt(HeatTransferDevice):
-    pass
-
-
 class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
 
@@ -401,10 +385,7 @@ __all__ = [
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowSensor",
-    "HeatExchanger",
-    "HeatPump",
     "HeatTransferDevice",
-    "HvacExchanger",
     "LevelSensor",
     "LevelSwitch",
     "Pcm",
@@ -413,7 +394,6 @@ __all__ = [
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
-    "Pvt",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

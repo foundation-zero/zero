@@ -7,7 +7,7 @@ import * as Partials from "./";
 const { items, sources } = useTranslations();
 
 defineProps<{
-  source: ModuleField<SensorComponentType.HeatExchanger>;
+  source: ModuleField<SensorComponentType.HeatTransferDevice>;
 }>();
 </script>
 

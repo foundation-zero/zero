@@ -13,7 +13,9 @@ export default toInstance<MimicComponentType.HeatPump>({
   source: getField(SensorComponentType.HeatPump, "dhw", "placeholder"),
   custom: { controller: pumpFlowController },
   parameters: {},
-  sensors: { heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump") },
+  sensors: {
+    heatTransfer: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwHeatpump"),
+  },
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Heat pump",

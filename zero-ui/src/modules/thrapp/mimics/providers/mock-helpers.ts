@@ -62,22 +62,6 @@ export type StampedObject<T extends Record<string, unknown>> = {
   [K in keyof T]: Stamped<T[K] extends Ref<infer U> ? U : T[K]>;
 };
 
-const generareHeatExchanger = () => {
-  const temperatureSupply = useRandomizedNumber(20, 100);
-  const temperatureReturn = useRandomizedNumber(20, 100);
-
-  const deltaT = computed(() => temperatureReturn.value - temperatureSupply.value);
-  const flow = useRandomizedNumber(0, 10);
-  const heat = useRandomizedNumber(0, 100);
-  return computed(() => ({
-    temperatureSupply: stamp(temperatureSupply),
-    temperatureReturn: stamp(temperatureReturn),
-    deltaT: stamp(deltaT),
-    flow: stamp(flow),
-    heat: stamp(heat),
-  }));
-};
-
 export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Temperature]: () => {
     const temperature = useRandomizedNumber(20, 100);
@@ -151,10 +135,29 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const positionAbs = useRandomizedDegree();
     return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
   },
-  [SensorComponentType.HeatExchanger]: generareHeatExchanger,
-  [SensorComponentType.HvacExchanger]: generareHeatExchanger,
-  [SensorComponentType.HeatPump]: generareHeatExchanger,
-  [SensorComponentType.Pvt]: generareHeatExchanger,
+  [SensorComponentType.HeatTransferDevice]: () => {
+    const temperatureSupply = useRandomizedNumber(20, 100);
+    const temperatureReturn = useRandomizedNumber(20, 100);
+
+    const deltaT = computed(() => temperatureReturn.value - temperatureSupply.value);
+    const flow = useRandomizedNumber(0, 10);
+    const heat = useRandomizedNumber(0, 100);
+    return computed(() => ({
+      temperatureSupply: stamp(temperatureSupply),
+      temperatureReturn: stamp(temperatureReturn),
+      deltaT: stamp(deltaT),
+      flow: stamp(flow),
+      heat: stamp(heat),
+    }));
+  },
+  [SensorComponentType.HeatPump]: () => {
+    const on = useRandomizedBoolean();
+    return computed(() => ({ on: stamp(on) }));
+  },
+  [SensorComponentType.Pvt]: () => {
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({ power: stamp(power) }));
+  },
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
     return computed(() => ({ flow: stamp(flow) }));

@@ -169,8 +169,8 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module1(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pcm_heat_module1(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module1.temperature,
             flow=self.pcm_flow_module1.flow,
@@ -182,8 +182,8 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module2(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pcm_heat_module2(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module2.temperature,
             flow=self.pcm_flow_module2.flow,
@@ -195,8 +195,8 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module3(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pcm_heat_module3(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module3.temperature,
             flow=self.pcm_flow_module3.flow,
@@ -208,8 +208,8 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pcm_heat_module4(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pcm_heat_module4(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module4.temperature,
             flow=self.pcm_flow_module4.flow,

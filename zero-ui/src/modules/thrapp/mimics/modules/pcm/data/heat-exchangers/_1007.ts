@@ -16,7 +16,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     exchangeCircuit: PCM_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].dhw.source,
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "consumers", "consumersDhwExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "consumers", "consumersDhwExchanger"),
   sensors: {},
   get tooltip() {
     return tooltip(this.source);

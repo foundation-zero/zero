@@ -172,11 +172,11 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   },
   adsorptionHtExchanger: {
     yardTag: "50001003",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   adsorptionDhwExchanger: {
     yardTag: "50001004",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -338,11 +338,11 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
   },
   consumersAdsorptionExchanger: {
     yardTag: "50001003",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   consumersDhwExchanger: {
     yardTag: "50001007",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -747,7 +747,7 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   },
   dcDhwExchanger: {
     yardTag: "50001008",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -1201,27 +1201,27 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   },
   dhwHvacExchanger: {
     yardTag: "41001001",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dhwHeatpump: {
     yardTag: "50001035",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dhwAdsorptionExchanger: {
     yardTag: "50001004",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dhwConsumersExchanger: {
     yardTag: "50001007",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dhwDcExchanger: {
     yardTag: "50001008",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dhwDrivesExchanger: {
     yardTag: "50001009",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -1531,7 +1531,7 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   },
   drivesDhwExchanger: {
     yardTag: "50001009",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -1878,19 +1878,19 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmHeatModule1: {
     yardTag: "50001049",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pcmHeatModule2: {
     yardTag: "50001050",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pcmHeatModule3: {
     yardTag: "50001051",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pcmHeatModule4: {
     yardTag: "50001052",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -2482,15 +2482,15 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtPvtMainFwd: {
     yardTag: "50009001-01",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPvtMainAft: {
     yardTag: "50009002-01",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPvtOwners: {
     yardTag: "50009001-03",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtReturnTemperature: {
     componentType: SensorComponentType.CalculatedTemperature,
@@ -2503,7 +2503,7 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtSeawaterExchanger: {
     yardTag: "50001002",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
@@ -2962,7 +2962,7 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   },
   thrustersSeawaterExchanger: {
     yardTag: "50001001",
-    componentType: SensorComponentType.HeatExchanger,
+    componentType: SensorComponentType.HeatTransferDevice,
   },
 });
 
