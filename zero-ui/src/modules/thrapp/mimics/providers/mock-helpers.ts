@@ -283,10 +283,12 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
       PcmChargingState.Idle,
     ]);
     const charge = useRandomizedRatio();
+    const energy = useRandomizedNumber(0, 25_200_000);
     return computed(() => ({
       charged: stamp(charged),
       chargingState: stamp(chargingState),
       charge: stamp(charge),
+      energy: stamp(energy),
     }));
   },
 };

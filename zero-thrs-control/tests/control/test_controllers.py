@@ -78,4 +78,4 @@ def test_module_computed_field_idle_by_default():
     charge_controller = controller_state.module1_charge_controller
 
     assert charge_controller.charging_state.value == PcmChargingState.IDLE.value
-    assert charge_controller.charge.value == 0
+    assert charge_controller.charge.value is None

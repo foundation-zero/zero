@@ -95,6 +95,12 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> fl
     return value
 
 
+def validate_optional_ratio_within_precision(
+    value: float | None, tolerance: float = 1e-4
+) -> float | None:
+    return None if value is None else validate_ratio_within_precision(value, tolerance)
+
+
 def validate_nonzero_float_within_precision(
     value: float, tolerance: float = 1e-7
 ) -> float:
@@ -106,7 +112,15 @@ def validate_nonzero_float_within_precision(
 
 
 SPECIFIC_HEAT_WATER = 4184  # J/(kg*K)
-WATER_HEAT_TRANSFER_CONVERSION = SPECIFIC_HEAT_WATER / 60  # kW min/(l*K)
+WATER_HEAT_TRANSFER_CONVERSION = SPECIFIC_HEAT_WATER / 60  # W/((l/min)*K)
+
+# TODO: Confirm the actual mixture. 20% glycol is an assumption; properties are
+# taken around 60 C, where the loops carrying it actually operate.
+SPECIFIC_HEAT_GLYCOL_20 = 3950  # J/(kg*K)
+DENSITY_GLYCOL_20 = 1005  # kg/m3
+GLYCOL_20_HEAT_TRANSFER_CONVERSION = (  # W/((l/min)*K), ~5% below water
+    SPECIFIC_HEAT_GLYCOL_20 * DENSITY_GLYCOL_20 / 1000 / 60
+)
 
 # ruff: noqa: UP040
 # These cannot be converted to proper type keyword statements because strawberry fails on those
@@ -122,10 +136,16 @@ Ratio: TypeAlias = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
+OptionalRatio: TypeAlias = Annotated[
+    float | None,
+    AfterValidator(validate_optional_ratio_within_precision),
+    UnitMeta(modelica_name="ratio"),
+]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
 Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
 Seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
 Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]
+OptionalJoule: TypeAlias = Annotated[float | None, UnitMeta(modelica_name="Joule")]
 OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Error: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]

@@ -1,7 +1,20 @@
 from enum import Enum
 
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.units import Celsius, Ratio, Seconds, TankState, Watt
+from thrs.input_output.definitions.units import (
+    Celsius,
+    Charged,
+    DeltaT,
+    Joule,
+    Liter,
+    LMin,
+    OptionalJoule,
+    OptionalRatio,
+    Ratio,
+    Seconds,
+    TankState,
+    Watt,
+)
 
 
 class PcmChargingState(Enum):
@@ -11,8 +24,44 @@ class PcmChargingState(Enum):
 
 
 PCM_CHARGING_DEADBAND: Watt = 100
-PCM_CHARGE_FULL_TEMP: Celsius = 51  # TODO
-PCM_CHARGE_EMPTY_TEMP: Celsius = 51  # TODO
+PCM_MIN_FLOW: LMin = 0.5  # below this the measured dT across a module is noise
+PCM_MAX_SAMPLE_GAP: Seconds = 30  # never integrate across a longer dropout
+
+# PCM58 has a phase transition at 58 C (Flamco FlexTherm Eco manual, ch. 1). Nothing
+# can be concluded about the phase fraction unless the inlet is clearly past it.
+PCM_MELT_TEMP: Celsius = 58
+PCM_MELT_MARGIN: DeltaT = 3
+
+# The outlet converging on the inlet means the module has stopped exchanging heat, so
+# there is no phase change left to drive. This, not any absolute outlet temperature,
+# is what says a module is full or empty: the datasheet quotes a 50-55 C outlet during
+# normal discharge, which reflects the exchanger approach, not the state of charge.
+PCM_EXHAUSTED_DT: DeltaT = 1.5
+PCM_ANCHOR_DWELL: Seconds = 300
+
+# TODO: Replace with a figure measured over a full charge/discharge cycle. This is NOT
+# the 10.5 kWh nameplate: that rates the tapwater deliverable between a 75 C charge and
+# a 10 -> 40 C draw-off, whereas we charge to ~65-70 C and discharge into a loop
+# returning around 50 C, so what is actually usable is roughly the latent plateau of
+# the 110 kg of PCM58.
+PCM_MODULE_CAPACITY: Joule = 7 * 3.6e6
+
+# Standing loss per module, FlexTherm Eco 9E: 0.77 kWh/24h (manual, table 2.2).
+PCM_STANDBY_LOSS: Watt = 32.1
+
+# The pipework and exchangers read stale without flow, so a circuit has to be purged
+# before its dT means anything. Water contents per exchanger, 9E (manual, table 2.2);
+# the pipe runs to and from the module are not included yet.
+PCM_LPC_VOLUME: Liter = 3.5
+PCM_HPC_VOLUME: Liter = 6.8
+
+# Module 1 gives the thrs loop its LPC and the freshwater system its HPC. Modules 2-4
+# run both exchangers in parallel on the thrs loop, so theirs is one combined circuit.
+PCM_MODULE1_PURGE_VOLUME: Liter = PCM_LPC_VOLUME
+PCM_MODULE1_FRESHWATER_PURGE_VOLUME: Liter = PCM_HPC_VOLUME
+PCM_MODULE_PURGE_VOLUME: Liter = PCM_LPC_VOLUME + PCM_HPC_VOLUME
+
+PCM_CHARGED_THRESHOLD: Ratio = 0.15
 
 
 class PidControllerValues(
@@ -36,7 +85,12 @@ class TanksControllerValues(ThrsValues):
 
 
 class PcmChargeControllerValues(ThrsValues):
-    charge: Stamped[Ratio]
+    # None until an end point has been observed: the integral has no absolute reference
+    # before that, and a fabricated 0.5 would be indistinguishable from a measurement.
+    charge: Stamped[OptionalRatio]
+    # Logged alongside the ratio so a corrected capacity can be applied retrospectively.
+    energy: Stamped[OptionalJoule]
+    charged: Stamped[Charged]
     charging_state: Stamped[PcmChargingState]
 
 

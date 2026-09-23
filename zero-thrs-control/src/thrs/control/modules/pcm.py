@@ -14,6 +14,8 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
+    PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
+    PCM_MODULE1_PURGE_VOLUME,
     PcmChargeControllerValues,
     PcmChargingState,
 )
@@ -26,7 +28,8 @@ class PcmParameters(ThrsValues):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
     minimum_charging_dt: Celsius = 2
-    minimum_charging_temperature: Celsius = 60
+    # Manufacturer minimum supply temperature for thermal charging is 65 C (maximum 80).
+    minimum_charging_temperature: Celsius = 65
     pump_tuning: Tuning = (0.01, 0.001, 0)
     supplying_enabled: bool = True
     charging_enabled: bool = True
@@ -77,25 +80,25 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
+def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
+    timestamp: datetime,
+) -> PcmChargeControllerValues:
+    # Charge is unknown until an end point has been observed, and an unknown module
+    # counts as charged so that it can be discharged and thereby become known.
+    return PcmChargeControllerValues(
+        charge=Stamped(value=None, timestamp=timestamp),
+        energy=Stamped(value=None, timestamp=timestamp),
+        charged=Stamped(value=True, timestamp=timestamp),
+        charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
+    )
 
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
     return PcmControllerState(
-        module1_charge_controller=PcmChargeControllerValues(
-            charge=Stamped(value=False, timestamp=timestamp),
-            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-        ),
-        module2_charge_controller=PcmChargeControllerValues(
-            charge=Stamped(value=False, timestamp=timestamp),
-            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-        ),
-        module3_charge_controller=PcmChargeControllerValues(
-            charge=Stamped(value=False, timestamp=timestamp),
-            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-        ),
-        module4_charge_controller=PcmChargeControllerValues(
-            charge=Stamped(value=False, timestamp=timestamp),
-            charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-        ),
+        module1_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
     )
 
 
@@ -283,7 +286,12 @@ class PcmControl(
             self._time,
         )
 
-        self.module1_charge_controller = PcmChargeController(self._time)
+        # Module 1 has the thrs loop on its LPC and the freshwater system on its HPC,
+        # each flushing its own volume; the others run both exchangers in parallel on
+        # the thrs loop, so they are one circuit carrying the combined volume.
+        self.module1_charge_controller = PcmChargeController(
+            self._time, (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME)
+        )
         self.module2_charge_controller = PcmChargeController(self._time)
         self.module3_charge_controller = PcmChargeController(self._time)
         self.module4_charge_controller = PcmChargeController(self._time)
@@ -346,7 +354,10 @@ class PcmControl(
     def _update_controllers(self, sensor_values: PcmSensorValues) -> PcmControllerState:
         self._control_flow_balance(sensor_values)
 
-        self.module1_charge_controller(sensor_values.pcm_heat_module1)
+        self.module1_charge_controller(
+            sensor_values.pcm_heat_module1,
+            sensor_values.pcm_heat_module1_freshwater,
+        )
         self.module2_charge_controller(sensor_values.pcm_heat_module2)
         self.module3_charge_controller(sensor_values.pcm_heat_module3)
         self.module4_charge_controller(sensor_values.pcm_heat_module4)
