@@ -96,7 +96,6 @@ impl MutationSpec {
             state_topic: String::new(),
             set_topic,
             returns: self.returns.clone(),
-            bounds: None,
             true_value: self.true_value.clone(),
             false_value: self.false_value.clone(),
             input_fields: Vec::new(),
@@ -104,7 +103,7 @@ impl MutationSpec {
             input_type_name: self.input_type_name.clone(),
             missing_error: self.missing_error.clone(),
             confirm: None,
-            invariants: Vec::new(),
+            model: None,
         };
 
         match self.kind {
@@ -143,8 +142,12 @@ impl MutationSpec {
                 match (self.kind, property) {
                     (MutationKind::SetField, Property::Scalar(scalar)) => {
                         def.arg_type = scalar.r#type.clone();
-                        def.bounds = scalar.bounds.clone();
-                        def.invariants = state_type.invariants.clone();
+                        def.model = Some(
+                            state_type
+                                .model
+                                .clone()
+                                .with_error_url(resolver.validation_error_url),
+                        );
                     }
                     (MutationKind::SetField, _) => {
                         anyhow::bail!("{}", context("sets a key that is not a scalar"))
@@ -173,6 +176,12 @@ impl MutationSpec {
                             anyhow::bail!("{}", context("sets a component without stamped leaves"));
                         }
                         def.derived = state_type.derived.clone();
+                        def.model = Some(
+                            component
+                                .model
+                                .clone()
+                                .with_error_url(resolver.validation_error_url),
+                        );
                     }
                     (MutationKind::SetComponent, _) => {
                         anyhow::bail!("{}", context("sets a key that is not a component"))
@@ -210,7 +219,6 @@ impl MutationSpec {
 mod tests {
     use super::super::fixtures::*;
     use super::*;
-    use crate::mutations_view::Bounds;
     use serde_json::json;
 
     fn mutations() -> Vec<MutationDef> {
@@ -224,19 +232,28 @@ mod tests {
     }
 
     #[test]
-    fn test_set_field_reads_scalar_bounds_and_invariants_off_the_state_type() {
+    fn test_set_field_validates_against_the_state_type_bounds_and_invariants() {
         let m = &mutations()[0];
         assert_eq!(m.arg_type, "Float");
         assert_eq!(m.state_topic, "ctl/thrusters/parameters");
         assert_eq!(m.set_topic, "ctl/thrusters/parameters/set");
+        let model = m.model.as_ref().unwrap();
+        let object = json!({"CoolingFlow": 25.0, "MaxFlow": 30.0})
+            .as_object()
+            .unwrap()
+            .clone();
+        let below = model.validate_assignment(&object, "CoolingFlow", json!(-1.0));
+        assert!(below
+            .unwrap_err()
+            .contains("Input should be greater than or equal to 0"));
+        let above_max = model.validate_assignment(&object, "CoolingFlow", json!(40.0));
+        assert!(above_max
+            .unwrap_err()
+            .contains("Value error, cooling flow above max"));
         assert_eq!(
-            m.bounds,
-            Some(Bounds {
-                min: Some(0.0),
-                ..Bounds::default()
-            })
+            model.validate_assignment(&object, "CoolingFlow", json!(20.0)),
+            Ok(json!(20.0))
         );
-        assert_eq!(m.invariants.len(), 1);
         assert_eq!(m.confirm_topic(), Some("ctl/thrusters/parameters"));
     }
 

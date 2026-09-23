@@ -38,7 +38,7 @@ use crate::asyncapi::{FieldDef, ObjectTypeDef, TopicDef, TopicGroupDef};
 use crate::cache::TopicCache;
 use crate::lifecycle_view::{DirectiveDef, LifecycleDef};
 use crate::metadata::{metadata_by_topic, MetadataByTopic, MetadataFile};
-use crate::mutations_view::{Bounds, ConfirmDef, DerivedLeaf, MutationDef, MutationKind};
+use crate::mutations_view::{ConfirmDef, DerivedLeaf, MutationDef, MutationKind};
 use crate::views::{
     LeafDef, ObjectFieldDef, ObjectSectionDef, PlainFieldDef, PlainObjectDef, SectionDef,
     StampedFieldDef, StampedFieldsSection, SwitchSectionDef, ViewDef,
@@ -1544,31 +1544,6 @@ mod tests {
     }
 
     #[test]
-    fn test_check_bounds_accepts_in_range_and_rejects_out_of_range() {
-        use crate::mutations_view::Bounds;
-        let b = Bounds {
-            min: Some(0.0),
-            max: Some(360.0),
-            exclusive_min: None,
-            exclusive_max: None,
-        };
-        assert!(check_bounds(&b, 0.0).is_ok());
-        assert!(check_bounds(&b, 360.0).is_ok());
-        assert!(check_bounds(&b, -0.1).is_err());
-        assert!(check_bounds(&b, 360.1).is_err());
-
-        let excl = Bounds {
-            min: None,
-            max: None,
-            exclusive_min: Some(0.0),
-            exclusive_max: Some(1.0),
-        };
-        assert!(check_bounds(&excl, 0.0).is_err());
-        assert!(check_bounds(&excl, 1.0).is_err());
-        assert!(check_bounds(&excl, 0.5).is_ok());
-    }
-
-    #[test]
     fn test_build_schema_for_one_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
@@ -2191,14 +2166,13 @@ mod tests {
                 state: None,
                 target: None,
                 returns: None,
-                bounds: None,
                 true_value: None,
                 false_value: None,
                 input_fields: Vec::new(),
                 input_type_name: None,
                 missing_error: Some("No parameters available to update".to_string()),
                 confirm: None,
-                invariants: Vec::new(),
+                model: None,
             }],
             parameters_object: Default::default(),
             control_values_object: Default::default(),
@@ -2418,7 +2392,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_invariant_violation_errors_and_publishes_nothing() {
-        use crate::mutations_view::{Comparison, InvariantDef};
+        use crate::model_validation::ModelSchema;
+        use crate::schema::Components;
         let cache = Arc::new(TopicCache::new());
         cache.insert(
             "thrs/controller/thrusters/parameters",
@@ -2431,12 +2406,22 @@ mod tests {
         let def = &mut groups[0].mutations[0];
         def.key = "WarmupTemperature".to_string();
         // Warmup must stay above cooling; setting it to 30 breaks that.
-        def.invariants = vec![InvariantDef {
-            lhs: "WarmupTemperature".to_string(),
-            op: Comparison::Ge,
-            rhs: "CoolingTemperature".to_string(),
-            error: "Warmup temperature must be greater than cooling temperature".to_string(),
-        }];
+        let components = json!({"schemas": {"Parameters": {
+            "title": "ThrustersParameters", "type": "object",
+            "properties": {
+                "CoolingFlow": {"type": "number", "x-python-name": "cooling_flow"},
+                "WarmupTemperature": {"type": "number", "x-python-name": "warmup_temperature"},
+                "CoolingTemperature": {"type": "number", "x-python-name": "cooling_temperature"}},
+            "x-invariants": [{"lhs": "WarmupTemperature", "op": "ge", "rhs": "CoolingTemperature",
+                "error": "Warmup temperature must be greater than cooling temperature"}]}}});
+        def.model = Some(
+            ModelSchema::read(
+                &json!({"$ref": "#/components/schemas/Parameters"}),
+                Components::new(Some(&components)),
+            )
+            .unwrap()
+            .with_error_url("https://errors.pydantic.dev/2.13/v/"),
+        );
         let schema = build_schema(
             cache,
             SchemaInputs {
@@ -2451,9 +2436,12 @@ mod tests {
             .execute("mutation { thrustersParameterSetCoolingFlow(value: 30) }")
             .await;
         assert_eq!(response.errors.len(), 1, "{:?}", response.errors);
-        assert_eq!(
-            response.errors[0].message,
-            "Warmup temperature must be greater than cooling temperature"
+        assert!(
+            response.errors[0].message.contains(
+                "Value error, Warmup temperature must be greater than cooling temperature [type=value_error"
+            ),
+            "{}",
+            response.errors[0].message
         );
         assert!(
             sent.lock().unwrap().is_empty(),
@@ -2525,13 +2513,12 @@ mod tests {
                 state: None,
                 target: None,
                 returns: None,
-                bounds: None,
                 true_value: None,
                 false_value: None,
                 input_type_name: Some("PumpInputType".to_string()),
                 missing_error: None,
                 confirm: None,
-                invariants: Vec::new(),
+                model: None,
                 input_fields: vec![
                     InputFieldDef {
                         gql: "dutypoint".to_string(),
@@ -2635,14 +2622,13 @@ mod tests {
                     state: None,
                     target: None,
                     returns: None,
-                    bounds: None,
                     true_value: None,
                     false_value: None,
                     input_fields: Vec::new(),
                     input_type_name: None,
                     missing_error: None,
                     confirm: None,
-                    invariants: Vec::new(),
+                    model: None,
                 },
                 MutationDef {
                     derived: Vec::new(),
@@ -2656,14 +2642,13 @@ mod tests {
                     state: None,
                     target: None,
                     returns: None,
-                    bounds: None,
                     true_value: Some("automatic".to_string()),
                     false_value: Some("manual".to_string()),
                     input_fields: Vec::new(),
                     input_type_name: None,
                     missing_error: None,
                     confirm: None,
-                    invariants: Vec::new(),
+                    model: None,
                 },
             ],
             parameters_object: ObjectSectionDef {
@@ -2795,13 +2780,12 @@ mod tests {
                 state: None,
                 target: None,
                 returns: None,
-                bounds: None,
                 true_value: None,
                 false_value: None,
                 input_type_name: Some("BoundaryInputType".to_string()),
                 missing_error: None,
                 confirm: None,
-                invariants: Vec::new(),
+                model: None,
                 input_fields: vec![leaf("flow", "Flow"), leaf("temperature", "Temperature")],
                 derived: vec![DerivedFieldDef {
                     key: "DrivesFlowRecovery".to_string(),
@@ -4025,7 +4009,8 @@ mod tests {
         assert!(!response.errors.is_empty());
         assert!(sent.lock().unwrap().is_empty());
         // Play in range: publishes `{"PlaybackRate": 2}` then times out waiting
-        // for `running` (nothing flips the status here).
+        // for `running` (nothing flips the status here) with thrs-api's
+        // message-less timeout.
         let response = schema
             .execute("mutation { simulationPlay(playbackRate: 2) }")
             .await;
@@ -4036,9 +4021,7 @@ mod tests {
             serde_json::from_str::<serde_json::Value>(&payload).unwrap(),
             json!({"PlaybackRate": 2.0})
         );
-        assert!(response.errors[0]
-            .message
-            .starts_with("Timeout waiting for status"));
+        assert_eq!(response.errors[0].message, "An unknown error occurred.");
 
         // Input mutation: restamps the component into the cached inputs object
         // and republishes it; returns the simulation's inputs type.

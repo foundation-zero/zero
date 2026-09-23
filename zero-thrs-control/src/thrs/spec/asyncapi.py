@@ -52,6 +52,7 @@ from thrs.orchestration.comms import (
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.descriptions.simulation import lookup_mode, simulation_io_classes
+from thrs.spec import validators
 
 # Only shapes the example topics printed in the spec -
 # the runtime always reads these from Config/env, never from here.
@@ -650,11 +651,38 @@ DERIVED_KEY = "x-derived"
 class ContractJsonSchema(GenerateJsonSchema):
     """Pydantic's JSON Schema, with every enum's member names alongside its
     values (``x-enum-varnames``): the wire carries the value, the API serves
-    the name."""
+    the name. Every model property also carries its Python field name and
+    every Python validator its recorded behaviour (``thrs.spec.validators``),
+    so the bridge rejects - in pydantic's words - what the API rejects."""
 
     def enum_schema(self, schema: Any) -> JsonSchemaValue:
         json_schema = super().enum_schema(schema)
         json_schema[ENUM_NAMES_KEY] = [member.name for member in schema["members"]]
+        return json_schema
+
+    def model_schema(self, schema: Any) -> JsonSchemaValue:
+        json_schema = super().model_schema(schema)
+        cls = schema["cls"]
+        properties = json_schema.get("properties", {})
+        for name, fld in cls.model_fields.items():
+            prop = properties.get(fld.alias or name)
+            if prop is not None:
+                prop[validators.PYTHON_NAME_KEY] = name
+        rules = validators.field_rules_of(cls)
+        if rules:
+            json_schema[validators.FIELD_RULES_KEY] = rules
+        return json_schema
+
+    def function_after_schema(self, schema: Any) -> JsonSchemaValue:
+        json_schema = super().function_after_schema(schema)
+        function = schema["function"]["function"]
+        # A number wrapped by a validator (a unit such as Ratio): record what
+        # it does. Validators on models or fields are recorded with their
+        # model (`x-invariants`, `x-field-rules`); pydantic's own are skipped.
+        if schema["schema"].get("type") in ("float", "int") and not (
+            validators.is_pydantic_internal(function)
+        ):
+            json_schema[validators.CLAMP_KEY] = validators.clamp_of(function)
         return json_schema
 
 

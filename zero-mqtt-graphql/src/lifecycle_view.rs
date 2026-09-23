@@ -6,7 +6,8 @@
 use anyhow::Context;
 
 use crate::extension::OperationRef;
-use crate::mutations_view::{validate_mutation, Bounds, MutationDef};
+use crate::model_validation::ModelSchema;
+use crate::mutations_view::{validate_mutation, MutationDef};
 use crate::views::{LeafDef, ObjectSection, ObjectSectionDef};
 
 /// One field of the status object.
@@ -69,8 +70,9 @@ pub struct DirectiveDef {
     pub arg_required: bool,
     /// Default used when a nullable argument is omitted.
     pub default: Option<f64>,
-    /// Numeric bounds on the argument.
-    pub bounds: Option<Bounds>,
+    /// The directive message's model (validates the argument as the
+    /// producer does, see [`ModelSchema`]).
+    pub model: Option<ModelSchema>,
     /// Statuses the directive is accepted from.
     pub allowed_from: Vec<String>,
     /// Status the directive waits for after publishing.

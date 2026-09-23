@@ -39,6 +39,12 @@ def post(
     return response.json()
 
 
+def messages(response: dict[str, Any]) -> list[str]:
+    """What a client shows of a response's errors: their messages, in order
+    (zero-ui displays urql's combined error message)."""
+    return [error["message"] for error in response.get("errors") or []]
+
+
 def query_data(url: str, query: str, variables: dict[str, Any] | None = None) -> Any:
     """POST a query that must succeed and return its ``data``."""
     body = post(url, query, variables)

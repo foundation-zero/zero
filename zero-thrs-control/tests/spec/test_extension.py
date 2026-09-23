@@ -68,7 +68,14 @@ def test_thrs_spec_is_the_document_plus_the_extension(spec, extension) -> None:
     assert set(without["components"]["schemas"]) >= set(
         document["components"]["schemas"]
     )
-    assert set(extension) == {"version", "types", "views", "metadata", "lifecycles"}
+    assert set(extension) == {
+        "version",
+        "validationErrorUrl",
+        "types",
+        "views",
+        "metadata",
+        "lifecycles",
+    }
     assert extension["version"] == EXTENSION_VERSION
     assert [m["gql"] for m in extension["views"][0]["members"]] == sorted(
         all_module_descriptions()

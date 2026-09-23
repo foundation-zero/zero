@@ -9,7 +9,7 @@
 //! object (the state). Three kinds:
 //!
 //! * `setField`: read the cached state object, overwrite one key with the
-//!   (bounds-checked) scalar argument, republish the whole object.
+//!   (validated) scalar argument, republish the whole object.
 //! * `setComponent`: restamp a composite input into one component of the
 //!   cached state object (`{WireKey: {Value, TimeStamp}}`), re-derive any
 //!   mirror fields, republish the whole object.
@@ -23,6 +23,8 @@
 use std::collections::BTreeMap;
 
 use serde::Deserialize;
+
+use crate::model_validation::ModelSchema;
 
 use crate::extension::OperationRef;
 
@@ -177,8 +179,6 @@ pub struct MutationDef {
     /// The `object` section of the member the mutation returns. None returns
     /// `Boolean!`.
     pub returns: Option<String>,
-    /// `setField`: per-field numeric bounds; `None` when unconstrained.
-    pub bounds: Option<Bounds>,
     /// `setFlag`: the `key` value when the Boolean argument is true.
     pub true_value: Option<String>,
     /// `setFlag`: the `key` value when the Boolean argument is false.
@@ -199,8 +199,10 @@ pub struct MutationDef {
     /// How the change is confirmed before the mutation returns; `None`
     /// returns right after the publish.
     pub confirm: Option<ConfirmDef>,
-    /// `setField`: cross-field invariants of the modified object.
-    pub invariants: Vec<InvariantDef>,
+    /// `setField`/`setComponent`: the model the written value is validated
+    /// against as the producer validates it - the whole object for a field,
+    /// the component for a component (see [`ModelSchema`]).
+    pub model: Option<ModelSchema>,
 }
 
 impl MutationDef {

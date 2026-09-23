@@ -116,33 +116,6 @@ pub(super) fn register_mutations(
     (obj, types)
 }
 
-/// Reject a numeric mutation value that violates the parameter's single-field
-/// bounds, matching thrs-api's `validate_assignment` (see [`Bounds`]). Only the
-/// per-field bounds; cross-field invariants are enforced by the control loop.
-pub(super) fn check_bounds(bounds: &Bounds, v: f64) -> Result<(), String> {
-    if let Some(min) = bounds.min {
-        if v < min {
-            return Err(format!("value {v} is below the minimum {min}"));
-        }
-    }
-    if let Some(max) = bounds.max {
-        if v > max {
-            return Err(format!("value {v} is above the maximum {max}"));
-        }
-    }
-    if let Some(x) = bounds.exclusive_min {
-        if v <= x {
-            return Err(format!("value {v} must be greater than {x}"));
-        }
-    }
-    if let Some(x) = bounds.exclusive_max {
-        if v >= x {
-            return Err(format!("value {v} must be less than {x}"));
-        }
-    }
-    Ok(())
-}
-
 /// The GraphQL type a mutation field returns: the object type when one is
 /// available, else `Boolean!` like thrs-api's automation-mode mutation.
 fn mutation_return_type(return_type: Option<&str>) -> TypeRef {
@@ -268,8 +241,9 @@ fn json_equivalent(a: &JsonValue, b: &JsonValue) -> bool {
 
 /// One mutation field of two kinds:
 /// * `setField` — `{name}(value: <scalar>): <Object>`: reads the whole object
-///   from `state_topic`, overwrites `key` with the (bounds-checked)
-///   value, checks the object's invariants, and republishes it to `set_topic`.
+///   from `state_topic`, overwrites `key` with the
+///   value validated as the producer validates it (the field, then the
+///   object's rules), and republishes it to `set_topic`.
 /// * `setFlag` — `{name}(<arg>: Boolean): Boolean`: publishes a fresh
 ///   `{key: true_value|false_value}` object to `set_topic`.
 pub(super) fn mutation_field(
@@ -317,30 +291,31 @@ pub(super) fn mutation_field(
                     "Boolean" => JsonValue::from(value.boolean()?),
                     t if t.starts_with('[') => {
                         let inner = t.trim_start_matches('[').trim_end_matches(['!', ']']);
-                        let items = value
-                            .list()?
-                            .iter()
-                            .map(|v| match inner {
-                                "Int" => v.i64().map(JsonValue::from),
-                                "Boolean" => v.boolean().map(JsonValue::from),
-                                _ => v.f64().map(JsonValue::from),
-                            })
-                            .collect::<Result<Vec<_>, _>>()?;
+                        let item = |v: async_graphql::dynamic::ValueAccessor<'_>| match inner {
+                            "Int" => v.i64().map(JsonValue::from),
+                            "Boolean" => v.boolean().map(JsonValue::from),
+                            _ => v.f64().map(JsonValue::from),
+                        };
+                        // A single value where a list is expected is a one-item
+                        // list (GraphQL input coercion).
+                        let items = match value.list() {
+                            Ok(list) => list.iter().map(item).collect::<Result<Vec<_>, _>>()?,
+                            Err(_) => vec![item(value)?],
+                        };
                         JsonValue::Array(items)
                     }
-                    _ => {
-                        let v = value.f64()?;
-                        if let Some(bounds) = &def.bounds {
-                            check_bounds(bounds, v).map_err(async_graphql::Error::new)?;
-                        }
-                        JsonValue::from(v)
-                    }
+                    _ => JsonValue::from(value.f64()?),
                 };
                 let mut map = cached_state(&cache, &def)?;
+                // The producer validates the assignment (the field, then the
+                // object's rules) before publishing anything.
+                let new_value = match &def.model {
+                    Some(model) => model
+                        .validate_assignment(&map, &def.key, new_value)
+                        .map_err(async_graphql::Error::new)?,
+                    None => new_value,
+                };
                 map.insert(def.key.clone(), new_value);
-                if let Some(error) = def.invariants.iter().find_map(|i| i.violation(&map)) {
-                    return Err(async_graphql::Error::new(error));
-                }
                 JsonValue::Object(map)
             };
             publish_result(
@@ -421,6 +396,13 @@ pub(super) fn control_mutation_field(
                     f.key.clone(),
                     serde_json::json!({ "Value": wire, "TimeStamp": now }),
                 );
+            }
+            // The producer builds (and so validates) the component before it
+            // looks at the cached object.
+            if let Some(model) = &def.model {
+                component = model
+                    .validate_model(component)
+                    .map_err(async_graphql::Error::new)?;
             }
 
             let mut map = cached_state(&cache, &def)?;

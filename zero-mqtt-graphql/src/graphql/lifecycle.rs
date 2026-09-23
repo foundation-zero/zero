@@ -6,6 +6,9 @@ use super::*;
 
 use crate::lifecycle_view::StatusFieldDef;
 
+/// graphql-core's message for an error that has none.
+const UNKNOWN_ERROR: &str = "An unknown error occurred.";
+
 // --- Lifecycle (`<queryField> { <status fields> <objects> }`, directives, member mutations) ---
 
 /// Schema contributions of one lifecycle.
@@ -261,21 +264,27 @@ pub(super) fn directive_field(
         let cache = cache.clone();
         let publisher = publisher.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            let mut payload = serde_json::Map::new();
-            if let (Some(arg_name), Some(key)) = (&def.arg_name, &def.key) {
-                let given = ctx.args.get(arg_name).map(|v| v.f64()).transpose()?;
-                let value = given.or(def.default);
-                if let Some(v) = value {
-                    if let Some(bounds) = &def.bounds {
-                        check_bounds(bounds, v).map_err(async_graphql::Error::new)?;
-                    }
-                    payload.insert(key.clone(), JsonValue::from(v));
-                }
-            }
+            // An argument that is absent (or null: a variable the client did
+            // not send) takes its default, as graphql-core passes it.
+            let given = match def.arg_name.as_ref().and_then(|name| ctx.args.get(name)) {
+                Some(v) if !v.is_null() => Some(v.f64()?),
+                _ => None,
+            };
             let status = cached_status(&cache, &status_topic, &status_key)
                 .ok_or_else(|| async_graphql::Error::new(def.missing_error.clone()))?;
             if !def.allowed_from.contains(&status) {
                 return Err(async_graphql::Error::new(def.precondition_error.clone()));
+            }
+            // The producer builds (and so validates) the message only when it
+            // sends it, after the status checks.
+            let mut payload = serde_json::Map::new();
+            if let (Some(key), Some(v)) = (&def.key, given.or(def.default)) {
+                payload.insert(key.clone(), JsonValue::from(v));
+            }
+            if let Some(model) = &def.model {
+                payload = model
+                    .validate_model(payload)
+                    .map_err(async_graphql::Error::new)?;
             }
             let serialized = serde_json::to_string(&JsonValue::Object(payload))
                 .map_err(|e| async_graphql::Error::new(e.to_string()))?;
@@ -291,10 +300,9 @@ pub(super) fn directive_field(
                     break;
                 }
                 if tokio::time::Instant::now() >= deadline {
-                    return Err(async_graphql::Error::new(format!(
-                        "Timeout waiting for status '{}'",
-                        def.expect_status
-                    )));
+                    // The producer's wait raises a bare `TimeoutError`, which
+                    // its GraphQL layer reports with its message-less default.
+                    return Err(async_graphql::Error::new(UNKNOWN_ERROR));
                 }
                 tokio::time::sleep(std::time::Duration::from_millis(50)).await;
             }

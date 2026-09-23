@@ -226,7 +226,7 @@ impl DirectiveSpec {
             key: self.key.clone(),
             arg_required: false,
             default: None,
-            bounds: None,
+            model: None,
             allowed_from: self.allowed_from.clone(),
             expect_status: self.expect_status.clone(),
             precondition_error: self.precondition_error.clone(),
@@ -251,7 +251,12 @@ impl DirectiveSpec {
                 None => None,
             };
             def.arg_required = scalar.default.is_none() && !scalar.optional;
-            def.bounds = scalar.bounds.clone();
+            def.model = Some(
+                message_type
+                    .model
+                    .clone()
+                    .with_error_url(resolver.validation_error_url),
+            );
         }
         Ok(def)
     }
@@ -329,7 +334,14 @@ mod tests {
         assert_eq!(play.arg_name.as_deref(), Some("playbackRate"));
         assert_eq!(play.default, Some(1.0));
         assert!(!play.arg_required);
-        assert_eq!(play.bounds.as_ref().unwrap().min, Some(0.0));
+        let rejected = play
+            .model
+            .as_ref()
+            .unwrap()
+            .validate_model(json!({"PlaybackRate": -1.0}).as_object().unwrap().clone());
+        assert!(rejected
+            .unwrap_err()
+            .contains("Input should be greater than or equal to 0 [type=greater_than_equal"));
 
         let member = &lifecycle.members[0];
         let inputs = member.section("inputs").unwrap();

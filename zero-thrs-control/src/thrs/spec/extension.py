@@ -59,6 +59,7 @@ from thrs.spec.naming import (
     switching_control_mode_type_name,
     type_name,
 )
+from thrs.spec.validators import validation_error_url
 
 EXTENSION_KEY = "x-mqtt-graphql"
 EXTENSION_VERSION = 2
@@ -106,6 +107,7 @@ def build_extension(document: Document) -> dict[str, Any]:
     ]
     return {
         "version": EXTENSION_VERSION,
+        "validationErrorUrl": validation_error_url(),
         "types": types.declared(),
         "views": views,
         "metadata": metadata,

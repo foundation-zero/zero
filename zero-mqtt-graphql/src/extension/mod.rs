@@ -47,6 +47,7 @@ use serde_json::Value;
 use crate::asyncapi::{OperationDef, OperationIndex, TopicGroupDef};
 use crate::lifecycle_view::LifecycleDef;
 use crate::metadata::{MetadataFile, TopicMetadataEntry};
+use crate::model_validation::ModelSchema;
 use crate::mutations_view::{DerivedFieldDef, InvariantDef};
 use crate::naming::field_name;
 use crate::schema::{schema_ref, Components, Property};
@@ -138,6 +139,8 @@ pub struct ResolvedType {
     pub properties: Vec<(String, Property)>,
     pub invariants: Vec<InvariantDef>,
     pub derived: Vec<DerivedFieldDef>,
+    /// The schema as a pydantic model, for validating writes.
+    pub model: ModelSchema,
 }
 
 impl ResolvedType {
@@ -210,6 +213,7 @@ fn read_type(
         properties,
         invariants: components.invariants(schema)?,
         derived: components.derived(schema)?,
+        model: ModelSchema::read(schema, components)?,
     })
 }
 
@@ -367,6 +371,7 @@ impl TypeIndex {
 pub struct Resolver<'a> {
     pub operations: &'a OperationIndex,
     pub types: &'a TypeIndex,
+    pub validation_error_url: &'a str,
 }
 
 /// The instances of one parametrized channel with their static attributes:
@@ -443,6 +448,9 @@ impl InstancesDef {
 struct ExtensionDocument {
     #[serde(default)]
     version: u64,
+    /// The documentation link base the producer's validation errors carry.
+    #[serde(default)]
+    validation_error_url: String,
     #[serde(default)]
     types: BTreeMap<String, TypeSpec>,
     #[serde(default)]
@@ -458,6 +466,9 @@ struct ExtensionDocument {
 #[derive(Debug, Clone, Default)]
 pub struct GraphqlExtension {
     pub version: u64,
+    /// The documentation link base of the producer's validation errors (see
+    /// [`crate::model_validation`]).
+    pub validation_error_url: String,
     pub types: TypeIndex,
     declared_views: Vec<ViewSpec>,
     declared_lifecycles: Vec<LifecycleSpec>,
@@ -489,6 +500,7 @@ impl GraphqlExtension {
         let resolver = Resolver {
             operations,
             types: &self.types,
+            validation_error_url: &self.validation_error_url,
         };
         self.views = self
             .declared_views
@@ -528,6 +540,13 @@ impl GraphqlExtension {
                 other.version,
                 self.version
             );
+        }
+        if self.validation_error_url.is_empty() {
+            self.validation_error_url = other.validation_error_url;
+        } else if !other.validation_error_url.is_empty()
+            && other.validation_error_url != self.validation_error_url
+        {
+            anyhow::bail!("documents disagree on {EXTENSION_KEY}.validationErrorUrl");
         }
         self.types.merge(other.types)?;
         self.declared_views.extend(other.declared_views);
@@ -613,6 +632,7 @@ pub fn parse_extension(
         .with_context(|| format!("{EXTENSION_KEY}.types"))?;
     Ok(Some(GraphqlExtension {
         version: declared.version,
+        validation_error_url: declared.validation_error_url,
         types,
         declared_views: declared.views,
         declared_lifecycles: declared.lifecycles,

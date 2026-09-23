@@ -27,14 +27,14 @@ the seeded sensors.
 from __future__ import annotations
 
 import re
-from pathlib import Path
 from typing import Any
 
 import pytest
 
-from tests.graphql.parity import diff, post, query_data
+from tests.graphql.parity import diff, messages, post, query_data
 from tests.graphql.seeding import seed_state
 from tests.graphql.stack_config import MQTT_GRAPHQL_URL, THRS_API_URL
+from tests.graphql.ui_source import control_query, query_all, status_query
 from thrs.spec import contract
 
 pytestmark = pytest.mark.migration
@@ -45,68 +45,6 @@ pytestmark = pytest.mark.migration
 # timestamps within this window of the wall clock count as equal; seeded
 # timestamps still have to denote the same instant.
 NOW_WINDOW_S = 60.0
-
-UI_DIR = Path(__file__).resolve().parents[3] / "zero-ui" / "src" / "modules" / "thrsim"
-
-
-# --- The UI's documents, read from its source ---------------------------------
-
-
-def _ui_source(relative: str) -> str:
-    path = UI_DIR / relative
-    if not path.exists():
-        pytest.skip(f"zero-ui source not found at {path}")
-    return path.read_text(encoding="utf-8")
-
-
-def _ui_match(pattern: str, src: str) -> str:
-    match = re.search(pattern, src, re.DOTALL)
-    assert match is not None, f"zero-ui source no longer matches {pattern!r}"
-    return match.group(1)
-
-
-def ui_control_query() -> str:
-    src = _ui_source("stores/automation.ts")
-    return _ui_match(r"gql`\s*(query ControlStatus.*?)`", src)
-
-
-def ui_status_query() -> str:
-    src = _ui_source("stores/simulation.ts")
-    return _ui_match(r"gql`\s*(query SimulationStatus.*?)`", src)
-
-
-def ui_query_all() -> str:
-    """Rebuild ``QUERY_ALL`` the way consts.ts does: substitute each
-    ``${Queries.X}`` with the generated fragment, and expand
-    ``${toUnionQueries(SIMULATION_*_QUERIES, toInputType/toOutputType)}`` into
-    the ``... on <Key>Simulation<Inputs|Outputs>Type { __typename <fragment> }``
-    members for every key of the map."""
-    consts = _ui_source("lib/consts.ts")
-    generated = _ui_source("lib/queries.generated.ts")
-    fragments = {
-        m.group(1): m.group(2)
-        for m in re.finditer(r"export const (\w+) = `(.*?)`;", generated, re.DOTALL)
-    }
-    template = _ui_match(r"gql`\s*(query QueryAll.*?)`;", consts)
-
-    def _map(name: str) -> list[tuple[str, str]]:
-        body = _ui_match(rf"export const {name}[^=]*=\s*\{{(.*?)\}};", consts)
-        return re.findall(r"(\w+):\s*Queries\.(\w+)", body)
-
-    def _union(map_name: str, suffix: str) -> str:
-        return "\n".join(
-            f"... on {key[0].upper()}{key[1:]}Simulation{suffix}Type {{ __typename {fragments[frag]} }}"
-            for key, frag in _map(map_name)
-        )
-
-    template = template.replace(
-        "${toUnionQueries(SIMULATION_INPUT_QUERIES, toInputType)}",
-        _union("SIMULATION_INPUT_QUERIES", "Inputs"),
-    ).replace(
-        "${toUnionQueries(SIMULATION_OUTPUT_QUERIES, toOutputType)}",
-        _union("SIMULATION_OUTPUT_QUERIES", "Outputs"),
-    )
-    return re.sub(r"\$\{Queries\.(\w+)\}", lambda m: fragments[m.group(1)], template)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -125,9 +63,9 @@ def seeded_state(docker_stack: None) -> None:
 def test_ui_document_parity(document: str) -> None:
     """Each document the UI sends is accepted by both APIs and yields equal data."""
     query = {
-        "ControlStatus": ui_control_query,
-        "SimulationStatus": ui_status_query,
-        "QueryAll": ui_query_all,
+        "ControlStatus": control_query,
+        "SimulationStatus": status_query,
+        "QueryAll": query_all,
     }[document]()
     thrs_api = query_data(THRS_API_URL, query)
     mqtt_graphql = query_data(MQTT_GRAPHQL_URL, query)
@@ -140,7 +78,7 @@ def test_ui_document_parity(document: str) -> None:
 def test_query_all_is_non_trivial() -> None:
     """Guard against a vacuous pass: the seeded state must actually surface
     (every module's sections non-null, simulation inputs typed)."""
-    data = query_data(MQTT_GRAPHQL_URL, ui_query_all())
+    data = query_data(MQTT_GRAPHQL_URL, query_all())
     for module, sections in data["modules"].items():
         for name, value in sections.items():
             assert value is not None, (
@@ -270,12 +208,8 @@ def test_simulation_pause_precondition_parity() -> None:
     query = "mutation MutationWithoutValue { simulationPause }"
     thrs_api = post(THRS_API_URL, query)
     mqtt_graphql = post(MQTT_GRAPHQL_URL, query)
-    assert "errors" in thrs_api and "errors" in mqtt_graphql, (thrs_api, mqtt_graphql)
-    assert (
-        thrs_api["errors"][0]["message"]
-        == mqtt_graphql["errors"][0]["message"]
-        == contract.PAUSE.precondition_error
-    )
+    assert messages(thrs_api) == messages(mqtt_graphql), (thrs_api, mqtt_graphql)
+    assert messages(thrs_api) == [contract.PAUSE.precondition_error]
     # Strawberry nulls the whole `data` on a mutation error where async-graphql
     # nulls the (nullable Void) field; the UI only looks at `error`.
     assert (thrs_api.get("data") or {}).get("simulationPause") is None
@@ -284,11 +218,11 @@ def test_simulation_pause_precondition_parity() -> None:
 
 def test_simulation_play_out_of_range_rejected_on_both() -> None:
     """``simulationPlay(playbackRate: 100)`` violates the message model's bound
-    (0.25..10) and must be rejected by both without publishing."""
+    (0.25..10): both answer with the same pydantic error, publishing nothing."""
     query = "mutation MutationWithValue($value: Float) { simulationPlay(playbackRate: $value) }"
     thrs_api = post(THRS_API_URL, query, {"value": 100.0})
     mqtt_graphql = post(MQTT_GRAPHQL_URL, query, {"value": 100.0})
-    assert "errors" in thrs_api, thrs_api
-    assert "errors" in mqtt_graphql, mqtt_graphql
+    assert messages(thrs_api), thrs_api
+    assert messages(thrs_api) == messages(mqtt_graphql), (thrs_api, mqtt_graphql)
     assert (thrs_api.get("data") or {}).get("simulationPlay") is None
     assert (mqtt_graphql.get("data") or {}).get("simulationPlay") is None
