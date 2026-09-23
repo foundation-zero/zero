@@ -105,7 +105,7 @@ pub(super) fn register_views(
 /// A constant non-null container so its children resolve from their own topics.
 pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
     Field::new(name.to_string(), TypeRef::named_nn(type_name), |_ctx| {
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             Ok(Some(FieldValue::value(GraphQlValue::Object(
                 Default::default(),
             ))))
@@ -135,7 +135,7 @@ pub(super) fn sensor_values_container_field(
         move |_ctx| {
             let required = required.clone();
             let cache = cache.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
+            FieldFuture::new(async move {
                 let complete = if partial {
                     section_any_complete(&cache, &required)
                 } else {
@@ -166,7 +166,7 @@ pub(super) fn module_sensor_field(
         let topic = topic.clone();
         let required = required.clone();
         let cache = cache.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             Ok(cache
                 .get(&topic)
                 .filter(|json| required.as_ref().is_none_or(|r| r.satisfied_by(json)))
@@ -194,41 +194,18 @@ pub(super) fn control_mode_section(
     let automatic = Field::new(
         def.flag_field.clone(),
         TypeRef::named_nn(TypeRef::BOOLEAN),
-        {
-            let key = key.clone();
-            move |ctx| {
-                let key = key.clone();
-                async_graphql::dynamic::FieldFuture::new(async move {
-                    let parent = ctx.parent_value.try_to_value()?;
-                    let on = match parent {
-                        GraphQlValue::Object(map) => {
-                            !matches!(map.get(&key), None | Some(GraphQlValue::Null))
-                        }
-                        _ => false,
-                    };
-                    Ok(Some(FieldValue::value(on)))
-                })
-            }
-        },
-    );
-    let mode_type = def.object.type_name.clone();
-    let automatic_mode = Field::new(
-        def.object_field.clone(),
-        TypeRef::named(&mode_type),
         move |ctx| {
             let key = key.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => match map.get(&key) {
-                        None | Some(GraphQlValue::Null) => None,
-                        Some(v) => Some(v.clone()),
-                    },
-                    _ => None,
-                };
-                Ok(value.map(FieldValue::value))
+            FieldFuture::new(async move {
+                let on = parent_key(&ctx, &key)?.is_some();
+                Ok(Some(FieldValue::value(on)))
             })
         },
+    );
+    let automatic_mode = key_field(
+        def.object_field.clone(),
+        TypeRef::named(&def.object.type_name),
+        &def.key,
     );
     let mut objects = vec![Object::new(def.type_name.as_str())
         .field(automatic)
@@ -264,7 +241,6 @@ pub(super) fn plain_object_types(def: &PlainObjectDef) -> Vec<Object> {
 }
 
 pub(super) fn plain_field(field: &PlainFieldDef) -> Field {
-    let key = Name::new(&field.key);
     let base = match (&field.object, field.r#type.as_deref()) {
         (Some(nested), _) => TypeRef::named(&nested.type_name),
         (None, Some(t)) => flat_type_ref(t),
@@ -278,17 +254,7 @@ pub(super) fn plain_field(field: &PlainFieldDef) -> Field {
             other => other,
         }
     };
-    Field::new(field.gql.clone(), type_ref, move |ctx| {
-        let key = key.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map.get(&key).cloned(),
-                _ => None,
-            };
-            Ok(value.map(FieldValue::value))
-        })
-    })
+    key_field(field.gql.clone(), type_ref, &field.key)
 }
 
 /// A `<section>` field: the cached section object, or null when unpublished.
@@ -316,7 +282,7 @@ pub(super) fn object_section_container_field(
         return Field::new(name.to_string(), TypeRef::named(type_name), move |_ctx| {
             let parts = parts.clone();
             let cache = cache.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
+            FieldFuture::new(async move {
                 let mut object = serde_json::Map::new();
                 for (key, required) in parts.iter() {
                     let Some(payload) = cache.get(&required.topic) else {
@@ -338,7 +304,7 @@ pub(super) fn object_section_container_field(
     Field::new(name.to_string(), TypeRef::named(type_name), move |_ctx| {
         let topic = topic.clone();
         let cache = cache.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             Ok(cache
                 .get(&topic)
                 .map(|json| FieldValue::value(json_to_graphql_value(&json))))
@@ -451,54 +417,27 @@ pub(super) fn object_section_objects(module: &str, section: &ObjectSectionDef) -
 /// The always-null `Empty: Void` placeholder on a fieldless object.
 pub(super) fn empty_placeholder_field() -> Field {
     Field::new(EMPTY_FIELD, TypeRef::named(VOID_SCALAR), |_ctx| {
-        async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(Some(FieldValue::value(GraphQlValue::Null)))
-        })
+        FieldFuture::new(async move { Ok(Some(FieldValue::value(GraphQlValue::Null))) })
     })
 }
 
 /// A flat (parameter) field reading its `key` off the parent section.
 pub(super) fn object_flat_field(field: &ObjectFieldDef) -> Field {
-    let key = field.key.clone();
     let base = flat_type_ref(field.r#type.as_deref().unwrap_or("Float"));
     let type_ref = if field.optional {
         base
     } else {
         TypeRef::NonNull(Box::new(base))
     };
-    Field::new(field.gql.clone(), type_ref, move |ctx| {
-        let key = key.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map
-                    .get(&Name::new(&key))
-                    .cloned()
-                    .unwrap_or(GraphQlValue::Null),
-                _ => GraphQlValue::Null,
-            };
-            Ok(Some(FieldValue::value(value)))
-        })
-    })
+    key_field(field.gql.clone(), type_ref, &field.key)
 }
 
 /// A component field resolving its `key` to a sub-object of Stamped leaves.
 pub(super) fn object_component_field(field: &ObjectFieldDef) -> Field {
-    let key = field.key.clone();
-    Field::new(
+    key_field(
         field.gql.clone(),
         TypeRef::named_nn(field.component_type_name()),
-        move |ctx| {
-            let key = key.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => map.get(&Name::new(&key)).cloned(),
-                    _ => None,
-                };
-                Ok(value.map(FieldValue::value))
-            })
-        },
+        &field.key,
     )
 }
 
@@ -540,20 +479,11 @@ pub(super) fn module_leaf_field(leaf: &LeafDef) -> Field {
         let raw_key = raw_key.clone();
         let enum_values = enum_values.clone();
         let default = default.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let mut value = match parent {
-                GraphQlValue::Object(map) => {
-                    map.get(&raw_key).cloned().unwrap_or(GraphQlValue::Null)
-                }
-                _ => GraphQlValue::Null,
-            };
+        FieldFuture::new(async move {
             // An absent leaf serves thrs-api's default `{value: null, timestamp: epoch}`.
-            if matches!(value, GraphQlValue::Null) {
-                if let Some(d) = default {
-                    value = d;
-                }
-            }
+            let mut value = parent_key(&ctx, &raw_key)?
+                .or(default)
+                .unwrap_or(GraphQlValue::Null);
             if let Some(map) = &enum_values {
                 value = map_enum_leaf_value(value, map);
             }
@@ -597,7 +527,7 @@ pub(super) fn view_stamped_object(leaf: &LeafDef) -> Object {
         list => TypeRef::NonNull(Box::new(list)),
     };
     Object::new(view_stamped_type_name(leaf))
-        .field(stamped_wrapper_field("value", "Value", value_ref))
+        .field(key_field("value", value_ref, "Value"))
         .field(stamped_timestamp_field(true))
 }
 

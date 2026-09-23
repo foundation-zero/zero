@@ -231,7 +231,7 @@ fn topics_introspection_field(topics: &[TopicDef]) -> Field {
     let topic_list: Vec<String> = topics.iter().map(|t| t.topic.clone()).collect();
     Field::new("topics", TypeRef::named_list("String"), move |_ctx| {
         let names = topic_list.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             let values: Vec<GraphQlValue> = names.into_iter().map(GraphQlValue::String).collect();
             Ok(Some(GraphQlValue::List(values)))
         })
@@ -346,10 +346,32 @@ fn graphql_type_ref(typ: &str) -> TypeRef {
         _ => TypeRef::named(TypeRef::STRING),
     }
 }
+
 /// Null as `None`: an enum-typed field rejects `Value::Null`.
 fn nullable(value: GraphQlValue) -> Option<FieldValue<'static>> {
     match value {
         GraphQlValue::Null => None,
         v => Some(FieldValue::value(v)),
     }
+}
+
+/// The value under `key` on the resolving field's parent object; `None` when
+/// absent or null.
+fn parent_key(
+    ctx: &ResolverContext<'_>,
+    key: &Name,
+) -> async_graphql::Result<Option<GraphQlValue>> {
+    Ok(match ctx.parent_value.try_to_value()? {
+        GraphQlValue::Object(map) => map.get(key).filter(|v| **v != GraphQlValue::Null).cloned(),
+        _ => None,
+    })
+}
+
+/// A field `name` serving wire key `raw_key` off its parent object.
+fn key_field(name: impl Into<String>, type_ref: TypeRef, raw_key: &str) -> Field {
+    let key = Name::new(raw_key);
+    Field::new(name, type_ref, move |ctx| {
+        let key = key.clone();
+        FieldFuture::new(async move { Ok(parent_key(&ctx, &key)?.map(FieldValue::value)) })
+    })
 }

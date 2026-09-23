@@ -319,7 +319,7 @@ pub(super) fn register_bucket_queries(
             let value_meta_json = value_meta_for_list.clone();
             let rows_field = rows_for_list.clone();
             let cache = cache_for_list.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
+            FieldFuture::new(async move {
                 let values =
                     bucket_rows_json(&buckets, &fields, &value_meta_json, &cache, &rows_field);
                 Ok(Some(FieldValue::value(json_to_graphql_value(
@@ -338,7 +338,7 @@ pub(super) fn register_bucket_queries(
         let value_meta_json = value_meta_for_bucket.clone();
         let rows_field = rows_for_bucket.clone();
         let cache = cache_for_bucket.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             let id = ctx.args.try_get("id")?.string()?;
             match buckets.get(id) {
                 Some(rows) => {
@@ -364,18 +364,7 @@ pub(super) fn register_bucket_queries(
 
 /// A field resolver that returns the named key of its parent row object.
 pub(super) fn row_projection_field(name: &str, type_ref: TypeRef) -> Field {
-    let key = Name::new(name);
-    Field::new(name, type_ref, move |ctx| {
-        let key = key.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map.get(&key).cloned().unwrap_or(GraphQlValue::Null),
-                _ => GraphQlValue::Null,
-            };
-            Ok(Some(FieldValue::value(value)))
-        })
-    })
+    key_field(name, type_ref, name)
 }
 
 /// The `<group>: [<Group>Topic]` query field; rows are materialized per resolve.
@@ -396,7 +385,7 @@ pub(super) fn group_query_field(
             let fields = fields.clone();
             let value_meta_json = value_meta_json.clone();
             let cache = cache.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
+            FieldFuture::new(async move {
                 let rows: Vec<GraphQlValue> = entries
                     .iter()
                     .map(|(topic, meta)| {

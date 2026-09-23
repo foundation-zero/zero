@@ -77,7 +77,7 @@ pub(super) fn register_lifecycle(
             let status_topic = status_topic.clone();
             let cache = cache_q.clone();
             let status_keys = status_keys.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
+            FieldFuture::new(async move {
                 let value = cache_q_status(&cache, &status_topic, &status_keys);
                 Ok(value.map(FieldValue::value))
             })
@@ -137,23 +137,10 @@ fn status_field(def: &StatusFieldDef) -> Field {
             optional: false,
         });
     }
-    let time_key = Name::new(&def.key);
-    Field::new(
+    key_field(
         def.gql.clone(),
         TypeRef::named_nn(DATETIME_SCALAR),
-        move |ctx| {
-            let time_key = time_key.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => {
-                        map.get(&time_key).cloned().unwrap_or(GraphQlValue::Null)
-                    }
-                    _ => GraphQlValue::Null,
-                };
-                Ok(Some(FieldValue::value(value)))
-            })
-        },
+        &def.key,
     )
 }
 
@@ -198,7 +185,7 @@ pub(super) fn union_member_field(
         let topic = topic.clone();
         let cache = cache.clone();
         let index = index.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             // Raw payload: the flattened view adds leaf keys that never match a member.
             let Some(JsonValue::Object(map)) = cache.get_raw(&topic) else {
                 return Ok(None);
@@ -244,7 +231,7 @@ pub(super) fn directive_field(
         let status_key = status_key.clone();
         let cache = cache.clone();
         let publisher = publisher.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             // Absent or null (an unsent variable) takes the default.
             let given = match def.arg_name.as_ref().and_then(|name| ctx.args.get(name)) {
                 Some(v) if !v.is_null() => Some(v.f64()?),

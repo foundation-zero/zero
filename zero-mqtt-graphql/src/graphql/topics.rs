@@ -84,32 +84,16 @@ pub(super) fn topic_query_field(topic: &str, type_name: &str, cache: &Arc<TopicC
     let cache_for_query = cache.clone();
     Field::new(type_name, obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
-        async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
-        })
+        FieldFuture::new(async move { Ok(val.map(|json_val| json_to_graphql_value(&json_val))) })
     })
 }
 
 /// A scalar field projecting its raw name from the parent payload.
 pub(super) fn payload_field(field: &FieldDef) -> Field {
-    let field_name = sanitize_to_graphql_name(&field.name);
-    let raw_name = Name::new(field.name.clone());
-    Field::new(
-        field_name,
+    key_field(
+        sanitize_to_graphql_name(&field.name),
         graphql_type_ref(&field.graphql_type),
-        move |ctx| {
-            let raw_name = raw_name.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => {
-                        map.get(&raw_name).cloned().unwrap_or(GraphQlValue::Null)
-                    }
-                    _ => GraphQlValue::Null,
-                };
-                Ok(Some(FieldValue::value(value)))
-            })
-        },
+        &field.name,
     )
 }
 
@@ -124,7 +108,7 @@ pub(super) fn metadata_field(
     Field::new("metadata", TypeRef::named(meta_type_name), move |_ctx| {
         let store = store.clone();
         let topic = topic.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
+        FieldFuture::new(async move {
             let value = match store.get(&topic) {
                 Some((_, meta)) => json_to_graphql_value(&JsonValue::Object(
                     meta.iter()

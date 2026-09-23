@@ -10,11 +10,7 @@ pub(super) fn stamped_wrapper_object(inner: &str) -> Object {
     let type_name = stamped_wrapper_type_name(inner);
     // `timestamp`, not `timeStamp`: thrs-api's field name; `TimeStamp` is only the wire key.
     Object::new(type_name.as_str())
-        .field(stamped_wrapper_field(
-            "value",
-            "Value",
-            stamped_value_type_ref(inner),
-        ))
+        .field(key_field("value", stamped_value_type_ref(inner), "Value"))
         .field(stamped_timestamp_field(false))
 }
 
@@ -25,38 +21,7 @@ pub(super) fn stamped_timestamp_field(non_null: bool) -> Field {
     } else {
         TypeRef::named(DATETIME_SCALAR)
     };
-    Field::new("timestamp", type_ref, move |ctx| {
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map
-                    .get(&Name::new("TimeStamp"))
-                    .cloned()
-                    .unwrap_or(GraphQlValue::Null),
-                _ => GraphQlValue::Null,
-            };
-            Ok(Some(FieldValue::value(value)))
-        })
-    })
-}
-
-/// A `Stamped<T>` field `name` reading wire key `raw_key` off the parent.
-pub(super) fn stamped_wrapper_field(name: &str, raw_key: &str, type_ref: TypeRef) -> Field {
-    let raw_key = raw_key.to_string();
-    Field::new(name, type_ref, move |ctx| {
-        let raw_key = raw_key.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map
-                    .get(&Name::new(&raw_key))
-                    .cloned()
-                    .unwrap_or(GraphQlValue::Null),
-                _ => GraphQlValue::Null,
-            };
-            Ok(nullable(value))
-        })
-    })
+    key_field("timestamp", type_ref, "TimeStamp")
 }
 
 /// Every distinct Stamped wrapper type used by topics, groups, views and lifecycles.
