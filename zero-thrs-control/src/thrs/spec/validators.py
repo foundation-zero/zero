@@ -1,22 +1,6 @@
-"""What the models' Python validators do, stated in the contract.
+"""Describe the models' Python validators in the contract by probing them, not copying their code.
 
-A JSON Schema says a number's bounds and a tuple's length, but not what a
-Python validator does. The bridge must reject (and word the rejection of)
-exactly what the API rejects, so the validators the mutable models carry are
-described here - not by copying their code, but by *asking* them: each one is
-run against probe values and its behaviour recorded, then that record is
-checked against the validator again.
-
-* ``x-python-name`` (every model property): the Python field name, which
-  pydantic's error locations and model reprs use.
-* ``x-clamp`` (a number wrapped by an after-validator such as ``Ratio``'s):
-  the accepted interval, the bounds out-of-range-but-close values snap to,
-  and the rejection message as a ``{value}`` template.
-* ``x-field-rules`` (a model with ``field_validator``s such as ``Pump``'s):
-  per validated stamped field, the interval its leaf must stay in and the
-  rejection message.
-* ``validationErrorUrl`` (the extension root): the documentation link base
-  pydantic appends each error type to.
+JSON Schema cannot express them, yet the bridge must reject exactly what the API rejects.
 """
 
 from __future__ import annotations
@@ -35,16 +19,13 @@ PYTHON_NAME_KEY = "x-python-name"
 CLAMP_KEY = "x-clamp"
 FIELD_RULES_KEY = "x-field-rules"
 
-# How far the probes search for an interval's edge: beyond this a number is
-# treated as unbounded.
+# Beyond this a probed interval is treated as unbounded.
 _SEARCH_LIMIT = 1e300
-# A known timestamp for probe values (a validator may only look at the value).
 _PROBE_TIME = datetime(2026, 1, 1, tzinfo=UTC)
 
 
 def validation_error_url() -> str:
-    """The base of the documentation link pydantic appends to every error,
-    read off an error pydantic raises."""
+    """The documentation link base pydantic appends each error type to."""
 
     class _Probe(BaseModel):
         value: int
@@ -63,9 +44,7 @@ def validation_error_url() -> str:
 def _edge(
     accepts: Callable[[float], bool], start: float, direction: float
 ) -> float | None:
-    """The last accepted float going from the accepted ``start`` in
-    ``direction``, exact to the float; None when nothing within the search
-    limit is rejected."""
+    """The last accepted float from ``start`` in ``direction``; None if unbounded."""
     step = 1.0
     good = start
     while True:
@@ -92,8 +71,7 @@ def _message_template(
     rejected: list[float],
     rendered: Callable[[float], str],
 ) -> str:
-    """A ``{value}`` template for the message ``render`` gives each rejected
-    value, checked on every one of them."""
+    """A ``{value}`` template of the rejection message, checked on every rejected value."""
     first = rejected[0]
     template = render(first).replace(rendered(first), "{value}")
     for value in rejected:
@@ -105,9 +83,7 @@ def _message_template(
 
 
 def clamp_of(function: Callable[[float], float]) -> dict[str, Any]:
-    """Describe a number after-validator by running it: the interval it
-    accepts (``acceptBelow`` .. ``acceptAbove``), the bounds values beyond
-    ``minimum``/``maximum`` snap to, and its rejection message."""
+    """Describe a clamping number after-validator (``x-clamp``) by probing it."""
 
     def accepts(x: float) -> bool:
         try:
@@ -145,8 +121,7 @@ def clamp_of(function: Callable[[float], float]) -> dict[str, Any]:
 
 
 def _check_clamp(function: Callable[[float], float], clamp: dict[str, Any]) -> None:
-    """The recorded behaviour, checked: values inside the bounds pass through
-    unchanged, values between a bound and its accept edge snap to the bound."""
+    """Check in-range values pass unchanged and near-out-of-range values snap to the bound."""
     minimum, maximum = clamp.get("minimum"), clamp.get("maximum")
     lo = minimum if minimum is not None else -1e6
     hi = maximum if maximum is not None else 1e6
@@ -170,9 +145,7 @@ def is_pydantic_internal(function: Any) -> bool:
 
 
 def field_rules_of(cls: type[BaseModel]) -> list[dict[str, Any]]:
-    """Describe a model's ``field_validator``s on stamped numeric fields by
-    running them: the interval the leaf value must stay in (within the range
-    the leaf type itself accepts) and the rejection message."""
+    """Describe a model's stamped-number ``field_validator``s (``x-field-rules``)."""
     decorators = cls.__pydantic_decorators__.field_validators
     if not decorators:
         return []
@@ -191,8 +164,7 @@ def field_rules_of(cls: type[BaseModel]) -> list[dict[str, Any]]:
 
 
 def _zero_instance(cls: type[ThrsValues]) -> ThrsValues:
-    """A valid instance of a component model, zeroed the way `ThrsValues.zero`
-    zeroes a model's components (honouring each field's `zero_value`)."""
+    """A valid instance of a component model, zeroed as by `ThrsValues.zero`."""
     holder = create_model("_ZeroHolder", component=(cls, ...), __base__=ThrsValues)
     return holder.zero().component  # type: ignore[attr-defined]
 
@@ -200,8 +172,7 @@ def _zero_instance(cls: type[ThrsValues]) -> ThrsValues:
 def _field_rule(
     cls: type[ThrsValues], base: ThrsValues, name: str
 ) -> dict[str, Any] | None:
-    """The rule a field validator enforces on a stamped number, or None when
-    it rejects nothing (it only transforms the value)."""
+    """The rule a field validator enforces, or None when it only transforms the value."""
     field = cls.model_fields[name]
     current = getattr(base, name)
     if not isinstance(current, Stamped) or not isinstance(current.value, float):

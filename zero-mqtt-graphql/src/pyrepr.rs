@@ -1,10 +1,4 @@
-//! Python's `repr()` of the values a client can send, which the producer's
-//! validation errors embed (pydantic's `input_value=...`, model reprs) - ported
-//! so a rejection reads exactly as the producer's API words it.
-
-/// Python's `repr(float)`: the shortest round-tripping digits, fixed notation
-/// for decimal exponents in `-4..16` (always with a fractional part), else
-/// scientific with a signed, at least two-digit exponent.
+/// Python's `repr(float)`, which the producer's validation errors embed.
 pub fn float_repr(x: f64) -> String {
     if x.is_nan() {
         return "nan".into();
@@ -40,10 +34,7 @@ pub fn float_repr(x: f64) -> String {
     }
 }
 
-/// Whether Python's `str.isprintable()` holds for `c`: everything except the
-/// control, format, separator (other than the space), private-use and
-/// surrogate categories. Unassigned code points (also non-printable in
-/// Python) are not tracked.
+/// Python's `str.isprintable()` (unassigned code points not tracked).
 fn is_printable(c: char) -> bool {
     let code = c as u32;
     !matches!(code,
@@ -53,8 +44,7 @@ fn is_printable(c: char) -> bool {
         | 0xFFF0..=0xFFFB | 0xE0000..=0xE0FFF | 0xF0000..=0x10FFFF)
 }
 
-/// Python's `repr(str)`: single-quoted unless the string holds a single quote
-/// and no double quote, with Python's escapes.
+/// Python's `repr(str)`, quotes and escapes included.
 pub fn str_repr(s: &str) -> String {
     let quote = if s.contains('\'') && !s.contains('"') {
         '"'

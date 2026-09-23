@@ -1,11 +1,6 @@
 """The behaviour of the THRS control API, as data.
 
-What a client can rely on beyond the shapes of the models: the query fields
-and sections, how mutations are named, how long a write waits for the
-controller to confirm it and what it says when that fails, and which simulation
-directives are allowed from which status. Both the API implementation
-(``thrs.graphql``) and the published contract (``thrs.spec``) read it from
-here, so neither can drift from the other.
+Shared by ``thrs.graphql`` and ``thrs.spec`` so the API and its contract cannot drift.
 """
 
 from dataclasses import dataclass
@@ -27,16 +22,15 @@ SIMULATION_STATE_TYPE_NAME = "SimulationState"
 SIMULATION_INPUTS_UNION = "SimulationInputsType"
 SIMULATION_OUTPUTS_UNION = "SimulationOutputsType"
 
-# The sections of a module (`modules.<module>.<section>`), by python name.
+# `modules.<module>.<section>`, by python name.
 SENSOR_VALUES_SECTION = "sensor_values"
 CONTROL_VALUES_SECTION = "control_values"
 PARAMETERS_SECTION = "parameters"
 CONTROLLER_STATE_SECTION = "controller_state"
 CONTROL_MODE_SECTION = "control_mode"
-# The sections of a simulation (`simulation.<section>`).
+# `simulation.<section>`.
 INPUTS_SECTION = "inputs"
 OUTPUTS_SECTION = "outputs"
-# The fields of the simulation state.
 STATUS_FIELD = "status"
 TIME_FIELD = "time"
 
@@ -46,15 +40,13 @@ AUTOMATIC_MODE_FIELD = "automatic_mode"
 
 # --- Mutations ---------------------------------------------------------------
 
-# Python names of the mutations; the GraphQL names follow from
-# `thrs.spec.naming.field_name`.
+# Python names; GraphQL names follow from `naming.field_name`.
 CONTROL_MUTATION_NAME = "{module}_control_set_{field}"
 PARAMETER_MUTATION_NAME = "{module}_parameter_set_{field}"
 SIMULATION_INPUT_MUTATION_NAME = "{mode}_simulation_set_{field}"
 AUTOMATION_MODE_MUTATION_NAME = "{module}_set_automation_mode"
 SIMULATION_DIRECTIVE_MUTATION_NAME = "simulation_{directive}"
 
-# The single argument of a set mutation, and of the automation-mode switch.
 VALUE_ARGUMENT = "value"
 AUTOMATIC_ARGUMENT = "automatic"
 
@@ -82,8 +74,7 @@ SIMULATION_INPUTS_TIMEOUT_ERROR = timeout_error("simulation inputs")
 
 @dataclass(frozen=True)
 class SimulationDirective:
-    """How the API guards one simulation directive: the statuses it may be
-    issued from, the status it then waits for, and the exact errors otherwise."""
+    """The allowed statuses, awaited status and errors of one simulation directive."""
 
     message: type[IncomingMessage]
     allowed_from: tuple[SimulationStatus, ...]

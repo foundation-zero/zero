@@ -1,25 +1,9 @@
-//! Composite read views: a query field whose object nests one member per
-//! declared name, each member a set of named sections read off the cache
-//! (`<queryField> { <member> { <section> { ... } } }`).
-//!
-//! This is the runtime model the resolvers work from, produced from the
-//! `x-mqtt-graphql` extension by [`crate::extension`]: every topic is
-//! resolved, every leaf carries its GraphQL name and wire key, every enum its
-//! member names. Three section kinds exist:
-//!
-//! * `stampedFields`: one topic per field, each payload a set of
-//!   `{Value, TimeStamp}` leaves.
-//! * `object`: one topic carrying a whole object (or, without a section
-//!   operation, one topic per component field), fields pulled out by wire key.
-//! * `switch`: one topic carrying an object whose `key` is either a plain
-//!   object or null, exposed as a flag plus the object.
-
 use std::collections::BTreeMap;
 
 use anyhow::Context;
 
 use crate::extension::OperationRef;
-use crate::mutations_view::{validate_mutation, MutationDef};
+use crate::model::mutations::{validate_mutation, MutationDef};
 
 /// One `{value, timestamp}` leaf of a stamped component.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -28,29 +12,18 @@ pub struct LeafDef {
     pub gql: String,
     /// Wire key in the cached MQTT payload, e.g. `PositionRel`.
     pub key: String,
-    /// Inner scalar of the `Stamped<T>` leaf: `Float`, `Boolean`, `Int` or
-    /// `String`. Selects the `Stamped<Inner>` wrapper type. Enum leaves carry
-    /// `String` (the producer serializes the enum member name).
+    /// Inner scalar of `Stamped<T>`; enum leaves carry `String`.
     pub r#type: String,
-    /// For an enum leaf: the wire-value -> member-name map (e.g. `"0" ->
-    /// "LOCAL"`, `"off" -> "OFF"`). The API returns the member name; the raw
-    /// MQTT payload carries the value, so the resolver translates the cached
-    /// value through this map. `None` for non-enum leaves.
+    /// Enum leaf: wire value -> member name (e.g. `"0" -> "LOCAL"`), applied to cached values.
     pub enum_values: Option<BTreeMap<String, String>>,
-    /// For an enum leaf: the GraphQL enum type name (e.g. `ControlMode`). The
-    /// leaf's `value` is typed as that enum; the members are `enum_values`'
-    /// names. Present exactly when `enum_values` is.
+    /// Enum leaf: GraphQL enum type name. Present exactly when `enum_values` is.
     pub enum_type: Option<String>,
     /// Whether the leaf's value is nullable in the API schema.
     pub optional: bool,
-    /// For a leaf of a per-topic section whose device payload keys it
-    /// differently than the model's alias (`CC_DutyPoint` for `Dutypoint`):
-    /// the key to read off the device payload. The section container re-keys
-    /// it to `raw` so the component type is the same one the mutation return
-    /// object uses. `None` when the keys agree.
+    /// Device payload key when it differs from the alias (`CC_DutyPoint` for `Dutypoint`);
+    /// re-keyed on read so reads and mutation returns share one component type.
     pub actuated_key: Option<String>,
-    /// The wire-shaped default (`{"Value": ..., "TimeStamp": ...}`) the API
-    /// serves when the payload lacks this leaf. `None` for a required leaf.
+    /// Wire-shaped default served when the payload lacks this leaf; `None` if required.
     pub default: Option<serde_json::Value>,
 }
 
@@ -64,46 +37,35 @@ pub struct StampedFieldDef {
     /// The resolved topic of `operation`.
     pub topic: String,
     pub leaves: Vec<LeafDef>,
-    /// The API's type name for the component (`SensorFlowSensorType`), shared
-    /// wherever the class is reused.
+    /// API type name of the component, e.g. `SensorFlowSensorType`.
     pub type_name: String,
-    /// Whether the producer derives this field from others (a computed value
-    /// it publishes like any other). Diagnostic only.
+    /// Producer-computed field; diagnostic only.
     pub computed: bool,
 }
 
-/// One field of an `object` section. Either a flat scalar (`type`, e.g. a
-/// parameter `Float`/`[Float!]`) or a stamped-leaf component (`leaves`, e.g. a
-/// valve's `setpoint`), pulled out of the section object by `key`.
+/// One field of an `object` section: a flat scalar (`type`) or a stamped-leaf component (`leaves`).
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ObjectFieldDef {
     /// GraphQL field name under the section, e.g. `coolingFlow`.
     pub gql: String,
     /// Key in the cached object payload, e.g. `CoolingFlow`.
     pub key: String,
-    /// GraphQL scalar for a flat field: `Float`, `Int`, `Boolean`, or a list
-    /// like `[Float!]`. `None` for a component field (see `leaves`).
+    /// GraphQL scalar of a flat field, e.g. `Float` or `[Float!]`; `None` for a component.
     pub r#type: Option<String>,
-    /// The API's type name for a component field (`ControlPumpType`); `None`
-    /// for a flat field.
+    /// API type name of a component field, e.g. `ControlPumpType`.
     pub type_name: Option<String>,
     /// A flat field that is nullable in the API schema.
     pub optional: bool,
-    /// For a component of a per-topic section: the `send` operation whose
-    /// messages back this component, read with the leaves' (actuated) wire
-    /// keys. `None` for a field of a whole-object section, which is read off
-    /// the section object.
+    /// Per-topic section only: the `send` operation backing this component.
     pub operation: Option<OperationRef>,
     /// The resolved topic of `operation`.
     pub topic: Option<String>,
-    /// Stamped `{value, timestamp}` leaves for a component field. Empty for a
-    /// flat field.
+    /// Stamped leaves of a component field; empty for a flat field.
     pub leaves: Vec<LeafDef>,
 }
 
 impl ObjectFieldDef {
-    /// The component type name of a stamped-leaf field (see `type_name`).
-    /// Panics on a flat field, which the resolvers never ask.
+    /// The component type name; panics on a flat field.
     pub fn component_type_name(&self) -> &str {
         self.type_name
             .as_deref()
@@ -111,10 +73,7 @@ impl ObjectFieldDef {
     }
 }
 
-/// A whole-object section: one topic carrying the entire section object, and
-/// the fields extracted from it. Without a section operation it is a per-topic
-/// section whose component fields carry their own operations. When nothing is
-/// cached the section resolves null.
+/// A section read from one whole-object topic, or (without an operation) one topic per component.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ObjectSectionDef {
     /// The `send` operation whose messages carry the whole section object.
@@ -146,8 +105,7 @@ impl ObjectSectionDef {
     }
 }
 
-/// One field of a plain (non-stamped) object, e.g. a mode model's `mode: str`
-/// or a nested group. Either a scalar `type` or a nested `object`.
+/// One field of a plain (non-stamped) object: a scalar `type` or a nested `object`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PlainFieldDef {
     pub gql: String,
@@ -159,17 +117,14 @@ pub struct PlainFieldDef {
     pub optional: bool,
 }
 
-/// A plain object type: the API's type name plus its fields. A model without
-/// fields renders an `Empty: Void` placeholder like the API does.
+/// A plain object type; without fields it renders an `Empty: Void` placeholder.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct PlainObjectDef {
     pub type_name: String,
     pub fields: Vec<PlainFieldDef>,
 }
 
-/// A `switch` section: one object on a topic whose `key` holds a plain object
-/// or null. Exposed as `<flagField>: Boolean!` (the key is not null) plus
-/// `<objectField>: <object type>` (the object, or null).
+/// A section whose `key` holds an object or null, exposed as a Boolean flag plus the object.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct SwitchSectionDef {
     /// The `send` operation whose messages carry the switch object.
@@ -187,7 +142,7 @@ pub struct SwitchSectionDef {
     pub object: PlainObjectDef,
 }
 
-/// One named section of a view member.
+/// One named section of a view member (`<view> { <member> { <section> } }`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SectionDef {
     StampedFields(StampedFieldsSection),
@@ -270,8 +225,7 @@ impl SectionDef {
     }
 }
 
-/// One member of a view: its GraphQL field under the view object, its type
-/// and its sections.
+/// One member of a view.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct MemberDef {
     /// GraphQL field name under the view object, e.g. `thrusters`.
@@ -279,8 +233,7 @@ pub struct MemberDef {
     /// The API's type name for this member's object.
     pub type_name: String,
     pub sections: Vec<SectionDef>,
-    /// The mutations acting on this member; each returns one of its `object`
-    /// sections (or Boolean). See [`crate::mutations_view`].
+    /// Mutations on this member; each returns one of its `object` sections or Boolean.
     pub mutations: Vec<MutationDef>,
 }
 
@@ -318,8 +271,7 @@ impl MemberDef {
     }
 }
 
-/// A composite read view: a query field whose object has one field per
-/// member.
+/// A composite read view: a query field with one field per member.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct ViewDef {
     /// The query field, e.g. `modules`.
@@ -370,8 +322,7 @@ impl ViewDef {
             .flat_map(|m| m.mutations.iter().map(move |d| (m, d)))
     }
 
-    /// The invariants the resolvers rely on: distinct member and section
-    /// names, and every mutation returns a section its member has.
+    /// Checks distinct member/section names and that every mutation returns an existing section.
     pub fn validate(&self) -> anyhow::Result<()> {
         let mut members: Vec<&str> = Vec::new();
         for member in &self.members {

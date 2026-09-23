@@ -1,14 +1,9 @@
-//! Lifecycle contract: a retained status object with directives that
-//! transition it, plus whole-object relays typed by a union. This is the
-//! runtime model the resolvers work from, produced from the `x-mqtt-graphql`
-//! extension by [`crate::extension`].
-
 use anyhow::Context;
 
 use crate::extension::OperationRef;
+use crate::model::mutations::{validate_mutation, MutationDef};
+use crate::model::views::{LeafDef, ObjectSection, ObjectSectionDef};
 use crate::model_validation::ModelSchema;
-use crate::mutations_view::{validate_mutation, MutationDef};
-use crate::views::{LeafDef, ObjectSection, ObjectSectionDef};
 
 /// One field of the status object.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -22,8 +17,7 @@ pub struct StatusFieldDef {
     pub r#type: String,
 }
 
-/// The retained status object: where it is read, which key holds the status
-/// string the directives check, and the fields exposed off it.
+/// The retained status object; `key` holds the status string directives check.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct StatusDef {
     /// The `send` operation whose messages carry the status object.
@@ -35,8 +29,7 @@ pub struct StatusDef {
     pub fields: Vec<StatusFieldDef>,
 }
 
-/// One whole object relayed next to the status, typed by a union of the
-/// members' objects: whichever member's object matches the payload's keys.
+/// A whole object relayed next to the status, typed by a union of the members' objects.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct LifecycleObjectDef {
     /// GraphQL field name on the state object, e.g. `inputs`.
@@ -51,9 +44,7 @@ pub struct LifecycleObjectDef {
     pub member_section: String,
 }
 
-/// One directive (play / pause / step): the message it publishes, the
-/// statuses it is allowed from, the status it waits for, and the producer's
-/// exact error strings.
+/// One directive (play / pause / step) that transitions the status.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct DirectiveDef {
     /// GraphQL mutation name (`simulationPlay`).
@@ -70,8 +61,7 @@ pub struct DirectiveDef {
     pub arg_required: bool,
     /// Default used when a nullable argument is omitted.
     pub default: Option<f64>,
-    /// The directive message's model (validates the argument as the
-    /// producer does, see [`ModelSchema`]).
+    /// The directive message's [`ModelSchema`], used to validate the argument.
     pub model: Option<ModelSchema>,
     /// Statuses the directive is accepted from.
     pub allowed_from: Vec<String>,
@@ -83,10 +73,7 @@ pub struct DirectiveDef {
     pub missing_error: String,
 }
 
-/// One member (thrusters, pcm, ..., thrs): its `object` sections (component
-/// fields with stamped leaves, without an operation of their own: the whole
-/// object lives on the lifecycle's relayed topics) and the `setComponent`
-/// mutations on them.
+/// One member (thrusters, pcm, ...); its sections are read off the relayed objects, not own topics.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct LifecycleMemberDef {
     /// camelCase name, e.g. `highTemperature`.
@@ -109,7 +96,7 @@ impl LifecycleMemberDef {
     }
 }
 
-/// The lifecycle contract.
+/// A retained status object with directives that transition it, plus relayed objects.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct LifecycleDef {
     /// The query field, e.g. `simulation`.
@@ -125,8 +112,7 @@ pub struct LifecycleDef {
 }
 
 impl LifecycleDef {
-    /// The topics the cache must subscribe to for the read side (status and
-    /// the relayed objects). Directive/target topics are publish-only.
+    /// The topics the cache subscribes to; directive topics are publish-only.
     pub fn read_topics(&self) -> Vec<String> {
         std::iter::once(self.status.topic.clone())
             .chain(self.objects.iter().map(|o| o.topic.clone()))
@@ -148,8 +134,7 @@ impl LifecycleDef {
             .flat_map(|s| s.section.leaves())
     }
 
-    /// The invariants the resolvers rely on: every relayed object names a
-    /// member object, and every mutation returns a section its member has.
+    /// Checks every relayed object names an existing member section and every mutation's return.
     pub fn validate(&self) -> anyhow::Result<()> {
         let context = |what: &str| format!("lifecycle '{}' {what}", self.gql);
         if self.status.fields.is_empty() {

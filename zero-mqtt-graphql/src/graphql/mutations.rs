@@ -1,17 +1,9 @@
-//! The write-path: the declared mutations (`setField`, `setFlag`,
-//! `setComponent`, see [`crate::mutations_view`]) served over the cache and a
-//! [`TopicPublisher`]. Lifecycle member mutations reuse the same resolvers
-//! (see `super::lifecycle`).
-
 use std::time::SystemTime;
 
 use super::*;
 
-/// The composite input object for a `setComponent` mutation, named as the
-/// producer's API names it (`PumpInputType`, shared across groups; clients may
-/// hard-code those names as variable types). Required leaves are non-null; an
-/// optional enum leaf is nullable and typed as the shared enum (see
-/// `shared_types`).
+/// A `setComponent` input object, named as thrs-api names it (clients hard-code
+/// names like `PumpInputType` as variable types).
 pub(super) fn control_input_type(def: &MutationDef) -> InputObject {
     let mut input_obj = InputObject::new(def.input_type_name());
     for f in &def.input_fields {
@@ -19,8 +11,6 @@ pub(super) fn control_input_type(def: &MutationDef) -> InputObject {
             Some(name) => name.clone(),
             None => flat_scalar_name(&f.r#type),
         };
-        // A nullable input field defaults to null like thrs-api's (the model
-        // field's default, unstamped).
         let input = if f.required {
             InputValue::new(&f.gql, TypeRef::named_nn(base))
         } else {
@@ -31,12 +21,8 @@ pub(super) fn control_input_type(def: &MutationDef) -> InputObject {
     input_obj
 }
 
-/// The object type a mutation returns, registered into `types` once per
-/// type name: the member section's own type (the producer's whole
-/// `Parameters` / `ControlValues` model), built by the same section builder
-/// the read side uses so read and write share one definition. `None` when the
-/// mutation names no section or the section has no fields (it then returns
-/// Boolean).
+/// A mutation's return object, built by the read side's section builder;
+/// `None` (returning Boolean) without a non-empty section.
 pub(super) fn mutation_result_type(
     scope: &str,
     section: Option<&ObjectSectionDef>,
@@ -57,8 +43,7 @@ pub(super) fn mutation_result_type(
     Some(section.type_name.clone())
 }
 
-/// One mutation field of any kind, plus (for a composite kind) its input
-/// type pushed onto `types`.
+/// One mutation field of any kind; a composite kind pushes its input type onto `types`.
 pub(super) fn mutation_field_of(
     def: &MutationDef,
     cache: &Arc<TopicCache>,
@@ -77,10 +62,7 @@ pub(super) fn mutation_field_of(
     }
 }
 
-/// Build the `Mutation` object (one field per mutation of every view member,
-/// deduped by GraphQL name) plus every supporting type: return objects and
-/// the composite input types. A GraphQL schema can't expose two mutations
-/// with the same name.
+/// The `Mutation` object (fields deduped by name) plus its supporting types.
 pub(super) fn register_mutations(
     views: &[ViewDef],
     cache: &Arc<TopicCache>,
@@ -116,8 +98,7 @@ pub(super) fn register_mutations(
     (obj, types)
 }
 
-/// The GraphQL type a mutation field returns: the object type when one is
-/// available, else `Boolean!` like thrs-api's automation-mode mutation.
+/// The object type when available, else `Boolean!` as in thrs-api.
 fn mutation_return_type(return_type: Option<&str>) -> TypeRef {
     match return_type {
         Some(name) => TypeRef::named_nn(name),
@@ -125,9 +106,8 @@ fn mutation_return_type(return_type: Option<&str>) -> TypeRef {
     }
 }
 
-/// The cached object a mutation modifies (exactly as the controller published
-/// it - the flattened field view would add spurious top-level keys to the
-/// republish), or thrs-api's error when nothing is cached at its state topic.
+/// The raw cached object a mutation modifies (the flattened view would add keys
+/// to the republish), or thrs-api's error when none is cached.
 fn cached_state(
     cache: &TopicCache,
     def: &MutationDef,
@@ -146,11 +126,7 @@ fn cached_state(
     }
 }
 
-/// Publish the (modified) object to the mutation's set topic, await its
-/// confirmation when the mutation declares one, and produce the field's
-/// result: the object itself when the field returns an object type (its
-/// fields are projected off it by the section objects), else the given
-/// Boolean (`true` for a field mutation, the flag itself for a flag mutation).
+/// Publish the object, await any confirmation, and return the object or `boolean`.
 async fn publish_result(
     publisher: &dyn TopicPublisher,
     cache: &TopicCache,
@@ -184,8 +160,7 @@ async fn publish_result(
     }))
 }
 
-/// What a confirmation waits for under the confirm key: the written value
-/// itself, or (a switch) whether the key holds a value at all.
+/// What a confirmation waits for: the written value, or (a switch) any value.
 enum Expectation {
     Value(JsonValue),
     Presence(bool),
@@ -200,8 +175,7 @@ impl Expectation {
     }
 }
 
-/// Wait until the object cached at the confirm topic meets the expectation
-/// under `key`, or fail with the confirm's timeout error.
+/// Wait until the confirm topic meets the expectation, or time out.
 async fn await_confirmation(
     cache: &TopicCache,
     confirm: &ConfirmDef,
@@ -222,8 +196,7 @@ async fn await_confirmation(
     }
 }
 
-/// JSON equality with numbers compared by value (`1` and `1.0` are the same
-/// on the wire) so a republished object matches its echo.
+/// JSON equality with `1` == `1.0`, so a republished object matches its echo.
 fn json_equivalent(a: &JsonValue, b: &JsonValue) -> bool {
     match (a, b) {
         (JsonValue::Number(x), JsonValue::Number(y)) => x.as_f64() == y.as_f64(),
@@ -239,13 +212,8 @@ fn json_equivalent(a: &JsonValue, b: &JsonValue) -> bool {
     }
 }
 
-/// One mutation field of two kinds:
-/// * `setField` — `{name}(value: <scalar>): <Object>`: reads the whole object
-///   from `state_topic`, overwrites `key` with the
-///   value validated as the producer validates it (the field, then the
-///   object's rules), and republishes it to `set_topic`.
-/// * `setFlag` — `{name}(<arg>: Boolean): Boolean`: publishes a fresh
-///   `{key: true_value|false_value}` object to `set_topic`.
+/// A `setField` (validate and overwrite one key of the cached object) or
+/// `setFlag` (publish a fresh `{key: value}`) mutation.
 pub(super) fn mutation_field(
     def: &MutationDef,
     cache: &Arc<TopicCache>,
@@ -255,8 +223,7 @@ pub(super) fn mutation_field(
     let def = def.clone();
     let cache = cache.clone();
     let arg_name = def.arg_name.clone();
-    // A list arg (`[Float!]`, a PID tuning tuple) is a non-null list of
-    // non-null scalars like thrs-api's `[Float!]!`.
+    // A list arg is `[Float!]!`, as in thrs-api.
     let arg_type_ref = match def.arg_type.strip_prefix('[') {
         Some(inner) => TypeRef::NonNull(Box::new(TypeRef::named_nn_list(flat_scalar_name(
             inner.trim_end_matches(['!', ']']),
@@ -270,8 +237,6 @@ pub(super) fn mutation_field(
         let publisher = publisher.clone();
         let def = def.clone();
         FieldFuture::new(async move {
-            // The Boolean result: a flag mutation returns the flag it was
-            // given; a field mutation without an object type returns true.
             let mut boolean_result = true;
             let payload = if def.kind == MutationKind::SetFlag {
                 let on = ctx.args.try_get(&def.arg_name)?.boolean()?;
@@ -296,8 +261,7 @@ pub(super) fn mutation_field(
                             "Boolean" => v.boolean().map(JsonValue::from),
                             _ => v.f64().map(JsonValue::from),
                         };
-                        // A single value where a list is expected is a one-item
-                        // list (GraphQL input coercion).
+                        // GraphQL input coercion: a single value is a one-item list.
                         let items = match value.list() {
                             Ok(list) => list.iter().map(item).collect::<Result<Vec<_>, _>>()?,
                             Err(_) => vec![item(value)?],
@@ -307,8 +271,6 @@ pub(super) fn mutation_field(
                     _ => JsonValue::from(value.f64()?),
                 };
                 let mut map = cached_state(&cache, &def)?;
-                // The producer validates the assignment (the field, then the
-                // object's rules) before publishing anything.
                 let new_value = match &def.model {
                     Some(model) => model
                         .validate_assignment(&map, &def.key, new_value)
@@ -332,11 +294,8 @@ pub(super) fn mutation_field(
     .argument(InputValue::new(arg_name, arg_type_ref))
 }
 
-/// One `setComponent` mutation: `{name}(<arg>: <ComponentInput>): <Object>`.
-/// Restamps each input leaf with `now()` into `{WireKey: {Value, TimeStamp}}`,
-/// sets the whole component into the cached state object, and republishes it
-/// to `set_topic`. Returns the modified object (or Boolean when no return type
-/// is available).
+/// A `setComponent` mutation: restamp each input leaf with `now()` and republish
+/// the cached object with the component replaced.
 pub(super) fn control_mutation_field(
     def: &MutationDef,
     cache: &Arc<TopicCache>,
@@ -359,12 +318,10 @@ pub(super) fn control_mutation_field(
             let mut component = serde_json::Map::new();
             for f in &def.input_fields {
                 let wire: Option<JsonValue> = if let Some(values) = &f.enum_values {
-                    // Optional enum leaf: absent -> null (the model's default).
                     match input.get(&f.gql) {
                         Some(v) => {
                             let member = v.enum_name()?;
-                            // Map the member name back to its wire value; the
-                            // enumValues map is wire-value(str) -> member-name.
+                            // `enumValues` maps wire value -> member name.
                             let wire_val = values
                                 .iter()
                                 .find(|(_, name)| name.as_str() == member)
@@ -375,8 +332,6 @@ pub(super) fn control_mutation_field(
                                         f.gql
                                     ))
                                 })?;
-                            // Wire stores the value; a numeric enum value goes as
-                            // a number, anything else as a string.
                             Some(match wire_val.parse::<i64>() {
                                 Ok(n) => JsonValue::from(n),
                                 Err(_) => JsonValue::from(wire_val),
@@ -397,8 +352,7 @@ pub(super) fn control_mutation_field(
                     serde_json::json!({ "Value": wire, "TimeStamp": now }),
                 );
             }
-            // The producer builds (and so validates) the component before it
-            // looks at the cached object.
+            // Validate before reading the cache, as thrs-api does.
             if let Some(model) = &def.model {
                 component = model
                     .validate_model(component)
@@ -407,8 +361,7 @@ pub(super) fn control_mutation_field(
 
             let mut map = cached_state(&cache, &def)?;
             map.insert(def.key.clone(), JsonValue::Object(component));
-            // Re-derive the object's mirror fields from the (possibly just
-            // replaced) components, as thrs-api's model does on serialization.
+            // Re-derive mirror fields from the components, as thrs-api does.
             for derived in &def.derived {
                 let mut mirrored = serde_json::Map::new();
                 for (leaf, origin) in &derived.leaves {
@@ -438,9 +391,7 @@ pub(super) fn control_mutation_field(
     .argument(InputValue::new(arg_name, TypeRef::named_nn(input_type)))
 }
 
-/// The current instant as an RFC 3339 UTC timestamp with microseconds
-/// (`2026-01-02T03:04:05.678901Z`), the form a `Stamped` value carries on
-/// the wire.
+/// Now as a microsecond RFC 3339 UTC timestamp, as `Stamped` values carry it.
 pub fn now_iso() -> String {
     humantime::format_rfc3339_micros(SystemTime::now()).to_string()
 }

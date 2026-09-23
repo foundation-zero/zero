@@ -1,17 +1,6 @@
 """The AsyncAPI 3.0 document of the THRS control system.
 
-The channels come from the real channel wiring (``thrs.orchestration.comms``):
-a recording connector builds the same ``*Channels`` the runtime builds, so the
-document cannot drift from the topics actually used. One channel per MQTT
-address template, one operation per direction, one message per distinct
-payload; a parametrized address (``{field}``, ``{module}``) carries an
-``x-{param}-schema`` pinning each parameter value to its own payload schema.
-
-``components.schemas`` are the pydantic models' JSON Schemas, plus what the
-GraphQL contract needs the schemas to say about themselves:
-``x-enum-varnames`` (the members of an enum, as OpenAPI tooling names them),
-``x-invariants`` (a model's cross-field rules, ``ThrsValues.invariants``) and
-``x-derived`` (the components a model mirrors from others on serialization).
+Channels are recorded from the runtime's own channel wiring, so the document cannot drift from it.
 """
 
 from __future__ import annotations
@@ -54,13 +43,10 @@ from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.descriptions.simulation import lookup_mode, simulation_io_classes
 from thrs.spec import validators
 
-# Only shapes the example topics printed in the spec -
-# the runtime always reads these from Config/env, never from here.
-# model_validate skips the settings sources (.env, os.environ): pure defaults.
+# Pure defaults (model_validate skips .env/os.environ); only shapes the spec's example topics.
 DEFAULT_CONFIG = Config.model_validate({})
 
-# Topics with a fixed "kind" segment per module, e.g. thrs/controller/{module}/parameters.
-# Field names are always hyphenized so they never collide with these.
+# e.g. thrs/controller/{module}/parameters; hyphenized field names never collide with these.
 TYPE_TOPIC_KINDS = (
     "parameters",
     "control-mode",
@@ -69,8 +55,7 @@ TYPE_TOPIC_KINDS = (
     "automation-mode",
 )
 
-# The bridge serves the last message of every THRS channel until the next one
-# replaces it (`x-ttl`), as thrs-api does; a value never expires into null.
+# As in thrs-api, a served value never expires into null.
 CHANNEL_TTL = "unbounded"
 
 SCHEMA_REF_PREFIX = "#/components/schemas/"
@@ -83,9 +68,7 @@ def spec_config(
     controller_prefix: str | None = None,
     simulator_prefix: str | None = None,
 ) -> Config:
-    """``DEFAULT_CONFIG`` with the chosen MQTT topic prefixes baked in, so a
-    document can target a differently-prefixed broker; an omitted prefix keeps
-    the default one."""
+    """``DEFAULT_CONFIG`` with the given MQTT topic prefixes overridden."""
     overrides = {
         "mqtt_devices_topic_prefix": devices_prefix,
         "mqtt_controller_topic_prefix": controller_prefix,
@@ -97,11 +80,11 @@ def spec_config(
 
 
 def all_module_descriptions() -> dict[str, ModuleDescription]:
-    """Every distinct module, keyed by name. Mode "thrs" covers the union of all modes."""
+    """Every distinct module, keyed by name; mode "thrs" covers all modes."""
     return dict(lookup_mode("thrs").control_modules)
 
 
-# --- Recording connector: builds the real mapping graph, records nothing else ---
+# --- Recording connector ---
 
 
 @dataclass
@@ -112,10 +95,7 @@ class _Registration:
 
 
 class RecordingConnector(MqttConnector):
-    """Fake MqttConnector that records what the *Channels constructors register.
-
-    Lets us derive the spec from the real mapping graph instead of re-implementing topic names.
-    """
+    """Fake MqttConnector that records what the *Channels constructors register."""
 
     def __init__(self) -> None:
         self.registrations: list[_Registration] = []
@@ -165,10 +145,8 @@ def _collect_registrations(config: Config) -> list[_Registration]:
         simulation_inputs_cls,
         simulation_outputs_cls,
     )
-    # The API subscribes to the simulation inputs/outputs topics with the
-    # union of *every* simulation's model, not just mode "thrs"'s: whichever
-    # simulation runs publishes its own class. Describe the API side that way
-    # so the channel payload (and so payload validation) accepts each of them.
+    # Any simulation can run, so both sides carry every simulation's
+    # inputs/outputs classes, not just mode "thrs"'s.
     io_classes = simulation_io_classes()
     SimulationApiChannels(
         connector,
@@ -176,11 +154,6 @@ def _collect_registrations(config: Config) -> list[_Registration]:
         tuple(dict.fromkeys(inputs for inputs, _ in io_classes.values())),
         tuple(dict.fromkeys(outputs for _, outputs in io_classes.values())),
     )
-    # The simulator side (`SimulationChannels` above) publishes the running
-    # mode's own inputs/outputs classes; the spec is built from mode "thrs"
-    # only, but every simulation can run. Declare each simulation's classes as
-    # publishers of those topics too, so the channel payload is the anyOf of
-    # all of them (what the wire can carry) rather than mode "thrs"'s alone.
     for inputs_cls, outputs_cls in io_classes.values():
         for cls, kind in (
             (inputs_cls, SIMULATION_INPUTS_TOPIC),
@@ -200,12 +173,11 @@ def _collect_registrations(config: Config) -> list[_Registration]:
     return connector.registrations
 
 
-# --- Reading (topic, payload type) pairs back off the real mappings ---
+# --- (topic, payload type) pairs from the mappings ---
 
 
 def _is_union(annotation: Any) -> bool:
-    """Both spellings of a union: `X | None` (`types.UnionType`) and
-    `typing.Union`/`Optional` (what `Annotated[...] | None` produces)."""
+    """`X | None` or `typing.Union` (which `Annotated[...] | None` produces)."""
     return get_origin(annotation) in (UnionType, Union)
 
 
@@ -227,12 +199,11 @@ def _field_annotation(field: FieldInfo | ComputedFieldInfo) -> Any:
 
 
 def _wire_type(topic: str, declared: Any) -> Any:
-    """The type actually on the wire for a direct mapping. The control loop's
-    control-mode publisher is declared with the bare mode class but actually
-    publishes a switching wrapper (`{"AutomaticMode": <mode> | null}`), which
-    is also what the API reads. A send mapping only dumps the model it's
-    given, so the declaration never mattered at runtime; describe the real
-    wire shape for the spec (and payload validation)."""
+    """The type actually on the wire for a direct mapping.
+
+    The control-mode publisher is declared with the bare mode class but
+    publishes a switching wrapper.
+    """
     from thrs.classes.control import ControlMode  # noqa: PLC0415
     from thrs.control.switching import SwitchingControlMode  # noqa: PLC0415
 
@@ -259,8 +230,6 @@ def describe_mapping(mapping: object) -> list[tuple[str, Any]]:
             for name, field in fields.items()
         ]
     if isinstance(mapping, DirectMqttMapping):
-        # A multi-class mapping (the simulation inputs/outputs union) is one
-        # entry per class; grouping by topic turns them into the payload anyOf.
         return [(mapping._topic, _wire_type(mapping._topic, t)) for t in mapping._types]
     if isinstance(mapping, ModuleMqttMapping):
         return [
@@ -332,10 +301,7 @@ def _classifier(config: Config) -> Classify:
             module, field = m.group("module"), m.group("field")
             template = f"{config.mqtt_controller_topic_prefix}/{module}/{{field}}"
             return (template, "field", field)
-        # Literal: either a global (non-module) topic, or a field with an
-        # explicit ``topic_override`` that breaks the module/field pattern
-        # outright (may live under another module, or a synthetic
-        # dummy-pcs/dummy-pms namespace - see ComponentMeta.topic_override).
+        # A global topic, or a field whose ComponentMeta.topic_override breaks the pattern.
         return (topic, None, None)
 
     return classify
@@ -400,10 +366,7 @@ def _type_name(t: Any) -> str:
 
 
 def _type_sort_key(t: Any) -> tuple[str, str]:
-    """(name, module) so same-named classes across modules sort deterministically.
-
-    Without __module__, id()-based tie-breaking shuffles types between runs and produces spurious diffs.
-    """
+    """(name, module) so same-named classes sort deterministically across runs."""
     return (_type_name(t), getattr(t, "__module__", ""))
 
 
@@ -411,10 +374,7 @@ def _type_sort_key(t: Any) -> tuple[str, str]:
 
 
 def channel_key(template: str) -> str:
-    """The channel key of an address template: its static segments joined by
-    dots (``thrs/controller/{module}/parameters`` ->
-    ``thrs.controller.parameters``), the same identity zero-mqtt-graphql
-    derives for a topic group."""
+    """Static segments joined by dots, as zero-mqtt-graphql keys a topic group."""
     return ".".join(
         segment
         for segment in template.split("/")
@@ -423,15 +383,13 @@ def channel_key(template: str) -> str:
 
 
 def operation_key(template: str, direction: Direction) -> str:
-    """The key of the operation for a channel template and direction, exactly
-    as the document emits it: the channel key plus the direction."""
+    """The operation key for a channel template and direction."""
     return f"{channel_key(template)}.{direction}"
 
 
 @dataclass(frozen=True)
 class Document:
-    """A built document, with what the extension needs to bind to it: the
-    channel wiring it was built from and where each model's schema lives."""
+    """A built document, plus the wiring and schema locations the extension binds to."""
 
     data: dict[str, Any]
     config: Config
@@ -447,8 +405,7 @@ class Document:
             raise KeyError(f"{cls!r} has no schema in the document") from None
 
     def property_ref(self, schema_ref: str, key: str) -> str:
-        """The ``$ref`` of the object a property of a schema holds (through a
-        nullable ``anyOf``)."""
+        """The ``$ref`` of the object a schema property holds, also when nullable."""
         schema = self.data["components"]["schemas"][
             schema_ref.removeprefix(SCHEMA_REF_PREFIX)
         ]
@@ -459,8 +416,7 @@ class Document:
         raise KeyError(f"{schema_ref}.{key} holds no object")
 
     def payload_ref(self, topic: str, direction: Direction) -> str | None:
-        """The one ``$ref`` the message for ``topic`` (in ``direction``)
-        carries, or None when the topic carries several payload types."""
+        """The payload ``$ref`` of ``topic``, or None when it carries several types."""
         template, param, value = self.classify(topic)
         operation = self.data["operations"][operation_key(template, direction)]
         message_key = operation["messages"][0]["$ref"].rsplit("/", 1)[-1]
@@ -471,9 +427,7 @@ class Document:
         return schema.get("$ref")
 
     def operation_ref(self, topic: str, direction: Direction) -> dict[str, Any]:
-        """The operation of the document carrying ``topic`` in ``direction``
-        (``send``: published by an application; ``receive``: subscribed by
-        one), with the channel parameter the topic fills in."""
+        """The operation reference carrying ``topic`` in ``direction``, with its parameter."""
         template, param, value = self.classify(topic)
         key = operation_key(template, direction)
         if key not in self.data["operations"]:
@@ -491,9 +445,7 @@ def build_document(
     version: str = "1.0.0",
     extra_schema_classes: tuple[type, ...] = (),
 ) -> Document:
-    """The document for the channel wiring under ``config``. The schemas of
-    ``extra_schema_classes`` are included next to the payloads' (the shared
-    component definitions the GraphQL types are served from)."""
+    """The document for the channel wiring under ``config``, plus ``extra_schema_classes``."""
     classify = _classifier(config)
     groups = _group(_flatten(_collect_registrations(config), classify))
 
@@ -558,8 +510,7 @@ def _document(
         templates_by_key[key] = template
         directions = by_template[template]
 
-        # One message per distinct payload: both directions share it when they
-        # carry the same types (the usual case), otherwise each gets its own.
+        # Directions share a message when their payloads match.
         described = {d: _message(g, schema_ref) for d, g in sorted(directions.items())}
         if len(set(map(repr, described.values()))) == 1:
             messages = {"message": next(iter(described.values()))}
@@ -617,10 +568,11 @@ def _document(
 
 
 def _message(group: _Group, schema_ref: Mapping[int, str]) -> dict[str, Any]:
-    """The message of one (template, direction) group: its payload (one
-    ``$ref`` or an ``anyOf``) and, for a parametrized address,
-    ``x-{param}-schema`` pinning each parameter value to its own schema so a
-    topic can be validated against that instead of the union."""
+    """The message of one (template, direction) group.
+
+    ``x-{param}-schema`` pins each parameter value to its own schema, so a
+    topic validates against that, not the union.
+    """
     types = sorted(group.types, key=_type_sort_key)
     message: dict[str, Any] = {
         "title": " | ".join(_type_name(t) for t in types),
@@ -635,8 +587,7 @@ def _message(group: _Group, schema_ref: Mapping[int, str]) -> dict[str, Any]:
 
 
 def _payload_schema(types: list[Any], schema_ref: Mapping[int, str]) -> dict[str, Any]:
-    """Schema for a payload: a single `$ref` if it has one payload type, else
-    an `anyOf` of the refs. Looks up `schema_ref` by object identity."""
+    """A single `$ref`, or an `anyOf` of refs for several payload types."""
     refs = [{"$ref": schema_ref[id(t)]} for t in types]
     return refs[0] if len(refs) == 1 else {"anyOf": refs}
 
@@ -649,11 +600,11 @@ DERIVED_KEY = "x-derived"
 
 
 class ContractJsonSchema(GenerateJsonSchema):
-    """Pydantic's JSON Schema, with every enum's member names alongside its
-    values (``x-enum-varnames``): the wire carries the value, the API serves
-    the name. Every model property also carries its Python field name and
-    every Python validator its recorded behaviour (``thrs.spec.validators``),
-    so the bridge rejects - in pydantic's words - what the API rejects."""
+    """Pydantic's JSON Schema, plus enum member names and Python validator behaviour.
+
+    The wire carries enum values but the API serves names; validators let the
+    bridge reject what the API rejects.
+    """
 
     def enum_schema(self, schema: Any) -> JsonSchemaValue:
         json_schema = super().enum_schema(schema)
@@ -676,9 +627,7 @@ class ContractJsonSchema(GenerateJsonSchema):
     def function_after_schema(self, schema: Any) -> JsonSchemaValue:
         json_schema = super().function_after_schema(schema)
         function = schema["function"]["function"]
-        # A number wrapped by a validator (a unit such as Ratio): record what
-        # it does. Validators on models or fields are recorded with their
-        # model (`x-invariants`, `x-field-rules`); pydantic's own are skipped.
+        # Only number units (e.g. Ratio); model/field validators are recorded with their model.
         if schema["schema"].get("type") in ("float", "int") and not (
             validators.is_pydantic_internal(function)
         ):
@@ -718,8 +667,7 @@ def _combined_schemas(leaf_classes: list[Any]) -> tuple[dict[int, str], dict[str
 
 
 def _annotate_schema(schema: dict[str, Any], cls: Any) -> None:
-    """Add what a model's JSON Schema does not say by itself: its
-    ``x-invariants`` and its ``x-derived`` components."""
+    """Add a model's ``x-invariants`` and ``x-derived`` components to its schema."""
     if not (isinstance(cls, type) and issubclass(cls, ThrsValues)):
         return
     if cls.invariants:
@@ -745,15 +693,14 @@ def wire_key(name: str, field: FieldInfo | ComputedFieldInfo) -> str:
 
 
 def _derived_fields(object_cls: type[ThrsValues]) -> list[dict[str, Any]]:
-    """The ``computed_field``s of a whole object that mirror other
-    components' stamped leaves, with the source of each leaf. Found by
-    identity on a ``zero()`` instance; a computed field whose leaves are not
-    all such copies is left out."""
+    """The ``computed_field``s that mirror other components' stamped leaves, with their sources.
+
+    Found by leaf identity on a ``zero()`` instance.
+    """
     if not object_cls.model_computed_fields:
         return []
     with warnings.catch_warnings():
-        # `zero()` builds placeholder values a model's own validators may warn
-        # about; only the structure matters here.
+        # Validators may warn about zero() placeholders; only structure matters.
         warnings.simplefilter("ignore")
         instance = object_cls.zero()
     sources: dict[int, dict[str, str]] = {}
@@ -780,8 +727,7 @@ def _derived_fields(object_cls: type[ThrsValues]) -> list[dict[str, Any]]:
             if source is not None:
                 leaves[wire_key(leaf_name, leaf_fld)] = source
             elif isinstance(leaf, Stamped) and leaf == leaf_fld.default:
-                # A leaf the mirror leaves at its (constant) default, e.g.
-                # FlowSensor.quantity: serialized as-is.
+                # A constant default, e.g. FlowSensor.quantity.
                 leaves[wire_key(leaf_name, leaf_fld)] = {
                     "constant": leaf.model_dump(by_alias=True, mode="json")
                 }
@@ -793,13 +739,11 @@ def _derived_fields(object_cls: type[ThrsValues]) -> list[dict[str, Any]]:
     return derived
 
 
-# --- Reading a document back (for tests that seed or capture MQTT) --------------
+# --- Reading a document back (for tests) ---
 
 
 def operation_topic(ref: Mapping[str, Any], document: Mapping[str, Any]) -> str:
-    """The concrete topic an operation reference stands for in ``document``:
-    the operation's channel address with the reference's parameters filled in
-    (what zero-mqtt-graphql resolves it to)."""
+    """The concrete topic an operation reference resolves to in ``document``."""
     operation = document["operations"][ref["operation"]]
     key = operation["channel"]["$ref"].rsplit("/", 1)[-1]
     parameters = ref.get("parameters") or {}

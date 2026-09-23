@@ -1,16 +1,6 @@
-"""The ``x-mqtt-graphql`` extension of the THRS document: the GraphQL side
-of the contract, so zero-mqtt-graphql serves the same schema the API does.
+"""The ``x-mqtt-graphql`` extension: the GraphQL side of the THRS contract.
 
-The extension names only what the document's schemas cannot say - the query
-fields and sections, which operation feeds which field, the GraphQL type
-names, the mutations and how they are confirmed. Every field name, wire key,
-scalar type, nullability, bound, enum member and default is read by the bridge
-from the schemas the ``types`` pair each GraphQL type with. See
-``zero-mqtt-graphql/README.md`` for the format.
-
-Names follow ``thrs.spec.naming``, behaviour ``thrs.spec.contract``; the
-models themselves come from the module descriptions, so a new field, module
-or simulation is in the contract as soon as it exists.
+It holds only what the schemas cannot say; see ``zero-mqtt-graphql/README.md`` for the format.
 """
 
 from __future__ import annotations
@@ -66,9 +56,7 @@ EXTENSION_VERSION = 2
 
 
 def shared_definitions() -> tuple[type[ThrsValues], ...]:
-    """Every shared component definition the API has a type for: the classes
-    the definitions modules export. Their schemas are part of the document so
-    a declared type can be served from them."""
+    """Every class the definitions modules export, each a GraphQL type of the API."""
     return tuple(
         getattr(module, name)
         for module in (sensor, control, controllers, simulation, system)
@@ -82,8 +70,7 @@ def build_thrs_spec(
     title: str = "THRS Control",
     version: str = "1.0.0",
 ) -> dict[str, Any]:
-    """The complete THRS contract: the channel document with the
-    ``x-mqtt-graphql`` extension at its root."""
+    """The complete THRS contract: the AsyncAPI document plus its extension."""
     document = build_document(
         config,
         title=title,
@@ -94,8 +81,7 @@ def build_thrs_spec(
 
 
 def build_extension(document: Document) -> dict[str, Any]:
-    """The extension for ``document``: the ``modules`` view, the instances of
-    every module's ``{field}`` channel, and the simulation lifecycle."""
+    """The ``x-mqtt-graphql`` extension for ``document``."""
     types = _Types(document)
     views = [_modules_view(document, types)]
     lifecycles = [_simulation_lifecycle(document, types)]
@@ -120,19 +106,16 @@ def build_extension(document: Document) -> dict[str, Any]:
 
 @dataclass
 class _Types:
-    """The GraphQL object types the extension declares, each paired with the
-    schema it is served from. A component is served as the type of its
-    registered model (``PropulsionDrive`` as ``SimulationHeatSourceType``);
-    where that differs from the component's own schema the field names the
-    type explicitly."""
+    """The declared GraphQL object types, each paired with the schema it is served from."""
 
     document: Document
     _declared: dict[str, str] = field(default_factory=dict)
 
     def declare(self, cls: type[ThrsValues], schema_ref: str | None = None) -> str:
-        """Declare the type of ``cls`` and return its name. ``schema_ref`` is
-        the schema of ``cls`` itself, for a class the document only holds
-        nested in another one."""
+        """Declare the type of ``cls`` and return its name.
+
+        ``schema_ref`` is needed for a class the document only holds nested in another.
+        """
         model = registered_model(cls)
         name = type_name(cls)
         ref = (
@@ -145,8 +128,7 @@ class _Types:
         return name
 
     def declare_nested(self, cls: type[ThrsValues], schema_ref: str) -> None:
-        """Declare the type of a plain object and of every object it nests,
-        following the document's own schema references."""
+        """Declare the type of an object and of every object it nests."""
         self.declare(cls, schema_ref)
         for name, fld in cls.model_fields.items():
             nested = _component_cls(fld.annotation)
@@ -158,10 +140,10 @@ class _Types:
     def field_type_override(
         self, cls: type[ThrsValues], schema_ref: str, found_from: str | None
     ) -> dict[str, str]:
-        """``{"typeName": ...}`` when the bridge cannot find the component's
-        type from the schema it reads it through (``found_from``: a property's
-        schema, or the one payload of a topic - None when the topic carries
-        several): the type is its base's, or the schema is ambiguous."""
+        """``{"typeName": ...}`` when the bridge cannot derive the type from ``found_from``.
+
+        That is when the type is its base's, or ``found_from`` is None (an ambiguous payload).
+        """
         name = self.declare(cls, schema_ref)
         if registered_model(cls) is cls and found_from == schema_ref:
             return {}
@@ -182,8 +164,7 @@ def _component_cls(annotation: Any) -> type[ThrsValues] | None:
 
 
 def component_class(annotation: Any) -> type[ThrsValues]:
-    """The component model a field annotation holds (optional or annotated
-    wrappers stripped); an error for a field that is no component."""
+    """The component model a field annotation holds."""
     component = _component_cls(annotation)
     if component is None:
         raise TypeError(f"{annotation!r} is not a component model")
@@ -191,8 +172,7 @@ def component_class(annotation: Any) -> type[ThrsValues]:
 
 
 def _bare_type(annotation: Any) -> Any:
-    """Peel ``X | None`` and ``Annotated[X, ...]`` wrappers, in any nesting
-    order, down to the bare type."""
+    """Peel ``X | None`` and ``Annotated[X, ...]`` wrappers in any nesting order."""
     base = annotation
     while True:
         stripped = base
@@ -265,8 +245,7 @@ def _member(document: Document, types: _Types, module_name: str) -> dict[str, An
 def _sensor_values_section(
     document: Document, types: _Types, module_name: str
 ) -> dict[str, Any]:
-    """``sensorValues``: one field per sensor component, raw fields off the
-    devices prefix and computed ones off the controller prefix."""
+    """``sensorValues``: raw fields off the devices prefix, computed ones off the controller's."""
     config = document.config
     description = all_module_descriptions()[module_name]
     sensor_cls = description.sensor_values_cls
@@ -304,10 +283,8 @@ def _sensor_values_section(
         for name, cfield in sensor_cls.model_computed_fields.items()
         if (e := entry(name, cfield.return_type, computed_topics.get(name), True))
     ]
-    # Two snake_case fields can collapse to one camelCase name
-    # (`pvt_flow_main_string1_2` / `pvt_flow_main_string12`); the API keeps the
-    # one defined last, so only that one is a field. Dedup across raw and
-    # computed fields together — a computed field can collide with a raw one.
+    # Snake_case names can collide in camelCase (`..._string1_2` / `..._string12`),
+    # also raw with computed; the API keeps the one defined last.
     last_index = {e["gql"]: i for i, (_, e) in enumerate(all_entries)}
     entries = [e for i, (_, e) in enumerate(all_entries) if i == last_index[e["gql"]]]
     entries.sort(key=lambda e: e["gql"])
@@ -322,8 +299,7 @@ def _sensor_values_section(
 def _control_values_section(
     document: Document, types: _Types, module_name: str
 ) -> dict[str, Any]:
-    """``controlValues``: the API's *actuated* control values, each component
-    read off its own device topic with the device's (``CC_*``) wire keys."""
+    """``controlValues``: the actuated values, read off device topics with ``CC_*`` wire keys."""
     config = document.config
     description = all_module_descriptions()[module_name]
     section_cls = description.control_values_cls
@@ -370,9 +346,7 @@ def _object_section(
     section_cls: type[ThrsValues],
     operation: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """A whole-object section (one topic carrying the object), or the shape
-    of a relayed object when ``operation`` is None. Every nested component's
-    type is declared; a component served as its base's type says so."""
+    """A whole-object section, or the shape of a relayed object when ``operation`` is None."""
     section_ref = document.schema_ref(section_cls)
     fields: list[dict[str, Any]] = []
     for name, fld in section_cls.model_fields.items():
@@ -401,10 +375,7 @@ def _object_section(
 def _control_mode_section(
     document: Document, types: _Types, module_name: str
 ) -> dict[str, Any]:
-    """``controlMode``: the switching control mode object on the
-    ``control-mode`` topic, ``{"AutomaticMode": <mode> | null}``, exposed as
-    ``automatic`` (the mode is not null) plus ``automaticMode`` (the module's
-    plain mode model)."""
+    """``controlMode``: ``{"AutomaticMode": <mode> | null}`` as two fields."""
     config = document.config
     description = all_module_descriptions()[module_name]
     mode_cls = description.control_mode_cls
@@ -447,18 +418,16 @@ def _stamped_leaves(component_cls: type[ThrsValues]) -> list[str]:
 
 
 def _actuated_wire_keys(component_cls: type[ThrsValues]) -> dict[str, str]:
-    """Field name -> the wire key of that field in an *actuated* (AMCS)
-    payload, where ``Pump``/``Valve`` rename their keys (``Dutypoint`` ->
-    ``CC_DutyPoint``). Read off the model's own serializer by giving each
-    leaf a distinct timestamp and pairing the emitted keys back by it."""
+    """Field name -> its wire key in an actuated (AMCS) payload (``Dutypoint`` -> ``CC_DutyPoint``).
+
+    Read off the serializer by giving each leaf a distinct timestamp and matching on it.
+    """
     from thrs.input_output.definitions.wire_context import (  # noqa: PLC0415
         AMCS_RECEIVE_CONTEXT,
     )
 
-    # Build without validation (`model_construct`): a component's own
-    # validators may reject zeros (Pump dutypoint < 0.1), and only the
-    # serializer's key mapping matters here. Enum leaves get a member (the
-    # actuated serializer drops a None value, e.g. Pump.control_mode).
+    # Unvalidated: validators may reject zeros (Pump dutypoint < 0.1). Enum leaves
+    # need a member because the actuated serializer drops None values.
     base = datetime(2000, 1, 1, tzinfo=UTC)
     stamps: dict[str, str] = {}
     values: dict[str, Any] = {}
@@ -471,8 +440,7 @@ def _actuated_wire_keys(component_cls: type[ThrsValues]) -> dict[str, str]:
         stamps[timestamp.isoformat().replace("+00:00", "Z")] = name
     inst = component_cls.model_construct(**values)
     with warnings.catch_warnings():
-        # Unvalidated placeholder values (a float in a bool leaf) trip
-        # pydantic's serializer warnings; only the emitted keys matter.
+        # Placeholder values trip serializer warnings; only the keys matter.
         warnings.simplefilter("ignore")
         data = inst.model_dump(mode="json", by_alias=True, context=AMCS_RECEIVE_CONTEXT)
     keys: dict[str, str] = {}
@@ -504,25 +472,16 @@ def _leaf_enum(annotation: Any) -> type[Enum] | None:
 def _member_mutations(
     document: Document, types: _Types, module_name: str
 ) -> list[dict[str, Any]]:
-    """Every mutation of one module:
-
-    * ``setField`` per parameter: overwrite it in the parameters object and
-      republish that to the set topic; returns the ``parameters`` section.
-    * ``setFlag``: publish a fresh ``AutomationMode`` object; returns Boolean.
-    * ``setComponent`` per control component: restamp an unstamped input into
-      the manual-values object and republish it; returns ``controlValues``."""
+    """Every mutation of one module: parameters, automation mode and control values."""
     description = all_module_descriptions()[module_name]
     config = document.config
     prefix = config.mqtt_controller_topic_prefix
     suffix = config.mqtt_controller_topic_suffix
 
     def state_of(kind: str) -> dict[str, Any]:
-        """The controller's `send` operation of one of its objects."""
         return document.operation_ref(f"{prefix}/{module_name}/{kind}", "send")
 
     def target_of(kind: str) -> dict[str, Any]:
-        """The controller's `receive` operation of one of its objects: the set
-        topic."""
         state = f"{prefix}/{module_name}/{kind}"
         return document.operation_ref(
             f"{state}/{suffix}" if suffix else state, "receive"
@@ -629,9 +588,7 @@ def _confirm(timeout_error: str) -> dict[str, Any]:
 
 
 def _simulation_lifecycle(document: Document, types: _Types) -> dict[str, Any]:
-    """The simulation: the retained status object, the inputs and outputs
-    relays (a union over every simulation's model, resolved by field keys),
-    the play/pause/step directives and the per-simulation input mutations."""
+    """The simulation: status, input/output relays, directives and input mutations."""
     config = document.config
     prefix = config.mqtt_simulator_topic_prefix
     suffix = config.mqtt_simulator_topic_suffix
@@ -682,7 +639,6 @@ def _simulation_lifecycle(document: Document, types: _Types) -> dict[str, Any]:
                 f"{prefix}/{message.subscribe_topic()}", "receive"
             ),
         }
-        # The argument is the message's single field, when it has one.
         arguments = list(message.model_fields.items())
         if len(arguments) > 1:
             raise RuntimeError(f"{message.__name__} has more than one field")
@@ -746,11 +702,7 @@ def _simulation_lifecycle(document: Document, types: _Types) -> dict[str, Any]:
 def _instances(
     document: Document, module_name: str, kind: Literal["sensors", "controller"]
 ) -> dict[str, Any]:
-    """Identity metadata of one module's ``{field}`` channel: the instances of
-    its parameter (``sensors``: the ``SensorValues`` fields on the devices
-    prefix; ``controller``: its ``computed_field``s on the controller prefix)
-    with their ``ComponentMeta`` attributes, so the bridge can serve a list
-    query over them."""
+    """The ``ComponentMeta`` attributes of each instance of a module's ``{field}`` channel."""
     config = document.config
     sensor_values_cls = all_module_descriptions()[module_name].sensor_values_cls
     if kind == "sensors":
@@ -765,10 +717,7 @@ def _instances(
         fields = dict(sensor_values_cls.model_computed_fields)
     template = f"{topic_prefix}/{module_prefix}/{{field}}"
 
-    # A `topic_override` (see ComponentMeta) can put a field outside this
-    # group's `{module_prefix}/{field}` path (thrusters'
-    # `thrusters_thruster_aft` -> "dummy-pcs/thruster-aft-active"). Those are
-    # their own concrete topics elsewhere, already queryable on their own.
+    # Fields moved elsewhere by a `topic_override` are queryable on their own topic.
     group_prefix = f"{topic_prefix}/{module_prefix}/"
     topics = {
         name: topic

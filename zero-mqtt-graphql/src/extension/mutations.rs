@@ -1,13 +1,3 @@
-//! The mutations of the extension: what a document declares for a write,
-//! and how it resolves to the runtime [`MutationDef`].
-//!
-//! A mutation names the `receive` operation it publishes to and, for the
-//! kinds that modify a cached object, the `send` operation whose messages
-//! carry that object. That object's declared type supplies the rest: the
-//! argument's scalar type and bounds (`setField`), the component's input
-//! fields (`setComponent`), and the `x-invariants` / `x-derived` the
-//! republished object must honour.
-
 use std::borrow::Cow;
 
 use anyhow::Context;
@@ -15,10 +5,10 @@ use roas_asyncapi::v3_0::operation::OperationAction;
 use serde::Deserialize;
 
 use super::{OperationRef, Resolver};
-use crate::mutations_view::{ConfirmDef, InputFieldDef, MutationDef, MutationKind};
+use crate::model::mutations::{ConfirmDef, InputFieldDef, MutationDef, MutationKind};
 use crate::schema::Property;
 
-/// How a mutation is confirmed before it returns (see [`ConfirmDef`]).
+/// Input for a [`ConfirmDef`]; `operation` defaults to the state, `key` to the mutation's key.
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ConfirmSpec {
@@ -32,38 +22,25 @@ pub struct ConfirmSpec {
     pub timeout_error: String,
 }
 
-/// One mutation as the document declares it.
+/// Input for a [`MutationDef`]; argument type, input fields and validation come from the state type.
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct MutationSpec {
-    /// GraphQL mutation field name, e.g. `thrustersParameterSetCoolingFlow`.
     pub gql: String,
     pub kind: MutationKind,
-    /// Name of the GraphQL argument.
     pub arg_name: String,
-    /// Wire key in the object to overwrite (`setField`/`setComponent`), or
-    /// the key of the fresh object (`setFlag`).
     pub key: String,
-    /// `setField`/`setComponent`: the `send` operation whose messages carry
-    /// the object to modify.
     #[serde(default)]
     pub state: Option<OperationRef>,
-    /// The `receive` operation the object is published to.
     pub target: OperationRef,
-    /// The `object` section of the member the mutation returns. None returns
-    /// `Boolean!`.
     #[serde(default)]
     pub returns: Option<String>,
-    /// `setFlag`: the `key` value when the Boolean argument is true / false.
     #[serde(default)]
     pub true_value: Option<String>,
     #[serde(default)]
     pub false_value: Option<String>,
-    /// `setComponent`: the GraphQL input type name (`PumpInputType`, shared
-    /// wherever the component type is).
     #[serde(default)]
     pub input_type_name: Option<String>,
-    /// The error when nothing is cached at the state topic to modify.
     #[serde(default)]
     pub missing_error: Option<String>,
     #[serde(default)]
@@ -71,9 +48,8 @@ pub struct MutationSpec {
 }
 
 impl MutationSpec {
-    /// Resolve against the member's `object` sections (GraphQL name -> type
-    /// name): the object a mutation modifies is the section it returns, so
-    /// that section's type supplies the argument and input shapes.
+    /// `sections` maps the member's `object` sections to type names; the returned section's type
+    /// supplies the argument and input shapes.
     pub fn resolve(
         &self,
         resolver: &Resolver<'_>,

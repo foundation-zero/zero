@@ -25,9 +25,7 @@ pub struct MqttSubscriber {
     event_loop: EventLoop,
     cache: Arc<TopicCache>,
     listen_only: bool,
-    /// Serve mode: drop schema-invalid payloads instead of caching them, so the
-    /// last valid value survives. No effect in listen-only mode (never caches).
-    /// See `AppConfig::strict_validation`.
+    /// Serve mode: drop schema-invalid payloads so the last valid value survives.
     strict_validation: bool,
     validators: HashMap<String, Validator>,
     /// Topics to subscribe once the connection is established. Subscribing
@@ -55,8 +53,7 @@ impl MqttSubscriber {
 
         let (client, event_loop) = AsyncClient::new(mqttoptions, REQUEST_CHANNEL_CAPACITY);
 
-        // Validators are built in both modes: listen-only rejects mismatches
-        // outright, serve mode logs them and (unless strict) still caches.
+        // Listen-only rejects mismatches; serve logs them and (unless strict) caches.
         let validators = build_validators(validator_specs);
 
         Ok(Self {
@@ -70,8 +67,7 @@ impl MqttSubscriber {
         })
     }
 
-    /// A cloneable handle to the underlying MQTT client, used to build an
-    /// [`MqttPublisher`] for serving mutations.
+    /// A handle to the MQTT client for building an [`MqttPublisher`].
     pub fn client(&self) -> AsyncClient {
         self.client.clone()
     }
@@ -192,8 +188,6 @@ impl MqttSubscriber {
             return;
         }
 
-        // `validate_payload` logs the mismatch. If strict, drop the payload so
-        // the last valid value stays cached; otherwise cache it anyway.
         if self.validate_payload(topic, &value) == Some(false) && self.strict_validation {
             warn!(
                 "Dropping schema-invalid payload for topic '{}' (strict validation)",
@@ -249,10 +243,8 @@ impl MqttSubscriber {
     }
 }
 
-/// Compile one validator per [`ValidatorSpec`], keyed by exact topic or
-/// wildcard pattern. A schema that won't compile (e.g. a bad `$ref`) is logged
-/// and skipped, not fatal. Last spec wins on a duplicate key, so callers put
-/// per-field topic schemas after the group pattern they refine.
+/// Compile one validator per [`ValidatorSpec`]; uncompilable schemas are logged
+/// and skipped, and the last spec wins on a duplicate key.
 fn build_validators(specs: &[ValidatorSpec]) -> HashMap<String, Validator> {
     let mut validators = HashMap::new();
     for (key, schema) in specs {
@@ -290,15 +282,11 @@ fn rand_u64() -> u64 {
     x
 }
 
-/// A [`TopicPublisher`](crate::graphql::TopicPublisher) backed by the
-/// subscriber's MQTT client, for serving mutations. Publishes non-retained at
-/// QoS AtLeastOnce, matching thrs-api's control/parameter publishes (its `/set`
-/// messages are transient commands, not retained state).
+/// A [`TopicPublisher`](crate::graphql::TopicPublisher) on the subscriber's client.
+/// Non-retained QoS 1, like thrs-api's transient `/set` commands.
 pub struct MqttPublisher {
     client: AsyncClient,
-    /// How long a publish may wait to be handed to the event loop before it is
-    /// abandoned with an error. [`PUBLISH_TIMEOUT`] in production; a test can
-    /// build one with a short timeout to exercise the path quickly.
+    /// How long a publish may wait for the event loop before failing.
     timeout: Duration,
 }
 
@@ -337,15 +325,11 @@ mod tests {
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    /// A publish must not park the caller forever when the event loop never
-    /// drains the request channel: with a tiny channel and no polled event
-    /// loop, once the buffer is full the next publish has to fail with the
-    /// timeout error instead of hanging. Guards the liveness fix for the
-    /// flood-wedge. Uses a short timeout so it resolves quickly.
+    /// A publish fails with a timeout instead of hanging when the event loop never drains.
     #[tokio::test]
     async fn test_publish_times_out_when_the_event_loop_never_drains() {
         let options = MqttOptions::new("test-publisher", "localhost", 1883);
-        // Capacity 1, and the returned event loop is dropped/never polled.
+        // Capacity 1 and an unpolled event loop: publish until one times out.
         let (client, _event_loop) = AsyncClient::new(options, 1);
         let publisher = MqttPublisher {
             client,
@@ -515,8 +499,7 @@ mod tests {
         assert_eq!(sub.validate_payload("metrics/a", &json!({})), None);
     }
 
-    /// Strict serve mode drops a schema-invalid payload, keeping the last valid
-    /// value cached (like thrs-api rejecting out-of-bounds values).
+    /// Strict serve mode drops a schema-invalid payload, keeping the last valid value.
     #[test]
     fn test_strict_validation_drops_invalid_payload_in_serve_mode() {
         let group = group_with_schema(
@@ -542,8 +525,7 @@ mod tests {
         );
     }
 
-    /// Without strict validation (the serve-mode default) an invalid payload is
-    /// still cached; the flag is the only thing that gates the drop.
+    /// Without strict validation an invalid payload is still cached.
     #[test]
     fn test_non_strict_serve_mode_caches_invalid_payload() {
         let group = group_with_schema(
@@ -555,7 +537,6 @@ mod tests {
         let topic = "power-tags/10P1/breaker3";
 
         sub.handle_json_payload(topic, json!({"active_power_total": 42.0}));
-        // The invalid payload overwrites the cache: nothing gates it.
         sub.handle_json_payload(topic, json!({"unexpected": 7.0}));
         assert_eq!(cache.get_field(topic, "active_power_total"), None);
         assert_eq!(cache.get_field(topic, "unexpected"), Some(json!(7.0)));
@@ -588,9 +569,7 @@ mod tests {
         .unwrap()
     }
 
-    /// Same validator-spec assembly as `load_specs_and_groups`, for tests: one
-    /// per topic, group pattern, and per-field topic. Test schemas have no
-    /// `$ref`s, so no components wrapping needed.
+    /// Validator specs as `load_specs_and_groups` builds them, minus components wrapping.
     fn specs_from(topics: &[TopicDef], groups: &[TopicGroupDef]) -> Vec<ValidatorSpec> {
         let mut specs = Vec::new();
         for t in topics {

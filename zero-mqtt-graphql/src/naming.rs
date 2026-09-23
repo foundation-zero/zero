@@ -57,13 +57,8 @@ fn split_to_words(raw: &str) -> Vec<String> {
     words
 }
 
-/// The GraphQL field name of a payload wire key, as the producers' own
-/// APIs name it: lowerCamelCase with the key's internal capitals kept, so a
-/// PascalCase key (`AvailableSeawaterTemperature`) and a snake_case one
-/// (`adsorption_chiller`) both map to what their snake_case source names
-/// map to (`availableSeawaterTemperature`, `adsorptionChiller`). Unlike
-/// [`sanitize_to_graphql_name`] (topic names, which lowercase every word),
-/// this never lowercases a letter that is not the first.
+/// The GraphQL field name of a payload wire key: lowerCamelCase, keeping the
+/// key's internal capitals (unlike [`sanitize_to_graphql_name`]).
 pub fn field_name(key: &str) -> String {
     let mut out = String::new();
     for (i, word) in key

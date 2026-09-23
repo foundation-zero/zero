@@ -1,15 +1,9 @@
-//! Lifecycles: a status query, whole-object relays typed by a union, the
-//! directives that transition the status and the member mutations, served
-//! from a declared lifecycle (see [`crate::lifecycle_view`]).
-
 use super::*;
 
-use crate::lifecycle_view::StatusFieldDef;
+use crate::model::lifecycle::StatusFieldDef;
 
-/// graphql-core's message for an error that has none.
+/// thrs-api's message for an error that has none.
 const UNKNOWN_ERROR: &str = "An unknown error occurred.";
-
-// --- Lifecycle (`<queryField> { <status fields> <objects> }`, directives, member mutations) ---
 
 /// Schema contributions of one lifecycle.
 pub(super) struct LifecycleSchemaParts {
@@ -18,10 +12,8 @@ pub(super) struct LifecycleSchemaParts {
     pub(super) mutation_fields: Vec<Field>,
 }
 
-/// Build one lifecycle over the cache: the status query (the retained status
-/// object; null until one has been published), the relayed objects typed by
-/// whichever member object matches the cached payload, and - with a publisher
-/// - the directives plus every member mutation.
+/// A lifecycle's status query and relayed objects, plus directives and member
+/// mutations when there is a publisher.
 pub(super) fn register_lifecycle(
     def: &LifecycleDef,
     cache: &Arc<TopicCache>,
@@ -69,8 +61,6 @@ pub(super) fn register_lifecycle(
     }
     types.push(state_obj.into());
 
-    // The query field: the cached status object, or null when none is
-    // retained or it lacks one of the status fields.
     let status_topic = def.status.topic.clone();
     let status_keys: Arc<Vec<Name>> = Arc::new(
         def.status
@@ -136,9 +126,7 @@ pub(super) fn register_lifecycle(
     }
 }
 
-/// One field of the status object: a `DateTime` field serves the cached
-/// timestamp as-is (RFC 3339); any other scalar reads its key straight off
-/// the object.
+/// One scalar field of the status object.
 fn status_field(def: &StatusFieldDef) -> Field {
     if def.r#type != "DateTime" {
         return plain_field(&PlainFieldDef {
@@ -169,8 +157,7 @@ fn status_field(def: &StatusFieldDef) -> Field {
     )
 }
 
-/// The cached status object when it is usable (carries every status field),
-/// converted for the resolvers.
+/// The cached status object, if it carries every status field.
 pub(super) fn cache_q_status(
     cache: &TopicCache,
     topic: &str,
@@ -195,10 +182,8 @@ pub(super) fn cached_status(cache: &TopicCache, topic: &str, status_key: &str) -
     }
 }
 
-/// A field resolving a whole cached object to one member of a union: the
-/// member whose by-alias field keys equal the object's keys (a pydantic
-/// union picks the model the payload fits), else the one whose keys are the
-/// largest subset of the object's, else null.
+/// Resolve a cached object to the union member whose keys match exactly, else
+/// the largest subset, else null.
 pub(super) fn union_member_field(
     name: &str,
     union_type: &str,
@@ -214,8 +199,7 @@ pub(super) fn union_member_field(
         let cache = cache.clone();
         let index = index.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            // The object as published: the flattened field view would carry
-            // the components' leaf keys too and never match a member exactly.
+            // Raw payload: the flattened view adds leaf keys that never match a member.
             let Some(JsonValue::Object(map)) = cache.get_raw(&topic) else {
                 return Ok(None);
             };
@@ -237,10 +221,7 @@ pub(super) fn union_member_field(
     })
 }
 
-/// One directive (`simulationPlay(playbackRate: Float): Void` etc.): checks
-/// the cached status against the directive's preconditions (the producer's
-/// exact error strings), publishes the message, then waits up to the timeout
-/// for the status to become the expected one.
+/// A directive mutation: check the status, publish, then wait for the expected status.
 pub(super) fn directive_field(
     def: &DirectiveDef,
     status_topic: &str,
@@ -264,8 +245,7 @@ pub(super) fn directive_field(
         let cache = cache.clone();
         let publisher = publisher.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            // An argument that is absent (or null: a variable the client did
-            // not send) takes its default, as graphql-core passes it.
+            // Absent or null (an unsent variable) takes the default.
             let given = match def.arg_name.as_ref().and_then(|name| ctx.args.get(name)) {
                 Some(v) if !v.is_null() => Some(v.f64()?),
                 _ => None,
@@ -275,8 +255,7 @@ pub(super) fn directive_field(
             if !def.allowed_from.contains(&status) {
                 return Err(async_graphql::Error::new(def.precondition_error.clone()));
             }
-            // The producer builds (and so validates) the message only when it
-            // sends it, after the status checks.
+            // Validate only after the status checks, as thrs-api does.
             let mut payload = serde_json::Map::new();
             if let (Some(key), Some(v)) = (&def.key, given.or(def.default)) {
                 payload.insert(key.clone(), JsonValue::from(v));
@@ -300,8 +279,7 @@ pub(super) fn directive_field(
                     break;
                 }
                 if tokio::time::Instant::now() >= deadline {
-                    // The producer's wait raises a bare `TimeoutError`, which
-                    // its GraphQL layer reports with its message-less default.
+                    // thrs-api reports its timeout with the message-less default.
                     return Err(async_graphql::Error::new(UNKNOWN_ERROR));
                 }
                 tokio::time::sleep(std::time::Duration::from_millis(50)).await;
@@ -310,15 +288,14 @@ pub(super) fn directive_field(
         })
     });
     if let Some(arg_name) = arg {
-        // A required arg, or one with a default (`playbackRate: Float! = 1`)
-        // is non-null; only an argument with neither is nullable.
+        // Nullable only when neither required nor defaulted.
         let mut input = if required || default.is_some() {
             InputValue::new(arg_name, TypeRef::named_nn(TypeRef::FLOAT))
         } else {
             InputValue::new(arg_name, TypeRef::named(TypeRef::FLOAT))
         };
         if let Some(d) = default {
-            // Strawberry prints an integral float default as `1`, not `1.0`.
+            // thrs-api prints an integral float default as `1`, not `1.0`.
             let default = if d.fract() == 0.0 && d.abs() < 1e15 {
                 GraphQlValue::from(d as i64)
             } else {

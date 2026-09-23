@@ -1,10 +1,4 @@
-//! Composite read views: `<queryField> { <member> { <section> { … } } }`,
-//! served over the cache from the declared views (see [`crate::views`]).
-//! Every name and type here is the producer's own; nothing is hardcoded.
-
 use super::*;
-
-// --- Composite views (`<queryField> { <member> { <section> { … } } }`) ---
 
 /// The query field plus every type it needs.
 pub(super) struct ViewSchemaParts {
@@ -12,10 +6,8 @@ pub(super) struct ViewSchemaParts {
     pub(super) objects: Vec<Object>,
 }
 
-/// The fields a stamped section serves, in spec order: every field relays
-/// its own topic. Belt-and-suspenders, drops any later duplicate of a
-/// camelCase name (async-graphql panics on a duplicate field, which would
-/// take the whole view down).
+/// A stamped section's fields in spec order, minus later duplicates of a name
+/// (async-graphql panics on a duplicate field).
 pub(super) fn served_sensor_fields<'a>(
     member: &str,
     section: &'a StampedFieldsSection,
@@ -38,12 +30,7 @@ pub(super) fn served_sensor_fields<'a>(
         .collect()
 }
 
-/// Build every declared view: the query field plus every type it needs.
-/// A view whose query field is already claimed is skipped with a warning.
-///
-/// Container levels resolve to a constant non-null object so their children
-/// run; each leaf resolver reads its own topic from the cache and projects the
-/// `{Value, TimeStamp}` leaves through the `Stamped<Inner>` wrappers.
+/// Build every declared view; one whose query field is already claimed is skipped.
 pub(super) fn register_views(
     views: &[ViewDef],
     cache: &Arc<TopicCache>,
@@ -58,8 +45,7 @@ pub(super) fn register_views(
         }
         let mut objects: Vec<Object> = Vec::new();
         let mut view_obj = Object::new(view.type_name.as_str());
-        // Component/section types named after the producer's class are shared
-        // across members (`ControlPumpType`); register each once.
+        // Types like `ControlPumpType` are shared across members; register once.
         let mut seen_types: BTreeSet<String> = BTreeSet::new();
 
         for member in &view.members {
@@ -116,9 +102,7 @@ pub(super) fn register_views(
     parts
 }
 
-/// A field that resolves to a constant empty (but non-null) object, so its
-/// children run and read the cache from their own topics. Used for the
-/// view / member container levels.
+/// A constant non-null container so its children resolve from their own topics.
 pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
     Field::new(name.to_string(), TypeRef::named_nn(type_name), |_ctx| {
         async_graphql::dynamic::FieldFuture::new(async move {
@@ -129,14 +113,8 @@ pub(super) fn constant_object_field(name: &str, type_name: &str) -> Field {
     })
 }
 
-/// The `sensorValues` container: thrs-api builds the whole SensorValues model
-/// from its per-field topics and serves null until every (required) field has
-/// arrived, never a partial object. Mirror that: resolve the (empty, constant)
-/// container only when every field's topic is cached. Its children are non-null.
-///
-/// With `partial` (`ENABLE_OPTIONAL_SENSOR_VALUES`) the container resolves as soon as
-/// any relayed field's topic is complete (or when there is nothing to relay),
-/// and each child serves or nulls itself (see [`module_sensor_field`]).
+/// The `sensorValues` container: null until every field is cached, as in thrs-api.
+/// With `partial` it resolves once any field is complete.
 pub(super) fn sensor_values_container_field(
     field_name: &str,
     type_name: &str,
@@ -169,14 +147,8 @@ pub(super) fn sensor_values_container_field(
     )
 }
 
-/// The `<field>` resolver under the sensorValues object: returns the whole
-/// cached payload of the field's topic. Non-null like thrs-api; the container
-/// only resolves when every field is cached (see
-/// `sensor_values_container_field`).
-///
-/// With `partial` the field is nullable and resolves null unless its own
-/// topic is cached with every required leaf present, so one missing sensor
-/// never takes its siblings down.
+/// A `sensorValues` field serving its topic's payload; nullable with `partial`
+/// so one missing sensor doesn't null its siblings.
 pub(super) fn module_sensor_field(
     field: &StampedFieldDef,
     cache: &Arc<TopicCache>,
@@ -203,8 +175,7 @@ pub(super) fn module_sensor_field(
     })
 }
 
-/// One per-field payload object: a `Stamped<Inner>` leaf per declared leaf,
-/// each projecting its raw PascalCase wire key off the cached payload.
+/// A per-field payload object with one Stamped leaf per declared leaf.
 pub(super) fn module_field_object(field: &StampedFieldDef) -> Object {
     field
         .leaves
@@ -213,12 +184,7 @@ pub(super) fn module_field_object(field: &StampedFieldDef) -> Object {
         .fold(Object::new(field.type_name.as_str()), Object::field)
 }
 
-// --- Whole-object read sections (controlValues / parameters / controllerState) ---
-
-/// The `controlMode` section (thrs-api `SwitchingControlModeType`): resolves the
-/// whole cached control-mode object (null when unpublished, like thrs-api), with
-/// `automatic: Boolean!` derived from `AutomaticMode` being non-null and
-/// `automaticMode` the module's plain mode object (or null in manual mode).
+/// The `controlMode` section; `automatic` is derived from `AutomaticMode` being non-null.
 pub(super) fn control_mode_section(
     name: &str,
     def: &SwitchSectionDef,
@@ -280,10 +246,7 @@ pub(super) fn control_mode_section(
     )
 }
 
-/// A plain (non-Stamped) object type and its nested object types, named as
-/// thrs-api names them (`<Class>Type`). Each field reads its by-alias key off
-/// the parent JSON; scalars are non-null unless the spec marks them optional. A
-/// fieldless model gets the `Empty: Void` placeholder like thrs-api.
+/// A plain (non-Stamped) object type and its nested types, named `<Class>Type`.
 pub(super) fn plain_object_types(def: &PlainObjectDef) -> Vec<Object> {
     let mut objects = Vec::new();
     let mut obj = Object::new(def.type_name.as_str());
@@ -328,9 +291,7 @@ pub(super) fn plain_field(field: &PlainFieldDef) -> Field {
     })
 }
 
-/// The `<section>` field under the module object: resolves to the whole cached
-/// object on the section topic, or null when nothing is cached — matching
-/// thrs-api returning null for a section the controller hasn't published.
+/// A `<section>` field: the cached section object, or null when unpublished.
 pub(super) fn object_section_container_field(
     name: &str,
     section: &ObjectSectionDef,
@@ -338,13 +299,8 @@ pub(super) fn object_section_container_field(
 ) -> Field {
     let type_name = section.type_name.as_str();
     if section.is_per_topic() {
-        // Per-topic section (actuated controlValues): assemble the section
-        // object from one cached payload per component, keyed like the
-        // whole-object form (`{ByAliasKey: payload}`), and only once every
-        // component's payload is cached with all its required leaves (thrs-api's
-        // PartialModelBuilder). The component fields then read `parent[key]`
-        // exactly as for a whole-object section, so the section type can be
-        // shared with the mutation return object (same name, one definition).
+        // Per-topic section: assemble `{ByAliasKey: payload}` once every component
+        // is complete, so the type is shared with the whole-object form.
         let parts: Arc<Vec<(String, RequiredTopic)>> = Arc::new(
             section
                 .fields
@@ -390,14 +346,11 @@ pub(super) fn object_section_container_field(
     })
 }
 
-/// One topic a section needs cached, with the wire keys that must be present
-/// (non-null) in its payload for thrs-api's model to validate: the required
-/// leaves of the component read off it.
+/// A topic a section needs cached, with the leaf keys that must be non-null.
 pub(super) struct RequiredTopic {
     pub(super) topic: String,
     pub(super) keys: Vec<String>,
-    /// (device key, model key) pairs to re-key when assembling a per-topic
-    /// section (`CC_DutyPoint` -> `Dutypoint`); empty when the keys agree.
+    /// (device key, model key) renames, e.g. `CC_DutyPoint` -> `Dutypoint`.
     pub(super) rekey: Vec<(String, String)>,
 }
 
@@ -417,10 +370,8 @@ impl RequiredTopic {
         }
     }
 
-    /// The payload as the component type reads it: actuated keys renamed to
-    /// the model's aliases (and the model alias dropped when both are present,
-    /// as thrs-api's actuated validator does - the plain key is the request,
-    /// the `CC_` key the actual value).
+    /// Rename actuated keys; the `CC_` key (actual value) wins over the plain
+    /// (requested) key, as in thrs-api.
     fn rekeyed(&self, payload: JsonValue) -> JsonValue {
         let JsonValue::Object(mut map) = payload else {
             return payload;
@@ -438,9 +389,7 @@ impl RequiredTopic {
         JsonValue::Object(map)
     }
 
-    /// Whether a cached payload carries every required leaf key with a
-    /// non-null value (a `{"Value": null}` leaf fails a non-optional
-    /// `Stamped[X]` in thrs-api's model just like a missing key).
+    /// Whether every required leaf key is present and non-null (`{"Value": null}` fails too).
     fn satisfied_by(&self, payload: &JsonValue) -> bool {
         let JsonValue::Object(map) = payload else {
             return self.keys.is_empty();
@@ -453,17 +402,14 @@ impl RequiredTopic {
     }
 }
 
-/// thrs-api builds a section model from its per-field topics and serves it
-/// only once the whole model validates. Mirror that: every required topic is
-/// cached and carries each required leaf key with a non-null value.
+/// Whether every required topic is cached and complete, as thrs-api requires.
 pub(super) fn section_complete(cache: &TopicCache, required: &[RequiredTopic]) -> bool {
     required
         .iter()
         .all(|r| cache.get(&r.topic).is_some_and(|p| r.satisfied_by(&p)))
 }
 
-/// The partial counterpart of [`section_complete`]: at least one required
-/// topic is cached and complete, or there is nothing to relay at all.
+/// Whether any required topic is complete, or there is none.
 pub(super) fn section_any_complete(cache: &TopicCache, required: &[RequiredTopic]) -> bool {
     required.is_empty()
         || required
@@ -471,10 +417,7 @@ pub(super) fn section_any_complete(cache: &TopicCache, required: &[RequiredTopic
             .any(|r| cache.get(&r.topic).is_some_and(|p| r.satisfied_by(&p)))
 }
 
-/// The section object type plus any per-field component object types. A flat
-/// field (a parameter scalar/list) reads its key straight off the section
-/// object; a component field (a controlValues/controllerState sub-object) nests
-/// a `Stamped<Inner>`-leaf object, same shape as a sensor field.
+/// The section object type plus its component object types.
 pub(super) fn object_section_objects(module: &str, section: &ObjectSectionDef) -> Vec<Object> {
     let mut objects = Vec::new();
     let mut section_obj = Object::new(section.type_name.as_str());
@@ -498,18 +441,14 @@ pub(super) fn object_section_objects(module: &str, section: &ObjectSectionDef) -
         added += 1;
     }
     if added == 0 {
-        // An empty section (e.g. a module with no controller-state fields) would
-        // be an invalid empty GraphQL object. thrs-api handles this the same way
-        // (`empty_pydantic_type_to_strawberry_type` adds an `_empty` placeholder,
-        // exposed as `Empty: Void`), and zero-ui selects `controllerState { Empty }`
-        // verbatim, so the placeholder must carry that exact name.
+        // An empty GraphQL object is invalid; zero-ui selects `controllerState { Empty }`.
         section_obj = section_obj.field(empty_placeholder_field());
     }
     objects.push(section_obj);
     objects
 }
 
-/// thrs-api's `Empty: Void` placeholder on a fieldless object. Always null.
+/// The always-null `Empty: Void` placeholder on a fieldless object.
 pub(super) fn empty_placeholder_field() -> Field {
     Field::new(EMPTY_FIELD, TypeRef::named(VOID_SCALAR), |_ctx| {
         async_graphql::dynamic::FieldFuture::new(async move {
@@ -518,13 +457,10 @@ pub(super) fn empty_placeholder_field() -> Field {
     })
 }
 
-/// A flat section field (parameter): reads its `key` off the parent section
-/// object and returns the raw scalar/list value (null when absent).
+/// A flat (parameter) field reading its `key` off the parent section.
 pub(super) fn object_flat_field(field: &ObjectFieldDef) -> Field {
     let key = field.key.clone();
     let base = flat_type_ref(field.r#type.as_deref().unwrap_or("Float"));
-    // Non-null like thrs-api (`coolingFlow: Float!`, `pumpTuning: [Float!]!`)
-    // unless the model field is `X | None`.
     let type_ref = if field.optional {
         base
     } else {
@@ -546,9 +482,7 @@ pub(super) fn object_flat_field(field: &ObjectFieldDef) -> Field {
     })
 }
 
-/// A component section field (a controlValues valve / controllerState
-/// controller): resolves its `key` off the parent object to a sub-object whose
-/// `Stamped<Inner>` leaves are then projected.
+/// A component field resolving its `key` to a sub-object of Stamped leaves.
 pub(super) fn object_component_field(field: &ObjectFieldDef) -> Field {
     let key = field.key.clone();
     Field::new(
@@ -576,8 +510,7 @@ pub(super) fn object_component_object(field: &ObjectFieldDef) -> Object {
         .fold(Object::new(field.component_type_name()), Object::field)
 }
 
-/// TypeRef for a flat section field type: a scalar (`Float`/`Int`/`Boolean`/
-/// `String`) or a non-null list like `[Float!]`.
+/// TypeRef for a flat field: a scalar or a list like `[Float!]`.
 pub(super) fn flat_type_ref(typ: &str) -> TypeRef {
     if let Some(inner) = typ.strip_prefix('[').and_then(|s| s.strip_suffix(']')) {
         let inner = inner.trim_end_matches('!');
@@ -596,14 +529,12 @@ pub(super) fn flat_scalar_name(typ: &str) -> String {
     .to_string()
 }
 
-/// One `{value, timestamp}` leaf: field `leaf.gql` reads wire key `leaf.key`
-/// off the parent payload, typed as the shared `Stamped<Inner>` wrapper.
+/// One `{value, timestamp}` leaf reading wire key `leaf.key` off the parent.
 pub(super) fn module_leaf_field(leaf: &LeafDef) -> Field {
     let raw_key = Name::new(&leaf.key);
     let enum_values = leaf.enum_values.clone();
     let default = leaf.default.as_ref().map(json_to_graphql_value);
-    // Non-null like thrs-api: a section is null as a whole when incomplete
-    // (see `sensor_values_container_field`), never partially populated.
+    // Non-null: an incomplete section is null as a whole.
     let type_ref = TypeRef::named_nn(view_stamped_type_name(leaf));
     Field::new(leaf.gql.clone(), type_ref, move |ctx| {
         let raw_key = raw_key.clone();
@@ -617,15 +548,12 @@ pub(super) fn module_leaf_field(leaf: &LeafDef) -> Field {
                 }
                 _ => GraphQlValue::Null,
             };
-            // A leaf absent from the payload takes the model's default, as
-            // thrs-api serves it (`{"value": null, "timestamp": epoch}`).
+            // An absent leaf serves thrs-api's default `{value: null, timestamp: epoch}`.
             if matches!(value, GraphQlValue::Null) {
                 if let Some(d) = default {
                     value = d;
                 }
             }
-            // Enum leaf: translate the cached wire value to the thrs-api member
-            // name so `value` reads e.g. "LOCAL" (not 0) / "OFF" (not "off").
             if let Some(map) = &enum_values {
                 value = map_enum_leaf_value(value, map);
             }
@@ -634,9 +562,7 @@ pub(super) fn module_leaf_field(leaf: &LeafDef) -> Field {
     })
 }
 
-/// The `Stamped<Inner>` wrapper key for a leaf: the enum type name for an enum
-/// leaf (`ControlMode`), `<Scalar>List` for a tuple leaf (`[Float!]` ->
-/// `FloatList`), else the scalar itself.
+/// A leaf's wrapper key: its enum name, `<Scalar>List` for a tuple, else the scalar.
 pub(super) fn stamped_inner_key(leaf: &LeafDef) -> String {
     if let Some(name) = &leaf.enum_type {
         return name.clone();
@@ -650,13 +576,8 @@ pub(super) fn stamped_inner_key(leaf: &LeafDef) -> String {
     }
 }
 
-/// thrs-api's name for a view leaf's Stamped wrapper type:
-/// `<Inner>[Optional]StampedType` with Strawberry's spellings (`Bool`, not
-/// `Boolean`; `FloatList` for a tuple; the enum class name), e.g.
-/// `FloatStampedType`, `FloatOptionalStampedType`, `BoolStampedType`,
-/// `PumpControlModeOptionalStampedType`. Distinct from the flat-topic wrappers
-/// (`Stamped<Inner>`) because these carry thrs-api's nullability: `value` is
-/// non-null unless the leaf is optional, `timestamp` always.
+/// thrs-api's `<Inner>[Optional]StampedType` name (e.g. `BoolStampedType`); unlike
+/// flat-topic wrappers, `value` is non-null unless the leaf is optional.
 pub(super) fn view_stamped_type_name(leaf: &LeafDef) -> String {
     let inner = match stamped_inner_key(leaf).as_str() {
         "Boolean" => "Bool".to_string(),
@@ -680,8 +601,7 @@ pub(super) fn view_stamped_object(leaf: &LeafDef) -> Object {
         .field(stamped_timestamp_field(true))
 }
 
-/// The GraphQL type of a `Stamped<Inner>` wrapper's `value`, from its key (see
-/// `stamped_inner_key`): a scalar, a non-null list of it, or a named enum.
+/// The type of a wrapper's `value`: a scalar, a list of it, or a named enum.
 pub(super) fn stamped_value_type_ref(inner_key: &str) -> TypeRef {
     match inner_key {
         "Float" | "Int" | "Boolean" | "String" => TypeRef::named(flat_scalar_name(inner_key)),
@@ -692,10 +612,8 @@ pub(super) fn stamped_value_type_ref(inner_key: &str) -> TypeRef {
     }
 }
 
-/// Rewrite the `Value` of a `Stamped` enum leaf from its raw wire value to the
-/// thrs-api enum member (`0` -> `LOCAL`, `"off"` -> `OFF`). `TimeStamp` and
-/// any value missing from the map are left untouched, so an unexpected wire
-/// value still surfaces rather than vanishing.
+/// Rewrite an enum leaf's wire `Value` to its member name (`0` -> `LOCAL`);
+/// unmapped values pass through so they still surface.
 pub(super) fn map_enum_leaf_value(
     value: GraphQlValue,
     enum_values: &BTreeMap<String, String>,
@@ -714,9 +632,7 @@ pub(super) fn map_enum_leaf_value(
     GraphQlValue::Object(map)
 }
 
-/// The map lookup key for a scalar wire value: integers as `"0"`, strings and
-/// bools as themselves. Floats fall back to their display form (enums don't use
-/// float values, but this keeps the mapping total).
+/// The enum map lookup key for a scalar wire value.
 pub(super) fn graphql_scalar_to_key(value: &GraphQlValue) -> Option<String> {
     match value {
         GraphQlValue::Number(n) => n

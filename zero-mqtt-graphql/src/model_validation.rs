@@ -1,22 +1,7 @@
-//! pydantic's validation of what a mutation writes, and its error text.
-//!
-//! The producer's API validates every write with its pydantic models before
-//! publishing, and a client sees pydantic's `ValidationError` text when a
-//! write is rejected. The bridge does the same from the models' JSON Schemas
-//! as the document carries them: numeric bounds (`minimum`/`maximum`/...,
-//! and the raw `ge`/`le`/`gt`/`lt` pydantic emits when it cannot map a
-//! constraint), tuple lengths (`prefixItems`), and what the producer states
-//! about its Python validators - `x-clamp` (a unit's after-validator),
-//! `x-field-rules` (a model's field validators), `x-invariants` (cross-field
-//! rules) - with the Python field names (`x-python-name`) pydantic's messages
-//! use. Values are validated the way pydantic does (inner validators first,
-//! fields in order, model rules last) and coerced the way it does (a clamp
-//! snaps a value to its bound), so what is published matches too.
-
 use anyhow::Context;
 use serde_json::{Map, Number, Value};
 
-use crate::mutations_view::InvariantDef;
+use crate::model::mutations::InvariantDef;
 use crate::pyrepr::float_repr;
 use crate::schema::Components;
 
@@ -24,12 +9,12 @@ pub const PYTHON_NAME_KEY: &str = "x-python-name";
 pub const CLAMP_KEY: &str = "x-clamp";
 pub const FIELD_RULES_KEY: &str = "x-field-rules";
 
-/// A model: its title, its fields in order, and its model-level rules.
+/// A model's JSON Schema, validated the way the producer's pydantic model does
+/// so rejections carry the same `ValidationError` text.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct ModelSchema {
     pub title: String,
-    /// The documentation link base appended to each error (the producer's
-    /// `validationErrorUrl`).
+    /// Documentation link base appended to each error (`validationErrorUrl`).
     error_url: String,
     fields: Vec<FieldSchema>,
     invariants: Vec<InvariantDef>,
@@ -50,8 +35,7 @@ enum ValueSchema {
     Model(Box<ModelSchema>),
     Nullable(Box<ValueSchema>),
     Boolean,
-    /// Anything the bridge never writes invalidly (enums arrive as members of
-    /// the GraphQL enum, timestamps are stamped by the bridge).
+    /// Anything the bridge never writes invalidly (enums, bridge-stamped timestamps).
     Other,
 }
 
@@ -100,9 +84,8 @@ impl BoundKind {
     }
 }
 
-/// `x-clamp`: values in `accept_below..=accept_above` pass, snapped into
-/// `minimum..=maximum`; others are rejected with `error` (a `{value}`
-/// template).
+/// `x-clamp`: values in `accept_below..=accept_above` are snapped into
+/// `minimum..=maximum`; others are rejected with `error`.
 #[derive(Debug, Clone, PartialEq, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct Clamp {
@@ -113,9 +96,7 @@ struct Clamp {
     error: String,
 }
 
-/// `x-field-rules`: a field validator on a stamped number - its `leaf` must
-/// stay within `minimum..=maximum`, else `error`; the rejected input renders
-/// as `input_repr` (`{value}`/`{timestamp}` template) of type `input_type`.
+/// `x-field-rules`: a stamped number's `leaf` must stay within `minimum..=maximum`.
 #[derive(Debug, Clone, PartialEq, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct FieldRule {
@@ -152,8 +133,7 @@ struct LineError {
 }
 
 impl ModelSchema {
-    /// Read a model's schema (after `$ref`) against its document's
-    /// components.
+    /// Read a model's schema against its document's components.
     pub fn read(schema: &Value, components: Components<'_>) -> anyhow::Result<Self> {
         let resolved = components.deref(schema)?;
         let title = resolved
@@ -199,10 +179,8 @@ impl ModelSchema {
         self.fields.iter().find(|f| f.key == key)
     }
 
-    /// pydantic's `validate_assignment` of `value` to the field `key` of
-    /// `object`: the field's validation, then the model's rules on the
-    /// object with the new value. The (coerced) value, or the
-    /// `ValidationError` text.
+    /// pydantic's `validate_assignment` of `value` to `key`: the coerced value or
+    /// the `ValidationError` text.
     pub fn validate_assignment(
         &self,
         object: &Map<String, Value>,
@@ -230,9 +208,8 @@ impl ModelSchema {
         }
     }
 
-    /// pydantic's construction of the model from `object`: every field's
-    /// validation in order, then the model's rules. The (coerced) object, or
-    /// the `ValidationError` text.
+    /// pydantic's model construction from `object`: the coerced object or the
+    /// `ValidationError` text.
     pub fn validate_model(&self, object: Map<String, Value>) -> Result<Map<String, Value>, String> {
         let mut errors = Vec::new();
         let coerced = self.validate_fields(object, &[], &mut errors);
@@ -453,8 +430,7 @@ fn validate_value(
             let Some(x) = value.as_f64() else {
                 return value;
             };
-            // Only a snapped number is rewritten; an accepted one keeps its
-            // JSON form.
+            // Only a snapped number is rewritten.
             match validate_number(number, x, loc, errors) {
                 Some(coerced) if coerced != x => Value::from(coerced),
                 _ => value,
@@ -507,8 +483,7 @@ fn validate_value(
     }
 }
 
-/// A number through its clamp, then its bounds: the coerced value, or None
-/// when rejected (the error is collected).
+/// A number through its clamp, then its bounds; `None` when rejected.
 fn validate_number(
     number: &NumberSchema,
     mut x: f64,
@@ -601,8 +576,7 @@ fn value_repr(schema: &ValueSchema, value: &Value) -> String {
     }
 }
 
-/// pydantic-core's rendering of a long input value: the first 25 and last
-/// 24 characters around `...`.
+/// pydantic-core's truncation of a long input: first 25 and last 24 chars.
 fn truncate_repr(repr: &str) -> String {
     let chars: Vec<char> = repr.chars().collect();
     if chars.len() <= 50 {
@@ -613,9 +587,7 @@ fn truncate_repr(repr: &str) -> String {
     format!("{head}...{tail}")
 }
 
-/// Python's `repr` of a UTC `datetime` for an RFC 3339 timestamp:
-/// `datetime.datetime(2026, 1, 2, 3, 4, 5, 678901, tzinfo=datetime.timezone.utc)`,
-/// dropping a zero microsecond (and a zero second with it).
+/// Python's `repr` of a UTC `datetime` for an RFC 3339 timestamp.
 fn python_datetime_repr(timestamp: &str) -> String {
     let Ok(time) = humantime::parse_rfc3339_weak(timestamp) else {
         return String::new();

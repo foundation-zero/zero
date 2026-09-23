@@ -1,41 +1,22 @@
-//! Runtime topic-prefix rewriting.
-//!
-//! Spec files bake a topic prefix at generation time (THRS
-//! `mqtt_devices_topic_prefix` / `mqtt_controller_topic_prefix`, defaulting to
-//! `simulation` and `thrs/controller`). When the live broker uses different
-//! prefixes, `PREFIX_STRATEGY=runtime` rewrites each spec topic's leading
-//! prefix from the "spec" value to the "runtime" value at load time, so the
-//! same spec can target a differently-prefixed broker without regeneration.
-//!
-//! The alternative is baking the correct prefix into the spec directly, via
-//! the generator's `--devices-prefix`/`--controller-prefix` flags, and leaving
-//! this rewriter disabled.
-
 use crate::asyncapi::{TopicDef, TopicGroupDef, ValidatorSpec};
 use crate::config::{AppConfig, PrefixStrategy};
 use crate::extension::GraphqlExtension;
 
-/// A set of leading-prefix substitutions applied to MQTT topics.
-///
-/// Each rule replaces a leading `from` segment-prefix with a `to` one. A topic
-/// matches a rule when it equals `from` or starts with `from` followed by `/`,
-/// so `simulation` never accidentally rewrites `simulation-extra/...`.
+/// Leading-prefix substitutions from spec prefixes to the live broker's
+/// (`PREFIX_STRATEGY=runtime`); `from` matches whole segments only.
 #[derive(Debug, Clone, Default)]
 pub struct PrefixRewriter {
     rules: Vec<(String, String)>,
 }
 
 impl PrefixRewriter {
-    /// Build the rewriter for the active config. Returns an empty (no-op)
-    /// rewriter unless `prefix_strategy = runtime` and a runtime prefix is set
-    /// that actually differs from the spec prefix.
+    /// Build the rewriter; a no-op unless the runtime strategy sets a differing prefix.
     pub fn from_config(config: &AppConfig) -> Self {
         if config.prefix_strategy != PrefixStrategy::Runtime {
             return Self::default();
         }
         let mut rules = Vec::new();
-        // Controller first: its default (`thrs/controller`) is more specific,
-        // and keeping the more-specific rule ahead avoids any future overlap.
+        // Controller first: its default is the more specific prefix.
         push_rule(
             &mut rules,
             &config.spec_controller_prefix,
@@ -54,8 +35,7 @@ impl PrefixRewriter {
         Self { rules }
     }
 
-    /// True when no rule would ever change a topic (build-time strategy, or
-    /// runtime with no differing prefixes configured).
+    /// True when no rule would ever change a topic.
     pub fn is_noop(&self) -> bool {
         self.rules.is_empty()
     }
@@ -75,9 +55,7 @@ impl PrefixRewriter {
         topic.to_string()
     }
 
-    /// Rewrite the concrete subscribe/cache topic of each flat AsyncAPI topic
-    /// def in place. These are the cache keys the read resolvers hit, so they
-    /// must move in lockstep with the module-view topics.
+    /// Rewrite each topic def's subscribe/cache topic in place.
     pub fn apply_to_topics(&self, topics: &mut [TopicDef]) {
         if self.is_noop() {
             return;
@@ -87,9 +65,7 @@ impl PrefixRewriter {
         }
     }
 
-    /// Rewrite each topic-group wildcard pattern in place. THRS prefixes never
-    /// match the non-THRS groups (e.g. `power-tags/+/+`), so this is a no-op for
-    /// them, but it keeps any future prefixed group correct.
+    /// Rewrite each topic-group wildcard pattern in place.
     pub fn apply_to_groups(&self, groups: &mut [TopicGroupDef]) {
         if self.is_noop() {
             return;
@@ -99,8 +75,7 @@ impl PrefixRewriter {
         }
     }
 
-    /// Rewrite the topic (or pattern) each validator is keyed by in place, so
-    /// payloads on the live-broker topics are checked against their schemas.
+    /// Rewrite the topic each validator is keyed by in place.
     pub fn apply_to_validators(&self, validators: &mut [ValidatorSpec]) {
         if self.is_noop() {
             return;
@@ -110,8 +85,7 @@ impl PrefixRewriter {
         }
     }
 
-    /// Rewrite every resolved topic of the extension (view sections, mutation
-    /// state/target topics, lifecycle status/objects/directives) in place.
+    /// Rewrite every resolved topic of the extension in place.
     pub fn apply_to_extension(&self, extension: &mut GraphqlExtension) {
         if self.is_noop() {
             return;

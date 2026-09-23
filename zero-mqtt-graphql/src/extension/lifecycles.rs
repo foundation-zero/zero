@@ -1,97 +1,71 @@
-//! The `lifecycles` of the extension: what a document declares for a
-//! retained status object with directives, and how it resolves to the
-//! runtime [`LifecycleDef`].
-
 use anyhow::Context;
 use roas_asyncapi::v3_0::operation::OperationAction;
 use serde::Deserialize;
 
 use super::views::ObjectSectionSpec;
 use super::{MutationSpec, OperationRef, Resolver};
-use crate::lifecycle_view::{
+use crate::model::lifecycle::{
     DirectiveDef, LifecycleDef, LifecycleMemberDef, LifecycleObjectDef, StatusDef, StatusFieldDef,
 };
+use crate::model::views::ObjectSection;
 use crate::naming::field_name;
 use crate::schema::Property;
-use crate::views::ObjectSection;
 
-/// One field exposed off the status object. Its scalar type comes from the
-/// status operation's schema.
+/// Input for a [`StatusFieldDef`]; the type comes from the status operation's schema.
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StatusFieldSpec {
-    /// Wire key in the status payload, e.g. `Status`.
     pub key: String,
     /// GraphQL field name. Default: [`field_name`] of the key.
     #[serde(default)]
     pub gql: Option<String>,
 }
 
-/// The retained status object.
+/// Input for a [`StatusDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StatusSpec {
-    /// The `send` operation whose messages carry the status object.
     pub operation: OperationRef,
-    /// Wire key of the status string (`available`/`running`/...).
     pub key: String,
     #[serde(default)]
     pub fields: Vec<StatusFieldSpec>,
 }
 
-/// One whole object relayed next to the status, typed by a union of the
-/// members' objects.
+/// Input for a [`LifecycleObjectDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct LifecycleObjectSpec {
-    /// GraphQL field name on the state object, e.g. `inputs`.
     pub gql: String,
-    /// The `send` operation whose messages carry the object.
     pub operation: OperationRef,
-    /// The union type name, e.g. `SimulationInputsType`.
     pub union_type: String,
-    /// Which `object` section of each member forms this union, e.g. `inputs`.
     pub member_section: String,
 }
 
-/// One directive (play / pause / step). Its argument, when it has one, is
-/// the `key` property of the target operation's schema: that supplies the
-/// scalar type, whether it is required, its default and its bounds.
+/// Input for a [`DirectiveDef`]; the argument's type, default and bounds come from the target's schema.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct DirectiveSpec {
-    /// GraphQL mutation name (`simulationPlay`).
     pub gql: String,
-    /// The `receive` operation the directive message is published to.
     pub target: OperationRef,
-    /// Wire key of the argument in the published message; none for a
-    /// directive without an argument.
     #[serde(default)]
     pub key: Option<String>,
-    /// GraphQL argument name. Default: [`field_name`] of the key.
+    /// Default: [`field_name`] of the key.
     #[serde(default)]
     pub arg_name: Option<String>,
-    /// Statuses the directive is accepted from.
     #[serde(default)]
     pub allowed_from: Vec<String>,
-    /// Status the directive waits for after publishing.
     #[serde(default)]
     pub expect_status: String,
-    /// Error when the current status is not in `allowed_from`.
     #[serde(default)]
     pub precondition_error: String,
-    /// Error when no status is cached.
     #[serde(default)]
     pub missing_error: String,
 }
 
-/// One member: its `object` sections (whole objects that live on the
-/// lifecycle's relayed topics, so they name no operation of their own) and
-/// the `setComponent` mutations on them.
+/// Input for a [`LifecycleMemberDef`]; its sections name no operation.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct LifecycleMemberSpec {
-    /// camelCase name, e.g. `highTemperature`.
     pub name: String,
     #[serde(default)]
     pub sections: Vec<LifecycleSectionSpec>,
@@ -106,26 +80,25 @@ pub enum LifecycleSectionSpec {
     Object(ObjectSectionSpec),
 }
 
-/// The lifecycle contract.
+/// Input for a [`LifecycleDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct LifecycleSpec {
-    /// The query field, e.g. `simulation`.
     pub gql: String,
-    /// GraphQL type name of the query object (a container).
+    /// A container type; needs no schema.
     pub state_type_name: String,
     pub status: StatusSpec,
     #[serde(default)]
     pub objects: Vec<LifecycleObjectSpec>,
     #[serde(default)]
     pub directives: Vec<DirectiveSpec>,
-    /// Seconds a directive waits for the expected status.
     pub wait_timeout_s: f64,
     #[serde(default)]
     pub members: Vec<LifecycleMemberSpec>,
 }
 
 impl LifecycleSpec {
+    /// Resolve operations and types into the runtime lifecycle.
     pub fn resolve(&self, resolver: &Resolver<'_>) -> anyhow::Result<LifecycleDef> {
         let context = |what: &str| format!("lifecycle '{}' {what}", self.gql);
 
@@ -240,10 +213,7 @@ impl DirectiveSpec {
                 anyhow::bail!("argument '{key}' is not a scalar");
             };
             def.arg_name = Some(self.arg_name.clone().unwrap_or_else(|| field_name(key)));
-            // Directive args are numeric (`DirectiveDef.default` is `Option<f64>`).
-            // A present-but-non-numeric default would otherwise be silently
-            // dropped while `arg_required` stays false, publishing no value for
-            // `key`; fail the load instead.
+            // A non-numeric default would silently publish no value; fail the load instead.
             def.default = match scalar.default.as_ref() {
                 Some(value) => Some(value.as_f64().ok_or_else(|| {
                     anyhow::anyhow!("directive argument '{key}' default {value} is not numeric")

@@ -4,8 +4,7 @@ use serde::Deserialize;
 /// config nor an AsyncAPI `x-ttl` extension specifies one.
 pub const DEFAULT_TTL_SECS: u64 = 300;
 
-/// The TTL of a value that never expires (`x-ttl: "unbounded"`): the last
-/// message is served until the next one replaces it.
+/// The TTL of a value that never expires (`x-ttl: "unbounded"`).
 pub const TTL_UNBOUNDED_SECS: u64 = u64::MAX;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -24,64 +23,36 @@ pub struct AppConfig {
     /// may override this with an `x-ttl` extension.
     #[serde(default = "default_ttl")]
     pub default_ttl_secs: u64,
-    /// When true, serve mode drops payloads that fail JSON Schema validation
-    /// instead of caching them, so the last valid value survives (an
-    /// out-of-bounds sensor value never reaches a client). Off by default: an
-    /// incomplete spec would otherwise drop valid live data. Env: `STRICT_VALIDATION`.
+    /// Serve mode drops schema-invalid payloads instead of caching them.
+    /// Env: `STRICT_VALIDATION`.
     #[serde(default)]
     pub strict_validation: bool,
-    /// When true, a `stampedFields` section of a view serves each field
-    /// independently: a field whose topic is cached (and carries every
-    /// required leaf) resolves, the others resolve null, so a query for one
-    /// field answers as soon as that one topic has arrived. Off by default: the
-    /// section is served all-or-nothing (null until every field's topic is
-    /// cached), as the producers' own APIs do. Changes the schema: the fields
-    /// become nullable. Env: `ENABLE_OPTIONAL_SENSOR_VALUES`.
+    /// Serve each `stampedFields` field independently (nullable) instead of
+    /// all-or-nothing. Env: `ENABLE_OPTIONAL_SENSOR_VALUES`.
     #[serde(default)]
     pub enable_optional_sensor_values: bool,
-    /// When true, expose the mutations and lifecycle directives declared in
-    /// the `x-mqtt-graphql` extension and publish their changes to MQTT. Off by default:
-    /// zero-mqtt-graphql is read-only until the write-path is switched on.
-    /// Env: `ENABLE_MUTATIONS`.
+    /// Expose the extension's mutations and lifecycle directives. Env: `ENABLE_MUTATIONS`.
     #[serde(default)]
     pub enable_mutations: bool,
-    /// How the MQTT topic prefixes in the specs are reconciled with the live
-    /// broker. `build_time` (default) trusts the prefix baked into each spec by
-    /// spec generation (aggregate-specs.sh `--devices-prefix`/
-    /// `--controller-prefix`). `runtime` rewrites the spec prefix at load using
-    /// `runtime_devices_prefix`/`runtime_controller_prefix`, so the same spec
-    /// can target a differently-prefixed broker without regeneration.
-    /// Env: `PREFIX_STRATEGY`.
+    /// How spec topic prefixes map to the live broker's. Env: `PREFIX_STRATEGY`.
     #[serde(default)]
     pub prefix_strategy: PrefixStrategy,
-    /// The devices-topic prefix the specs were generated with (the "from" side
-    /// of a `runtime` rewrite); without it no devices rule applies. Env:
-    /// `SPEC_DEVICES_PREFIX`.
+    /// Devices prefix the specs were generated with. Env: `SPEC_DEVICES_PREFIX`.
     #[serde(default)]
     pub spec_devices_prefix: String,
-    /// The controller-topic prefix the specs were generated with (the "from"
-    /// side of a `runtime` rewrite); without it no controller rule applies.
-    /// Env: `SPEC_CONTROLLER_PREFIX`.
+    /// Controller prefix the specs were generated with. Env: `SPEC_CONTROLLER_PREFIX`.
     #[serde(default)]
     pub spec_controller_prefix: String,
-    /// The devices-topic prefix the live broker actually uses (the "to" side of
-    /// a `runtime` rewrite). Only consulted when `prefix_strategy = runtime`.
-    /// Env: `RUNTIME_DEVICES_PREFIX`.
+    /// Devices prefix the live broker uses. Env: `RUNTIME_DEVICES_PREFIX`.
     #[serde(default)]
     pub runtime_devices_prefix: Option<String>,
-    /// The controller-topic prefix the live broker actually uses (the "to" side
-    /// of a `runtime` rewrite). Only consulted when `prefix_strategy = runtime`.
-    /// Env: `RUNTIME_CONTROLLER_PREFIX`.
+    /// Controller prefix the live broker uses. Env: `RUNTIME_CONTROLLER_PREFIX`.
     #[serde(default)]
     pub runtime_controller_prefix: Option<String>,
-    /// The simulator-topic prefix the specs were generated with (the "from"
-    /// side of a `runtime` rewrite); without it no simulator rule applies.
-    /// Env: `SPEC_SIMULATOR_PREFIX`.
+    /// Simulator prefix the specs were generated with. Env: `SPEC_SIMULATOR_PREFIX`.
     #[serde(default)]
     pub spec_simulator_prefix: String,
-    /// The simulator-topic prefix the live broker actually uses (the "to" side
-    /// of a `runtime` rewrite). Only consulted when `prefix_strategy = runtime`.
-    /// Env: `RUNTIME_SIMULATOR_PREFIX`.
+    /// Simulator prefix the live broker uses. Env: `RUNTIME_SIMULATOR_PREFIX`.
     #[serde(default)]
     pub runtime_simulator_prefix: Option<String>,
 }

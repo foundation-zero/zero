@@ -22,8 +22,7 @@ use zero_mqtt_graphql::mqtt::{MqttConnection, MqttPublisher, MqttSubscriber};
 /// A spawned MQTT subscriber task paired with a receiver that fires when
 /// the task exits.
 type MqttTask = (JoinHandle<()>, oneshot::Receiver<()>);
-/// The MQTT side of a serve: the subscriber task (when there is anything to
-/// subscribe to) and the publisher the mutations use.
+/// The subscriber task (if anything to subscribe to) and the mutations' publisher.
 type MqttSide = (Option<MqttTask>, Option<Arc<dyn TopicPublisher>>);
 
 #[derive(Parser, Debug)]
@@ -71,9 +70,7 @@ async fn main() -> Result<()> {
         mut extension,
         ..
     } = load_specs_and_groups(&cli.spec_dir)?;
-    // Under PREFIX_STRATEGY=runtime the subscribe set, the cache keys, the
-    // validators, the resolver reads and the group instances all move to the
-    // live-broker prefix together, whatever the command.
+    // Under PREFIX_STRATEGY=runtime every topic moves to the live-broker prefix together.
     let rewriter = zero_mqtt_graphql::prefix::PrefixRewriter::from_config(&config);
     if !rewriter.is_noop() {
         info!("Prefix strategy: runtime — rewriting spec topic prefixes to live-broker prefixes");
@@ -124,9 +121,8 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-/// Strict validation for the `validate` subcommand: a missing or malformed
-/// metadata file fails (serve/listen stay lenient), and the schema is built
-/// exactly as `serve` would build it.
+/// Strict validation for `validate`: a bad metadata file fails, and the schema
+/// is built as `serve` would.
 fn validate_command(
     spec_dir: &str,
     config: &AppConfig,
@@ -214,11 +210,7 @@ async fn run_serve(
 ) -> Result<()> {
     let extension = extension.unwrap_or_default();
     let metadata = metadata_or_empty(spec_dir, Some(&extension));
-    // The whole-object read sections (controlValues/parameters/controllerState)
-    // are each one MQTT topic carrying the section object; subscribe to them so
-    // the nested resolvers can read them from the cache. Always subscribed (the
-    // read-path is on regardless of ENABLE_MUTATIONS); deduped against the
-    // mutation state topics, which include the same `.../parameters` topic.
+    // Whole-object view sections are read from the cache, so always subscribe.
     let extra_topics = extension.read_topics(config.enable_mutations);
     if topics.is_empty() {
         info!("No MQTT topics found in spec directory '{spec_dir}'");
@@ -239,8 +231,6 @@ async fn run_serve(
         &extra_topics,
     )?;
 
-    // The write side is served only with ENABLE_MUTATIONS; without it no
-    // publisher reaches the schema and it stays read-only.
     let publisher = publisher.filter(|_| config.enable_mutations);
     if publisher.is_some() {
         info!(
@@ -300,10 +290,7 @@ fn spawn_mqtt_subscriber(
     cache: &Arc<TopicCache>,
     extra_topics: &[String],
 ) -> Result<MqttSide> {
-    // `extra_topics` are the mutation state topics (e.g.
-    // `controller_prefix/<module>/parameters`) whose cached objects the
-    // mutations read-modify-republish; subscribing to them keeps that state
-    // fresh. Empty unless mutations are enabled.
+    // `extra_topics`: mutation state topics read-modify-republished by mutations.
     let mqtt_topics: Vec<String> = topics
         .iter()
         .map(|t| t.topic.clone())
@@ -329,8 +316,6 @@ fn spawn_mqtt_subscriber(
         validator_specs,
     )?;
     sub.set_pending_subscriptions(&mqtt_topics);
-    // A publish handle on the same client, for serving mutations. Cheap to make
-    // even when mutations are off (the schema builder just won't use it).
     let publisher: Arc<dyn TopicPublisher> = Arc::new(MqttPublisher::new(sub.client()));
     Ok((Some(spawn_subscriber(sub)), Some(publisher)))
 }
@@ -459,9 +444,7 @@ fn load_metadata_or_empty(spec_dir: &str) -> Vec<MetadataFile> {
     }
 }
 
-/// Every metadata group the schema can enumerate: the `*-metadata.json` files
-/// (lenient, see `load_metadata_or_empty`) plus the `{field}` groups the
-/// `x-mqtt-graphql` extension carries.
+/// Every metadata group: the `*-metadata.json` files plus the extension's `{field}` groups.
 fn metadata_or_empty(spec_dir: &str, extension: Option<&GraphqlExtension>) -> Vec<MetadataFile> {
     let mut metadata = load_metadata_or_empty(spec_dir);
     if let Some(extension) = extension {
@@ -510,8 +493,7 @@ mod tests {
         config
     }
 
-    /// One view with a parameters section and its `setField` mutation, built
-    /// from a document the way the loader does.
+    /// One view with a parameters section and its `setField` mutation.
     fn extension() -> GraphqlExtension {
         use roas_asyncapi::v3_0::operation::OperationAction;
         use std::collections::BTreeMap;

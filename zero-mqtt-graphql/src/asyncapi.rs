@@ -8,12 +8,11 @@ use roas_asyncapi::common::reference::{RefOr, Reference};
 use roas_asyncapi::v3_0::channel::Channel;
 use roas_asyncapi::v3_0::message::Message;
 use roas_asyncapi::v3_0::operation::OperationAction;
-use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SubSchema};
+use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SchemaType, SubSchema};
 use roas_asyncapi::v3_0::Document;
 use serde_json::{json, Value};
 
 use crate::extension::{parse_extension, GraphqlExtension};
-use crate::graphql::graphql_type_for_subschema;
 use crate::naming::*;
 
 #[derive(Debug, Clone)]
@@ -40,15 +39,9 @@ pub struct TopicGroupDef {
     /// future use (e.g. per-parameter filtering); nothing reads it today.
     pub params: Vec<String>,
     pub fields: Vec<FieldDef>,
-    /// Raw JSON Schema for the payload. For a multi-type `{field}` group it's
-    /// the permissive `anyOf` of every branch, so it can't catch an out-of-bounds
-    /// value on a single field; `field_schemas` handles that.
+    /// Raw JSON Schema for the payload; for a multi-type group the `anyOf` union.
     pub payload_schema: Option<Value>,
-    /// The exact schema per concrete topic (group pattern with its `+` filled
-    /// in), from the channel's `x-{param}-schema` extension. Lets each topic be
-    /// validated against its own schema instead of the group-wide union, like
-    /// thrs-api's per-field validation. Empty without that extension (single-type
-    /// groups, or multi-`+` patterns).
+    /// Exact schema per concrete topic, from the channel's `x-{param}-schema`.
     pub field_schemas: BTreeMap<String, Value>,
     /// Extension attributes per payload field (`x-*` schema extensions
     /// minus the prefix), keyed by raw field name.
@@ -62,10 +55,7 @@ pub struct FieldDef {
     pub graphql_type: String,
 }
 
-/// A pydantic model referenced by a field that isn't a scalar or a
-/// `Stamped` envelope (e.g. `PidControllerValues`). Gets its own GraphQL
-/// type instead of getting dropped. Same idea as THRS's own
-/// `pydantic_to_strawberry_type`: every model becomes its own named type.
+/// A named composite schema (e.g. `PidControllerValues`) that becomes its own GraphQL type.
 #[derive(Debug, Clone)]
 pub struct ObjectTypeDef {
     /// Schema `title`, used as-is for the GraphQL type name.
@@ -73,14 +63,10 @@ pub struct ObjectTypeDef {
     pub fields: Vec<FieldDef>,
 }
 
-/// Object types found so far, keyed by name. Dedupes a schema referenced
-/// from multiple fields. Threaded as `&mut` through the schema walk.
+/// Object types found so far, keyed by name.
 pub type ObjectTypeRegistry = BTreeMap<String, ObjectTypeDef>;
 
-/// A topic (or wildcard pattern) some described application *receives* on,
-/// i.e. one this bridge may publish to. Declared by a channel with a
-/// `receive` operation. Not a query field: the bridge only subscribes to
-/// what an application sends.
+/// A topic or pattern some application receives on, i.e. where the bridge may publish.
 #[derive(Debug, Clone)]
 pub struct PublishTargetDef {
     pub pattern: String,
@@ -88,10 +74,8 @@ pub struct PublishTargetDef {
     pub payload_schema: Option<Value>,
 }
 
-/// One operation of a document, resolved to its channel's topic template so
-/// an extension can name the operation it binds to instead of a raw topic,
-/// and to the payload schema its messages carry so the extension can derive
-/// the GraphQL shape of what it reads or writes there.
+/// An operation resolved to its channel's topic template and payload schema,
+/// so an extension can bind to it by name.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OperationDef {
     pub action: OperationAction,
@@ -100,21 +84,16 @@ pub struct OperationDef {
     pub address: String,
     /// The MQTT pattern (`{param}` -> `+`).
     pub pattern: String,
-    /// The document that declares the operation; `$ref`s in `payload` and
-    /// `parameter_schemas` are relative to it.
+    /// The declaring document; `$ref`s are relative to it.
     pub document: String,
-    /// The payload schema of the operation's message, as the document
-    /// declares it (a `$ref` into `components.schemas`, or inline).
+    /// The message's payload schema (a `$ref` or inline).
     pub payload: Option<Value>,
-    /// For a single-parameter address: the payload schema per parameter
-    /// value (the message's `x-{param}-schema`), which pins each concrete
-    /// topic to the one schema it carries instead of the channel's union.
+    /// Payload schema per parameter value (`x-{param}-schema`), single-parameter only.
     pub parameter_schemas: BTreeMap<String, Value>,
 }
 
 impl OperationDef {
-    /// The payload schema of the concrete topic `parameters` select: the
-    /// per-value schema when the message declares one, else the message's.
+    /// The per-value schema for `parameters`, else the message's.
     pub fn schema(&self, parameters: &BTreeMap<String, String>) -> Option<&Value> {
         parameters
             .values()
@@ -122,8 +101,7 @@ impl OperationDef {
             .or(self.payload.as_ref())
     }
 
-    /// The concrete topic for the given parameter values: every `{param}`
-    /// segment of the address must be supplied, and only those.
+    /// The concrete topic for exactly the address's `{param}` values.
     pub fn topic(&self, parameters: &BTreeMap<String, String>) -> anyhow::Result<String> {
         let mut used: BTreeSet<&str> = BTreeSet::new();
         let segments = self
@@ -165,16 +143,13 @@ pub fn topic_matches(pattern: &str, topic: &str) -> bool {
     topic_segments.next().is_none()
 }
 
-/// How a document's operations use one channel: whether some described
-/// application sends on it (so the bridge subscribes) and/or receives on it
-/// (so the bridge may publish). A channel no operation names counts as sent:
-/// older specs declare channels only.
+/// Whether applications send and/or receive on a channel. A channel no
+/// operation names counts as sent (older specs declare channels only).
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 struct ChannelUse {
     send: bool,
     receive: bool,
-    /// Keys of the channel messages the send operations name, in
-    /// operation order: the payloads sent on the channel.
+    /// Message keys named by send operations, in operation order.
     send_messages: Vec<String>,
     /// Keys of the channel messages the receive operations name.
     receive_messages: Vec<String>,
@@ -186,9 +161,7 @@ impl ChannelUse {
     }
 }
 
-/// The message an operation of one direction carries: the first of the
-/// channel's messages its operations name, else the channel's first message
-/// (a channel with one message needs no operation to say so).
+/// The first message the direction's operations name, else the channel's first.
 fn select_message<'a>(
     channel: &'a Channel,
     doc: &'a Document,
@@ -228,8 +201,6 @@ fn channel_uses(doc: &Document) -> BTreeMap<String, ChannelUse> {
 }
 
 /// The operations of one document, resolved to their channels' templates.
-/// An operation whose channel is missing or has no address is an error: an
-/// extension may bind to it, and nothing could be resolved for it.
 fn operations_from_document(doc: &Document, path: &Path) -> anyhow::Result<OperationIndex> {
     let mut index = OperationIndex::new();
     for (key, operation) in &doc.operations {
@@ -294,9 +265,7 @@ fn operations_from_document(doc: &Document, path: &Path) -> anyhow::Result<Opera
     Ok(index)
 }
 
-/// A message's payload schema as the document declares it: the `$ref` kept
-/// as a reference (so it can be matched against the extension's types), an
-/// inline schema as its JSON.
+/// A message's payload schema: a `$ref` kept as reference, inline schema as JSON.
 fn payload_value(message: &Message) -> Option<Value> {
     match message.payload.as_ref()? {
         RefOr::Reference(reference) => Some(json!({"$ref": reference.reference})),
@@ -304,9 +273,7 @@ fn payload_value(message: &Message) -> Option<Value> {
     }
 }
 
-/// The channel address without the trailing `:<Role>` (`:Publisher`,
-/// `:Handler`) FastStream appends to name the operation kind; it is not part
-/// of the topic path.
+/// The address without FastStream's trailing `:<Role>` suffix.
 fn strip_role_suffix(address: &str) -> String {
     address
         .rsplit_once(':')
@@ -314,8 +281,7 @@ fn strip_role_suffix(address: &str) -> String {
         .to_string()
 }
 
-/// The publish targets of one document: the topic/pattern and payload schema
-/// of every channel some application receives on.
+/// The publish targets of one document.
 fn publish_targets_from_document(
     doc: &Document,
     path: &Path,
@@ -388,37 +354,26 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<SpecDocument>> {
         .collect()
 }
 
-/// Load AsyncAPI 3.0.0 spec files from a directory in a single pass over the
-/// spec directory, extracting both concrete topics and parametrized groups.
-///
-/// Consumers that only need one of the two should still use this loader and
-/// ignore the other half, so each spec file is read exactly once.
-/// A validator input: an MQTT topic (or wildcard pattern) and a self-contained
-/// JSON Schema for its payloads. Self-contained means the schema carries its
-/// document's `components` at the root, so `#/components/schemas/...` `$ref`s
-/// still resolve when it's compiled on its own.
+/// A validator input: an MQTT topic or pattern and a self-contained JSON Schema
+/// (document `components` at the root so `$ref`s resolve).
 pub type ValidatorSpec = (String, Value);
 
+/// Everything derived from the spec directory.
 pub struct LoadedSpecs {
     pub topics: Vec<TopicDef>,
     pub groups: Vec<TopicGroupDef>,
     pub object_types: Vec<ObjectTypeDef>,
-    /// Validator inputs: concrete topics, then group patterns, then per-field
-    /// topics, in that order, so a later exact-topic entry beats an earlier
-    /// wildcard one at validation time.
+    /// Topics, then patterns, then per-field topics, so exact topics win.
     pub validators: Vec<ValidatorSpec>,
-    /// Topics/patterns some described application receives on (channels with
-    /// a `receive` operation): where the bridge may publish.
+    /// Topics/patterns the bridge may publish to.
     pub publish_targets: Vec<PublishTargetDef>,
     /// Every operation of every document, for extensions that bind to one.
     pub operations: OperationIndex,
-    /// The `x-mqtt-graphql` specification extension (views, mutations,
-    /// metadata and lifecycles) merged across the documents that carry one,
-    /// resolved against every document's operations; `None` when none does.
-    /// See [`crate::extension`].
+    /// The merged, resolved `x-mqtt-graphql` extension, if any document has one.
     pub extension: Option<GraphqlExtension>,
 }
 
+/// Load every AsyncAPI 3.0.0 spec in a directory in a single pass.
 pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     let docs = spec_documents(spec_dir)?;
     let mut object_types: ObjectTypeRegistry = ObjectTypeRegistry::new();
@@ -431,9 +386,7 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     let mut extension: Option<GraphqlExtension> = None;
 
     for (_, path, doc, components) in &docs {
-        // Direction comes from the operations: the bridge subscribes to what
-        // the described applications send and may publish where they receive.
-        // One topic can be both (THRS's control and API sides are one document).
+        // One topic can be both sent and received (THRS control and API share a document).
         let uses = channel_uses(doc);
         for (key, operation) in operations_from_document(doc, path)? {
             if operations.insert(key.clone(), operation).is_some() {
@@ -456,10 +409,7 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
         let doc_topics = topics_from_document(doc, path, &mut object_types, &uses)?;
         let doc_groups = groups_from_document(doc, path, &mut object_types, &uses)?;
 
-        // Wrap each spec with this doc's raw components so `$ref`s resolve.
-        // Topics and group patterns first, then per-field topics (which override
-        // the group pattern via the exact-topic-first lookup in
-        // `MqttSubscriber::validate_payload`).
+        // Per-field topics last so they override the group pattern at validation.
         for t in &doc_topics {
             if let Some(schema) = &t.payload_schema {
                 validators.push((t.topic.clone(), self_contained(schema, components)));
@@ -488,8 +438,6 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
         object_types.len(),
         spec_dir
     );
-    // The extension binds to operations of any loaded document, so it is
-    // resolved once every document is in.
     if let Some(extension) = &mut extension {
         extension.resolve(&operations, &groups).with_context(|| {
             format!(
@@ -517,10 +465,8 @@ pub fn load_specs_and_groups(spec_dir: &str) -> anyhow::Result<LoadedSpecs> {
     })
 }
 
-/// Make a payload schema compilable on its own: put it under `allOf` and attach
-/// the document's raw `components` at the root, so its `#/components/schemas/...`
-/// `$ref`s resolve. Returned unchanged when there are no components (already
-/// self-contained, e.g. in tests).
+/// Make a payload schema compilable on its own by attaching the document's
+/// `components` at the root.
 fn self_contained(schema: &Value, components: &Option<Arc<Value>>) -> Value {
     match components {
         Some(components) => json!({
@@ -531,9 +477,7 @@ fn self_contained(schema: &Value, components: &Option<Arc<Value>>) -> Value {
     }
 }
 
-/// Extract concrete topics from one document, erroring on unresolvable
-/// channel references. Only channels some application sends on become
-/// topics; a topic declared by several such channels is taken once.
+/// Extract concrete topics some application sends on from one document.
 fn topics_from_document(
     doc: &Document,
     path: &Path,
@@ -567,10 +511,7 @@ fn topics_from_document(
         .map(|topics| topics.into_iter().flatten().collect())
 }
 
-/// Extract parametrized groups from one document, erroring on unresolvable
-/// channel references or malformed parametrized channels. Only channels some
-/// application sends on become groups; a pattern declared by several such
-/// channels is taken once.
+/// Extract parametrized groups some application sends on from one document.
 fn groups_from_document(
     doc: &Document,
     path: &Path,
@@ -701,12 +642,7 @@ fn group_from_channel(
     }))
 }
 
-/// Expand the `x-{param}-schema` extension of the message (or, for older
-/// documents, of the channel) into a map of concrete topic to the schema that
-/// topic carries. Only single-parameter groups (one `+` in the pattern) are
-/// expanded: each value's schema is pinned to `pattern` with the `+` replaced
-/// by that value. Empty when there's no such extension or the pattern has
-/// more than one `+` (e.g. `power-tags/+/+`).
+/// Map each concrete topic to its `x-{param}-schema` schema; single-`+` patterns only.
 fn field_schemas_for(
     message: Option<&Message>,
     channel: &Channel,
@@ -734,10 +670,8 @@ fn field_schemas_for(
     out
 }
 
-/// Read and parse one file into an AsyncAPI 3.x `Document`, plus the file's raw
-/// `components` value. We keep components verbatim so JSON Schema constraints
-/// like `minimum`/`maximum` survive for the validators (the typed model drops
-/// them), and so payload schemas' `#/components/schemas/...` `$ref`s resolve.
+/// Read one AsyncAPI 3.x document plus its raw `components`, kept verbatim so
+/// constraints like `minimum` survive for the validators.
 ///
 /// Errors when the file is unreadable, not valid JSON, lacks an `asyncapi`
 /// version, or is not an AsyncAPI 3.x document — a spec directory is
@@ -789,11 +723,7 @@ fn param_name(segment: &str) -> Option<&str> {
 
 /// Parameter names in order: `power-tags/{panel}/{slug}` → `[panel, slug]`.
 ///
-/// Strips the trailing `:<Role>` operation suffix first (like
-/// [`group_identity`]). Otherwise the last segment of `.../{field}:Publisher` is
-/// `{field}:Publisher`, which `param_name` doesn't see as a placeholder, so the
-/// param gets dropped and per-field schema pinning
-/// (`field_schemas_from_channel`) never fires.
+/// Strips the `:<Role>` suffix first, else the last `{field}:Publisher` is missed.
 fn extract_params(address: &str) -> Vec<String> {
     let address = address
         .rsplit_once(':')
@@ -805,14 +735,9 @@ fn extract_params(address: &str) -> Vec<String> {
         .collect()
 }
 
-/// Group identity of an address: all of its static segments, so that
-/// `thrs/controller/{module}/parameters` and
-/// `thrs/controller/{module}/manual-values` are distinct groups
-/// (`thrs/controller/parameters`, `thrs/controller/manual-values`).
+/// Group identity of an address: all of its static segments.
 fn group_identity(address: &str) -> Option<String> {
-    // Addresses end in `:<Role>` (`controller-state:Publisher`,
-    // `{field}:Handler`) that names the AsyncAPI operation kind, not part
-    // of the topic path, so strip it first or it leaks into the group name.
+    // Strip `:<Role>` or it leaks into the group name.
     let address = address
         .rsplit_once(':')
         .map_or(address, |(path, _role)| path);
@@ -838,7 +763,7 @@ fn wildcard_from_address(address: &str) -> String {
         .join("/")
 }
 
-/// Extract scalar fields + payload schema from one message of a channel.
+/// Extract scalar fields and payload schema from one message of a channel.
 fn message_fields(
     message: Option<&Message>,
     doc: &Document,
@@ -1027,12 +952,7 @@ fn extract_fields_from_schema(
     doc: &Document,
     object_types: &mut ObjectTypeRegistry,
 ) -> Vec<FieldDef> {
-    // Groups with a per-{field} payload (adsorption etc, where one field
-    // is a TemperatureSensor and another a Valve) come through as a
-    // top-level `anyOf` of branch schemas instead of one `properties` map.
-    // Union all the branches into one wide column set. Each topic only
-    // fills in its own branch's columns, the rest stay null (group_row in
-    // graphql.rs).
+    // Per-{field} groups come as a top-level `anyOf`: union the branches into one column set.
     if schema.properties.is_empty() {
         if let Some(any_of) = &schema.any_of {
             return extract_fields_from_any_of(any_of, doc, object_types);
@@ -1059,13 +979,8 @@ fn extract_fields_from_schema(
         .collect()
 }
 
-/// Resolve one property's GraphQL type. Tries, in order: a `Stamped`
-/// envelope (`{ Value: <T>, TimeStamp: <string> }`; THRS wraps basically
-/// every value in one of these), encoded as `"Stamped:<T>"` and picked up by
-/// `graphql_type_ref` in graphql.rs and turned into the shared `Stamped<T>`
-/// type so we keep the timestamp instead of throwing it away); a plain
-/// scalar; and finally a composite object ref (`PidControllerValues` and
-/// friends) via `resolve_object_type`, same as before.
+/// Resolve one property's GraphQL type: a `Stamped` envelope (`"Stamped:<T>"`),
+/// a scalar, or a composite object ref.
 fn field_graphql_type(
     subschema: &SubSchema,
     doc: &Document,
@@ -1081,8 +996,7 @@ fn field_graphql_type(
     resolve_object_type(subschema, doc, object_types)
 }
 
-/// True if `subschema` is a Stamped envelope (properties exactly
-/// `{Value, TimeStamp}`). Returns its `Value` subschema if so.
+/// The `Value` subschema if `subschema` is a `{Value, TimeStamp}` envelope.
 fn stamped_value_subschema(subschema: &SubSchema, doc: &Document) -> Option<SubSchema> {
     let schema = resolve_subschema_to_schema(subschema, doc)?;
     let keys: BTreeSet<&str> = schema.properties.keys().map(String::as_str).collect();
@@ -1092,16 +1006,8 @@ fn stamped_value_subschema(subschema: &SubSchema, doc: &Document) -> Option<SubS
     schema.properties.get("Value").cloned()
 }
 
-/// Resolve `subschema` as a named composite object (not a scalar, not
-/// Stamped) and register it once in `object_types`, recursing into its own
-/// properties. Returns the `"Object:<Name>"` marker for `graphql_type_ref`,
-/// or `None` if it has no title or no fields (e.g. `AdsorptionControllerState`
-/// is legitimately empty for modules without PID/tank controllers, and you
-/// can't make a GraphQL type with zero fields, so that field just gets
-/// skipped).
-///
-/// Inserts a placeholder before recursing so a self-referential schema
-/// can't loop forever.
+/// Register `subschema` as a named object type and return its `"Object:<Name>"` marker;
+/// `None` without a title or fields (GraphQL types need at least one field).
 fn resolve_object_type(
     subschema: &SubSchema,
     doc: &Document,
@@ -1126,15 +1032,8 @@ fn resolve_object_type(
     Some(format!("Object:{name}"))
 }
 
-/// Union the properties of every `anyOf` branch into one field list --
-/// first occurrence of a field name wins. Branches with an unresolvable
-/// `$ref` are just skipped.
-///
-/// Two branches sharing a field name with the same type is fine (e.g.
-/// `Setpoint` on both `Valve` and `Pump`). Same name, different type, or
-/// two different names colliding after sanitization: that's a real
-/// conflict and `validate_topic_fields` catches it later, not silently
-/// dropped here.
+/// Union the properties of every `anyOf` branch; the first occurrence of a name wins.
+/// Type conflicts are reported by `validate_topic_fields`.
 fn extract_fields_from_any_of(
     any_of: &[SubSchema],
     doc: &Document,
@@ -1152,9 +1051,7 @@ fn extract_fields_from_any_of(
     merged.into_values().collect()
 }
 
-/// Resolve a subschema (inline or `$ref`) to its concrete `Schema`. Same
-/// resolution as `graphql::graphql_type_for_subschema`, just returns the
-/// schema itself instead of a mapped scalar type.
+/// Resolve a subschema (inline or `$ref`) to its concrete `Schema`.
 fn resolve_subschema_to_schema(sub: &SubSchema, doc: &Document) -> Option<Schema> {
     match sub {
         SubSchema::Bool(_) => None,
@@ -1200,9 +1097,7 @@ fn ttl_from_value(v: Option<&Value>) -> Option<u64> {
     }
 }
 
-/// Parse an `x-ttl` string: plain seconds (`"300"`), a suffixed form
-/// (`"30s"`, `"5m"`, `"1h"`) or `"unbounded"` (the value never expires).
-/// Logs and returns `None` on unsupported values.
+/// Parse an `x-ttl` string: seconds, `30s`/`5m`/`1h`, or `unbounded`.
 fn parse_ttl_str(s: &str) -> Option<u64> {
     if let Ok(n) = s.parse::<u64>() {
         return Some(n);
@@ -1233,6 +1128,83 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
     }
 }
 
+/// Derive a GraphQL scalar type name from a (possibly `$ref`'d) subschema.
+fn graphql_type_for_subschema(sub: &SubSchema, doc: &Document) -> Option<String> {
+    match sub {
+        SubSchema::Bool(_) => None,
+        SubSchema::Schema(boxed) => match boxed.as_ref() {
+            RefOr::Item(schema) => type_from_schema(schema, doc),
+            RefOr::Reference(r) => {
+                let key = r.component_key("schemas")?;
+                let entry = doc.components.as_ref()?.schemas.get(&key)?;
+                let resolved = entry.item()?;
+                match resolved {
+                    SchemaOrMultiFormat::Schema(s) => type_from_schema(s, doc),
+                    SchemaOrMultiFormat::MultiFormat(mf) => {
+                        let schema: Schema = serde_json::from_value(mf.schema.clone()).ok()?;
+                        type_from_schema(&schema, doc)
+                    }
+                    SchemaOrMultiFormat::Bool(_) => None,
+                }
+            }
+        },
+    }
+}
+
+fn type_from_schema(schema: &Schema, doc: &Document) -> Option<String> {
+    if let Some(schema_type) = &schema.schema_type {
+        return match schema_type {
+            SchemaType::Single(t) => map_json_type_to_graphql(t),
+            SchemaType::Multiple(types) => {
+                for t in types {
+                    if t == "null" {
+                        continue;
+                    }
+                    if let Some(gql) = map_json_type_to_graphql(t) {
+                        return Some(gql.to_string());
+                    }
+                }
+                None
+            }
+        };
+    }
+
+    // Handle nullable via anyOf / oneOf / allOf
+    if let Some(any_of) = &schema.any_of {
+        for sub in any_of {
+            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+                return Some(t);
+            }
+        }
+    }
+    if let Some(one_of) = &schema.one_of {
+        for sub in one_of {
+            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+                return Some(t);
+            }
+        }
+    }
+    if let Some(all_of) = &schema.all_of {
+        for sub in all_of {
+            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+                return Some(t);
+            }
+        }
+    }
+
+    None
+}
+
+fn map_json_type_to_graphql(t: &str) -> Option<String> {
+    match t {
+        "number" => Some("Float".to_string()),
+        "integer" => Some("Int".to_string()),
+        "boolean" => Some("Boolean".to_string()),
+        "string" => Some("String".to_string()),
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1259,10 +1231,7 @@ mod tests {
 
     #[test]
     fn test_extract_params_strips_operation_role_suffix() {
-        // Channel addresses end in a `:<Role>` suffix (`{field}:Publisher`).
-        // Without stripping it the last placeholder reads as `{field}:Publisher`,
-        // not a param, so the list comes back empty and per-field pinning never
-        // fires (regression: group payloads then only hit the anyOf union).
+        // The `:<Role>` suffix must not hide the last placeholder.
         assert_eq!(
             extract_params("simulation/500000-thrs/thrusters/{field}:Publisher"),
             vec!["field".to_string()],

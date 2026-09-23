@@ -1,27 +1,12 @@
-//! Reading GraphQL shapes off JSON Schema payloads.
-//!
-//! The `x-mqtt-graphql` extension never repeats what a message schema already
-//! says: which keys an object carries, their scalar types, nullability,
-//! numeric bounds, enum members and defaults all come from the document's
-//! `components.schemas`. This module walks a payload schema (as the document
-//! carries it: `$ref`s into `components`, `anyOf` for nullability, pydantic's
-//! `{Value, TimeStamp}` envelopes) and classifies each property, so the
-//! extension only has to name the GraphQL side.
-//!
-//! Enum member names are read from `x-enum-varnames` (the vendor extension
-//! OpenAPI tooling uses for the same purpose), aligned with the `enum` list;
-//! cross-field rules from `x-invariants` and mirrored components from
-//! `x-derived` (both documented in `README.md`).
-
 use std::collections::BTreeMap;
 
 use anyhow::Context;
 use serde::Deserialize;
 use serde_json::Value;
 
-use crate::mutations_view::{Bounds, DerivedFieldDef, InvariantDef};
+use crate::model::mutations::{Bounds, DerivedFieldDef, InvariantDef};
 
-/// The `x-*` schema extensions this module reads.
+/// Enum member names, aligned with `enum` (the OpenAPI vendor convention).
 pub const ENUM_NAMES_KEY: &str = "x-enum-varnames";
 pub const INVARIANTS_KEY: &str = "x-invariants";
 pub const DERIVED_KEY: &str = "x-derived";
@@ -47,8 +32,7 @@ impl<'a> Components<'a> {
         Self { components }
     }
 
-    /// Follow a `$ref` (once) to the schema it names; an inline schema is
-    /// returned as-is. A dangling reference is an error.
+    /// Follow a `$ref` once; an inline schema is returned as-is.
     pub fn deref<'s>(&self, schema: &'s Value) -> anyhow::Result<&'s Value>
     where
         'a: 's,
@@ -77,8 +61,7 @@ impl<'a> Components<'a> {
             .unwrap_or_default())
     }
 
-    /// The (non-null) subschema of a property and whether the property is
-    /// nullable: `anyOf: [X, {type: null}]` -> `(X, true)`.
+    /// The non-null subschema of a property and whether it is nullable.
     fn unwrap_nullable<'s>(&self, schema: &'s Value) -> (&'s Value, bool)
     where
         'a: 's,
@@ -212,10 +195,7 @@ fn stamped_value(schema: &Value) -> Option<&Value> {
     properties.get("Value")
 }
 
-/// The GraphQL scalar for a JSON Schema scalar (or list of scalars). An
-/// enum schema maps to `String` (the API serves member names); the enum
-/// itself is read by [`enum_of`]. A `date-time` string is the `DateTime`
-/// scalar.
+/// The GraphQL scalar for a JSON Schema scalar (or list); enums map to `String`.
 pub fn scalar_type(schema: &Value) -> Option<String> {
     if schema.get(ENUM_NAMES_KEY).is_some() {
         return Some("String".to_string());
@@ -241,11 +221,8 @@ pub fn scalar_type(schema: &Value) -> Option<String> {
     }
 }
 
-/// The GraphQL enum an `enum` schema declares, when it names its members:
-/// `title` names the GraphQL enum and the `enum` values pair with
-/// `x-enum-varnames` as the member names. A schema without `enum`, or an
-/// `enum` without member names (a closed set of plain strings), is `None`:
-/// the API serves those values as they are.
+/// The GraphQL enum a schema declares via `title` and `x-enum-varnames`;
+/// `None` for plain-string enums, which are served as-is.
 pub fn enum_of(schema: &Value) -> anyhow::Result<Option<EnumDef>> {
     let (Some(values), Some(names)) = (
         schema.get("enum").and_then(Value::as_array),
@@ -280,8 +257,7 @@ pub fn enum_of(schema: &Value) -> anyhow::Result<Option<EnumDef>> {
     }))
 }
 
-/// The map key for a wire enum value: strings as-is, anything else in its
-/// JSON rendering (`0` -> `"0"`).
+/// The map key for a wire enum value (`0` -> `"0"`).
 fn wire_key_of(value: &Value) -> String {
     match value {
         Value::String(s) => s.clone(),

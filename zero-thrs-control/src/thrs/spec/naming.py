@@ -1,11 +1,4 @@
-"""How the THRS control API names things in GraphQL.
-
-The API's schema is generated from the pydantic models; these are the rules
-that generation follows, stated once so the published contract
-(``thrs.spec``) names every field, type, input and mutation exactly as the
-API serves it without introspecting the API. ``tests/spec`` checks the two
-against each other for as long as both exist.
-"""
+"""How the THRS control API names things in GraphQL, so the spec matches without introspection."""
 
 from enum import Enum
 from types import ModuleType
@@ -19,8 +12,7 @@ from thrs.input_output.definitions import (
     system,
 )
 
-# The shared component definitions get a type per exported class, prefixed
-# by the module it is defined in (`control.Pump` -> `ControlPumpType`).
+# `control.Pump` -> `ControlPumpType`.
 DEFINITION_PREFIXES: dict[ModuleType, str] = {
     sensor: "Sensor",
     control: "Control",
@@ -34,17 +26,16 @@ INPUT_TYPE_SUFFIX = "InputType"
 
 
 def field_name(python_name: str) -> str:
-    """The GraphQL name of a python field, argument or mutation: lowerCamelCase
-    of its snake_case name (``sensor_values`` -> ``sensorValues``)."""
+    """The lowerCamelCase GraphQL name of a snake_case python name."""
     head, *rest = python_name.split("_")
     return head + "".join(word.capitalize() if word else "_" for word in rest)
 
 
 def registered_model(cls: type[ThrsValues]) -> type[ThrsValues]:
-    """The model a component's GraphQL type is generated from: the class
-    itself when its definitions module exports it (or when it is no shared
-    definition at all), else the nearest exported base. An unexported subclass
-    (``PropulsionDrive(HeatSource)``) is served as its base's type."""
+    """The class, or its nearest base exported by a definitions module.
+
+    An unexported subclass (``PropulsionDrive(HeatSource)``) is served as its base's type.
+    """
     for base in cls.__mro__:
         module = _definitions_module(base)
         if module is None:
@@ -55,8 +46,7 @@ def registered_model(cls: type[ThrsValues]) -> type[ThrsValues]:
 
 
 def type_name(cls: type[ThrsValues]) -> str:
-    """The GraphQL object type of a model: ``<Class>Type``, prefixed by its
-    definitions module for a shared component (``ControlPumpType``)."""
+    """The GraphQL object type of a model (``ControlPumpType``)."""
     model = registered_model(cls)
     module = _definitions_module(model)
     prefix = DEFINITION_PREFIXES[module] if module is not None else ""
@@ -64,9 +54,7 @@ def type_name(cls: type[ThrsValues]) -> str:
 
 
 def input_type_name(component_cls: type[ThrsValues]) -> str:
-    """The GraphQL input type a component mutation takes: the unstamped
-    component, named after the component class itself (``PumpInputType``).
-    Two components sharing a class name share the input type."""
+    """The GraphQL input type of a component mutation; shared by same-named classes."""
     return f"{component_cls.__name__}{INPUT_TYPE_SUFFIX}"
 
 
@@ -76,8 +64,7 @@ def enum_type_name(enum_cls: type[Enum]) -> str:
 
 
 def generic_type_name(generic: str, *arguments: str) -> str:
-    """The name of a specialised generic type: the argument type names joined,
-    then the generic's name (``FloatStampedType``, ``<...>ControlModule``)."""
+    """The name of a specialised generic type (``FloatStampedType``)."""
     return "".join(arguments) + generic
 
 
@@ -104,8 +91,7 @@ def control_module_type_name(
     control_mode_cls: type[ThrsValues],
     controller_state_cls: type[ThrsValues],
 ) -> str:
-    """The type of one member of the ``modules`` query: the generic
-    ``ControlModule`` specialised by the module's five section types."""
+    """The type of one member of the ``modules`` query."""
     return generic_type_name(
         "ControlModule",
         *_control_module_arguments(
@@ -125,10 +111,10 @@ def switching_control_mode_type_name(
     control_mode_cls: type[ThrsValues],
     controller_state_cls: type[ThrsValues],
 ) -> str:
-    """The type of a module's ``controlMode`` section. It is the generic
-    ``SwitchingControlModeType[Mode]`` nested in ``ControlModule``, and a
-    generic nested in another is specialised (and so named) by the outer
-    generic's full argument list, not by its own one argument."""
+    """The type of a module's ``controlMode`` section.
+
+    As a generic nested in ``ControlModule``, it is named by the outer generic's arguments.
+    """
     return generic_type_name(
         "SwitchingControlModeType",
         *_control_module_arguments(

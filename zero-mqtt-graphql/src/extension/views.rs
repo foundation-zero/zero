@@ -1,12 +1,3 @@
-//! The `views` of the extension: what a document declares for a composite
-//! read view, and how it resolves to the runtime [`ViewDef`].
-//!
-//! A section names its GraphQL type; that type's declared schema (see
-//! [`super::TypeIndex`]) supplies the fields. The document only adds what the
-//! schema cannot say: which operation feeds a field, and — where the rule
-//! does not hold — a field's GraphQL name, its type, or the wire keys a
-//! device payload uses instead of the type's own.
-
 use std::collections::BTreeMap;
 
 use anyhow::Context;
@@ -14,56 +5,45 @@ use roas_asyncapi::v3_0::operation::OperationAction;
 use serde::Deserialize;
 
 use super::{MutationSpec, OperationRef, ResolvedType, Resolver};
-use crate::naming::field_name;
-use crate::schema::Property;
-use crate::views::{
+use crate::model::views::{
     MemberDef, ObjectFieldDef, ObjectSection, ObjectSectionDef, PlainFieldDef, PlainObjectDef,
     SectionDef, StampedFieldDef, StampedFieldsSection, SwitchSection, SwitchSectionDef, ViewDef,
 };
+use crate::naming::field_name;
+use crate::schema::Property;
 
-/// One field of a `stampedFields` section: fed by one `send` operation.
+/// Input for a [`StampedFieldDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StampedFieldSpec {
-    /// GraphQL field name under the section, e.g. `thrustersFlowAft`.
     pub gql: String,
-    /// The `send` operation whose messages back this field.
     pub operation: OperationRef,
-    /// The component's GraphQL type. Default: the type served from the
-    /// operation's payload schema.
+    /// Default: the type of the operation's payload schema.
     #[serde(default)]
     pub type_name: Option<String>,
-    /// Whether the producer derives this field from others (a computed value
-    /// it publishes like any other). Diagnostic only.
     #[serde(default)]
     pub computed: bool,
 }
 
-/// What a document adds to one property of an `object` section's type.
+/// Overrides for one property of an `object` section's type; the fields themselves come from the schema.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ObjectFieldSpec {
-    /// The property's wire key in the section object.
     pub key: String,
-    /// GraphQL field name. Default: [`field_name`] of the key.
+    /// Default: [`field_name`] of the key.
     #[serde(default)]
     pub gql: Option<String>,
-    /// For a component: its GraphQL type. Default: the type served from the
-    /// property's schema.
+    /// Default: the type of the property's schema.
     #[serde(default)]
     pub type_name: Option<String>,
-    /// For a component of a per-topic section: the `send` operation whose
-    /// messages carry this component alone.
     #[serde(default)]
     pub operation: Option<OperationRef>,
-    /// For a component read off a device payload that keys a leaf differently
-    /// than the type's schema: type key -> device key (`Dutypoint` ->
-    /// `CC_DutyPoint`).
+    /// Type key -> device payload key, e.g. `Dutypoint` -> `CC_DutyPoint`.
     #[serde(default)]
     pub wire_keys: BTreeMap<String, String>,
 }
 
-/// One named section of a view member.
+/// Input for a [`SectionDef`].
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum SectionSpec {
@@ -82,27 +62,23 @@ impl SectionSpec {
     }
 }
 
-/// A section of one topic per stamped field.
+/// Input for a [`StampedFieldsSection`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StampedFieldsSpec {
-    /// GraphQL field name of the section under the member, e.g. `sensorValues`.
     pub gql: String,
-    /// GraphQL type name of the section object (a container: its fields are
-    /// the ones listed here, so it needs no schema).
+    /// A container type: its fields are listed here, so it needs no schema.
     pub type_name: String,
     #[serde(default)]
     pub fields: Vec<StampedFieldSpec>,
 }
 
-/// A whole-object section (one `send` operation carrying the whole object)
-/// or, without an operation, a per-topic section whose component fields
-/// each name their own.
+/// Input for an [`ObjectSectionDef`]; without an operation, each component names its own.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ObjectSectionSpec {
     pub gql: String,
-    /// The declared type the section object is served as.
+    /// The declared type whose schema supplies the fields.
     pub type_name: String,
     #[serde(default)]
     pub operation: Option<OperationRef>,
@@ -110,32 +86,26 @@ pub struct ObjectSectionSpec {
     pub fields: Vec<ObjectFieldSpec>,
 }
 
-/// A `switch` section: one object on a topic whose `key` holds a plain
-/// object or null, exposed as a flag plus the object.
+/// Input for a [`SwitchSectionDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct SwitchSectionSpec {
     pub gql: String,
-    /// GraphQL type name of the section object.
     pub type_name: String,
     pub operation: OperationRef,
-    /// The wire key of the switched object inside the payload.
     pub key: String,
-    /// GraphQL name of the derived Boolean field.
     pub flag_field: String,
-    /// GraphQL name of the object field.
     pub object_field: String,
     /// The declared type of the switched object.
     pub object_type_name: String,
 }
 
-/// One member of a view.
+/// Input for a [`MemberDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct MemberSpec {
-    /// GraphQL field name under the view object, e.g. `thrusters`.
     pub gql: String,
-    /// GraphQL type name of the member object (a container).
+    /// A container type; needs no schema.
     pub type_name: String,
     #[serde(default)]
     pub sections: Vec<SectionSpec>,
@@ -143,20 +113,19 @@ pub struct MemberSpec {
     pub mutations: Vec<MutationSpec>,
 }
 
-/// A composite read view: a query field whose object has one field per
-/// member.
+/// Input for a [`ViewDef`].
 #[derive(Debug, Clone, Default, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ViewSpec {
-    /// The query field, e.g. `modules`.
     pub gql: String,
-    /// GraphQL type name of the view object (a container).
+    /// A container type; needs no schema.
     pub type_name: String,
     #[serde(default)]
     pub members: Vec<MemberSpec>,
 }
 
 impl ViewSpec {
+    /// Resolve operations and types into the runtime view.
     pub fn resolve(&self, resolver: &Resolver<'_>) -> anyhow::Result<ViewDef> {
         let members = self
             .members
@@ -276,10 +245,7 @@ impl StampedFieldSpec {
 }
 
 impl ObjectSectionSpec {
-    /// Resolve the section: every property of the section's type becomes a
-    /// field (a scalar, or a component with the leaves of its own type), with
-    /// the document's per-field additions applied by key. A `per_topic`
-    /// section has no operation of its own: every component names one.
+    /// Every property of the section's type becomes a field, with `fields` overrides applied by key.
     pub fn resolve(
         &self,
         resolver: &Resolver<'_>,
@@ -314,12 +280,7 @@ impl ObjectSectionSpec {
     }
 }
 
-/// One property of a section type as a field. A scalar property is a flat
-/// field; an object property is a component whose leaves come from its own
-/// declared type (found by its schema, or named by `spec`). A component
-/// without stamped leaves (an empty controller state) is no field, like the
-/// producer's API. In a per-topic section every component names the
-/// operation that carries it.
+/// One property as a field; a component without stamped leaves is skipped, as the producer's API does.
 fn object_field(
     key: &str,
     property: &Property,
@@ -383,8 +344,7 @@ fn object_field(
     }
 }
 
-/// A plain (non-stamped) object type as the runtime describes it: scalar
-/// fields and nested objects, each nested one found by its schema.
+/// A plain (non-stamped) object type, nested objects resolved by their schema.
 pub fn plain_object(
     plain_type: &ResolvedType,
     resolver: &Resolver<'_>,

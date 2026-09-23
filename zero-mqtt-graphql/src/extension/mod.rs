@@ -1,37 +1,3 @@
-//! The `x-mqtt-graphql` AsyncAPI specification extension.
-//!
-//! Everything the bridge serves beyond one query field per topic is
-//! declared in one root-level specification extension of the AsyncAPI
-//! document:
-//!
-//! ```json
-//! {
-//!   "asyncapi": "3.0.0", "channels": {...}, "operations": {...},
-//!   "components": {"schemas": {...}},
-//!   "x-mqtt-graphql": {
-//!     "version": 2,
-//!     "types": {...},        // GraphQL object types <- payload schemas    (this module)
-//!     "views": [...],        // composite read views + their mutations  (views, mutations)
-//!     "metadata": [...],     // instances of a parametrized channel      (this module)
-//!     "lifecycles": [...]    // status + directives                      (lifecycles)
-//!   }
-//! }
-//! ```
-//!
-//! The extension names the GraphQL side only. Every field name, type name,
-//! wire key, scalar type, nullability, bound, enum member and default of what
-//! is read or written comes from the document itself: a `types` entry pairs
-//! a GraphQL object type with the payload schema it is served from, and the
-//! properties of that schema are its fields ([`crate::schema`]). The
-//! extension never names a topic either: every read binds to a `send`
-//! operation and every write to a `receive` operation of the document
-//! ([`OperationRef`]), resolved to topics at load; a wrong direction, unknown
-//! operation, missing parameter or unknown type is a load error.
-//!
-//! This module holds the *document model* (what is deserialized) and turns
-//! it into the *runtime model* the resolvers use ([`crate::views`],
-//! [`crate::mutations_view`], [`crate::lifecycle_view`]).
-
 mod lifecycles;
 mod mutations;
 mod views;
@@ -45,13 +11,13 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use crate::asyncapi::{OperationDef, OperationIndex, TopicGroupDef};
-use crate::lifecycle_view::LifecycleDef;
 use crate::metadata::{MetadataFile, TopicMetadataEntry};
+use crate::model::lifecycle::LifecycleDef;
+use crate::model::mutations::{DerivedFieldDef, InvariantDef};
+use crate::model::views::{LeafDef, ViewDef};
 use crate::model_validation::ModelSchema;
-use crate::mutations_view::{DerivedFieldDef, InvariantDef};
 use crate::naming::field_name;
 use crate::schema::{schema_ref, Components, Property};
-use crate::views::{LeafDef, ViewDef};
 
 pub use lifecycles::LifecycleSpec;
 pub use mutations::MutationSpec;
@@ -63,8 +29,7 @@ pub const EXTENSION_KEY: &str = "x-mqtt-graphql";
 /// The extension version this bridge reads.
 pub const EXTENSION_VERSION: u64 = 2;
 
-/// A binding to one operation of the document: the operation key and the
-/// value of every `{parameter}` in its channel's address.
+/// A binding to one operation plus a value for every `{parameter}` in its address.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct OperationRef {
@@ -74,8 +39,7 @@ pub struct OperationRef {
 }
 
 impl OperationRef {
-    /// The concrete topic of this binding, provided the operation exists and
-    /// has the expected direction.
+    /// The concrete topic, provided the operation exists and has the expected direction.
     pub fn resolve(
         &self,
         operations: &OperationIndex,
@@ -87,8 +51,7 @@ impl OperationRef {
             .with_context(|| format!("operation '{}'", self.operation))
     }
 
-    /// The operation this binding names, provided it has the expected
-    /// direction.
+    /// The operation, provided it has the expected direction.
     pub fn operation<'a>(
         &self,
         operations: &'a OperationIndex,
@@ -116,37 +79,31 @@ fn action_name(action: OperationAction) -> &'static str {
     }
 }
 
-/// One GraphQL object type as the document declares it: the payload schema
-/// it is served from.
+/// One GraphQL object type as the document declares it.
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeSpec {
-    /// The payload schema (a `$ref` into `components.schemas`, or inline)
-    /// whose properties are the type's fields.
+    /// The payload schema (`$ref` or inline) whose properties are the type's fields.
     pub schema: Value,
 }
 
-/// A declared type with its schema read: the classified properties and the
-/// schema's own `x-invariants` / `x-derived`.
+/// A declared type with its schema read, including its `x-invariants` / `x-derived`.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ResolvedType {
     pub name: String,
     /// The document the schema belongs to.
     pub document: String,
-    /// The `$ref` the type is declared with, if it is a reference.
     pub reference: Option<String>,
-    /// The properties of the schema, in document order, classified.
+    /// Classified properties in document order.
     pub properties: Vec<(String, Property)>,
     pub invariants: Vec<InvariantDef>,
     pub derived: Vec<DerivedFieldDef>,
-    /// The schema as a pydantic model, for validating writes.
+    /// Validates writes as the producer does.
     pub model: ModelSchema,
 }
 
 impl ResolvedType {
-    /// The `{value, timestamp}` leaves of a stamped component type: one per
-    /// stamped property, named by [`field_name`]. Other properties are not
-    /// leaves (a component carries stamped values only).
+    /// One `{value, timestamp}` leaf per stamped property; other properties are ignored.
     pub fn leaves(&self, wire_keys: &BTreeMap<String, String>) -> Vec<LeafDef> {
         self.properties
             .iter()
@@ -176,11 +133,8 @@ impl ResolvedType {
     }
 }
 
-/// Every declared type by name, plus the reverse map from a schema reference
-/// to the type served from it (so a property or an operation payload that
-/// `$ref`s a schema finds its type without the extension repeating the pair),
-/// plus each document's `components` for payloads that are no declared type
-/// (a status object, a directive message).
+/// Declared types by name and by schema `$ref`, plus each document's `components`
+/// for payloads that are no declared type.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct TypeIndex {
     types: BTreeMap<String, ResolvedType>,
@@ -188,8 +142,7 @@ pub struct TypeIndex {
     components: BTreeMap<String, Value>,
 }
 
-/// Read one schema as a type: its classified properties and its own
-/// `x-invariants` / `x-derived`.
+/// Read one schema as a type.
 fn read_type(
     name: &str,
     schema: &Value,
@@ -276,8 +229,7 @@ impl TypeIndex {
             .and_then(|name| self.types.get(name))
     }
 
-    /// The type served from an operation's payload (for the given
-    /// parameters): the declared type whose schema the payload `$ref`s.
+    /// The declared type whose schema an operation's payload `$ref`s.
     pub fn declared_for_operation(
         &self,
         operation: &OperationDef,
@@ -296,10 +248,7 @@ impl TypeIndex {
             .with_context(|| format!("no declared type is served from '{reference}'"))
     }
 
-    /// The shape of an operation's payload (for the given parameters): the
-    /// declared type served from it when there is one, else the schema read
-    /// on its own (a payload that is no GraphQL type of its own, such as a
-    /// status object or a directive message).
+    /// An operation payload's declared type, else its schema read on its own.
     pub fn for_operation(
         &self,
         operation: &OperationDef,
@@ -317,10 +266,8 @@ impl TypeIndex {
             .with_context(|| format!("payload of operation on '{}'", operation.address))
     }
 
-    /// The shape of a nested-object property: the declared type served from
-    /// its schema when there is one, else the schema read on its own (a
-    /// component served as its base's type still carries its own fields on
-    /// the wire, which is what a write of it must supply).
+    /// A nested property's own schema shape: a component served as its base's type
+    /// still carries its own fields on the wire, which a write must supply.
     pub fn shape_of_property(
         &self,
         document: &str,
@@ -366,18 +313,14 @@ impl TypeIndex {
     }
 }
 
-/// What every resolve step needs: the operations of every document and the
-/// declared types.
+/// What every resolve step needs.
 pub struct Resolver<'a> {
     pub operations: &'a OperationIndex,
     pub types: &'a TypeIndex,
     pub validation_error_url: &'a str,
 }
 
-/// The instances of one parametrized channel with their static attributes:
-/// the channel's `send` operation (whose address has exactly one parameter)
-/// and, per parameter value, the attributes. Resolves to the same shape as a
-/// `*-metadata.json` file ([`MetadataFile`]), which the list queries use.
+/// Static attributes per instance of a one-parameter `send` channel; resolves to a [`MetadataFile`].
 #[derive(Debug, Clone, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InstancesDef {
@@ -410,7 +353,7 @@ impl InstancesDef {
                 params.len()
             );
         };
-        // The group identity the loader gives the channel (`group_identity`).
+        // Must match the loader's `group_identity`.
         let group = segments
             .iter()
             .filter(|s| !s.starts_with('{'))
@@ -448,7 +391,6 @@ impl InstancesDef {
 struct ExtensionDocument {
     #[serde(default)]
     version: u64,
-    /// The documentation link base the producer's validation errors carry.
     #[serde(default)]
     validation_error_url: String,
     #[serde(default)]
@@ -461,31 +403,28 @@ struct ExtensionDocument {
     lifecycles: Vec<LifecycleSpec>,
 }
 
-/// The parsed extension: the declarations of every document that carries
-/// one, with their types read, waiting for [`GraphqlExtension::resolve`].
+/// The `x-mqtt-graphql` extension of every document, unresolved until [`GraphqlExtension::resolve`].
+/// Reads bind to `send` and writes to `receive` operations; names and types all come from the schemas.
 #[derive(Debug, Clone, Default)]
 pub struct GraphqlExtension {
     pub version: u64,
-    /// The documentation link base of the producer's validation errors (see
-    /// [`crate::model_validation`]).
+    /// Documentation link base the producer's validation errors carry.
     pub validation_error_url: String,
     pub types: TypeIndex,
     declared_views: Vec<ViewSpec>,
     declared_lifecycles: Vec<LifecycleSpec>,
     pub metadata: Vec<InstancesDef>,
-    /// The views, resolved (filled by `resolve`).
+    /// Filled by `resolve`.
     pub views: Vec<ViewDef>,
-    /// The lifecycles, resolved (filled by `resolve`).
+    /// Filled by `resolve`.
     pub lifecycles: Vec<LifecycleDef>,
-    /// `metadata` resolved against the document (filled by `resolve`).
+    /// Filled by `resolve`.
     pub metadata_files: Vec<MetadataFile>,
 }
 
 impl GraphqlExtension {
-    /// Resolve every operation binding to its topic, every type reference to
-    /// its fields, and check the invariants the resolvers rely on. `groups`
-    /// are the subscribed topic groups, one of which every metadata entry
-    /// must enumerate.
+    /// Resolve bindings to topics and types to fields, and validate. Each metadata entry
+    /// must enumerate one of `groups`.
     pub fn resolve(
         &mut self,
         operations: &OperationIndex,
@@ -529,8 +468,7 @@ impl GraphqlExtension {
         Ok(())
     }
 
-    /// Fold another document's extension into this one. Every document must
-    /// declare the same extension version.
+    /// Fold another document's extension into this one; versions must match.
     pub fn merge(&mut self, other: GraphqlExtension) -> anyhow::Result<()> {
         if self.version == 0 {
             self.version = other.version;
@@ -555,9 +493,7 @@ impl GraphqlExtension {
         Ok(())
     }
 
-    /// The distinct topics the read side needs cached: every view section,
-    /// every lifecycle status/object, and (when mutations are served) every
-    /// mutation's state object.
+    /// The distinct topics the read side caches, including mutation state topics when mutations are served.
     pub fn read_topics(&self, with_mutations: bool) -> Vec<String> {
         let mut topics: Vec<String> = Vec::new();
         let mut push = |topic: String| {
@@ -615,9 +551,7 @@ impl GraphqlExtension {
     }
 }
 
-/// Parse the (unresolved) extension from a document's root extensions
-/// (`Document::extensions`), reading its declared types against the
-/// document's `components`; `None` when the document has none.
+/// Parse the unresolved extension from a document's root extensions; `None` when it has none.
 pub fn parse_extension(
     extensions: Option<&BTreeMap<String, Value>>,
     components: Option<&Value>,
@@ -645,9 +579,7 @@ pub fn parse_extension(
 
 #[cfg(test)]
 pub(crate) mod fixtures {
-    //! One small document shared by the extension tests: a device channel with
-    //! one stamped sensor per `{field}`, a controller parameters object with
-    //! its set topic, and the types served from them.
+    // One small document shared by the extension tests.
 
     use super::*;
     use serde_json::json;

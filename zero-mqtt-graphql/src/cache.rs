@@ -7,23 +7,16 @@ use serde_json::Value;
 use crate::asyncapi::{TopicDef, TopicGroupDef};
 
 struct Entry {
-    /// The payload as the GraphQL field resolvers read it (nested objects
-    /// flattened one level, see [`flatten_payload`]).
+    /// The payload for field resolution (flattened, see [`flatten_payload`]).
     value: Value,
-    /// The payload exactly as published, for consumers that republish or
-    /// type-match the whole object (mutations, union resolution).
+    /// The payload exactly as published, for whole-object consumers.
     raw: Value,
     inserted: Instant,
     ttl_secs: u64,
 }
 
-/// Flatten one level of nested objects into the top-level payload for field
-/// resolution.
-///
-/// Services such as hull-temperature publish `{"temperatures": {sensor: value}}`
-/// while their AsyncAPI spec lists the nested keys as top-level fields, so the
-/// GraphQL schema expects them at the top level. Existing top-level keys win on
-/// collision; the wrapper key is kept so the raw payload stays visible.
+/// Flatten one level of nested objects for field resolution: specs list nested
+/// keys as top-level fields. Top-level keys win; the wrapper key is kept.
 pub(crate) fn flatten_payload(value: Value) -> Value {
     let Value::Object(map) = &value else {
         return value;
@@ -104,9 +97,7 @@ impl TopicCache {
             .unwrap_or(self.default_ttl_secs)
     }
 
-    /// Insert or overwrite the cached payload for a topic. The payload is
-    /// kept as published ([`get_raw`](Self::get_raw)) and, for field
-    /// resolution, flattened one level ([`get`](Self::get)).
+    /// Insert or overwrite the cached payload for a topic.
     pub fn insert(&self, topic: &str, payload: Value) {
         let ttl = self.ttl_for(topic);
         self.data.insert(
@@ -120,17 +111,14 @@ impl TopicCache {
         );
     }
 
-    /// Get the full cached payload for a topic (nested objects flattened one
-    /// level for field resolution), or `None` if missing or expired.
+    /// The flattened cached payload for a topic, or `None` if missing or expired.
     pub fn get(&self, topic: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         Some(entry.value.clone())
     }
 
-    /// Get the cached payload exactly as it was published (no flattening),
-    /// or `None` if missing or expired. A whole-object republish (a mutation)
-    /// must start from this, not from the flattened view, or it would add the
-    /// flattened keys as spurious top-level fields.
+    /// The cached payload as published, or `None` if missing or expired. Mutations
+    /// republish from this so flattened keys don't leak in.
     pub fn get_raw(&self, topic: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         Some(entry.raw.clone())
