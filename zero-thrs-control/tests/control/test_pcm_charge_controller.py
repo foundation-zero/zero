@@ -50,6 +50,9 @@ def _device(
         temperature_supply=Stamped(value=inlet, timestamp=timestamp),
         temperature_return=Stamped(value=outlet, timestamp=timestamp),
         flow=Stamped(value=flow, timestamp=timestamp),
+        temperature_supply_source="inlet",
+        temperature_return_source="outlet",
+        flow_source="flow",
         heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
     )
 
@@ -245,7 +248,7 @@ def test_freshwater_circuit_discharges_module1():
 def test_heating_element_charges_a_module_with_nothing_flowing():
     """Module 1's element heats the cell directly, so no circuit ever sees it."""
     clock = Clock()
-    controller = ChargeController(
+    controller = PcmChargeController(
         clock, heating_power=PCM_HEATING_ELEMENT_POWER, capacity=PCM_MODULE_CAPACITY
     )
 
@@ -265,7 +268,7 @@ def test_heating_element_charges_a_module_with_nothing_flowing():
 
 def test_heating_element_counts_as_charging():
     clock = Clock()
-    controller = ChargeController(clock, heating_power=PCM_HEATING_ELEMENT_POWER)
+    controller = PcmChargeController(clock, heating_power=PCM_HEATING_ELEMENT_POWER)
 
     _feed(
         controller,
@@ -280,7 +283,7 @@ def test_heating_element_counts_as_charging():
 
 def test_heating_element_adds_to_the_hydronic_balance():
     clock = Clock()
-    controller = ChargeController(
+    controller = PcmChargeController(
         clock, heating_power=PCM_HEATING_ELEMENT_POWER, capacity=PCM_MODULE_CAPACITY
     )
 
@@ -301,7 +304,7 @@ def test_heating_element_adds_to_the_hydronic_balance():
 
 def test_modules_without_an_element_ignore_the_heating_flag():
     clock = Clock()
-    controller = ChargeController(clock)  # heating_power defaults to zero
+    controller = PcmChargeController(clock)  # heating_power defaults to zero
 
     _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
     _feed(

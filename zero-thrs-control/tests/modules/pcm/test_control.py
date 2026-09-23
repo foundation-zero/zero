@@ -255,3 +255,41 @@ def test_mode_switches(
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")
+
+
+def test_module_inlet_follows_the_switches(
+    control: PcmControl, simulation: PcmSimulation
+):
+    """The inlet is the producers header while charging, the consumers mix otherwise."""
+    result = simulation.tick(control.control(PcmSensorValues.zero())[0])
+
+    control.parameters.charging_enabled = False
+    control.to_supplying(result.sensor_values)  # type: ignore
+
+    for _i in range(100):
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+
+    assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
+        result.simulation_outputs.pcm_consumers_return.flow.value  # type: ignore
+    )
+
+    consumers_return = result.simulation_inputs.pcm_consumers_supply.temperature.value  # type: ignore
+    assert result.sensor_values.pcm_temperature_consumers_return.temperature.value == (
+        approx(consumers_return)
+    )
+    assert result.sensor_values.pcm_heat_module1.temperature_supply.value == approx(
+        consumers_return
+    )
+
+    control.parameters.charging_enabled = True
+    control.parameters.supplying_enabled = False
+    control.to_charging(result.sensor_values)  # type: ignore
+
+    for _i in range(100):
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+
+    assert result.sensor_values.pcm_heat_module1.temperature_supply.value == approx(
+        result.sensor_values.pcm_temperature_producers_return.temperature.value
+    )

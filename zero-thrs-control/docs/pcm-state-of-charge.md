@@ -1,7 +1,7 @@
 # PCM state of charge
 
 The Flamco FlexTherm Eco 9E has no communication interface, so state of charge has to be
-estimated from our own supply temperature, return temperature and flow. `ChargeController`
+estimated from our own supply temperature, return temperature and flow. `PcmChargeController`
 integrates measured heat and re-anchors the integral to empty or full whenever a module's
 outlet converges on its inlet — the only observable that says the 58 °C phase change has
 run out.
@@ -68,15 +68,18 @@ us the charge enable, so the element stops charging against our wishes.
 
 The element matters more than it looks, because its heat goes straight into the cell and
 so never appears in any circuit. In the final configuration only module 1 has one
-connected, we drive it through a digital output (`pcm_module1.on`) and we read back
-whether it is running (`pcm_module1.heating`). `ChargeController` takes that feedback and
-adds 2,8 kW to the balance while it is on, which is the only reason the integral survives
-an electric boost. Modules 2–4 have no element, so their `heating_power` is zero.
+connected and we drive it through a digital output (`pcm_module1.on`).
+`PcmChargeController` reads that same output and adds 2,8 kW to the balance while it is
+set, which is the only reason the integral survives an electric boost. Modules 2–4 have no
+element, so their `heating_power` is zero.
 
-Two caveats. Commissioning data recorded before this was wired has PCM 1 and PCM 2 both
-heating with no feedback, so it cannot be used to validate the integral. And nothing
-commands the output yet: when to boost electrically is a separate decision from estimating
-the charge, and probably belongs with the PV surplus logic.
+Three caveats. The command is not the draw: the unit's own thermostat can open the element
+while our output stays closed, and the balance then counts 2,8 kW that is not flowing. A
+contactor auxiliary or the D1 "Verwarming" LED would fix that, which is another reason to
+want option 1 above. Commissioning data recorded before this was wired has PCM 1 and PCM 2
+both heating with nothing recorded either way, so it cannot validate the integral. And
+nothing commands the output yet: when to boost electrically is a separate decision from
+estimating the charge, and probably belongs with the PV surplus logic.
 
 ## Topology on board
 
@@ -161,23 +164,23 @@ retrospectively in Greptime without re-running anything.
   flagged as an assumption. Added `OptionalRatio` and `OptionalJoule`.
 - `definitions/controllers.py` — replaced `PCM_CHARGE_FULL_TEMP` and
   `PCM_CHARGE_EMPTY_TEMP`, both 51 and both marked TODO, with the melt point, margins,
-  dwell, purge volumes, standing loss and capacity. `ChargeControllerValues` gained
+  dwell, purge volumes, standing loss and capacity. `PcmChargeControllerValues` gained
   `energy` and `charged`, and `charge` became optional.
-- `control/controllers.py` — `ChargeController` rewritten. The old charge test was also
+- `control/controllers.py` — `PcmChargeController` rewritten. The old charge test was also
   inverted: above full temperature it set 0.0, above empty temperature 1.0.
-- `input_output/modules/pcm.py` — the module inlet now follows
-  `pcm_switch_charging_supply`, so it is the producers header while charging and the
+- `input_output/modules/pcm.py` — the module inlet now follows `pcm_switch_charging_supply`
+  and `pcm_switch_charging_return`, so it is the producers header while charging and the
   consumers-return mix otherwise. Added that mix as `pcm_temperature_consumers_return`, the
   five borrowed consumers sensors it needs, and `pcm_heat_module1_freshwater`. Module heat
-  now uses the glycol conversion; the freshwater circuit stays on water.
+  now uses the glycol conversion; the freshwater circuit stays on water. In simulation the
+  borrowed sensors come off `pcm_consumers_supply`, which is the model's single consumers
+  stream.
 - `control/modules/pcm.py` — `minimum_charging_temperature` 60 → 65, per-module purge
-  volumes, module 1 fed both circuits and its element feedback.
-- `definitions/sensor.py` — `Pcm` gained `heating`, the element's contactor feedback. Not
-  in the FMU, and false on modules 2–4, which have no element.
-- `tests/control/test_charge_controller.py` — 18 tests covering the anchors, the purge
+  volumes, module 1 fed both circuits and the state of its element output.
+- `tests/control/test_pcm_charge_controller.py` — 18 tests covering the anchors, the purge
   gate, the dwell, integration, standby loss, data gaps, the two-circuit cases and the
   heating element.
-- `zero-ui` — schema re-exported, `ChargeController` TS type and its mimic mock updated.
+- `zero-ui` — schema re-exported, `PcmChargeController` TS type and its mimic mock updated.
 
 ## Still open
 
@@ -189,7 +192,7 @@ retrospectively in Greptime without re-running anything.
 | Does PCM58 supercool on discharge?                                                  | Flamco, Sunamp     | A freeze plateau below 58 °C would false-trigger the empty anchor |
 | Ethylene or propylene glycol, and what concentration?                               | Us                 | Currently assumed 20 %, worth about 1 % either way     |
 | When do the freshwater topics get fixed?                                            | Us                 | Module 1's balance is wrong without them               |
-| Are the borrowed `consumers/*` topic overrides right?                                | Us                 | They mirror the consumers mapping but are unverified against a live broker |
+| Do we want a real feedback input for the element, or is the command good enough?    | Us, engineers      | Today the balance counts 2,8 kW whenever the output is set |
 
 The first is the one worth pushing: a probe in the thermowell would turn this from an
 estimate into a measurement. The rest is tuning.
@@ -198,7 +201,7 @@ Deliberately not done here:
 
 - **Module selection still reads `sensor_values.pcm_moduleN.charged`**, not the estimator.
   The FMU drives that input, so flipping the source would change simulated control
-  behaviour with no real-data validation behind it. `ChargeController.charged` is exposed
+  behaviour with no real-data validation behind it. `PcmChargeController.charged` is exposed
   and ready; switching `_set_supplying_flow_setpoints` and `_all_discharged` over to it is
   a follow-up, and note that an uncalibrated module must count as charged or it will never
   be discharged, never anchor, and never become known.

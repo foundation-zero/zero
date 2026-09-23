@@ -51,7 +51,8 @@ PCM_STANDBY_LOSS: Watt = 32.1
 
 # The electric element, 2.8 kW at 230 V (manual, table 2.2). Only module 1 has one
 # connected. It heats the cell directly, so none of it shows up in the water, which is
-# why the balance has to be told when it is running.
+# why the balance has to be told when it is switched on. The unit's own thermostat can
+# cut the element out while our output stays closed, so this over-counts when it does.
 PCM_HEATING_ELEMENT_POWER: Watt = 2800
 
 # The pipework and exchangers read stale without flow, so a circuit has to be purged
