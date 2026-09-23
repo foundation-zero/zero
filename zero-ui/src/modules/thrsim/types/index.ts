@@ -49,8 +49,7 @@ export type PIDController = {
   components: Stamped<PID>;
 };
 
-export type ChargeController = {
-  charged: Stamped<boolean>;
+export type PcmChargeController = {
   chargingState: Stamped<PcmChargingState>;
   charge: Stamped<Ratio>;
 };
@@ -380,7 +379,7 @@ export type ControllerStateDefinitions = SchemaDefinitions<
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
-  [ControllerStateComponentType.PcmChargeController]: ChargeController;
+  [ControllerStateComponentType.PcmChargeController]: PcmChargeController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<

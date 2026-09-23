@@ -51,7 +51,7 @@ const { findTooltipContext } = getTooltipContext();
 
 const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
 const isParameter = computed(() => isParameterField(source.value));
-const showLink = computed(() => !props.noLink || !backendSource.value);
+const showLink = computed(() => !props.noLink && !backendSource.value);
 </script>
 
 <template>
@@ -61,7 +61,7 @@ const showLink = computed(() => !props.noLink || !backendSource.value);
     "
   >
     <RouterLink
-      v-if="tooltipContext && !showLink"
+      v-if="tooltipContext && showLink"
       class="cursor-pointer underline"
       :to="{
         query: { ...$route.query, tooltip: serializeField(source) },

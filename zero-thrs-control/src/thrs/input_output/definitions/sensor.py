@@ -218,7 +218,9 @@ def extract_source_yardtag(model: ThrsValues, key: str | None) -> str:
     if key is None:
         return "calculated"
 
-    field_info = type(model).model_fields.get(key)
+    field_info = type(model).model_fields.get(
+        key, type(model).model_computed_fields.get(key)
+    )
     if not field_info:
         return "unknown"
 
