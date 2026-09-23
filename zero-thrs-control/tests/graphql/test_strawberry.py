@@ -600,18 +600,26 @@ async def test_query_controller_state(app, test_client):
                         controllerState {
                             module1ChargeController {
                                 charge { value }
+                                energy { value }
+                                charged { value }
                                 chargingState { value }
                             }
                             module2ChargeController {
                                 charge { value }
+                                energy { value }
+                                charged { value }
                                 chargingState { value }
                             }
                             module3ChargeController {
                                 charge { value }
+                                energy { value }
+                                charged { value }
                                 chargingState { value }
                             }
                             module4ChargeController {
                                 charge { value }
+                                energy { value }
+                                charged { value }
                                 chargingState { value }
                             }
                         }
@@ -1110,7 +1118,13 @@ async def test_query_controller_state(app, test_client):
                     "controllerState": {
                         "module1ChargeController": {
                             "charge": {
-                                "value": 0.0,
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "charged": {
+                                "value": False,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1118,7 +1132,13 @@ async def test_query_controller_state(app, test_client):
                         },
                         "module2ChargeController": {
                             "charge": {
-                                "value": 0.0,
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "charged": {
+                                "value": False,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1126,7 +1146,13 @@ async def test_query_controller_state(app, test_client):
                         },
                         "module3ChargeController": {
                             "charge": {
-                                "value": 0.0,
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "charged": {
+                                "value": False,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1134,7 +1160,13 @@ async def test_query_controller_state(app, test_client):
                         },
                         "module4ChargeController": {
                             "charge": {
-                                "value": 0.0,
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "charged": {
+                                "value": False,
                             },
                             "chargingState": {
                                 "value": "IDLE",
