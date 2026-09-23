@@ -10,6 +10,9 @@ use serde_json::Value;
 use crate::asyncapi::ValidatorSpec;
 use crate::cache::{mqtt_pattern_matches, TopicCache};
 
+const REQUEST_CHANNEL_CAPACITY: usize = 1024;
+const PUBLISH_TIMEOUT: Duration = Duration::from_secs(5);
+
 pub struct MqttConnection<'a> {
     pub host: &'a str,
     pub port: u16,
@@ -50,7 +53,7 @@ impl MqttSubscriber {
             mqttoptions.set_credentials(user, pass);
         }
 
-        let (client, event_loop) = AsyncClient::new(mqttoptions, 10);
+        let (client, event_loop) = AsyncClient::new(mqttoptions, REQUEST_CHANNEL_CAPACITY);
 
         // Validators are built in both modes: listen-only rejects mismatches
         // outright, serve mode logs them and (unless strict) still caches.
@@ -293,22 +296,34 @@ fn rand_u64() -> u64 {
 /// messages are transient commands, not retained state).
 pub struct MqttPublisher {
     client: AsyncClient,
+    /// How long a publish may wait to be handed to the event loop before it is
+    /// abandoned with an error. [`PUBLISH_TIMEOUT`] in production; a test can
+    /// build one with a short timeout to exercise the path quickly.
+    timeout: Duration,
 }
 
 impl MqttPublisher {
     pub fn new(client: AsyncClient) -> Self {
-        Self { client }
+        Self {
+            client,
+            timeout: PUBLISH_TIMEOUT,
+        }
     }
 }
 
 impl crate::graphql::TopicPublisher for MqttPublisher {
     fn publish(&self, topic: String, payload: String) -> crate::graphql::PublishFuture {
         let client = self.client.clone();
+        let timeout = self.timeout;
         Box::pin(async move {
-            client
-                .publish(topic, QoS::AtLeastOnce, false, payload.into_bytes())
-                .await
-                .map_err(anyhow::Error::from)
+            let send = client.publish(topic.clone(), QoS::AtLeastOnce, false, payload.into_bytes());
+            match tokio::time::timeout(timeout, send).await {
+                Ok(result) => result.map_err(anyhow::Error::from),
+                Err(_) => Err(anyhow::anyhow!(
+                    "publishing to '{topic}' timed out after {timeout:?}; \
+                     the MQTT event loop is saturated or unreachable"
+                )),
+            }
         })
     }
 }
@@ -318,8 +333,46 @@ mod tests {
     use super::*;
     use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
     use crate::cache::flatten_payload;
+    use crate::graphql::TopicPublisher;
     use serde_json::json;
     use std::collections::BTreeMap;
+
+    /// A publish must not park the caller forever when the event loop never
+    /// drains the request channel: with a tiny channel and no polled event
+    /// loop, once the buffer is full the next publish has to fail with the
+    /// timeout error instead of hanging. Guards the liveness fix for the
+    /// flood-wedge. Uses a short timeout so it resolves quickly.
+    #[tokio::test]
+    async fn test_publish_times_out_when_the_event_loop_never_drains() {
+        let options = MqttOptions::new("test-publisher", "localhost", 1883);
+        // Capacity 1, and the returned event loop is dropped/never polled.
+        let (client, _event_loop) = AsyncClient::new(options, 1);
+        let publisher = MqttPublisher {
+            client,
+            timeout: Duration::from_millis(50),
+        };
+
+        // Keep publishing until one call cannot enqueue and must time out. The
+        // first few fill the buffer/inflight; a full channel then times out.
+        let mut timed_out = false;
+        for _ in 0..8 {
+            match publisher
+                .publish("some/topic".to_string(), "{}".to_string())
+                .await
+            {
+                Ok(()) => continue,
+                Err(e) => {
+                    assert!(e.to_string().contains("timed out"), "unexpected error: {e}");
+                    timed_out = true;
+                    break;
+                }
+            }
+        }
+        assert!(
+            timed_out,
+            "a publish to an undrained channel should time out"
+        );
+    }
 
     fn group_with_schema(pattern: &str, schema: Value) -> TopicGroupDef {
         TopicGroupDef {

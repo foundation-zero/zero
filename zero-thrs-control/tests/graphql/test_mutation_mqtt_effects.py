@@ -54,13 +54,13 @@ from tests.graphql.parity import diff, graphql_literal, post, query_data, recent
 from tests.graphql.resolved import ResolvedSpec, section_of
 from tests.graphql.seeding import control_mode_instance, seeded
 from tests.graphql.stack_config import (
-    APIS,
     MQTT_GRAPHQL,
     MQTT_HOST,
     MQTT_PORT,
     THRS_API,
     URLS,
     mqtt_graphql_config,
+    selected_apis,
     thrs_api_config,
 )
 from thrs.control.switching import AutomationMode, SwitchingControlMode
@@ -73,6 +73,9 @@ from thrs.spec.extension import component_class
 from thrs.spec.naming import field_name
 
 pytestmark = pytest.mark.migration
+
+
+APIS = selected_apis()
 
 _THRS_CFG = thrs_api_config()
 _MQTT_CFG = mqtt_graphql_config()

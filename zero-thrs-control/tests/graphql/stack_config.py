@@ -19,9 +19,6 @@ from thrs.spec.asyncapi import DEFAULT_CONFIG
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
-# The services the suites talk to, as `docker compose` names them.
-STACK_SERVICES = ("vernemq", "postgres", "thrs-api", "mqtt-graphql")
-
 MQTT_HOST = "localhost"
 MQTT_PORT = 1883
 
@@ -34,6 +31,43 @@ URLS = {
 }
 THRS_API_URL = URLS[THRS_API]
 MQTT_GRAPHQL_URL = URLS[MQTT_GRAPHQL]
+
+# Infrastructure both APIs sit on; always required.
+_INFRA_SERVICES = ("vernemq", "postgres")
+# Each API's own `docker compose` service (only these carry an HTTP endpoint the
+# suites hit); infra is shared.
+_API_SERVICE = {THRS_API: "thrs-api", MQTT_GRAPHQL: "mqtt-graphql"}
+
+_APIS_ENV = "MIGRATION_APIS"
+
+
+def selected_apis() -> tuple[str, ...]:
+    """The APIs to exercise, honouring ``MIGRATION_APIS`` (default: both, in
+    the canonical order). Raises on an unknown name so a typo fails loudly
+    rather than silently skipping an API."""
+    raw = os.environ.get(_APIS_ENV)
+    if not raw:
+        return APIS
+    chosen = [name.strip() for name in raw.split(",") if name.strip()]
+    unknown = [name for name in chosen if name not in APIS]
+    if unknown:
+        raise ValueError(
+            f"{_APIS_ENV}={raw!r}: unknown API(s) {unknown}; known: {list(APIS)}"
+        )
+    # Preserve the canonical order regardless of how they were listed.
+    return tuple(api for api in APIS if api in chosen)
+
+
+def waited_services() -> tuple[str, ...]:
+    """The `docker compose` services the stack fixture must bring up for the
+    selected APIs: shared infra plus each selected API's own service. A solo
+    ``mqtt-graphql`` run does not require thrs-api to be up."""
+    return _INFRA_SERVICES + tuple(_API_SERVICE[api] for api in selected_apis())
+
+
+# The services the suites talk to, as `docker compose` names them. Kept for
+# callers that want the full set regardless of selection.
+STACK_SERVICES = _INFRA_SERVICES + tuple(_API_SERVICE[api] for api in APIS)
 
 
 def _interpolate(value: str) -> str:
