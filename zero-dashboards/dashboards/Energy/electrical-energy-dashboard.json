@@ -90,7 +90,7 @@
       "id": 3,
       "options": {
         "infinitePan": false,
-        "inlineEditing": false,
+        "inlineEditing": true,
         "panZoom": false,
         "root": {
           "background": {
@@ -99,7 +99,7 @@
             },
             "image": {
               "field": "",
-              "fixed": "../extra/electrical_flow.png",
+              "fixed": "../extra/electrical_flow_boxed.png",
               "mode": "fixed"
             },
             "size": "original"
@@ -118,7 +118,7 @@
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
@@ -126,7 +126,7 @@
                   "fixed": "#313131"
                 },
                 "radius": 0,
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -148,9 +148,9 @@
               "name": "Propulsion",
               "placement": {
                 "height": 30,
-                "left": 547,
+                "left": 550,
                 "rotation": 0,
-                "top": 318,
+                "top": 339,
                 "width": 80
               },
               "type": "metric-value"
@@ -158,8 +158,7 @@
             {
               "background": {
                 "color": {
-                  "field": "Domestic",
-                  "fixed": "text"
+                  "fixed": "transparent"
                 },
                 "size": "cover"
               },
@@ -167,7 +166,7 @@
                 "color": {
                   "fixed": "#333333"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -191,25 +190,24 @@
               "name": "Domestic",
               "placement": {
                 "height": 30,
-                "left": 547,
+                "left": 550,
                 "rotation": 0,
-                "top": 136,
-                "width": 80
+                "top": 154,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "field": "Technical",
-                  "fixed": "text"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -232,18 +230,17 @@
               "name": "Technical",
               "placement": {
                 "height": 30,
-                "left": 547,
+                "left": 550,
                 "rotation": 0,
-                "top": 222,
-                "width": 80
+                "top": 250,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "field": "HVAC",
-                  "fixed": "text"
+                  "fixed": "transparent"
                 },
                 "image": {
                   "fixed": ""
@@ -253,7 +250,7 @@
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -277,24 +274,24 @@
               "name": "HVAC",
               "placement": {
                 "height": 30,
-                "left": 547,
+                "left": 550,
                 "rotation": 0,
-                "top": 50,
-                "width": 80
+                "top": 59,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#333333"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -316,24 +313,24 @@
               "name": "Hydro",
               "placement": {
                 "height": 30,
-                "left": 173,
+                "left": 157,
                 "rotation": 0,
-                "top": 288,
-                "width": 80
+                "top": 339,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -355,24 +352,24 @@
               "name": "Shore",
               "placement": {
                 "height": 30,
-                "left": 173,
+                "left": 157,
                 "rotation": 0,
-                "top": 186,
-                "width": 80
+                "top": 199,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -394,24 +391,24 @@
               "name": "Solar",
               "placement": {
                 "height": 30,
-                "left": 173,
+                "left": 157,
                 "rotation": 0,
-                "top": 74,
-                "width": 80
+                "top": 60,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -425,6 +422,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -432,25 +430,25 @@
               "links": [],
               "name": "Discharging",
               "placement": {
-                "height": 30,
-                "left": 399,
+                "height": 31,
+                "left": 427,
                 "rotation": 0,
-                "top": 186,
-                "width": 80
+                "top": 152,
+                "width": 78
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 }
               },
               "border": {
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -472,11 +470,11 @@
               "links": [],
               "name": "Charging",
               "placement": {
-                "height": 30,
-                "left": 319,
+                "height": 31,
+                "left": 286,
                 "rotation": 0,
-                "top": 186,
-                "width": 80
+                "top": 152,
+                "width": 78
               },
               "type": "metric-value"
             },
@@ -511,17 +509,17 @@
               "name": "SoC %",
               "placement": {
                 "height": 40,
-                "left": 322,
+                "left": 437,
                 "rotation": 0,
-                "top": 5,
-                "width": 150
+                "top": 10,
+                "width": 127
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "#646464"
+                  "fixed": "transparent"
                 },
                 "image": {
                   "field": "soc",
@@ -532,7 +530,7 @@
                 "color": {
                   "fixed": "#313131"
                 },
-                "width": 2
+                "width": 0
               },
               "config": {
                 "align": "center",
@@ -554,10 +552,10 @@
               "name": "SoC",
               "placement": {
                 "height": 30,
-                "left": 337,
+                "left": 350,
                 "rotation": 0,
-                "top": 44,
-                "width": 120
+                "top": 14,
+                "width": 79
               },
               "type": "metric-value"
             }
