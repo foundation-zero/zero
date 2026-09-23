@@ -1705,16 +1705,16 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
 
 export const PCM_CONTROLLER_STATE = toControllerStateDefinition({
   module1ChargeController: {
-    componentType: ControllerStateComponentType.ChargeController,
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
   module2ChargeController: {
-    componentType: ControllerStateComponentType.ChargeController,
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
   module3ChargeController: {
-    componentType: ControllerStateComponentType.ChargeController,
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
   module4ChargeController: {
-    componentType: ControllerStateComponentType.ChargeController,
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
 });
 

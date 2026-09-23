@@ -10,7 +10,7 @@ from thrs.input_output.definitions.controllers import (
     PCM_CHARGE_EMPTY_TEMP,
     PCM_CHARGE_FULL_TEMP,
     PCM_CHARGING_DEADBAND,
-    ChargeControllerValues,
+    PcmChargeControllerValues,
     PcmChargingState,
     PidControllerValues,
 )
@@ -283,7 +283,7 @@ class FlowDistributionController:
         self._flow_balance_controller(measurements)
 
 
-class ChargeController:
+class PcmChargeController:
     def __init__(self, time_fn: Callable[[], datetime]) -> None:
         self._time = time_fn
         self._charge = 0
@@ -312,9 +312,9 @@ class ChargeController:
             else:
                 self._charge = 0.5
 
-    def values(self) -> ChargeControllerValues:
+    def values(self) -> PcmChargeControllerValues:
         timestamp = self._time()
-        return ChargeControllerValues(
+        return PcmChargeControllerValues(
             charge=Stamped(value=self._charge, timestamp=timestamp),
             charging_state=Stamped(value=self._charging_state, timestamp=timestamp),
         )

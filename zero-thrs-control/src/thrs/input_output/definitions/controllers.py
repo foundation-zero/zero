@@ -35,13 +35,13 @@ class TanksControllerValues(ThrsValues):
     time_to_hot: Stamped[Seconds | None]
 
 
-class ChargeControllerValues(ThrsValues):
+class PcmChargeControllerValues(ThrsValues):
     charge: Stamped[Ratio]
     charging_state: Stamped[PcmChargingState]
 
 
 __all__ = [
-    "ChargeControllerValues",
+    "PcmChargeControllerValues",
     "PidControllerValues",
     "TanksControllerValues",
 ]

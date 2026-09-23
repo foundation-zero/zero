@@ -275,7 +275,7 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
     }));
   },
 
-  [ControllerStateComponentType.ChargeController]: () => {
+  [ControllerStateComponentType.PcmChargeController]: () => {
     const charged = useRandomizedBoolean();
     const chargingState = useRandomizedState([
       PcmChargingState.Charging,

@@ -8,7 +8,7 @@ const createHeatBattery = (
   title: string,
   source: ModuleField<SensorComponentType.Pcm>,
   heatExchanger: ModuleField<SensorComponentType.HeatTransferDevice>,
-  controller: ModuleField<ControllerStateComponentType.ChargeController>,
+  controller: ModuleField<ControllerStateComponentType.PcmChargeController>,
 ) =>
   toInstance<MimicComponentType.Pcm>({
     source,
@@ -31,25 +31,25 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
       "Heat battery 1",
       getField(SensorComponentType.Pcm, "pcm", "pcmModule1"),
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule1"),
-      getField(ControllerStateComponentType.ChargeController, "pcm", "module1ChargeController"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module1ChargeController"),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
       getField(SensorComponentType.Pcm, "pcm", "pcmModule2"),
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule2"),
-      getField(ControllerStateComponentType.ChargeController, "pcm", "module2ChargeController"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module2ChargeController"),
     ),
     "1051": createHeatBattery(
       "Heat battery 3",
       getField(SensorComponentType.Pcm, "pcm", "pcmModule3"),
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule3"),
-      getField(ControllerStateComponentType.ChargeController, "pcm", "module3ChargeController"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module3ChargeController"),
     ),
     "1052": createHeatBattery(
       "Heat battery 4",
       getField(SensorComponentType.Pcm, "pcm", "pcmModule4"),
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule4"),
-      getField(ControllerStateComponentType.ChargeController, "pcm", "module4ChargeController"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module4ChargeController"),
     ),
   },
 });
