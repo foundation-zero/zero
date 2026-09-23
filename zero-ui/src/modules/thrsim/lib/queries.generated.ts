@@ -112,16 +112,16 @@ export const ADSORPTION_SENSOR_QUERY = `
     temperature { value timestamp }
   }
   adsorptionHtExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   adsorptionDhwExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -260,16 +260,16 @@ export const CONSUMERS_SENSOR_QUERY = `
     positionAbs { value timestamp }
   }
   consumersAdsorptionExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   consumersDhwExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -609,9 +609,9 @@ export const DC_SENSOR_QUERY = `
     active { value timestamp }
   }
   dcDhwExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -983,44 +983,44 @@ export const DHW_SENSOR_QUERY = `
     flow { value timestamp }
   }
   dhwHvacExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwHeatpump {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwAdsorptionExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwConsumersExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwDcExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwDrivesExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -1287,9 +1287,9 @@ export const DRIVES_SENSOR_QUERY = `
     active { value timestamp }
   }
   drivesDhwExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -1607,30 +1607,30 @@ export const PCM_SENSOR_QUERY = `
     positionAbs { value timestamp }
   }
   pcmHeatModule1 {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   pcmHeatModule2 {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   pcmHeatModule3 {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   pcmHeatModule4 {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -2203,23 +2203,23 @@ export const PVT_SENSOR_QUERY = `
     flow { value timestamp }
   }
   pvtPvtMainFwd {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   pvtPvtMainAft {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   pvtPvtOwners {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -2233,9 +2233,9 @@ export const PVT_SENSOR_QUERY = `
     flow { value timestamp }
   }
   pvtSeawaterExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -2711,9 +2711,9 @@ export const THRUSTERS_SENSOR_QUERY = `
     flow { value timestamp }
   }
   thrustersSeawaterExchanger {
-    temperatureSupply { value timestamp }
-    temperatureReturn { value timestamp }
-    flow { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }

@@ -160,6 +160,13 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
             temperature_return=self.adsorption_temperature_ht_return.temperature,
             flow=self.adsorption_flow_ht.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_ht_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_ht_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "adsorption_flow_ht"),
         )
 
     @computed_field(
@@ -176,6 +183,13 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
             flow=self.adsorption_flow_dhw.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_waste_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_dhw_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "adsorption_flow_dhw"),
         )
 
 

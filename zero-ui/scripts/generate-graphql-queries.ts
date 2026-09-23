@@ -156,6 +156,10 @@ const FIELD_MAPPINGS: AllFieldMappings = {
   },
 };
 
+const WITH_SOURCE_MAPPING: Record<string, string[]> = {
+  HeatTransferDevice: ["temperatureSupply", "temperatureReturn", "flow"],
+};
+
 // ============================================================================
 // Argument Parsing
 // ============================================================================
@@ -266,8 +270,20 @@ function generateFieldQuery(fieldName: string, fieldDef: FieldDefinition): strin
     return `  ${fieldName}`;
   }
 
-  // Components with no defined fields get default structure
+  if (WITH_SOURCE_MAPPING[componentType]) {
+    const nestedFields = componentFields
+      .map((field) =>
+        WITH_SOURCE_MAPPING[componentType].includes(field)
+          ? `    ${field} { value timestamp source }`
+          : `    ${field} { value timestamp }`,
+      )
+      .join("\n");
+
+    return `  ${fieldName} {\n${nestedFields}\n  }`;
+  }
+
   if (componentFields.length === 0) {
+    // Components with no defined fields get default structure
     return `  ${fieldName} { value timestamp }`;
   }
 

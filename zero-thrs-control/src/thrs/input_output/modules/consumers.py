@@ -96,6 +96,15 @@ class ConsumersSensorValues(AmcsModeSensorValues):
             temperature_return=self.consumers_temperature_adsorption_return.temperature,
             flow=self.consumers_flow_adsorption.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_adsorption_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_adsorption_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "consumers_flow_adsorption"
+            ),
         )
 
     @computed_field(
@@ -112,6 +121,13 @@ class ConsumersSensorValues(AmcsModeSensorValues):
             temperature_return=self.consumers_temperature_dhw_return.temperature,
             flow=self.consumers_flow_dhw.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_dhw_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_dhw_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "consumers_flow_dhw"),
         )
 
 

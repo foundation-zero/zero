@@ -234,6 +234,7 @@ export const [getMimicDataProvider, createMimicDataProvider] =
   createContext<MimicDataProvider>("MimicProvider");
 
 export const provideFieldValue = <T>(value: Ref<T>) => provide("FieldValue", value);
+export const provideFieldValueData = <T>(value: Ref<T>) => provide("FieldValueData", value);
 export const provideFieldValueField = (field?: string) => provide("FieldValueField", field);
 export const injectFieldValueField = <T extends string = string>() =>
   inject<T | undefined>("FieldValueField");
@@ -261,6 +262,9 @@ export const injectFieldValueSource = <
 export const getFieldValue = <T>(
   fallback: Ref<T | undefined> = ref(undefined),
 ): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValue", fallback);
+export const getFieldValueData = <T>(
+  fallback: Ref<T | undefined> = ref(undefined),
+): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValueData", fallback);
 
 export const getDefinition = (field: ModuleField) => {
   const [_, module, fieldName, customData] = field;

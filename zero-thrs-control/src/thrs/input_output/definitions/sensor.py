@@ -4,7 +4,7 @@ from typing import Annotated, Self, cast
 
 from pydantic import field_validator
 
-from thrs.input_output.base import Stamped, ThrsValues, field_meta
+from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
@@ -172,10 +172,10 @@ class TemperatureDelta(ThrsValues):
 
 
 class HeatTransferDevice(ThrsValues):
-    temperature_supply: Stamped[OptionalCelsius]
-    temperature_return: Stamped[OptionalCelsius]
+    temperature_supply: StampedWithSource[OptionalCelsius]
+    temperature_return: StampedWithSource[OptionalCelsius]
     delta_t: Stamped[DeltaT]
-    flow: Stamped[LMin]
+    flow: StampedWithSource[LMin]
     heat: Stamped[Watt]
 
     @classmethod
@@ -184,6 +184,9 @@ class HeatTransferDevice(ThrsValues):
         temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
         temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
         flow: Stamped[LMin],
+        temperature_supply_source: str,
+        temperature_return_source: str,
+        flow_source: str,
         heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
     ) -> Self:
         delta_t = Stamped.combine(
@@ -197,12 +200,29 @@ class HeatTransferDevice(ThrsValues):
             delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
         )
         return cls(
-            temperature_supply=temperature_supply,  # type: ignore
-            temperature_return=temperature_return,  # type: ignore
+            temperature_supply=StampedWithSource.from_stamped(
+                temperature_supply,  # type: ignore
+                temperature_supply_source,
+            ),
+            temperature_return=StampedWithSource.from_stamped(
+                temperature_return,  # type: ignore
+                temperature_return_source,
+            ),
             delta_t=delta_t,
-            flow=flow,
+            flow=StampedWithSource.from_stamped(flow, flow_source),
             heat=heat,
         )
+
+
+def extract_source_yardtag(model: ThrsValues, key: str | None) -> str:
+    if key is None:
+        return "calculated"
+
+    field_info = type(model).model_fields.get(key)
+    if not field_info:
+        return "unknown"
+
+    return field_info.json_schema_extra["yard_tag"]  # type: ignore
 
 
 class Valve(ThrsValues):

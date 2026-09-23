@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from "..";
-import { isSensorField, ModuleField, SensorValue } from "../../providers";
+import { ModuleField, SensorValue } from "../../providers";
 import * as Partials from "./";
 
 const { items, sources } = useTranslations();
@@ -45,12 +45,6 @@ defineProps<{
   >
     <Partials.ListItem>
       {{ items("flow") }}
-      <template
-        v-if="isSensorField(source, SensorComponentType.CalculatedFlow)"
-        #sourceName
-      >
-        {{ sources("calculated") }}
-      </template>
     </Partials.ListItem>
   </SensorValue>
 </template>

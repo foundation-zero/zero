@@ -747,9 +747,21 @@ type FloatOptionalStampedType {
   timestamp: DateTime!
 }
 
+type FloatOptionalStampedWithSourceType {
+  value: Float
+  timestamp: DateTime!
+  source: String!
+}
+
 type FloatStampedType {
   value: Float!
   timestamp: DateTime!
+}
+
+type FloatStampedWithSourceType {
+  value: Float!
+  timestamp: DateTime!
+  source: String!
 }
 
 input FlowBoundaryInputType {
@@ -1528,10 +1540,10 @@ type SensorFlowSensorType {
 }
 
 type SensorHeatTransferDeviceType {
-  temperatureSupply: FloatOptionalStampedType!
-  temperatureReturn: FloatOptionalStampedType!
+  temperatureSupply: FloatOptionalStampedWithSourceType!
+  temperatureReturn: FloatOptionalStampedWithSourceType!
   deltaT: FloatStampedType!
-  flow: FloatStampedType!
+  flow: FloatStampedWithSourceType!
   heat: FloatStampedType!
 }
 

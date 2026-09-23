@@ -174,6 +174,13 @@ class PcmSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module1.temperature,
             flow=self.pcm_flow_module1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_module1"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pcm_flow_module1"),
         )
 
     @computed_field(
@@ -187,6 +194,13 @@ class PcmSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module2.temperature,
             flow=self.pcm_flow_module2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_module2"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pcm_flow_module2"),
         )
 
     @computed_field(
@@ -200,6 +214,13 @@ class PcmSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module3.temperature,
             flow=self.pcm_flow_module3.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_module3"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pcm_flow_module3"),
         )
 
     @computed_field(
@@ -213,6 +234,13 @@ class PcmSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pcm_temperature_producers_return.temperature,
             temperature_return=self.pcm_temperature_module4.temperature,
             flow=self.pcm_flow_module4.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_module4"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pcm_flow_module4"),
         )
 
 

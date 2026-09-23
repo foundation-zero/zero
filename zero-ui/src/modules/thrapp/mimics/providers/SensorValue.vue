@@ -16,6 +16,7 @@ import {
   getMimicDataProvider,
   ModuleField,
   provideFieldValue,
+  provideFieldValueData,
   provideFieldValueField,
   provideFieldValueSource,
 } from ".";
@@ -32,7 +33,10 @@ const sensor = getSensorValue(props.source);
 const value = computed(() =>
   field ? (unstamp(sensor.value?.[field as Key]) as Value | undefined) : undefined,
 );
+const sensorData = computed(() => (field ? sensor.value?.[field as Key] : undefined));
+
 provideFieldValue(value);
+provideFieldValueData(sensorData);
 provideFieldValueSource(props.source);
 provideFieldValueField(field as string | undefined);
 </script>
