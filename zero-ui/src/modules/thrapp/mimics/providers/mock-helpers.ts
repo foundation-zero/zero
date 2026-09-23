@@ -95,8 +95,7 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
-    const heating = useRandomizedBoolean();
-    return computed(() => ({ charged: stamp(charged), heating: stamp(heating) }));
+    return computed(() => ({ charged: stamp(charged) }));
   },
   [SensorComponentType.Pcs]: () => {
     const mode = useRandomizedState([
