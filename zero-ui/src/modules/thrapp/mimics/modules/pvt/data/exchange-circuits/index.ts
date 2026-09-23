@@ -13,7 +13,7 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
         circuitName: "Seawater",
       },
       parameters: {},
-      source: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtSeawaterExchanger"),
+      source: getField(SensorComponentType.HeatTransferDevice, "pvt", "placeholder"),
       sensors: {},
       get tooltip() {
         return fieldTooltip(this.source, {
