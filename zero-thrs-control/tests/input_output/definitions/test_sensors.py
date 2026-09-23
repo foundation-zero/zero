@@ -9,6 +9,9 @@ def test_heat_transfer_device_heat_in_watts():
         temperature_return=Stamped.stamp(50.0),
         flow=Stamped.stamp(5.0),
         heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        temperature_supply_source="",
+        temperature_return_source="",
+        flow_source="",
     )
 
     assert pcm.delta_t.value == -20.0

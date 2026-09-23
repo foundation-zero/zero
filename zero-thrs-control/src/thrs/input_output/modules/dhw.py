@@ -6,6 +6,7 @@ from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     Stamped,
+    StampedWithSource,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -285,6 +286,13 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_return=self.dhw_temperature_hvac_exchanger_return.temperature,
             flow=self.dhw_flow_dc.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_adsorption_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_hvac_exchanger_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dhw_flow_dc"),
         )
 
     @computed_field(
@@ -306,12 +314,22 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_return=self.dhw_temperature_boosting_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_boosting_supply"
+                ),
+                temperature_return_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_boosting_return"
+                ),
+                flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
         return sensor.HeatTransferDevice(
-            temperature_supply=self.dhw_temperature_boosting_supply.temperature,  # type: ignore
-            temperature_return=Stamped.stamp(0),
+            temperature_supply=StampedWithSource.from_stamped(
+                self.dhw_temperature_boosting_supply.temperature,  # type: ignore
+                sensor.extract_source_yardtag(self, "dhw_temperature_boosting_supply"),
+            ),
+            temperature_return=StampedWithSource.stamp(0, "unknown"),
             delta_t=Stamped.stamp(0),
-            flow=Stamped.stamp(0),
+            flow=StampedWithSource.stamp(0, "unknown"),
             heat=Stamped.stamp(0),
         )
 
@@ -327,6 +345,13 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_return=self.dhw_temperature_adsorption_return.temperature,
             flow=self.dhw_flow_dc.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_freshwater_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_adsorption_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dhw_flow_dc"),
         )
 
     @computed_field(
@@ -348,12 +373,22 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_return=self.dhw_temperature_boosting_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_boosting_supply"
+                ),
+                temperature_return_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_boosting_return"
+                ),
+                flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
         return sensor.HeatTransferDevice(
-            temperature_supply=self.dhw_temperature_boosting_supply.temperature,  # type: ignore
-            temperature_return=Stamped.stamp(0),
+            temperature_supply=StampedWithSource.from_stamped(
+                self.dhw_temperature_boosting_supply.temperature,  # type: ignore
+                sensor.extract_source_yardtag(self, "dhw_temperature_boosting_supply"),
+            ),
+            temperature_return=StampedWithSource.stamp(0, "unknown"),
             delta_t=Stamped.stamp(0),
-            flow=Stamped.stamp(0),
+            flow=StampedWithSource.stamp(0, "unknown"),
             heat=Stamped.stamp(0),
         )
 
@@ -369,6 +404,13 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_return=self.dhw_temperature_dc_return.temperature,
             flow=self.dhw_flow_dc.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_hvac_exchanger_return"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dhw_temperature_dc_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dhw_flow_dc"),
         )
 
     @computed_field(
@@ -384,6 +426,13 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_return=self.dhw_temperature_drives_return.temperature,
                 flow=self.dhw_flow_drives.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_freshwater_supply"
+                ),
+                temperature_return_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_drives_return"
+                ),
+                flow_source=sensor.extract_source_yardtag(self, "dhw_flow_drives"),
             )
         if sensor.valves_open_closed(
             open_valves=[self.dhw_switch_low_temperature],
@@ -398,12 +447,19 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_return=self.dhw_temperature_drives_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_boosting_supply"
+                ),
+                temperature_return_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_drives_return"
+                ),
+                flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
         return sensor.HeatTransferDevice(
-            temperature_supply=Stamped.stamp(0),
-            temperature_return=Stamped.stamp(0),
+            temperature_supply=StampedWithSource.stamp(0, "unknown"),
+            temperature_return=StampedWithSource.stamp(0, "unknown"),
             delta_t=Stamped.stamp(0),
-            flow=Stamped.stamp(0),
+            flow=StampedWithSource.stamp(0, "unknown"),
             heat=Stamped.stamp(0),
         )
 

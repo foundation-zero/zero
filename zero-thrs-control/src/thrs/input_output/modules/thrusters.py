@@ -6,6 +6,7 @@ from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     Stamped,
+    StampedWithSource,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -206,14 +207,21 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     )
     @property
     def thrusters_seawater_exchanger(self) -> sensor.HeatTransferDevice:
-        temperature_supply = self.thrusters_temperature_pre_cooler.temperature
-        temperature_return = self.thrusters_temperature_supply.temperature
+        temperature_supply = StampedWithSource.from_stamped(
+            self.thrusters_temperature_pre_cooler.temperature,
+            sensor.extract_source_yardtag(self, "thrusters_temperature_pre_cooler"),
+        )
+        temperature_return = StampedWithSource.from_stamped(
+            self.thrusters_temperature_supply.temperature,
+            sensor.extract_source_yardtag(self, "thrusters_temperature_supply"),
+        )
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
-        actual_flow = Stamped.combine(
+        actual_flow = StampedWithSource.combine(
             exchange_mix_ration,
             value=1 / exchange_mix_ration.value
             if exchange_mix_ration.value > 0
             else 0.0,
+            source="calculated",
         )
         heat_flow = self.thrusters_flow.flow
 

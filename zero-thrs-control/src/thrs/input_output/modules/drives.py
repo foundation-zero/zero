@@ -216,6 +216,13 @@ class DrivesSensorValues(AmcsModeSensorValues):
             temperature_return=self.drives_temperature_recovery_return.temperature,
             flow=self.drives_flow_recovery.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_recovery_mix"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_recovery_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "drives_flow_recovery"),
         )
 
 

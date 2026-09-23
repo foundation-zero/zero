@@ -1,4 +1,4 @@
-import { Stamped, Unstamp } from "@common/types";
+import { Stamped, StampedWithSource, Unstamp } from "@common/types";
 import { Ref, WritableComputedRef } from "vue";
 
 export type SchemaDefinition<T> = {
@@ -163,9 +163,9 @@ export type DeltaTSensor = {
 };
 
 export type HeatTransferDeviceSensor = DeltaTSensor & {
-  temperatureSupply: Stamped<number | undefined>;
-  temperatureReturn: Stamped<number | undefined>;
-  flow: Stamped<Ratio>;
+  temperatureSupply: StampedWithSource<number | undefined>;
+  temperatureReturn: StampedWithSource<number | undefined>;
+  flow: StampedWithSource<Ratio>;
   heat: Stamped<number>;
 };
 

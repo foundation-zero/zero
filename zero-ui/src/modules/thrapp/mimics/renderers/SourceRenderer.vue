@@ -6,11 +6,13 @@ import { FieldRenderer } from ".";
 import { getTooltipContext } from "../../components/tooltip";
 import {
   getDefinition,
+  getFieldValueData,
   injectFieldValueSource,
   isParameterField,
   ModuleField,
   serializeField,
 } from "../../mimics/providers";
+import { useTranslations } from "../tooltips";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -18,7 +20,10 @@ const props = defineProps<{
   noLink?: boolean;
 }>();
 
+const { sources } = useTranslations();
+
 const source = computed(() => props.source ?? injectFieldValueSource());
+const sourceData = getFieldValueData();
 
 const definition = computed(() => {
   if (!source.value) return null;
@@ -26,7 +31,16 @@ const definition = computed(() => {
   return getDefinition(source.value);
 });
 
+const backendSource = computed(() => {
+  const source = (sourceData.value as unknown as { source: string } | undefined)?.source;
+  if (source && ["unknown", "calculated"].includes(source)) return sources(source);
+  else if (source) return source;
+
+  return null;
+});
+
 const sourceName = computed(() => {
+  if (backendSource.value) return backendSource.value;
   if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
   else if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
 
@@ -37,6 +51,7 @@ const { findTooltipContext } = getTooltipContext();
 
 const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
 const isParameter = computed(() => isParameterField(source.value));
+const showLink = computed(() => !props.noLink || !backendSource.value);
 </script>
 
 <template>
@@ -46,7 +61,7 @@ const isParameter = computed(() => isParameterField(source.value));
     "
   >
     <RouterLink
-      v-if="tooltipContext && !noLink"
+      v-if="tooltipContext && !showLink"
       class="cursor-pointer underline"
       :to="{
         query: { ...$route.query, tooltip: serializeField(source) },

@@ -794,6 +794,15 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
             flow=self.pvt_flow_main_fwd_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_fwd_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_fwd_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "pvt_flow_main_fwd_strings"
+            ),
         )
 
     @computed_field(
@@ -810,6 +819,15 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
             flow=self.pvt_flow_main_aft_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_aft_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_aft_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "pvt_flow_main_aft_strings"
+            ),
         )
 
     @computed_field(
@@ -826,6 +844,13 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,
             flow=self.pvt_flow_owners_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_strings"),
         )
 
     @computed_field(
@@ -897,6 +922,15 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_supply"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "pvt_seawater_exchanger_flow"
+            ),
         )
 
 

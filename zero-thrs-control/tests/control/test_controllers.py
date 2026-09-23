@@ -20,6 +20,9 @@ def _heat_exchanger(
         temperature_return=Stamped.stamp(module),
         flow=Stamped.stamp(flow),
         heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        temperature_supply_source="",
+        temperature_return_source="",
+        flow_source="",
     )
 
 

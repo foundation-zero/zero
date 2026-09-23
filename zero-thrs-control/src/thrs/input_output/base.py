@@ -95,6 +95,30 @@ class Stamped[T](ThrsValues):
         return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
 
 
+class StampedWithSource[T](Stamped[T]):
+    source: str
+
+    @staticmethod
+    def stamp[V](value: V, source: str) -> "StampedWithSource[V]":  # type: ignore
+        return StampedWithSource(
+            value=value, timestamp=datetime.now(UTC), source=source
+        )
+
+    @staticmethod
+    def from_stamped[V](original: Stamped[V], source: str) -> "StampedWithSource[V]":
+        return StampedWithSource(
+            value=original.value, timestamp=original.timestamp, source=source
+        )
+
+    @staticmethod
+    def combine[V](  # type: ignore
+        *stamped: "Stamped[Any]", value: V, source: str
+    ) -> "StampedWithSource[V]":
+        return StampedWithSource(
+            value=value, timestamp=min(s.timestamp for s in stamped), source=source
+        )
+
+
 def _factory[R, **P](
     cls: Callable[P, Any],
 ) -> Callable[[Callable[P, R]], Callable[P, R]]:

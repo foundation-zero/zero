@@ -1,4 +1,4 @@
-import { stamp } from "@/modules/common/lib/utils";
+import { stamp, stampWithSource } from "@/modules/common/lib/utils";
 import { Stamped } from "@/modules/common/types";
 import {
   AmcsControlMode,
@@ -143,10 +143,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const flow = useRandomizedNumber(0, 10);
     const heat = useRandomizedNumber(0, 100);
     return computed(() => ({
-      temperatureSupply: stamp(temperatureSupply),
-      temperatureReturn: stamp(temperatureReturn),
+      temperatureSupply: stampWithSource(temperatureSupply, "mock"),
+      temperatureReturn: stampWithSource(temperatureReturn, "mock"),
       deltaT: stamp(deltaT),
-      flow: stamp(flow),
+      flow: stampWithSource(flow, "mock"),
       heat: stamp(heat),
     }));
   },
