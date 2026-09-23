@@ -1,0 +1,3901 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commissioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "id": 1001,
+      "title": "",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 2
+      },
+      "description": "",
+      "transparent": true,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Hydrogeneration</h1>\r\n</center>\r\n",
+        "mode": "markdown"
+      }
+    },
+    {
+      "id": 1002,
+      "title": "General",
+      "type": "row",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 2,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 1003,
+      "title": "PCS overview (\u26a0 mode labels TBD \u2014 see notes)",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "w": 12,
+        "h": 6
+      },
+      "description": "Latest snapshot per pod. Mode is the raw propellor_sailing_mode code (0-4) \u2014 label mapping unconfirmed, see hydrogeneration-dashboard-notes.md open question #1. Power/torque units assume Aradex BIGINT fields are already engineering-unit scaled (unconfirmed).",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH pcs AS (\n  (SELECT 'FWD' AS pod, timestamp AS time, propellor_sailing_mode__value AS mode_code,\n         propellor_pitch__value AS pitch, motor_torque__value AS randax_torque,\n         shear_beam_calculated__value AS shear_beam_torque, output_velocity__value AS output_rpm\n  FROM public.marpower__150000_propulsion__pcs_fwd ORDER BY timestamp DESC LIMIT 1)\n  UNION ALL\n  (SELECT 'AFT', timestamp, propellor_sailing_mode__value, propellor_pitch__value,\n         motor_torque__value, shear_beam_calculated__value, output_velocity__value\n  FROM public.marpower__150000_propulsion__pcs_aft ORDER BY timestamp DESC LIMIT 1)\n),\nara AS (\n  SELECT 'FWD' AS pod,\n    (SELECT power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 ORDER BY timestamp DESC LIMIT 1) +\n    (SELECT power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 ORDER BY timestamp DESC LIMIT 1) AS aradex_power,\n    (SELECT torque__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 ORDER BY timestamp DESC LIMIT 1) +\n    (SELECT torque__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 ORDER BY timestamp DESC LIMIT 1) AS aradex_torque\n  UNION ALL\n  SELECT 'AFT',\n    (SELECT power__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 ORDER BY timestamp DESC LIMIT 1) +\n    (SELECT power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 ORDER BY timestamp DESC LIMIT 1),\n    (SELECT torque__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 ORDER BY timestamp DESC LIMIT 1) +\n    (SELECT torque__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 ORDER BY timestamp DESC LIMIT 1)\n)\nSELECT p.time, p.pod, p.mode_code, p.pitch, a.aradex_power, a.aradex_torque,\n       p.shear_beam_torque, p.randax_torque, p.output_rpm\nFROM pcs p JOIN ara a ON p.pod = a.pod\nORDER BY p.pod",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "time": "Time",
+              "pod": "Pod",
+              "mode_code": "Mode (code, TBD)",
+              "pitch": "Pitch",
+              "aradex_power": "Power (Aradex)",
+              "aradex_torque": "Torque (Aradex)",
+              "shear_beam_torque": "Torque (shear beam)",
+              "randax_torque": "Torque (Randax/motor)",
+              "output_rpm": "Output RPM"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1004,
+      "title": "A+T overview (sender=atprocessor_0)",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 3,
+        "w": 8,
+        "h": 6
+      },
+      "description": "atprocessor_0 assumed canonical A+T sender \u2014 needs confirmation, see open question #8.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BSP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "knots"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AWS"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "knots"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AWA"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heel"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Leeway"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rudder"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  MAX(CASE WHEN field='boat_speed_kts' THEN value END) AS bsp,\n  MAX(CASE WHEN field='app_wind_angle' THEN value END) AS awa,\n  MAX(CASE WHEN field='app_wind_speed_kts' THEN value END) AS aws,\n  MAX(CASE WHEN field='heel_angle_deg' THEN value END) AS heel,\n  MAX(CASE WHEN field='signed_leeway' THEN value END) AS leeway,\n  MAX(CASE WHEN field='rudder_angle_deg' THEN value END) AS rudder\nFROM (\n  SELECT field, value, ROW_NUMBER() OVER (PARTITION BY field ORDER BY timestamp DESC) AS rn\n  FROM public.atpx_raw\n  WHERE sender = 'atprocessor_0' AND $__timeFilter(timestamp)\n    AND field IN ('boat_speed_kts','app_wind_angle','app_wind_speed_kts','heel_angle_deg','signed_leeway','rudder_angle_deg')\n) t\nWHERE rn = 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "bsp": "BSP",
+              "awa": "AWA",
+              "aws": "AWS",
+              "heel": "Heel",
+              "leeway": "Leeway",
+              "rudder": "Rudder"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1005,
+      "title": "Total power (Aradex, fwd+aft)",
+      "type": "stat",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 3,
+        "w": 2,
+        "h": 3
+      },
+      "description": "Computed as fwd+aft Aradex power. Not from marpower__150000_propulsion(_general) \u2014 see open question #5.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  (SELECT power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 ORDER BY timestamp DESC LIMIT 1) +\n  (SELECT power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 ORDER BY timestamp DESC LIMIT 1) +\n  (SELECT power__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 ORDER BY timestamp DESC LIMIT 1) +\n  (SELECT power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 ORDER BY timestamp DESC LIMIT 1) AS total_power",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1006,
+      "title": "(Total torque, shear beam, fwd+aft)",
+      "type": "stat",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 22,
+        "y": 3,
+        "w": 2,
+        "h": 3
+      },
+      "description": "Parenthetical per original ask. Computed as fwd+aft shear beam torque.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  (SELECT shear_beam_calculated__value FROM public.marpower__150000_propulsion__pcs_fwd ORDER BY timestamp DESC LIMIT 1) +\n  (SELECT shear_beam_calculated__value FROM public.marpower__150000_propulsion__pcs_aft ORDER BY timestamp DESC LIMIT 1) AS total_torque",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1007,
+      "title": "Power trend \u2014 Aradex fwd/aft",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 7
+      },
+      "description": "",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.p) AS fwd_power\nFROM (\n  SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.p) AS aft_power\nFROM (\n  SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1008,
+      "title": "BSP & AWS trend",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 9,
+        "w": 12,
+        "h": 7
+      },
+      "description": "",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "knots"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(value) AS bsp\nFROM public.atpx_raw\nWHERE sender='atprocessor_0' AND field='boat_speed_kts' AND $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(value) AS aws\nFROM public.atpx_raw\nWHERE sender='atprocessor_0' AND field='app_wind_speed_kts' AND $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1009,
+      "title": "Per-pod performance detail",
+      "type": "row",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 1010,
+      "title": "FWD \u2014 status",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 17,
+        "w": 12,
+        "h": 5
+      },
+      "description": "speed_or_torque_setpoint is BOOLEAN, not a magnitude, and we don't yet know which value means Torque vs RPM mode \u2014 see open questions #1, #2, #9.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  timestamp AS time,\n  propellor_sailing_mode__value AS mode_code,\n  propellor_pitch__value AS pitch,\n  propellor_azimuth__value AS azimuth,\n  pitch_setpoint_not_reached__value AS pitch_not_reached,\n  rpm_setpoint_not_reached__value AS rpm_not_reached,\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 ORDER BY timestamp DESC LIMIT 1) AS regen_submode_ara1,\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 ORDER BY timestamp DESC LIMIT 1) AS regen_submode_ara2\nFROM public.marpower__150000_propulsion__pcs_fwd\nORDER BY timestamp DESC LIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "time": "Time",
+              "mode_code": "Mode (code, TBD)",
+              "pitch": "Pitch",
+              "azimuth": "Azimuth",
+              "pitch_not_reached": "Pitch setpoint not reached",
+              "rpm_not_reached": "RPM setpoint not reached",
+              "regen_submode_ara1": "Regen submode (ara1, bool \u2014 polarity TBD)",
+              "regen_submode_ara2": "Regen submode (ara2, bool \u2014 polarity TBD)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1011,
+      "title": "FWD \u2014 sailing mode over time (\u26a0 code, not label)",
+      "type": "status-history",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 12,
+        "h": 6
+      },
+      "description": "",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "fillOpacity": 100,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Mode 0 (TBD)",
+                  "color": "blue",
+                  "index": 0
+                },
+                "1": {
+                  "text": "Mode 1 (TBD)",
+                  "color": "orange",
+                  "index": 1
+                },
+                "2": {
+                  "text": "Mode 2 (TBD)",
+                  "color": "green",
+                  "index": 2
+                },
+                "3": {
+                  "text": "Mode 3 (TBD)",
+                  "color": "purple",
+                  "index": 3
+                },
+                "4": {
+                  "text": "Mode 4 (TBD)",
+                  "color": "red",
+                  "index": 4
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colWidth": 0.8,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "rowHeight": 0.8,
+        "showValue": "never",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, mode_code FROM (\n  SELECT timestamp AS time, propellor_sailing_mode__value AS mode_code,\n         LAG(propellor_sailing_mode__value) OVER (ORDER BY timestamp) AS prev_mode\n  FROM public.marpower__150000_propulsion__pcs_fwd\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev_mode IS NULL OR prev_mode <> mode_code\nORDER BY time",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1012,
+      "title": "FWD \u2014 torque (Aradex / shear beam / Randax)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "description": "No numeric torque setpoint exists yet (speed_or_torque_setpoint is boolean-only) \u2014 see open question #2.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.torque) AS aradex_torque\nFROM (\n  SELECT timestamp, torque__value AS torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, torque__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(shear_beam_calculated__value) AS shear_beam_torque\nFROM public.marpower__150000_propulsion__pcs_fwd\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(motor_torque__value) AS randax_torque\nFROM public.marpower__150000_propulsion__pcs_fwd\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1013,
+      "title": "FWD \u2014 power (Aradex kW / Randax %)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "description": "Randax/motor power is a percentage of rated power (unit conversion to kW pending \u2014 open question #3); shown on its own right axis.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.p) AS aradex_power\nFROM (\n  SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(motor_power_in_perc__value) AS randax_power_pct\nFROM public.marpower__150000_propulsion__pcs_fwd\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1014,
+      "title": "FWD \u2014 RPM (Aradex / prop shaft / setpoint)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "description": "Setpoint shown as a step trace (speed_setpoint__value). output_velocity__value assumed to be prop shaft RPM \u2014 see open question #4.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "rotrpm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "custom.lineInterpolation",
+                "value": "stepAfter"
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.speed) AS aradex_rpm\nFROM (\n  SELECT timestamp, speed__value AS speed FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, speed__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(output_velocity__value) AS output_rpm\nFROM public.marpower__150000_propulsion__pcs_fwd\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(speed_setpoint__value) AS rpm_setpoint\nFROM public.marpower__150000_propulsion__pcs_fwd\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1015,
+      "title": "FWD \u2014 hydrogen efficiency (\u26a0 not implemented)",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 12,
+        "h": 3
+      },
+      "description": "",
+      "transparent": false,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "**Placeholder.** Formula not yet confirmed \u2014 see open question #6 in `hydrogeneration-dashboard-notes.md`. Will likely compare measured Aradex power against the reference-curve power at the current BSP + pitch.",
+        "mode": "markdown"
+      }
+    },
+    {
+      "id": 1016,
+      "title": "AFT \u2014 status",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 17,
+        "w": 12,
+        "h": 5
+      },
+      "description": "speed_or_torque_setpoint is BOOLEAN, not a magnitude, and we don't yet know which value means Torque vs RPM mode \u2014 see open questions #1, #2, #9.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  timestamp AS time,\n  propellor_sailing_mode__value AS mode_code,\n  propellor_pitch__value AS pitch,\n  propellor_azimuth__value AS azimuth,\n  pitch_setpoint_not_reached__value AS pitch_not_reached,\n  rpm_setpoint_not_reached__value AS rpm_not_reached,\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 ORDER BY timestamp DESC LIMIT 1) AS regen_submode_ara1,\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 ORDER BY timestamp DESC LIMIT 1) AS regen_submode_ara2\nFROM public.marpower__150000_propulsion__pcs_aft\nORDER BY timestamp DESC LIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "time": "Time",
+              "mode_code": "Mode (code, TBD)",
+              "pitch": "Pitch",
+              "azimuth": "Azimuth",
+              "pitch_not_reached": "Pitch setpoint not reached",
+              "rpm_not_reached": "RPM setpoint not reached",
+              "regen_submode_ara1": "Regen submode (ara1, bool \u2014 polarity TBD)",
+              "regen_submode_ara2": "Regen submode (ara2, bool \u2014 polarity TBD)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1017,
+      "title": "AFT \u2014 sailing mode over time (\u26a0 code, not label)",
+      "type": "status-history",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 6
+      },
+      "description": "",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "fillOpacity": 100,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Mode 0 (TBD)",
+                  "color": "blue",
+                  "index": 0
+                },
+                "1": {
+                  "text": "Mode 1 (TBD)",
+                  "color": "orange",
+                  "index": 1
+                },
+                "2": {
+                  "text": "Mode 2 (TBD)",
+                  "color": "green",
+                  "index": 2
+                },
+                "3": {
+                  "text": "Mode 3 (TBD)",
+                  "color": "purple",
+                  "index": 3
+                },
+                "4": {
+                  "text": "Mode 4 (TBD)",
+                  "color": "red",
+                  "index": 4
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colWidth": 0.8,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "rowHeight": 0.8,
+        "showValue": "never",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, mode_code FROM (\n  SELECT timestamp AS time, propellor_sailing_mode__value AS mode_code,\n         LAG(propellor_sailing_mode__value) OVER (ORDER BY timestamp) AS prev_mode\n  FROM public.marpower__150000_propulsion__pcs_aft\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev_mode IS NULL OR prev_mode <> mode_code\nORDER BY time",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1018,
+      "title": "AFT \u2014 torque (Aradex / shear beam / Randax)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "description": "No numeric torque setpoint exists yet (speed_or_torque_setpoint is boolean-only) \u2014 see open question #2.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.torque) AS aradex_torque\nFROM (\n  SELECT timestamp, torque__value AS torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, torque__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(shear_beam_calculated__value) AS shear_beam_torque\nFROM public.marpower__150000_propulsion__pcs_aft\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(motor_torque__value) AS randax_torque\nFROM public.marpower__150000_propulsion__pcs_aft\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1019,
+      "title": "AFT \u2014 power (Aradex kW / Randax %)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "description": "Randax/motor power is a percentage of rated power (unit conversion to kW pending \u2014 open question #3); shown on its own right axis.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.p) AS aradex_power\nFROM (\n  SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(motor_power_in_perc__value) AS randax_power_pct\nFROM public.marpower__150000_propulsion__pcs_aft\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1020,
+      "title": "AFT \u2014 RPM (Aradex / prop shaft / setpoint)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "description": "Setpoint shown as a step trace (speed_setpoint__value). output_velocity__value assumed to be prop shaft RPM \u2014 see open question #4.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "rotrpm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "custom.lineInterpolation",
+                "value": "stepAfter"
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time, avg(t.speed) AS aradex_rpm\nFROM (\n  SELECT timestamp, speed__value AS speed FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, speed__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)\n) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(output_velocity__value) AS output_rpm\nFROM public.marpower__150000_propulsion__pcs_aft\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(speed_setpoint__value) AS rpm_setpoint\nFROM public.marpower__150000_propulsion__pcs_aft\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1021,
+      "title": "AFT \u2014 hydrogen efficiency (\u26a0 not implemented)",
+      "type": "text",
+      "gridPos": {
+        "x": 12,
+        "y": 52,
+        "w": 12,
+        "h": 3
+      },
+      "description": "",
+      "transparent": false,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "**Placeholder.** Formula not yet confirmed \u2014 see open question #6 in `hydrogeneration-dashboard-notes.md`. Will likely compare measured Aradex power against the reference-curve power at the current BSP + pitch.",
+        "mode": "markdown"
+      }
+    },
+    {
+      "id": 1022,
+      "title": "Performance curves \u2014 power vs boat speed",
+      "type": "row",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 55,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 1023,
+      "title": "FWD \u2014 power vs boat speed (bucket avg, colour = pitch)",
+      "type": "xychart",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 56,
+        "w": 12,
+        "h": 14
+      },
+      "description": "Grey lines = reference curves (Dykstra PDF, CP1-4). Coloured dots = live bucket averages (bucket width set by $avg_window), coloured continuously by actual pitch. Largest dot = most recent bucket. NOTE: XY chart panel options are our best-effort reconstruction of the Grafana 12.3 schema and are unverified \u2014 likely needs adjustment once opened in Grafana.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "pointSize": {
+              "fixed": 6,
+              "min": 4,
+              "max": 18
+            },
+            "show": "points"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vs_kts"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "knots"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "power_kw"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pitch"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#d0d0d0"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#a8a8a8"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#808080"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#505050"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "custom.pointSize",
+                "value": {
+                  "fixed": 20
+                }
+              },
+              {
+                "id": "custom.pointShape",
+                "value": "square"
+              },
+              {
+                "id": "custom.pointStrokeWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "mapping": "manual",
+        "series": [
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 0
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP1 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 1
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP2 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 2
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP3 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 3
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP4 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 4
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "color": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Live (bucket avg)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 5
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "color": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Current"
+            }
+          }
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,3.5), (7,5.6), (8,8.4), (9,12), (10,16), (11,22), (12,28), (13,36), (14,45), (15,55), (16,67), (17,81), (18,96)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,4.3), (7,6.8), (8,10), (9,14), (10,20), (11,26), (12,34), (13,44), (14,54), (15,67), (16,81), (17,97), (18,116)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,5.0), (7,7.9), (8,12), (9,17), (10,23), (11,31), (12,40), (13,50), (14,63), (15,77), (16,94), (17,113), (18,134)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,5.9), (7,9.4), (8,14), (9,20), (10,27), (11,36), (12,47), (13,60), (14,75), (15,92), (16,112), (17,134), (18,159)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "D",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH pitch_b AS (\n  SELECT date_bin('$avg_window', timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_fwd\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n),\npower_b AS (\n  SELECT date_bin('$avg_window', t.timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(t.p) AS power_kw\n  FROM (\n    SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)\n  ) t\n  GROUP BY 1\n),\nbsp_b AS (\n  SELECT date_bin('$avg_window', timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(value) AS vs_kts\n  FROM public.atpx_raw\n  WHERE sender='atprocessor_0' AND field='boat_speed_kts' AND $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT b.bucket AS time, b.vs_kts, p.power_kw, pi.pitch\nFROM bsp_b b\nJOIN power_b p ON b.bucket = p.bucket\nJOIN pitch_b pi ON b.bucket = pi.bucket\nORDER BY b.bucket",
+          "refId": "E",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH pitch_c AS (\n  SELECT avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_fwd\n  WHERE timestamp > now() - INTERVAL '$avg_window'\n),\npower_c AS (\n  SELECT avg(t.p) AS power_kw\n  FROM (\n    SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE timestamp > now() - INTERVAL '$avg_window'\n    UNION ALL\n    SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE timestamp > now() - INTERVAL '$avg_window'\n  ) t\n),\nbsp_c AS (\n  SELECT avg(value) AS vs_kts\n  FROM public.atpx_raw\n  WHERE sender='atprocessor_0' AND field='boat_speed_kts' AND timestamp > now() - INTERVAL '$avg_window'\n)\nSELECT bsp_c.vs_kts, power_c.power_kw, pitch_c.pitch\nFROM bsp_c, power_c, pitch_c",
+          "refId": "F",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": 1024,
+      "title": "AFT \u2014 power vs boat speed (bucket avg, colour = pitch)",
+      "type": "xychart",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 56,
+        "w": 12,
+        "h": 14
+      },
+      "description": "Grey lines = reference curves (Dykstra PDF, CP1-4). Coloured dots = live bucket averages (bucket width set by $avg_window), coloured continuously by actual pitch. Largest dot = most recent bucket. NOTE: XY chart panel options are our best-effort reconstruction of the Grafana 12.3 schema and are unverified \u2014 likely needs adjustment once opened in Grafana.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "pointSize": {
+              "fixed": 6,
+              "min": 4,
+              "max": 18
+            },
+            "show": "points"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vs_kts"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "knots"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "power_kw"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pitch"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#d0d0d0"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#a8a8a8"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#808080"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "lines"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#505050"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "custom.pointSize",
+                "value": {
+                  "fixed": 20
+                }
+              },
+              {
+                "id": "custom.pointShape",
+                "value": "square"
+              },
+              {
+                "id": "custom.pointStrokeWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "mapping": "manual",
+        "series": [
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 0
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP1 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 1
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP2 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 2
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP3 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 3
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "name": {
+              "fixed": "CP4 (ref)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 4
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "color": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Live (bucket avg)"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 5
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "vs_kts"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "power_kw"
+              }
+            },
+            "color": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Current"
+            }
+          }
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,2.1), (7,3.4), (8,5.1), (9,7.2), (10,10), (11,13), (12,17), (13,22), (14,27), (15,33), (16,40), (17,49), (18,58)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,4.6), (7,7.3), (8,11), (9,16), (10,21), (11,28), (12,37), (13,47), (14,59), (15,72), (16,88), (17,105), (18,125)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,7.0), (7,11), (8,17), (9,24), (10,32), (11,43), (12,56), (13,71), (14,89), (15,109), (16,133), (17,159), (18,189)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT vs_kts, power_kw FROM (VALUES (6,9.3), (7,15), (8,22), (9,31), (10,43), (11,57), (12,74), (13,94), (14,118), (15,145), (16,176), (17,211), (18,250)) AS t(vs_kts, power_kw) ORDER BY vs_kts",
+          "refId": "D",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH pitch_b AS (\n  SELECT date_bin('$avg_window', timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_aft\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n),\npower_b AS (\n  SELECT date_bin('$avg_window', t.timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(t.p) AS power_kw\n  FROM (\n    SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)\n  ) t\n  GROUP BY 1\n),\nbsp_b AS (\n  SELECT date_bin('$avg_window', timestamp, TIMESTAMP '1970-01-01') AS bucket, avg(value) AS vs_kts\n  FROM public.atpx_raw\n  WHERE sender='atprocessor_0' AND field='boat_speed_kts' AND $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT b.bucket AS time, b.vs_kts, p.power_kw, pi.pitch\nFROM bsp_b b\nJOIN power_b p ON b.bucket = p.bucket\nJOIN pitch_b pi ON b.bucket = pi.bucket\nORDER BY b.bucket",
+          "refId": "E",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH pitch_c AS (\n  SELECT avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_aft\n  WHERE timestamp > now() - INTERVAL '$avg_window'\n),\npower_c AS (\n  SELECT avg(t.p) AS power_kw\n  FROM (\n    SELECT timestamp, power__value AS p FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE timestamp > now() - INTERVAL '$avg_window'\n    UNION ALL\n    SELECT timestamp, power__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE timestamp > now() - INTERVAL '$avg_window'\n  ) t\n),\nbsp_c AS (\n  SELECT avg(value) AS vs_kts\n  FROM public.atpx_raw\n  WHERE sender='atprocessor_0' AND field='boat_speed_kts' AND timestamp > now() - INTERVAL '$avg_window'\n)\nSELECT bsp_c.vs_kts, power_c.power_kw, pitch_c.pitch\nFROM bsp_c, power_c, pitch_c",
+          "refId": "F",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ]
+    }
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [
+    "commissioning",
+    "hydrogeneration"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "info8fcc-greptimedb-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "5m",
+          "value": "5m"
+        },
+        "description": "Averaging bucket width for the performance-curve scatter plots (independent of the dashboard time range/zoom).",
+        "label": "Scatter avg window",
+        "name": "avg_window",
+        "options": [
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "2m",
+            "value": "2m"
+          },
+          {
+            "selected": true,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "15m",
+            "value": "15m"
+          }
+        ],
+        "query": "1m,2m,5m,10m,15m",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Hydrogeneration",
+  "uid": "commissioning-hydrogeneration",
+  "version": 1
+}
