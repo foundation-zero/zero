@@ -14,6 +14,7 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
+    PCM_HEATING_ELEMENT_POWER,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
     PcmChargeControllerValues,
@@ -290,7 +291,9 @@ class PcmControl(
         # each flushing its own volume; the others run both exchangers in parallel on
         # the thrs loop, so they are one circuit carrying the combined volume.
         self.module1_charge_controller = PcmChargeController(
-            self._time, (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME)
+            self._time,
+            (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME),
+            heating_power=PCM_HEATING_ELEMENT_POWER,
         )
         self.module2_charge_controller = PcmChargeController(self._time)
         self.module3_charge_controller = PcmChargeController(self._time)
@@ -357,6 +360,7 @@ class PcmControl(
         self.module1_charge_controller(
             sensor_values.pcm_heat_module1,
             sensor_values.pcm_heat_module1_freshwater,
+            heating=sensor_values.pcm_module1.heating.value,
         )
         self.module2_charge_controller(sensor_values.pcm_heat_module2)
         self.module3_charge_controller(sensor_values.pcm_heat_module3)

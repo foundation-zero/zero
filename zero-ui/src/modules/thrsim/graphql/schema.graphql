@@ -1583,6 +1583,7 @@ type SensorLevelSwitchType {
 
 type SensorPcmType {
   charged: BoolStampedType!
+  heating: BoolStampedType!
 }
 
 type SensorPcsType {

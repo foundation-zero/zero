@@ -66,10 +66,17 @@ Three things the engineers could do, cheapest first.
 Driving terminal 3–4 from our control is also worth taking while we are in there: it gives
 us the charge enable, so the element stops charging against our wishes.
 
-The element matters more than it looks. PCM 1 and PCM 2 currently have their heating
-elements switched on, and that energy is invisible to a hydronic balance. Until either the
-elements are off or we can see the Heating signal, the integrator will drift on those two
-modules no matter how good the rest is.
+The element matters more than it looks, because its heat goes straight into the cell and
+so never appears in any circuit. In the final configuration only module 1 has one
+connected, we drive it through a digital output (`pcm_module1.on`) and we read back
+whether it is running (`pcm_module1.heating`). `ChargeController` takes that feedback and
+adds 2,8 kW to the balance while it is on, which is the only reason the integral survives
+an electric boost. Modules 2–4 have no element, so their `heating_power` is zero.
+
+Two caveats. Commissioning data recorded before this was wired has PCM 1 and PCM 2 both
+heating with no feedback, so it cannot be used to validate the integral. And nothing
+commands the output yet: when to boost electrically is a separate decision from estimating
+the charge, and probably belongs with the PV surplus logic.
 
 ## Topology on board
 
@@ -136,7 +143,10 @@ Three practical guards:
 
 Module 1 is passed two circuits, because the freshwater system can draw it down with the
 thrs loop idle. If the two disagree — one converged hot, the other converged cold — neither
-anchors.
+anchors. It is also passed its element's feedback, and counts 2,8 kW into the cell while
+that is on, with no flow required. The anchors are deliberately left alone: a converged ΔT
+still means the water found nothing to melt or freeze, whether or not the element is
+running.
 
 The capacity constant calibrates itself for free: the energy integrated between a full
 anchor and the next empty anchor *is* that module's usable capacity under our actual duty.
@@ -161,9 +171,12 @@ retrospectively in Greptime without re-running anything.
   five borrowed consumers sensors it needs, and `pcm_heat_module1_freshwater`. Module heat
   now uses the glycol conversion; the freshwater circuit stays on water.
 - `control/modules/pcm.py` — `minimum_charging_temperature` 60 → 65, per-module purge
-  volumes, module 1 fed both circuits.
-- `tests/control/test_charge_controller.py` — 14 tests covering the anchors, the purge
-  gate, the dwell, integration, standby loss, data gaps and the two-circuit cases.
+  volumes, module 1 fed both circuits and its element feedback.
+- `definitions/sensor.py` — `Pcm` gained `heating`, the element's contactor feedback. Not
+  in the FMU, and false on modules 2–4, which have no element.
+- `tests/control/test_charge_controller.py` — 18 tests covering the anchors, the purge
+  gate, the dwell, integration, standby loss, data gaps, the two-circuit cases and the
+  heating element.
 - `zero-ui` — schema re-exported, `ChargeController` TS type and its mimic mock updated.
 
 ## Still open
@@ -171,15 +184,15 @@ retrospectively in Greptime without re-running anything.
 | Question                                                                            | Who                | Why it blocks                                          |
 | ----------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------ |
 | Can we tap the LED lines, fit a second probe in the thermowell, or is there a serial header? | Engineers, Flamco  | Decides whether we estimate or measure                 |
-| Can the heating elements on PCM 1 and 2 be switched off, or the Heating signal read? | Us, engineers      | 2,8 kW invisible to the energy balance                 |
+| What decides when module 1 boosts electrically?                                     | Us                 | The output exists and nothing drives it                |
 | Is the HPC deliberately connected against its port labels?                          | Engineers          | Possible performance loss on all four modules          |
 | Does PCM58 supercool on discharge?                                                  | Flamco, Sunamp     | A freeze plateau below 58 °C would false-trigger the empty anchor |
 | Ethylene or propylene glycol, and what concentration?                               | Us                 | Currently assumed 20 %, worth about 1 % either way     |
 | When do the freshwater topics get fixed?                                            | Us                 | Module 1's balance is wrong without them               |
 | Are the borrowed `consumers/*` topic overrides right?                                | Us                 | They mirror the consumers mapping but are unverified against a live broker |
 
-The first two are the ones worth pushing. Everything else is tuning; those two change what
-is achievable at all.
+The first is the one worth pushing: a probe in the thermowell would turn this from an
+estimate into a measurement. The rest is tuning.
 
 Deliberately not done here:
 
@@ -192,8 +205,9 @@ Deliberately not done here:
 - **No persistence.** A restart comes up unknown until the first anchor.
 - **`pnpm codegen` has not been run** in zero-ui; it needs `.env.local` and an endpoint.
   Nothing surfaces `energy` in the UI yet.
-- **Thresholds are not fitted to logged data.** With the elements on for PCM 1 and 2 and no
-  complete cycles recorded, there is nothing in Greptime that would validate an anchor.
+- **Thresholds are not fitted to logged data.** What is in Greptime was recorded with the
+  elements on for PCM 1 and 2 and no feedback on either, and holds no complete cycles, so
+  there is nothing yet that would validate an anchor.
 
 ## Sources
 

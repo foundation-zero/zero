@@ -472,11 +472,11 @@ class PcmControlValues(ThrsValues):
         control.Valve,
         valve_meta(yard_tag="50001071-02", component_type="valve", valve_type="switch"),
     ]
+    # Drives module 1's electric element, the only one connected. Nothing commands it
+    # yet: when to boost electrically is a separate decision from estimating the charge.
     pcm_module1: Annotated[
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
-    ] = control.Pcm(  # TODO: Remove
-        on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ] = control.Pcm(on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)))
 
 
 class PcmSimulationInputs(ThrsValues):

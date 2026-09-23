@@ -49,6 +49,11 @@ PCM_MODULE_CAPACITY: Joule = 7 * 3.6e6
 # Standing loss per module, FlexTherm Eco 9E: 0.77 kWh/24h (manual, table 2.2).
 PCM_STANDBY_LOSS: Watt = 32.1
 
+# The electric element, 2.8 kW at 230 V (manual, table 2.2). Only module 1 has one
+# connected. It heats the cell directly, so none of it shows up in the water, which is
+# why the balance has to be told when it is running.
+PCM_HEATING_ELEMENT_POWER: Watt = 2800
+
 # The pipework and exchangers read stale without flow, so a circuit has to be purged
 # before its dT means anything. Water contents per exchanger, 9E (manual, table 2.2);
 # the pipe runs to and from the module are not included yet.

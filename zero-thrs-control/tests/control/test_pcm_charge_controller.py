@@ -8,11 +8,13 @@ from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions.controllers import (
     PCM_ANCHOR_DWELL,
+    PCM_HEATING_ELEMENT_POWER,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
     PCM_MODULE_CAPACITY,
     PCM_MODULE_PURGE_VOLUME,
     PCM_STANDBY_LOSS,
+    PcmChargingState,
 )
 from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
@@ -58,10 +60,11 @@ def _feed(
     devices: Callable[[datetime], tuple[sensor.HeatTransferDevice, ...]],
     seconds: float,
     step: float = STEP,
+    heating: bool = False,
 ) -> None:
     for _ in range(round(seconds / step)):
         clock.advance(step)
-        controller(*devices(clock.now))
+        controller(*devices(clock.now), heating=heating)
 
 
 def _single(
@@ -237,6 +240,79 @@ def test_freshwater_circuit_discharges_module1():
 
     charge = controller.values().charge.value
     assert charge is not None and charge < 1.0
+
+
+def test_heating_element_charges_a_module_with_nothing_flowing():
+    """Module 1's element heats the cell directly, so no circuit ever sees it."""
+    clock = Clock()
+    controller = ChargeController(
+        clock, heating_power=PCM_HEATING_ELEMENT_POWER, capacity=PCM_MODULE_CAPACITY
+    )
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(
+        controller,
+        clock,
+        _single(inlet=20.0, outlet=20.0, flow=0.0),
+        seconds=600,
+        heating=True,
+    )
+
+    assert controller.values().energy.value == approx(
+        (PCM_HEATING_ELEMENT_POWER - PCM_STANDBY_LOSS) * 600
+    )
+
+
+def test_heating_element_counts_as_charging():
+    clock = Clock()
+    controller = ChargeController(clock, heating_power=PCM_HEATING_ELEMENT_POWER)
+
+    _feed(
+        controller,
+        clock,
+        _single(inlet=20.0, outlet=20.0, flow=0.0),
+        seconds=60,
+        heating=True,
+    )
+
+    assert controller.values().charging_state.value == PcmChargingState.CHARGING.value
+
+
+def test_heating_element_adds_to_the_hydronic_balance():
+    clock = Clock()
+    controller = ChargeController(
+        clock, heating_power=PCM_HEATING_ELEMENT_POWER, capacity=PCM_MODULE_CAPACITY
+    )
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(
+        controller,
+        clock,
+        _single(inlet=70.0, outlet=60.0),
+        seconds=600,
+        heating=True,
+    )
+
+    water = FLOW * 10.0 * GLYCOL_20_HEAT_TRANSFER_CONVERSION
+    assert controller.values().energy.value == approx(
+        (water + PCM_HEATING_ELEMENT_POWER) * 600
+    )
+
+
+def test_modules_without_an_element_ignore_the_heating_flag():
+    clock = Clock()
+    controller = ChargeController(clock)  # heating_power defaults to zero
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(
+        controller,
+        clock,
+        _single(inlet=20.0, outlet=20.0, flow=0.0),
+        seconds=600,
+        heating=True,
+    )
+
+    assert controller.values().energy.value == approx(0.0)
 
 
 def test_circuits_that_disagree_do_not_anchor():
