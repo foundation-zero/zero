@@ -675,7 +675,6 @@
           "decimals": 1,
           "fieldMinMax": false,
           "mappings": [],
-          "noValue": "---",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -702,9 +701,10 @@
         "labelFields": [],
         "sizeField": "energy",
         "textField": "sub_group_name",
-        "tiling": "treemapBinary"
+        "tiling": "treemapSquarify"
       },
       "pluginVersion": "2.1.1",
+      "repeatDirection": "h",
       "targets": [
         {
           "dataset": "dev",
@@ -713,9 +713,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n\tSUM(avg_energy) AS energy,\r\n  SUM(SUM(avg_energy)) OVER (PARTITION BY group_name) AS group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tAVG(energy_wh) AS avg_energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "rawSql": "SELECT\r\n\tmain_group AS group_name,\r\n\tsub_group AS sub_group_name,\r\n\tSUM(energy) AS energy,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 50 AS energy\r\n\tFROM views.gld_electrical_energy_consumption\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group",
           "refId": "A",
           "sql": {
             "columns": [
