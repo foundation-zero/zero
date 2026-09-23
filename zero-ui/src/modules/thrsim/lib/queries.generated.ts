@@ -1609,7 +1609,38 @@ export const PCM_SENSOR_QUERY = `
     positionRel { value timestamp }
     positionAbs { value timestamp }
   }
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowAdsorption {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  pcmTemperatureConsumersReturn {
+    temperature { value timestamp }
+  }
   pcmHeatModule1 {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pcmHeatModule1Freshwater {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }

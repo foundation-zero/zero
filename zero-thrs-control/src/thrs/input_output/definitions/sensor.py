@@ -360,11 +360,6 @@ class Pcs(ThrsValues):
 # Temporary helper for the FMU charged input that control depends on. This should come from a charge controller
 class Pcm(ThrsValues):
     charged: Stamped[Charged]
-    # Feedback from the electric element's contactor. Only module 1 has an element
-    # connected, so this stays false on the others. Not modelled in the FMU.
-    heating: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)] = Stamped(
-        value=False, timestamp=datetime.fromtimestamp(0, UTC)
-    )
 
 
 class LevelSwitch(ThrsValues):

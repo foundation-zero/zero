@@ -315,8 +315,8 @@ class PcmChargeController:
     loop and discharged by the freshwater system), so every circuit is passed on each
     call, in the order its purge volume was given. Module 1 also has an electric element,
     whose heat goes straight into the cell and so never appears in any circuit: give its
-    rating as `heating_power` and pass its feedback on each call, or the estimate will
-    drift by however long it runs.
+    rating as `heating_power` and say on each call whether it is switched on, or the
+    estimate will drift by however long it runs.
     """
 
     def __init__(

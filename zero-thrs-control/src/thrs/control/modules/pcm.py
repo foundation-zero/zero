@@ -28,7 +28,11 @@ from thrs.orchestration.module import ModuleDescription
 class PcmParameters(ThrsValues):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
-    minimum_charging_dt: Celsius = 2
+    # Must stay below PCM_EXHAUSTED_DT, or charging stops before a module has held a
+    # converged dT long enough to anchor its charge at full. TODO: The condition is an
+    # any() over all four modules, so today only the last one to finish is at risk;
+    # revisit when the charging conditions are reworked per module.
+    minimum_charging_dt: Celsius = 1
     # Manufacturer minimum supply temperature for thermal charging is 65 C (maximum 80).
     minimum_charging_temperature: Celsius = 65
     pump_tuning: Tuning = (0.01, 0.001, 0)
@@ -360,7 +364,7 @@ class PcmControl(
         self.module1_charge_controller(
             sensor_values.pcm_heat_module1,
             sensor_values.pcm_heat_module1_freshwater,
-            heating=sensor_values.pcm_module1.heating.value,
+            heating=self._current_values.pcm_module1.on.value,
         )
         self.module2_charge_controller(sensor_values.pcm_heat_module2)
         self.module3_charge_controller(sensor_values.pcm_heat_module3)

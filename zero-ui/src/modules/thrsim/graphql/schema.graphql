@@ -1233,22 +1233,13 @@ type PcmSensorValuesType {
   consumersFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
   consumersFlowAdsorption: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-08", componentType: "flow_sensor", valveType: null)
   consumersFlowBypass: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001192", componentType: "flow_sensor", valveType: null)
-
-  """
-  What the consumers send back, which is what the modules see while supplying.
-  
-  The bypass carries the module outlet mix around, so it comes in at the flow
-  weighted average of the module outlets. Flow meter temperatures are not accurate
-  enough to use here, so every temperature comes from a dedicated sensor.
-  """
-  pcmTemperatureConsumersReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "50001038-48", componentType: "calculated_temperature", valveType: null)
+  pcmTemperatureConsumersReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pcmHeatModule1: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
 
   """
   Module 1's second circuit, the HPC, which the freshwater system discharges.
   
   It can draw the module down with the thrs loop idle, so its energy counts too.
-  Freshwater is not glycol, hence the other conversion.
   """
   pcmHeatModule1Freshwater: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
   pcmHeatModule2: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
@@ -1583,7 +1574,6 @@ type SensorLevelSwitchType {
 
 type SensorPcmType {
   charged: BoolStampedType!
-  heating: BoolStampedType!
 }
 
 type SensorPcsType {

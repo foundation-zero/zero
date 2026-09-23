@@ -1880,7 +1880,34 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  consumersTemperatureDhwReturn: {
+    yardTag: "50001038-48",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureAdsorptionReturn: {
+    yardTag: "50001038-49",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersFlowDhw: {
+    yardTag: "50001058-07",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowAdsorption: {
+    yardTag: "50001058-08",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowBypass: {
+    yardTag: "50001192",
+    componentType: SensorComponentType.Flow,
+  },
+  pcmTemperatureConsumersReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
   pcmHeatModule1: {
+    yardTag: "50001049",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pcmHeatModule1Freshwater: {
     yardTag: "50001049",
     componentType: SensorComponentType.HeatTransferDevice,
   },

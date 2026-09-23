@@ -64,10 +64,7 @@ class PcmSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="250000-fresh-water/hot/hot-temperature-to-pcm",
         ),
-    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
-        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-    )
-
+    ]
     freshwater_temperature_pcm_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(
@@ -76,10 +73,7 @@ class PcmSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="250000-fresh-water/hot/hot-temperature-from-pcm",
         ),
-    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
-        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-    )
-
+    ]
     pcm_module1: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm_input")
     ] = sensor.Pcm(
@@ -122,12 +116,9 @@ class PcmSensorValues(AmcsModeSensorValues):
             yard_tag="25001139",
             component_type="flow_sensor",
             included_in_fmu=False,
-            topic_override="250000-fresh-water/tech/tech-flow-technical-room-energy-recovery",  # must be 250000-fresh-water/hot/hot-flow-technical-room-energy-recovery
+            topic_override="250000-fresh-water/hot/hot-flow-to-pcm",
         ),
-    ] = sensor.FlowSensor(  # TODO: Remove default when topic is correct
-        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-    )
+    ]
     pcm_switch_charging_return: Annotated[
         sensor.Valve,
         valve_meta(yard_tag="50001062-02", component_type="valve", valve_type="switch"),
@@ -216,39 +207,44 @@ class PcmSensorValues(AmcsModeSensorValues):
     ]
 
     @property
-    def _charging(self) -> bool:
-        """Whether the modules are lined up on the producers header.
-
-        Taken from the switch positions rather than the control mode so that the heat
-        stays a function of the sensors alone.
-        """
+    def _supply_from_producers(self) -> bool:
         return sensor.valves_open_closed(
-            open_valves=[
+            closed_valves=[self.pcm_switch_discharging],
+            open_valves=[self.pcm_switch_charging_supply],
+            tolerance=Valve.OPEN / 2,
+        )
+
+    @property
+    def _supply_from_consumers(self) -> bool:
+        return sensor.valves_open_closed(
+            closed_valves=[
                 self.pcm_switch_charging_supply,
                 self.pcm_switch_charging_return,
             ],
+            open_valves=[self.pcm_switch_discharging],
             tolerance=Valve.OPEN / 2,
         )
 
     @property
     def _module_inlet_temperature(self) -> Stamped[OptionalCelsius]:
-        """The temperature of the water entering the modules.
-
-        Flow through a module runs the same way in both directions of use, so only the
-        source changes: the producers header while charging, and whatever the consumers
-        send back otherwise.
-        """
-        if self._charging:
+        if self._supply_from_producers:
             return cast(
                 Stamped[OptionalCelsius],
                 self.pcm_temperature_producers_return.temperature,
             )
-        return self.pcm_temperature_consumers_return.temperature
+        if self._supply_from_consumers:
+            return cast(
+                Stamped[OptionalCelsius],
+                self.pcm_temperature_consumers_return.temperature,
+            )
+
+        return Stamped.stamp(None)
 
     @property
     def _module_inlet_source(self) -> str:
         return sensor.extract_source_yardtag(
-            self, "pcm_temperature_producers_return" if self._charging else None
+            self,
+            "pcm_temperature_producers_return" if self._supply_from_producers else None,
         )
 
     @computed_field(
@@ -258,65 +254,20 @@ class PcmSensorValues(AmcsModeSensorValues):
     )
     @property
     def pcm_temperature_consumers_return(self) -> sensor.CalculatedTemperature:
-        """What the consumers send back, which is what the modules see while supplying.
-
-        The bypass carries the module outlet mix around, so it comes in at the flow
-        weighted average of the module outlets.
-        """
-        bypass_temperature = sensor.CalculatedTemperature.from_weighted_sensors(
-            [
-                self.pcm_flow_module1.flow,
-                self.pcm_flow_module2.flow,
-                self.pcm_flow_module3.flow,
-                self.pcm_flow_module4.flow,
-            ],
-            [
-                self.pcm_temperature_module1,
-                self.pcm_temperature_module2,
-                self.pcm_temperature_module3,
-                self.pcm_temperature_module4,
-            ],
-            default_if_zero_weight=None,
-        )
-        weights = [
-            self.consumers_flow_dhw.flow,
-            self.consumers_flow_adsorption.flow,
-            self.consumers_flow_bypass.flow,
-        ]
-        temperatures: list[Stamped[OptionalCelsius]] = [
-            cast(
-                Stamped[OptionalCelsius],
-                self.consumers_temperature_dhw_return.temperature,
-            ),
-            cast(
-                Stamped[OptionalCelsius],
-                self.consumers_temperature_adsorption_return.temperature,
-            ),
-            bypass_temperature.temperature,
-        ]
-        # A leg without flow or without a temperature is dropped rather than defaulted:
-        # with no module flowing the bypass carries no temperature at all.
-        known = [
-            (weight, temperature)
-            for weight, temperature in zip(weights, temperatures, strict=True)
-            if temperature.value is not None and weight.value > 0
-        ]
-        total_flow = sum(weight.value for weight, _ in known)
-
+        # What comes back from the consumers is a flow-weighted average of the dhw, absorption and bypass temperatures.
         return sensor.CalculatedTemperature(
-            temperature=Stamped.combine(
-                *weights,
-                *temperatures,
-                value=(
-                    sum(
-                        weight.value * temperature.value
-                        for weight, temperature in known
-                        if temperature.value is not None
-                    )
-                    / total_flow
-                    if total_flow > 0
-                    else None
-                ),
+            temperature=sensor.weighted_combined_measurement(
+                weights=[
+                    self.consumers_flow_dhw.flow,
+                    self.consumers_flow_adsorption.flow,
+                    self.consumers_flow_bypass.flow,
+                ],
+                measurements=[
+                    self.consumers_temperature_dhw_return.temperature,
+                    self.consumers_temperature_adsorption_return.temperature,
+                    self.consumers_flow_bypass.temperature,  # For now, we take the bypass temperature from the flow sensor. Even though it's inaccurate, the alternative is a complex valve-dependent calculation.
+                ],
+                default_if_zero_weight=None,
             )
         )
 
@@ -472,8 +423,6 @@ class PcmControlValues(ThrsValues):
         control.Valve,
         valve_meta(yard_tag="50001071-02", component_type="valve", valve_type="switch"),
     ]
-    # Drives module 1's electric element, the only one connected. Nothing commands it
-    # yet: when to boost electrically is a separate decision from estimating the charge.
     pcm_module1: Annotated[
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
     ] = control.Pcm(on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)))
@@ -486,9 +435,65 @@ class PcmSimulationInputs(ThrsValues):
     pcm_consumers_supply: simulation.TemperatureBoundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def freshwater_temperature_pcm_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.pcm_freshwater_supply.temperature
+        )
+
+    # For the PCM simulation, we set the individual consumers return temperatures based on the overall consumers supply temperature.
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.pcm_consumers_supply.temperature
+        )
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def consumers_temperature_adsorption_return(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.pcm_consumers_supply.temperature
+        )
+
 
 class PcmSimulationOutputs(ThrsValues):
     pcm_consumers_return: simulation.Boundary
     pcm_thrusters_return: simulation.Boundary
     pcm_pvt_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def freshwater_temperature_pcm_return(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.pcm_freshwater_return.temperature
+        )
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def freshwater_flow_pcm(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor(
+            flow=self.pcm_freshwater_return.flow,
+            temperature=self.pcm_freshwater_return.temperature,
+        )
+
+    # For the PCM simulation, we set the individual consumers flow based on the such that all flow goes through the bypass
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def consumers_flow_dhw(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor.zero()
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def consumers_flow_adsorption(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor.zero()
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def consumers_flow_bypass(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor(
+            flow=self.pcm_consumers_return.flow,
+            temperature=self.pcm_consumers_return.temperature,
+        )
