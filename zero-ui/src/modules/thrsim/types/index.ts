@@ -205,6 +205,8 @@ export const enum PcmChargingState {
 
 export type PcmSensor = {
   charged: Stamped<boolean>;
+  // Only module 1 has an electric element connected.
+  heating: Stamped<boolean>;
 };
 
 export type HeatpumpSensor = {

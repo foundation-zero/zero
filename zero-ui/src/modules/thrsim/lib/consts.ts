@@ -169,7 +169,7 @@ export const SENSOR_FIELDS: SensorFields = {
   [SensorComponentType.Thruster]: ["active"],
   [SensorComponentType.Pcs]: ["mode"],
   [SensorComponentType.Flow]: ["flow", "temperature", "quantity"],
-  [SensorComponentType.Pcm]: ["charged"],
+  [SensorComponentType.Pcm]: ["charged", "heating"],
   [SensorComponentType.Level]: ["level"],
   [SensorComponentType.LevelSwitch]: ["empty"],
 };

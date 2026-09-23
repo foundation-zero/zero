@@ -23,7 +23,14 @@ from thrs.input_output.definitions.controllers import (
     PidControllerValues,
 )
 from thrs.input_output.definitions.sensor import HeatTransferDevice
-from thrs.input_output.definitions.units import Joule, Liter, LMin, Ratio, Seconds
+from thrs.input_output.definitions.units import (
+    Joule,
+    Liter,
+    LMin,
+    Ratio,
+    Seconds,
+    Watt,
+)
 
 
 class PidController[ActuatorUnit: float, MeasurementUnit: float]:
@@ -306,7 +313,10 @@ class PcmChargeController:
 
     A module can have more than one circuit through it (module 1 is charged by the thrs
     loop and discharged by the freshwater system), so every circuit is passed on each
-    call, in the order its purge volume was given.
+    call, in the order its purge volume was given. Module 1 also has an electric element,
+    whose heat goes straight into the cell and so never appears in any circuit: give its
+    rating as `heating_power` and pass its feedback on each call, or the estimate will
+    drift by however long it runs.
     """
 
     def __init__(
@@ -314,9 +324,11 @@ class PcmChargeController:
         time_fn: Callable[[], datetime],
         purge_volumes: Sequence[Liter] = (PCM_MODULE_PURGE_VOLUME,),
         capacity: Joule = PCM_MODULE_CAPACITY,
+        heating_power: Watt = 0.0,
     ) -> None:
         self._time = time_fn
         self._capacity = capacity
+        self._heating_power = heating_power
         self._purge_volumes = tuple(purge_volumes)
         self._purged = [0.0] * len(self._purge_volumes)
         self._energy: Joule | None = None
@@ -325,7 +337,9 @@ class PcmChargeController:
         self._full_since: datetime | None = None
         self._empty_since: datetime | None = None
 
-    def __call__(self, *heat_transfer_devices: HeatTransferDevice) -> None:
+    def __call__(
+        self, *heat_transfer_devices: HeatTransferDevice, heating: bool = False
+    ) -> None:
         if len(heat_transfer_devices) != len(self._purge_volumes):
             raise ValueError("Devices length must match purge volumes length")
 
@@ -335,7 +349,7 @@ class PcmChargeController:
         # A longer gap means we stopped seeing the module, not that nothing happened.
         usable = 0 < interval <= PCM_MAX_SAMPLE_GAP
 
-        self._charging_state = self._state(heat_transfer_devices)
+        self._charging_state = self._state(heat_transfer_devices, heating)
         settled = [
             self._settle(index, device, interval if usable else 0.0)
             for index, device in enumerate(heat_transfer_devices)
@@ -344,18 +358,21 @@ class PcmChargeController:
         if not usable:
             return
 
-        self._integrate(heat_transfer_devices, settled, interval)
+        self._integrate(heat_transfer_devices, settled, heating, interval)
         self._anchor(heat_transfer_devices, settled, timestamp)
 
     def _state(
-        self, heat_transfer_devices: Sequence[HeatTransferDevice]
+        self, heat_transfer_devices: Sequence[HeatTransferDevice], heating: bool
     ) -> PcmChargingState:
         flowing = [
             device
             for device in heat_transfer_devices
             if device.flow.value >= PCM_MIN_FLOW
         ]
-        heat = sum(device.heat.value for device in flowing)
+        # A module taking heat from its element is charging even with nothing flowing.
+        heat = sum(device.heat.value for device in flowing) - (
+            self._heating_power if heating else 0.0
+        )
 
         if heat < -PCM_CHARGING_DEADBAND:
             return PcmChargingState.CHARGING
@@ -383,6 +400,7 @@ class PcmChargeController:
         self,
         heat_transfer_devices: Sequence[HeatTransferDevice],
         settled: Sequence[bool],
+        heating: bool,
         interval: Seconds,
     ) -> None:
         if self._energy is None:
@@ -398,6 +416,10 @@ class PcmChargeController:
             power = 0.0  # Flowing but still flushing: the readings mean nothing yet.
         else:
             power = -PCM_STANDBY_LOSS
+
+        if heating:
+            # Straight into the cell, so it counts whether or not anything is flowing.
+            power += self._heating_power
 
         self._energy = min(max(self._energy + power * interval, 0.0), self._capacity)
 
