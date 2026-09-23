@@ -201,11 +201,11 @@ class ThrustersSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001001", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001001", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def thrusters_seawater_exchanger(self) -> sensor.HeatExchanger:
+    def thrusters_seawater_exchanger(self) -> sensor.HeatTransferDevice:
         temperature_supply = self.thrusters_temperature_pre_cooler.temperature
         temperature_return = self.thrusters_temperature_supply.temperature
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
@@ -243,7 +243,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             * WATER_HEAT_TRANSFER_CONVERSION,
         )
 
-        return sensor.HeatExchanger(
+        return sensor.HeatTransferDevice(
             temperature_supply=temperature_supply,
             temperature_return=temperature_return,  # type: ignore
             delta_t=delta_t,

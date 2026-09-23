@@ -13,7 +13,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       parameters: {},
       source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
       sensors: {
-        heatExchanger: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainFwd"),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainFwd"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {
@@ -30,7 +30,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
 
       sensors: {
-        heatExchanger: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtMainAft"),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainAft"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {
@@ -47,7 +47,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
 
       sensors: {
-        heatExchanger: getField(SensorComponentType.HeatExchanger, "pvt", "pvtPvtOwners"),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtOwners"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {

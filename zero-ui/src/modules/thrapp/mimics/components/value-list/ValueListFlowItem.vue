@@ -12,7 +12,7 @@ const props = defineProps<{
   source: ModuleField<
     | SensorComponentType.Flow
     | SensorComponentType.CalculatedFlow
-    | SensorComponentType.HeatExchanger
+    | SensorComponentType.HeatTransferDevice
   >;
   class?: HTMLAttributes["class"];
 }>();

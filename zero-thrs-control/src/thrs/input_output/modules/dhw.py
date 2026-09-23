@@ -275,12 +275,12 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="41001001", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="41001001", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_hvac_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def dhw_hvac_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_adsorption_return.temperature,
             temperature_return=self.dhw_temperature_hvac_exchanger_return.temperature,
             flow=self.dhw_flow_dc.flow,
@@ -289,11 +289,11 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001035", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001035", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_heatpump(self) -> sensor.HeatExchanger:
+    def dhw_heatpump(self) -> sensor.HeatTransferDevice:
         if sensor.valves_open_closed(
             open_valves=[self.dhw_switch_heatpump],
             closed_valves=[
@@ -301,13 +301,13 @@ class DhwSensorValues(AmcsModeSensorValues):
                 self.dhw_switch_low_temperature,
             ],
         ):
-            return sensor.HeatExchanger.from_sensors(
+            return sensor.HeatTransferDevice.from_sensors(
                 temperature_supply=self.dhw_temperature_boosting_supply.temperature,
                 temperature_return=self.dhw_temperature_boosting_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        return sensor.HeatExchanger(
+        return sensor.HeatTransferDevice(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,  # type: ignore
             temperature_return=Stamped.stamp(0),
             delta_t=Stamped.stamp(0),
@@ -317,12 +317,12 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001004", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001004", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_adsorption_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def dhw_adsorption_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
             temperature_return=self.dhw_temperature_adsorption_return.temperature,
             flow=self.dhw_flow_dc.flow,
@@ -331,11 +331,11 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001007", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001007", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_consumers_exchanger(self) -> sensor.HeatExchanger:
+    def dhw_consumers_exchanger(self) -> sensor.HeatTransferDevice:
         if sensor.valves_open_closed(
             open_valves=[self.dhw_switch_high_temperature],
             closed_valves=[
@@ -343,13 +343,13 @@ class DhwSensorValues(AmcsModeSensorValues):
                 self.dhw_switch_low_temperature,
             ],
         ):
-            return sensor.HeatExchanger.from_sensors(
+            return sensor.HeatTransferDevice.from_sensors(
                 temperature_supply=self.dhw_temperature_boosting_supply.temperature,
                 temperature_return=self.dhw_temperature_boosting_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        return sensor.HeatExchanger(
+        return sensor.HeatTransferDevice(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,  # type: ignore
             temperature_return=Stamped.stamp(0),
             delta_t=Stamped.stamp(0),
@@ -359,12 +359,12 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001008", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001008", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_dc_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def dhw_dc_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_hvac_exchanger_return.temperature,
             temperature_return=self.dhw_temperature_dc_return.temperature,
             flow=self.dhw_flow_dc.flow,
@@ -373,13 +373,13 @@ class DhwSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001009", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001009", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_drives_exchanger(self) -> sensor.HeatExchanger:
+    def dhw_drives_exchanger(self) -> sensor.HeatTransferDevice:
         if sensor.valves_open_closed(closed_valves=[self.dhw_switch_low_temperature]):
-            return sensor.HeatExchanger.from_sensors(
+            return sensor.HeatTransferDevice.from_sensors(
                 temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
                 temperature_return=self.dhw_temperature_drives_return.temperature,
                 flow=self.dhw_flow_drives.flow,
@@ -393,13 +393,13 @@ class DhwSensorValues(AmcsModeSensorValues):
                 self.dhw_flowcontrol_drives,
             ],
         ):
-            return sensor.HeatExchanger.from_sensors(
+            return sensor.HeatTransferDevice.from_sensors(
                 temperature_supply=self.dhw_temperature_boosting_supply.temperature,
                 temperature_return=self.dhw_temperature_drives_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
-        return sensor.HeatExchanger(
+        return sensor.HeatTransferDevice(
             temperature_supply=Stamped.stamp(0),
             temperature_return=Stamped.stamp(0),
             delta_t=Stamped.stamp(0),

@@ -16,7 +16,11 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     exchangeCircuit:
       PCM_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].adsorption.source,
   },
-  source: getField(SensorComponentType.HeatExchanger, "consumers", "consumersAdsorptionExchanger"),
+  source: getField(
+    SensorComponentType.HeatTransferDevice,
+    "consumers",
+    "consumersAdsorptionExchanger",
+  ),
   parameters: {},
   sensors: {},
   get tooltip() {

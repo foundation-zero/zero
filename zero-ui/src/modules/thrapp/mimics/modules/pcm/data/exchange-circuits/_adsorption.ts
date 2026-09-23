@@ -12,7 +12,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "adsorption",
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "adsorption", "adsorptionHtExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "adsorption", "adsorptionHtExchanger"),
   sensors: {},
   get tooltip() {
     return tooltip(this.source);

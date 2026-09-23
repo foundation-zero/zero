@@ -11,7 +11,11 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Seawater",
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "thrusters", "thrustersSeawaterExchanger"),
+  source: getField(
+    SensorComponentType.HeatTransferDevice,
+    "thrusters",
+    "thrustersSeawaterExchanger",
+  ),
   sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {

@@ -14,8 +14,8 @@ FLOW = 5.0
 
 def _heat_exchanger(
     supply: float, module: float, flow: float = FLOW
-) -> sensor.HeatExchanger:
-    return sensor.HeatExchanger.from_sensors(
+) -> sensor.HeatTransferDevice:
+    return sensor.HeatTransferDevice.from_sensors(
         temperature_supply=Stamped.stamp(supply),
         temperature_return=Stamped.stamp(module),
         flow=Stamped.stamp(flow),

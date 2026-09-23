@@ -56,7 +56,7 @@ const props = withDefaults(
           <ValueListItem>
             <RiFireLine class="text-heating-medium size-3.5" />
             <SensorValue
-              :source="sensors.heatExchanger"
+              :source="sensors.heatTransfer"
               field="heat"
             >
               <FieldRenderer.Auto />

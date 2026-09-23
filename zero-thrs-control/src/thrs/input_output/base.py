@@ -113,7 +113,7 @@ type BaseComponentType = Literal[
     "delta_t",
     "external_sensor",
     "flow_sensor",
-    "heat_exchanger",
+    "heat_transfer",
     "heatpump",
     "hvac_exchanger",
     "level_sensor",

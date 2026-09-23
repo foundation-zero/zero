@@ -12,7 +12,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "dhw",
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwConsumersExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwConsumersExchanger"),
   sensors: {},
   get tooltip() {
     return tooltip(this.source);

@@ -9,7 +9,7 @@ export default toInstance<MimicComponentType.HVAC>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHvacExchanger"),
+  source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwHvacExchanger"),
   sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
