@@ -1,14 +1,14 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import ClassVar
 
-from pydantic import model_validator
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Invariant, Stamped, ThrsValues
 from thrs.input_output.definitions.control import AdsorptionChiller, Valve
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
@@ -40,17 +40,20 @@ class AdsorptionParameters(ThrsValues):
     waste_cooling_tuning: Tuning = (0.05, 0.01, 0)
     free_cooling_enabled: bool = False
 
-    @model_validator(mode="after")
-    def check_temperature_setpoints(self):
-        if self.adsorption_hot_trigger <= self.adsorption_hot_minimum:
-            raise ValueError(
-                "Hot trigger temperature must be greater than hot minimum temperature"
-            )
-        if self.adsorption_cold_trigger <= self.adsorption_cold_minimum:
-            raise ValueError(
-                "Cold trigger temperature must be greater than cold minimum temperature"
-            )
-        return self
+    invariants: ClassVar = (
+        Invariant(
+            "adsorption_hot_trigger",
+            "gt",
+            "adsorption_hot_minimum",
+            "Hot trigger temperature must be greater than hot minimum temperature",
+        ),
+        Invariant(
+            "adsorption_cold_trigger",
+            "gt",
+            "adsorption_cold_minimum",
+            "Cold trigger temperature must be greater than cold minimum temperature",
+        ),
+    )
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802

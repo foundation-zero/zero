@@ -40,6 +40,7 @@ from thrs.graphql.base import (
     DrivesMessaging,
     PcmMessaging,
     PvtMessaging,
+    SimulationDirectiveMutations,
     ThrsContext,
     ThrustersMessaging,
     resolve_module,
@@ -158,22 +159,9 @@ class Mutation(
     dhw.DhwMutations,
     drives.DrivesMutations,
     SimulationMutations,
+    SimulationDirectiveMutations,
 ):
-    @strawberry.mutation
-    async def simulation_play(
-        self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
-    ) -> None:
-        await info.context.messaging.play_simulation(playback_rate)
-
-    @strawberry.mutation
-    async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
-        await info.context.messaging.pause_simulation()
-
-    @strawberry.mutation
-    async def simulation_step(
-        self, info: strawberry.Info[ThrsContext], seconds: float
-    ) -> None:
-        await info.context.messaging.step_simulation(seconds)
+    pass
 
 
 def messaging(request: Request) -> DirectiveMessaging:
