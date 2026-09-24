@@ -1452,6 +1452,9 @@ type PvtSensorValuesType {
   pvtTemperatureOwnersString5Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-44", componentType: "temperature_sensor", valveType: null)
   pvtTemperatureOwnersString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-45", componentType: "temperature_sensor", valveType: null)
   pcmTemperatureProducersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-55", componentType: "temperature_sensor", valveType: null)
+  pvtPvtMainFwd: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "pvt", valveType: null)
+  pvtPvtMainAft: SensorPvtType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "pvt", valveType: null)
+  pvtPvtOwners: SensorPvtType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "pvt", valveType: null)
   pvtMaxTemperatureMainAftStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureMainFwdStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtMaxTemperatureOwnersStrings: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
@@ -1464,9 +1467,9 @@ type PvtSensorValuesType {
   pvtFlowMainAftStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtFlowMainFwdStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtFlowOwnersStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
-  pvtPvtMainFwd: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_transfer", valveType: null)
-  pvtPvtMainAft: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_transfer", valveType: null)
-  pvtPvtOwners: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_transfer", valveType: null)
+  pvtPvtMainFwdHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_transfer", valveType: null)
+  pvtPvtMainAftHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_transfer", valveType: null)
+  pvtPvtOwnersHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_transfer", valveType: null)
   pvtReturnTemperature: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtSeawaterExchangerFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
@@ -1578,6 +1581,10 @@ type SensorPumpType {
   pressure: FloatStampedType!
   energyConsumption: FloatStampedType!
   powerInput: FloatStampedType!
+}
+
+type SensorPvtType {
+  power: FloatStampedType!
 }
 
 type SensorShorePowerConverterType {

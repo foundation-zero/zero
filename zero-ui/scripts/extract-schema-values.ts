@@ -91,6 +91,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorBrightloopType: "Brightloop",
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
+  SensorPvtType: "Pvt",
   SensorShorePowerConverterType: "ShorePowerConverter",
   SystemAmcsControlModeType: "AmcsControlMode",
 };

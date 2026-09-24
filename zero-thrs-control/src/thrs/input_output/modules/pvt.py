@@ -768,6 +768,28 @@ class PvtSensorValues(AmcsModeSensorValues):
             ],
         )
 
+    # TODO: Remove when api is ready since we don't need them for control
+    pvt_pvt_main_fwd: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009001-01", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
+    pvt_pvt_main_aft: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009002-01", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
+    pvt_pvt_owners: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009001-03", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009001-01",
@@ -776,7 +798,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_main_fwd(self) -> sensor.HeatTransferDevice:
+    def pvt_pvt_main_fwd_heat(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
@@ -801,7 +823,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_main_aft(self) -> sensor.HeatTransferDevice:
+    def pvt_pvt_main_aft_heat(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
@@ -826,7 +848,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_pvt_owners(self) -> sensor.HeatTransferDevice:
+    def pvt_pvt_owners_heat(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,

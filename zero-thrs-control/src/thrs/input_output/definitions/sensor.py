@@ -338,6 +338,10 @@ class Ugrid(ThrsValues):
     active: Stamped[OnOff]
 
 
+class Pvt(ThrsValues):
+    power: Stamped[Watt]
+
+
 class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
@@ -417,6 +421,7 @@ __all__ = [
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
+    "Pvt",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

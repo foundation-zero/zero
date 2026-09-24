@@ -2166,6 +2166,15 @@ export const PVT_SENSOR_QUERY = `
   pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
+  pvtPvtMainFwd {
+    power { value timestamp }
+  }
+  pvtPvtMainAft {
+    power { value timestamp }
+  }
+  pvtPvtOwners {
+    power { value timestamp }
+  }
   pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }
   }
@@ -2202,21 +2211,21 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowOwnersStrings {
     flow { value timestamp }
   }
-  pvtPvtMainFwd {
+  pvtPvtMainFwdHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  pvtPvtMainAft {
+  pvtPvtMainAftHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  pvtPvtOwners {
+  pvtPvtOwnersHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }
