@@ -216,11 +216,11 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             sensor.extract_source_yardtag(self, "thrusters_temperature_supply"),
         )
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
-        heat_flow = self.thrusters_flow.flow
+        thrusters_flow = self.thrusters_flow.flow
         actual_flow = StampedWithSource.combine(
-            heat_flow,
+            thrusters_flow,
             exchange_mix_ration,
-            value=heat_flow.value * (1 - exchange_mix_ration.value),
+            value=thrusters_flow.value * (1 - exchange_mix_ration.value),
             source="calculated",
         )
 
@@ -229,19 +229,24 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply,
             temperature_return,
             value=(
-                actual_flow.value
-                * (temperature_return.value - temperature_supply.value)
+                (
+                    1
+                    / exchange_mix_ration.value
+                    * (temperature_return.value - temperature_supply.value)
+                )
+                if exchange_mix_ration.value > 0
+                else 0.0
             )
             if temperature_supply.value
             else 0.0,
         )
 
-        # We don't use above delta_t because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
+        # We don't use above delta_t and actual flow because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
         heat = Stamped.combine(
             temperature_return,
             temperature_supply,
-            heat_flow,
-            value=heat_flow.value
+            thrusters_flow,
+            value=thrusters_flow.value
             * (
                 (temperature_return.value - temperature_supply.value)
                 if temperature_supply.value
