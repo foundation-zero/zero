@@ -86,11 +86,23 @@ def test_proof_view_is_queryable_with_explicit_columns(
 
     explicit_columns = [
         "ts",
-        "topic",
         "component",
         "panel",
         "consumer",
+        "source_type",
         "active_power_total",
+        "power_factor_total",
+        "current_a",
+        "current_b",
+        "current_c",
+        "active_power_a",
+        "active_power_b",
+        "active_power_c",
+        "voltage_an",
+        "voltage_bn",
+        "voltage_cn",
+        "table",
+        "topic"
     ]
     views = Greptime(connection, "views")
     # Selecting the exact explicit columns proves the contract and cross-db resolution.
