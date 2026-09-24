@@ -8,17 +8,22 @@ use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-use zero_mqtt_graphql::asyncapi::{load_specs_and_groups, TopicDef, TopicGroupDef};
+use zero_mqtt_graphql::asyncapi::{
+    load_specs_and_groups, LoadedSpecs, ObjectTypeDef, TopicDef, TopicGroupDef, ValidatorSpec,
+};
 use zero_mqtt_graphql::cache::TopicCache;
 use zero_mqtt_graphql::config::AppConfig;
-use zero_mqtt_graphql::graphql::build_schema;
+use zero_mqtt_graphql::extension::GraphqlExtension;
+use zero_mqtt_graphql::graphql::{build_schema, PublishFuture, SchemaInputs, TopicPublisher};
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::metadata::{load_metadata, MetadataFile};
-use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
+use zero_mqtt_graphql::mqtt::{MqttConnection, MqttPublisher, MqttSubscriber};
 
 /// A spawned MQTT subscriber task paired with a receiver that fires when
 /// the task exits.
 type MqttTask = (JoinHandle<()>, oneshot::Receiver<()>);
+/// The subscriber task (if anything to subscribe to) and the mutations' publisher.
+type MqttSide = (Option<MqttTask>, Option<Arc<dyn TopicPublisher>>);
 
 #[derive(Parser, Debug)]
 #[command(name = "zero-mqtt-graphql")]
@@ -57,37 +62,128 @@ async fn main() -> Result<()> {
 
     let cli = Cli::parse();
     let config = AppConfig::load()?;
-    let (topics, groups) = load_specs_and_groups(&cli.spec_dir)?;
+    let LoadedSpecs {
+        topics,
+        groups,
+        object_types,
+        validators,
+        extension,
+        ..
+    } = load_specs_and_groups(&cli.spec_dir)?;
     match cli.command.unwrap_or(Command::Serve) {
-        Command::Validate => validate_command(&cli.spec_dir, &topics, &groups)?,
+        Command::Validate => validate_command(
+            &cli.spec_dir,
+            &config,
+            &topics,
+            &groups,
+            &object_types,
+            extension.as_ref(),
+        )?,
         Command::PrintSchema { output } => {
-            let metadata = load_metadata_or_empty(&cli.spec_dir);
-            export_sdl(&topics, &groups, &metadata, output.as_deref())?;
+            let metadata = metadata_or_empty(&cli.spec_dir, extension.as_ref());
+            let schema = offline_schema(
+                &config,
+                &topics,
+                &groups,
+                &object_types,
+                &metadata,
+                extension.as_ref(),
+            )?;
+            export_sdl(&schema, output.as_deref())?;
         }
-        Command::Listen => run_listen_only(cli.spec_dir, topics, groups, config).await?,
-        Command::Serve => run_serve(&cli.spec_dir, config, topics, groups).await?,
+        Command::Listen => {
+            run_listen_only(cli.spec_dir, topics, groups, validators, config).await?
+        }
+        Command::Serve => {
+            run_serve(
+                &cli.spec_dir,
+                config,
+                topics,
+                groups,
+                object_types,
+                validators,
+                extension,
+            )
+            .await?
+        }
     }
     Ok(())
 }
 
-/// Strict validation for the `validate` subcommand: a missing or malformed
-/// metadata file must fail so CI catches it (serve/listen stay lenient).
-fn validate_command(spec_dir: &str, topics: &[TopicDef], groups: &[TopicGroupDef]) -> Result<()> {
+/// Strict validation for `validate`: a bad metadata file fails, and the schema
+/// is built as `serve` would.
+fn validate_command(
+    spec_dir: &str,
+    config: &AppConfig,
+    topics: &[TopicDef],
+    groups: &[TopicGroupDef],
+    object_types: &[ObjectTypeDef],
+    extension: Option<&GraphqlExtension>,
+) -> Result<()> {
     if topics.is_empty() && groups.is_empty() {
         anyhow::bail!("no topics found in '{spec_dir}'");
     }
-    let metadata = load_metadata(spec_dir)?;
+    let mut metadata = load_metadata(spec_dir)?;
+    metadata.extend(
+        extension
+            .map(|e| e.metadata_files.clone())
+            .unwrap_or_default(),
+    );
     zero_mqtt_graphql::graphql::validate_topics(topics)?;
-    let cache = Arc::new(TopicCache::new());
-    let _schema = zero_mqtt_graphql::graphql::build_schema(topics, cache, groups, &metadata)?;
+    let _schema = offline_schema(config, topics, groups, object_types, &metadata, extension)?;
+    let (views, lifecycles, mutations) = extension
+        .map(|e| (e.views.len(), e.lifecycles.len(), e.mutation_count()))
+        .unwrap_or_default();
     println!(
-        "Validated {} topic(s), {} group(s) and {} metadata file(s) from '{}' — no sanitization collisions",
+        "Validated {} topic(s), {} group(s), {} composite object type(s), {} metadata group(s), {} view(s), {} lifecycle(s) and {} mutation(s) from '{}' — no sanitization collisions",
         topics.len(),
         groups.len(),
+        object_types.len(),
         metadata.len(),
+        views,
+        lifecycles,
+        mutations,
         spec_dir
     );
     Ok(())
+}
+
+/// The publisher of a schema built without a broker: every publish fails.
+struct OfflinePublisher;
+
+impl TopicPublisher for OfflinePublisher {
+    fn publish(&self, topic: String, _payload: String) -> PublishFuture {
+        Box::pin(async move { anyhow::bail!("no broker connection: cannot publish to '{topic}'") })
+    }
+}
+
+/// The schema `serve` would build from these specs, without a broker.
+fn offline_schema(
+    config: &AppConfig,
+    topics: &[TopicDef],
+    groups: &[TopicGroupDef],
+    object_types: &[ObjectTypeDef],
+    metadata: &[MetadataFile],
+    extension: Option<&GraphqlExtension>,
+) -> Result<async_graphql::dynamic::Schema> {
+    let empty = GraphqlExtension::default();
+    let extension = extension.unwrap_or(&empty);
+    let publisher: Option<Arc<dyn TopicPublisher>> = config
+        .enable_mutations
+        .then(|| Arc::new(OfflinePublisher) as Arc<dyn TopicPublisher>);
+    build_schema(
+        Arc::new(TopicCache::new()),
+        SchemaInputs {
+            topics,
+            groups,
+            metadata,
+            object_types,
+            views: &extension.views,
+            lifecycles: &extension.lifecycles,
+            publisher,
+            enable_optional_sensor_values: config.enable_optional_sensor_values,
+        },
+    )
 }
 
 /// Serve mode: expose the loaded specs as a GraphQL API backed by live MQTT
@@ -97,8 +193,14 @@ async fn run_serve(
     config: AppConfig,
     topics: Vec<TopicDef>,
     groups: Vec<TopicGroupDef>,
+    object_types: Vec<ObjectTypeDef>,
+    validator_specs: Vec<ValidatorSpec>,
+    extension: Option<GraphqlExtension>,
 ) -> Result<()> {
-    let metadata = load_metadata_or_empty(spec_dir);
+    let extension = extension.unwrap_or_default();
+    let metadata = metadata_or_empty(spec_dir, Some(&extension));
+    // Whole-object view sections are read from the cache, so always subscribe.
+    let extra_topics = extension.read_topics(config.enable_mutations);
     if topics.is_empty() {
         info!("No MQTT topics found in spec directory '{spec_dir}'");
     }
@@ -109,9 +211,35 @@ async fn run_serve(
         config.default_ttl_secs,
     ));
     zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
-    let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &cache)?;
+    let (mut mqtt, publisher) = spawn_mqtt_subscriber(
+        &config,
+        &topics,
+        &groups,
+        &validator_specs,
+        &cache,
+        &extra_topics,
+    )?;
 
-    let schema = build_schema(&topics, cache, &groups, &metadata)?;
+    let publisher = publisher.filter(|_| config.enable_mutations);
+    if publisher.is_some() {
+        info!(
+            "Mutations enabled: serving {} mutation(s) and directive(s)",
+            extension.mutation_count()
+        );
+    }
+    let schema = build_schema(
+        cache,
+        SchemaInputs {
+            topics: &topics,
+            groups: &groups,
+            metadata: &metadata,
+            object_types: &object_types,
+            views: &extension.views,
+            lifecycles: &extension.lifecycles,
+            publisher,
+            enable_optional_sensor_values: config.enable_optional_sensor_values,
+        },
+    )?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{}", addr);
     let listener = TcpListener::bind(addr).await?;
@@ -147,16 +275,20 @@ fn spawn_mqtt_subscriber(
     config: &AppConfig,
     topics: &[TopicDef],
     groups: &[TopicGroupDef],
+    validator_specs: &[ValidatorSpec],
     cache: &Arc<TopicCache>,
-) -> Result<Option<MqttTask>> {
+    extra_topics: &[String],
+) -> Result<MqttSide> {
+    // `extra_topics`: mutation state topics read-modify-republished by mutations.
     let mqtt_topics: Vec<String> = topics
         .iter()
         .map(|t| t.topic.clone())
         .chain(groups.iter().map(|g| g.pattern.clone()))
+        .chain(extra_topics.iter().cloned())
         .collect();
     if mqtt_topics.is_empty() {
         info!("No MQTT topics to subscribe to");
-        return Ok(None);
+        return Ok((None, None));
     }
 
     let connection = MqttConnection {
@@ -165,9 +297,16 @@ fn spawn_mqtt_subscriber(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache.clone(), false, topics, groups)?;
+    let mut sub = MqttSubscriber::new_with_mode(
+        connection,
+        cache.clone(),
+        false,
+        config.strict_validation,
+        validator_specs,
+    )?;
     sub.set_pending_subscriptions(&mqtt_topics);
-    Ok(Some(spawn_subscriber(sub)))
+    let publisher: Arc<dyn TopicPublisher> = Arc::new(MqttPublisher::new(sub.client()));
+    Ok((Some(spawn_subscriber(sub)), Some(publisher)))
 }
 
 /// Spawn a prepared subscriber, returning its task handle plus its exit
@@ -222,6 +361,7 @@ async fn run_listen_only(
     spec_dir: String,
     topics: Vec<TopicDef>,
     groups: Vec<TopicGroupDef>,
+    validator_specs: Vec<ValidatorSpec>,
     config: AppConfig,
 ) -> Result<()> {
     if topics.is_empty() && groups.is_empty() {
@@ -247,7 +387,8 @@ async fn run_listen_only(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, &topics, &groups)?;
+    // listen-only never caches, so strict validation is moot here.
+    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, false, &validator_specs)?;
     sub.set_pending_subscriptions(&mqtt_topics);
 
     let (handle, dead_rx) = spawn_subscriber(sub);
@@ -292,21 +433,20 @@ fn load_metadata_or_empty(spec_dir: &str) -> Vec<MetadataFile> {
     }
 }
 
+/// Every metadata group: the `*-metadata.json` files plus the extension's `{field}` groups.
+fn metadata_or_empty(spec_dir: &str, extension: Option<&GraphqlExtension>) -> Vec<MetadataFile> {
+    let mut metadata = load_metadata_or_empty(spec_dir);
+    if let Some(extension) = extension {
+        metadata.extend(extension.metadata_files.iter().cloned());
+    }
+    metadata
+}
+
 /// Print the schema SDL to stdout, or write it to `output` when given.
 ///
 /// Used by the `print-schema` subcommand so the SDL can be exported for
 /// client codegen without starting the server.
-fn export_sdl(
-    topics: &[zero_mqtt_graphql::asyncapi::TopicDef],
-    groups: &[zero_mqtt_graphql::asyncapi::TopicGroupDef],
-    metadata: &[MetadataFile],
-    output: Option<&str>,
-) -> Result<()> {
-    if topics.is_empty() && groups.is_empty() {
-        anyhow::bail!("no topics found — nothing to export");
-    }
-    let cache = Arc::new(TopicCache::new());
-    let schema = build_schema(topics, cache, groups, metadata)?;
+fn export_sdl(schema: &async_graphql::dynamic::Schema, output: Option<&str>) -> Result<()> {
     let sdl = schema.sdl();
     match output {
         Some(path) => {
@@ -335,6 +475,60 @@ mod tests {
         }]
     }
 
+    /// The defaults every knob falls back to when its env var is unset.
+    fn config(enable_mutations: bool) -> AppConfig {
+        let mut config: AppConfig = serde_json::from_value(serde_json::json!({})).unwrap();
+        config.enable_mutations = enable_mutations;
+        config
+    }
+
+    /// One view with a parameters section and its `setField` mutation.
+    fn extension() -> GraphqlExtension {
+        use roas_asyncapi::v3_0::operation::OperationAction;
+        use std::collections::BTreeMap;
+        use zero_mqtt_graphql::asyncapi::{OperationDef, OperationIndex};
+        use zero_mqtt_graphql::extension::{parse_extension, EXTENSION_KEY, EXTENSION_VERSION};
+
+        let reference = serde_json::json!({"$ref": "#/components/schemas/Parameters"});
+        let components = serde_json::json!({"schemas": {"Parameters": {
+            "type": "object", "properties": {"CoolingFlow": {"type": "number"}}}}});
+        let op = |action, address: &str| OperationDef {
+            action,
+            address: address.to_string(),
+            pattern: address.to_string(),
+            document: "doc.json".to_string(),
+            payload: Some(reference.clone()),
+            parameter_schemas: BTreeMap::new(),
+        };
+        let operations = OperationIndex::from([
+            ("p".to_string(), op(OperationAction::Send, "ctl/parameters")),
+            (
+                "s".to_string(),
+                op(OperationAction::Receive, "ctl/parameters/set"),
+            ),
+        ]);
+        let root = BTreeMap::from([(
+            EXTENSION_KEY.to_string(),
+            serde_json::json!({
+                "version": EXTENSION_VERSION,
+                "types": {"ThrustersParametersType": {"schema": reference}},
+                "views": [{"gql": "modules", "typeName": "ControlModules", "members": [{
+                    "gql": "thrusters", "typeName": "ThrustersControlModule",
+                    "sections": [{"kind": "object", "gql": "parameters",
+                        "typeName": "ThrustersParametersType", "operation": {"operation": "p"}}],
+                    "mutations": [{"gql": "thrustersParameterSetCoolingFlow", "kind": "setField",
+                        "argName": "value", "key": "CoolingFlow", "returns": "parameters",
+                        "state": {"operation": "p"}, "target": {"operation": "s"}}]
+                }]}]
+            }),
+        )]);
+        let mut extension = parse_extension(Some(&root), Some(&components), "doc.json")
+            .unwrap()
+            .unwrap();
+        extension.resolve(&operations, &[]).unwrap();
+        extension
+    }
+
     #[test]
     fn test_export_sdl_to_file() {
         let dir = std::env::temp_dir().join("mqtt-graphql-print-schema-test");
@@ -342,7 +536,8 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("schema.graphql");
 
-        export_sdl(&sample_topics(), &[], &[], path.to_str()).unwrap();
+        let schema = offline_schema(&config(false), &sample_topics(), &[], &[], &[], None).unwrap();
+        export_sdl(&schema, path.to_str()).unwrap();
 
         let sdl = std::fs::read_to_string(&path).unwrap();
         assert!(sdl.contains("type Query"), "{sdl}");
@@ -352,13 +547,37 @@ mod tests {
     }
 
     #[test]
-    fn test_export_sdl_empty_specs_error() {
-        let err = export_sdl(&[], &[], &[], None).unwrap_err();
-        assert!(err.to_string().contains("no topics found"), "{err}");
+    fn test_export_sdl_stdout_does_not_fail() {
+        let schema = offline_schema(&config(false), &sample_topics(), &[], &[], &[], None).unwrap();
+        export_sdl(&schema, None).unwrap();
     }
 
+    /// The offline schema is the served one: views are always in, the
+    /// mutation side follows ENABLE_MUTATIONS.
     #[test]
-    fn test_export_sdl_stdout_does_not_fail() {
-        export_sdl(&sample_topics(), &[], &[], None).unwrap();
+    fn test_offline_schema_includes_views_and_mutations_per_config() {
+        let ext = extension();
+        let read_only =
+            offline_schema(&config(false), &sample_topics(), &[], &[], &[], Some(&ext)).unwrap();
+        let sdl = read_only.sdl();
+        assert!(sdl.contains("modules: ControlModules"), "{sdl}");
+        assert!(!sdl.contains("type Mutation"), "{sdl}");
+
+        let writable =
+            offline_schema(&config(true), &sample_topics(), &[], &[], &[], Some(&ext)).unwrap();
+        let sdl = writable.sdl();
+        assert!(
+            sdl.contains("thrustersParameterSetCoolingFlow(value: Float!)"),
+            "{sdl}"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_offline_publisher_rejects_every_publish() {
+        let err = OfflinePublisher
+            .publish("a/b".into(), "{}".into())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("no broker connection"), "{err}");
     }
 }

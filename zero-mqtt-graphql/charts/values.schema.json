@@ -47,6 +47,18 @@
       "description": "Default TTL in seconds for cached values before they expire.",
       "minimum": 1
     },
+    "strictValidation": {
+      "type": "boolean",
+      "description": "Drop schema-invalid payloads instead of caching them. (STRICT_VALIDATION)"
+    },
+    "enableOptionalSensorValues": {
+      "type": "boolean",
+      "description": "Serve each stamped field independently (nullable) instead of all-or-nothing. (ENABLE_OPTIONAL_SENSOR_VALUES)"
+    },
+    "enableMutations": {
+      "type": "boolean",
+      "description": "Expose the spec extension's mutations and lifecycle directives. (ENABLE_MUTATIONS)"
+    },
     "mqtt": {
       "type": "object",
       "required": ["host", "port"],
@@ -72,6 +84,30 @@
         "existingSecretPasswordKey": {
           "type": "string",
           "description": "Key in existingSecret that stores the MQTT password."
+        },
+        "devicesTopicPrefix": {
+          "type": "string",
+          "description": "MQTT_DEVICES_TOPIC_PREFIX for specs whose topics read it; empty leaves it unset."
+        },
+        "controllerTopicPrefix": {
+          "type": "string",
+          "description": "MQTT_CONTROLLER_TOPIC_PREFIX for specs whose topics read it; empty leaves it unset."
+        },
+        "simulatorTopicPrefix": {
+          "type": "string",
+          "description": "MQTT_SIMULATOR_TOPIC_PREFIX for specs whose topics read it; empty leaves it unset."
+        },
+        "controlTopicSuffix": {
+          "type": "string",
+          "description": "MQTT_CONTROL_TOPIC_SUFFIX for specs whose topics read it; empty leaves it unset."
+        },
+        "controllerTopicSuffix": {
+          "type": "string",
+          "description": "MQTT_CONTROLLER_TOPIC_SUFFIX for specs whose topics read it; empty leaves it unset."
+        },
+        "simulatorTopicSuffix": {
+          "type": "string",
+          "description": "MQTT_SIMULATOR_TOPIC_SUFFIX for specs whose topics read it; empty leaves it unset."
         }
       }
     },

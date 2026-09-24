@@ -1,9 +1,9 @@
 import logging
 from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
@@ -13,7 +13,7 @@ from thrs.classes.machine_state_logger import (
 )
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Invariant, Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
@@ -136,23 +136,32 @@ class DhwParameters(ThrsValues):
     dc_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
     drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
 
-    @model_validator(mode="after")
-    def check_tank_setpoints(self):
-        if self.minimum_tank_temperature > self.maximum_tank_temperature:
-            raise ValueError(
-                "Maximum tank temperature must be greater than minimum tank temperature"
-            )
-        if self.minimum_tank_level > self.maximum_tank_level:
-            raise ValueError(
-                "Maximum tank level must be greater than minimum tank level"
-            )
-        if self.full_level_lower_band > self.maximum_tank_level:
-            raise ValueError("Full level lower band must not exceed maximum tank level")
-        if self.minimum_tank_level > self.full_level_lower_band:
-            raise ValueError(
-                "Full level lower band must not be below minimum tank level"
-            )
-        return self
+    invariants: ClassVar = (
+        Invariant(
+            "minimum_tank_temperature",
+            "le",
+            "maximum_tank_temperature",
+            "Maximum tank temperature must be greater than minimum tank temperature",
+        ),
+        Invariant(
+            "minimum_tank_level",
+            "le",
+            "maximum_tank_level",
+            "Maximum tank level must be greater than minimum tank level",
+        ),
+        Invariant(
+            "full_level_lower_band",
+            "le",
+            "maximum_tank_level",
+            "Full level lower band must not exceed maximum tank level",
+        ),
+        Invariant(
+            "minimum_tank_level",
+            "le",
+            "full_level_lower_band",
+            "Full level lower band must not be below minimum tank level",
+        ),
+    )
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
