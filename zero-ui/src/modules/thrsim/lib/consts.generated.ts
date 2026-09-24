@@ -1190,6 +1190,10 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "25001038-1",
     componentType: SensorComponentType.Temperature,
   },
+  dhwHeatpump: {
+    yardTag: "50001035",
+    componentType: SensorComponentType.HeatPump,
+  },
   dhwFreshwaterFlowSupply: {
     componentType: SensorComponentType.CalculatedFlow,
   },
@@ -1197,7 +1201,7 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "41001001",
     componentType: SensorComponentType.HeatTransferDevice,
   },
-  dhwHeatpump: {
+  dhwHeatpumpHeat: {
     yardTag: "50001035",
     componentType: SensorComponentType.HeatTransferDevice,
   },

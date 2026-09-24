@@ -969,6 +969,9 @@ export const DHW_SENSOR_QUERY = `
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
   }
+  dhwHeatpump {
+    on { value timestamp }
+  }
   dhwFreshwaterFlowSupply {
     flow { value timestamp }
   }
@@ -979,7 +982,7 @@ export const DHW_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  dhwHeatpump {
+  dhwHeatpumpHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }

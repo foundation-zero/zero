@@ -295,13 +295,23 @@ class DhwSensorValues(AmcsModeSensorValues):
             flow_source=sensor.extract_source_yardtag(self, "dhw_flow_dc"),
         )
 
+    # TODO: Remove this if control does not use it
+    dhw_heatpump: Annotated[
+        sensor.Heatpump,
+        component_meta(
+            yard_tag="50001035", component_type="heatpump", included_in_fmu=False
+        ),
+    ] = sensor.Heatpump(
+        on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    )
+
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001035", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def dhw_heatpump(self) -> sensor.HeatTransferDevice:
+    def dhw_heatpump_heat(self) -> sensor.HeatTransferDevice:
         if sensor.valves_open_closed(
             open_valves=[self.dhw_switch_heatpump],
             closed_valves=[
