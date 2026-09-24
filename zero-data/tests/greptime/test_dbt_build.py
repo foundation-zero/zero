@@ -86,10 +86,11 @@ def test_proof_view_is_queryable_with_explicit_columns(
 
     explicit_columns = [
         "ts",
-        "device_state",
-        "drive_thermal_state",
-        "command_register",
-        "azimuth_setpoint_not_reached",
+        "topic",
+        "component",
+        "panel",
+        "consumer",
+        "active_power_total",
     ]
     views = Greptime(connection, "views")
     # Selecting the exact explicit columns proves the contract and cross-db resolution.
