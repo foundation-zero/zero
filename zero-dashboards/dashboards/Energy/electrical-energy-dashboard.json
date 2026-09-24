@@ -90,7 +90,7 @@
       "id": 3,
       "options": {
         "infinitePan": false,
-        "inlineEditing": true,
+        "inlineEditing": false,
         "panZoom": false,
         "root": {
           "background": {
@@ -602,7 +602,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_energy_consumption\r\n  WHERE time >= date_sub($__to::TIMESTAMP, '5 minutes') AND time < $__to::TIMESTAMP\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY\r\n  main_group",
+          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_energy_consumption\r\n  WHERE time >= date_sub($__to::TIMESTAMP, '5 minutes') AND time < $__to::TIMESTAMP\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY main_group",
           "refId": "A",
           "sql": {
             "columns": [
@@ -670,7 +670,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-YlBl"
+            "mode": "thresholds"
           },
           "decimals": 1,
           "fieldMinMax": false,
@@ -679,8 +679,24 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "super-light-blue",
                 "value": 0
+              },
+              {
+                "color": "light-blue",
+                "value": 2500
+              },
+              {
+                "color": "blue",
+                "value": 5000
+              },
+              {
+                "color": "semi-dark-blue",
+                "value": 10000
+              },
+              {
+                "color": "dark-blue",
+                "value": 15000
               }
             ]
           },
@@ -704,7 +720,6 @@
         "tiling": "treemapSquarify"
       },
       "pluginVersion": "2.1.1",
-      "repeatDirection": "h",
       "targets": [
         {
           "dataset": "dev",
@@ -821,7 +836,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "time: DD-MM HH:mm"
+                "value": "time:  HH:mm"
               }
             ]
           },
@@ -962,9 +977,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "time_series",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy_wh ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy_wh ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy_wh ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy_wh ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT group_name,\r\n\t\t\t-- To display producers and consumers side-by-side, I altered the time value.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN hour - INTERVAL '5 minutes'\r\n  \t\t\tELSE hour + INTERVAL '5 minutes'\r\n  \t\tEND AS time,\r\n\t\t\t-- For testing purposes, I multiplied the values of the producers by 50.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN energy_wh * 40\r\n  \t\t\tELSE energy_wh\r\n  \t\tEND AS energy_wh\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IS NOT NULL\r\n)\r\nGROUP BY time\r\nORDER BY time",
+          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT\r\n\t\tgroup_name,\r\n\t\thour AS time,\r\n\t\tCASE\r\n\t\t  -- Make the consumer values negative to place the bars under the X-axis\r\n\t\t\tWHEN group_name IN ('Domestic', 'Technical', 'HVAC', 'Propulsion') THEN energy * -1\r\n\t\t\t-- The consumer values are placed above th X-axis\r\n\t\t\tELSE energy\r\n\t\tEND AS energy\r\n\tFROM (\r\n    SELECT\r\n      date_trunc('hour', time) AS hour,\r\n  \t\tmain_group AS group_name,\r\n  \t\tsub_group AS sub_group_name,\r\n  \t\tSUM(power) / 50 AS energy\r\n  \tFROM views.gld_electrical_energy_consumption\r\n  \tGROUP BY hour, main_group, sub_group\r\n  )\r\n)\r\nGROUP BY time\r\nORDER BY time",
           "refId": "Electrical hourly",
           "sql": {
             "columns": [
@@ -985,8 +1014,16 @@
           }
         }
       ],
-      "title": "Electrical energy consumption per hour",
+      "title": "Electrical energy production and consumption",
       "transformations": [
+        {
+          "id": "groupingToMatrix",
+          "options": {
+            "columnField": "group_name",
+            "rowField": "time",
+            "valueField": "energy"
+          }
+        },
         {
           "id": "organize",
           "options": {
