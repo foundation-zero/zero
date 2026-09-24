@@ -64,10 +64,6 @@ models:
         tests:
           - unique
           - not_null
-      - name: panel
-        description: "The panel where the power tag is located."
-      - name: breaker
-        description: "The breaker associated with the power tag."
       - name: main_group
         description: "The main group classification of the power tag."
       - name: sub_group
