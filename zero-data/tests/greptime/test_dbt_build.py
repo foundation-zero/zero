@@ -63,8 +63,7 @@ def test_dbt_build_is_green_against_snapshot_seeded_greptime(
     )
     # each success is asserted by dbt log event type, not a text substring
     assert any(
-        "source_not_null_raw_power_tags_timestamp" in msg
-        and "PASS" in msg
+        "source_not_null_raw_power_tags_timestamp" in msg and "PASS" in msg
         for msg in events.get("LogTestResult", [])
     )
     assert any(
