@@ -63,24 +63,13 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
     let config = AppConfig::load()?;
     let LoadedSpecs {
-        mut topics,
-        mut groups,
+        topics,
+        groups,
         object_types,
-        mut validators,
-        mut extension,
+        validators,
+        extension,
         ..
     } = load_specs_and_groups(&cli.spec_dir)?;
-    // Under PREFIX_STRATEGY=runtime every topic moves to the live-broker prefix together.
-    let rewriter = zero_mqtt_graphql::prefix::PrefixRewriter::from_config(&config);
-    if !rewriter.is_noop() {
-        info!("Prefix strategy: runtime — rewriting spec topic prefixes to live-broker prefixes");
-        rewriter.apply_to_topics(&mut topics);
-        rewriter.apply_to_groups(&mut groups);
-        rewriter.apply_to_validators(&mut validators);
-        if let Some(extension) = &mut extension {
-            rewriter.apply_to_extension(extension);
-        }
-    }
     match cli.command.unwrap_or(Command::Serve) {
         Command::Validate => validate_command(
             &cli.spec_dir,

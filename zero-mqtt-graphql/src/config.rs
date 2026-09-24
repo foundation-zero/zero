@@ -34,38 +34,6 @@ pub struct AppConfig {
     /// Expose the extension's mutations and lifecycle directives. Env: `ENABLE_MUTATIONS`.
     #[serde(default)]
     pub enable_mutations: bool,
-    /// How spec topic prefixes map to the live broker's. Env: `PREFIX_STRATEGY`.
-    #[serde(default)]
-    pub prefix_strategy: PrefixStrategy,
-    /// Devices prefix the specs were generated with. Env: `SPEC_DEVICES_PREFIX`.
-    #[serde(default)]
-    pub spec_devices_prefix: String,
-    /// Controller prefix the specs were generated with. Env: `SPEC_CONTROLLER_PREFIX`.
-    #[serde(default)]
-    pub spec_controller_prefix: String,
-    /// Devices prefix the live broker uses. Env: `MQTT_DEVICES_TOPIC_PREFIX`.
-    #[serde(default)]
-    pub mqtt_devices_topic_prefix: Option<String>,
-    /// Controller prefix the live broker uses. Env: `MQTT_CONTROLLER_TOPIC_PREFIX`.
-    #[serde(default)]
-    pub mqtt_controller_topic_prefix: Option<String>,
-    /// Simulator prefix the specs were generated with. Env: `SPEC_SIMULATOR_PREFIX`.
-    #[serde(default)]
-    pub spec_simulator_prefix: String,
-    /// Simulator prefix the live broker uses. Env: `MQTT_SIMULATOR_TOPIC_PREFIX`.
-    #[serde(default)]
-    pub mqtt_simulator_topic_prefix: Option<String>,
-}
-
-/// See [`AppConfig::prefix_strategy`].
-#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, Default)]
-#[serde(rename_all = "snake_case")]
-pub enum PrefixStrategy {
-    /// Trust the prefix baked into the spec at generation time.
-    #[default]
-    BuildTime,
-    /// Rewrite the spec prefix at load time from config.
-    Runtime,
 }
 
 // function indirect needed by serde

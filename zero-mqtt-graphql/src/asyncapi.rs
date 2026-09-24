@@ -680,7 +680,7 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<(Document, Option<Arc<V
     let content =
         std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
 
-    let spec_value: Value = serde_json::from_str(&content)
+    let mut spec_value: Value = serde_json::from_str(&content)
         .with_context(|| format!("parsing JSON of {}", path.display()))?;
 
     let asyncapi_version = spec_value
@@ -698,10 +698,63 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<(Document, Option<Arc<V
         );
     }
 
+    resolve_env_parameters(&mut spec_value, &|var| std::env::var(var).ok())
+        .with_context(|| format!("resolving settings of {}", path.display()))?;
     let components = spec_value.get("components").cloned().map(Arc::new);
     let doc = serde_json::from_value::<Document>(spec_value)
         .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
     Ok((doc, components))
+}
+
+/// Marks an address parameter as a setting and names the environment variable it is read from.
+pub const ENV_KEY: &str = "x-env";
+
+/// Fill each `x-env` address parameter in from its environment variable, so
+/// the rest of loading sees the live broker's topics. An unset or empty
+/// variable is an error.
+fn resolve_env_parameters(
+    spec: &mut Value,
+    env: &dyn Fn(&str) -> Option<String>,
+) -> anyhow::Result<()> {
+    let Some(channels) = spec.get_mut("channels").and_then(Value::as_object_mut) else {
+        return Ok(());
+    };
+    for (key, channel) in channels {
+        let Some(parameters) = channel.get_mut("parameters").and_then(Value::as_object_mut) else {
+            continue;
+        };
+        let settings: Vec<(String, String)> = parameters
+            .iter()
+            .filter_map(|(name, parameter)| {
+                let var = parameter.get(ENV_KEY)?.as_str()?;
+                Some((name.clone(), var.to_string()))
+            })
+            .collect();
+        if settings.is_empty() {
+            continue;
+        }
+        for (name, _) in &settings {
+            parameters.remove(name);
+        }
+        if parameters.is_empty() {
+            channel.as_object_mut().map(|c| c.remove("parameters"));
+        }
+        let address = channel
+            .get_mut("address")
+            .with_context(|| format!("channel '{key}' has settings but no address"))?;
+        let mut resolved = address
+            .as_str()
+            .with_context(|| format!("channel '{key}' has a non-string address"))?
+            .to_string();
+        for (name, var) in &settings {
+            let value = env(var)
+                .filter(|value| !value.is_empty())
+                .with_context(|| format!("channel '{key}' needs environment variable {var}"))?;
+            resolved = resolved.replace(&format!("{{{name}}}"), &value);
+        }
+        *address = Value::String(resolved);
+    }
+    Ok(())
 }
 
 /// Whether a channel describes a parametrized topic family rather than one
@@ -1226,6 +1279,61 @@ mod tests {
         Schema {
             properties,
             ..Default::default()
+        }
+    }
+
+    fn settings_spec() -> Value {
+        serde_json::json!({"channels": {
+            "field": {
+                "address": "{prefix}/thrusters/{field}/{suffix}",
+                "parameters": {
+                    "prefix": {"x-env": "PREFIX"},
+                    "field": {"enum": ["pump1"]},
+                    "suffix": {"x-env": "SUFFIX"}
+                }
+            },
+            "status": {
+                "address": "{prefix}/status",
+                "parameters": {"prefix": {"x-env": "PREFIX"}}
+            },
+            "plain": {"address": "a/{b}", "parameters": {"b": {}}}
+        }})
+    }
+
+    #[test]
+    fn test_env_parameters_are_filled_in_and_dropped() {
+        let mut spec = settings_spec();
+        let env = |var: &str| match var {
+            "PREFIX" => Some("ctl/x".to_string()),
+            "SUFFIX" => Some("set".to_string()),
+            _ => None,
+        };
+        resolve_env_parameters(&mut spec, &env).unwrap();
+        let channels = &spec["channels"];
+        assert_eq!(channels["field"]["address"], "ctl/x/thrusters/{field}/set");
+        assert_eq!(
+            channels["field"]["parameters"],
+            serde_json::json!({"field": {"enum": ["pump1"]}})
+        );
+        assert_eq!(channels["status"]["address"], "ctl/x/status");
+        assert!(channels["status"].get("parameters").is_none());
+        assert_eq!(channels["plain"]["address"], "a/{b}");
+    }
+
+    #[test]
+    fn test_unset_or_empty_env_parameter_is_an_error() {
+        for value in [None, Some(String::new())] {
+            let mut spec = settings_spec();
+            let env = |var: &str| {
+                (var == "PREFIX")
+                    .then(|| "ctl".to_string())
+                    .or(value.clone())
+            };
+            let err = resolve_env_parameters(&mut spec, &env).unwrap_err();
+            assert!(
+                format!("{err:#}").contains("needs environment variable SUFFIX"),
+                "{err:#}"
+            );
         }
     }
 

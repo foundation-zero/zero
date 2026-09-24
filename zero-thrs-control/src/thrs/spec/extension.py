@@ -28,11 +28,9 @@ from thrs.orchestration.comms import (
     SIMULATION_OUTPUTS_TOPIC,
     device_module_prefix,
 )
-from thrs.orchestration.config import Config
 from thrs.runtime.messages import SimulationStatusMessage
 from thrs.spec import contract
 from thrs.spec.asyncapi import (
-    DEFAULT_CONFIG,
     Document,
     all_module_descriptions,
     build_document,
@@ -65,14 +63,12 @@ def shared_definitions() -> tuple[type[ThrsValues], ...]:
 
 
 def build_thrs_spec(
-    config: Config = DEFAULT_CONFIG,
     *,
     title: str = "THRS Control",
     version: str = "1.0.0",
 ) -> dict[str, Any]:
     """The complete THRS contract: the AsyncAPI document plus its extension."""
     document = build_document(
-        config,
         title=title,
         version=version,
         extra_schema_classes=shared_definitions(),

@@ -9,6 +9,5 @@ pub mod model;
 pub mod model_validation;
 pub mod mqtt;
 pub mod naming;
-pub mod prefix;
 pub mod pyrepr;
 pub mod schema;

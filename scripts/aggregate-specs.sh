@@ -13,22 +13,6 @@ echo "Generating AsyncAPI specs from all services..."
 STRICT="${AGGREGATE_STRICT:-0}"
 warnings=0
 
-# Bake a chosen MQTT topic prefix into the THRS spec at generation time. Set
-# THRS_SPEC_DEVICES_PREFIX, THRS_SPEC_CONTROLLER_PREFIX and/or
-# THRS_SPEC_SIMULATOR_PREFIX to override; unset keeps the historical prefixes
-# (simulation / thrs/controller / thrs/simulator). zero-mqtt-graphql's
-# PREFIX_STRATEGY=runtime does the same rewrite at load instead.
-thrs_prefix_args=()
-if [ -n "${THRS_SPEC_DEVICES_PREFIX:-}" ]; then
-  thrs_prefix_args+=(--devices-prefix "$THRS_SPEC_DEVICES_PREFIX")
-fi
-if [ -n "${THRS_SPEC_CONTROLLER_PREFIX:-}" ]; then
-  thrs_prefix_args+=(--controller-prefix "$THRS_SPEC_CONTROLLER_PREFIX")
-fi
-if [ -n "${THRS_SPEC_SIMULATOR_PREFIX:-}" ]; then
-  thrs_prefix_args+=(--simulator-prefix "$THRS_SPEC_SIMULATOR_PREFIX")
-fi
-
 fail_or_warn() {
   local label="$1"
   echo "WARNING: failed to generate spec for $label" >&2
@@ -74,7 +58,7 @@ fi
 echo "  -> thrs-control"
 rm -f "$SPECS_DIR"/thrs-*-module.json "$SPECS_DIR"/thrs-*-mutations.json \
   "$SPECS_DIR"/thrs-*-metadata.json "$SPECS_DIR"/thrs-simulation.json
-if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi "${thrs_prefix_args[@]}") > "$SPECS_DIR/thrs-control.json"; then
+if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli print-asyncapi) > "$SPECS_DIR/thrs-control.json"; then
   fail_or_warn "thrs-control" || exit 1
 fi
 

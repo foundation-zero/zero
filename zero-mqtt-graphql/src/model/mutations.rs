@@ -181,17 +181,6 @@ impl MutationDef {
     pub fn confirm_topic(&self) -> Option<&str> {
         self.confirm.as_ref().map(|c| c.topic.as_str())
     }
-
-    /// Rewrite the resolved topics in place (runtime prefix strategy).
-    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
-        if !self.state_topic.is_empty() {
-            self.state_topic = rewrite(&self.state_topic);
-        }
-        self.set_topic = rewrite(&self.set_topic);
-        if let Some(confirm) = &mut self.confirm {
-            confirm.topic = rewrite(&confirm.topic);
-        }
-    }
 }
 
 /// `returns` must name one of the member's `object` sections.

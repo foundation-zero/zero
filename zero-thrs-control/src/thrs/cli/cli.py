@@ -210,28 +210,18 @@ class LockstepCmd(BaseSettings):
 class AsyncApiCmd(BaseModel):
     """Print the THRS AsyncAPI document, including the x-mqtt-graphql extension.
 
-    The MQTT topic prefixes default to the ones in ``Config``; pass
-    ``--devices-prefix`` etc. to describe a differently-prefixed broker."""
+    The MQTT topic prefixes and suffixes stay address parameters, filled in
+    from the environment by the document's consumer."""
 
     title: str = "THRS Control"
     version: str = "1.0.0"
-    devices_prefix: str | None = None
-    controller_prefix: str | None = None
-    simulator_prefix: str | None = None
 
     def cli_cmd(self) -> None:
         # Spec generation walks every module description; keep it off the
         # import path of the runtime commands.
         from thrs.spec import build_thrs_spec  # noqa: PLC0415
-        from thrs.spec.asyncapi import spec_config  # noqa: PLC0415
 
-        spec = build_thrs_spec(
-            spec_config(
-                self.devices_prefix, self.controller_prefix, self.simulator_prefix
-            ),
-            title=self.title,
-            version=self.version,
-        )
+        spec = build_thrs_spec(title=self.title, version=self.version)
         print(json.dumps(spec, indent=2))  # noqa: T201
 
 

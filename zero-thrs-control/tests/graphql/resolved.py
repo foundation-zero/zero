@@ -18,7 +18,7 @@ from typing import Any
 
 from thrs.orchestration.config import Config
 from thrs.spec import build_thrs_spec
-from thrs.spec.asyncapi import operation_topic
+from thrs.spec.asyncapi import operation_topic, resolve_settings
 from thrs.spec.extension import EXTENSION_KEY
 
 SCHEMA_REF_PREFIX = "#/components/schemas/"
@@ -51,7 +51,7 @@ class ResolvedSpec:
     the document's schemas."""
 
     def __init__(self, config: Config) -> None:
-        self.spec = build_thrs_spec(config)
+        self.spec = resolve_settings(build_thrs_spec(), config)
         self.extension = self.spec[EXTENSION_KEY]
         self.schemas = self.spec["components"]["schemas"]
         self.type_refs = {

@@ -18,7 +18,7 @@ from thrs.spec.asyncapi import (
     all_module_descriptions,
     build_asyncapi,
     operation_topic,
-    spec_config,
+    resolve_settings,
 )
 from thrs.spec.extension import (
     EXTENSION_KEY,
@@ -31,6 +31,12 @@ from thrs.spec.extension import (
 @pytest.fixture(scope="module")
 def spec() -> dict[str, Any]:
     return build_thrs_spec()
+
+
+@pytest.fixture(scope="module")
+def resolved(spec: dict[str, Any]) -> dict[str, Any]:
+    """The spec with its topic settings filled in, as the bridge serves it."""
+    return resolve_settings(spec, DEFAULT_CONFIG)
 
 
 @pytest.fixture(scope="module")
@@ -162,14 +168,14 @@ def _operation_refs(node: Any, parent: str = "") -> list[tuple[str, dict[str, An
 
 
 def test_extension_binds_only_to_operations_the_document_declares(
-    spec, extension
+    resolved, extension
 ) -> None:
     """The extension never names a topic: every read binds to a ``send``
     operation and every write to a ``receive`` operation of the same document,
     with exactly the parameters that operation's channel address has, and every
     metadata group is a channel address of the document."""
-    operations = spec["operations"]
-    channels = spec["channels"]
+    operations = resolved["operations"]
+    channels = resolved["channels"]
     refs = _operation_refs(extension)
     assert refs, "the extension binds to operations"
     for under, ref in refs:
@@ -183,7 +189,7 @@ def test_extension_binds_only_to_operations_the_document_declares(
         for name, value in parameters.items():
             assert value in channel["parameters"][name]["enum"], (ref, name)
         # The bound topic is the address with its parameters filled in.
-        assert operation_topic(ref, spec) == re.sub(
+        assert operation_topic(ref, resolved) == re.sub(
             r"\{(\w+)\}", lambda m, p=parameters: p[m.group(1)], address
         )
 
@@ -197,7 +203,9 @@ def test_extension_binds_only_to_operations_the_document_declares(
         assert set(entry["instances"]) <= set(channel["parameters"][param]["enum"])
 
 
-def test_a_field_names_its_type_only_where_the_schema_cannot(spec, extension) -> None:
+def test_a_field_names_its_type_only_where_the_schema_cannot(
+    spec, resolved, extension
+) -> None:
     """A ``typeName`` on a field appears exactly when the bridge could not
     find the type from the schema it reads the field through: the topic
     carries several payload types, or the component is served as its base's
@@ -210,7 +218,7 @@ def test_a_field_names_its_type_only_where_the_schema_cannot(spec, extension) ->
     )
     sensor_values = next(s for s in thrusters["sections"] if s["gql"] == "sensorValues")
     for field in sensor_values["fields"]:
-        topic = operation_topic(field["operation"], spec)
+        topic = operation_topic(field["operation"], resolved)
         operation = spec["operations"][field["operation"]["operation"]]
         channel = spec["channels"][operation["channel"]["$ref"].rsplit("/", 1)[-1]]
         message = next(iter(channel["messages"].values()))
@@ -270,16 +278,19 @@ def test_every_mutation_is_confirmed_the_way_the_contract_says(extension) -> Non
     assert directives["simulationPlay"]["key"] == "PlaybackRate"
 
 
-def test_prefixes_reach_every_part_of_the_extension() -> None:
-    """The three prefix flags of ``print-asyncapi`` land in every binding of
-    the extension, so one invocation targets one broker prefix consistently."""
-    spec = build_thrs_spec(
-        spec_config(
-            devices_prefix="dev", controller_prefix="ctl", simulator_prefix="sim"
-        )
+def test_settings_reach_every_part_of_the_extension(spec) -> None:
+    """Every binding of the extension resolves through the topic settings, so
+    one environment moves every topic the bridge reads and writes together."""
+    config = DEFAULT_CONFIG.model_copy(
+        update={
+            "mqtt_devices_topic_prefix": "dev",
+            "mqtt_controller_topic_prefix": "ctl",
+            "mqtt_simulator_topic_prefix": "sim",
+        }
     )
+    resolved = resolve_settings(spec, config)
     extension = spec[EXTENSION_KEY]
-    topics = [operation_topic(ref, spec) for _, ref in _operation_refs(extension)]
+    topics = [operation_topic(ref, resolved) for _, ref in _operation_refs(extension)]
     assert topics
     for topic in topics:
         assert topic.startswith(("dev/", "ctl/", "sim/")), topic
@@ -288,17 +299,11 @@ def test_prefixes_reach_every_part_of_the_extension() -> None:
     )
     sensor_values = next(s for s in thrusters["sections"] if s["gql"] == "sensorValues")
     assert any(
-        operation_topic(f["operation"], spec).startswith("dev/")
+        operation_topic(f["operation"], resolved).startswith("dev/")
         for f in sensor_values["fields"]
     )
     parameters = next(s for s in thrusters["sections"] if s["gql"] == "parameters")
-    assert operation_topic(parameters["operation"], spec).startswith("ctl/")
-    defaults = (
-        DEFAULT_CONFIG.mqtt_devices_topic_prefix + "/",
-        DEFAULT_CONFIG.mqtt_controller_topic_prefix + "/",
-        DEFAULT_CONFIG.mqtt_simulator_topic_prefix + "/",
-    )
-    assert not any(topic.startswith(defaults) for topic in topics)
+    assert operation_topic(parameters["operation"], resolved).startswith("ctl/")
 
 
 # --- Naming parity with the API, for as long as the API exists -------------------

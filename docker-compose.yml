@@ -166,16 +166,13 @@ services:
       # Serve thrs-api's parameter mutations (write-path) and publish their
       # changes to MQTT. Off keeps zero-mqtt-graphql read-only.
       ENABLE_MUTATIONS: "true"
-      # The THRS specs carry THRS's default prefixes; rewrite them at load to
-      # the prefixes the THRS services in this stack use, under the same
-      # MQTT_*_TOPIC_PREFIX names as their own environment.
-      PREFIX_STRATEGY: runtime
-      SPEC_DEVICES_PREFIX: simulation
-      SPEC_CONTROLLER_PREFIX: thrs/controller
-      SPEC_SIMULATOR_PREFIX: thrs/simulator
+      # Fill in the THRS spec's topic settings; same values as the THRS services.
       MQTT_DEVICES_TOPIC_PREFIX: devices_topic
       MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
       MQTT_SIMULATOR_TOPIC_PREFIX: simulation_topic
+      MQTT_CONTROL_TOPIC_SUFFIX: Command
+      MQTT_CONTROLLER_TOPIC_SUFFIX: set
+      MQTT_SIMULATOR_TOPIC_SUFFIX: set
     depends_on:
       vernemq:
         condition: service_healthy

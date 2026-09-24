@@ -1,11 +1,11 @@
 """Where the two APIs under test are, and which MQTT topic prefixes each
 reads.
 
-thrs-api runs with the environment ``docker-compose.yml`` gives it. zero-mqtt-graphql
-serves the specs ``scripts/aggregate-specs.sh`` generates (``DEFAULT_CONFIG``'s
-prefixes) and, with ``PREFIX_STRATEGY=runtime``, rewrites them to the
-``MQTT_*_TOPIC_PREFIX`` values of its own compose environment. The cross-API suites
-seed each service on its own prefixes so both see the same state.
+Both run with the environment ``docker-compose.yml`` gives them: thrs-api
+builds its topics from ``MQTT_*_TOPIC_PREFIX``/``_SUFFIX``, zero-mqtt-graphql
+fills the same variables into the ``x-env`` parameters of the specs
+``scripts/aggregate-specs.sh`` generates. The cross-API suites seed each
+service on its own topics so both see the same state.
 """
 
 import os
@@ -15,7 +15,7 @@ from pathlib import Path
 import yaml
 
 from thrs.orchestration.config import Config
-from thrs.spec.asyncapi import DEFAULT_CONFIG
+from thrs.spec.asyncapi import TOPIC_SETTINGS
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
@@ -89,8 +89,9 @@ def _service_environment(service: str) -> dict[str, str]:
     }
 
 
-def thrs_api_config() -> Config:
-    environment = _service_environment("thrs-api")
+def _config_of(service: str) -> Config:
+    """The ``Config`` a service reads from its compose environment."""
+    environment = _service_environment(service)
     return Config.model_validate(
         {
             key.lower(): value
@@ -100,14 +101,14 @@ def thrs_api_config() -> Config:
     )
 
 
+def thrs_api_config() -> Config:
+    return _config_of("thrs-api")
+
+
 def mqtt_graphql_config() -> Config:
+    """zero-mqtt-graphql's topic settings; like the bridge, a missing one fails."""
     environment = _service_environment("mqtt-graphql")
-    if environment.get("PREFIX_STRATEGY") != "runtime":
-        return DEFAULT_CONFIG
-    return DEFAULT_CONFIG.model_copy(
-        update={
-            f"mqtt_{kind}_topic_prefix": environment[f"MQTT_{kind.upper()}_TOPIC_PREFIX"]
-            for kind in ("devices", "controller", "simulator")
-            if f"MQTT_{kind.upper()}_TOPIC_PREFIX" in environment
-        }
-    )
+    missing = [n.upper() for n in TOPIC_SETTINGS if n.upper() not in environment]
+    if missing:
+        raise KeyError(f"mqtt-graphql's compose environment lacks {missing}")
+    return _config_of("mqtt-graphql")

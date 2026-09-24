@@ -201,28 +201,6 @@ impl SectionDef {
             SectionDef::Switch(s) => vec![s.section.topic.clone()],
         }
     }
-
-    /// Rewrite every resolved topic in place (runtime prefix strategy).
-    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
-        match self {
-            SectionDef::StampedFields(s) => {
-                for f in &mut s.fields {
-                    f.topic = rewrite(&f.topic);
-                }
-            }
-            SectionDef::Object(s) => {
-                if !s.section.topic.is_empty() {
-                    s.section.topic = rewrite(&s.section.topic);
-                }
-                for f in &mut s.section.fields {
-                    if let Some(t) = &f.topic {
-                        f.topic = Some(rewrite(t));
-                    }
-                }
-            }
-            SectionDef::Switch(s) => s.section.topic = rewrite(&s.section.topic),
-        }
-    }
 }
 
 /// One member of a view.
@@ -301,18 +279,6 @@ impl ViewDef {
             }
         }
         topics
-    }
-
-    /// Rewrite every resolved topic in place (runtime prefix strategy).
-    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
-        for member in &mut self.members {
-            for section in &mut member.sections {
-                section.rewrite_topics(rewrite);
-            }
-            for def in &mut member.mutations {
-                def.rewrite_topics(rewrite);
-            }
-        }
     }
 
     /// Every mutation of every member, with its member.

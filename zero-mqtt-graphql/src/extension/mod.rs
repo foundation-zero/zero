@@ -534,21 +534,6 @@ impl GraphqlExtension {
                 .map(|l| l.mutations().count() + l.directives.len())
                 .sum::<usize>()
     }
-
-    /// Rewrite every resolved topic in place (runtime prefix strategy).
-    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
-        for view in &mut self.views {
-            view.rewrite_topics(rewrite);
-        }
-        for lifecycle in &mut self.lifecycles {
-            lifecycle.rewrite_topics(rewrite);
-        }
-        for file in &mut self.metadata_files {
-            for entry in &mut file.topics {
-                entry.topic = rewrite(&entry.topic);
-            }
-        }
-    }
 }
 
 /// Parse the unresolved extension from a document's root extensions; `None` when it has none.
@@ -993,7 +978,7 @@ mod tests {
     }
 
     #[test]
-    fn test_merge_appends_and_rewrite_touches_every_topic() {
+    fn test_merge_appends_views() {
         let components = components();
         let mut ext = parse_extension(Some(&root(extension_json())), Some(&components), DOCUMENT)
             .unwrap()
@@ -1009,21 +994,12 @@ mod tests {
         ext.merge(other).unwrap();
         ext.resolve(&operations(), &groups()).unwrap();
         assert_eq!(ext.views.len(), 2);
-        ext.rewrite_topics(&|t| format!("x/{t}"));
         assert_eq!(
             ext.read_topics(true)[..2],
             [
-                "x/dev/thrusters/thrusters-flow-aft".to_string(),
-                "x/ctl/thrusters/parameters".to_string()
+                "dev/thrusters/thrusters-flow-aft".to_string(),
+                "ctl/thrusters/parameters".to_string()
             ]
-        );
-        assert_eq!(
-            ext.views[0].members[0].mutations[0].set_topic,
-            "x/ctl/thrusters/parameters/set"
-        );
-        assert_eq!(
-            ext.metadata_files[0].topics[0].topic,
-            "x/dev/thrusters/thrusters-flow-aft"
         );
     }
 }

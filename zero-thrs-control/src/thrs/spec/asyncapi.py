@@ -5,6 +5,7 @@ Channels are recorded from the runtime's own channel wiring, so the document can
 
 from __future__ import annotations
 
+import copy
 import re
 import warnings
 from collections import defaultdict
@@ -43,8 +44,25 @@ from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.descriptions.simulation import lookup_mode, simulation_io_classes
 from thrs.spec import validators
 
-# Pure defaults (model_validate skips .env/os.environ); only shapes the spec's example topics.
+# Pure defaults (model_validate skips .env/os.environ); only shapes the spec's server.
 DEFAULT_CONFIG = Config.model_validate({})
+
+# The settings that shape a topic. The document keeps each as an address
+# parameter, which its consumer fills in from the environment variable of the
+# same name, as the THRS services do.
+TOPIC_SETTINGS = tuple(
+    name
+    for name in Config.model_fields
+    if name.startswith("mqtt_") and name.endswith(("_topic_prefix", "_topic_suffix"))
+)
+
+# The config the document is built with: each topic setting is its own placeholder.
+TEMPLATE_CONFIG = Config.model_validate(
+    {name: f"{{{name}}}" for name in TOPIC_SETTINGS}
+)
+
+# Marks an address parameter as a setting and names its environment variable.
+ENV_KEY = "x-env"
 
 # e.g. thrs/controller/{module}/parameters; hyphenized field names never collide with these.
 TYPE_TOPIC_KINDS = (
@@ -61,22 +79,6 @@ CHANNEL_TTL = "unbounded"
 SCHEMA_REF_PREFIX = "#/components/schemas/"
 
 Direction = Literal["send", "receive"]
-
-
-def spec_config(
-    devices_prefix: str | None = None,
-    controller_prefix: str | None = None,
-    simulator_prefix: str | None = None,
-) -> Config:
-    """``DEFAULT_CONFIG`` with the given MQTT topic prefixes overridden."""
-    overrides = {
-        "mqtt_devices_topic_prefix": devices_prefix,
-        "mqtt_controller_topic_prefix": controller_prefix,
-        "mqtt_simulator_topic_prefix": simulator_prefix,
-    }
-    return DEFAULT_CONFIG.model_copy(
-        update={key: value for key, value in overrides.items() if value}
-    )
 
 
 def all_module_descriptions() -> dict[str, ModuleDescription]:
@@ -373,13 +375,21 @@ def _type_sort_key(t: Any) -> tuple[str, str]:
 # --- The document ------------------------------------------------------------
 
 
+def _settings_of(template: str) -> list[str]:
+    """The topic settings in ``template``, in address order."""
+    return [
+        name for name in re.findall(r"\{(\w+)\}", template) if name in TOPIC_SETTINGS
+    ]
+
+
 def channel_key(template: str) -> str:
-    """Static segments joined by dots, as zero-mqtt-graphql keys a topic group."""
-    return ".".join(
-        segment
-        for segment in template.split("/")
-        if not (segment.startswith("{") and segment.endswith("}"))
-    )
+    """Static segments and setting names joined by dots; other parameters are dropped."""
+    segments = []
+    for segment in template.split("/"):
+        name = segment.removeprefix("{").removesuffix("}")
+        if name == segment or name in TOPIC_SETTINGS:
+            segments.append(name)
+    return ".".join(segments)
 
 
 def operation_key(template: str, direction: Direction) -> str:
@@ -439,13 +449,13 @@ class Document:
 
 
 def build_document(
-    config: Config = DEFAULT_CONFIG,
     *,
     title: str = "THRS Control",
     version: str = "1.0.0",
     extra_schema_classes: tuple[type, ...] = (),
 ) -> Document:
-    """The document for the channel wiring under ``config``, plus ``extra_schema_classes``."""
+    """The document for the channel wiring, plus ``extra_schema_classes``."""
+    config = TEMPLATE_CONFIG
     classify = _classifier(config)
     groups = _group(_flatten(_collect_registrations(config), classify))
 
@@ -476,13 +486,12 @@ def build_document(
 
 
 def build_asyncapi(
-    config: Config = DEFAULT_CONFIG,
     *,
     title: str = "THRS Control",
     version: str = "1.0.0",
 ) -> dict[str, Any]:
     """The AsyncAPI document alone (no extension)."""
-    return build_document(config, title=title, version=version).data
+    return build_document(title=title, version=version).data
 
 
 def _document(
@@ -524,10 +533,16 @@ def _document(
             "address": template,
             "description": f"{len(topics)} topic(s), e.g. {topics[0]}.",
         }
+        parameters: dict[str, Any] = {
+            name: {"description": f"The {name.upper()} setting.", ENV_KEY: name.upper()}
+            for name in _settings_of(template)
+        }
         param = next(iter(directions.values())).param_name
         if param:
             values = sorted(set().union(*(g.param_values for g in directions.values())))
-            channel["parameters"] = {param: {"enum": values}}
+            parameters[param] = {"enum": values}
+        if parameters:
+            channel["parameters"] = parameters
         channel["messages"] = messages
         channel["x-ttl"] = CHANNEL_TTL
         channels[key] = channel
@@ -742,6 +757,22 @@ def _derived_fields(object_cls: type[ThrsValues]) -> list[dict[str, Any]]:
 # --- Reading a document back (for tests) ---
 
 
+def resolve_settings(document: Mapping[str, Any], config: Config) -> dict[str, Any]:
+    """``document`` with each setting parameter filled in from ``config``, as
+    zero-mqtt-graphql fills it in from the environment at load."""
+    resolved = copy.deepcopy(dict(document))
+    for channel in resolved["channels"].values():
+        parameters = channel.get("parameters", {})
+        for name in [n for n, p in parameters.items() if ENV_KEY in p]:
+            del parameters[name]
+            channel["address"] = channel["address"].replace(
+                f"{{{name}}}", getattr(config, name)
+            )
+        if "parameters" in channel and not parameters:
+            del channel["parameters"]
+    return resolved
+
+
 def operation_topic(ref: Mapping[str, Any], document: Mapping[str, Any]) -> str:
     """The concrete topic an operation reference resolves to in ``document``."""
     operation = document["operations"][ref["operation"]]
@@ -773,7 +804,10 @@ __all__ = [
     "DEFAULT_CONFIG",
     "DERIVED_KEY",
     "ENUM_NAMES_KEY",
+    "ENV_KEY",
     "INVARIANTS_KEY",
+    "TEMPLATE_CONFIG",
+    "TOPIC_SETTINGS",
     "Document",
     "all_module_descriptions",
     "build_asyncapi",
@@ -782,7 +816,7 @@ __all__ = [
     "field_topics",
     "operation_key",
     "operation_topic",
+    "resolve_settings",
     "simulation_io_classes",
-    "spec_config",
     "wire_key",
 ]

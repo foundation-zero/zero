@@ -159,18 +159,4 @@ impl LifecycleDef {
         }
         Ok(())
     }
-
-    /// Rewrite every resolved topic in place (runtime prefix strategy).
-    pub fn rewrite_topics(&mut self, rewrite: &dyn Fn(&str) -> String) {
-        self.status.topic = rewrite(&self.status.topic);
-        for object in &mut self.objects {
-            object.topic = rewrite(&object.topic);
-        }
-        for directive in &mut self.directives {
-            directive.topic = rewrite(&directive.topic);
-        }
-        for def in self.members.iter_mut().flat_map(|m| m.mutations.iter_mut()) {
-            def.rewrite_topics(rewrite);
-        }
-    }
 }

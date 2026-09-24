@@ -15,12 +15,15 @@ from pydantic import ValidationError
 from thrs.input_output.definitions.sensor import Thruster as SensorThruster
 from thrs.input_output.definitions.simulation import Thruster as SimulationThruster
 from thrs.input_output.definitions.units import PcsMode
+from thrs.orchestration.config import Config
 from thrs.runtime.descriptions.simulation import MODES, simulation_io_classes
 from thrs.spec.asyncapi import (
-    DEFAULT_CONFIG,
     DERIVED_KEY,
     ENUM_NAMES_KEY,
+    ENV_KEY,
     INVARIANTS_KEY,
+    TEMPLATE_CONFIG,
+    TOPIC_SETTINGS,
     _classifier,
     _collect_registrations,
     _combined_schemas,
@@ -30,7 +33,7 @@ from thrs.spec.asyncapi import (
     build_asyncapi,
     build_document,
     describe_mapping,
-    spec_config,
+    resolve_settings,
 )
 
 
@@ -78,43 +81,41 @@ def test_build_asyncapi_has_no_broken_refs() -> None:
     assert _broken_refs(build_asyncapi()) == []
 
 
-def _all_strings(node: Any) -> list[str]:
-    if isinstance(node, dict):
-        out: list[str] = []
-        for key, value in node.items():
-            out.append(key)
-            out += _all_strings(value)
-        return out
-    if isinstance(node, list):
-        return [s for item in node for s in _all_strings(item)]
-    return [node] if isinstance(node, str) else []
+def test_every_topic_setting_is_an_env_parameter() -> None:
+    """Each topic setting stays an address parameter naming its environment
+    variable, and no default value of a setting leaks into an address."""
+    doc = build_asyncapi()
+    used: set[str] = set()
+    for key, channel in doc["channels"].items():
+        parameters = channel.get("parameters", {})
+        for name in re.findall(r"\{(\w+)\}", channel["address"]):
+            if name in TOPIC_SETTINGS:
+                assert parameters[name][ENV_KEY] == name.upper(), key
+                used.add(name)
+            else:
+                assert ENV_KEY not in parameters[name], key
+    assert used == set(TOPIC_SETTINGS)
+    defaults = Config.model_validate({})
+    for channel in doc["channels"].values():
+        for segment in channel["address"].split("/"):
+            assert segment not in {getattr(defaults, n) for n in TOPIC_SETTINGS}, (
+                channel["address"]
+            )
 
 
-def test_build_asyncapi_default_prefix_is_a_noop() -> None:
-    """Passing the default prefixes explicitly changes nothing."""
-    config = spec_config(
-        devices_prefix=DEFAULT_CONFIG.mqtt_devices_topic_prefix,
-        controller_prefix=DEFAULT_CONFIG.mqtt_controller_topic_prefix,
+def test_resolve_settings_fills_in_every_setting_without_breaking_refs() -> None:
+    """Resolving against a config puts its values in every address and drops
+    the setting parameters, as zero-mqtt-graphql does at load."""
+    config = Config.model_validate(
+        {name: f"x-{name.removeprefix('mqtt_')}" for name in TOPIC_SETTINGS}
     )
-    assert build_asyncapi(config) == build_asyncapi()
-
-
-def test_build_asyncapi_reprefix_swaps_every_topic_form_without_breaking_refs() -> None:
-    """Every channel address, key, MQTT binding and $ref moves to the chosen
-    prefix (both `/` and `.` forms), nothing keeps the old prefix, unrelated
-    (simulator) channels are untouched, and no ref breaks."""
-    doc = build_asyncapi(spec_config(devices_prefix="xsim", controller_prefix="xctrl"))
-    strings = _all_strings(doc)
-    assert not any(
-        s.startswith(
-            ("simulation/", "simulation.", "thrs/controller/", "thrs.controller.")
-        )
-        for s in strings
-    ), "an old prefix survived the reprefix"
-    assert any(s.startswith("xsim/") for s in strings)
-    assert any(s.startswith("xctrl/") for s in strings)
-    # Unrelated simulator channels keep their own prefix.
-    assert any(s.startswith(("thrs/simulator/", "thrs.simulator.")) for s in strings)
+    doc = resolve_settings(build_asyncapi(), config)
+    for key, channel in doc["channels"].items():
+        assert "{mqtt_" not in channel["address"], key
+        assert channel["address"].startswith("x-"), key
+        assert not any(
+            ENV_KEY in parameter for parameter in channel.get("parameters", {}).values()
+        ), key
     assert _broken_refs(doc) == []
 
 
@@ -164,7 +165,7 @@ def test_same_named_classes_are_not_merged_into_one_wrong_schema() -> None:
 
 def test_one_channel_per_address_with_one_message_per_distinct_payload() -> None:
     """A send-group and a receive-group sharing one address template (e.g.
-    thrs/controller/{module}/control-mode - ControlChannels sends
+    {mqtt_controller_topic_prefix}/{module}/control-mode - ControlChannels sends
     the raw control-mode class, ControlApiChannels listens for it
     wrapped in ``SwitchingControlMode[...]``, which ``_wire_type`` maps to the
     same wrapper on the wire) are one channel. Its directions share one
@@ -173,7 +174,7 @@ def test_one_channel_per_address_with_one_message_per_distinct_payload() -> None
     direction, and a parametrized message pins each parameter value to its
     schema."""
     doc = build_asyncapi()
-    channel = doc["channels"]["thrs.controller.control-mode"]
+    channel = doc["channels"]["mqtt_controller_topic_prefix.control-mode"]
     assert set(channel["messages"]) == {"message"}
     message = channel["messages"]["message"]
     assert set(channel["parameters"]["module"]["enum"]) == set(
@@ -197,7 +198,9 @@ def test_one_channel_per_address_with_one_message_per_distinct_payload() -> None
             assert operation["messages"] == [
                 {"$ref": f"#/channels/{key}/messages/{expected}"}
             ], key
-        for param in channel.get("parameters", {}):
+        for param, declared in channel.get("parameters", {}).items():
+            if ENV_KEY in declared:
+                continue
             for message in channel["messages"].values():
                 assert set(message[f"x-{param}-schema"]) <= set(
                     channel["parameters"][param]["enum"]
@@ -208,8 +211,8 @@ def test_every_registered_topic_is_covered_by_exactly_one_channel() -> None:
     """Every concrete (topic, direction) pair the real ``*Channels`` classes
     register must be described by exactly one generated channel - nothing
     silently dropped, nothing double-counted."""
-    registrations = _collect_registrations(DEFAULT_CONFIG)
-    classify = _classifier(DEFAULT_CONFIG)
+    registrations = _collect_registrations(TEMPLATE_CONFIG)
+    classify = _classifier(TEMPLATE_CONFIG)
 
     doc = build_asyncapi()
     operations = {
@@ -236,11 +239,13 @@ def test_field_level_parameter_enum_matches_the_real_field_names() -> None:
     not a superset (would imply a topic that doesn't exist) or a subset
     (would silently hide a real topic)."""
     entries = _flatten(
-        _collect_registrations(DEFAULT_CONFIG), _classifier(DEFAULT_CONFIG)
+        _collect_registrations(TEMPLATE_CONFIG), _classifier(TEMPLATE_CONFIG)
     )
     groups = _group(entries)
 
-    thrusters_sensor = groups[("simulation/500000-thrs/thrusters/{field}", "receive")]
+    thrusters_sensor = groups[
+        ("{mqtt_devices_topic_prefix}/500000-thrs/thrusters/{field}", "receive")
+    ]
     assert "thrusters-pump1" in thrusters_sensor.param_values
     assert "thrusters-mix-recovery" in thrusters_sensor.param_values
 
