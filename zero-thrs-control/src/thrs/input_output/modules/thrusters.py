@@ -16,8 +16,11 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
+    DeltaT,
+    LMin,
     OptionalCelsius,
     PcsMode,
+    Watt,
 )
 from thrs.input_output.sensor_values import AmcsModeSensorValues
 
@@ -265,7 +268,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         )
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
         thrusters_flow = self.thrusters_flow.flow
-        actual_flow = StampedWithSource.combine(
+        actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
             thrusters_flow,
             exchange_mix_ration,
             value=thrusters_flow.value * (1 - exchange_mix_ration.value),
@@ -273,7 +276,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         )
 
         # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
-        delta_t = Stamped.combine(
+        delta_t: Stamped[DeltaT | None] = Stamped.combine(
             temperature_supply,
             temperature_return,
             value=(
@@ -290,7 +293,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         )
 
         # We don't use above delta_t and actual flow because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
-        heat = Stamped.combine(
+        heat: Stamped[Watt | None] = Stamped.combine(
             temperature_return,
             temperature_supply,
             thrusters_flow,

@@ -172,32 +172,36 @@ class TemperatureDelta(ThrsValues):
 
 
 class HeatTransferDevice(ThrsValues):
-    temperature_supply: StampedWithSource[OptionalCelsius]
-    temperature_return: StampedWithSource[OptionalCelsius]
-    delta_t: Stamped[DeltaT]
-    flow: StampedWithSource[LMin]
-    heat: Stamped[Watt]
+    temperature_supply: StampedWithSource[Celsius | None]
+    temperature_return: StampedWithSource[Celsius | None]
+    delta_t: Stamped[DeltaT | None]
+    flow: StampedWithSource[LMin | None]
+    heat: Stamped[Watt | None]
 
     @classmethod
     def from_sensors(
         cls,
-        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
-        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
-        flow: Stamped[LMin],
+        temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
+        temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
+        flow: Stamped[LMin] | Stamped[LMin | None],
         temperature_supply_source: str,
         temperature_return_source: str,
         flow_source: str,
         heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
     ) -> Self:
-        delta_t = Stamped.combine(
+        delta_t: Stamped[Celsius | None] = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=0.0
+            value=None
             if temperature_supply.value is None or temperature_return.value is None
             else temperature_return.value - temperature_supply.value,
         )
         heat = Stamped.combine(
-            delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
+            delta_t,
+            flow,
+            value=flow.value * delta_t.value * heat_transfer_conversion
+            if flow.value and delta_t.value
+            else None,
         )
         return cls(
             temperature_supply=StampedWithSource.from_stamped(
@@ -209,7 +213,7 @@ class HeatTransferDevice(ThrsValues):
                 temperature_return_source,
             ),
             delta_t=delta_t,
-            flow=StampedWithSource.from_stamped(flow, flow_source),
+            flow=StampedWithSource.from_stamped(flow, flow_source),  # type: ignore
             heat=heat,
         )
 

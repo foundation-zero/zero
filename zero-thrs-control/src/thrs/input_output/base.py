@@ -110,6 +110,9 @@ class StampedWithSource[T](Stamped[T]):
 
     @staticmethod
     def from_stamped[V](original: Stamped[V], source: str) -> "StampedWithSource[V]":
+        if isinstance(original, StampedWithSource):
+            return original
+
         return StampedWithSource(
             value=original.value, timestamp=original.timestamp, source=source
         )

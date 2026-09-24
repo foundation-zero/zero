@@ -290,9 +290,12 @@ class PcmChargeController:
         self._charging_state = PcmChargingState.IDLE
 
     def __call__(self, heat_transfer_device: HeatTransferDevice) -> None:
-        if heat_transfer_device.heat.value < -PCM_CHARGING_DEADBAND:
+        heat_transfer = heat_transfer_device.heat.value
+        if heat_transfer is None:
+            self._charging_state = PcmChargingState.IDLE  # TODO is idle correct?
+        elif heat_transfer < -PCM_CHARGING_DEADBAND:
             self._charging_state = PcmChargingState.CHARGING
-        elif heat_transfer_device.heat.value > PCM_CHARGING_DEADBAND:
+        elif heat_transfer > PCM_CHARGING_DEADBAND:
             self._charging_state = PcmChargingState.DISCHARGING
         else:
             self._charging_state = PcmChargingState.IDLE
@@ -305,7 +308,7 @@ class PcmChargeController:
             ):
                 self._charge = 0.0
             elif (
-                heat_transfer_device.temperature_return.value > PCM_CHARGE_EMPTY_TEMP
+                heat_transfer_device.temperature_return.value < PCM_CHARGE_EMPTY_TEMP
                 and self._charging_state == PcmChargingState.IDLE
             ):
                 self._charge = 1.0
