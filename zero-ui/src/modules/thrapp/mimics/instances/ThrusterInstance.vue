@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ThrusterMode } from "@/modules/thrsim/types";
-import { RiDropLine, RiFireLine } from "@remixicon/vue";
+import { RiFireLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -24,7 +24,7 @@ const props = withDefaults(
   >(),
   {
     width: 180,
-    height: 250,
+    height: 225,
     forceHeight: true,
   },
 );
@@ -90,25 +90,17 @@ const heatTransfer = getSensorValue(props.sensors.heatTransfer);
       </ValueListItem>
 
       <ValueListItem>
-        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
-        <span class="flex items-center gap-0.5">
-          <RiDropLine class="text-brand size-3.5" />
-        </span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.FlowRate :value="heatTransfer?.flow?.value" />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
         <span class="flex items-center gap-0.5">
           <RiFireLine class="text-heating-medium size-3.5" />
         </span>
         <span class="text-foreground font-medium">
           <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
+        </span>
+      </ValueListItem>
+      <ValueListItem>
+        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
         </span>
       </ValueListItem>
 
