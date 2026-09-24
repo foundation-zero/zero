@@ -116,6 +116,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Thruster: ["active"],
     Pcs: ["mode"],
     Pcm: ["charged"],
+    Pvt: ["power"],
     Level: ["level"],
     LevelSwitch: ["empty"],
     HeatTransferDevice: ["temperatureSupply", "temperatureReturn", "flow", "heat", "deltaT"],
