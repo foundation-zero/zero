@@ -1857,6 +1857,8 @@ type ThrustersSensorValuesType {
   thrustersThrusterAft: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001001", componentType: "thruster", valveType: null)
   thrustersThrusterFwd: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001002", componentType: "thruster", valveType: null)
   thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
+  thrustersThrusterAftHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "15001001", componentType: "heat_transfer", valveType: null)
+  thrustersThrusterFwdHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "15001002", componentType: "heat_transfer", valveType: null)
 
   """The average temperature after thrusters before optional mix with pcm."""
   thrustersTemperatureRecovery: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)

@@ -2713,6 +2713,20 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
+  thrustersThrusterAftHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  thrustersThrusterFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   thrustersTemperatureRecovery {
     temperature { value timestamp }
   }
