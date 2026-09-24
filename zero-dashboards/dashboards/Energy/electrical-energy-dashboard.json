@@ -24,7 +24,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -582,7 +582,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -602,7 +602,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_energy_consumption\r\n  WHERE time >= date_sub($__to::TIMESTAMP, '5 minutes') AND time < $__to::TIMESTAMP\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY main_group",
+          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_power_consumption_per_minute\r\n  WHERE time >= date_sub($__to::TIMESTAMP, '5 minutes') AND time < $__to::TIMESTAMP\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY main_group",
           "refId": "A",
           "sql": {
             "columns": [
@@ -663,7 +663,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "description": "Average energy consumption per group and subgroup",
@@ -724,7 +724,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -744,7 +744,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tmain_group AS group_name,\r\n\tsub_group AS sub_group_name,\r\n\tSUM(energy) AS energy,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_energy_consumption\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group",
+          "rawSql": "SELECT\r\n\tmain_group AS group_name,\r\n\tsub_group AS sub_group_name,\r\n\tSUM(energy) AS energy,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group",
           "refId": "A",
           "sql": {
             "columns": [
@@ -770,7 +770,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -973,7 +973,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -993,7 +993,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT\r\n\t\tgroup_name,\r\n\t\thour AS time,\r\n\t\tCASE\r\n\t\t  -- Make the consumer values negative to place the bars under the X-axis\r\n\t\t\tWHEN group_name IN ('Domestic', 'Technical', 'HVAC', 'Propulsion') THEN energy * -1\r\n\t\t\t-- The consumer values are placed above th X-axis\r\n\t\t\tELSE energy\r\n\t\tEND AS energy\r\n\tFROM (\r\n    SELECT\r\n      date_trunc('hour', time) AS hour,\r\n  \t\tmain_group AS group_name,\r\n  \t\tsub_group AS sub_group_name,\r\n  \t\tSUM(power) / 60 AS energy\r\n  \tFROM views.gld_electrical_energy_consumption\r\n  \tGROUP BY hour, main_group, sub_group\r\n  )\r\n)\r\nGROUP BY time\r\nORDER BY time",
+          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT\r\n\t\tgroup_name,\r\n\t\thour AS time,\r\n\t\tCASE\r\n\t\t  -- Make the consumer values negative to place the bars under the X-axis\r\n\t\t\tWHEN group_name IN ('Domestic', 'Technical', 'HVAC', 'Propulsion') THEN energy * -1\r\n\t\t\t-- The consumer values are placed above th X-axis\r\n\t\t\tELSE energy\r\n\t\tEND AS energy\r\n\tFROM (\r\n    SELECT\r\n      date_trunc('hour', time) AS hour,\r\n  \t\tmain_group AS group_name,\r\n  \t\tsub_group AS sub_group_name,\r\n  \t\tSUM(power) / 60 AS energy\r\n  \tFROM views.gld_electrical_power_consumption_per_minute\r\n  \tGROUP BY hour, main_group, sub_group\r\n  )\r\n)\r\nGROUP BY time\r\nORDER BY time",
           "refId": "Electrical hourly",
           "sql": {
             "columns": [

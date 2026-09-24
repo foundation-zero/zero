@@ -20,17 +20,17 @@ models:
         description: "The main group classification of the power tag."
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
-  - name: gld_electrical_energy_consumption
+  - name: gld_electrical_power_consumption_per_minute
     description: >
-      Electrical energy consumption aggregated per main group and sub group.
+      Electrical power consumption aggregated per main group and sub group per minute.
       Materialized as a view in the `views` database.
     columns:
       - name: time
-        description: "Timestamp representing the start of the interval for the aggregated electrical energy consumption."
+        description: "Timestamp representing the start of the minute interval for the aggregated electrical power consumption."
         tests:
           - not_null
       - name: power
-        description: "Electrical energy consumption in watts aggregated per minute."
+        description: "Electrical power consumption in watts aggregated per minute."
       - name: main_group
         description: "The main group classification of the power tag."
       - name: sub_group
