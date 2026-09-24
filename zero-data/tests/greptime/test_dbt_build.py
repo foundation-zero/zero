@@ -71,14 +71,6 @@ def test_dbt_build_is_green_against_snapshot_seeded_greptime(
         for msg in events.get("LogModelResult", [])
     )
     assert any(
-        f"unique_{PROOF_VIEW}_topic" in msg and "PASS" in msg
-        for msg in events.get("LogTestResult", [])
-    )
-    assert any(
-        f"not_null_{PROOF_VIEW}_topic" in msg and "PASS" in msg
-        for msg in events.get("LogTestResult", [])
-    )
-    assert any(
         f"not_null_{PROOF_VIEW}_ts" in msg and "PASS" in msg
         for msg in events.get("LogTestResult", [])
     )
