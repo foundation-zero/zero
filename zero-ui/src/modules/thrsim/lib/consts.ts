@@ -23,6 +23,8 @@ import * as Queries from "./queries.generated";
 
 export * from "./consts.types";
 
+export const THRS_YARDTAG_PREFIX_REGEX = /^5000/;
+
 export const THRUSTER_MODES: ThrusterMode[] = [
   ThrusterMode.Maneuvering,
   ThrusterMode.Off,

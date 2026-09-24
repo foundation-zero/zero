@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
+import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrsim/lib/consts";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { FieldRenderer } from ".";
@@ -42,7 +43,7 @@ const backendSource = computed(() => {
   if (["unknown", "calculated"].includes(sourcedataTyped.source))
     return sources(sourcedataTyped.source);
 
-  return sourcedataTyped.source;
+  return sourcedataTyped.source.replace(THRS_YARDTAG_PREFIX_REGEX, "");
 });
 
 const sourceName = computed(() => {
