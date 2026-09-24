@@ -29,8 +29,8 @@ models:
         description: "Timestamp representing the start of the interval for the aggregated electrical energy consumption."
         tests:
           - not_null
-      - name: power_wh
-        description: "Electrical energy consumption in watt-hours aggregated per minute."
+      - name: power
+        description: "Electrical energy consumption in watts aggregated per minute."
       - name: main_group
         description: "The main group classification of the power tag."
       - name: sub_group
