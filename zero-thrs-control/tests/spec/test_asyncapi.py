@@ -22,6 +22,7 @@ from thrs.spec.asyncapi import (
     ENUM_NAMES_KEY,
     ENV_KEY,
     INVARIANTS_KEY,
+    SERVER_SETTINGS,
     TEMPLATE_CONFIG,
     TOPIC_SETTINGS,
     _classifier,
@@ -95,21 +96,24 @@ def test_every_topic_setting_is_an_env_parameter() -> None:
             else:
                 assert ENV_KEY not in parameters[name], key
     assert used == set(TOPIC_SETTINGS)
-    defaults = Config.model_validate({})
-    for channel in doc["channels"].values():
-        for segment in channel["address"].split("/"):
-            assert segment not in {getattr(defaults, n) for n in TOPIC_SETTINGS}, (
-                channel["address"]
-            )
 
 
-def test_resolve_settings_fills_in_every_setting_without_breaking_refs() -> None:
+def test_the_broker_is_located_by_env_variables() -> None:
+    """The server's host is made of settings too; the spec states no broker."""
+    (server,) = build_asyncapi()["servers"].values()
+    assert set(re.findall(r"\{(\w+)\}", server["host"])) == set(SERVER_SETTINGS)
+    assert {n: v[ENV_KEY] for n, v in server["variables"].items()} == {
+        name: name.upper() for name in SERVER_SETTINGS
+    }
+
+
+def test_resolve_settings_fills_in_every_setting_without_breaking_refs(
+    settings: Config,
+) -> None:
     """Resolving against a config puts its values in every address and drops
     the setting parameters, as zero-mqtt-graphql does at load."""
-    config = Config.model_validate(
-        {name: f"x-{name.removeprefix('mqtt_')}" for name in TOPIC_SETTINGS}
-    )
-    doc = resolve_settings(build_asyncapi(), config)
+    doc = resolve_settings(build_asyncapi(), settings)
+    assert [s["host"] for s in doc["servers"].values()] == ["broker:1883"]
     for key, channel in doc["channels"].items():
         assert "{mqtt_" not in channel["address"], key
         assert channel["address"].startswith("x-"), key

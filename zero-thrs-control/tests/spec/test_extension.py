@@ -12,9 +12,9 @@ from typing import Any
 import pytest
 
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.orchestration.config import Config
 from thrs.spec import contract, naming
 from thrs.spec.asyncapi import (
-    DEFAULT_CONFIG,
     all_module_descriptions,
     build_asyncapi,
     operation_topic,
@@ -34,9 +34,9 @@ def spec() -> dict[str, Any]:
 
 
 @pytest.fixture(scope="module")
-def resolved(spec: dict[str, Any]) -> dict[str, Any]:
+def resolved(spec: dict[str, Any], settings: Config) -> dict[str, Any]:
     """The spec with its topic settings filled in, as the bridge serves it."""
-    return resolve_settings(spec, DEFAULT_CONFIG)
+    return resolve_settings(spec, settings)
 
 
 @pytest.fixture(scope="module")
@@ -278,10 +278,10 @@ def test_every_mutation_is_confirmed_the_way_the_contract_says(extension) -> Non
     assert directives["simulationPlay"]["key"] == "PlaybackRate"
 
 
-def test_settings_reach_every_part_of_the_extension(spec) -> None:
+def test_settings_reach_every_part_of_the_extension(spec, settings: Config) -> None:
     """Every binding of the extension resolves through the topic settings, so
     one environment moves every topic the bridge reads and writes together."""
-    config = DEFAULT_CONFIG.model_copy(
+    config = settings.model_copy(
         update={
             "mqtt_devices_topic_prefix": "dev",
             "mqtt_controller_topic_prefix": "ctl",

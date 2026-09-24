@@ -10,7 +10,9 @@ before any test ran.
 
 import pytest
 
+from thrs.orchestration.config import Config
 from thrs.runtime.descriptions.simulation import MODES
+from thrs.spec.asyncapi import TOPIC_SETTINGS
 
 _DECLARED_CONTROL_MODE_CLASSES = {
     id(description): description.control_mode_cls
@@ -26,3 +28,12 @@ def declared_module_descriptions() -> None:
             description.control_mode_cls = _DECLARED_CONTROL_MODE_CLASSES[
                 id(description)
             ]
+
+
+@pytest.fixture(scope="session")
+def settings() -> Config:
+    """A config with a distinct value for every setting the spec leaves open."""
+    return Config.model_validate(
+        {name: f"x-{name.removeprefix('mqtt_')}" for name in TOPIC_SETTINGS}
+        | {"mqtt_host": "broker", "mqtt_port": 1883}
+    )

@@ -44,9 +44,6 @@ from thrs.orchestration.module import ModuleDescription
 from thrs.runtime.descriptions.simulation import lookup_mode, simulation_io_classes
 from thrs.spec import validators
 
-# Pure defaults (model_validate skips .env/os.environ); only shapes the spec's server.
-DEFAULT_CONFIG = Config.model_validate({})
-
 # The settings that shape a topic. The document keeps each as an address
 # parameter, which its consumer fills in from the environment variable of the
 # same name, as the THRS services do.
@@ -56,9 +53,14 @@ TOPIC_SETTINGS = tuple(
     if name.startswith("mqtt_") and name.endswith(("_topic_prefix", "_topic_suffix"))
 )
 
-# The config the document is built with: each topic setting is its own placeholder.
-TEMPLATE_CONFIG = Config.model_validate(
-    {name: f"{{{name}}}" for name in TOPIC_SETTINGS}
+
+# The settings that locate the broker, kept as server variables the same way.
+SERVER_SETTINGS = ("mqtt_host", "mqtt_port")
+
+# The config the document is built with: each topic setting is its own
+# placeholder. Only the topic settings are read, so nothing else is validated.
+TEMPLATE_CONFIG = Config.model_construct().model_copy(
+    update={name: f"{{{name}}}" for name in TOPIC_SETTINGS}
 )
 
 # Marks an address parameter as a setting and names its environment variable.
@@ -382,6 +384,11 @@ def _settings_of(template: str) -> list[str]:
     ]
 
 
+def _setting(name: str) -> dict[str, str]:
+    """The parameter or server variable of a ``Config`` setting."""
+    return {"description": f"The {name.upper()} setting.", ENV_KEY: name.upper()}
+
+
 def channel_key(template: str) -> str:
     """Static segments and setting names joined by dots; other parameters are dropped."""
     segments = []
@@ -534,8 +541,7 @@ def _document(
             "description": f"{len(topics)} topic(s), e.g. {topics[0]}.",
         }
         parameters: dict[str, Any] = {
-            name: {"description": f"The {name.upper()} setting.", ENV_KEY: name.upper()}
-            for name in _settings_of(template)
+            name: _setting(name) for name in _settings_of(template)
         }
         param = next(iter(directions.values())).param_name
         if param:
@@ -571,9 +577,10 @@ def _document(
         "defaultContentType": "application/json",
         "servers": {
             "broker": {
-                "host": f"{DEFAULT_CONFIG.mqtt_host}:{DEFAULT_CONFIG.mqtt_port}",
+                "host": ":".join(f"{{{name}}}" for name in SERVER_SETTINGS),
                 "protocol": "mqtt",
                 "protocolVersion": "5.0",
+                "variables": {name: _setting(name) for name in SERVER_SETTINGS},
             }
         },
         "channels": channels,
@@ -770,6 +777,11 @@ def resolve_settings(document: Mapping[str, Any], config: Config) -> dict[str, A
             )
         if "parameters" in channel and not parameters:
             del channel["parameters"]
+    for server in resolved["servers"].values():
+        for name in server.pop("variables", {}):
+            server["host"] = server["host"].replace(
+                f"{{{name}}}", str(getattr(config, name))
+            )
     return resolved
 
 
@@ -801,11 +813,11 @@ def field_topics(
 
 
 __all__ = [
-    "DEFAULT_CONFIG",
     "DERIVED_KEY",
     "ENUM_NAMES_KEY",
     "ENV_KEY",
     "INVARIANTS_KEY",
+    "SERVER_SETTINGS",
     "TEMPLATE_CONFIG",
     "TOPIC_SETTINGS",
     "Document",
