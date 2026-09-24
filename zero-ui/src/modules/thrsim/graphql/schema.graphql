@@ -462,7 +462,6 @@ type DhwControlValuesType {
 type DhwControllerStateType {
   dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "tank_controller", valveType: null)
   dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
   dhwDrivesFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
   dhwDcFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
@@ -472,7 +471,7 @@ type DhwParametersType {
   htBoostingEnabled: Boolean!
   heatpumpFlowSetpoint: Float!
   heatpumpTemperatureSetpoint: Float!
-  htBoostingTemperatureSetpoint: Float!
+  htBoostingFlowSetpoint: Float!
   minimumTankTemperature: Float!
   maximumTankTemperature: Float!
 
@@ -522,7 +521,6 @@ type DhwParametersType {
   tank1Enabled: Boolean!
   tank2Enabled: Boolean!
   tank3Enabled: Boolean!
-  pumpTemperatureTuning: [Float!]!
   pumpFlowTuning: [Float!]!
   dcFlowTuning: [Float!]!
   drivesFlowTuning: [Float!]!
@@ -950,7 +948,7 @@ type Mutation {
   dhwParameterSetHtBoostingEnabled(value: Boolean!): DhwParametersType!
   dhwParameterSetHeatpumpFlowSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetHeatpumpTemperatureSetpoint(value: Float!): DhwParametersType!
-  dhwParameterSetHtBoostingTemperatureSetpoint(value: Float!): DhwParametersType!
+  dhwParameterSetHtBoostingFlowSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetMinimumTankTemperature(value: Float!): DhwParametersType!
   dhwParameterSetMaximumTankTemperature(value: Float!): DhwParametersType!
   dhwParameterSetHtBoostingMinimumDelta(value: Float!): DhwParametersType!
@@ -968,7 +966,6 @@ type Mutation {
   dhwParameterSetTank1Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank2Enabled(value: Boolean!): DhwParametersType!
   dhwParameterSetTank3Enabled(value: Boolean!): DhwParametersType!
-  dhwParameterSetPumpTemperatureTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetPumpFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDcFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDrivesFlowTuning(value: [Float!]!): DhwParametersType!

@@ -14,14 +14,19 @@ const t = tScoped("thrapp.parameters.dhw");
     <Parameters.Description>{{ t("boostingHeatpump.description") }}</Parameters.Description>
     <Parameters.Separator />
     <Parameters.List>
+      <ParameterItems.Enabled
+        :source="getField(ParametersType.Enabled, 'dhw', 'heatpumpBoostingEnabled')"
+      >
+        {{ t("items.heatpumpBoosting") }}
+      </ParameterItems.Enabled>
+      <ParameterItems.Flow :source="getField(ParametersType.Flow, 'dhw', 'heatpumpFlowSetpoint')">
+        {{ t("items.heatpumpFlow") }}
+      </ParameterItems.Flow>
       <ParameterItems.Temperature
         :source="getField(ParametersType.Temperature, 'dhw', 'heatpumpTemperatureSetpoint')"
       >
         {{ t("items.heatpumpTemperature") }}
       </ParameterItems.Temperature>
-      <ParameterItems.Flow :source="getField(ParametersType.Flow, 'dhw', 'heatpumpFlowSetpoint')">
-        {{ t("items.heatpumpFlow") }}
-      </ParameterItems.Flow>
     </Parameters.List>
   </Parameters.Card>
 </template>

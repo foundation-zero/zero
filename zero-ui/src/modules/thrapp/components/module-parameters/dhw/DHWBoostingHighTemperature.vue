@@ -16,10 +16,18 @@ const t = tScoped("thrapp.parameters.dhw");
     </Parameters.Description>
     <Parameters.Separator />
     <Parameters.List>
-      <ParameterItems.Temperature
-        :source="getField(ParametersType.Temperature, 'dhw', 'htBoostingTemperatureSetpoint')"
+      <ParameterItems.Enabled
+        :source="getField(ParametersType.Enabled, 'dhw', 'htBoostingEnabled')"
       >
-        {{ t("items.boostingTemperature") }}
+        {{ t("items.highTemperatureBoosting") }}
+      </ParameterItems.Enabled>
+      <ParameterItems.Flow :source="getField(ParametersType.Flow, 'dhw', 'htBoostingFlowSetpoint')">
+        {{ t("items.boostingFlow") }}
+      </ParameterItems.Flow>
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.dT, 'dhw', 'htBoostingMinimumDelta')"
+      >
+        {{ t("items.htBoostingMinimumDelta") }}
       </ParameterItems.Temperature>
     </Parameters.List>
   </Parameters.Card>

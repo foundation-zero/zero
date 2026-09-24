@@ -1,26 +1,19 @@
-import {
-  ControllerStateComponentType,
-  ParametersType,
-  SensorComponentType,
-} from "@/modules/thrsim/types";
+import { ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
+import { pumpFlowController } from "../controllers";
 import { pump, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowSensor>({
   controls: {
     pump,
   },
-  controllerState: {
-    controller: getField(
-      ControllerStateComponentType.PIDController,
-      "dhw",
-      "dhwPumpFlowController",
-    ),
+  controllerState: {},
+  custom: {
+    controller: pumpFlowController,
   },
-  custom: {},
   parameters: {
     flow: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
   },
