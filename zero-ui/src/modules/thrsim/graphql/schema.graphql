@@ -581,9 +581,10 @@ type DhwSensorValuesType {
   consumersTemperatureDhwSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-53", componentType: "temperature_sensor", valveType: null)
   freshwaterHotwaterFlow: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "25001123-1", componentType: null, valveType: null)
   freshwaterHotwaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-1", componentType: null, valveType: null)
+  dhwHeatpump: SensorHeatpumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
   dhwFreshwaterFlowSupply: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   dhwHvacExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "41001001", componentType: "heat_transfer", valveType: null)
-  dhwHeatpump: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heat_transfer", valveType: null)
+  dhwHeatpumpHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heat_transfer", valveType: null)
   dhwAdsorptionExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001004", componentType: "heat_transfer", valveType: null)
   dhwConsumersExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001007", componentType: "heat_transfer", valveType: null)
   dhwDcExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_transfer", valveType: null)
@@ -1548,6 +1549,10 @@ type SensorHeatTransferDeviceType {
   deltaT: FloatStampedType!
   flow: FloatStampedWithSourceType!
   heat: FloatStampedType!
+}
+
+type SensorHeatpumpType {
+  on: BoolStampedType!
 }
 
 type SensorLevelSensorType {

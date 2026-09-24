@@ -338,6 +338,10 @@ class Ugrid(ThrsValues):
     active: Stamped[OnOff]
 
 
+class Heatpump(ThrsValues):
+    on: Stamped[OnOff]
+
+
 class Pvt(ThrsValues):
     power: Stamped[Watt]
 
@@ -413,6 +417,7 @@ __all__ = [
     "CalculatedTemperature",
     "FlowSensor",
     "HeatTransferDevice",
+    "Heatpump",
     "LevelSensor",
     "LevelSwitch",
     "Pcm",
