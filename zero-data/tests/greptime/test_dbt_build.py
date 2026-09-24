@@ -14,7 +14,7 @@ from zero_data.greptime.config import PROJECT_ROOT, SNAPSHOT_DIR, GreptimeConnec
 from zero_data.greptime.snapshot import load_snapshot
 
 DBT_DIR = PROJECT_ROOT / "dbt"
-PROOF_VIEW = "stg_marpower__150000_propulsion__pcs_fwd"
+PROOF_VIEW = "stg_marpower__power_tags"
 
 
 def _dbt_build() -> subprocess.CompletedProcess[str]:
