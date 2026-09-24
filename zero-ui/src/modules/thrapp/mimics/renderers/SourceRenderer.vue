@@ -32,17 +32,24 @@ const definition = computed(() => {
 });
 
 const backendSource = computed(() => {
-  const source = (sourceData.value as unknown as { source: string } | undefined)?.source;
-  if (source && ["unknown", "calculated"].includes(source)) return sources(source);
-  else if (source) return source;
+  const sourcedataTyped = sourceData.value as unknown as { source?: string } | undefined;
 
-  return null;
+  if (!sourcedataTyped || (sourcedataTyped && !Object.keys(sourcedataTyped).includes("source")))
+    return null;
+
+  if (!sourcedataTyped.source) return "";
+
+  if (["unknown", "calculated"].includes(sourcedataTyped.source))
+    return sources(sourcedataTyped.source);
+
+  return sourcedataTyped.source;
 });
 
 const sourceName = computed(() => {
   if (backendSource.value) return backendSource.value;
   if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
-  else if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
+  else if (!definition.value || !("yardTag" in definition.value))
+    return snakeCase(source.value?.[2]);
 
   return definition.value.yardTag ?? source.value?.[2];
 });
@@ -92,7 +99,7 @@ const showLink = computed(() => !props.noLink && !backendSource.value);
 
     <FieldRenderer.Placeholder v-else-if="sourceName === 'placeholder'" />
     <slot v-else-if="sourceName">
-      {{ snakeCase(sourceName) }}
+      {{ sourceName }}
     </slot>
 
     <slot v-else />

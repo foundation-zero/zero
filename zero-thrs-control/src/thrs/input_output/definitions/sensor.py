@@ -214,17 +214,18 @@ class HeatTransferDevice(ThrsValues):
         )
 
 
-def extract_source_yardtag(model: ThrsValues, key: str | None) -> str:
-    if key is None:
-        return "calculated"
+def extract_source_yardtag(model: ThrsValues, key: str) -> str:
+    klass = type(model)
+    field_info = klass.model_fields.get(key)
+    computed_field_info = klass.model_computed_fields.get(key)
 
-    field_info = type(model).model_fields.get(
-        key, type(model).model_computed_fields.get(key)
-    )
-    if not field_info:
-        return "unknown"
+    if not field_info and computed_field_info:
+        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # type: ignore
+        if not yard_tag:
+            return "calculated"
+        return yard_tag
 
-    return field_info.json_schema_extra["yard_tag"]  # type: ignore
+    return field_info.json_schema_extra.get("yard_tag", "unknown")  # type: ignore
 
 
 class Valve(ThrsValues):
