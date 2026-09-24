@@ -2969,6 +2969,14 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "1500",
     componentType: SensorComponentType.Pcs,
   },
+  thrustersThrusterAftHeat: {
+    yardTag: "15001001",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  thrustersThrusterFwdHeat: {
+    yardTag: "15001002",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   thrustersTemperatureRecovery: {
     componentType: SensorComponentType.CalculatedTemperature,
   },

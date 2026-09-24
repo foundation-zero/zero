@@ -114,6 +114,30 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="15001001",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def thrusters_thruster_aft_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.thrusters_temperature_supply.temperature,
+            temperature_return=self.thrusters_temperature_aft.temperature,
+            flow=self.thrusters_flow_aft.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_aft"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_aft"),
+        )
+
     thrusters_thruster_fwd: Annotated[
         sensor.Thruster,
         component_meta(
@@ -125,6 +149,30 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="15001002",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def thrusters_thruster_fwd_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.thrusters_temperature_supply.temperature,
+            temperature_return=self.thrusters_temperature_fwd.temperature,
+            flow=self.thrusters_flow_fwd.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_fwd"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_fwd"),
+        )
+
     thrusters_pcs: Annotated[
         sensor.Pcs,
         component_meta(

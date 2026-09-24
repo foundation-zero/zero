@@ -96,6 +96,10 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pvt]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
+  [MimicComponentType.Thruster]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+    pcs: SensorComponentType.Pcs;
+  };
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
@@ -133,6 +137,7 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
@@ -164,6 +169,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -195,6 +201,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type PIDController<
@@ -273,6 +280,9 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.Pvt]: {
     group: PvtGroup;
   };
+  [MimicComponentType.Thruster]: {
+    titleKey: "fwdTitle" | "aftTitle";
+  };
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
@@ -297,6 +307,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
+  [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.ConnectingCircuit]: undefined;
 }>;
 
