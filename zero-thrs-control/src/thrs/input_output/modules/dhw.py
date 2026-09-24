@@ -331,6 +331,17 @@ class DhwSensorValues(AmcsModeSensorValues):
                 ),
                 flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
+        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_heatpump]):
+            return sensor.HeatTransferDevice.from_sensors(
+                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_return=Stamped.stamp(None),
+                flow=Stamped.stamp(0.0),
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_drives_return"
+                ),
+                temperature_return_source="unknown",
+                flow_source="Calculated",
+            )
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,
             temperature_return=Stamped.stamp(None),
@@ -389,6 +400,17 @@ class DhwSensorValues(AmcsModeSensorValues):
                     self, "dhw_temperature_boosting_return"
                 ),
                 flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
+            )
+        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_high_temperature]):
+            return sensor.HeatTransferDevice.from_sensors(
+                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_return=Stamped.stamp(None),
+                flow=Stamped.stamp(0.0),
+                temperature_supply_source=sensor.extract_source_yardtag(
+                    self, "dhw_temperature_drives_return"
+                ),
+                temperature_return_source="unknown",
+                flow_source="Calculated",
             )
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,

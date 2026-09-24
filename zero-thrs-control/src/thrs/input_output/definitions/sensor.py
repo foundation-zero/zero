@@ -196,13 +196,16 @@ class HeatTransferDevice(ThrsValues):
             if temperature_supply.value is None or temperature_return.value is None
             else temperature_return.value - temperature_supply.value,
         )
-        heat = Stamped.combine(
-            delta_t,
-            flow,
-            value=flow.value * delta_t.value * heat_transfer_conversion
-            if flow.value and delta_t.value
-            else None,
+        heat_value = (
+            0.0
+            if flow.value == 0.0 or delta_t.value == 0.0
+            else (
+                None
+                if flow.value is None or delta_t.value is None
+                else flow.value * delta_t.value * heat_transfer_conversion
+            )
         )
+        heat = Stamped.combine(delta_t, flow, value=heat_value)
         return cls(
             temperature_supply=StampedWithSource.from_stamped(
                 temperature_supply,  # type: ignore
