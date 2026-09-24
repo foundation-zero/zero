@@ -43,18 +43,18 @@ pub struct AppConfig {
     /// Controller prefix the specs were generated with. Env: `SPEC_CONTROLLER_PREFIX`.
     #[serde(default)]
     pub spec_controller_prefix: String,
-    /// Devices prefix the live broker uses. Env: `RUNTIME_DEVICES_PREFIX`.
+    /// Devices prefix the live broker uses. Env: `MQTT_DEVICES_TOPIC_PREFIX`.
     #[serde(default)]
-    pub runtime_devices_prefix: Option<String>,
-    /// Controller prefix the live broker uses. Env: `RUNTIME_CONTROLLER_PREFIX`.
+    pub mqtt_devices_topic_prefix: Option<String>,
+    /// Controller prefix the live broker uses. Env: `MQTT_CONTROLLER_TOPIC_PREFIX`.
     #[serde(default)]
-    pub runtime_controller_prefix: Option<String>,
+    pub mqtt_controller_topic_prefix: Option<String>,
     /// Simulator prefix the specs were generated with. Env: `SPEC_SIMULATOR_PREFIX`.
     #[serde(default)]
     pub spec_simulator_prefix: String,
-    /// Simulator prefix the live broker uses. Env: `RUNTIME_SIMULATOR_PREFIX`.
+    /// Simulator prefix the live broker uses. Env: `MQTT_SIMULATOR_TOPIC_PREFIX`.
     #[serde(default)]
-    pub runtime_simulator_prefix: Option<String>,
+    pub mqtt_simulator_topic_prefix: Option<String>,
 }
 
 /// See [`AppConfig::prefix_strategy`].

@@ -4,7 +4,7 @@ reads.
 thrs-api runs with the environment ``docker-compose.yml`` gives it. zero-mqtt-graphql
 serves the specs ``scripts/aggregate-specs.sh`` generates (``DEFAULT_CONFIG``'s
 prefixes) and, with ``PREFIX_STRATEGY=runtime``, rewrites them to the
-``RUNTIME_*_PREFIX`` values of its own compose environment. The cross-API suites
+``MQTT_*_TOPIC_PREFIX`` values of its own compose environment. The cross-API suites
 seed each service on its own prefixes so both see the same state.
 """
 
@@ -106,8 +106,8 @@ def mqtt_graphql_config() -> Config:
         return DEFAULT_CONFIG
     return DEFAULT_CONFIG.model_copy(
         update={
-            f"mqtt_{kind}_topic_prefix": environment[f"RUNTIME_{kind.upper()}_PREFIX"]
+            f"mqtt_{kind}_topic_prefix": environment[f"MQTT_{kind.upper()}_TOPIC_PREFIX"]
             for kind in ("devices", "controller", "simulator")
-            if f"RUNTIME_{kind.upper()}_PREFIX" in environment
+            if f"MQTT_{kind.upper()}_TOPIC_PREFIX" in environment
         }
     )

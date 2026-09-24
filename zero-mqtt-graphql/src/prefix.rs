@@ -20,17 +20,17 @@ impl PrefixRewriter {
         push_rule(
             &mut rules,
             &config.spec_controller_prefix,
-            config.runtime_controller_prefix.as_deref(),
+            config.mqtt_controller_topic_prefix.as_deref(),
         );
         push_rule(
             &mut rules,
             &config.spec_simulator_prefix,
-            config.runtime_simulator_prefix.as_deref(),
+            config.mqtt_simulator_topic_prefix.as_deref(),
         );
         push_rule(
             &mut rules,
             &config.spec_devices_prefix,
-            config.runtime_devices_prefix.as_deref(),
+            config.mqtt_devices_topic_prefix.as_deref(),
         );
         Self { rules }
     }
@@ -120,10 +120,10 @@ mod tests {
             prefix_strategy: strategy,
             spec_devices_prefix: "simulation".into(),
             spec_controller_prefix: "thrs/controller".into(),
-            runtime_devices_prefix: dev.map(str::to_string),
-            runtime_controller_prefix: ctrl.map(str::to_string),
+            mqtt_devices_topic_prefix: dev.map(str::to_string),
+            mqtt_controller_topic_prefix: ctrl.map(str::to_string),
             spec_simulator_prefix: "thrs/simulator".into(),
-            runtime_simulator_prefix: None,
+            mqtt_simulator_topic_prefix: None,
         }
     }
 
