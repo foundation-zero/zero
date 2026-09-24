@@ -1,9 +1,10 @@
+import operator
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Annotated, Any, Literal, Self, cast
+from typing import Annotated, Any, ClassVar, Literal, Self, cast
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_pascal
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -11,6 +12,30 @@ from thrs.input_output.definitions.units import (
     unit_for_annotation,
     zero_for_unit,
 )
+
+type Comparison = Literal["lt", "le", "gt", "ge"]
+
+_COMPARE: dict[Comparison, Callable[[Any, Any], bool]] = {
+    "lt": operator.lt,
+    "le": operator.le,
+    "gt": operator.gt,
+    "ge": operator.ge,
+}
+
+
+@dataclass(frozen=True)
+class Invariant:
+    """A cross-field rule a model must satisfy: ``<lhs> <op> <rhs>`` over two of
+    its fields, else ``error``. Declared as data (``ThrsValues.invariants``) so
+    the model validates it and the API contract can state it."""
+
+    lhs: str
+    op: Comparison
+    rhs: str
+    error: str
+
+    def holds(self, model: BaseModel) -> bool:
+        return _COMPARE[self.op](getattr(model, self.lhs), getattr(model, self.rhs))
 
 
 class ThrsValues(BaseModel):
@@ -22,6 +47,15 @@ class ThrsValues(BaseModel):
         validate_by_name=True,
         validate_assignment=True,
     )
+
+    invariants: ClassVar[tuple[Invariant, ...]] = ()
+
+    @model_validator(mode="after")
+    def _check_invariants(self) -> Self:
+        for invariant in type(self).invariants:
+            if not invariant.holds(self):
+                raise ValueError(invariant.error)
+        return self
 
     @classmethod
     def zero(cls) -> Self:

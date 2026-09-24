@@ -1,8 +1,10 @@
 import contextlib
+import json
 import logging
 from datetime import datetime, timedelta
 
 from aiomqtt import Client as MqttClient
+from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -205,6 +207,24 @@ class LockstepCmd(BaseSettings):
                 await runtime.start()
 
 
+class AsyncApiCmd(BaseModel):
+    """Print the THRS AsyncAPI document, including the x-mqtt-graphql extension.
+
+    The MQTT topic prefixes and suffixes stay address parameters, filled in
+    from the environment by the document's consumer."""
+
+    title: str = "THRS Control"
+    version: str = "1.0.0"
+
+    def cli_cmd(self) -> None:
+        # Spec generation walks every module description; keep it off the
+        # import path of the runtime commands.
+        from thrs.spec import build_thrs_spec  # noqa: PLC0415
+
+        spec = build_thrs_spec(title=self.title, version=self.version)
+        print(json.dumps(spec, indent=2))  # noqa: T201
+
+
 class ThrsCli(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -216,6 +236,7 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     lockstep: CliSubCommand[LockstepCmd]
     simulation: CliSubCommand[SimulationCmd]
     control: CliSubCommand[ControlCmd]
+    print_asyncapi: CliSubCommand[AsyncApiCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()

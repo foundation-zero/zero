@@ -9,7 +9,7 @@ from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
-from thrs.input_output.base import Stamped
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.simulation import (
     AdsorptionChiller,
     Boundary,
@@ -378,6 +378,18 @@ class Mode:
 
 def lookup_mode(mode_name: ModeName) -> Mode:
     return next(m for m in MODES if m.name == mode_name)
+
+
+def simulation_io_classes() -> dict[str, tuple[type[ThrsValues], type[ThrsValues]]]:
+    """Per simulation mode, the classes of the inputs and outputs it publishes."""
+    return {
+        mode.name: (
+            type(mode.simulation_description.simulation_inputs),
+            mode.simulation_description.simulation_outputs_cls,
+        )
+        for mode in MODES
+        if mode.simulation_description is not None
+    }
 
 
 MODES: list[Mode] = [

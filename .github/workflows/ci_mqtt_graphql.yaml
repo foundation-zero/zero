@@ -56,6 +56,9 @@ jobs:
       - name: Sync hull-temperature
         run: uv sync --locked
         working-directory: zero-hull-temperature
+      - name: Sync thrs-control
+        run: uv sync --locked
+        working-directory: zero-thrs-control
       - name: Sync atpx-nmea
         run: uv sync --locked
         working-directory: zero-atpx-nmea
