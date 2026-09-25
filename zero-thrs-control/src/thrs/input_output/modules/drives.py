@@ -14,7 +14,7 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.sensor_values import AmcsModeSensorValues
+from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
 class DrivesSensorValues(AmcsModeSensorValues):
@@ -219,7 +219,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
         )
 
 
-class DrivesControlValues(ThrsValues):
+class DrivesControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

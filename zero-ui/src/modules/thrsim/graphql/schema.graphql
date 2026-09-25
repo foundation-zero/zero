@@ -32,6 +32,7 @@ type AdsorptionControlModeType {
 }
 
 type AdsorptionControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   adsorptionFlowcontrolWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-03", componentType: "valve", valveType: "flowcontrol")
   adsorptionMixHot: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-02", componentType: "valve", valveType: "mix")
   adsorptionMixWaste: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-01", componentType: "valve", valveType: "mix")
@@ -122,6 +123,10 @@ input AmcsControlModeInputType {
   mode: ControlMode!
 }
 
+input AmcsExternalAvailableInputType {
+  since: Float!
+}
+
 type BoolStampedType {
   value: Boolean!
   timestamp: DateTime!
@@ -137,6 +142,7 @@ type ConsumersControlModeType {
 }
 
 type ConsumersControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   consumersFlowcontrolAdsorption: ControlValveType! @jsonSchemaDirective(yardTag: "50001061", componentType: "valve", valveType: "flowcontrol")
   consumersFlowcontrolBypass: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-01", componentType: "valve", valveType: "flowcontrol")
   consumersFlowcontrolDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001065-01", componentType: "valve", valveType: "flowcontrol")
@@ -298,6 +304,7 @@ type DcControlModeType {
 }
 
 type DcControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcPumpAft: ControlPumpType! @jsonSchemaDirective(yardTag: "50001020", componentType: "pump", valveType: null)
   dcPumpFwd: ControlPumpType! @jsonSchemaDirective(yardTag: "50001025", componentType: "pump", valveType: null)
   dcPumpUgrid: ControlPumpType! @jsonSchemaDirective(yardTag: "50001023", componentType: "pump", valveType: null)
@@ -438,6 +445,7 @@ type DhwControlModeType {
 }
 
 type DhwControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dhwPump: ControlPumpType! @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
   dhwHeatpump: ControlHeatPumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
   dhwFlowcontrolDc: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-03", componentType: "valve", valveType: "flowcontrol")
@@ -629,6 +637,7 @@ type DrivesControlModeType {
 }
 
 type DrivesControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   drivesPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "50001028", componentType: "pump", valveType: null)
   drivesPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "50001029", componentType: "pump", valveType: null)
   drivesMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001046-01", componentType: "valve", valveType: "mix")
@@ -825,6 +834,7 @@ type Mutation {
   thrustersParameterSetFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
   thrustersParameterSetAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
   thrustersParameterSetFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): ThrustersControlValuesType!
   thrustersControlSetThrustersPump1(value: PumpInputType!): ThrustersControlValuesType!
   thrustersControlSetThrustersPump2(value: PumpInputType!): ThrustersControlValuesType!
   thrustersControlSetThrustersMixRecovery(value: ValveInputType!): ThrustersControlValuesType!
@@ -850,6 +860,7 @@ type Mutation {
   pvtParameterSetMainFwdPumpTuning(value: [Float!]!): PvtParametersType!
   pvtParameterSetMainAftPumpTuning(value: [Float!]!): PvtParametersType!
   pvtParameterSetOwnersPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): PvtControlValuesType!
   pvtControlSetPvtPumpMainFwd(value: PumpInputType!): PvtControlValuesType!
   pvtControlSetPvtPumpMainAft(value: PumpInputType!): PvtControlValuesType!
   pvtControlSetPvtPumpOwners(value: PumpInputType!): PvtControlValuesType!
@@ -872,6 +883,7 @@ type Mutation {
   pcmParameterSetModule2FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule3FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule4FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  pcmControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): PcmControlValuesType!
   pcmControlSetPcmPump(value: PumpInputType!): PcmControlValuesType!
   pcmControlSetPcmSwitchChargingReturn(value: ValveInputType!): PcmControlValuesType!
   pcmControlSetPcmFlowcontrolModule1(value: ValveInputType!): PcmControlValuesType!
@@ -896,6 +908,7 @@ type Mutation {
   adsorptionParameterSetRecoveryTuning(value: [Float!]!): AdsorptionParametersType!
   adsorptionParameterSetWasteCoolingTuning(value: [Float!]!): AdsorptionParametersType!
   adsorptionParameterSetFreeCoolingEnabled(value: Boolean!): AdsorptionParametersType!
+  adsorptionControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): AdsorptionControlValuesType!
   adsorptionControlSetAdsorptionFlowcontrolWaste(value: ValveInputType!): AdsorptionControlValuesType!
   adsorptionControlSetAdsorptionMixHot(value: ValveInputType!): AdsorptionControlValuesType!
   adsorptionControlSetAdsorptionMixWaste(value: ValveInputType!): AdsorptionControlValuesType!
@@ -909,6 +922,7 @@ type Mutation {
   consumersParameterSetDhwFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
   consumersParameterSetBypassFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
   consumersParameterSetAdsorptionFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  consumersControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersFlowcontrolAdsorption(value: ValveInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersFlowcontrolBypass(value: ValveInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersFlowcontrolDhw(value: ValveInputType!): ConsumersControlValuesType!
@@ -929,6 +943,7 @@ type Mutation {
   dcParameterSetBrightloopsFwdPumpTuning(value: [Float!]!): DcParametersType!
   dcParameterSetBrightloopsAftPumpTuning(value: [Float!]!): DcParametersType!
   dcParameterSetUgridsPumpTuning(value: [Float!]!): DcParametersType!
+  dcControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): DcControlValuesType!
   dcControlSetDcPumpAft(value: PumpInputType!): DcControlValuesType!
   dcControlSetDcPumpFwd(value: PumpInputType!): DcControlValuesType!
   dcControlSetDcPumpUgrid(value: PumpInputType!): DcControlValuesType!
@@ -972,6 +987,7 @@ type Mutation {
   dhwParameterSetPumpFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDcFlowTuning(value: [Float!]!): DhwParametersType!
   dhwParameterSetDrivesFlowTuning(value: [Float!]!): DhwParametersType!
+  dhwControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): DhwControlValuesType!
   dhwControlSetDhwPump(value: PumpInputType!): DhwControlValuesType!
   dhwControlSetDhwHeatpump(value: HeatPumpInputType!): DhwControlValuesType!
   dhwControlSetDhwFlowcontrolDc(value: ValveInputType!): DhwControlValuesType!
@@ -1002,6 +1018,7 @@ type Mutation {
   drivesParameterSetHeatDumpTuning(value: [Float!]!): DrivesParametersType!
   drivesParameterSetAftFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
   drivesParameterSetFwdFlowBalanceTuning(value: [Float!]!): DrivesParametersType!
+  drivesControlSetExternalAvailable(value: AmcsExternalAvailableInputType!): DrivesControlValuesType!
   drivesControlSetDrivesPump1(value: PumpInputType!): DrivesControlValuesType!
   drivesControlSetDrivesPump2(value: PumpInputType!): DrivesControlValuesType!
   drivesControlSetDrivesMixExchanger(value: ValveInputType!): DrivesControlValuesType!
@@ -1149,6 +1166,7 @@ type PcmControlModeType {
 }
 
 type PcmControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   pcmPump: ControlPumpType! @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
   pcmSwitchChargingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001062-02", componentType: "valve", valveType: "switch")
   pcmFlowcontrolModule1: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-04", componentType: "valve", valveType: "flowcontrol")
@@ -1290,6 +1308,7 @@ type PvtControlModeType {
 }
 
 type PvtControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   pvtPumpMainFwd: ControlPumpType! @jsonSchemaDirective(yardTag: "50001018", componentType: "pump", valveType: null)
   pvtPumpMainAft: ControlPumpType! @jsonSchemaDirective(yardTag: "50001019", componentType: "pump", valveType: null)
   pvtPumpOwners: ControlPumpType! @jsonSchemaDirective(yardTag: "50001021", componentType: "pump", valveType: null)
@@ -1661,6 +1680,10 @@ type SystemAmcsControlModeType {
   mode: ControlModeStampedType!
 }
 
+type SystemAmcsExternalAvailableType {
+  since: FloatStampedType!
+}
+
 enum TankControlMode {
   NONE
   BOTH
@@ -1783,6 +1806,7 @@ type ThrustersControlModeType {
 }
 
 type ThrustersControlValuesType {
+  externalAvailable: SystemAmcsExternalAvailableType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   thrustersPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
   thrustersPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "50001195", componentType: "pump", valveType: null)
   thrustersMixRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001074", componentType: "valve", valveType: "mix")

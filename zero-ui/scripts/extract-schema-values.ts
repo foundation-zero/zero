@@ -111,12 +111,13 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 
-const CONTROL_TYPE_MAP: Record<string, string> = {
+const CONTROL_TYPE_MAP: Record<string, string | null> = {
   ControlPcmType: "Pcm",
   ControlPumpType: "Pump",
   ControlValveType: "Valve",
   ControlHeatPumpType: "Heatpump",
   ControlAdsorptionChillerType: "AdsorptionChiller",
+  SystemAmcsExternalAvailableType: null,
 };
 
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
@@ -281,6 +282,11 @@ function processControlField(
   };
 
   const componentType = inferControlComponentType(fieldType);
+
+  if (componentType === null) {
+    return null;
+  }
+
   if (componentType) {
     entry.componentType = componentType;
   }
