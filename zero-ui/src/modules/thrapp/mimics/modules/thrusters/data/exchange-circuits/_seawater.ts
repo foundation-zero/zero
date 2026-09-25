@@ -1,7 +1,7 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
@@ -11,21 +11,8 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Seawater",
   },
   parameters: {},
-  source: getCustomField("thrusters", { technicalName: "thrusters-seawater-loop" }),
-  sensors: {
-    flow: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowAft"),
-    incoming: getField(
-      SensorComponentType.Temperature,
-      "thrusters",
-      "thrustersTemperatureRecoveryMix",
-    ),
-    outgoing: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
-    heatExchanger: getField(
-      SensorComponentType.HeatExchanger,
-      "thrusters",
-      "thrustersSeawaterExchanger",
-    ),
-  },
+  source: getField(SensorComponentType.HeatTransferDevice, "thrusters", "placeholder"),
+  sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
       title: "Seawater",

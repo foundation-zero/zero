@@ -7,10 +7,7 @@ from thrs.graphql.base import (
     add_control_mutations,
     add_parameter_mutations,
 )
-from thrs.graphql.helpers import (
-    empty_pydantic_type_to_strawberry_type,
-    pydantic_to_strawberry_type,
-)
+from thrs.graphql.helpers import pydantic_to_strawberry_type
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 
 PcmSensorValuesType = pydantic_to_strawberry_type(
@@ -19,7 +16,7 @@ PcmSensorValuesType = pydantic_to_strawberry_type(
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
-PcmControllerStateType = empty_pydantic_type_to_strawberry_type(PcmControllerState)
+PcmControllerStateType = pydantic_to_strawberry_type(PcmControllerState)
 
 PcmModule = ControlModule[
     PcmSensorValuesType,

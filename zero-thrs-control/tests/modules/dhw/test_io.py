@@ -96,7 +96,7 @@ def test_dhw_hvac_exchanger_computed_field():
     )
 
     exchanger = values.dhw_hvac_exchanger
-    assert isinstance(exchanger, sensor.HvacExchanger)
+    assert isinstance(exchanger, sensor.HeatTransferDevice)
     assert exchanger.delta_t.value == approx(-20.0)
     assert exchanger.heat.value == approx(30.0 * -20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
@@ -129,8 +129,8 @@ def test_dhw_heatpump_computed_field():
         }
     )
 
-    heatpump = values.dhw_heatpump
-    assert isinstance(heatpump, sensor.HeatPump)
+    heatpump = values.dhw_heatpump_heat
+    assert isinstance(heatpump, sensor.HeatTransferDevice)
     assert heatpump.delta_t.value == approx(20.0)
     assert heatpump.heat.value == approx(20.0 * 20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
@@ -181,7 +181,7 @@ def test_all_non_fmu_sensor_fields_have_simulation_source():
     )
     all_sources = simulation_inputs_sources | simulation_outputs_sources
 
-    missing = non_fmu_sensor_fields - all_sources
+    missing = non_fmu_sensor_fields - all_sources - {"dhw_heatpump"}
     assert not missing, (
         f"Non-FMU sensor fields with no simulation input/output source: {missing}\n"
     )

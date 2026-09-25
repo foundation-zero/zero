@@ -1,6 +1,6 @@
 import { toUpperCamelCase } from "@/modules/common/lib/utils";
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
-import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
+import { THRS_YARDTAG_PREFIX_REGEX, ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { PickKeys, SchemaDefinition, SensorComponentType } from "@/modules/thrsim/types";
 import { kebabCase } from "lodash";
 import {
@@ -10,8 +10,6 @@ import {
   isSensorField,
   ModuleField,
 } from "../providers";
-
-const THRS_YARDTAG_PREFIX_REGEX = /^5000/;
 
 export const fieldTooltip = <
   Type extends SensorComponentType | "custom",

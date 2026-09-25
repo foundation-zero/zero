@@ -1,7 +1,7 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
@@ -12,16 +12,8 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "dhw",
   },
   parameters: {},
-  source: getCustomField("dhw", {
-    title: "Domestic hot water",
-    technicalName: "dhw",
-  }),
-  sensors: {
-    flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
-    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
-    outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwConsumersExchanger"),
-  },
+  source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwConsumersExchanger"),
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

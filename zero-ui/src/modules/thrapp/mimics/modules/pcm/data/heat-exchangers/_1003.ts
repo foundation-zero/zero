@@ -13,25 +13,16 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   custom: {
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
-    get exchangeCircuit() {
-      return PCM_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].adsorption.sensors;
-    },
+    exchangeCircuit:
+      PCM_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].adsorption.source,
   },
-  source: getField(SensorComponentType.HeatExchanger, "consumers", "consumersAdsorptionExchanger"),
+  source: getField(
+    SensorComponentType.HeatTransferDevice,
+    "consumers",
+    "consumersAdsorptionExchanger",
+  ),
   parameters: {},
-  sensors: {
-    incoming: getField(
-      SensorComponentType.Temperature,
-      "consumers",
-      "consumersTemperatureAdsorptionSupply",
-    ),
-    outgoing: getField(
-      SensorComponentType.Temperature,
-      "consumers",
-      "consumersTemperatureAdsorptionReturn",
-    ),
-    flow: getField(SensorComponentType.Flow, "consumers", "consumersFlowAdsorption"),
-  },
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

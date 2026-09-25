@@ -1,4 +1,4 @@
-import { stamp } from "@/modules/common/lib/utils";
+import { stamp, stampWithSource } from "@/modules/common/lib/utils";
 import { Stamped } from "@/modules/common/types";
 import {
   AmcsControlMode,
@@ -95,24 +95,6 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
-    const chargingState = useRandomizedState([
-      PcmChargingState.Charging,
-      PcmChargingState.Discharging,
-      PcmChargingState.Idle,
-    ]);
-    const heat = useRandomizedNumber(-7000, 7000);
-    const charge = useRandomizedNumber(0, 100);
-    const deltaT = useRandomizedNumber(-20, 20);
-    return computed(() => ({
-      charged: stamp(charged),
-      chargingState: stamp(chargingState),
-      heat: stamp(heat),
-      charge: stamp(charge),
-      deltaT: stamp(deltaT),
-    }));
-  },
-  [SensorComponentType.PcmInput]: () => {
-    const charged = useRandomizedBoolean();
     return computed(() => ({ charged: stamp(charged) }));
   },
   [SensorComponentType.Pcs]: () => {
@@ -153,25 +135,28 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const positionAbs = useRandomizedDegree();
     return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
   },
-  [SensorComponentType.HeatExchanger]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
+  [SensorComponentType.HeatTransferDevice]: () => {
+    const temperatureSupply = useRandomizedNumber(20, 100);
+    const temperatureReturn = useRandomizedNumber(20, 100);
+
+    const deltaT = computed(() => temperatureReturn.value - temperatureSupply.value);
+    const flow = useRandomizedNumber(0, 10);
     const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
-  },
-  [SensorComponentType.HvacExchanger]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    return computed(() => ({
+      temperatureSupply: stampWithSource(temperatureSupply, "mock"),
+      temperatureReturn: stampWithSource(temperatureReturn, "mock"),
+      deltaT: stamp(deltaT),
+      flow: stampWithSource(flow, "mock"),
+      heat: stamp(heat),
+    }));
   },
   [SensorComponentType.HeatPump]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    const on = useRandomizedBoolean();
+    return computed(() => ({ on: stamp(on) }));
   },
   [SensorComponentType.Pvt]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({ power: stamp(power) }));
   },
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
@@ -287,6 +272,21 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
       enabled: stamp(enabled),
       tuning: stamp(tuning),
       components: stamp(components),
+    }));
+  },
+
+  [ControllerStateComponentType.PcmChargeController]: () => {
+    const charged = useRandomizedBoolean();
+    const chargingState = useRandomizedState([
+      PcmChargingState.Charging,
+      PcmChargingState.Discharging,
+      PcmChargingState.Idle,
+    ]);
+    const charge = useRandomizedRatio();
+    return computed(() => ({
+      charged: stamp(charged),
+      chargingState: stamp(chargingState),
+      charge: stamp(charge),
     }));
   },
 };

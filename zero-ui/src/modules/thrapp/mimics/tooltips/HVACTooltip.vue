@@ -47,10 +47,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
           </template>
         </Partials.ListItem>
       </SensorValue>
-      <Circuit
-        v-bind="sensors"
-        :delta-t="source"
-      />
+      <Circuit :source="source" />
     </TooltipList>
   </MimicTooltip>
 </template>

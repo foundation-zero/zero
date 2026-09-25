@@ -11,7 +11,7 @@ const value = getFieldValue(toRef(props, "value"));
 const state = computed<ChargeState | undefined>(() => {
   if (value.value === undefined) return undefined;
   else if (value.value <= 0) return ChargeState.Empty;
-  else if (value.value >= 100) return ChargeState.Full;
+  else if (value.value >= 1.0) return ChargeState.Full;
   else return ChargeState.HalfFull;
 });
 </script>

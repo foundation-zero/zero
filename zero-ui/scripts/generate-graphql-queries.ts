@@ -102,7 +102,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "components",
     ],
     DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill", "timeToHot"],
-    PvtController: ["mode"],
+    PcmChargeController: ["charge", "chargingState"],
   },
 
   // Sensor component fields
@@ -115,14 +115,12 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Valve: ["positionRel", "positionAbs"],
     Thruster: ["active"],
     Pcs: ["mode"],
-    Pcm: ["charged", "heat", "deltaT", "chargingState"],
-    PcmInput: ["charged"],
+    Pcm: ["charged"],
+    Pvt: ["power"],
+    HeatPump: ["on"],
     Level: ["level"],
     LevelSwitch: ["empty"],
-    HeatExchanger: ["heat", "deltaT"],
-    HvacExchanger: ["heat", "deltaT"],
-    HeatPump: ["heat", "deltaT"],
-    Pvt: ["heat", "deltaT"],
+    HeatTransferDevice: ["temperatureSupply", "temperatureReturn", "flow", "heat", "deltaT"],
     CalculatedFlow: ["flow"],
     AdsorptionChiller: ["operating", "noError", "freeCooling"],
     Brightloop: ["active"],
@@ -158,6 +156,10 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Disabled: [],
     Tuning: [],
   },
+};
+
+const WITH_SOURCE_MAPPING: Record<string, string[]> = {
+  HeatTransferDevice: ["temperatureSupply", "temperatureReturn", "flow"],
 };
 
 // ============================================================================
@@ -270,8 +272,20 @@ function generateFieldQuery(fieldName: string, fieldDef: FieldDefinition): strin
     return `  ${fieldName}`;
   }
 
-  // Components with no defined fields get default structure
+  if (WITH_SOURCE_MAPPING[componentType]) {
+    const nestedFields = componentFields
+      .map((field) =>
+        WITH_SOURCE_MAPPING[componentType].includes(field)
+          ? `    ${field} { value timestamp source }`
+          : `    ${field} { value timestamp }`,
+      )
+      .join("\n");
+
+    return `  ${fieldName} {\n${nestedFields}\n  }`;
+  }
+
   if (componentFields.length === 0) {
+    // Components with no defined fields get default structure
     return `  ${fieldName} { value timestamp }`;
   }
 

@@ -6,6 +6,7 @@ from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     Stamped,
+    StampedWithSource,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -15,8 +16,11 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
+    DeltaT,
+    LMin,
     OptionalCelsius,
     PcsMode,
+    Watt,
 )
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
@@ -113,6 +117,30 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="15001001",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def thrusters_thruster_aft_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.thrusters_temperature_supply.temperature,
+            temperature_return=self.thrusters_temperature_aft.temperature,
+            flow=self.thrusters_flow_aft.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_aft"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_aft"),
+        )
+
     thrusters_thruster_fwd: Annotated[
         sensor.Thruster,
         component_meta(
@@ -124,6 +152,30 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     ] = sensor.Thruster(  # TODO: Remove default
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="15001002",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def thrusters_thruster_fwd_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.thrusters_temperature_supply.temperature,
+            temperature_return=self.thrusters_temperature_fwd.temperature,
+            flow=self.thrusters_flow_fwd.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_fwd"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_fwd"),
+        )
+
     thrusters_pcs: Annotated[
         sensor.Pcs,
         component_meta(
@@ -201,18 +253,30 @@ class ThrustersSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            yard_tag="50001001", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001001", component_type="heat_transfer", included_in_fmu=False
         )
     )
     @property
-    def thrusters_seawater_exchanger(self) -> sensor.HeatExchanger:
-        temperature_supply = self.thrusters_temperature_pre_cooler.temperature
-        temperature_return = self.thrusters_temperature_supply.temperature
-        flow = self.thrusters_flow.flow
+    def thrusters_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        temperature_supply = StampedWithSource.from_stamped(
+            self.thrusters_temperature_pre_cooler.temperature,
+            sensor.extract_source_yardtag(self, "thrusters_temperature_pre_cooler"),
+        )
+        temperature_return = StampedWithSource.from_stamped(
+            self.thrusters_temperature_supply.temperature,
+            sensor.extract_source_yardtag(self, "thrusters_temperature_supply"),
+        )
         exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
+        thrusters_flow = self.thrusters_flow.flow
+        actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
+            thrusters_flow,
+            exchange_mix_ration,
+            value=thrusters_flow.value * (1 - exchange_mix_ration.value),
+            source="calculated",
+        )
 
         # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
-        delta_t = Stamped.combine(
+        delta_t: Stamped[DeltaT | None] = Stamped.combine(
             temperature_supply,
             temperature_return,
             value=(
@@ -228,12 +292,12 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             else 0.0,
         )
 
-        # We don't use above delta_t because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
-        heat = Stamped.combine(
+        # We don't use above delta_t and actual flow because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
+        heat: Stamped[Watt | None] = Stamped.combine(
             temperature_return,
             temperature_supply,
-            flow,
-            value=flow.value
+            thrusters_flow,
+            value=thrusters_flow.value
             * (
                 (temperature_return.value - temperature_supply.value)
                 if temperature_supply.value
@@ -242,7 +306,13 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             * WATER_HEAT_TRANSFER_CONVERSION,
         )
 
-        return sensor.HeatExchanger(delta_t=delta_t, heat=heat)
+        return sensor.HeatTransferDevice(
+            temperature_supply=temperature_supply,
+            temperature_return=temperature_return,  # type: ignore
+            delta_t=delta_t,
+            flow=actual_flow,
+            heat=heat,
+        )
 
 
 class ThrustersControlValues(AmcsWatchdogControlValues):

@@ -1,32 +1,19 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from "..";
-import { isField, isSensorField, ModuleField, SensorValue } from "../../providers";
+import { ModuleField, SensorValue } from "../../providers";
 import * as Partials from "./";
 
 const { items, sources } = useTranslations();
 
 defineProps<{
-  deltaT: ModuleField<
-    | SensorComponentType.HeatExchanger
-    | SensorComponentType.HvacExchanger
-    | SensorComponentType.HeatPump
-    | SensorComponentType.Pvt
-  >;
-  incoming: ModuleField<
-    SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature
-  >;
-  outgoing: ModuleField<
-    SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature
-  >;
-  flow?: ModuleField<SensorComponentType.Flow | SensorComponentType.CalculatedFlow>;
+  source: ModuleField<SensorComponentType.HeatTransferDevice>;
 }>();
 </script>
 
 <template>
   <SensorValue
-    v-if="isField(deltaT)"
-    :source="deltaT"
+    :source="source"
     field="deltaT"
   >
     <Partials.ListItem>
@@ -37,34 +24,27 @@ defineProps<{
     </Partials.ListItem>
   </SensorValue>
   <SensorValue
-    :source="incoming"
-    field="temperature"
+    :source="source"
+    field="temperatureSupply"
   >
     <Partials.ListItem size="sm">
       {{ items("incomingTemperature") }}
     </Partials.ListItem>
   </SensorValue>
   <SensorValue
-    :source="outgoing"
-    field="temperature"
+    :source="source"
+    field="temperatureReturn"
   >
     <Partials.ListItem size="sm">
       {{ items("outgoingTemperature") }}
     </Partials.ListItem>
   </SensorValue>
   <SensorValue
-    v-if="isField(flow)"
-    :source="flow"
+    :source="source"
     field="flow"
   >
     <Partials.ListItem>
       {{ items("flow") }}
-      <template
-        v-if="isSensorField(flow, SensorComponentType.CalculatedFlow)"
-        #sourceName
-      >
-        {{ sources("calculated") }}
-      </template>
     </Partials.ListItem>
   </SensorValue>
 </template>

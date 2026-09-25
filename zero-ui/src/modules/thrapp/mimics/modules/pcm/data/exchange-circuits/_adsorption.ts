@@ -1,7 +1,7 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
@@ -12,28 +12,8 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     modeModule: "adsorption",
   },
   parameters: {},
-  source: getCustomField("pcm", {
-    title: "Adsorption",
-    technicalName: "adsorption",
-  }),
-  sensors: {
-    flow: getField(SensorComponentType.Flow, "adsorption", "adsorptionFlowHt"),
-    incoming: getField(
-      SensorComponentType.Temperature,
-      "adsorption",
-      "adsorptionTemperatureHtReturn",
-    ),
-    outgoing: getField(
-      SensorComponentType.Temperature,
-      "adsorption",
-      "adsorptionTemperatureHtSupply",
-    ),
-    heatExchanger: getField(
-      SensorComponentType.HeatExchanger,
-      "adsorption",
-      "adsorptionHtExchanger",
-    ),
-  },
+  source: getField(SensorComponentType.HeatTransferDevice, "adsorption", "adsorptionHtExchanger"),
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

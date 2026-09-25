@@ -1,15 +1,20 @@
 import { getField, ModuleField } from "@/modules/thrapp/mimics/providers";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { fieldTooltip } from "../../../shared";
 
-const createHeatBattery = (title: string, source: ModuleField<SensorComponentType.Pcm>) =>
+const createHeatBattery = (
+  title: string,
+  source: ModuleField<SensorComponentType.Pcm>,
+  heatExchanger: ModuleField<SensorComponentType.HeatTransferDevice>,
+  controller: ModuleField<ControllerStateComponentType.PcmChargeController>,
+) =>
   toInstance<MimicComponentType.Pcm>({
     source,
-    sensors: {},
+    sensors: { heatTransfer: heatExchanger },
     controls: {},
-    controllerState: {},
+    controllerState: { chargeController: controller },
     parameters: {},
     custom: {},
     get tooltip() {
@@ -24,19 +29,27 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
   [MimicComponentType.Pcm]: {
     "1049": createHeatBattery(
       "Heat battery 1",
-      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule1"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmModule1"),
+      getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule1"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module1ChargeController"),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
-      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule2"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmModule2"),
+      getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule2"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module2ChargeController"),
     ),
     "1051": createHeatBattery(
       "Heat battery 3",
-      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule3"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmModule3"),
+      getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule3"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module3ChargeController"),
     ),
     "1052": createHeatBattery(
       "Heat battery 4",
-      getField(SensorComponentType.Pcm, "pcm", "pcmHeatModule4"),
+      getField(SensorComponentType.Pcm, "pcm", "pcmModule4"),
+      getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule4"),
+      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module4ChargeController"),
     ),
   },
 });

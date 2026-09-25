@@ -9,7 +9,7 @@ import { ModuleField } from "../providers";
 defineProps<
   MimicComponentInstanceProps &
     LabelProps & {
-      heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
+      heatExchanger: ModuleField<SensorComponentType.HeatTransferDevice>;
     }
 >();
 </script>

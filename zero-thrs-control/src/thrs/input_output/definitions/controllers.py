@@ -1,5 +1,18 @@
+from enum import Enum
+
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.units import Seconds, TankState
+from thrs.input_output.definitions.units import Celsius, Ratio, Seconds, TankState, Watt
+
+
+class PcmChargingState(Enum):
+    IDLE = "idle"
+    CHARGING = "charging"
+    DISCHARGING = "discharging"
+
+
+PCM_CHARGING_DEADBAND: Watt = 100
+PCM_CHARGE_FULL_TEMP: Celsius = 51  # TODO
+PCM_CHARGE_EMPTY_TEMP: Celsius = 51  # TODO
 
 
 class PidControllerValues(
@@ -22,4 +35,13 @@ class TanksControllerValues(ThrsValues):
     time_to_hot: Stamped[Seconds | None]
 
 
-__all__ = ["PidControllerValues", "TanksControllerValues"]
+class PcmChargeControllerValues(ThrsValues):
+    charge: Stamped[Ratio]
+    charging_state: Stamped[PcmChargingState]
+
+
+__all__ = [
+    "PcmChargeControllerValues",
+    "PidControllerValues",
+    "TanksControllerValues",
+]

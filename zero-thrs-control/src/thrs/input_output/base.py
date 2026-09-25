@@ -36,6 +36,10 @@ class ThrsValues(BaseModel):
                     return datetime.fromtimestamp(0, UTC)
                 return zero_for_unit(unit) if unit else 0.0
 
+            if issubclass(component, StampedWithSource):
+                return StampedWithSource.stamp(
+                    zero_for_unit(unit_for_annotation(component)), "initialization"
+                )
             if issubclass(component, Stamped):
                 return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
             if issubclass(component, ThrsValues):
@@ -95,6 +99,33 @@ class Stamped[T](ThrsValues):
         return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
 
 
+class StampedWithSource[T](Stamped[T]):
+    source: str
+
+    @staticmethod
+    def stamp[V](value: V, source: str) -> "StampedWithSource[V]":  # type: ignore
+        return StampedWithSource(
+            value=value, timestamp=datetime.now(UTC), source=source
+        )
+
+    @staticmethod
+    def from_stamped[V](original: Stamped[V], source: str) -> "StampedWithSource[V]":
+        if isinstance(original, StampedWithSource):
+            return original
+
+        return StampedWithSource(
+            value=original.value, timestamp=original.timestamp, source=source
+        )
+
+    @staticmethod
+    def combine[V](  # type: ignore
+        *stamped: "Stamped[Any]", value: V, source: str
+    ) -> "StampedWithSource[V]":
+        return StampedWithSource(
+            value=value, timestamp=min(s.timestamp for s in stamped), source=source
+        )
+
+
 def _factory[R, **P](
     cls: Callable[P, Any],
 ) -> Callable[[Callable[P, R]], Callable[P, R]]:
@@ -113,7 +144,7 @@ type BaseComponentType = Literal[
     "delta_t",
     "external_sensor",
     "flow_sensor",
-    "heat_exchanger",
+    "heat_transfer",
     "heatpump",
     "hvac_exchanger",
     "level_sensor",
@@ -131,6 +162,7 @@ type BaseComponentType = Literal[
     "ugrid",
     "tank_controller",
     "pid_controller",
+    "pvt",
 ]
 type SpecialComponentType = Literal["valve"]
 

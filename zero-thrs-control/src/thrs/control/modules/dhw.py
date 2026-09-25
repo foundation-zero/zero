@@ -579,7 +579,7 @@ class TanksController:
         sensor_values: DhwSensorValues, boosting_mode: str
     ) -> Watt | None:
         if boosting_mode == "boosting_heatpump":
-            heat = sensor_values.dhw_heatpump.heat.value
+            heat = sensor_values.dhw_heatpump_heat.heat.value
         elif boosting_mode == "boosting_high_temperature":
             heat = sensor_values.dhw_consumers_exchanger.heat.value
         else:
