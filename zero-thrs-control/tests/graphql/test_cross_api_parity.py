@@ -233,7 +233,7 @@ def _mqtt_graphql_sensor_query() -> str:
     # One combined row list; each row carries all leaves, matched by topic.
     all_keys = {leaf.mqtt_graphql_key for case in SENSOR_CASES for leaf in case.leaves}
     values = " ".join(f"{key} {{ value timestamp }}" for key in sorted(all_keys))
-    return f"{{ simulation500000ThrsThrusters {{ topic values {{ {values} }} }} }}"
+    return f"{{ {THRUSTERS_GROUP_FIELD} {{ topic values {{ {values} }} }} }}"
 
 
 def _assert_leaf_equal(
@@ -283,13 +283,13 @@ async def test_thrs_api_and_mqtt_graphql_agree_on_raw_sensor_fields(
         "did not validate; did every per-field topic get published?"
     )
 
-    rows = mqtt_graphql_data["simulation500000ThrsThrusters"]
+    rows = mqtt_graphql_data[THRUSTERS_GROUP_FIELD]
     rows_by_topic = {row["topic"]: row["values"] for row in rows}
 
     for case in SENSOR_CASES:
         topic = _mqtt_graphql_sensor_topic(case.topic_segment)
         assert topic in rows_by_topic, (
-            f"{case.name}: no row for topic {topic!r} in simulation500000ThrsThrusters "
+            f"{case.name}: no row for topic {topic!r} in {THRUSTERS_GROUP_FIELD} "
             f"(are the specs up to date?) "
             f"Rows: {sorted(rows_by_topic)!r}"
         )
@@ -366,8 +366,7 @@ async def test_thrs_api_and_mqtt_graphql_reject_out_of_bounds_sensor_values(
         "thrs-api sensorValues is null: the valid baseline model did not validate"
     )
     rows_by_topic = {
-        row["topic"]: row["values"]
-        for row in mqtt_graphql_data["simulation500000ThrsThrusters"]
+        row["topic"]: row["values"] for row in mqtt_graphql_data[THRUSTERS_GROUP_FIELD]
     }
 
     for case in OUT_OF_BOUNDS_CASES:
@@ -396,6 +395,13 @@ def _topic_query_field(topic: str) -> str:
     boundary, every other letter lowercased."""
     words = [w for w in re.split(r"[^0-9A-Za-z]+", topic) if w]
     return words[0].lower() + "".join(w[:1].upper() + w[1:].lower() for w in words[1:])
+
+
+# mqtt-graphql's field for the thrusters topic group (every per-field topic
+# under the devices prefix), one row per topic.
+THRUSTERS_GROUP_FIELD = _topic_query_field(
+    f"{MQTT_GRAPHQL_DEVICES_PREFIX}/{MODULE_PREFIX}"
+)
 
 
 THRUSTER_AFT_TOPIC = PartialMqttMapping(
