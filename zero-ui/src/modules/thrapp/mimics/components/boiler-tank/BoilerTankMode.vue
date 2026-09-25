@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
+import { useAdvisoryEnabled } from "@/modules/thrapp/state";
 import { BoilerTankState } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { DHW_TANK_MODE_MODES } from ".";
@@ -11,21 +12,18 @@ const props = withDefaults(defineProps<{ mode?: BoilerTankState; state?: MimicCo
   mode: BoilerTankState.Standby,
 });
 
-const mode = computed(() => {
-  if (props.state === MimicComponentState.Normal) {
-    return DHW_TANK_MODE_MODES[props.mode];
-  } else {
-    return DHW_TANK_MODE_MODES[props.state];
-  }
-});
+const badge_mode = computed(() => DHW_TANK_MODE_MODES[props.mode]);
 
 const t = tScoped("thrapp.mimics.boilerTank.modes");
+
+const isAdvisoryEnabled = useAdvisoryEnabled();
 </script>
 
 <template>
   <ModeBadge
-    :mode="mode"
-    :label="t(props.mode.toString())"
+    v-if="isAdvisoryEnabled && state === MimicComponentState.Normal"
+    :mode="badge_mode"
+    :label="t(mode)"
     :size="ModeBadgeSize.Tank"
   />
 </template>
