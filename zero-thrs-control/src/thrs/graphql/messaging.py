@@ -33,14 +33,14 @@ class ControlMessaging[
         self._channels = channels
 
     async def set_manual_control(self, name: str, value: Any) -> ControlValues:
-        control_values = self._channels.get_manual_values()
+        control_values = self._channels.get_actuated_control_values()
         if control_values is None:
             raise Exception("No control values available to modify")
 
         control_values = control_values.model_copy()
         setattr(control_values, name, value)
 
-        expect = self._channels.wait_for_manual_values(
+        expect = self._channels.wait_for_actuated_control_values(
             lambda v: getattr(v, name) == value, timeout_s=WAIT_TIMEOUT
         )
         await self._channels.send_manual_values(control_values)
