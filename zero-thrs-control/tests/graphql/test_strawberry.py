@@ -442,15 +442,6 @@ async def test_query_controller_state(app, test_client):
                                 tuning { value }
                                 components { value }
                             }
-                            dhwPumpTemperatureController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
                             dhwDrivesFlowController {
                                 setpoint { value }
                                 measurement { value }
@@ -642,15 +633,6 @@ async def test_query_controller_state(app, test_client):
                             "tuning": {"value": [0.0, 0.0, 0.0]},
                         },
                         "dhwPumpFlowController": {
-                            "components": {"value": [0.0, 0.0, 0.0]},
-                            "enabled": {"value": False},
-                            "error": {"value": None},
-                            "measurement": {"value": None},
-                            "output": {"value": None},
-                            "setpoint": {"value": 0.0},
-                            "tuning": {"value": [0.0, 0.0, 0.0]},
-                        },
-                        "dhwPumpTemperatureController": {
                             "components": {"value": [0.0, 0.0, 0.0]},
                             "enabled": {"value": False},
                             "error": {"value": None},

@@ -27,15 +27,5 @@ export const drivesFlowController: PIDController<SensorComponentType.Temperature
 export const pumpFlowController: PIDController<SensorComponentType.Flow> = {
   type: SensorComponentType.Flow,
   controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwPumpFlowController"),
-  setpoint: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
-};
-
-export const pumpTemperatureController: PIDController<SensorComponentType.Temperature> = {
-  type: SensorComponentType.Temperature,
-  controller: getField(
-    ControllerStateComponentType.PIDController,
-    "dhw",
-    "dhwPumpTemperatureController",
-  ),
-  setpoint: getField(ParametersType.Temperature, "dhw", "htBoostingTemperatureSetpoint"),
+  measurement: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
 };

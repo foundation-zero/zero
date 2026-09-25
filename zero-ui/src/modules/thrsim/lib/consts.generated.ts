@@ -899,9 +899,6 @@ export const DHW_CONTROLLER_STATE = toControllerStateDefinition({
   dhwPumpFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  dhwPumpTemperatureController: {
-    componentType: ControllerStateComponentType.PIDController,
-  },
   dhwDrivesFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
@@ -923,8 +920,8 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   heatpumpTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
   },
-  htBoostingTemperatureSetpoint: {
-    componentType: ParametersType.Temperature,
+  htBoostingFlowSetpoint: {
+    componentType: ParametersType.Flow,
   },
   minimumTankTemperature: {
     componentType: ParametersType.Temperature,
@@ -976,9 +973,6 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   },
   tank3Enabled: {
     componentType: ParametersType.Enabled,
-  },
-  pumpTemperatureTuning: {
-    componentType: ParametersType.Tuning,
   },
   pumpFlowTuning: {
     componentType: ParametersType.Tuning,
