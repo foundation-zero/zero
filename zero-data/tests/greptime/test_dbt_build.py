@@ -14,7 +14,7 @@ from zero_data.greptime.config import PROJECT_ROOT, SNAPSHOT_DIR, GreptimeConnec
 from zero_data.greptime.snapshot import load_snapshot
 
 DBT_DIR = PROJECT_ROOT / "dbt"
-PROOF_VIEW = "stg_marpower__150000_propulsion__pcs_fwd"
+PROOF_VIEW = "stg_marpower__power_tags"
 
 
 def _dbt_build() -> subprocess.CompletedProcess[str]:
@@ -63,8 +63,7 @@ def test_dbt_build_is_green_against_snapshot_seeded_greptime(
     )
     # each success is asserted by dbt log event type, not a text substring
     assert any(
-        "source_not_null_raw_marpower__150000_propulsion__pcs_fwd_timestamp" in msg
-        and "PASS" in msg
+        "source_not_null_raw_power_tags_timestamp" in msg and "PASS" in msg
         for msg in events.get("LogTestResult", [])
     )
     assert any(
@@ -86,10 +85,23 @@ def test_proof_view_is_queryable_with_explicit_columns(
 
     explicit_columns = [
         "ts",
-        "device_state",
-        "drive_thermal_state",
-        "command_register",
-        "azimuth_setpoint_not_reached",
+        "component",
+        "panel",
+        "consumer",
+        "source_type",
+        "active_power_total",
+        "power_factor_total",
+        "current_a",
+        "current_b",
+        "current_c",
+        "active_power_a",
+        "active_power_b",
+        "active_power_c",
+        "voltage_an",
+        "voltage_bn",
+        "voltage_cn",
+        "table",
+        "topic",
     ]
     views = Greptime(connection, "views")
     # Selecting the exact explicit columns proves the contract and cross-db resolution.
