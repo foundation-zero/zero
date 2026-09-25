@@ -71,6 +71,36 @@ spec:
               value: {{ .Values.listenPort | quote }}
             - name: DEFAULT_TTL_SECS
               value: {{ .Values.defaultTtlSecs | default 300 | quote }}
+            - name: STRICT_VALIDATION
+              value: {{ .Values.strictValidation | quote }}
+            - name: ENABLE_OPTIONAL_SENSOR_VALUES
+              value: {{ .Values.enableOptionalSensorValues | quote }}
+            - name: ENABLE_MUTATIONS
+              value: {{ .Values.enableMutations | quote }}
+            {{- with .Values.mqtt.devicesTopicPrefix }}
+            - name: MQTT_DEVICES_TOPIC_PREFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mqtt.controllerTopicPrefix }}
+            - name: MQTT_CONTROLLER_TOPIC_PREFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mqtt.simulatorTopicPrefix }}
+            - name: MQTT_SIMULATOR_TOPIC_PREFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mqtt.controlTopicSuffix }}
+            - name: MQTT_CONTROL_TOPIC_SUFFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mqtt.controllerTopicSuffix }}
+            - name: MQTT_CONTROLLER_TOPIC_SUFFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.mqtt.simulatorTopicSuffix }}
+            - name: MQTT_SIMULATOR_TOPIC_SUFFIX
+              value: {{ . | quote }}
+            {{- end }}
           ports:
             {{- if ne (.Values.command | default "serve") "listen" }}
             - name: http
