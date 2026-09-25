@@ -46,10 +46,13 @@ type_check:
     uv run pyright
 
 test *args:
-    uv run pytest -m "not io" {{ args }}
+    uv run pytest -m "not io and not migration" {{ args }}
 
 test_io *args:
     uv run pytest -m "io" {{ args }}
+
+test_migration *args:
+    uv run pytest -m "migration" {{ args }}
 
 format:
     uv run ruff format --check src tests
