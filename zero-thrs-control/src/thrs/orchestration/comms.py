@@ -572,14 +572,6 @@ class ControlApiChannels[
         )
         connector._register_listener(actuated_control_values_mapping)
 
-        manual_values_mapping = DirectMqttMapping[C].for_module(
-            module_description.control_values_cls,
-            config.mqtt_controller_topic_prefix,
-            module_name,
-            type_topic="manual-values",
-        )
-        connector._register_listener(manual_values_mapping)
-
         # We should not need to wrap here with SwitchingControlMode because it exposes SwitchingControlMode
         # which we should not have to know about here... This needs a refactor of how switching control is handled
         control_modes_mapping = DirectMqttMapping[SwitchingControlMode[M]].for_module(
@@ -636,11 +628,10 @@ class ControlApiChannels[
 
         self.get_sensor_values = sensor_values_mapping.result
         self.get_actuated_control_values = actuated_control_values_mapping.result
-        self.get_manual_values = manual_values_mapping.result
         self.get_control_modes = control_modes_mapping.result
         self.get_parameters = parameters_mapping.result
         self.get_controller_state = controller_state_mapping.result
-        self.wait_for_manual_values = manual_values_mapping.wait_for
+        self.wait_for_actuated_control_values = actuated_control_values_mapping.wait_for
         self.wait_for_parameters = parameters_mapping.wait_for
         self.wait_for_control_modes = control_modes_mapping.wait_for
 
