@@ -294,7 +294,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             flow_source=sensor.extract_source_yardtag(self, "dhw_flow_dc"),
         )
 
-    # TODO: Remove this if control does not use it
     dhw_heatpump: Annotated[
         sensor.Heatpump,
         component_meta(
@@ -333,12 +332,10 @@ class DhwSensorValues(AmcsModeSensorValues):
             )
         if sensor.valves_open_closed(closed_valves=[self.dhw_switch_heatpump]):
             return sensor.HeatTransferDevice.from_sensors(
-                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_supply=Stamped.stamp(None),
                 temperature_return=Stamped.stamp(None),
                 flow=Stamped.stamp(0.0),
-                temperature_supply_source=sensor.extract_source_yardtag(
-                    self, "dhw_temperature_drives_return"
-                ),
+                temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
             )
@@ -347,7 +344,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_return=Stamped.stamp(None),
             flow=Stamped.stamp(None),
             temperature_supply_source=sensor.extract_source_yardtag(
-                self, "dhw_temperature_drives_return"
+                self, "dhw_temperature_boosting_supply"
             ),
             temperature_return_source="unknown",
             flow_source="unknown",
@@ -403,12 +400,10 @@ class DhwSensorValues(AmcsModeSensorValues):
             )
         if sensor.valves_open_closed(closed_valves=[self.dhw_switch_high_temperature]):
             return sensor.HeatTransferDevice.from_sensors(
-                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_supply=Stamped.stamp(None),
                 temperature_return=Stamped.stamp(None),
                 flow=Stamped.stamp(0.0),
-                temperature_supply_source=sensor.extract_source_yardtag(
-                    self, "dhw_temperature_drives_return"
-                ),
+                temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
             )
@@ -417,7 +412,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_return=Stamped.stamp(None),
             flow=Stamped.stamp(None),
             temperature_supply_source=sensor.extract_source_yardtag(
-                self, "dhw_temperature_drives_return"
+                self, "dhw_temperature_boosting_supply"
             ),
             temperature_return_source="unknown",
             flow_source="unknown",
