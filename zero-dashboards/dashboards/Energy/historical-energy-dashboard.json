@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 58,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -332,10 +332,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tDAY,\r\n\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM (\r\n\tSELECT\r\n\t\tdate_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\tSUM(soc) AS total_soc\r\n\tFROM energy.electrical_soc_hourly\r\n\tGROUP BY hour\r\n)\r\nGROUP BY DAY\r\nORDER BY day",
+          "rawSql": "SELECT\r\n\tDAY,\r\n\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM (\r\n\tSELECT\r\n\t\tdate_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\tSUM(soc) AS total_soc\r\n\tFROM views.\r\n\tGROUP BY hour\r\n)\r\nGROUP BY DAY\r\nORDER BY day",
           "refId": "SoC",
           "sql": {
             "columns": [
@@ -807,9 +821,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\tSUM(energy) AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tSUM(energy_wh) AS energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "rawSql": "SELECT\r\n\tmain_group                                      AS group_name,\r\n\tsub_group                                       AS sub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\tSUM(energy)                                     AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -847,7 +875,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
@@ -1029,5 +1057,5 @@
   "timezone": "browser",
   "title": "Historical energy",
   "uid": "singel-historical-energy",
-  "version": 2
+  "version": 1
 }
