@@ -1006,23 +1006,6 @@ class PvtSimulationInputs(ThrsValues):
     pvt_seawater_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
-
-class PvtSimulationOutputs(ThrsValues):
-    pvt_pcm_return: simulation.Boundary
-    pvt_pcm_supply: simulation.FlowBoundary
-    pvt_seawater_return: simulation.TemperatureBoundary
-
-    @computed_field(
-        json_schema_extra=computed_meta(
-            included_in_fmu=False, component_type="temperature_sensor"
-        )
-    )
-    @property
-    def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
-        )
-
     @computed_field(
         json_schema_extra=computed_meta(
             included_in_fmu=False, component_type="pyranometer"
@@ -1040,3 +1023,20 @@ class PvtSimulationOutputs(ThrsValues):
     @property
     def pvt_pyranometer_sb(self) -> sensor.Pyranometer:
         return sensor.Pyranometer(irradiance=Stamped.stamp(0))
+
+
+class PvtSimulationOutputs(ThrsValues):
+    pvt_pcm_return: simulation.Boundary
+    pvt_pcm_supply: simulation.FlowBoundary
+    pvt_seawater_return: simulation.TemperatureBoundary
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="temperature_sensor"
+        )
+    )
+    @property
+    def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
+        )
