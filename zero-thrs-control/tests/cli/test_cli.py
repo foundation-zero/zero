@@ -25,7 +25,7 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
-from thrs.runtime.messages import SimulationStatusMessage
+from thrs.runtime.messages import SimulationStatus, SimulationStatusMessage
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runtime import Runtime
 
@@ -43,6 +43,17 @@ controls_client = pytest.fixture(_mqtt_client)
 runtime_client = pytest.fixture(_mqtt_client)
 test_client = pytest.fixture(_mqtt_client)
 status_client = pytest.fixture(_mqtt_client)
+
+
+async def wait_for_status(status_client: Client, status: SimulationStatus) -> None:
+    """Skip the running status that is republished every tick until the expected status arrives."""
+    async for message in status_client.messages:
+        if not isinstance(message.payload, str | bytes) or not message.payload:
+            continue
+        status_message = SimulationStatusMessage.model_validate_json(message.payload)
+        if status_message.status == status:
+            return
+    raise RuntimeError(f"Status messages ended before status '{status}'")
 
 
 def setup_lockstep(
@@ -150,25 +161,8 @@ async def test_simulation_run_start_stop(
             "{}",
             qos=1,
         )
-        paused = None
-        for _ in range(3):
-            logger.info("Waiting on message")
-            status_message = await anext(status_client.messages)
-            if not isinstance(status_message.payload, str | bytes):
-                continue
-            if not status_message.payload:
-                continue
-            with suppress(Exception):
-                if (
-                    SimulationStatusMessage.model_validate_json(
-                        status_message.payload
-                    ).status
-                    == "available"
-                ):
-                    paused = status_message
-                    break
-
-        assert paused is not None
+        logger.info("Waiting on message")
+        await wait_for_status(status_client, "available")
         amount_after_pause = len(test_client.messages)
         assert (
             amount_after_pause >= amount_before_pause
@@ -235,12 +229,7 @@ async def test_simulation_run_playback_rate(
             qos=1,
         )
         logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
+        await wait_for_status(status_client, "available")
 
         rate_1_count = 0
         while len(test_client.messages) != 0:
@@ -254,21 +243,8 @@ async def test_simulation_run_playback_rate(
             '{"playback_rate": 2}',
             qos=1,
         )
-        running = None
-        for _ in range(2):
-            logger.info("Waiting on message")
-            status_message = await anext(status_client.messages)
-            assert isinstance(status_message.payload, str | bytes)
-            if (
-                SimulationStatusMessage.model_validate_json(
-                    status_message.payload
-                ).status
-                == "running"
-            ):
-                running = status_message
-                break
-
-        assert running is not None
+        logger.info("Waiting on message")
+        await wait_for_status(status_client, "running")
         await sleep(2.6)
         await controls_client.publish(
             f"{settings.mqtt_simulator_topic_prefix}/pause",
@@ -276,12 +252,7 @@ async def test_simulation_run_playback_rate(
             qos=1,
         )
         logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
+        await wait_for_status(status_client, "available")
 
         rate_2_count = 0
         while len(test_client.messages) != 0:
@@ -464,25 +435,8 @@ async def test_simulation_controls_automated_control(
             "{}",
             qos=1,
         )
-        paused = None
-        for _ in range(3):
-            logger.info("Waiting on message")
-            status_message = await anext(status_client.messages)
-            if not isinstance(status_message.payload, str | bytes):
-                continue
-            if not status_message.payload:
-                continue
-            with suppress(Exception):
-                if (
-                    SimulationStatusMessage.model_validate_json(
-                        status_message.payload
-                    ).status
-                    == "available"
-                ):
-                    paused = status_message
-                    break
-
-        assert paused is not None
+        logger.info("Waiting on message")
+        await wait_for_status(status_client, "available")
 
         control_builder = PartialModelBuilder(
             ThrustersControlValues, validation_context=AMCS_WRITE_CONTEXT
