@@ -163,10 +163,17 @@ impl MemberSpec {
                 _ => None,
             })
             .collect();
+        let state_sections: Vec<(&str, &ObjectSectionDef)> = sections
+            .iter()
+            .filter_map(|section| match section {
+                SectionDef::Object(s) => Some((s.gql.as_str(), &s.section)),
+                _ => None,
+            })
+            .collect();
         let mutations = self
             .mutations
             .iter()
-            .map(|mutation| mutation.resolve(resolver, &object_sections))
+            .map(|mutation| mutation.resolve(resolver, &object_sections, &state_sections))
             .collect::<anyhow::Result<Vec<_>>>()?;
         Ok(MemberDef {
             gql: self.gql.clone(),

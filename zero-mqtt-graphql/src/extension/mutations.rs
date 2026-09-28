@@ -6,6 +6,7 @@ use serde::Deserialize;
 
 use super::{OperationRef, Resolver};
 use crate::model::mutations::{ConfirmDef, InputFieldDef, MutationDef, MutationKind};
+use crate::model::views::ObjectSectionDef;
 use crate::schema::Property;
 
 /// Input for a [`ConfirmDef`]; `operation` defaults to the state, `key` to the mutation's key.
@@ -32,6 +33,10 @@ pub struct MutationSpec {
     pub key: String,
     #[serde(default)]
     pub state: Option<OperationRef>,
+    /// `setComponent`: a per-topic `object` section of the member to assemble
+    /// the object from, instead of `state`.
+    #[serde(default)]
+    pub state_section: Option<String>,
     pub target: OperationRef,
     #[serde(default)]
     pub returns: Option<String>,
@@ -49,11 +54,13 @@ pub struct MutationSpec {
 
 impl MutationSpec {
     /// `sections` maps the member's `object` sections to type names; the returned section's type
-    /// supplies the argument and input shapes.
+    /// supplies the argument and input shapes. `state_sections` are the resolved per-topic ones
+    /// a `stateSection` may name.
     pub fn resolve(
         &self,
         resolver: &Resolver<'_>,
         sections: &[(&str, &str)],
+        state_sections: &[(&str, &ObjectSectionDef)],
     ) -> anyhow::Result<MutationDef> {
         let context = |what: &str| format!("mutation '{}' {what}", self.gql);
         let set_topic = self
@@ -70,6 +77,7 @@ impl MutationSpec {
             state: self.state.clone(),
             target: Some(self.target.clone()),
             state_topic: String::new(),
+            state_section: None,
             set_topic,
             returns: self.returns.clone(),
             true_value: self.true_value.clone(),
@@ -90,27 +98,45 @@ impl MutationSpec {
                 def.arg_type = "Boolean".to_string();
             }
             MutationKind::SetField | MutationKind::SetComponent => {
-                let state = self
-                    .state
-                    .as_ref()
-                    .with_context(|| context("names no state"))?;
-                let operation = state
-                    .operation(resolver.operations, OperationAction::Send)
-                    .with_context(|| context("state"))?;
-                def.state_topic = operation
-                    .topic(&state.parameters)
-                    .with_context(|| context("state"))?;
                 let returned = self
                     .returns
                     .as_deref()
                     .and_then(|gql| sections.iter().find(|(name, _)| *name == gql))
                     .map(|(_, type_name)| type_name);
-                let state_type = match returned {
-                    Some(type_name) => Cow::Borrowed(resolver.types.get(type_name)?),
-                    None => resolver
-                        .types
-                        .for_operation(operation, &state.parameters)
-                        .with_context(|| context("state"))?,
+                let state_type = match (&self.state, &self.state_section) {
+                    (Some(_), Some(_)) => {
+                        anyhow::bail!("{}", context("names both state and stateSection"))
+                    }
+                    (None, None) => anyhow::bail!("{}", context("names no state")),
+                    (None, Some(name)) => {
+                        let section = state_sections
+                            .iter()
+                            .find(|(gql, _)| gql == name)
+                            .map(|(_, section)| *section)
+                            .filter(|section| section.is_per_topic())
+                            .with_context(|| {
+                                context(&format!(
+                                    "stateSection '{name}' is no per-topic object section"
+                                ))
+                            })?;
+                        def.state_section = Some(section.clone());
+                        Cow::Borrowed(resolver.types.get(&section.type_name)?)
+                    }
+                    (Some(state), None) => {
+                        let operation = state
+                            .operation(resolver.operations, OperationAction::Send)
+                            .with_context(|| context("state"))?;
+                        def.state_topic = operation
+                            .topic(&state.parameters)
+                            .with_context(|| context("state"))?;
+                        match returned {
+                            Some(type_name) => Cow::Borrowed(resolver.types.get(type_name)?),
+                            None => resolver
+                                .types
+                                .for_operation(operation, &state.parameters)
+                                .with_context(|| context("state"))?,
+                        }
+                    }
                 };
                 let property = state_type
                     .property(&self.key)
@@ -173,6 +199,8 @@ impl MutationSpec {
                     .resolve(resolver.operations, OperationAction::Send)
                     .with_context(|| context("confirm"))?,
                 None if !def.state_topic.is_empty() => def.state_topic.clone(),
+                // Waits on the state section.
+                None if def.state_section.is_some() => String::new(),
                 None => anyhow::bail!(
                     "{}",
                     context("confirm names no operation and the mutation has no state")
@@ -245,7 +273,35 @@ mod tests {
         assert_eq!(names, vec![("dutypoint", true), ("controlMode", true)]);
         assert_eq!(m.input_fields[1].enum_type.as_deref(), Some("Mode"));
         assert_eq!(m.derived.len(), 1);
-        assert!(m.confirm.is_none());
+        // Assembled from, and confirmed on, the per-topic controlValues section.
+        assert!(m.state_topic.is_empty());
+        let section = m.state_section.as_ref().unwrap();
+        assert_eq!(
+            section.fields[0].topic.as_deref(),
+            Some("dev/thrusters/thrusters-pump1")
+        );
+        assert!(m.confirm.is_some());
+        assert_eq!(m.confirm_topic(), None);
+    }
+
+    #[test]
+    fn test_state_section_must_be_a_per_topic_section_and_excludes_state() {
+        let mut json = extension_json();
+        json["views"][0]["members"][0]["mutations"][1]["stateSection"] = json!("parameters");
+        let err = resolved(json).unwrap_err();
+        assert!(
+            format!("{err:#}").contains("no per-topic object section"),
+            "{err:#}"
+        );
+
+        let mut json = extension_json();
+        json["views"][0]["members"][0]["mutations"][1]["state"] =
+            json!({"operation": "ctl.parameters.send", "parameters": {"module": "thrusters"}});
+        let err = resolved(json).unwrap_err();
+        assert!(
+            format!("{err:#}").contains("both state and stateSection"),
+            "{err:#}"
+        );
     }
 
     #[test]

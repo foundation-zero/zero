@@ -793,8 +793,9 @@ pub(crate) mod fixtures {
                          "confirm": {"timeoutS": 5, "timeoutError": "Timeout when setting parameters"}},
                         {"gql": "thrustersControlSetPump1", "kind": "setComponent",
                          "argName": "value", "key": "pump1", "inputTypeName": "PumpInputType", "returns": "controlValues",
-                         "state": {"operation": "ctl.manual-values.send", "parameters": {"module": "thrusters"}},
-                         "target": {"operation": "ctl.manual-values.set.receive", "parameters": {"module": "thrusters"}}},
+                         "stateSection": "controlValues",
+                         "target": {"operation": "ctl.manual-values.set.receive", "parameters": {"module": "thrusters"}},
+                         "confirm": {"timeoutS": 5, "timeoutError": "Timeout when setting control values"}},
                         {"gql": "thrustersSetAutomationMode", "kind": "setFlag",
                          "argName": "automatic", "key": "Mode", "trueValue": "automatic", "falseValue": "manual",
                          "target": {"operation": "ctl.automation-mode.set.receive", "parameters": {"module": "thrusters"}},
@@ -871,9 +872,8 @@ mod tests {
                 "sim/inputs".to_string(),
             ]
         );
-        assert!(ext
-            .read_topics(true)
-            .contains(&"ctl/thrusters/manual-values".to_string()));
+        // Every mutation reads and confirms on topics the view already caches.
+        assert_eq!(ext.read_topics(true), ext.read_topics(false));
         assert_eq!(ext.mutation_count(), 5);
     }
 
