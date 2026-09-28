@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from typing import Annotated, Self, cast
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions import control
@@ -30,6 +30,29 @@ from thrs.input_output.definitions.units import (
 )
 
 
+class AmcsComponentAlarms(ThrsValues):
+    any_failure_active: Annotated[
+        Stamped[bool],
+        Field(alias="TF_AnyFailureActive"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    any_warning_active: Annotated[
+        Stamped[bool],
+        Field(alias="TF_AnyWarningActive"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    feedback_failure: Annotated[
+        Stamped[bool],
+        Field(alias="TF_FeedbackFailure"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    external_out_of_range: Annotated[
+        Stamped[bool],
+        Field(alias="TF_ExternalOutOfRange"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+
+
 class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
@@ -40,7 +63,7 @@ class FlowSensor(ThrsValues):
     )
 
 
-class Pump(ThrsValues):
+class Pump(AmcsComponentAlarms, ThrsValues):
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
@@ -213,7 +236,7 @@ class Pvt(HeatTransferDevice):
     pass
 
 
-class Valve(ThrsValues):
+class Valve(AmcsComponentAlarms, ThrsValues):
     position_rel: Stamped[Ratio]
 
     # Not used in control, only in frontend TODO: Remove when graphql api is split off

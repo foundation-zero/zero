@@ -136,7 +136,14 @@ export type SimulationFields = {
   [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
 };
 
-export type PumpSensor = {
+export type SensorAlarms = {
+  anyFailureActive: Stamped<boolean>;
+  anyWarningActive: Stamped<boolean>;
+  feedbackFailure: Stamped<boolean>;
+  externalOutOfRange: Stamped<boolean>;
+};
+
+export type PumpSensor = SensorAlarms & {
   flow: Stamped<Ratio>;
   speed: Stamped<number>;
   opTime: Stamped<number>;
@@ -161,7 +168,7 @@ export type HeatExchangerSensor = DeltaTSensor & {
   heat: Stamped<number>;
 };
 
-export type Valve = {
+export type Valve = SensorAlarms & {
   positionRel: Stamped<Ratio>;
   positionAbs: Stamped<Degree>;
 };

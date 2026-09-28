@@ -7,6 +7,7 @@ import ActuatedValve from "../components/actuated-valve/ActuatedValve.vue";
 import { ThreeWayValveLegs } from "../components/actuated-valve/index.ts";
 import SwitchValve from "../components/actuated-valve/SwitchValve.vue";
 import ThreeWayValve from "../components/actuated-valve/ThreeWayValve.vue";
+import { componentStateFromAlarms } from "../providers/helpers";
 import { getMimicDataProvider } from "../providers/index.ts";
 import { MimicComponentInstanceProps } from "./index.ts";
 
@@ -20,6 +21,7 @@ const props = defineProps<
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
+const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, valve.value));
 
 // A switch valve is either fully on A or fully on B, and only mixed during transient state.
 const flow = computed(() => Math.round(valve.value?.positionRel.value ?? 0));
@@ -33,7 +35,7 @@ const forwardedProps = reactiveOmit(props, ["legs"]);
   >
     <ActuatedValve
       v-bind="forwardedProps"
-      :state="state"
+      :state="stateWithAlarms"
     >
       <SwitchValve />
       <ThreeWayValve
