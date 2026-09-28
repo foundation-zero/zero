@@ -7,7 +7,7 @@
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/pvt/pvt-pyranometer-sb", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-tank1", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-switch-tank3", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
-{ "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-switch-tank1", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
+{ "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/500000-thrs/dhw/dhw-level-switch-tank1", "message": "{\" invalid JSON content should fail }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/250000-fresh-water/hot/hot-temperature-to-cabins", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/250000-tech-water/clean/clean-level", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
 { "timestamp": "2026-06-01T12:00:00Z", "topic": "marpower/340000-sewage/sludge/sludge-level", "message": "{\"A\": { \"Value\": \"test\", \"TimeStamp\": \"2024-06-01T12:00:00Z\" }, \"PascalCase\": \"test\" }"}
