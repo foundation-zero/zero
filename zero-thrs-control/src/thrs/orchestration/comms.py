@@ -10,7 +10,7 @@ from typing import (
     cast,
 )
 
-from aiomqtt import Client
+from aiomqtt import Client, Topic
 from paho.mqtt.client import topic_matches_sub
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
@@ -760,6 +760,7 @@ class MqttConnector:
     def __init__(self, mqtt_client: Client):
         self._mqtt_client = mqtt_client
         self._listeners: list[MqttReceiveMapping[object]] = []
+        self._topic_listeners: dict[str, list[MqttReceiveMapping[object]]] = {}
         self._started = False
 
     def _register_listener[T](self, receiver: MqttReceiveMapping[T]) -> None:
@@ -779,13 +780,7 @@ class MqttConnector:
     async def _listen(self):
         async for message in self._mqtt_client.messages:
             if message.payload != b"":
-                matching_mappings = [
-                    mapping
-                    for mapping in self._listeners
-                    for topic in mapping.subscribe_topics()
-                    if message.topic.matches(topic)
-                ]
-                for mapping in matching_mappings:
+                for mapping in self._listeners_for(message.topic):
                     if not isinstance(message.payload, str | bytes):
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
@@ -796,6 +791,17 @@ class MqttConnector:
                         logger.exception(
                             "Failed handling MQTT message, message ignored"
                         )
+
+    def _listeners_for(self, topic: Topic) -> list[MqttReceiveMapping[object]]:
+        # Listeners are fixed once started, so matching each topic once is enough
+        if topic.value not in self._topic_listeners:
+            self._topic_listeners[topic.value] = [
+                mapping
+                for mapping in self._listeners
+                for subscribe_topic in mapping.subscribe_topics()
+                if topic.matches(subscribe_topic)
+            ]
+        return self._topic_listeners[topic.value]
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool
