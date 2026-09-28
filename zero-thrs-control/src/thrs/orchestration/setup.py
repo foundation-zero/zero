@@ -138,6 +138,7 @@ def setup_control_modules(
     time_fn: Callable[[], datetime],
     database: PostgresDatabase | None,
     machine_state_logging_service_enabled: bool,
+    publish_qos: int = 1,
 ) -> list[Module]:
     result = []
 
@@ -153,7 +154,9 @@ def setup_control_modules(
         # We need to refactor the switching control functionality to be more local/abstractable
         module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
 
-        channel = ControlChannels(connector, config, module_name, module)
+        channel = ControlChannels(
+            connector, config, module_name, module, publish_qos=publish_qos
+        )
 
         result.append(
             Module(

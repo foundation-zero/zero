@@ -165,6 +165,8 @@ class LockstepCmd(BaseSettings):
             time_fn=simulation_module.time,
             database=database,
             machine_state_logging_service_enabled=self.machine_state_logging,
+            # Lockstep trades delivery guarantees for speed; every tick republishes these values
+            publish_qos=0,
         )
 
         for module in control_modules:

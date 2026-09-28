@@ -314,6 +314,31 @@ class TestControlChannelsAutoclear:
         assert channels.get_manual_controls() is None
 
 
+class TestControlChannelsPublishQos:
+    @pytest.mark.parametrize(
+        ("qos_kwargs", "expected_qos"),
+        [({}, 1), ({"publish_qos": 0}, 0)],
+    )
+    def test_publishers_use_publish_qos(self, settings, qos_kwargs, expected_qos):
+        connector = mock.Mock()
+        description = ModuleDescription(
+            SimpleInOut,
+            SimpleInOut,
+            SimpleParameters,
+            lambda *_args, **_kwargs: mock.Mock(),
+            SimpleMode,
+            SimpleControllerState,
+            mock.Mock,
+        )
+
+        ControlChannels(connector, settings, "testmodule", description, **qos_kwargs)
+
+        publisher_qos = [
+            call.kwargs["qos"] for call in connector._create_publisher.call_args_list
+        ]
+        assert publisher_qos == [expected_qos] * 6
+
+
 class TestCombinedMqttMapping:
     def test_split_to_topics(self):
         clss = {"module1": SimpleInOut}

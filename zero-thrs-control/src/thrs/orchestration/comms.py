@@ -381,6 +381,7 @@ class ControlChannels[
         config: Config,
         module_name: str,
         control_module: ModuleDescription[S, C, P, M, CS],
+        publish_qos: int = 1,
     ) -> None:
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
@@ -426,6 +427,7 @@ class ControlChannels[
                 config.mqtt_control_topic_suffix,
                 context=AMCS_WRITE_CONTEXT,
             ),
+            qos=publish_qos,
         )
         actuated_control_values_mapping = PartialMqttMapping[C](
             control_module.control_values_cls,
@@ -440,7 +442,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 only_computed_fields=True,
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_controller_state = connector._create_publisher(
             DirectMqttMapping[CS].for_module(
@@ -449,6 +452,7 @@ class ControlChannels[
                 module_name,
                 type_topic="controller-state",
             ),
+            qos=publish_qos,
         )
         self.send_parameters = connector._create_publisher(
             DirectMqttMapping[P].for_module(
@@ -456,7 +460,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="parameters",
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_control_modes = connector._create_publisher(
             DirectMqttMapping[M].for_module(
@@ -464,7 +469,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="control-mode",
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_manual_control = connector._create_publisher(
             DirectMqttMapping[C].for_module(
@@ -472,7 +478,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="manual-values",
-            )
+            ),
+            qos=publish_qos,
         )
 
         self.get_sensor_values = sensor_values_mapping.result
