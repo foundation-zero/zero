@@ -47,7 +47,7 @@ const props = withDefaults(
         </ControllerStateValue>
         <ControllerStateValue
           :source="controllerState.chargeController"
-          field="charge"
+          field="chargeStatus"
         >
           <FieldRenderer.ChargeState />
         </ControllerStateValue>

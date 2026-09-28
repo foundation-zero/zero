@@ -286,7 +286,7 @@ export type CustomFieldDefinitions = CustomFields<{
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
-  [MimicComponentType.Pcm]: SensorComponentType.Pcm;
+  [MimicComponentType.Pcm]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.Pump]: SensorComponentType.Pump;
   [MimicComponentType.ManualPump]: undefined;
   [MimicComponentType.HeatExchanger]: SensorComponentType.HeatTransferDevice;

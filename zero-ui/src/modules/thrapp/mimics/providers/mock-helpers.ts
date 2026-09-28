@@ -9,6 +9,7 @@ import {
   ControllerStateDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
+  PcmChargeStatus,
   PcmChargingState,
   PID,
   SensorComponentType,
@@ -107,10 +108,6 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.LevelSwitch]: () => {
     const empty = useRandomizedBoolean();
     return computed(() => ({ empty: stamp(empty) }));
-  },
-  [SensorComponentType.Pcm]: () => {
-    const charged = useRandomizedBoolean();
-    return computed(() => ({ charged: stamp(charged) }));
   },
   [SensorComponentType.Pcs]: () => {
     const mode = useRandomizedState([
@@ -296,17 +293,22 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
   },
 
   [ControllerStateComponentType.PcmChargeController]: () => {
-    const charged = useRandomizedBoolean();
     const chargingState = useRandomizedState([
       PcmChargingState.Charging,
       PcmChargingState.Discharging,
       PcmChargingState.Idle,
     ]);
+    const chargeStatus = useRandomizedState([
+      PcmChargeStatus.Unknown,
+      PcmChargeStatus.Empty,
+      PcmChargeStatus.Intermediate,
+      PcmChargeStatus.Full,
+    ]);
     const charge = useRandomizedRatio();
     const energy = useRandomizedNumber(0, 25_200_000);
     return computed(() => ({
-      charged: stamp(charged),
       chargingState: stamp(chargingState),
+      chargeStatus: stamp(chargeStatus),
       charge: stamp(charge),
       energy: stamp(energy),
     }));

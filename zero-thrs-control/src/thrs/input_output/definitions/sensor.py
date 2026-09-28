@@ -10,7 +10,6 @@ from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
     Bar,
     Celsius,
-    Charged,
     Degree,
     DeltaT,
     Empty,
@@ -412,11 +411,6 @@ class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
 
-# Temporary helper for the FMU charged input that control depends on. This should come from a charge controller
-class Pcm(ThrsValues):
-    charged: Stamped[Charged]
-
-
 class LevelSwitch(ThrsValues):
     empty: Stamped[Empty]
 
@@ -486,7 +480,6 @@ __all__ = [
     "Heatpump",
     "LevelSensor",
     "LevelSwitch",
-    "Pcm",
     "Pcs",
     "PowerSensor",
     "PressureSensor",

@@ -74,26 +74,6 @@ class PcmSensorValues(AmcsModeSensorValues):
             topic_override="250000-fresh-water/hot/hot-temperature-from-pcm",
         ),
     ]
-    pcm_module1: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm_input")
-    ] = sensor.Pcm(
-        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
-    pcm_module2: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001050", component_type="pcm_input")
-    ] = sensor.Pcm(
-        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
-    pcm_module3: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001051", component_type="pcm_input")
-    ] = sensor.Pcm(
-        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
-    pcm_module4: Annotated[
-        sensor.Pcm, component_meta(yard_tag="50001052", component_type="pcm_input")
-    ] = sensor.Pcm(
-        charged=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
     pcm_flow_module1: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-18", component_type="flow_sensor"),

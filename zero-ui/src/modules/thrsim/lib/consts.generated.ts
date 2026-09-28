@@ -1729,20 +1729,26 @@ export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
   pcmChargeFlow: {
     componentType: ParametersType.Flow,
   },
-  minimumChargingDt: {
-    componentType: ParametersType.dT,
-  },
   minimumChargingTemperature: {
     componentType: ParametersType.Temperature,
   },
   pumpTuning: {
     componentType: ParametersType.Tuning,
   },
-  supplyingEnabled: {
+  chargingRequested: {
     componentType: ParametersType.Enabled,
   },
-  chargingEnabled: {
+  supplyingRequested: {
     componentType: ParametersType.Enabled,
+  },
+  gracePeriod: {
+    componentType: ParametersType.Duration,
+  },
+  stallDuration: {
+    componentType: ParametersType.Duration,
+  },
+  retryDelay: {
+    componentType: ParametersType.Duration,
   },
   module1FlowBalanceTuning: {
     componentType: ParametersType.Tuning,
@@ -1797,22 +1803,6 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   freshwaterTemperaturePcmReturn: {
     yardTag: "25001038-3",
     componentType: SensorComponentType.Temperature,
-  },
-  pcmModule1: {
-    yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmModule2: {
-    yardTag: "50001050",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmModule3: {
-    yardTag: "50001051",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmModule4: {
-    yardTag: "50001052",
-    componentType: SensorComponentType.Pcm,
   },
   pcmFlowModule1: {
     yardTag: "50001057-18",

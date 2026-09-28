@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Annotated
 
 from pydantic import Field, model_validator
@@ -16,15 +16,20 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
-    PCM_EXHAUSTED_EFFECTIVENESS,
     PCM_HEATING_ELEMENT_POWER,
-    PCM_MELT_TEMP,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
     PcmChargeControllerValues,
+    PcmChargeStatus,
     PcmChargingState,
 )
-from thrs.input_output.definitions.units import Celsius, DeltaT, LMin, Ratio, Tuning
+from thrs.input_output.definitions.units import (
+    Celsius,
+    LMin,
+    Ratio,
+    Seconds,
+    Tuning,
+)
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 from thrs.orchestration.module import ModuleDescription
 
@@ -32,31 +37,60 @@ from thrs.orchestration.module import ModuleDescription
 class PcmParameters(ThrsValues):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
-    minimum_charging_dt: Annotated[DeltaT, Field(gt=0)] = 1
     minimum_charging_temperature: Annotated[
         Celsius,
         Field(description="Range for thermal charging", ge=65, le=80),
     ] = 65
     pump_tuning: Tuning = (0.01, 0.001, 0)
-    supplying_enabled: bool = True
-    charging_enabled: bool = True
+    charging_requested: Annotated[
+        bool,
+        Field(description="Keep trying to charge the PCM modules while possible"),
+    ] = False
+    supplying_requested: Annotated[
+        bool,
+        Field(
+            description="Keep trying to supply heat from the PCM modules while possible"
+        ),
+    ] = False
+    grace_period: Annotated[
+        Seconds,
+        Field(
+            description="Grace period after entering charging/supplying before the stall guard checks a module's charging_state",
+            ge=0,
+        ),
+    ] = 120
+    stall_duration: Annotated[
+        Seconds,
+        Field(
+            description="How long a module's charging_state may fail to show it actually (dis)charging before it is dropped as stalled",
+            ge=0,
+        ),
+    ] = 120
+    retry_delay: Annotated[
+        Seconds,
+        Field(
+            description="Lockout before retrying a mode after all its modules stalled and were dropped",
+            ge=0,
+        ),
+    ] = 600
     module1_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
     @model_validator(mode="after")
-    def check_charging_dt(self):
-        # Charging must continue until the exchanger effectiveness has dropped far
-        # enough for the last module to anchor full.
-        anchor_dt = PCM_EXHAUSTED_EFFECTIVENESS * (
-            self.minimum_charging_temperature - PCM_MELT_TEMP
-        )
-        if self.minimum_charging_dt >= anchor_dt:
+    def check_not_both_requested(self):
+        if self.charging_requested and self.supplying_requested:
+            raise ValueError("Charging and supplying cannot both be requested")
+        return self
+
+    @model_validator(mode="after")
+    def check_charging_can_anchor_full(self):
+        bound = PcmChargeController.minimum_charging_temperature(self.pcm_charge_flow)
+        if self.minimum_charging_temperature <= bound:
             raise ValueError(
-                f"Minimum charging dT must be below {anchor_dt:.1f} K at a minimum "
-                "charging temperature of "
-                f"{self.minimum_charging_temperature} C"
+                f"Minimum charging temperature must be above {bound:.1f} C at a "
+                f"charge flow of {self.pcm_charge_flow} l/min"
             )
         return self
 
@@ -108,7 +142,7 @@ def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
     return PcmChargeControllerValues(
         charge=Stamped(value=None, timestamp=timestamp),
         energy=Stamped(value=None, timestamp=timestamp),
-        charged=Stamped(value=None, timestamp=timestamp),
+        charge_status=Stamped(value=PcmChargeStatus.UNKNOWN, timestamp=timestamp),
         charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
     )
 
@@ -165,6 +199,11 @@ class PcmControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
+        self._mode_entered_at: datetime | None = None
+        self._module_last_active: dict[PcmChargeController, datetime] = {}
+        self._dropped_modules: set[PcmChargeController] = set()
+        self._charging_retry_until: datetime | None = None
+        self._supplying_retry_until: datetime | None = None
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -184,6 +223,7 @@ class PcmControl(
                 on_enter=[
                     self._set_valves_to_supplying,
                     self._activate_pump,
+                    self._start_mode_tracking,
                 ],
                 on_exit=[self._deactivate_pump],
             ),
@@ -191,6 +231,7 @@ class PcmControl(
                 name="charging",
                 on_enter=[
                     self._set_valves_to_charging,
+                    self._start_mode_tracking,
                 ],
             ),
             State(
@@ -212,37 +253,25 @@ class PcmControl(
                 "trigger": "_try_supplying",
                 "source": "idle",
                 "dest": "supplying",
-                "conditions": [
-                    lambda sensor_values: self._parameters.supplying_enabled,
-                    lambda sensor_values: not self._all_discharged(sensor_values),
-                ],
+                "conditions": self._supplying_available,
             },
             {
                 "trigger": "_check_supplying_conditions",
                 "source": "supplying",
                 "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._parameters.supplying_enabled
-                    or self._all_discharged(sensor_values)
-                ),
+                "conditions": self._supplying_should_stop,
             },
             {
                 "trigger": "_try_charging",
                 "source": "idle",
                 "dest": "charging",
-                "conditions": [
-                    lambda sensor_values: self._parameters.charging_enabled,
-                    self._heat_available,
-                ],
+                "conditions": self._charging_available,
             },
             {
                 "trigger": "_check_charging_conditions",
                 "source": "charging",
                 "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._parameters.charging_enabled
-                    or not self._sufficient_dt(sensor_values)
-                ),
+                "conditions": self._charging_should_stop,
             },
         ]
 
@@ -342,6 +371,11 @@ class PcmControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
+        self._mode_entered_at = None
+        self._module_last_active = {}
+        self._dropped_modules = set()
+        self._charging_retry_until = None
+        self._supplying_retry_until = None
         self._state_machine.set_state(self._state_machine.initial)  # type: ignore
         self._init_controllers()
 
@@ -360,9 +394,15 @@ class PcmControl(
         self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
         if self.mode.is_charging:
+            self._update_dropped_modules(
+                PcmChargingState.CHARGING, PcmChargeStatus.FULL
+            )
             self._set_charging_flow_setpoints(sensor_values)
             self._check_charging_conditions(sensor_values)  # type: ignore
         elif self.mode.is_supplying:
+            self._update_dropped_modules(
+                PcmChargingState.DISCHARGING, PcmChargeStatus.EMPTY
+            )
             self._set_supplying_flow_setpoints(sensor_values)
             self._check_supplying_conditions(sensor_values)  # type: ignore
 
@@ -389,87 +429,153 @@ class PcmControl(
             module4_charge_controller=self.module4_charge_controller.values(),
         )
 
-    def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
-        return not any(
+    def _modules(self) -> list[PcmChargeController]:
+        return [
+            self.module1_charge_controller,
+            self.module2_charge_controller,
+            self.module3_charge_controller,
+            self.module4_charge_controller,
+        ]
+
+    def _eligible(
+        self, module: PcmChargeController, exhausted: PcmChargeStatus
+    ) -> bool:
+        return module.charge_status is not exhausted
+
+    def _active(self, module: PcmChargeController, exhausted: PcmChargeStatus) -> bool:
+        """Eligible and not dropped as stalled this cycle."""
+        return self._eligible(module, exhausted) and module not in self._dropped_modules
+
+    def _valves_settled(
+        self, sensor_values: PcmSensorValues, tolerance: Ratio = 0.05
+    ) -> bool:
+        pairs = [
             (
-                sensor_values.pcm_module1.charged.value,
-                sensor_values.pcm_module2.charged.value,
-                sensor_values.pcm_module3.charged.value,
-                sensor_values.pcm_module4.charged.value,
-            )
+                self._current_values.pcm_switch_charging_return,
+                sensor_values.pcm_switch_charging_return,
+            ),
+            (
+                self._current_values.pcm_switch_discharging,
+                sensor_values.pcm_switch_discharging,
+            ),
+            (
+                self._current_values.pcm_switch_charging_supply,
+                sensor_values.pcm_switch_charging_supply,
+            ),
+            (
+                self._current_values.pcm_switch_consumers,
+                sensor_values.pcm_switch_consumers,
+            ),
+        ]
+        return all(
+            abs(sensor_valve.position_rel.value - control_valve.setpoint.value)
+            <= tolerance
+            for control_valve, sensor_valve in pairs
         )
 
-    def _heat_available(self, sensor_values: PcmSensorValues) -> bool:
+    def _locked_out(self, until: datetime | None) -> bool:
+        return until is not None and self._time() < until
+
+    def _charging_available(self, sensor_values: PcmSensorValues) -> bool:
         return (
-            sensor_values.pcm_temperature_producers_return.temperature.value
+            self._parameters.charging_requested
+            and self._valves_settled(sensor_values)
+            and sensor_values.pcm_temperature_producers_return.temperature.value
             > self._parameters.minimum_charging_temperature
-        )  # TODO: need to check if flow is available, but the flow meter is in the consumers module
-
-    def _sufficient_dt(self, sensor_values: PcmSensorValues) -> bool:
-        return any(
-            (
-                (
-                    sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module1.temperature.value
-                )
-                > self._parameters.minimum_charging_dt,
-                (
-                    sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module2.temperature.value
-                )
-                > self._parameters.minimum_charging_dt,
-                (
-                    sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module3.temperature.value
-                )
-                > self._parameters.minimum_charging_dt,
-                (
-                    sensor_values.pcm_temperature_producers_return.temperature.value
-                    - sensor_values.pcm_temperature_module4.temperature.value
-                )
-                > self._parameters.minimum_charging_dt,
+            and any(
+                self._eligible(module, PcmChargeStatus.FULL)
+                for module in self._modules()
             )
+            and not self._locked_out(self._charging_retry_until)
         )
+
+    def _supplying_available(self, sensor_values: PcmSensorValues) -> bool:
+        return (
+            self._parameters.supplying_requested
+            and self._valves_settled(sensor_values)
+            and any(
+                self._eligible(module, PcmChargeStatus.EMPTY)
+                for module in self._modules()
+            )
+            and not self._locked_out(self._supplying_retry_until)
+        )
+
+    def _charging_should_stop(self, sensor_values: PcmSensorValues) -> bool:
+        if not any(
+            self._active(module, PcmChargeStatus.FULL) for module in self._modules()
+        ):
+            if self._dropped_modules:
+                self._charging_retry_until = self._time() + timedelta(
+                    seconds=self._parameters.retry_delay
+                )
+            return True
+        return not self._parameters.charging_requested
+
+    def _supplying_should_stop(self, sensor_values: PcmSensorValues) -> bool:
+        if not any(
+            self._active(module, PcmChargeStatus.EMPTY) for module in self._modules()
+        ):
+            if self._dropped_modules:
+                self._supplying_retry_until = self._time() + timedelta(
+                    seconds=self._parameters.retry_delay
+                )
+            return True
+        return not self._parameters.supplying_requested
+
+    def _start_mode_tracking(self, sensor_values: PcmSensorValues):
+        entered_at = self._time()
+        self._mode_entered_at = entered_at
+        grace_end = entered_at + timedelta(seconds=self._parameters.grace_period)
+        self._module_last_active = dict.fromkeys(self._modules(), grace_end)
+        self._dropped_modules = set()
+
+    def _update_dropped_modules(
+        self, expected_state: PcmChargingState, exhausted: PcmChargeStatus
+    ) -> None:
+        if self._mode_entered_at is None:
+            return
+        grace_elapsed = (
+            self._time() - self._mode_entered_at
+        ).total_seconds() >= self._parameters.grace_period
+
+        # Exhausted modules get no flow, so they never (dis)charge; don't drop them.
+        for module in self._modules():
+            if not self._active(module, exhausted):
+                continue
+            if module.charging_state is expected_state:
+                self._module_last_active[module] = self._time()
+            elif (
+                grace_elapsed
+                and (self._time() - self._module_last_active[module]).total_seconds()
+                >= self._parameters.stall_duration
+            ):
+                self._dropped_modules.add(module)
 
     def _set_supplying_flow_setpoints(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller.set_pump(self._current_values.pcm_pump)
-        charged_modules = [
-            sensor_values.pcm_module1.charged.value,
-            sensor_values.pcm_module2.charged.value,
-            sensor_values.pcm_module3.charged.value,
-            sensor_values.pcm_module4.charged.value,
+        actives = [
+            self._active(module, PcmChargeStatus.EMPTY) for module in self._modules()
         ]
 
-        self._flow_balance_controller.set_active_valves(charged_modules)
+        self._flow_balance_controller.set_active_valves(actives)
         self._flow_balance_controller.set_setpoints(
             [
-                self.parameters.pcm_discharge_flow if charged else 0.0
-                for charged in charged_modules
+                self.parameters.pcm_discharge_flow if is_active else 0.0
+                for is_active in actives
             ]
         )
 
     def _set_charging_flow_setpoints(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller.set_pump(None)
-
-        charging_modules = [
-            (
-                sensor_values.pcm_temperature_producers_return.temperature.value
-                - temp_out
-            )
-            > self.parameters.minimum_charging_dt
-            for temp_out in [
-                sensor_values.pcm_temperature_module1.temperature.value,
-                sensor_values.pcm_temperature_module2.temperature.value,
-                sensor_values.pcm_temperature_module3.temperature.value,
-                sensor_values.pcm_temperature_module4.temperature.value,
-            ]
+        actives = [
+            self._active(module, PcmChargeStatus.FULL) for module in self._modules()
         ]
 
-        self._flow_balance_controller.set_active_valves(charging_modules)
+        self._flow_balance_controller.set_active_valves(actives)
         self._flow_balance_controller.set_setpoints(
             [
-                self.parameters.pcm_charge_flow if charging else 0.0
-                for charging in charging_modules
+                self.parameters.pcm_charge_flow if is_active else 0.0
+                for is_active in actives
             ]
         )
 
@@ -529,7 +635,7 @@ class PcmControl(
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
             value=Valve.OPEN,
-            timestamp=self._time(),  # Needs to not exceed max flow into pcm's
+            timestamp=self._time(),
         )
 
     def _set_valves_to_boosting(self, sensor_values: PcmSensorValues):
