@@ -91,3 +91,37 @@ async def test_loop_play_runs_until_pause():
         loop_task.cancel()
         with pytest.raises(asyncio.CancelledError):
             await loop_task
+
+
+@pytest.mark.asyncio
+async def test_loop_reports_running_after_each_played_tick():
+    loop = Loop(tick_duration=timedelta(seconds=1))
+    runner = make_runner(block_after_first_call=True)
+    hook_calls: list[str] = []
+    recording_hooks = make_hooks(hook_calls)
+    available_again = asyncio.Event()
+
+    async def available_hook(hooked_loop: Loop) -> None:
+        await recording_hooks.available(hooked_loop)
+        if hook_calls.count("available") == 2:
+            available_again.set()
+
+    hooks = LoopHooks(available_hook, recording_hooks.running, recording_hooks.stepping)
+
+    loop_task = asyncio.create_task(loop.loop(runner, hooks))
+
+    try:
+        await loop.play(10)
+
+        await asyncio.wait_for(runner.started.wait(), timeout=1)
+        assert hook_calls == ["available", "running"]
+
+        await loop.pause()
+        runner.release.set()
+
+        await asyncio.wait_for(available_again.wait(), timeout=1)
+        assert hook_calls[:4] == ["available", "running", "running", "available"]
+    finally:
+        loop_task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await loop_task
