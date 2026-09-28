@@ -123,6 +123,11 @@ input AmcsControlModeInputType {
   mode: ControlMode!
 }
 
+type BoolOptionalStampedType {
+  value: Boolean
+  timestamp: DateTime!
+}
+
 input AmcsExternalAvailableInputType {
   since: Float!
 }
@@ -270,7 +275,7 @@ type ControlValveType {
 type ControllerPcmChargeControllerValuesType {
   charge: FloatOptionalStampedType!
   energy: FloatOptionalStampedType!
-  charged: BoolStampedType!
+  charged: BoolOptionalStampedType!
   chargingState: PcmChargingStateStampedType!
 }
 
@@ -1205,6 +1210,8 @@ type PcmParametersType {
   pcmDischargeFlow: Float!
   pcmChargeFlow: Float!
   minimumChargingDt: Float!
+
+  """Range for thermal charging"""
   minimumChargingTemperature: Float!
   pumpTuning: [Float!]!
   supplyingEnabled: Boolean!
@@ -1251,11 +1258,7 @@ type PcmSensorValuesType {
   pcmTemperatureConsumersReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pcmHeatModule1: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
 
-  """
-  Module 1's second circuit, the HPC, which the freshwater system discharges.
-  
-  It can draw the module down with the thrs loop idle, so its energy counts too.
-  """
+  """Module 1's A-D exchanger, discharged by the freshwater system."""
   pcmHeatModule1Freshwater: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
   pcmHeatModule2: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
   pcmHeatModule3: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)

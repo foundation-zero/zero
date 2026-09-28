@@ -10,7 +10,7 @@ from thrs.input_output.definitions.controllers import (
     PCM_ANCHOR_DWELL,
     PCM_CHARGED_THRESHOLD,
     PCM_CHARGING_DEADBAND,
-    PCM_EXHAUSTED_DT,
+    PCM_EXHAUSTED_EFFECTIVENESS,
     PCM_MAX_SAMPLE_GAP,
     PCM_MELT_MARGIN,
     PCM_MELT_TEMP,
@@ -24,6 +24,7 @@ from thrs.input_output.definitions.controllers import (
 )
 from thrs.input_output.definitions.sensor import HeatTransferDevice
 from thrs.input_output.definitions.units import (
+    DeltaT,
     Joule,
     Liter,
     LMin,
@@ -299,24 +300,23 @@ class FlowDistributionController:
 
 
 class PcmChargeController:
-    """Estimates the stored energy of one PCM module from its own heat balance.
+    """Estimates the energy stored in one PCM module.
 
-    Inside the melting plateau the module sits at ~58 C whatever the phase fraction, so
-    temperature says nothing about how far the phase front has travelled and only
-    integrated heat does. At the ends of the plateau it is the other way round: the
-    integral has drifted, and temperature says exactly where we are. So the energy is
-    integrated continuously and re-anchored to empty or full whenever a module's outlet
-    converges on its inlet while the inlet is clearly past the melting point. That
-    convergence, not any absolute outlet temperature, is what says the phase change has
-    run out: the manufacturer quotes a 50-55 C outlet throughout a normal discharge,
-    which reflects the exchanger approach rather than the state of charge.
+    The energy is integrated from the heat of each circuit through the module, plus
+    `heating_power` while `heating` is set, minus PCM_STANDBY_LOSS while nothing flows.
+    It is None until the first anchor. A module is anchored full (empty) when, with the
+    inlet more than PCM_MELT_MARGIN above (below) PCM_MELT_TEMP,
 
-    A module can have more than one circuit through it (module 1 is charged by the thrs
-    loop and discharged by the freshwater system), so every circuit is passed on each
-    call, in the order its purge volume was given. Module 1 also has an electric element,
-    whose heat goes straight into the cell and so never appears in any circuit: give its
-    rating as `heating_power` and say on each call whether it is switched on, or the
-    estimate will drift by however long it runs.
+        |T_out - T_in| / |T_in - PCM_MELT_TEMP| < PCM_EXHAUSTED_EFFECTIVENESS
+
+    holds for PCM_ANCHOR_DWELL. While the PCM melts or freezes it stays at
+    PCM_MELT_TEMP, which pulls the outlet towards it and keeps this effectiveness high.
+    Once the latent heat is used up, the PCM moves towards the inlet temperature and
+    the effectiveness drops to zero. Circuits anchoring in opposite directions cancel.
+
+    The sensors sit in the pipework, so a circuit only counts once its purge volume has
+    passed since flow started and all its readings are known. Pass circuits in the order
+    of `purge_volumes`.
     """
 
     def __init__(
@@ -346,33 +346,28 @@ class PcmChargeController:
         timestamp = min(device.heat.timestamp for device in heat_transfer_devices)
         previous, self._previous = self._previous, timestamp
         interval = (timestamp - previous).total_seconds() if previous else 0.0
-        # A longer gap means we stopped seeing the module, not that nothing happened.
-        usable = 0 < interval <= PCM_MAX_SAMPLE_GAP
 
         self._charging_state = self._state(heat_transfer_devices, heating)
-        settled = [
-            self._settle(index, device, interval if usable else 0.0)
-            for index, device in enumerate(heat_transfer_devices)
-        ]
 
-        if not usable:
+        if not 0 < interval <= PCM_MAX_SAMPLE_GAP:
+            self._purged = [0.0] * len(self._purge_volumes)
             return
 
+        settled = [
+            self._settle(index, device, interval)
+            for index, device in enumerate(heat_transfer_devices)
+        ]
         self._integrate(heat_transfer_devices, settled, heating, interval)
         self._anchor(heat_transfer_devices, settled, timestamp)
 
     def _state(
         self, heat_transfer_devices: Sequence[HeatTransferDevice], heating: bool
     ) -> PcmChargingState:
-        flowing = [
-            device
+        heat = sum(
+            device.heat.value
             for device in heat_transfer_devices
-            if device.flow.value >= PCM_MIN_FLOW
-        ]
-        # A module taking heat from its element is charging even with nothing flowing.
-        heat = sum(device.heat.value for device in flowing) - (
-            self._heating_power if heating else 0.0
-        )
+            if device.heat.value is not None and self._flowing(device)
+        ) - (self._heating_power if heating else 0.0)
 
         if heat < -PCM_CHARGING_DEADBAND:
             return PcmChargingState.CHARGING
@@ -383,17 +378,18 @@ class PcmChargeController:
     def _settle(
         self, index: int, heat_transfer_device: HeatTransferDevice, interval: Seconds
     ) -> bool:
-        """Whether this circuit has been flushed since flow started.
-
-        The temperature sensors sit in the pipework, so without flow they read whatever
-        was last pushed past them. Counting litres rather than seconds makes the wait
-        scale with the flow that is actually clearing them.
-        """
-        if heat_transfer_device.flow.value < PCM_MIN_FLOW:
+        flow = heat_transfer_device.flow.value
+        if (
+            flow is None
+            or flow < PCM_MIN_FLOW
+            or heat_transfer_device.heat.value is None
+            or heat_transfer_device.delta_t.value is None
+            or heat_transfer_device.temperature_supply.value is None
+        ):
             self._purged[index] = 0.0
             return False
 
-        self._purged[index] += heat_transfer_device.flow.value * interval / 60
+        self._purged[index] += flow * interval / 60
         return self._purged[index] >= self._purge_volumes[index]
 
     def _integrate(
@@ -404,21 +400,24 @@ class PcmChargeController:
         interval: Seconds,
     ) -> None:
         if self._energy is None:
-            return  # No reference to integrate onto until an end point has been seen.
+            return
 
-        if any(settled):
-            power = -sum(  # Negative heat flows into the module.
-                device.heat.value
-                for device, ready in zip(heat_transfer_devices, settled, strict=True)
-                if ready
-            )
-        elif any(device.flow.value >= PCM_MIN_FLOW for device in heat_transfer_devices):
-            power = 0.0  # Flowing but still flushing: the readings mean nothing yet.
+        heats = [
+            device.heat.value
+            for device, ready in zip(heat_transfer_devices, settled, strict=True)
+            if ready and device.heat.value is not None
+        ]
+        if heats:
+            power = -sum(heats)
+        elif any(
+            device.flow.value is None or self._flowing(device)
+            for device in heat_transfer_devices
+        ):
+            power = 0.0
         else:
             power = -PCM_STANDBY_LOSS
 
         if heating:
-            # Straight into the cell, so it counts whether or not anything is flowing.
             power += self._heating_power
 
         self._energy = min(max(self._energy + power * interval, 0.0), self._capacity)
@@ -429,25 +428,15 @@ class PcmChargeController:
         settled: Sequence[bool],
         timestamp: datetime,
     ) -> None:
-        exhausted = [
-            device
+        drives = [
+            self._exhausted_drive(device)
             for device, ready in zip(heat_transfer_devices, settled, strict=True)
             if ready
-            and device.temperature_supply.value is not None
-            and abs(device.delta_t.value) < PCM_EXHAUSTED_DT
         ]
-        full = any(
-            device.temperature_supply.value > PCM_MELT_TEMP + PCM_MELT_MARGIN
-            for device in exhausted
-            if device.temperature_supply.value is not None
-        )
-        empty = any(
-            device.temperature_supply.value < PCM_MELT_TEMP - PCM_MELT_MARGIN
-            for device in exhausted
-            if device.temperature_supply.value is not None
-        )
+        full = any(drive is not None and drive > 0 for drive in drives)
+        empty = any(drive is not None and drive < 0 for drive in drives)
         if full and empty:
-            full = empty = False  # Circuits disagree, so neither is evidence.
+            full = empty = False
 
         self._full_since = (self._full_since or timestamp) if full else None
         self._empty_since = (self._empty_since or timestamp) if empty else None
@@ -456,6 +445,26 @@ class PcmChargeController:
             self._energy = self._capacity
         elif self._held(self._empty_since, timestamp):
             self._energy = 0.0
+
+    @staticmethod
+    def _flowing(heat_transfer_device: HeatTransferDevice) -> bool:
+        flow = heat_transfer_device.flow.value
+        return flow is not None and flow >= PCM_MIN_FLOW
+
+    @staticmethod
+    def _exhausted_drive(heat_transfer_device: HeatTransferDevice) -> DeltaT | None:
+        """T_in - PCM_MELT_TEMP if the circuit shows no phase change left, else None."""
+        inlet = heat_transfer_device.temperature_supply.value
+        delta_t = heat_transfer_device.delta_t.value
+        if inlet is None or delta_t is None:
+            return None
+
+        drive = inlet - PCM_MELT_TEMP
+        if abs(drive) <= PCM_MELT_MARGIN:
+            return None
+        if abs(delta_t) >= PCM_EXHAUSTED_EFFECTIVENESS * abs(drive):
+            return None
+        return drive
 
     @staticmethod
     def _held(since: datetime | None, timestamp: datetime) -> bool:
@@ -469,14 +478,8 @@ class PcmChargeController:
         return None if self._energy is None else self._energy / self._capacity
 
     @property
-    def charged(self) -> bool:
-        """An uncalibrated module counts as available.
-
-        Modules are selected for discharge on this flag, and discharging is what makes
-        the empty anchor fire, so treating unknown as not charged would leave a module
-        that never gets discharged and therefore never becomes known.
-        """
-        return self.charge is None or self.charge > PCM_CHARGED_THRESHOLD
+    def charged(self) -> bool | None:
+        return None if self.charge is None else self.charge > PCM_CHARGED_THRESHOLD
 
     def values(self) -> PcmChargeControllerValues:
         timestamp = self._time()

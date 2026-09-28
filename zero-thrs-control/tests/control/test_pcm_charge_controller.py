@@ -25,9 +25,8 @@ from thrs.input_output.definitions.units import (
 FLOW: LMin = 5.0
 STEP = 10.0  # seconds; well inside the sample gap limit
 
-# Long enough to flush the largest circuit at FLOW, so the purge never masks what is
-# being tested, plus a step for the first sample, which sets the clock but measures no
-# interval. Both are rounded up to whole steps.
+# Flushes the largest circuit at FLOW, plus a step for the first sample, which only sets
+# the clock.
 PURGE_SECONDS = 60 * PCM_MODULE_PURGE_VOLUME / FLOW + 2 * STEP
 DWELL_SECONDS = PCM_ANCHOR_DWELL + 2 * STEP
 
@@ -44,7 +43,7 @@ class Clock:
 
 
 def _device(
-    inlet: Celsius, outlet: Celsius, flow: LMin, timestamp: datetime
+    inlet: Celsius | None, outlet: Celsius, flow: LMin, timestamp: datetime
 ) -> sensor.HeatTransferDevice:
     return sensor.HeatTransferDevice.from_sensors(
         temperature_supply=Stamped(value=inlet, timestamp=timestamp),
@@ -71,7 +70,7 @@ def _feed(
 
 
 def _single(
-    inlet: Celsius, outlet: Celsius, flow: LMin = FLOW
+    inlet: Celsius | None, outlet: Celsius, flow: LMin = FLOW
 ) -> Callable[[datetime], tuple[sensor.HeatTransferDevice, ...]]:
     return lambda timestamp: (_device(inlet, outlet, flow, timestamp),)
 
@@ -96,11 +95,10 @@ def test_charge_is_unknown_before_any_anchor():
     assert controller.values().energy.value is None
 
 
-def test_unknown_module_counts_as_charged():
-    """Otherwise it would never be selected for discharge, so never become known."""
+def test_charged_is_unknown_before_any_anchor():
     controller = PcmChargeController(Clock())
 
-    assert controller.values().charged.value is True
+    assert controller.values().charged.value is None
 
 
 def test_converged_hot_inlet_anchors_full():
@@ -174,6 +172,68 @@ def test_discharge_outlet_in_the_manufacturer_band_does_not_anchor_empty():
     assert charge is not None and charge > 0.0
 
 
+def test_small_dt_does_not_anchor_with_little_drive():
+    """1 K across a module with its inlet 4 K past the melt point is still melting."""
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _feed(
+        controller,
+        clock,
+        _single(inlet=62.0, outlet=61.0),
+        seconds=PURGE_SECONDS + DWELL_SECONDS,
+    )
+
+    assert controller.values().charge.value is None
+
+
+def test_same_dt_anchors_with_a_large_drive():
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _feed(
+        controller,
+        clock,
+        _single(inlet=75.0, outlet=74.0),
+        seconds=PURGE_SECONDS + DWELL_SECONDS,
+    )
+
+    assert controller.values().charge.value == approx(1.0)
+
+
+def test_unknown_inlet_is_not_integrated():
+    """Between valve positions the inlet is unknown, and so is the heat."""
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(controller, clock, _single(inlet=None, outlet=60.0), seconds=600)
+
+    assert controller.values().energy.value == approx(0.0)
+
+
+def test_unknown_inlet_restarts_the_purge():
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(controller, clock, _single(inlet=None, outlet=60.0), seconds=60)
+    _feed(controller, clock, _single(inlet=70.0, outlet=60.0), seconds=60)
+
+    assert controller.values().energy.value == approx(0.0)
+
+
+def test_a_gap_in_the_data_restarts_the_purge():
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    _feed(controller, clock, _single(inlet=70.0, outlet=60.0), seconds=600, step=600)
+    _feed(controller, clock, _single(inlet=70.0, outlet=60.0), seconds=60)
+
+    assert controller.values().energy.value == approx(0.0)
+
+
 def test_energy_is_integrated_between_anchors():
     clock = Clock()
     controller = PcmChargeController(clock)
@@ -218,7 +278,7 @@ def test_energy_is_clamped_to_capacity():
 
 
 def test_freshwater_circuit_discharges_module1():
-    """Module 1 can be drawn down over its HPC with the thrs loop idle."""
+    """Module 1 can be drawn down over its A-D exchanger with the thrs loop idle."""
     clock = Clock()
     controller = PcmChargeController(
         clock, (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME)

@@ -242,10 +242,15 @@ class PcmSensorValues(AmcsModeSensorValues):
 
     @property
     def _module_inlet_source(self) -> str:
-        return sensor.extract_source_yardtag(
-            self,
-            "pcm_temperature_producers_return" if self._supply_from_producers else None,
-        )
+        if self._supply_from_producers:
+            return sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_return"
+            )
+        if self._supply_from_consumers:
+            return sensor.extract_source_yardtag(
+                self, "pcm_temperature_consumers_return"
+            )
+        return "unknown"
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -265,7 +270,7 @@ class PcmSensorValues(AmcsModeSensorValues):
                 measurements=[
                     self.consumers_temperature_dhw_return.temperature,
                     self.consumers_temperature_adsorption_return.temperature,
-                    self.consumers_flow_bypass.temperature,  # For now, we take the bypass temperature from the flow sensor. Even though it's inaccurate, the alternative is a complex valve-dependent calculation.
+                    self.consumers_flow_bypass.temperature,  # Reading from flow sensor is inaccurate, but avoids a valve-dependent calculation
                 ],
                 default_if_zero_weight=None,
             )
@@ -297,10 +302,7 @@ class PcmSensorValues(AmcsModeSensorValues):
     )
     @property
     def pcm_heat_module1_freshwater(self) -> sensor.HeatTransferDevice:
-        """Module 1's second circuit, the HPC, which the freshwater system discharges.
-
-        It can draw the module down with the thrs loop idle, so its energy counts too.
-        """
+        """Module 1's A-D exchanger, discharged by the freshwater system."""
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.freshwater_temperature_pcm_supply.temperature,
             temperature_return=self.freshwater_temperature_pcm_return.temperature,
@@ -442,7 +444,7 @@ class PcmSimulationInputs(ThrsValues):
             temperature=self.pcm_freshwater_supply.temperature
         )
 
-    # For the PCM simulation, we set the individual consumers return temperatures based on the overall consumers supply temperature.
+    # The model has a single consumers stream, so every return reads its temperature.
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
@@ -479,11 +481,14 @@ class PcmSimulationOutputs(ThrsValues):
             temperature=self.pcm_freshwater_return.temperature,
         )
 
-    # For the PCM simulation, we set the individual consumers flow based on the such that all flow goes through the bypass
+    # The model has a single consumers stream, so all of it goes past the dhw.
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_dhw(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor.zero()
+        return sensor.FlowSensor(
+            flow=self.pcm_consumers_return.flow,
+            temperature=self.pcm_consumers_return.temperature,
+        )
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
@@ -493,7 +498,4 @@ class PcmSimulationOutputs(ThrsValues):
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_bypass(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=self.pcm_consumers_return.flow,
-            temperature=self.pcm_consumers_return.temperature,
-        )
+        return sensor.FlowSensor.zero()

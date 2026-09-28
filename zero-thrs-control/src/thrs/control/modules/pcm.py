@@ -1,6 +1,8 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import Annotated
 
+from pydantic import Field, model_validator
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
@@ -14,13 +16,15 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
+    PCM_EXHAUSTED_EFFECTIVENESS,
     PCM_HEATING_ELEMENT_POWER,
+    PCM_MELT_TEMP,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
     PcmChargeControllerValues,
     PcmChargingState,
 )
-from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
+from thrs.input_output.definitions.units import Celsius, DeltaT, LMin, Ratio, Tuning
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 from thrs.orchestration.module import ModuleDescription
 
@@ -28,13 +32,11 @@ from thrs.orchestration.module import ModuleDescription
 class PcmParameters(ThrsValues):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
-    # Must stay below PCM_EXHAUSTED_DT, or charging stops before a module has held a
-    # converged dT long enough to anchor its charge at full. TODO: The condition is an
-    # any() over all four modules, so today only the last one to finish is at risk;
-    # revisit when the charging conditions are reworked per module.
-    minimum_charging_dt: Celsius = 1
-    # Manufacturer minimum supply temperature for thermal charging is 65 C (maximum 80).
-    minimum_charging_temperature: Celsius = 65
+    minimum_charging_dt: Annotated[DeltaT, Field(gt=0)] = 1
+    minimum_charging_temperature: Annotated[
+        Celsius,
+        Field(description="Range for thermal charging", ge=65, le=80),
+    ] = 65
     pump_tuning: Tuning = (0.01, 0.001, 0)
     supplying_enabled: bool = True
     charging_enabled: bool = True
@@ -42,6 +44,21 @@ class PcmParameters(ThrsValues):
     module2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+
+    @model_validator(mode="after")
+    def check_charging_dt(self):
+        # Charging must continue until the exchanger effectiveness has dropped far
+        # enough for the last module to anchor full.
+        anchor_dt = PCM_EXHAUSTED_EFFECTIVENESS * (
+            self.minimum_charging_temperature - PCM_MELT_TEMP
+        )
+        if self.minimum_charging_dt >= anchor_dt:
+            raise ValueError(
+                f"Minimum charging dT must be below {anchor_dt:.1f} K at a minimum "
+                "charging temperature of "
+                f"{self.minimum_charging_temperature} C"
+            )
+        return self
 
 
 class PcmControllerState(ThrsValues):
@@ -88,12 +105,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N
 def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
     timestamp: datetime,
 ) -> PcmChargeControllerValues:
-    # Charge is unknown until an end point has been observed, and an unknown module
-    # counts as charged so that it can be discharged and thereby become known.
     return PcmChargeControllerValues(
         charge=Stamped(value=None, timestamp=timestamp),
         energy=Stamped(value=None, timestamp=timestamp),
-        charged=Stamped(value=True, timestamp=timestamp),
+        charged=Stamped(value=None, timestamp=timestamp),
         charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
     )
 
@@ -291,9 +306,6 @@ class PcmControl(
             self._time,
         )
 
-        # Module 1 has the thrs loop on its LPC and the freshwater system on its HPC,
-        # each flushing its own volume; the others run both exchangers in parallel on
-        # the thrs loop, so they are one circuit carrying the combined volume.
         self.module1_charge_controller = PcmChargeController(
             self._time,
             (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME),

@@ -51,7 +51,6 @@ export type PIDController = {
 
 export type PcmChargeController = {
   chargingState: Stamped<PcmChargingState>;
-  // Undefined until the estimate has been anchored to a measured empty or full.
   charge: Stamped<Ratio | undefined>;
   energy: Stamped<number | undefined>;
 };
