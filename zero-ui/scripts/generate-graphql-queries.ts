@@ -102,7 +102,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "components",
     ],
     DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill", "timeToHot"],
-    PcmChargeController: ["charge", "energy", "chargingState"],
+    PcmChargeController: ["charge", "energy", "chargingState", "chargeStatus"],
   },
 
   // Sensor component fields
@@ -115,7 +115,6 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Valve: ["positionRel", "positionAbs"],
     Thruster: ["active"],
     Pcs: ["mode"],
-    Pcm: ["charged"],
     Pvt: ["power"],
     HeatPump: ["on"],
     Level: ["level"],

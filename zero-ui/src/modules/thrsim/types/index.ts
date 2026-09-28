@@ -53,6 +53,7 @@ export type PcmChargeController = {
   chargingState: Stamped<PcmChargingState>;
   charge: Stamped<Ratio | undefined>;
   energy: Stamped<number | undefined>;
+  chargeStatus: Stamped<PcmChargeStatus>;
 };
 
 export const enum PvtMode {
@@ -113,7 +114,6 @@ export type SensorValueFields =
   | keyof DeltaTSensor
   | keyof HeatTransferDeviceSensor
   | keyof Valve
-  | keyof PcmSensor
   | keyof LevelSwitchSensor;
 
 export type SensorFields = {
@@ -124,7 +124,6 @@ export type SensorFields = {
   [SensorComponentType.Valve]: (keyof Valve)[];
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
-  [SensorComponentType.Pcm]: (keyof PcmSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
   [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
@@ -202,9 +201,12 @@ export const enum PcmChargingState {
   Idle = "IDLE",
 }
 
-export type PcmSensor = {
-  charged: Stamped<boolean>;
-};
+export const enum PcmChargeStatus {
+  Unknown = "UNKNOWN",
+  Empty = "EMPTY",
+  Intermediate = "INTERMEDIATE",
+  Full = "FULL",
+}
 
 export type HeatpumpSensor = {
   on: Stamped<boolean>;
@@ -398,7 +400,6 @@ export const enum SensorComponentType {
   Valve = "sensor:valve",
   Thruster = "sensor:thruster",
   Pcs = "sensor:pcs",
-  Pcm = "sensor:pcm",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
   HeatTransferDevice = "sensor:heatTransferDevice",
@@ -422,7 +423,6 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Valve,
   SensorComponentType.Thruster,
   SensorComponentType.Pcs,
-  SensorComponentType.Pcm,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
   SensorComponentType.HeatTransferDevice,
@@ -467,7 +467,6 @@ export type PumpSensorDefinition = SensorDefinition<SensorComponentType.Pump>;
 export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> & {
   valveType: ValveType;
 };
-export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
@@ -486,7 +485,6 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Flow]: FlowSensor;
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
-  [SensorComponentType.Pcm]: PcmSensor;
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;

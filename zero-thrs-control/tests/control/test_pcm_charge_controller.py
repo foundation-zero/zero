@@ -14,6 +14,8 @@ from thrs.input_output.definitions.controllers import (
     PCM_MODULE_CAPACITY,
     PCM_MODULE_PURGE_VOLUME,
     PCM_STANDBY_LOSS,
+    PCM_STATUS_DEADBAND,
+    PcmChargeStatus,
     PcmChargingState,
 )
 from thrs.input_output.definitions.units import (
@@ -95,10 +97,10 @@ def test_charge_is_unknown_before_any_anchor():
     assert controller.values().energy.value is None
 
 
-def test_charged_is_unknown_before_any_anchor():
+def test_status_is_unknown_before_any_anchor():
     controller = PcmChargeController(Clock())
 
-    assert controller.values().charged.value is None
+    assert controller.values().charge_status.value == PcmChargeStatus.UNKNOWN.value
 
 
 def test_converged_hot_inlet_anchors_full():
@@ -109,6 +111,7 @@ def test_converged_hot_inlet_anchors_full():
 
     assert controller.values().charge.value == approx(1.0)
     assert controller.values().energy.value == approx(PCM_MODULE_CAPACITY)
+    assert controller.values().charge_status.value == PcmChargeStatus.FULL.value
 
 
 def test_converged_cold_inlet_anchors_empty():
@@ -118,7 +121,7 @@ def test_converged_cold_inlet_anchors_empty():
     _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
 
     assert controller.values().charge.value == approx(0.0)
-    assert controller.values().charged.value is False
+    assert controller.values().charge_status.value == PcmChargeStatus.EMPTY.value
 
 
 def test_no_anchor_before_the_circuit_is_purged():
@@ -394,3 +397,78 @@ def test_circuits_that_disagree_do_not_anchor():
     _feed(controller, clock, circuits, seconds=PURGE_SECONDS + DWELL_SECONDS)
 
     assert controller.values().charge.value is None
+
+
+def test_full_status_survives_standby_loss_and_a_small_discharge():
+    """Only measured heat moves the status; the modelled standby loss must not."""
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _charge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    assert controller.values().charge_status.value == PcmChargeStatus.FULL.value
+
+    _feed(controller, clock, _single(inlet=20.0, outlet=20.0, flow=0.0), seconds=3600)
+    assert controller.values().charge_status.value == PcmChargeStatus.FULL.value
+
+    # A real but small discharge, kept under the deadband once purged. The dT is
+    # picked well above the exhausted-effectiveness threshold so it never anchors
+    # empty, whatever the duration.
+    small_discharge_heat = FLOW * 3.0 * GLYCOL_20_HEAT_TRANSFER_CONVERSION
+    _feed(
+        controller,
+        clock,
+        _single(inlet=45.0, outlet=48.0, flow=FLOW),
+        seconds=PURGE_SECONDS + 0.5 * PCM_STATUS_DEADBAND / small_discharge_heat,
+    )
+    assert controller.values().charge_status.value == PcmChargeStatus.FULL.value
+
+
+def test_full_status_becomes_intermediate_after_discharging_past_the_deadband():
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _charge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    assert controller.values().charge_status.value == PcmChargeStatus.FULL.value
+
+    discharge_heat = FLOW * 10.0 * GLYCOL_20_HEAT_TRANSFER_CONVERSION
+    _feed(
+        controller,
+        clock,
+        _single(inlet=45.0, outlet=55.0, flow=FLOW),
+        seconds=PURGE_SECONDS + 1.5 * PCM_STATUS_DEADBAND / discharge_heat,
+    )
+    assert controller.values().charge_status.value == PcmChargeStatus.INTERMEDIATE.value
+
+
+def test_empty_status_becomes_intermediate_after_charging_past_the_deadband():
+    """Module 1's heating element can charge a module with nothing flowing."""
+    clock = Clock()
+    controller = PcmChargeController(clock, heating_power=PCM_HEATING_ELEMENT_POWER)
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    assert controller.values().charge_status.value == PcmChargeStatus.EMPTY.value
+
+    _feed(
+        controller,
+        clock,
+        _single(inlet=20.0, outlet=20.0, flow=0.0),
+        seconds=1.5 * PCM_STATUS_DEADBAND / PCM_HEATING_ELEMENT_POWER,
+        heating=True,
+    )
+    assert controller.values().charge_status.value == PcmChargeStatus.INTERMEDIATE.value
+
+
+def test_integrated_capacity_alone_does_not_anchor_status_full():
+    """The estimate can reach capacity without measured evidence of a full anchor."""
+    clock = Clock()
+    controller = PcmChargeController(clock)
+
+    _discharge(clock, controller, PURGE_SECONDS + DWELL_SECONDS)
+    assert controller.values().charge_status.value == PcmChargeStatus.EMPTY.value
+
+    # Strong charging that never reads as exhausted, so it never re-anchors full.
+    _feed(controller, clock, _single(inlet=70.0, outlet=60.0), seconds=20000)
+
+    values = controller.values()
+    assert values.charge.value == approx(1.0)
+    assert values.charge_status.value == PcmChargeStatus.INTERMEDIATE.value

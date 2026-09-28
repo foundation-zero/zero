@@ -164,7 +164,6 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Valve]: "positionRel",
   [SensorComponentType.Thruster]: "active",
   [SensorComponentType.Pcs]: "mode",
-  [SensorComponentType.Pcm]: "charged",
   [SensorComponentType.Level]: "level",
   [SensorComponentType.LevelSwitch]: "empty",
   [SensorComponentType.HeatTransferDevice]: "deltaT",

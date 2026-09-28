@@ -233,7 +233,7 @@
         "states": {
           "empty": "Empty",
           "full": "Full",
-          "half-full": "Half full",
+          "half-full": "Partial",
           "unknown": "Charge unknown"
         }
       },

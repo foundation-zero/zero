@@ -8,7 +8,6 @@ from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.controllers import (
     PCM_ANCHOR_DWELL,
-    PCM_CHARGED_THRESHOLD,
     PCM_CHARGING_DEADBAND,
     PCM_EXHAUSTED_EFFECTIVENESS,
     PCM_MAX_SAMPLE_GAP,
@@ -18,12 +17,16 @@ from thrs.input_output.definitions.controllers import (
     PCM_MODULE_CAPACITY,
     PCM_MODULE_PURGE_VOLUME,
     PCM_STANDBY_LOSS,
+    PCM_STATUS_DEADBAND,
     PcmChargeControllerValues,
+    PcmChargeStatus,
     PcmChargingState,
     PidControllerValues,
 )
 from thrs.input_output.definitions.sensor import HeatTransferDevice
 from thrs.input_output.definitions.units import (
+    GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+    Celsius,
     DeltaT,
     Joule,
     Liter,
@@ -300,7 +303,7 @@ class FlowDistributionController:
 
 
 class PcmChargeController:
-    """Estimates the energy stored in one PCM module.
+    """Estimates the energy stored in one PCM module and its FULL/EMPTY charge status.
 
     The energy is integrated from the heat of each circuit through the module, plus
     `heating_power` while `heating` is set, minus PCM_STANDBY_LOSS while nothing flows.
@@ -317,6 +320,10 @@ class PcmChargeController:
     The sensors sit in the pipework, so a circuit only counts once its purge volume has
     passed since flow started and all its readings are known. Pass circuits in the order
     of `purge_volumes`.
+
+    `charge_status` starts UNKNOWN and is set to FULL/EMPTY by an anchor. Once FULL (EMPTY), it moves
+    to INTERMEDIATE once the *measured* heat moved through the circuits since the anchor
+    -- excluding the modelled standby loss -- exceeds PCM_STATUS_DEADBAND out (in).
     """
 
     def __init__(
@@ -336,6 +343,8 @@ class PcmChargeController:
         self._previous: datetime | None = None
         self._full_since: datetime | None = None
         self._empty_since: datetime | None = None
+        self._charge_status = PcmChargeStatus.UNKNOWN
+        self._net_since_anchor: Joule = 0.0
 
     def __call__(
         self, *heat_transfer_devices: HeatTransferDevice, heating: bool = False
@@ -358,7 +367,7 @@ class PcmChargeController:
             for index, device in enumerate(heat_transfer_devices)
         ]
         self._integrate(heat_transfer_devices, settled, heating, interval)
-        self._anchor(heat_transfer_devices, settled, timestamp)
+        self._anchor(heat_transfer_devices, settled, heating, interval, timestamp)
 
     def _state(
         self, heat_transfer_devices: Sequence[HeatTransferDevice], heating: bool
@@ -392,6 +401,18 @@ class PcmChargeController:
         self._purged[index] += flow * interval / 60
         return self._purged[index] >= self._purge_volumes[index]
 
+    @staticmethod
+    def _measured_heat(
+        heat_transfer_devices: Sequence[HeatTransferDevice], settled: Sequence[bool]
+    ) -> Watt | None:
+        """Net heat into the module from settled circuits this tick, or None if none are settled."""
+        heats = [
+            device.heat.value
+            for device, ready in zip(heat_transfer_devices, settled, strict=True)
+            if ready and device.heat.value is not None
+        ]
+        return -sum(heats) if heats else None
+
     def _integrate(
         self,
         heat_transfer_devices: Sequence[HeatTransferDevice],
@@ -402,13 +423,9 @@ class PcmChargeController:
         if self._energy is None:
             return
 
-        heats = [
-            device.heat.value
-            for device, ready in zip(heat_transfer_devices, settled, strict=True)
-            if ready and device.heat.value is not None
-        ]
-        if heats:
-            power = -sum(heats)
+        measured = self._measured_heat(heat_transfer_devices, settled)
+        if measured is not None:
+            power = measured
         elif any(
             device.flow.value is None or self._flowing(device)
             for device in heat_transfer_devices
@@ -426,6 +443,8 @@ class PcmChargeController:
         self,
         heat_transfer_devices: Sequence[HeatTransferDevice],
         settled: Sequence[bool],
+        heating: bool,
+        interval: Seconds,
         timestamp: datetime,
     ) -> None:
         drives = [
@@ -441,10 +460,56 @@ class PcmChargeController:
         self._full_since = (self._full_since or timestamp) if full else None
         self._empty_since = (self._empty_since or timestamp) if empty else None
 
-        if self._held(self._full_since, timestamp):
+        anchored_full = self._held(self._full_since, timestamp)
+        anchored_empty = self._held(self._empty_since, timestamp)
+
+        if anchored_full:
             self._energy = self._capacity
-        elif self._held(self._empty_since, timestamp):
+        elif anchored_empty:
             self._energy = 0.0
+
+        self._update_charge_status(
+            heat_transfer_devices,
+            settled,
+            heating,
+            interval,
+            anchored_full,
+            anchored_empty,
+        )
+
+    def _update_charge_status(
+        self,
+        heat_transfer_devices: Sequence[HeatTransferDevice],
+        settled: Sequence[bool],
+        heating: bool,
+        interval: Seconds,
+        anchored_full: bool,
+        anchored_empty: bool,
+    ) -> None:
+        if anchored_full:
+            self._charge_status = PcmChargeStatus.FULL
+            self._net_since_anchor = 0.0
+            return
+        if anchored_empty:
+            self._charge_status = PcmChargeStatus.EMPTY
+            self._net_since_anchor = 0.0
+            return
+
+        if self._charge_status not in (PcmChargeStatus.FULL, PcmChargeStatus.EMPTY):
+            return
+
+        measured = self._measured_heat(heat_transfer_devices, settled) or 0.0
+        power = measured + (self._heating_power if heating else 0.0)
+        self._net_since_anchor += power * interval
+
+        if (
+            self._charge_status is PcmChargeStatus.FULL
+            and self._net_since_anchor < -PCM_STATUS_DEADBAND
+        ) or (
+            self._charge_status is PcmChargeStatus.EMPTY
+            and self._net_since_anchor > PCM_STATUS_DEADBAND
+        ):
+            self._charge_status = PcmChargeStatus.INTERMEDIATE
 
     @staticmethod
     def _flowing(heat_transfer_device: HeatTransferDevice) -> bool:
@@ -473,19 +538,36 @@ class PcmChargeController:
             and (timestamp - since).total_seconds() >= PCM_ANCHOR_DWELL
         )
 
+    @staticmethod
+    def minimum_charging_temperature(flow: LMin) -> Celsius:
+        """Lowest inlet at which a module charged at `flow` can anchor full.
+
+        The inlet must clear the melt margin, and the heat at the anchoring
+        effectiveness must stay above the deadband, or the module stops reading
+        CHARGING before it anchors.
+        """
+        deadband_drive = PCM_CHARGING_DEADBAND / (
+            flow * GLYCOL_20_HEAT_TRANSFER_CONVERSION * PCM_EXHAUSTED_EFFECTIVENESS
+        )
+        return PCM_MELT_TEMP + max(PCM_MELT_MARGIN, deadband_drive)
+
     @property
     def charge(self) -> Ratio | None:
         return None if self._energy is None else self._energy / self._capacity
 
     @property
-    def charged(self) -> bool | None:
-        return None if self.charge is None else self.charge > PCM_CHARGED_THRESHOLD
+    def charge_status(self) -> PcmChargeStatus:
+        return self._charge_status
+
+    @property
+    def charging_state(self) -> PcmChargingState:
+        return self._charging_state
 
     def values(self) -> PcmChargeControllerValues:
         timestamp = self._time()
         return PcmChargeControllerValues(
             charge=Stamped(value=self.charge, timestamp=timestamp),
             energy=Stamped(value=self._energy, timestamp=timestamp),
-            charged=Stamped(value=self.charged, timestamp=timestamp),
+            charge_status=Stamped(value=self._charge_status, timestamp=timestamp),
             charging_state=Stamped(value=self._charging_state, timestamp=timestamp),
         )
