@@ -218,7 +218,14 @@ class PcmSensorValues(AmcsModeSensorValues):
                 self.pcm_temperature_consumers_return.temperature,
             )
 
-        return Stamped.stamp(None)
+        return sensor.stamped_by_valves(
+            [
+                self.pcm_switch_discharging,
+                self.pcm_switch_charging_supply,
+                self.pcm_switch_charging_return,
+            ],
+            None,
+        )
 
     @property
     def _module_inlet_source(self) -> str:

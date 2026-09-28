@@ -303,6 +303,14 @@ class DhwSensorValues(AmcsModeSensorValues):
         on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
 
+    @property
+    def _boosting_switches(self) -> list[sensor.Valve]:
+        return [
+            self.dhw_switch_heatpump,
+            self.dhw_switch_high_temperature,
+            self.dhw_switch_low_temperature,
+        ]
+
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001035", component_type="heat_transfer", included_in_fmu=False
@@ -330,19 +338,20 @@ class DhwSensorValues(AmcsModeSensorValues):
                 ),
                 flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
-        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_heatpump]):
+        source_switch = [self.dhw_switch_heatpump]
+        if sensor.valves_open_closed(closed_valves=source_switch):
             return sensor.HeatTransferDevice.from_sensors(
-                temperature_supply=Stamped.stamp(None),
-                temperature_return=Stamped.stamp(None),
-                flow=Stamped.stamp(0.0),
+                temperature_supply=sensor.stamped_by_valves(source_switch, None),
+                temperature_return=sensor.stamped_by_valves(source_switch, None),
+                flow=sensor.stamped_by_valves(source_switch, 0.0),
                 temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
             )
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,
-            temperature_return=Stamped.stamp(None),
-            flow=Stamped.stamp(None),
+            temperature_return=sensor.stamped_by_valves(self._boosting_switches, None),
+            flow=sensor.stamped_by_valves(self._boosting_switches, None),
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_boosting_supply"
             ),
@@ -398,19 +407,20 @@ class DhwSensorValues(AmcsModeSensorValues):
                 ),
                 flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
-        if sensor.valves_open_closed(closed_valves=[self.dhw_switch_high_temperature]):
+        source_switch = [self.dhw_switch_high_temperature]
+        if sensor.valves_open_closed(closed_valves=source_switch):
             return sensor.HeatTransferDevice.from_sensors(
-                temperature_supply=Stamped.stamp(None),
-                temperature_return=Stamped.stamp(None),
-                flow=Stamped.stamp(0.0),
+                temperature_supply=sensor.stamped_by_valves(source_switch, None),
+                temperature_return=sensor.stamped_by_valves(source_switch, None),
+                flow=sensor.stamped_by_valves(source_switch, 0.0),
                 temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
             )
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,
-            temperature_return=Stamped.stamp(None),
-            flow=Stamped.stamp(None),
+            temperature_return=sensor.stamped_by_valves(self._boosting_switches, None),
+            flow=sensor.stamped_by_valves(self._boosting_switches, None),
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_boosting_supply"
             ),
@@ -481,10 +491,11 @@ class DhwSensorValues(AmcsModeSensorValues):
                 ),
                 flow_source=sensor.extract_source_yardtag(self, "dhw_flow_boosting"),
             )
+        drives_valves = [*self._boosting_switches, self.dhw_flowcontrol_drives]
         return sensor.HeatTransferDevice.from_sensors(
-            temperature_supply=Stamped.stamp(None),
+            temperature_supply=sensor.stamped_by_valves(drives_valves, None),
             temperature_return=self.dhw_temperature_drives_return.temperature,
-            flow=Stamped.stamp(None),
+            flow=sensor.stamped_by_valves(drives_valves, None),
             temperature_supply_source="unknown",
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_drives_return"
