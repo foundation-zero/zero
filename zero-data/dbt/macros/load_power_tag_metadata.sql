@@ -1,3 +1,14 @@
+/*
+ * Normally this metadata should be loaded into a seed table.
+ * However, it is currently not possible to create tables the normal way, because GreptimeDB demands that each table has a time index constraint.
+ * Therefor we cannot use seeds or create tables in silver/gold layer the usual way; dbt uses regular "CREATE TABLE" statements that lack the time index constraint.
+ * 
+ * The only (simple) solution at the moment is to create a table using a macro.
+*/
+
+-- TODO: Create dbt plugin for greptime which seeds with an epoch time index
+
+
 {% macro load_power_tag_metadata() %}
 
     {% set target_table = 'power_tag_metadata' %}
