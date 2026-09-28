@@ -102,7 +102,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
       "components",
     ],
     DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill", "timeToHot"],
-    PcmChargeController: ["charge", "chargingState"],
+    PcmChargeController: ["charge", "energy", "chargingState"],
   },
 
   // Sensor component fields

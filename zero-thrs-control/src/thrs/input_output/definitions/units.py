@@ -114,8 +114,7 @@ def validate_nonzero_float_within_precision(
 SPECIFIC_HEAT_WATER = 4184  # J/(kg*K)
 WATER_HEAT_TRANSFER_CONVERSION = SPECIFIC_HEAT_WATER / 60  # W/((l/min)*K)
 
-# TODO: Confirm the actual mixture. 20% glycol is an assumption; properties are
-# taken around 60 C, where the loops carrying it actually operate.
+# Properties at around 60 C, where the glycol loops operate.
 SPECIFIC_HEAT_GLYCOL_20 = 3950  # J/(kg*K)
 DENSITY_GLYCOL_20 = 1005  # kg/m3
 GLYCOL_20_HEAT_TRANSFER_CONVERSION = (  # W/((l/min)*K), ~5% below water
@@ -152,6 +151,7 @@ NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Error: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Operating: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
+OptionalCharged: TypeAlias = Annotated[bool | None, UnitMeta(modelica_name="bool")]
 Empty: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]

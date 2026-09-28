@@ -1124,7 +1124,7 @@ async def test_query_controller_state(app, test_client):
                                 "value": None,
                             },
                             "charged": {
-                                "value": False,
+                                "value": None,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1138,7 +1138,7 @@ async def test_query_controller_state(app, test_client):
                                 "value": None,
                             },
                             "charged": {
-                                "value": False,
+                                "value": None,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1152,7 +1152,7 @@ async def test_query_controller_state(app, test_client):
                                 "value": None,
                             },
                             "charged": {
-                                "value": False,
+                                "value": None,
                             },
                             "chargingState": {
                                 "value": "IDLE",
@@ -1166,7 +1166,7 @@ async def test_query_controller_state(app, test_client):
                                 "value": None,
                             },
                             "charged": {
-                                "value": False,
+                                "value": None,
                             },
                             "chargingState": {
                                 "value": "IDLE",

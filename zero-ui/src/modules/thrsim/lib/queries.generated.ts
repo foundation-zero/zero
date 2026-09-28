@@ -1464,18 +1464,22 @@ export const PCM_CONTROL_QUERY = `
 export const PCM_CONTROLLER_STATE_QUERY = `
   module1ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
   }
   module2ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
   }
   module3ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
   }
   module4ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
   }
 `;
