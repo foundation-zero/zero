@@ -8,9 +8,6 @@ from zero_data.io_list.types import IOResult
 from zero_data.io_list.utils import detect_same_format
 
 EXTRA_GROUPED_TOPICS = [
-    # "marpower/450000-main-power-storage/system-05/",
-    # "marpower/450000-main-power-storage/system-5/",
-    # "marpower/500000-thrs/vlv/",
     "marpower/450000-dc-distribution/350v-conv/",
     "marpower/450000-dc-distribution/conv/",
     "marpower/450000-dc-distribution/dc-switch/",
