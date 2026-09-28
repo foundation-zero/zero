@@ -15,11 +15,6 @@ const t = tScoped("thrapp.parameters.dhw");
     <Parameters.Separator />
     <Parameters.List>
       <ParameterItems.Temperature
-        :source="getField(ParametersType.dT, 'dhw', 'htBoostingMinimumDelta')"
-      >
-        {{ t("items.htBoostingMinimumDelta") }}
-      </ParameterItems.Temperature>
-      <ParameterItems.Temperature
         :source="getField(ParametersType.Temperature, 'dhw', 'minimumTankTemperature')"
       >
         {{ t("items.minimumTankTemperature") }}
@@ -29,16 +24,6 @@ const t = tScoped("thrapp.parameters.dhw");
       >
         {{ t("items.maximumTankTemperature") }}
       </ParameterItems.Temperature>
-      <ParameterItems.Enabled
-        :source="getField(ParametersType.Enabled, 'dhw', 'heatpumpBoostingEnabled')"
-      >
-        {{ t("items.heatpumpBoosting") }}
-      </ParameterItems.Enabled>
-      <ParameterItems.Enabled
-        :source="getField(ParametersType.Enabled, 'dhw', 'htBoostingEnabled')"
-      >
-        {{ t("items.highTemperatureBoosting") }}
-      </ParameterItems.Enabled>
       <ParameterItems.Dutypoint
         :source="getField(ParametersType.Dutypoint, 'dhw', 'minimumPumpDutypoint')"
       >

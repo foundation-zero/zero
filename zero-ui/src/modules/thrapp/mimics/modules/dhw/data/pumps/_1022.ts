@@ -4,11 +4,10 @@ import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
-import { pumpFlowController, pumpTemperatureController } from "../controllers";
+import { pumpFlowController } from "../controllers";
 
 export default toInstance<MimicComponentType.Pump>({
   custom: {
-    temperatureController: pumpTemperatureController,
     flowController: pumpFlowController,
   },
   controllerState: {},

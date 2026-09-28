@@ -728,15 +728,6 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  dhwPumpTemperatureController {
-    setpoint { value timestamp }
-    measurement { value timestamp }
-    output { value timestamp }
-    error { value timestamp }
-    enabled { value timestamp }
-    tuning { value timestamp }
-    components { value timestamp }
-  }
   dhwDrivesFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
@@ -762,7 +753,7 @@ export const DHW_PARAMETERS_QUERY = `
   htBoostingEnabled
   heatpumpFlowSetpoint
   heatpumpTemperatureSetpoint
-  htBoostingTemperatureSetpoint
+  htBoostingFlowSetpoint
   minimumTankTemperature
   maximumTankTemperature
   htBoostingMinimumDelta
@@ -780,7 +771,6 @@ export const DHW_PARAMETERS_QUERY = `
   tank1Enabled
   tank2Enabled
   tank3Enabled
-  pumpTemperatureTuning
   pumpFlowTuning
   dcFlowTuning
   drivesFlowTuning

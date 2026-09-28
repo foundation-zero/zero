@@ -310,32 +310,40 @@ def test_boosting_pump_held_until_boosting_loop_open(
     # while the boosting valves travel the pump must not be driven
     while not control._boosting_loop_open(runner.tick()[0]):  # type: ignore
         assert control._current_values.dhw_pump.dutypoint.value == 0.1
-        assert not control._pump_temperature_controller.enabled()
+        assert not control._pump_flow_controller.enabled()
 
     sensor_values, *_ = runner.run(120)
 
     assert sensor_values is not None
-    assert control._pump_temperature_controller.enabled()
+    assert control._pump_flow_controller.enabled()
     assert sensor_values.dhw_flow_boosting.flow.value > 0.1
 
 
 def test_pump_minimum_dutypoint_follows_parameters(parameters: DhwParameters):
     control = DhwControl(parameters, datetime.now)
-    pumps = (
-        control._pump_flow_controller,
-        control._pump_temperature_controller,
-    )
+    pump = control._pump_flow_controller
 
-    for pump in pumps:
-        pump(None)
-        assert pump._output_limits == (0.1, 1.0)
+    pump(None)
+    assert pump._output_limits == (parameters.minimum_pump_dutypoint, 1.0)
 
     control.update_parameters(
         parameters.model_copy(update={"minimum_pump_dutypoint": 0.4})
     )
-    for pump in pumps:
-        pump(None)
-        assert pump._output_limits == (0.4, 1.0)
+    pump(None)
+    assert pump._output_limits == (0.4, 1.0)
+
+
+def test_pump_flow_setpoint_follows_boosting_source(parameters: DhwParameters):
+    control = DhwControl(parameters, datetime.now)
+    controller = control._pump_flow_controller
+
+    control._state_machine.set_state("boosting_heatpump")
+    controller(None)  # syncs the setpoint getter
+    assert controller.setpoint == parameters.heatpump_flow_setpoint
+
+    control._state_machine.set_state("boosting_high_temperature")
+    controller(None)
+    assert controller.setpoint == parameters.ht_boosting_flow_setpoint
 
 
 def test_minimum_pump_dutypoint_rejects_below_pump_floor(
@@ -356,11 +364,11 @@ def test_reset_restores_initial_control_state(
     for pid in (
         control._drives_flow_controller,
         control._dc_flow_controller,
-        control._pump_temperature_controller,
+        control._pump_flow_controller,
     ):
         if not pid.enabled():
             pid.enable()
-    control._pump_temperature_controller(control._pump_temperature_controller.setpoint)
+    control._pump_flow_controller(control._pump_flow_controller.setpoint)
     control._state_machine.set_state("boosting_heatpump")
     control._tanks_controller._filling_tank = control._tanks_controller._tanks[0]
     control._boosting_entered_at = datetime.now()
@@ -385,10 +393,7 @@ def test_reset_restores_initial_control_state(
     # selection cleared, tanks controller rebound to the new control values.
     assert not control._drives_flow_controller.enabled()
     assert not control._dc_flow_controller.enabled()
-    assert not control._pump_temperature_controller.enabled()
     assert not control._pump_flow_controller.enabled()
-    assert control._boosting_pump_controller is None
-    assert control._boosting_pump_measurement is None
     assert control._boosting_entered_at is None
     assert control._boosting_shortfall_since is None
     assert control._heatpump_stall_cooldown_until is None
