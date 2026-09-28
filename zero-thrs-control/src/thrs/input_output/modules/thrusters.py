@@ -6,7 +6,6 @@ from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import (
     Stamped,
-    StampedWithSource,
     ThrsValues,
     component_meta,
     computed_meta,
@@ -16,11 +15,8 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
-    DeltaT,
-    LMin,
     OptionalCelsius,
     PcsMode,
-    Watt,
 )
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
@@ -262,7 +258,6 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.thrusters_temperature_pre_cooler.temperature,
             temperature_return=self.thrusters_temperature_supply.temperature,  # type: ignore
             flow=self.thrusters_flow.flow,
-            exchange_mix_ratio=self.thrusters_mix_exchanger.position_rel,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_pre_cooler"
             ),
