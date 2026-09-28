@@ -31,7 +31,8 @@ class PcmChargeStatus(Enum):
 
 PCM_CHARGING_DEADBAND: Watt = 100
 PCM_MIN_FLOW: LMin = 0.5  # below this the dT across a module is noise
-PCM_MAX_SAMPLE_GAP: Seconds = 30
+# Must exceed the 60 s MQTT republish interval of unchanged values.
+PCM_MAX_SAMPLE_GAP: Seconds = 90
 
 PCM_MELT_TEMP: Celsius = 58
 PCM_MELT_MARGIN: DeltaT = (
