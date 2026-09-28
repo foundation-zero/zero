@@ -154,3 +154,25 @@ def test_fmu_roundtrip():
     )
 
     assert values, values == build_outputs_from_fmu((MiniModel,), values, time)
+
+
+def test_build_outputs_stamps_non_fmu_values_with_tick_time():
+    earlier = datetime(2026, 1, 1, tzinfo=UTC)
+    time = datetime(2026, 1, 2, tzinfo=UTC)
+
+    (sensor_values,) = build_outputs_from_fmu(
+        (ExcludedSensorValues,),
+        {"excluded_field_component__included_field__ratio": 0.5},
+        time,
+        {
+            "excluded_component": {
+                "included_field": Stamped(value=1.0, timestamp=earlier)
+            },
+            "excluded_field_component": {
+                "excluded_field": Stamped(value=1.0, timestamp=earlier)
+            },
+        },
+    )
+
+    assert sensor_values.excluded_component.included_field.timestamp == time
+    assert sensor_values.excluded_field_component.excluded_field.timestamp == time
