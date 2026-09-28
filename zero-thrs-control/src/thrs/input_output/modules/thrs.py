@@ -1,7 +1,9 @@
 from typing import Annotated
 
-from thrs.input_output.base import ThrsValues, component_meta
-from thrs.input_output.definitions import simulation
+from pydantic import computed_field
+
+from thrs.input_output.base import ThrsValues, component_meta, computed_meta
+from thrs.input_output.definitions import sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
@@ -119,6 +121,13 @@ class ThrsSimulationInputs(ThrsValues):
     drives_shorepower: simulation.Converter
     drives_seawater_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def freshwater_temperature_pcm_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.pcm_freshwater_supply.temperature
+        )
 
 
 class ThrsSimulationOutputs(
