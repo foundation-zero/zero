@@ -2,7 +2,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PIPE_HEAT_EXCHANGER_WIDTH } from "../../../components/pipe-heat-exchanger";
-import { HeatExchangerLabelInstance, PipeHeatExchangerInstance } from "../../../instances";
+import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
 const heatExchangers = THRUSTERS_MIMIC_DATA[MimicComponentType.HeatExchanger];
@@ -10,10 +10,10 @@ const heatExchangers = THRUSTERS_MIMIC_DATA[MimicComponentType.HeatExchanger];
 
 <template>
   <g>
-    <PipeHeatExchangerInstance
+    <HeatExchangerInstance
       x="664"
-      y="141"
-      :orientation="ComponentOrientation.Left"
+      y="126"
+      :orientation="ComponentOrientation.Up"
       v-bind="heatExchangers['1001']"
     >
       <HeatExchangerLabelInstance
@@ -23,6 +23,6 @@ const heatExchangers = THRUSTERS_MIMIC_DATA[MimicComponentType.HeatExchanger];
         :tag-id="heatExchangers['1001'].tooltip?.yardTag"
         :heat-exchanger="heatExchangers['1001'].source"
       />
-    </PipeHeatExchangerInstance>
+    </HeatExchangerInstance>
   </g>
 </template>

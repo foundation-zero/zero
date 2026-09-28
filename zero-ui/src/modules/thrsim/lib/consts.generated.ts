@@ -170,6 +170,14 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   adsorptionAvailableSeawaterTemperature: {
     componentType: SensorComponentType.Temperature,
   },
+  adsorptionHtExchanger: {
+    yardTag: "50001003",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  adsorptionDhwExchanger: {
+    yardTag: "50001004",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
@@ -327,6 +335,14 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001067-15",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
+  },
+  consumersAdsorptionExchanger: {
+    yardTag: "50001003",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  consumersDhwExchanger: {
+    yardTag: "50001007",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 
@@ -729,6 +745,10 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
   },
+  dcDhwExchanger: {
+    yardTag: "50001008",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
@@ -879,9 +899,6 @@ export const DHW_CONTROLLER_STATE = toControllerStateDefinition({
   dhwPumpFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  dhwPumpTemperatureController: {
-    componentType: ControllerStateComponentType.PIDController,
-  },
   dhwDrivesFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
@@ -903,8 +920,8 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   heatpumpTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
   },
-  htBoostingTemperatureSetpoint: {
-    componentType: ParametersType.Temperature,
+  htBoostingFlowSetpoint: {
+    componentType: ParametersType.Flow,
   },
   minimumTankTemperature: {
     componentType: ParametersType.Temperature,
@@ -912,8 +929,20 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   maximumTankTemperature: {
     componentType: ParametersType.Temperature,
   },
-  boostingDelta: {
+  htBoostingMinimumDelta: {
     componentType: ParametersType.dT,
+  },
+  boostingStartupGrace: {
+    componentType: ParametersType.Duration,
+  },
+  boostingStallWindow: {
+    componentType: ParametersType.Duration,
+  },
+  boostingStallCooldown: {
+    componentType: ParametersType.Duration,
+  },
+  boostingMinimumHeat: {
+    componentType: ParametersType.Power,
   },
   drivesFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,
@@ -944,9 +973,6 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   },
   tank3Enabled: {
     componentType: ParametersType.Enabled,
-  },
-  pumpTemperatureTuning: {
-    componentType: ParametersType.Tuning,
   },
   pumpFlowTuning: {
     componentType: ParametersType.Tuning,
@@ -1140,20 +1166,12 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-16",
     componentType: SensorComponentType.Temperature,
   },
-  drivesTemperatureRecoveryReturn: {
-    yardTag: "50001038-59",
-    componentType: SensorComponentType.Temperature,
-  },
   dcFlowRecovery: {
     yardTag: "50001058-04",
     componentType: SensorComponentType.Flow,
   },
   dcTemperatureRecovery: {
     yardTag: "50001038-52",
-    componentType: SensorComponentType.Temperature,
-  },
-  dcTemperatureRecoveryReturn: {
-    yardTag: "50001038-58",
     componentType: SensorComponentType.Temperature,
   },
   consumersFlowDhw: {
@@ -1164,22 +1182,6 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureDhwReturn: {
-    yardTag: "50001038-48",
-    componentType: SensorComponentType.Temperature,
-  },
-  adsorptionFlowDhw: {
-    yardTag: "50001058-10",
-    componentType: SensorComponentType.Flow,
-  },
-  adsorptionTemperatureWasteReturn: {
-    yardTag: "50001038-38",
-    componentType: SensorComponentType.Temperature,
-  },
-  adsorptionTemperatureDhwReturn: {
-    yardTag: "50001038-56",
-    componentType: SensorComponentType.Temperature,
-  },
   freshwaterHotwaterFlow: {
     yardTag: "25001123-1",
     componentType: SensorComponentType.Flow,
@@ -1187,18 +1189,6 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   freshwaterHotwaterTemperature: {
     yardTag: "25001038-1",
     componentType: SensorComponentType.Temperature,
-  },
-  drivesDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  dcDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  consumersDelta: {
-    componentType: SensorComponentType.DeltaT,
-  },
-  adsorptionDelta: {
-    componentType: SensorComponentType.DeltaT,
   },
   dhwFreshwaterFlowSupply: {
     componentType: SensorComponentType.CalculatedFlow,
@@ -1533,6 +1523,10 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
   },
+  drivesDhwExchanger: {
+    yardTag: "50001009",
+    componentType: SensorComponentType.HeatExchanger,
+  },
 });
 
 export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
@@ -1779,21 +1773,29 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-35",
     componentType: SensorComponentType.Temperature,
   },
+  freshwaterTemperaturePcmSupply: {
+    yardTag: "25001038-5",
+    componentType: SensorComponentType.Temperature,
+  },
+  freshwaterTemperaturePcmReturn: {
+    yardTag: "25001038-3",
+    componentType: SensorComponentType.Temperature,
+  },
   pcmModule1: {
     yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule2: {
     yardTag: "50001050",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule3: {
     yardTag: "50001051",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmModule4: {
     yardTag: "50001052",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.PcmInput,
   },
   pcmFlowModule1: {
     yardTag: "50001057-18",
@@ -1809,6 +1811,10 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   pcmFlowModule4: {
     yardTag: "50001057-21",
+    componentType: SensorComponentType.Flow,
+  },
+  freshwaterFlowPcm: {
+    yardTag: "25001139",
     componentType: SensorComponentType.Flow,
   },
   pcmSwitchChargingReturn: {
@@ -1850,6 +1856,22 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001071-02",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
+  },
+  pcmHeatModule1: {
+    yardTag: "50001049",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule2: {
+    yardTag: "50001050",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule3: {
+    yardTag: "50001051",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmHeatModule4: {
+    yardTag: "50001052",
+    componentType: SensorComponentType.Pcm,
   },
 });
 

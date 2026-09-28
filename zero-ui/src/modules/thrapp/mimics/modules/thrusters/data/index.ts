@@ -11,6 +11,7 @@ import { THRUSTERS_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 import { THRUSTERS_PUMP_DATA } from "./pumps";
 import { THRUSTERS_SWITCH_VALVE_DATA } from "./switch-valves";
 import { THRUSTERS_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
+import { THRUSTERS_THREE_WAY_SWITCH_VALVE_DATA } from "./three-way-switch-valves";
 
 export { THRUSTERS_ASSET_DATA } from "./assets";
 export { THRUSTERS_CHECK_VALVE_DATA } from "./check-valves";
@@ -38,4 +39,5 @@ export const THRUSTERS_MIMIC_DATA = toFieldsMap({
   ...THRUSTERS_CHECK_VALVE_DATA,
   ...THRUSTERS_EXCHANGE_CIRCUIT_DATA,
   ...THRUSTERS_ASSET_DATA,
+  ...THRUSTERS_THREE_WAY_SWITCH_VALVE_DATA,
 });

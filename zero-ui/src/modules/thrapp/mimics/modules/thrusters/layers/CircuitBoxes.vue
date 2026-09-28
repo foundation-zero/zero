@@ -14,15 +14,15 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
       x="1002"
       y="316"
       force-height
-      height="300"
+      height="260"
       v-bind="connectingCircuits?.['pcm']"
     />
 
     <LoopCircuitInstance
       x="590"
-      y="6"
+      y="-10"
       width="194"
-      height="168"
+      height="130"
       force-height
       v-bind="circuits?.['seawater']"
     />

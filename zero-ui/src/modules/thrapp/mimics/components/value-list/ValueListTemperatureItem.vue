@@ -10,7 +10,7 @@ import ValueListItem from "./ValueListItem.vue";
 
 const props = defineProps<{
   setpoint?: number;
-  source: ModuleField<SensorComponentType.Temperature>;
+  source: ModuleField<SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature>;
   class?: HTMLAttributes["class"];
 }>();
 

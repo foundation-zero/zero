@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -15,7 +14,7 @@ import { MimicComponentType } from "../../types";
 import { ComponentOrientation } from "../components";
 import { YardTag } from "../components/yard-tag";
 import { HeatExchangerInstance } from "../instances";
-import { ModuleField, SensorValue } from "../providers";
+import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import Circuit from "./partials/Circuit.vue";
@@ -89,7 +88,7 @@ const { labels, actions, items, sources } = useTranslations();
       <Circuit
         :incoming="custom.exchangeCircuit.incoming"
         :outgoing="custom.exchangeCircuit.outgoing"
-        :delta-t="custom.exchangeCircuit.deltaT as ModuleField<SensorComponentType.DeltaT>"
+        :delta-t="custom.exchangeCircuit.heatExchanger"
         :flow="custom.exchangeCircuit.flow"
       />
     </TooltipList>

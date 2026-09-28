@@ -70,26 +70,26 @@ const flowSensors = PCM_MIMIC_DATA[MimicComponentType.FlowSensor];
     x="1100"
     y="715"
     :orientation="ComponentOrientation.Right"
-    v-bind="flowSensors['1058-07-1']"
+    v-bind="flowSensors['1058-07']"
   >
     <FlowLabelInstance
       target-x="1100"
       y="710"
-      :tag-id="flowSensors['1058-07-1'].tooltip?.yardTag"
-      :flow="flowSensors['1058-07-1'].source"
+      :tag-id="flowSensors['1058-07'].tooltip?.yardTag"
+      :flow="flowSensors['1058-07'].source"
     />
   </FlowSensorInstance>
   <FlowSensorInstance
     x="1224"
     y="715"
     :orientation="ComponentOrientation.Right"
-    v-bind="flowSensors['1058-07-2']"
+    v-bind="flowSensors['1058-08']"
   >
     <FlowLabelInstance
       target-x="1224"
       y="710"
-      :tag-id="flowSensors['1058-07-2'].tooltip?.yardTag"
-      :flow="flowSensors['1058-07-2'].source"
+      :tag-id="flowSensors['1058-08'].tooltip?.yardTag"
+      :flow="flowSensors['1058-08'].source"
     />
   </FlowSensorInstance>
   <FlowSensorInstance

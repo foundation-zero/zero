@@ -82,9 +82,9 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorThrusterType: "Thruster",
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
+  SensorPcmInputType: "PcmInput",
   SensorLevelSensorType: "Level",
   SensorLevelSwitchType: "LevelSwitch",
-  SensorTemperatureDeltaType: "DeltaT",
   SensorCalculatedFlowType: "CalculatedFlow",
   SensorHeatPumpType: "HeatPump",
   SensorHeatExchangerType: "HeatExchanger",
@@ -111,12 +111,13 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 
-const CONTROL_TYPE_MAP: Record<string, string> = {
+const CONTROL_TYPE_MAP: Record<string, string | null> = {
   ControlPcmType: "Pcm",
   ControlPumpType: "Pump",
   ControlValveType: "Valve",
   ControlHeatPumpType: "Heatpump",
   ControlAdsorptionChillerType: "AdsorptionChiller",
+  SystemAmcsExternalAvailableType: null,
 };
 
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
@@ -207,6 +208,13 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("cold")) return "Temperature";
   if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
+  if (
+    lowerFieldName.includes("grace") ||
+    lowerFieldName.includes("window") ||
+    lowerFieldName.includes("cooldown")
+  )
+    return "Duration";
+  if (lowerFieldName.includes("heat")) return "Power";
   if (lowerFieldName.includes("disabled")) return "Disabled";
 
   throw new Error(
@@ -274,6 +282,11 @@ function processControlField(
   };
 
   const componentType = inferControlComponentType(fieldType);
+
+  if (componentType === null) {
+    return null;
+  }
+
   if (componentType) {
     entry.componentType = componentType;
   }

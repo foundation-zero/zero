@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
@@ -88,6 +89,10 @@ export default defineConfig({
         ],
       },
       {
+        text: "PVT Components",
+        items: [{ text: "PVT String", link: "/mimics/pvt-string" }],
+      },
+      {
         text: "Modules",
         items: [
           { text: "Overview", link: "/mimics/modules/" },
@@ -100,6 +105,7 @@ export default defineConfig({
   },
 
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       alias: {
         "@": new URL("../../src", import.meta.url).pathname,

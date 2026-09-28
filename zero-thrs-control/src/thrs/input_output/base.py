@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Annotated, Any, Literal, Self, cast
@@ -94,19 +95,74 @@ class Stamped[T](ThrsValues):
         return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
 
 
-class ComponentMeta(BaseModel):
+def _factory[R, **P](
+    cls: Callable[P, Any],
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def inner(func):
+        return func
+
+    return inner
+
+
+# If you add something here, make sure this type is also handled in the script that generate typescript for the frontend
+type BaseComponentType = Literal[
+    "adsorption_chiller",
+    "brightloop",
+    "calculated_flow",
+    "calculated_temperature",
+    "delta_t",
+    "external_sensor",
+    "flow_sensor",
+    "heat_exchanger",
+    "heatpump",
+    "hvac_exchanger",
+    "level_sensor",
+    "level_switch",
+    "pcm_input",
+    "pcm",
+    "pcs",
+    "power_sensor",
+    "pressure_sensor",
+    "propulsion_drive",
+    "pump",
+    "shore_power_converter",
+    "temperature_sensor",
+    "thruster",
+    "ugrid",
+    "tank_controller",
+    "pid_controller",
+]
+type SpecialComponentType = Literal["valve"]
+
+
+class BaseMeta(BaseModel):
+    component_type: BaseComponentType | None = None
     yard_tag: str = ""
     included_in_fmu: bool = True
-    component_type: str | None = None
-    valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
     topic_override: str | None = None
 
 
+class ValveMeta(BaseMeta):
+    component_type: Literal["valve"]  # type: ignore
+    valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
+
+
+class ComponentMeta(ValveMeta):
+    component_type: BaseComponentType | SpecialComponentType | None = None  # type: ignore
+
+
+@_factory(BaseMeta)
 def computed_meta(**kwargs):
     return ComponentMeta(**kwargs).model_dump()
 
 
+@_factory(BaseMeta)
 def component_meta(**kwargs):
+    return Field(json_schema_extra=computed_meta(**kwargs))
+
+
+@_factory(ValveMeta)
+def valve_meta(**kwargs):
     return Field(json_schema_extra=computed_meta(**kwargs))
 
 

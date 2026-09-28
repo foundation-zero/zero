@@ -68,13 +68,13 @@ const valves = PCM_MIMIC_DATA[MimicComponentType.FlowControlValve];
   </FlowControlValveInstance>
   <FlowControlValveInstance
     x="1117"
-    y="798"
+    y="558"
     :orientation="ComponentOrientation.Left"
     v-bind="valves['1065-01']"
   >
     <FlowControlLabelInstance
       target-x="1125"
-      y="790"
+      y="550"
       :tag-id="valves['1065-01'].tooltip?.yardTag"
       :valve="valves['1065-01'].source"
     />

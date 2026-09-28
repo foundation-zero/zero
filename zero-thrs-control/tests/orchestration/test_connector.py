@@ -151,7 +151,12 @@ class TestPartialMqttMapping:
         mapping.handle_message(
             "base/module/go-with-the", flow_sensor.model_dump_json(by_alias=True)
         )
-        assert mapping.result() == SimpleInOut(go_with_the=flow_sensor)
+        result = mapping.result()
+        assert result
+        assert result == SimpleInOut(
+            go_with_the=flow_sensor,
+            external_available=result.external_available,
+        )
 
 
 class TestDirectMqttMapping:
@@ -345,8 +350,14 @@ class TestCombinedMqttMapping:
             flow_sensor.model_dump_json(by_alias=True),
         )
         result = mapping.result()
+        assert result
         assert result == CombinedValues(
-            {"module1": SimpleInOut(go_with_the=flow_sensor)}
+            {
+                "module1": SimpleInOut(
+                    go_with_the=flow_sensor,
+                    external_available=result.values["module1"].external_available,
+                )
+            }
         )
 
 

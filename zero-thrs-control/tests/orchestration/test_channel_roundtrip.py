@@ -115,9 +115,6 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
             expected_control_values = DemoControlValues(
                 command=DemoComponent(value=10.5)
             )
-            expected_manual_values = DemoControlValues(
-                command=DemoComponent(value=22.0)
-            )
             expected_parameters = DemoParameters(value=3.14)
             expected_state = DemoControllerState(state="running")
             expected_mode = SwitchingControlMode(
@@ -133,7 +130,6 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 CombinedValues({"thrusters": expected_control_values})
             )
             await control_channels.send_control_values(expected_control_values)
-            await control_channels.send_manual_control(expected_manual_values)
             await control_channels.send_parameters(expected_parameters)
             await control_channels.send_controller_state(expected_state)
             await control_channels.send_control_modes(expected_mode)
@@ -143,7 +139,6 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 lambda: (
                     api_channels.get_actuated_control_values()
                     == expected_control_values
-                    and api_channels.get_manual_values() == expected_manual_values
                     and api_channels.get_parameters() == expected_parameters
                     and api_channels.get_controller_state() == expected_state
                     and api_channels.get_control_modes() == expected_mode

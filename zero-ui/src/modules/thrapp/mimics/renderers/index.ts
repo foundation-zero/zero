@@ -3,6 +3,7 @@ import { HTMLAttributes } from "vue";
 import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
+import BoilerTankTemperature from "./BoilerTankTemperatureRenderer.vue";
 import Charge from "./ChargeRenderer.vue";
 import ChargeState from "./ChargeStateRenderer.vue";
 import ChargingMode from "./ChargingModeRenderer.vue";
@@ -22,12 +23,14 @@ import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
 import Placeholder from "./PlaceholderRenderer.vue";
+import PowerConsumption from "./PowerConsumptionRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
 import PvtMode from "./PvtModeRenderer.vue";
 import QuantityLiters from "./QuantityLitersRenderer.vue";
 import Source from "./SourceRenderer.vue";
 import Temperature from "./TemperatureRenderer.vue";
+import ThreeWayValveState from "./ThreeWayValveStateRenderer.vue";
 import TimeRemaining from "./TimeRemainingRenderer.vue";
 import ValveState from "./ValveStateRenderer.vue";
 
@@ -35,6 +38,7 @@ export type FieldRendererProps<T> = {
   value?: T;
   class?: HTMLAttributes["class"];
   format?: NumberFormatter;
+  transform?: (value: T) => T;
 };
 
 export const FieldRenderer = {
@@ -43,8 +47,10 @@ export const FieldRenderer = {
   Temperature,
   HeatPumpMode,
   BoilerTankMode,
+  BoilerTankTemperature,
   BoilerTankControllerMode,
   ValveState,
+  ThreeWayValveState,
   Percentage,
   FlowRate,
   Degree,
@@ -68,4 +74,5 @@ export const FieldRenderer = {
   Charge,
   ChargeState,
   ChargingMode,
+  PowerConsumption,
 };

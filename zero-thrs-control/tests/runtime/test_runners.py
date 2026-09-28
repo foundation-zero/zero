@@ -41,7 +41,7 @@ class ModelDumpable:
     is now called on every tick by the persistence-wired runners and would otherwise
     blow up on a plain sentinel/dict test double."""
 
-    def model_dump(self, mode: str = "json") -> dict:
+    def model_dump(self, mode: str = "json", exclude: set | None = None) -> dict:
         return {}
 
 

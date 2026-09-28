@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   controllerState: {},
   custom: {
     circuitName: "DC Converters",
+    modeModule: "dc",
   },
   parameters: {},
   source: getCustomField("dhw", {
@@ -16,11 +17,10 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     technicalName: "dc-converters",
   }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "dhw", "dcDelta"),
-    flow: getField(SensorComponentType.Flow, "dhw", "dcFlowRecovery"),
-    incoming: getField(SensorComponentType.Temperature, "dhw", "dcTemperatureRecovery"),
-    outgoing: getField(SensorComponentType.Temperature, "dhw", "dcTemperatureRecoveryReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDcExchanger"),
+    flow: getField(SensorComponentType.Flow, "dc", "dcFlowRecovery"),
+    incoming: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecovery"),
+    outgoing: getField(SensorComponentType.Temperature, "dc", "dcTemperatureRecoveryReturn"),
+    heatExchanger: getField(SensorComponentType.HeatExchanger, "dc", "dcDhwExchanger"),
   },
   get tooltip() {
     return tooltip(this.source);

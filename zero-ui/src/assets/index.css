@@ -936,6 +936,15 @@ body,
   .bg-secondary {
     background-color: var(--secondary);
   }
+  .stroke-flows-connecting {
+    stroke: var(--color-flows-connecting);
+  }
+  .stroke-attention {
+    stroke: var(--color-attention);
+  }
+  .fill-muted-foreground {
+    fill: var(--muted-foreground);
+  }
   .bg-secondary-foreground {
     background-color: var(--secondary-foreground);
   }

@@ -15,7 +15,7 @@ mqtt:
 modbus:
   port: 502
   probe_interval: 10
-  # One gateway per panel; keys are sanitized panel names (panel 10P0.1 → key
+  # One gateway per panel; keys are sanitized panel names (panel 10P0-1 → key
   # 10p0_1) rendered as MODBUS_PANELS__host_<key> / MODBUS_PANELS__port_<key>
   # env vars. The addresses themselves live in the deployment repository.
   panels: {}

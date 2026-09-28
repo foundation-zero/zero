@@ -19,6 +19,7 @@ class TanksControllerValues(ThrsValues):
     tank2_state: Stamped[TankState]
     tank3_state: Stamped[TankState]
     time_to_fill: Stamped[Seconds | None]
+    time_to_hot: Stamped[Seconds | None]
 
 
 __all__ = ["PidControllerValues", "TanksControllerValues"]

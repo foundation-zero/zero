@@ -1587,7 +1587,18 @@
             "mode": "continuous-greens"
           },
           "decimals": 2,
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2488,7 +2499,18 @@
             "mode": "continuous-greens"
           },
           "decimals": 2,
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "text",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -5730,14 +5752,13 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -5751,26 +5772,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    aft_thrust_windingtempu_1__value AS winding_temp_u1,\r\n    aft_thrust_windingtempv_1__value AS winding_temp_v1,\r\n    aft_thrust_windingtempw_1__value AS winding_temp_w1,\r\n    aft_thrust_windingtempu_2__value AS winding_temp_u2,\r\n    aft_thrust_windingtempv_2__value AS winding_temp_v2,\r\n    aft_thrust_windingtempw_2__value AS winding_temp_w2,\r\n    stern_thrust_bearing_de_temp__value AS bearing_de_temp,\r\n    stern_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\n  FROM public.marpower__150000_propulsion_general\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    fwd_thrust_windingtempu_1__value AS winding_temp_u1,\r\n    fwd_thrust_windingtempv_1__value AS winding_temp_v1,\r\n    fwd_thrust_winding_temp_w_1__value AS winding_temp_w1,\r\n    bow_thrust_windingtempu_2__value AS winding_temp_u2,\r\n    bow_thrust_windingtempv_2__value AS winding_temp_v2,\r\n    bow_thrust_windingtempw_2__value AS winding_temp_w2,\r\n    bow_thrust_bearing_de_temp__value AS bearing_de_temp,\r\n    bow_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\n  FROM public.marpower__150000_propulsion_general\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  windingtempu_1__value   AS winding_temp_u1,\r\n  windingtempv_1__value   AS winding_temp_v1,\r\n  windingtempw_1__value   AS winding_temp_w1,\r\n  windingtempu_2__value   AS winding_temp_u2,\r\n  windingtempv_2__value   AS winding_temp_v2,\r\n  windingtempw_2__value   AS winding_temp_w2,\r\n  bearing_de_temp__value  AS bearing_de_temp,\r\n  bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion__pcs_aft\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\nAND (\r\n  windingtempu_1__has_value   = TRUE OR\r\n  windingtempv_1__has_value   = TRUE OR\r\n  windingtempw_1__has_value   = TRUE OR\r\n  windingtempu_2__has_value   = TRUE OR\r\n  windingtempv_2__has_value   = TRUE OR\r\n  windingtempw_2__has_value   = TRUE OR\r\n  bearing_de_temp__has_value  = TRUE OR\r\n  bearing_nde_temp__has_value = TRUE\r\n)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp               AS time,\r\n  windingtempu_1__value   AS winding_temp_u1,\r\n  windingtempv_1__value   AS winding_temp_v1,\r\n  winding_temp_w_1__value AS winding_temp_w1,\r\n  windingtempu_2__value   AS winding_temp_u2,\r\n  windingtempv_2__value   AS winding_temp_v2,\r\n  windingtempw_2__value   AS winding_temp_w2,\r\n  bearing_de_temp__value  AS bearing_de_temp,\r\n  bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion__pcs_fwd\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\nAND (\r\n  windingtempu_1__has_value   = TRUE OR\r\n  windingtempv_1__has_value   = TRUE OR\r\n  winding_temp_w_1__has_value = TRUE OR\r\n  windingtempu_2__has_value   = TRUE OR\r\n  windingtempv_2__has_value   = TRUE OR\r\n  windingtempw_2__has_value   = TRUE OR\r\n  bearing_de_temp__has_value  = TRUE OR\r\n  bearing_nde_temp__has_value = TRUE\r\n)\r\nORDER BY time DESC\r\nLIMIT 1",
+          "refId": "A"
         }
       ],
       "title": "Internal thruster temperatures",

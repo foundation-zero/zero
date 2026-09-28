@@ -13,7 +13,6 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
   parameters: {},
   source: getCustomField("thrusters", { technicalName: "thrusters-seawater-loop" }),
   sensors: {
-    deltaT: getField(SensorComponentType.DeltaT, "dhw", "adsorptionDelta"), // TODO
     flow: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowAft"),
     incoming: getField(
       SensorComponentType.Temperature,

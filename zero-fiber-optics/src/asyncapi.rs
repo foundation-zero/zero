@@ -1,9 +1,9 @@
-use asyncapi_rust::{
-    indexmap::IndexMap, AsyncApiSpec, Channel, ChannelRef, Components, Info, Message,
-    MessageRef, Operation, OperationAction, Schema, SchemaObject,
-};
 use crate::config::UdpChannels;
 use crate::layout::{topic_segment, TopicMap};
+use asyncapi_rust::{
+    indexmap::IndexMap, AsyncApiSpec, Channel, ChannelRef, Components, Info, Message, MessageRef,
+    Operation, OperationAction, Schema, SchemaObject,
+};
 
 /// Dynamically build an AsyncAPI 3.0.0 schema from the loaded configuration.
 ///

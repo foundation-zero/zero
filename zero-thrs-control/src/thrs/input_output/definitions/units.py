@@ -105,7 +105,8 @@ def validate_nonzero_float_within_precision(
     return value
 
 
-WATER_HEAT_TRANSFER_CONVERSION = 4184 / 60  # kW min/(l*K)
+SPECIFIC_HEAT_WATER = 4184  # J/(kg*K)
+WATER_HEAT_TRANSFER_CONVERSION = SPECIFIC_HEAT_WATER / 60  # kW min/(l*K)
 
 # ruff: noqa: UP040
 # These cannot be converted to proper type keyword statements because strawberry fails on those

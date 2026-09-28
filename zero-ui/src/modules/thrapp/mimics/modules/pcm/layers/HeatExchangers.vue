@@ -25,13 +25,13 @@ const heatExchangers = PCM_MIMIC_DATA[MimicComponentType.HeatExchanger];
     x="1248"
     y="466.5"
     :orientation="ComponentOrientation.Right"
-    v-bind="heatExchangers['1004']"
+    v-bind="heatExchangers['1003']"
   >
     <HeatExchangerLabelInstance
       :target-x="1228"
       y="460"
-      :tag-id="heatExchangers['1004'].tooltip?.yardTag"
-      :heat-exchanger="heatExchangers['1004'].source"
+      :tag-id="heatExchangers['1003'].tooltip?.yardTag"
+      :heat-exchanger="heatExchangers['1003'].source"
     />
   </HeatExchangerInstance>
 </template>

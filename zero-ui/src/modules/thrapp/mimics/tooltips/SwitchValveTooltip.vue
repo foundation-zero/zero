@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { ComponentOrientation } from "../components";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { FieldEditor } from "../editors";
@@ -30,7 +31,10 @@ const { labels, items, sources } = useTranslations();
   <MimicTooltip>
     <div class="flex items-center gap-2">
       <NoopTooltipProvider>
-        <SwitchValveInstance v-bind="props" />
+        <SwitchValveInstance
+          v-bind="props"
+          :orientation="ComponentOrientation.Right"
+        />
       </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>

@@ -5,6 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
+import { ModeBadgeSize, ModeBadges } from "../components/mode-badge";
 import {
   ValueList,
   ValueListFlowItem,
@@ -39,6 +40,12 @@ const t = tScoped("labels");
       :state="state"
     >
       <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+
+      <ModeBadges
+        :module="custom.modeModule"
+        :size="ModeBadgeSize.Circuit"
+      />
+
       <ValueList>
         <ValueListSeparator />
         <ValueListHeader>

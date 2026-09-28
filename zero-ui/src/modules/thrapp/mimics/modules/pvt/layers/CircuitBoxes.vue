@@ -16,9 +16,9 @@ const t = tScoped("labels");
   <g>
     <HotWaterCircuitInstance
       x="885"
-      y="15"
+      y="0"
       force-height
-      height="300"
+      height="245"
       v-bind="hotWaterCircuits?.['pcm']"
     >
       <template #from>
@@ -32,10 +32,10 @@ const t = tScoped("labels");
     </HotWaterCircuitInstance>
 
     <LoopCircuitInstance
-      x="1093"
+      x="1110"
       y="355"
       width="194"
-      height="168"
+      height="145"
       force-height
       v-bind="circuits?.['seawater']"
     />

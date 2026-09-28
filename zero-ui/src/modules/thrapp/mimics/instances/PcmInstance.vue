@@ -40,7 +40,7 @@ const props = withDefaults(
       <PcmContent>
         <SensorValue
           :source="source"
-          field="deltaT"
+          field="chargingState"
         >
           <FieldRenderer.ChargingMode />
         </SensorValue>
@@ -56,7 +56,7 @@ const props = withDefaults(
             <RiFireLine class="text-heating-medium size-3.5" />
             <SensorValue
               :source="source"
-              field="deltaT"
+              field="heat"
             >
               <FieldRenderer.Auto />
             </SensorValue>

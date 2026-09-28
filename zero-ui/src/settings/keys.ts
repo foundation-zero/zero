@@ -18,6 +18,7 @@ export const ENV_KEYS = [
   "VITE_MQTT_GRAPHQL_API_SERVER",
   "VITE_MQTT_GRAPHQL_API_SERVER_URL",
   "VITE_ANIMATE_NUMBERS",
+  "VITE_SHOW_DEMO_MODE",
 ] as const;
 
 export type EnvKey = (typeof ENV_KEYS)[number];

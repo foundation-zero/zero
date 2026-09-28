@@ -94,6 +94,7 @@ jobs:
         with:
           images: |
             ${{ env.IMAGE }}
+            ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
       - run: 'echo "$GSHEET_SA_KEY" > .gsheet-sa-key.json'
@@ -106,9 +107,7 @@ jobs:
           context: zero-data
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: |
-            ${{ steps.meta.outputs.tags }}
-            ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool:${{ steps.version.outputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secret-files: |
             "gsheet_sa_key=./zero-data/.gsheet-sa-key.json"

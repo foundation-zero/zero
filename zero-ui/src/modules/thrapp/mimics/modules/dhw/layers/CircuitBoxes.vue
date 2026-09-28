@@ -9,6 +9,7 @@
  */
 
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
 import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
 import { LoopCircuitInstance } from "../../../instances/index.ts";
 import { DHW_MIMIC_DATA } from "../data/index.ts";
@@ -21,27 +22,30 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
   <g>
     <LoopCircuitInstance
       x="0"
-      y="0"
+      y="25"
       force-height
-      height="150"
+      height="175"
       v-bind="circuits['highTempLoop']"
     />
     <LoopCircuitInstance
       x="397"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['dcConverters']"
     />
     <LoopCircuitInstance
       x="650"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['drives']"
     />
     <LoopCircuitInstance
       x="903"
-      y="728"
+      y="708"
       force-height
+      height="155"
       v-bind="circuits['adsorption']"
     />
     <ConnectingCircuitInstance
@@ -50,6 +54,13 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
       force-height
       height="300"
       v-bind="connectingCircuits['freshwater']"
-    />
+    >
+      <template #fromIcon>
+        <RiArrowDownLine class="text-muted-foreground size-3" />
+      </template>
+      <template #toIcon>
+        <RiArrowLeftLine class="text-muted-foreground size-3" />
+      </template>
+    </ConnectingCircuitInstance>
   </g>
 </template>

@@ -14,9 +14,6 @@ const t = tScoped("thrapp.parameters.dhw");
     <Parameters.Description>{{ t("boostingModeSelection.description") }}</Parameters.Description>
     <Parameters.Separator />
     <Parameters.List>
-      <ParameterItems.Temperature :source="getField(ParametersType.dT, 'dhw', 'boostingDelta')">
-        {{ t("items.boostingDelta") }}
-      </ParameterItems.Temperature>
       <ParameterItems.Temperature
         :source="getField(ParametersType.Temperature, 'dhw', 'minimumTankTemperature')"
       >
@@ -27,21 +24,29 @@ const t = tScoped("thrapp.parameters.dhw");
       >
         {{ t("items.maximumTankTemperature") }}
       </ParameterItems.Temperature>
-      <ParameterItems.Enabled
-        :source="getField(ParametersType.Enabled, 'dhw', 'heatpumpBoostingEnabled')"
-      >
-        {{ t("items.heatpumpBoosting") }}
-      </ParameterItems.Enabled>
-      <ParameterItems.Enabled
-        :source="getField(ParametersType.Enabled, 'dhw', 'htBoostingEnabled')"
-      >
-        {{ t("items.highTemperatureBoosting") }}
-      </ParameterItems.Enabled>
       <ParameterItems.Dutypoint
         :source="getField(ParametersType.Dutypoint, 'dhw', 'minimumPumpDutypoint')"
       >
         {{ t("items.minimumPumpDutypoint") }}
       </ParameterItems.Dutypoint>
+      <ParameterItems.Power :source="getField(ParametersType.Power, 'dhw', 'boostingMinimumHeat')">
+        {{ t("items.boostingMinimumHeat") }}
+      </ParameterItems.Power>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStartupGrace')"
+      >
+        {{ t("items.boostingStartupGrace") }}
+      </ParameterItems.Duration>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallWindow')"
+      >
+        {{ t("items.boostingStallWindow") }}
+      </ParameterItems.Duration>
+      <ParameterItems.Duration
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallCooldown')"
+      >
+        {{ t("items.boostingStallCooldown") }}
+      </ParameterItems.Duration>
     </Parameters.List>
   </Parameters.Card>
 </template>

@@ -7,8 +7,7 @@ import * as Partials from "./";
 const { items, sources } = useTranslations();
 
 defineProps<{
-  deltaT?: ModuleField<
-    | SensorComponentType.DeltaT
+  deltaT: ModuleField<
     | SensorComponentType.HeatExchanger
     | SensorComponentType.HvacExchanger
     | SensorComponentType.HeatPump

@@ -9,6 +9,7 @@ import {
   ControllerStateDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
+  PcmChargingState,
   PID,
   SensorComponentType,
   SensorDefinitionMap,
@@ -94,13 +95,25 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Pcm]: () => {
     const charged = useRandomizedBoolean();
+    const chargingState = useRandomizedState([
+      PcmChargingState.Charging,
+      PcmChargingState.Discharging,
+      PcmChargingState.Idle,
+    ]);
+    const heat = useRandomizedNumber(-7000, 7000);
     const charge = useRandomizedNumber(0, 100);
     const deltaT = useRandomizedNumber(-20, 20);
     return computed(() => ({
       charged: stamp(charged),
+      chargingState: stamp(chargingState),
+      heat: stamp(heat),
       charge: stamp(charge),
       deltaT: stamp(deltaT),
     }));
+  },
+  [SensorComponentType.PcmInput]: () => {
+    const charged = useRandomizedBoolean();
+    return computed(() => ({ charged: stamp(charged) }));
   },
   [SensorComponentType.Pcs]: () => {
     const mode = useRandomizedState([
@@ -159,10 +172,6 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const deltaT = useRandomizedNumber(-20, 20);
     const heat = useRandomizedNumber(0, 100);
     return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
-  },
-  [SensorComponentType.DeltaT]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    return computed(() => ({ deltaT: stamp(deltaT) }));
   },
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
@@ -251,12 +260,14 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
     const tank2State = useRandomizedState(states);
     const tank3State = useRandomizedState(states);
     const timeToFill = useRandomizedNumber(0, 1000);
+    const timeToHot = useRandomizedNumber(0, 1000);
 
     return computed(() => ({
       tank1State: stamp(tank1State),
       tank2State: stamp(tank2State),
       tank3State: stamp(tank3State),
       timeToFill: stamp(timeToFill),
+      timeToHot: stamp(timeToHot),
     }));
   },
   [ControllerStateComponentType.PIDController]: () => {
@@ -290,4 +301,6 @@ export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
   [ParametersType.Temperature]: () => useRandomizedNumber(20, 100),
   [ParametersType.Tuning]: () => computed(() => [1, 2, 3]),
   [ParametersType.dT]: () => useRandomizedNumber(-20, 20),
+  [ParametersType.Duration]: () => useRandomizedNumber(0, 900),
+  [ParametersType.Power]: () => useRandomizedNumber(0, 5000),
 };

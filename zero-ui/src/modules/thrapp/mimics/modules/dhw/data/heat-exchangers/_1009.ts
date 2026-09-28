@@ -20,7 +20,7 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   parameters: {},
   source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDrivesExchanger"),
   sensors: {
-    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureHvacExchangerReturn"),
+    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureDrivesReturn"),
     flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDrives"),
   },

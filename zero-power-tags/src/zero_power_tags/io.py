@@ -130,7 +130,7 @@ class BridgeSpec(BaseModel):
 
 
 def modbus_env(panel: str, field: Literal["HOST", "PORT"]) -> str:
-    """Env var name carrying the gateway host for a panel (`10P0.1` → `MODBUS_HOST_10P0_1`)."""
+    """Env var name carrying the gateway host for a panel (`10P0-1` → `MODBUS_HOST_10P0_1`)."""
     suffix = re.sub(r"[^A-Z0-9]+", "_", panel.upper()).strip("_")
     return f"MODBUS_{field}_{suffix}"
 

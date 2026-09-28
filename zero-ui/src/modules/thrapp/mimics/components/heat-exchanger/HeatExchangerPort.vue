@@ -40,7 +40,7 @@ const flipOrientation = computed(() =>
       :r="HEAT_EXCHANGER_PORT_CONNECTOR_R"
       :stroke="connectorColor"
       stroke-width="2"
-      fill="var(--background)"
+      class="fill-background"
     />
 
     <path

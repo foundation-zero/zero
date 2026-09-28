@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
+import { RiDropLine, RiFireLine } from "@remixicon/vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
+import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../components/mode-badge";
 import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import { getMimicDataProvider, getSensorDefinition, ModuleField } from "../providers";
+import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
@@ -21,7 +25,7 @@ const props = withDefaults(
   >(),
   {
     width: 180,
-    height: 140,
+    height: 250,
     forceHeight: true,
   },
 );
@@ -29,49 +33,85 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const thruster = getSensorValue(props.source);
 const pcs = getSensorValue(props.modeSource);
 const state = getComponentState();
 const definition = getSensorDefinition(props.source[1], props.source[2]);
 
-const modeLabelMap: Record<string, string> = {
-  [ThrusterMode.Off]: "thrapp.mimics.thrusters.assets.modes.off",
-  [ThrusterMode.Propulsion]: "thrapp.mimics.thrusters.assets.modes.propulsion",
-  [ThrusterMode.Maneuvering]: "thrapp.mimics.thrusters.assets.modes.maneuvering",
-  [ThrusterMode.Regeneration]: "thrapp.mimics.thrusters.assets.modes.regeneration",
+const modeLabelMap = {
+  [ThrusterMode.Off]: {
+    mode: ModeBadgeMode.Active,
+    label: t("thrapp.mimics.thrusters.assets.modes.off"),
+  },
+  [ThrusterMode.Propulsion]: {
+    mode: ModeBadgeMode.Active,
+    label: t("thrapp.mimics.thrusters.assets.modes.propulsion"),
+  },
+  [ThrusterMode.Maneuvering]: {
+    mode: ModeBadgeMode.Active,
+    label: t("thrapp.mimics.thrusters.assets.modes.maneuvering"),
+  },
+  [ThrusterMode.Regeneration]: {
+    mode: ModeBadgeMode.Active,
+    label: t("thrapp.mimics.thrusters.assets.modes.regeneration"),
+  },
 };
+
+const mode = computed(() => {
+  const modeKey = (pcs?.value?.mode?.value as ThrusterMode) ?? ThrusterMode.Off;
+  return modeLabelMap[modeKey];
+});
 </script>
 
 <template>
   <HeatPump
     v-bind="props"
     :state="state"
-    height="170"
   >
     <YardTag>{{ definition.yardTag }}</YardTag>
     <HeatPumpTitle class="pb-1">
       {{ t(`thrapp.mimics.thrusters.assets.${titleKey}`) }}
     </HeatPumpTitle>
-
-    <span
-      class="bg-brand text-background inline-flex w-fit rounded-sm px-2 py-1 text-xs font-semibold"
-    >
-      {{
-        t(
-          modeLabelMap[(pcs?.mode?.value as string) ?? ThrusterMode.Off] ??
-            "thrapp.mimics.thrusters.assets.modes.off",
-        )
-      }}
-    </span>
+    <ModeBadge
+      v-bind="mode"
+      :size="ModeBadgeSize.Asset"
+    />
 
     <ValueList class="pt-1">
       <ValueListSeparator />
       <ValueListItem>
-        <span>{{ t("thrapp.mimics.thrusters.assets.labels.status") }}</span>
-        <strong>{{
-          thruster?.active?.value ? t("thrapp.labels.on") : t("thrapp.labels.off")
-        }}</strong>
+        <span class="flex items-center gap-0.5"> Power </span>
+        <span></span>
       </ValueListItem>
+
+      <ValueListItem>
+        <span class="flex items-center gap-0.5"> Internal Temp </span>
+        <span></span>
+      </ValueListItem>
+
+      <ValueListItem>
+        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Placeholder />
+        </span>
+      </ValueListItem>
+      <ValueListItem>
+        <span class="flex items-center gap-0.5">
+          <RiDropLine class="text-brand size-3.5" />
+        </span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Placeholder />
+        </span>
+      </ValueListItem>
+      <ValueListItem>
+        <span class="flex items-center gap-0.5">
+          <RiFireLine class="text-heating-medium size-3.5" />
+        </span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Placeholder />
+        </span>
+      </ValueListItem>
+
+      <ValueListSeparator />
     </ValueList>
   </HeatPump>
 </template>

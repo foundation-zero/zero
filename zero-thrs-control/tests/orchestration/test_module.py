@@ -12,6 +12,7 @@ from tests.orchestration.simples import (
 )
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.switching import AutomationMode
+from thrs.input_output.root_types import AmcsWatchdogControlValues
 
 
 async def test_module_returns_control_when_sensor_values_are_none(
@@ -94,7 +95,7 @@ async def test_module_forces_manual_even_without_actuated_values(
 ):
     """Without actuated feedback we can still not stay automatic when the
     AMCS is in control; manual controls keep their last value."""
-    initial_control_values = {"dutypoint": 0.5}
+    initial_control_values = AmcsWatchdogControlValues()
     mock_control.initial.return_value = (initial_control_values, None)
     mock_control.control.return_value = (initial_control_values, None)
 
@@ -287,3 +288,21 @@ async def test_tick_without_sensors_echoes_actuated(manual_values):
 
     control_values = await module.tick(None)
     assert control_values == actuated
+
+
+async def test_tick_always_updates_watchdog_timestamp(manual_values):
+    channels = make_async_channels()
+    module = make_module(channels=channels)
+
+    timestamps = set()
+
+    control_values = await module.tick(manual_values)
+    timestamps.add(control_values.external_available.since.value)
+
+    control_values = await module.tick(manual_values)
+    timestamps.add(control_values.external_available.since.value)
+
+    control_values = await module.tick(None)
+    timestamps.add(control_values.external_available.since.value)
+
+    assert len(timestamps) == 3

@@ -40,6 +40,6 @@ export const useAdvisoryEnabled = () => {
     const module = control.value.modules[key as keyof typeof control.value.modules];
     if (!module?.sensorValues) return null;
 
-    return module.sensorValues["mode"]?.mode.value === AmcsControlMode.External;
+    return module.sensorValues.mode?.mode.value === AmcsControlMode.External;
   });
 };

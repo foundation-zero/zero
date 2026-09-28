@@ -45,7 +45,7 @@ const { labels, items, sources } = useTranslations();
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
       <ControlValueForm :source="controls.valve">
         <Partials.EditableListItem
-          :renderer="FieldRenderer.ValveState"
+          :renderer="FieldRenderer.ThreeWayValveState"
           :editor="FieldEditor.OpenClosed"
         >
           {{ items("setpoint") }}

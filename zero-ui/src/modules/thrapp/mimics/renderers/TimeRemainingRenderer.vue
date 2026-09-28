@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { formatInt } from "@/modules/common/lib/utils.ts";
+import { formatNumber } from "@/modules/common/lib/utils.ts";
 import { FieldRenderer, FieldRendererProps } from ".";
 import { useTranslations } from "../tooltips";
 
-const props = defineProps<FieldRendererProps<number>>();
+const props = withDefaults(defineProps<FieldRendererProps<number>>(), { format: formatNumber.int });
 
 const { units } = useTranslations();
-const seconds = (value: number) => formatInt(value % 60);
-const minutes = (value: number) => formatInt(Math.floor((value % 3600) / 60));
-const hours = (value: number) => formatInt(Math.floor(value / 3600));
+const seconds = (value: number) => value % 60;
+const minutes = (value: number) => Math.floor((value % 3600) / 60);
+const hours = (value: number) => Math.floor(value / 3600);
 </script>
 
 <template>
@@ -16,17 +16,17 @@ const hours = (value: number) => formatInt(Math.floor(value / 3600));
     <FieldRenderer.Number
       v-bind="props"
       :unit="units('hours')"
-      :format="hours"
+      :transform="hours"
     />
     <FieldRenderer.Number
       v-bind="props"
       :unit="units('minutes')"
-      :format="minutes"
+      :transform="minutes"
     />
     <FieldRenderer.Number
       v-bind="props"
       :unit="units('seconds')"
-      :format="seconds"
+      :transform="seconds"
     />
   </span>
 </template>

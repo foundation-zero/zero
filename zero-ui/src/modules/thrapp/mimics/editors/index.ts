@@ -1,10 +1,12 @@
 import { HTMLAttributes, inject, provide } from "vue";
 import AutoEditor from "./AutoEditor.vue";
+import DurationEditor from "./DurationEditor.vue";
 import FlowRateEditor from "./FlowRateEditor.vue";
 import NumberEditor from "./NumberEditor.vue";
 import OpenClosedEditor from "./OpenClosedEditor.vue";
 import PendingIndicator from "./PendingIndicator.vue";
 import PercentageEditor from "./PercentageEditor.vue";
+import PowerEditor from "./PowerEditor.vue";
 import SubmitButton from "./SubmitButton.vue";
 import TankLevelEditor from "./TankLevelEditor.vue";
 import TemperatureEditor from "./TemperatureEditor.vue";
@@ -20,6 +22,8 @@ export const FieldEditor = {
   OpenClosed: OpenClosedEditor,
   TankLevel: TankLevelEditor,
   FlowRate: FlowRateEditor,
+  Duration: DurationEditor,
+  Power: PowerEditor,
   PendingIndicator,
 };
 

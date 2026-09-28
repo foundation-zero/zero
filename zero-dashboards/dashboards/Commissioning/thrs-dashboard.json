@@ -186,7 +186,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -349,7 +349,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -498,7 +498,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -647,7 +647,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(quantity__value) AS \"quantity\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(quantity__value) AS \"quantity\"\nFROM public.marpower__thrs__flows AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -810,7 +810,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(pressure__value) AS \"pressure\"\nFROM public.marpower__thrs__pressures AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(pressure__value) AS \"pressure\"\nFROM public.marpower__thrs__pressures AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -973,7 +973,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1120,7 +1120,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_warm__value) AS \"temperature_warm\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_warm__value) AS \"temperature_warm\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1285,7 +1285,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_cold__value) AS \"temperature_cold\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_cold__value) AS \"temperature_cold\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1452,7 +1452,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_warm__value - temperature_cold__value) AS \"delta_temperature\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(temperature_warm__value - temperature_cold__value) AS \"delta_temperature\"\nFROM public.marpower__thrs__rh33s AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1615,7 +1615,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(level__value) AS \"level\"\nFROM public.marpower__thrs__level_sensors AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(level__value) AS \"level\"\nFROM public.marpower__thrs__level_sensors AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1778,7 +1778,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(irradiance__value) AS \"irradiance\"\nFROM public.marpower__thrs__pyranometers AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(irradiance__value) AS \"irradiance\"\nFROM public.marpower__thrs__pyranometers AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -1941,7 +1941,7 @@
               },
               "pluginVersion": "2.1.4",
               "queryType": "table",
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(speed__value) AS \"speed\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(speed__value) AS \"speed\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A"
             }
           ],
@@ -2088,7 +2088,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(flow__value) AS \"flow\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2252,7 +2252,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(pressure__value) AS \"pressure\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(pressure__value) AS \"pressure\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2416,7 +2416,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(power_input__value) AS \"power_input\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(power_input__value) AS \"power_input\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2580,7 +2580,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(energy_consumption__value) AS \"energy_consumption\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(energy_consumption__value) AS \"energy_consumption\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2732,7 +2732,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(op_time__value) AS \"op_time\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tMAX(op_time__value) AS \"op_time\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2884,7 +2884,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_duty_point__value) AS \"cc_duty_point\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_duty_point__value) AS \"cc_duty_point\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3039,7 +3039,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_control_mode__value) AS \"cc_control_mode\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_control_mode__value) AS \"cc_control_mode\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3209,7 +3209,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_on_off__value::INT) AS \"cc_on_off\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_on_off__value::INT) AS \"cc_on_off\"\nFROM public.marpower__thrs__pumps AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3388,7 +3388,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(position_abs__value) AS \"position_abs\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(position_abs__value) AS \"position_abs\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3552,7 +3552,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(position_rel__value) AS \"position_rel\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(position_rel__value) AS \"position_rel\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3716,7 +3716,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "timeseries",
               "rawQuery": true,
-              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_setpoint__value) AS \"cc_setpoint\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(thrs_data.timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
+              "rawSql": "SELECT\n\tdate_bin('$__interval', thrs_data.timestamp) AS time,\n\tconcat('[', coalesce(metadata.yard_tag, ''), '] ', thrs_data.technical_name) AS device,\n\tAVG(cc_setpoint__value) AS \"cc_setpoint\"\nFROM public.marpower__thrs__valves AS thrs_data\nLEFT JOIN (\n  SELECT DISTINCT mqtt_topic, yard_tag FROM public.marpower__io_metadata WHERE mqtt_topic LIKE 'marpower/500000-thrs/%'\n) AS metadata ON thrs_data.topic = metadata.mqtt_topic\nWHERE $__timeFilter(timestamp)\n  AND ',' || '${section:csv}' || ',' LIKE '%,' || split_part(thrs_data.topic, '/', 3) || ',%'\n  AND ',' || '${device:csv}' || ',' LIKE '%,' || thrs_data.technical_name || ',%'\nGROUP BY 1, 2\nORDER BY 2, 1 ASC",
               "refId": "A",
               "sql": {
                 "columns": [

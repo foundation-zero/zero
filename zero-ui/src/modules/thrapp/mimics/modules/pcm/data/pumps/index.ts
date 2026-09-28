@@ -18,7 +18,6 @@ export const PCM_PUMP_DATA = toFieldsMap({
       get tooltip() {
         return fieldTooltip(this.source, {
           title: "Pump",
-          yardTag: "1017",
           componentType: "Circulation pump",
         });
       },

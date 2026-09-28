@@ -1,55 +1,27 @@
+import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
+import { getField, ModuleField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
-type PcmTemperatureField =
-  | "pcmTemperatureModule1"
-  | "pcmTemperatureModule2"
-  | "pcmTemperatureModule3"
-  | "pcmTemperatureModule4"
-  | "pcmTemperatureProducersSupply"
-  | "pcmTemperatureProducersReturn";
-type ConsumerTemperatureField =
-  | "consumersTemperatureDhwSupply"
-  | "consumersTemperatureDhwReturn"
-  | "consumersTemperatureAdsorptionSupply"
-  | "consumersTemperatureAdsorptionReturn";
-
-const createPcmTemperatureSensor = (field: PcmTemperatureField, yardTag: string) =>
-  toInstance<MimicComponentType.TemperatureSensor>({
-    controls: {},
-    controllerState: {},
-    custom: {},
-    parameters: {},
-    source: getField(SensorComponentType.Temperature, "pcm", field),
-    sensors: {
-      measurement: getField(SensorComponentType.Temperature, "pcm", field),
-    },
-    get tooltip() {
-      return fieldTooltip(this.source, {
-        title: "Temperature sensor",
-        yardTag,
-        componentType: "Temperature sensor",
-      });
-    },
+export const tooltip = (field: ModuleField<SensorComponentType.Temperature>): TooltipContent =>
+  fieldTooltip(field, {
+    title: "Temperature sensor",
+    componentType: "Temperature sensor",
   });
 
-const createConsumerTemperatureSensor = (field: ConsumerTemperatureField, yardTag: string) =>
+const createTemperatureSensor = (field: ModuleField<SensorComponentType.Temperature>) =>
   toInstance<MimicComponentType.TemperatureSensor>({
     controls: {},
     controllerState: {},
     custom: {},
     parameters: {},
-    source: getField(SensorComponentType.Temperature, "consumers", field),
-    sensors: {
-      measurement: getField(SensorComponentType.Temperature, "consumers", field),
-    },
+    source: field,
+    sensors: {},
     get tooltip() {
-      return fieldTooltip(this.source, {
+      return fieldTooltip(field, {
         title: "Temperature sensor",
-        yardTag,
         componentType: "Temperature sensor",
       });
     },
@@ -57,15 +29,43 @@ const createConsumerTemperatureSensor = (field: ConsumerTemperatureField, yardTa
 
 export const PCM_TEMPERATURE_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.TemperatureSensor]: {
-    "1038-60": createPcmTemperatureSensor("pcmTemperatureModule1", "1038-60"),
-    "1038-33": createPcmTemperatureSensor("pcmTemperatureModule2", "1038-33"),
-    "1038-34": createPcmTemperatureSensor("pcmTemperatureModule3", "1038-34"),
-    "1038-35": createPcmTemperatureSensor("pcmTemperatureModule4", "1038-35"),
-    "1038-48": createConsumerTemperatureSensor("consumersTemperatureDhwReturn", "1038-48"),
-    "1038-49": createConsumerTemperatureSensor("consumersTemperatureAdsorptionReturn", "1038-49"),
-    "1038-53": createConsumerTemperatureSensor("consumersTemperatureDhwSupply", "1038-53"),
-    "1038-54": createConsumerTemperatureSensor("consumersTemperatureAdsorptionSupply", "1038-54"),
-    "1038-31": createPcmTemperatureSensor("pcmTemperatureProducersReturn", "1038-31"),
-    "1038-55": createPcmTemperatureSensor("pcmTemperatureProducersSupply", "1038-55"),
+    "1038-60": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureModule1"),
+    ),
+    "1038-33": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureModule2"),
+    ),
+    "1038-34": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureModule3"),
+    ),
+    "1038-35": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureModule4"),
+    ),
+    "1038-48": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "consumers", "consumersTemperatureDhwReturn"),
+    ),
+    "1038-49": createTemperatureSensor(
+      getField(
+        SensorComponentType.Temperature,
+        "consumers",
+        "consumersTemperatureAdsorptionReturn",
+      ),
+    ),
+    "1038-53": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "consumers", "consumersTemperatureDhwSupply"),
+    ),
+    "1038-54": createTemperatureSensor(
+      getField(
+        SensorComponentType.Temperature,
+        "consumers",
+        "consumersTemperatureAdsorptionSupply",
+      ),
+    ),
+    "1038-31": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersReturn"),
+    ),
+    "1038-55": createTemperatureSensor(
+      getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersSupply"),
+    ),
   },
 });

@@ -25,4 +25,4 @@ export const enum MimicComponentType {
   Pvt = "Pvt",
 }
 
-export type BoilerTankStateField = keyof Omit<DhwTankController, "timeToFill">;
+export type BoilerTankStateField = keyof Omit<DhwTankController, "timeToFill" | "timeToHot">;

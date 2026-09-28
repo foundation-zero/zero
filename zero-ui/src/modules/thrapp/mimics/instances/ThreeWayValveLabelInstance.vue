@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { formatRatio } from "@/modules/common/lib/utils";
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField, SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 
-const props = defineProps<
-  MimicComponentInstanceProps & { valve: ModuleField<SensorComponentType.Valve> }
->();
-
-const { getSensorValue } = getMimicDataProvider();
-const valve = getSensorValue(props.valve);
+defineProps<MimicComponentInstanceProps & { valve: ModuleField<SensorComponentType.Valve> }>();
 </script>
 
 <template>
@@ -24,10 +18,9 @@ const valve = getSensorValue(props.valve);
     {{ tagId }}
     <template #value>
       <span>A:</span>
-      <AnimatedNumber
-        :to="valve?.positionRel?.value"
-        :format="formatRatio.default"
-      />
+      <SensorValue :source="valve">
+        <FieldRenderer.Auto />
+      </SensorValue>
     </template>
   </Label>
 </template>

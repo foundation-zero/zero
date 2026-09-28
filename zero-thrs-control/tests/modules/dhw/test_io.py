@@ -68,7 +68,6 @@ def test_yard_tags():
             "freshwater_hotwater_temperature",
             "dhw_tanks_controller",
             "dhw_pump_flow_controller",
-            "dhw_pump_temperature_controller",
             "dhw_drives_flow_controller",
             "dhw_dc_flow_controller",
         },

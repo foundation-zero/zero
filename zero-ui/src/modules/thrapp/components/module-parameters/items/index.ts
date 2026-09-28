@@ -1,6 +1,8 @@
+export { default as Duration } from "./ModuleParametersDurationItem.vue";
 export { default as Dutypoint } from "./ModuleParametersDutypointItem.vue";
 export { default as Enabled } from "./ModuleParametersEnabledItem.vue";
 export { default as FlowControl } from "./ModuleParametersFlowControlItem.vue";
 export { default as Flow } from "./ModuleParametersFlowItem.vue";
 export { default as Level } from "./ModuleParametersLevelItem.vue";
+export { default as Power } from "./ModuleParametersPowerItem.vue";
 export { default as Temperature } from "./ModuleParametersTemperatureItem.vue";

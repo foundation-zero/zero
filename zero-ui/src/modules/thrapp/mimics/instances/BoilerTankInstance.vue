@@ -34,6 +34,7 @@ const controller = getControllerState(
 );
 const mode = computed(() => controller.value?.[props.custom.tankStateField].value);
 const fillTime = computed(() => controller.value?.timeToFill.value);
+const hotTime = computed(() => controller.value?.timeToHot.value);
 </script>
 
 <template>
@@ -66,6 +67,10 @@ const fillTime = computed(() => controller.value?.timeToFill.value);
         <ValueListTimeItem
           v-if="mode === BoilerTankState.Filling"
           :value="fillTime"
+        />
+        <ValueListTimeItem
+          v-if="mode === BoilerTankState.Boosting"
+          :value="hotTime"
         />
       </ValueList>
     </BoilerTank>

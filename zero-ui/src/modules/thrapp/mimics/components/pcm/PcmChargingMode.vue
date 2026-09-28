@@ -2,7 +2,7 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { computed } from "vue";
 import { CHARGING_MODE_COLORS, ChargingMode, PcmChargingModeProps } from ".";
-import { FieldRenderer } from "../../renderers";
+import Placeholder from "../../renderers/PlaceholderRenderer.vue";
 
 const props = defineProps<PcmChargingModeProps>();
 
@@ -16,7 +16,7 @@ const t = tScoped("thrapp.mimics.pcm.modes");
     class="text-inverse-foreground w-fit rounded-lg px-2 text-sm font-medium"
     :style="{ backgroundColor: color }"
   >
-    <FieldRenderer.Placeholder v-if="!mode" />
+    <Placeholder v-if="!mode" />
     <slot v-else> {{ t(mode) }} </slot>
   </span>
 </template>

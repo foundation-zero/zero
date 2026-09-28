@@ -1,12 +1,14 @@
 use crate::config::{Port, Var};
 use crate::layout::{Layout, Variable, VariableValue};
-use log::warn;
+use crate::metrics::PortMetrics;
+use log::{debug, error, warn};
 use nom::{
     number::complete::{
         be_i16, be_i32, be_i64, be_i8, be_u16, be_u32, be_u64, be_u8, le_f32, le_f64,
     },
     IResult,
 };
+use std::sync::Arc;
 use tokio_stream::{Stream, StreamExt};
 
 /// Parse one UDP packet according to `port_config` and return a `Vec<Variable>`
@@ -27,10 +29,14 @@ pub fn parse_packet<'input, 'layout>(
 }
 
 /// Convert a packet byte stream into a stream of parsed variable batches.
+///
+/// Decode failures are logged and counted here rather than by the caller, since
+/// this is the last point that still holds the raw bytes for diagnostics.
 pub fn parse_packet_stream<'layout, S>(
     packets: S,
     port_config: &'layout Port,
     layout: &'layout Layout,
+    metrics: Arc<PortMetrics>,
 ) -> impl Stream<Item = Result<Vec<Variable<'layout>>, String>> + 'layout
 where
     S: Stream<Item = Vec<u8>> + 'layout,
@@ -38,21 +44,55 @@ where
     let expected_len = expected_packet_len(port_config);
     packets.map(move |packet| {
         if packet.len() != expected_len {
+            metrics.incr_length_mismatches();
             warn!(
-                "Packet length {} does not match expected length {} on port {}",
+                "port {}: packet length {} does not match expected length {} \
+                 (wrong config file for this feed?)",
+                port_config.numport,
                 packet.len(),
-                expected_len,
-                port_config.numport
+                expected_len
             );
         }
 
-        parse_packet(&packet, port_config, layout)
-            .map(|(_, vars)| vars)
-            .map_err(|e| e.to_string())
+        match parse_packet(&packet, port_config, layout) {
+            Ok((_, vars)) => {
+                debug!(
+                    "port {}: parsed {} variables from {} bytes",
+                    port_config.numport,
+                    vars.len(),
+                    packet.len()
+                );
+                Ok(vars)
+            }
+            Err(e) => {
+                metrics.incr_parse_errors();
+                error!(
+                    "port {}: failed to parse {} bytes [{}]: {}",
+                    port_config.numport,
+                    packet.len(),
+                    hex_preview(&packet),
+                    e
+                );
+                Err(e.to_string())
+            }
+        }
     })
 }
 
-fn expected_packet_len(port_config: &Port) -> usize {
+/// Render the leading bytes of a packet as hex, so a bad frame can be inspected
+/// from the logs without a packet capture.
+fn hex_preview(bytes: &[u8]) -> String {
+    const PREVIEW_LEN: usize = 16;
+    bytes
+        .iter()
+        .take(PREVIEW_LEN)
+        .map(|byte| format!("{:02x}", byte))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Total packet length implied by the configured variables.
+pub(crate) fn expected_packet_len(port_config: &Port) -> usize {
     port_config
         .variables
         .iter()
@@ -452,5 +492,50 @@ mod tests {
         let data: &[u8] = &[0x77, 0xBE, 0x9F, 0x1A, 0x2F, 0xDD, 0x5E, 0x40];
         let (_, values) = parse_packet(data, &port, &layout).unwrap();
         assert!((find_number(&values, "Value") - 123.456).abs() < 1e-10);
+    }
+
+    #[tokio::test]
+    async fn test_stream_counts_length_mismatches_and_parse_errors() {
+        use tokio_stream::StreamExt;
+
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Foo", "UnSignedInt8", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+        let metrics = PortMetrics::new();
+
+        let packets = vec![
+            vec![0x0A],       // exact length, parses
+            vec![0x0A, 0x0B], // too long: warns, but still parses
+            Vec::new(),       // too short: mismatched length and unparseable
+        ];
+
+        let results: Vec<_> =
+            parse_packet_stream(tokio_stream::iter(packets), &port, &layout, metrics.clone())
+                .collect()
+                .await;
+
+        assert_eq!(results.len(), 3);
+        assert!(results[0].is_ok());
+        assert!(results[1].is_ok());
+        assert!(results[2].is_err());
+
+        let snapshot = metrics.snapshot();
+        assert_eq!(snapshot.length_mismatches, 2);
+        assert_eq!(snapshot.parse_errors, 1);
+    }
+
+    #[test]
+    fn test_hex_preview_truncates_to_sixteen_bytes() {
+        let bytes: Vec<u8> = (0..32).collect();
+        assert_eq!(
+            hex_preview(&bytes),
+            "00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f"
+        );
+        assert_eq!(hex_preview(&[]), "");
     }
 }

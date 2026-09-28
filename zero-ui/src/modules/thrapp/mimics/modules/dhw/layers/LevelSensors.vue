@@ -17,9 +17,9 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSensor];
       :orientation="ComponentOrientation.Left"
     >
       <LevelLabelInstance
-        :target-x="559 + 10"
+        :x="559 + 3"
         :target-width="PRESSURE_SENSOR_WIDTH"
-        y="71"
+        y="63"
         :tag-id="levelSensors['1056-01'].tooltip?.yardTag"
         :level="levelSensors['1056-01'].source"
       />
@@ -31,9 +31,9 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSensor];
       :orientation="ComponentOrientation.Left"
     >
       <LevelLabelInstance
-        :target-x="921 + 10"
+        :x="921 + 4"
         :target-width="PRESSURE_SENSOR_WIDTH"
-        y="71"
+        y="63"
         :tag-id="levelSensors['1056-02'].tooltip?.yardTag"
         :level="levelSensors['1056-02'].source"
       />
@@ -45,9 +45,9 @@ const levelSensors = DHW_MIMIC_DATA[MimicComponentType.LevelSensor];
       :orientation="ComponentOrientation.Left"
     >
       <LevelLabelInstance
-        :target-x="1260 + 10"
+        :x="1260 + 4"
         :target-width="PRESSURE_SENSOR_WIDTH"
-        y="71"
+        y="63"
         :tag-id="levelSensors['1056-03'].tooltip?.yardTag"
         :level="levelSensors['1056-03'].source"
       />

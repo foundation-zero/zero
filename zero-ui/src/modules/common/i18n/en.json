@@ -6,7 +6,9 @@
     "temperature": "Temperature",
     "liter": "Liter",
     "flow": "Flow",
-    "position": "Position"
+    "position": "Position",
+    "duration": "Duration",
+    "power": "Power"
   },
   "units": {
     "bar": "bar",
@@ -16,9 +18,13 @@
     "liters": "L",
     "lpm": "L/min",
     "watts": "W",
+    "watt": "W",
+    "megawatt": "MW",
     "joules": "J",
     "kilowatt": "kW",
     "kilowatthours": "kWh",
+    "watthours": "Wh",
+    "megawatthours": "MWh",
     "deltaT": "ΔT",
     "Tin": "Tin",
     "Tout": "Tout",

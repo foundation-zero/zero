@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
+import { ModeBadges, ModeBadgeSize } from "../components/mode-badge";
 import {
   ValueList,
   ValueListDeltaTItem,
   ValueListFlowItem,
   ValueListTemperatureItem,
 } from "../components/value-list";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { getMimicDataProvider } from "../providers";
 
 const { t } = useI18n();
 const props = defineProps<
@@ -38,11 +38,14 @@ const state = getComponentState();
       :state="state"
     >
       <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+
+      <ModeBadges
+        :module="custom.modeModule"
+        :size="ModeBadgeSize.Circuit"
+      />
+
       <ValueList>
-        <ValueListDeltaTItem
-          v-if="sensors.deltaT?.[0]"
-          :source="sensors.deltaT as ModuleField<SensorComponentType.DeltaT>"
-        />
+        <ValueListDeltaTItem :source="sensors.heatExchanger" />
         <ValueListTemperatureItem
           class="text-xs"
           :source="sensors.incoming"

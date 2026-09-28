@@ -28,6 +28,7 @@ export const enum BoilerTankState {
   NeedsBoost = "NEEDS_BOOST",
   NeedsFill = "NEEDS_FILL",
   Standby = "STANDBY",
+  OnTemperature = "ON_TEMPERATURE",
 }
 
 export type DhwTankController = {
@@ -35,6 +36,7 @@ export type DhwTankController = {
   tank2State: Stamped<BoilerTankState>;
   tank3State: Stamped<BoilerTankState>;
   timeToFill: Stamped<number>;
+  timeToHot: Stamped<number>;
 };
 
 export type PIDController = {
@@ -48,8 +50,8 @@ export type PIDController = {
 };
 
 export const enum PvtMode {
-  Idle = "IDLE",
-  Recovery = "RECOVERY",
+  Idle = "idle",
+  Recovery = "recovery",
 }
 
 export type PumpControl = {
@@ -117,6 +119,7 @@ export type SensorFields = {
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
+  [SensorComponentType.PcmInput]: (keyof PcmInputSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
   [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
@@ -185,10 +188,22 @@ export type ModeSelector<T> = {
   mode: Stamped<T>;
 };
 
+export const enum PcmChargingState {
+  Charging = "CHARGING",
+  Discharging = "DISCHARGING",
+  Idle = "IDLE",
+}
+
 export type PcmSensor = {
   charged: Stamped<boolean>;
+  chargingState: Stamped<PcmChargingState>;
+  heat: Stamped<number>;
   charge: Stamped<number>;
   deltaT: Stamped<number>;
+};
+
+export type PcmInputSensor = {
+  charged: Stamped<boolean>;
 };
 
 export type LevelSensor = {
@@ -372,9 +387,9 @@ export const enum SensorComponentType {
   Thruster = "sensor:thruster",
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
+  PcmInput = "sensor:pcmInput",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
-  DeltaT = "sensor:deltaT",
   HeatExchanger = "sensor:heatExchanger",
   HvacExchanger = "sensor:hvacExchanger",
   HeatPump = "sensor:heatPump",
@@ -398,9 +413,9 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Thruster,
   SensorComponentType.Pcs,
   SensorComponentType.Pcm,
+  SensorComponentType.PcmInput,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
-  SensorComponentType.DeltaT,
   SensorComponentType.HeatExchanger,
   SensorComponentType.HvacExchanger,
   SensorComponentType.HeatPump,
@@ -445,10 +460,10 @@ export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> 
   valveType: ValveType;
 };
 export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
+export type PcmInputSensorDefinition = SensorDefinition<SensorComponentType.PcmInput>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
-export type DeltaTSensorDefinition = SensorDefinition<SensorComponentType.DeltaT>;
 export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
@@ -462,11 +477,11 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
   [SensorComponentType.Pcm]: PcmSensor;
+  [SensorComponentType.PcmInput]: PcmInputSensor;
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
-  [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
   [SensorComponentType.HvacExchanger]: HeatExchangerSensor;
   [SensorComponentType.HeatPump]: HeatExchangerSensor;
@@ -525,6 +540,8 @@ export const enum ParametersType {
   Dutypoint = "parameter:dutypoint",
   dT = "parameter:dT",
   Level = "parameter:level",
+  Duration = "parameter:duration",
+  Power = "parameter:power",
 }
 
 export const PARAMETERS_TYPES = [
@@ -537,6 +554,8 @@ export const PARAMETERS_TYPES = [
   ParametersType.Dutypoint,
   ParametersType.dT,
   ParametersType.Level,
+  ParametersType.Duration,
+  ParametersType.Power,
 ];
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
@@ -564,6 +583,8 @@ export type ParameterDefinitionMap = {
   [ParametersType.Dutypoint]: Ratio;
   [ParametersType.dT]: number;
   [ParametersType.Level]: number;
+  [ParametersType.Duration]: number;
+  [ParametersType.Power]: number;
 };
 
 export type ExtractParameterValues<T extends ParameterDefinitions> = ExtractValues<
