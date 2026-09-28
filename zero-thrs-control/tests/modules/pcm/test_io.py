@@ -13,8 +13,7 @@ from thrs.input_output.modules.pcm import (
 )
 from thrs.simulation.models.fmu_paths import pcm_path
 
-# Neither the FMU's nor the sheet's charged outputs are measured on board; PCM status
-# is anchor-derived instead.
+# Neither the FMU's nor the sheet's charged outputs are measured; PCM status comes from the PcmChargeController
 PCM_IGNORED_FMU_CHARGED_OUTPUTS = {
     "pcm_module1__charged__bool",
     "pcm_module2__charged__bool",
