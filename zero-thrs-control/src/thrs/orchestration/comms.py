@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, Future, gather, timeout
+from asyncio import Event, Future, TaskGroup, gather, timeout
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Mapping
 from functools import partial
@@ -792,9 +792,12 @@ class MqttConnector:
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool
     ):
         payloads = mapping.split_to_topics(value)
-        for topic, payload in payloads.items():
-            logging.debug("Publishing on %s", topic)
-            await self._mqtt_client.publish(topic, payload, qos=qos, retain=retain)
+        async with TaskGroup() as tg:
+            for topic, payload in payloads.items():
+                logging.debug("Publishing on %s", topic)
+                tg.create_task(
+                    self._mqtt_client.publish(topic, payload, qos=qos, retain=retain)
+                )
 
     async def _start(self):
         for mapping in self._listeners:
