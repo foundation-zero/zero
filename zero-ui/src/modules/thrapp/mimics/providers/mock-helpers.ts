@@ -62,6 +62,21 @@ export type StampedObject<T extends Record<string, unknown>> = {
   [K in keyof T]: Stamped<T[K] extends Ref<infer U> ? U : T[K]>;
 };
 
+const generateAlarms = () => {
+  // Use different chances to prevent it being in alarm always
+  const anyFailureActive = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const anyWarningActive = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const feedbackFailure = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const externalOutOfRange = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+
+  return {
+    anyFailureActive: stamp(anyFailureActive),
+    anyWarningActive: stamp(anyWarningActive),
+    feedbackFailure: stamp(feedbackFailure),
+    externalOutOfRange: stamp(externalOutOfRange),
+  };
+};
+
 export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Temperature]: () => {
     const temperature = useRandomizedNumber(20, 100);
@@ -142,6 +157,7 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
       pressure: stamp(pressure),
       energyConsumption: stamp(energyConsumption),
       powerInput: stamp(powerInput),
+      ...generateAlarms(),
     }));
   },
   [SensorComponentType.Thruster]: () => {
@@ -151,7 +167,11 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Valve]: () => {
     const positionRel = useRandomizedRatio();
     const positionAbs = useRandomizedDegree();
-    return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
+    return computed(() => ({
+      positionRel: stamp(positionRel),
+      positionAbs: stamp(positionAbs),
+      ...generateAlarms(),
+    }));
   },
   [SensorComponentType.HeatExchanger]: () => {
     const deltaT = useRandomizedNumber(-20, 20);

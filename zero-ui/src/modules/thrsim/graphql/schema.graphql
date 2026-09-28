@@ -1584,6 +1584,10 @@ type SensorPropulsionDriveType {
 }
 
 type SensorPumpType {
+  anyFailureActive: BoolStampedType!
+  anyWarningActive: BoolStampedType!
+  feedbackFailure: BoolStampedType!
+  externalOutOfRange: BoolStampedType!
   speed: FloatStampedType!
   opTime: FloatStampedType!
   flow: FloatStampedType!
@@ -1618,6 +1622,10 @@ type SensorUgridType {
 }
 
 type SensorValveType {
+  anyFailureActive: BoolStampedType!
+  anyWarningActive: BoolStampedType!
+  feedbackFailure: BoolStampedType!
+  externalOutOfRange: BoolStampedType!
   positionRel: FloatStampedType!
   positionAbs: FloatStampedType!
 }

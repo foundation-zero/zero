@@ -43,18 +43,34 @@ export const ADSORPTION_SENSOR_QUERY = `
   adsorptionFlowcontrolWaste {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   adsorptionMixHot {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   adsorptionMixWaste {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   adsorptionSwitchDhw {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   adsorptionChiller {
     operating { value timestamp }
@@ -236,22 +252,42 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersFlowcontrolAdsorption {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   consumersFlowcontrolBypass {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   consumersFlowcontrolDhw {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   consumersSwitchAdsorption {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   consumersSwitchDhw {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   consumersAdsorptionExchanger {
     heat { value timestamp }
@@ -380,6 +416,10 @@ export const DC_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcPumpUgrid {
     flow { value timestamp }
@@ -388,6 +428,10 @@ export const DC_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcPumpFwd {
     flow { value timestamp }
@@ -396,6 +440,10 @@ export const DC_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcTemperatureAft4Return {
     temperature { value timestamp }
@@ -454,22 +502,42 @@ export const DC_SENSOR_QUERY = `
   dcMixFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcMixAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcMixUgrid {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcMixRecovery {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcFlowAft4 {
     flow { value timestamp }
@@ -534,34 +602,66 @@ export const DC_SENSOR_QUERY = `
   dcSwitchAft4 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchAft3 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchAft2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchAft1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchFwd2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchFwd1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchUgrid2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcSwitchUgrid1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dcPressureAft {
     pressure { value timestamp }
@@ -787,6 +887,10 @@ export const DHW_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwTemperatureHvacExchangerReturn {
     temperature { value timestamp }
@@ -845,70 +949,138 @@ export const DHW_SENSOR_QUERY = `
   dhwFlowcontrolDc {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwFlowcontrolDrives {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank3Inlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank3BoostingReturn {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank3Outlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank3BoostingSupply {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank2Inlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank2BoostingReturn {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank2Outlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank2BoostingSupply {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank1Inlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank1BoostingReturn {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank1Outlet {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchTank1BoostingSupply {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchLowTemperature {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchHeatpump {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwSwitchHighTemperature {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   dhwLevelSwitchTank1 {
     empty { value timestamp }
@@ -1113,6 +1285,10 @@ export const DRIVES_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesPump2 {
     flow { value timestamp }
@@ -1121,6 +1297,10 @@ export const DRIVES_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesTemperatureShorepowerReturn {
     temperature { value timestamp }
@@ -1158,10 +1338,18 @@ export const DRIVES_SENSOR_QUERY = `
   drivesMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesMixRecovery {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesFlowShorepower {
     flow { value timestamp }
@@ -1196,34 +1384,66 @@ export const DRIVES_SENSOR_QUERY = `
   drivesFlowcontrolPropdriveAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesFlowcontrolPropdriveFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchShorepowerSupply {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchShorepowerReturn {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchPropdriveAft1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchPropdriveAft2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchPropdriveFwd1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesSwitchPropdriveFwd2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   drivesPressure {
     pressure { value timestamp }
@@ -1451,6 +1671,10 @@ export const PCM_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmTemperatureProducersReturn {
     temperature { value timestamp }
@@ -1516,34 +1740,66 @@ export const PCM_SENSOR_QUERY = `
   pcmSwitchChargingReturn {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmFlowcontrolModule1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmFlowcontrolModule2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmFlowcontrolModule3 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmFlowcontrolModule4 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmSwitchDischarging {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmSwitchChargingSupply {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmSwitchConsumers {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pcmHeatModule1 {
     charged { value timestamp }
@@ -1742,6 +1998,10 @@ export const PVT_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtPumpMainAft {
     flow { value timestamp }
@@ -1750,6 +2010,10 @@ export const PVT_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtPumpOwners {
     flow { value timestamp }
@@ -1758,6 +2022,10 @@ export const PVT_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtTemperatureMainFwdReturn {
     temperature { value timestamp }
@@ -1780,14 +2048,26 @@ export const PVT_SENSOR_QUERY = `
   pvtMixMainFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtMixMainAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtMixOwners {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtFlowMainFwdRecovery {
     flow { value timestamp }
@@ -1825,18 +2105,34 @@ export const PVT_SENSOR_QUERY = `
   pvtSwitchMainFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtSwitchMainAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtSwitchOwners {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   pvtTemperatureSupply {
     temperature { value timestamp }
@@ -2551,6 +2847,10 @@ export const THRUSTERS_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersPump2 {
     flow { value timestamp }
@@ -2559,6 +2859,10 @@ export const THRUSTERS_SENSOR_QUERY = `
     pressure { value timestamp }
     energyConsumption { value timestamp }
     powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersTemperatureAft {
     temperature { value timestamp }
@@ -2575,10 +2879,18 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersMixRecovery {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersFlowFwd {
     flow { value timestamp }
@@ -2593,22 +2905,42 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFlowcontrolAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersFlowcontrolFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersSwitchRecovery {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersSwitchAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersSwitchFwd {
     positionRel { value timestamp }
     positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   thrustersFlowRecovery {
     flow { value timestamp }
