@@ -521,12 +521,14 @@ class SimulationChannels[
             control_values_clss,
             config.mqtt_devices_topic_prefix,
         )
-        self._publish_merged = connector._create_publisher(self._merged_mapping)
+        # Every tick overwrites these values, so a lost message is harmless
+        self._publish_merged = connector._create_publisher(self._merged_mapping, qos=0)
         self.send_simulation_inputs = connector._create_publisher(
-            DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic)
+            DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic), qos=0
         )
         self.send_simulation_outputs = connector._create_publisher(
             DirectMqttMapping(simulation_outputs_cls, simulation_outputs_topic),
+            qos=0,
         )
 
         self.get_control_values = control_values_mapping.result
