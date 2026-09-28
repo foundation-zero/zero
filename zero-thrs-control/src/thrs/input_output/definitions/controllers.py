@@ -34,7 +34,9 @@ PCM_MIN_FLOW: LMin = 0.5  # below this the dT across a module is noise
 PCM_MAX_SAMPLE_GAP: Seconds = 30
 
 PCM_MELT_TEMP: Celsius = 58
-PCM_MELT_MARGIN: DeltaT = 3  # inlet must be this far past PCM_MELT_TEMP to define EMPTY/FULL
+PCM_MELT_MARGIN: DeltaT = (
+    3  # inlet must be this far past PCM_MELT_TEMP to define EMPTY/FULL
+)
 
 # Exchanger effectiveness dT / (T_in - PCM_MELT_TEMP) below which a module is exhausted.
 # TODO: Fit on logged full charge/discharge cycles.

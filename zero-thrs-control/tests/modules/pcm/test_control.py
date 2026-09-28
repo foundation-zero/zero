@@ -86,7 +86,8 @@ def _all_modules(control: PcmControl) -> tuple[PcmChargeController, ...]:
         control.module4_charge_controller,
     )
 
-#test state machine
+
+# test state machine
 def test_idle_when_nothing_requested():
     control, _clock = _new_control()
     sensor_values = _hot_settled_sensor_values(control)
@@ -310,7 +311,7 @@ def test_charging_and_supplying_never_switch_directly():
     assert control.mode == PcmControlMode(mode="supplying")
 
 
-#Parameter setting
+# Parameter setting
 def test_charging_and_supplying_cannot_both_be_requested():
     with pytest.raises(ValidationError):
         PcmParameters(charging_requested=True, supplying_requested=True)
@@ -323,7 +324,7 @@ def test_minimum_charging_temperature_must_allow_anchoring_full():
         PcmParameters(pcm_charge_flow=1, minimum_charging_temperature=65)
 
 
-#Test simulation
+# Test simulation
 def test_idle_with_real_simulation(control: PcmControl, simulation: PcmSimulation):
     result = simulation.tick(control.initial()[0])
 
