@@ -81,9 +81,7 @@ def extract_managed_topics(
     """Extract managed topics from the given list of topics."""
 
     other_topics, managed_topics = partition(
-        lambda topic: (
-            topic.topic.startswith("marpower/") and topic.topic[9:].startswith(SYSTEMS)
-        ),
+lambda topic: topic.topic.startswith(tuple(f"marpower/{system}/" for system in SYSTEMS)),
         topics,
     )
     parsed_topics = [(extract_parts(topic), topic) for topic in managed_topics]
