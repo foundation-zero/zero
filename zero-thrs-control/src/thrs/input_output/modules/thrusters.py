@@ -258,60 +258,17 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     )
     @property
     def thrusters_seawater_exchanger(self) -> sensor.HeatTransferDevice:
-        temperature_supply = StampedWithSource.from_stamped(
-            self.thrusters_temperature_pre_cooler.temperature,
-            sensor.extract_source_yardtag(self, "thrusters_temperature_pre_cooler"),
-        )
-        temperature_return = StampedWithSource.from_stamped(
-            self.thrusters_temperature_supply.temperature,
-            sensor.extract_source_yardtag(self, "thrusters_temperature_supply"),
-        )
-        exchange_mix_ration = self.thrusters_mix_exchanger.position_rel
-        thrusters_flow = self.thrusters_flow.flow
-        actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
-            thrusters_flow,
-            exchange_mix_ration,
-            value=thrusters_flow.value * (1 - exchange_mix_ration.value),
-            source="calculated",
-        )
-
-        # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
-        delta_t: Stamped[DeltaT | None] = Stamped.combine(
-            temperature_supply,
-            temperature_return,
-            value=(
-                (
-                    1
-                    / exchange_mix_ration.value
-                    * (temperature_return.value - temperature_supply.value)
-                )
-                if exchange_mix_ration.value > 0
-                else 0.0
-            )
-            if temperature_supply.value
-            else 0.0,
-        )
-
-        # We don't use above delta_t and actual flow because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
-        heat: Stamped[Watt | None] = Stamped.combine(
-            temperature_return,
-            temperature_supply,
-            thrusters_flow,
-            value=thrusters_flow.value
-            * (
-                (temperature_return.value - temperature_supply.value)
-                if temperature_supply.value
-                else 0.0
-            )
-            * WATER_HEAT_TRANSFER_CONVERSION,
-        )
-
-        return sensor.HeatTransferDevice(
-            temperature_supply=temperature_supply,
-            temperature_return=temperature_return,  # type: ignore
-            delta_t=delta_t,
-            flow=actual_flow,
-            heat=heat,
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
+            temperature_supply=self.thrusters_temperature_pre_cooler.temperature,
+            temperature_return=self.thrusters_temperature_supply.temperature,  # type: ignore
+            flow=self.thrusters_flow.flow,
+            exchange_mix_ratio=self.thrusters_mix_exchanger.position_rel,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_pre_cooler"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_supply"
+            ),
         )
 
 

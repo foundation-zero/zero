@@ -221,6 +221,100 @@ class HeatTransferDevice(ThrsValues):
             heat=heat,
         )
 
+    @classmethod
+    def from_sensors_with_mix_valve(
+        cls,
+        temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
+        temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
+        flow: Stamped[LMin] | Stamped[LMin | None],
+        exchange_mix_ratio: Stamped[Ratio],
+        temperature_supply_source: str,
+        temperature_return_source: str,
+        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
+    ):
+        """
+        Calculate heat transfer device for seawater exchangers where a mix valve determines the ratio that actually passed the heat exchanger.
+
+        We assume the `exchange_mix_ratio` is 1.0 if no water passes through the exchanger.
+        There are a lot of assumptions in this function. So we might want to evaluate how much we want to try to calculate this
+        """
+        # DeltaT is slightly more difficult since we need to account for the part that does not flow past the exchanger
+        if temperature_supply.value is None or temperature_return.value is None:
+            delta_t: Stamped[DeltaT | None] = Stamped.combine(
+                temperature_return, temperature_supply, flow, value=None
+            )
+        else:
+            delta_t: Stamped[DeltaT | None] = Stamped.combine(
+                temperature_supply,
+                temperature_return,
+                value=(
+                    (
+                        1
+                        / exchange_mix_ratio.value
+                        * (temperature_return.value - temperature_supply.value)
+                    )
+                    if exchange_mix_ratio.value > 0
+                    else 0.0
+                ),
+            )
+
+        if flow.value is None and exchange_mix_ratio.value != 0.0:
+            actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
+                flow, exchange_mix_ratio, value=None, source="unknown"
+            )
+            heat: Stamped[Watt | None] = Stamped.combine(
+                temperature_return, temperature_supply, flow, value=None
+            )
+        elif flow.value == 0.0 or exchange_mix_ratio.value == 0.0:
+            actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
+                flow, value=0.0, source="calculated"
+            )
+            heat: Stamped[Watt | None] = Stamped.combine(
+                temperature_return,
+                temperature_supply,
+                flow,
+                exchange_mix_ratio,
+                value=0.0,
+            )
+        else:
+            assert flow.value is not None  # noqa: S101
+            actual_flow: StampedWithSource[LMin | None] = StampedWithSource.combine(
+                flow,
+                exchange_mix_ratio,
+                value=flow.value * (1 - exchange_mix_ratio.value),
+                source="calculated",
+            )
+
+            if temperature_supply.value is None or temperature_return.value is None:
+                heat: Stamped[Watt | None] = Stamped.combine(
+                    temperature_return, temperature_supply, flow, value=None
+                )
+            else:
+                # We don't use above delta_t and actual flow because its too complicated and we can assume that the part that does not flow past the exchanger does no heat dump.
+                heat: Stamped[Watt | None] = Stamped.combine(
+                    temperature_return,
+                    temperature_supply,
+                    flow,
+                    exchange_mix_ratio,
+                    value=flow.value
+                    * (temperature_return.value - temperature_supply.value)
+                    * heat_transfer_conversion,
+                )
+
+        return HeatTransferDevice(
+            temperature_supply=StampedWithSource.from_stamped(
+                temperature_supply,  # type: ignore
+                temperature_supply_source,
+            ),
+            temperature_return=StampedWithSource.from_stamped(
+                temperature_return,  # type: ignore
+                temperature_return_source,
+            ),
+            delta_t=delta_t,
+            flow=actual_flow,
+            heat=heat,
+        )
+
 
 def extract_source_yardtag(model: ThrsValues, key: str) -> str:
     klass = type(model)

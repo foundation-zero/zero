@@ -43,7 +43,7 @@ def test_heat_transfer_device_heat_in_watts():
         "All unknown",
     ),
 )
-def test_heat_transfer_device(temp_in, temp_out, flow, delta_t, heat):
+def test_heat_transfer_device_from_sensors(temp_in, temp_out, flow, delta_t, heat):
     pcm = sensor.HeatTransferDevice.from_sensors(
         temperature_supply=Stamped.stamp(temp_in),
         temperature_return=Stamped.stamp(temp_out),
@@ -52,6 +52,54 @@ def test_heat_transfer_device(temp_in, temp_out, flow, delta_t, heat):
         temperature_supply_source="",
         temperature_return_source="",
         flow_source="",
+    )
+
+    assert pcm.delta_t.value == delta_t
+    assert pcm.heat.value == heat
+
+
+@pytest.mark.parametrize(
+    ("temp_in", "temp_out", "flow", "mix_ratio", "delta_t", "heat"),
+    [
+        (10, 10, 10, 1, 0, 0),
+        (10, 20, 10, 1, 10, 6973.333333333333),
+        (None, None, 0, 1, None, 0),
+        (None, None, 10, 1, None, None),
+        (10, 20, None, 1, 10, None),
+        # technically for the next one we know heat is 0, but delta t is never exactly 0 so this is very unlikely
+        (10, 10, None, 1, 0, None),
+        (10, None, None, 1, None, None),
+        (None, None, None, 1, None, None),
+        (10, 10, 10, 0.5, 0, 0),
+        (10, 20, 10, 0.5, 20, 6973.333333333333),
+        (None, None, 0, 0.5, None, 0),
+        (None, None, 10, 0.5, None, None),
+        (10, 20, None, 0.5, 20, None),
+        # technically for the next one we know heat is 0, but delta t is never exactly 0 so this is very unlikely
+        (10, 10, None, 0.5, 0, None),
+        (10, None, None, 0.5, None, None),
+        (None, None, None, 0.5, None, None),
+        (10, 10, 10, 0, 0, 0),
+        (10, 20, 10, 0, 0, 0),
+        (None, None, 0, 0, None, 0),
+        (None, None, 10, 0, None, 0),
+        (10, 20, None, 0, 0, 0),
+        (10, 10, None, 0, 0, 0),
+        (10, None, None, 0, None, 0),
+        (None, None, None, 0, None, 0),
+    ],
+)
+def test_heat_transfer_device_from_sensors_with_mix_valve(
+    temp_in, temp_out, flow, mix_ratio, delta_t, heat
+):
+    pcm = sensor.HeatTransferDevice.from_sensors_with_mix_valve(
+        temperature_supply=Stamped.stamp(temp_in),
+        temperature_return=Stamped.stamp(temp_out),
+        flow=Stamped.stamp(flow),
+        exchange_mix_ratio=Stamped.stamp(mix_ratio),
+        temperature_supply_source="",
+        temperature_return_source="",
+        heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
     )
 
     assert pcm.delta_t.value == delta_t

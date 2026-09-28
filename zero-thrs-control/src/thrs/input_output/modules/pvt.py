@@ -939,19 +939,16 @@ class PvtSensorValues(AmcsModeSensorValues):
     )
     @property
     def pvt_seawater_exchanger(self) -> sensor.HeatTransferDevice:
-        return sensor.HeatTransferDevice.from_sensors(
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
             temperature_supply=self.pvt_temperature_supply.temperature,
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            exchange_mix_ratio=self.pvt_mix_exchanger.position_rel,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_supply"
             ),
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "pcm_temperature_producers_supply"
-            ),
-            flow_source=sensor.extract_source_yardtag(
-                self, "pvt_seawater_exchanger_flow"
             ),
         )
 
