@@ -40,7 +40,9 @@ class MarpowerVectorGenerator:
     def generate(self, io_result: IOResult):
         """Generate the VRL file for the given topics."""
         topics = io_result.topics
-        managed_topics, invalid_managed_topics, other_topics = extract_managed_topics(topics)
+        managed_topics, invalid_managed_topics, other_topics = extract_managed_topics(
+            topics
+        )
         for topic in invalid_managed_topics:
             logger.warning(f"Invalid managed topic: {topic.topic}")
 
