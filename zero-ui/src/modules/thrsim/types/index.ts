@@ -219,7 +219,7 @@ export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
 export type PropulsionDriveSensor = Toggle;
 export type ShorePowerConverterSensor = Toggle;
-export type IrradianceSensor = {
+export type PyranometerSensor = {
   irradiance: Stamped<number>;
 };
 
@@ -251,7 +251,7 @@ export type SensorType =
   | UgridSensor
   | PropulsionDriveSensor
   | ShorePowerConverterSensor
-  | IrradianceSensor;
+  | PyranometerSensor;
 
 export type ControlType =
   | PumpControl
@@ -380,7 +380,7 @@ export const enum SensorComponentType {
   Temperature = "sensor:temperature",
   CalculatedTemperature = "sensor:calculatedTemperature",
   Pressure = "sensor:pressure",
-  Irradiance = "sensor:irradiance",
+  Pyranometer = "sensor:pyranometer",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
   Valve = "sensor:valve",
@@ -425,7 +425,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
-  SensorComponentType.Irradiance,
+  SensorComponentType.Pyranometer,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -492,7 +492,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
-  [SensorComponentType.Irradiance]: IrradianceSensor;
+  [SensorComponentType.Pyranometer]: PyranometerSensor;
   [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };
 

@@ -8,7 +8,7 @@ import { FieldRenderer } from "../renderers";
 
 defineProps<
   MimicComponentInstanceProps &
-    LabelProps & { source?: ModuleField<SensorComponentType.Irradiance>; value?: number }
+    LabelProps & { source?: ModuleField<SensorComponentType.Pyranometer>; value?: number }
 >();
 </script>
 

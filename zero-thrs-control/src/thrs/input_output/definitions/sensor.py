@@ -27,6 +27,7 @@ from thrs.input_output.definitions.units import (
     Ratio,
     Seconds,
     Watt,
+    WattMeter2,
 )
 
 
@@ -429,6 +430,10 @@ class PowerSensor(ThrsValues):
     temperature_cold: Stamped[Celsius]
 
 
+class Pyranometer(ThrsValues):
+    irradiance: Stamped[WattMeter2]
+
+
 __all__ = [
     "AdsorptionChiller",
     "Brightloop",
@@ -450,6 +455,7 @@ __all__ = [
     "PropulsionDrive",
     "Pump",
     "Pvt",
+    "Pyranometer",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",
