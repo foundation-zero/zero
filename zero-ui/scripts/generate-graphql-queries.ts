@@ -129,6 +129,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Ugrid: ["active"],
     PropulsionDrive: ["active"],
     ShorePowerConverter: ["active"],
+    Pyranometer: ["irradiance"],
     AmcsControlMode: ["mode"],
   },
 

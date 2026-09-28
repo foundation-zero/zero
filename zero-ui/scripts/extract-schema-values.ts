@@ -95,6 +95,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SensorPyranometerType: "Pyranometer",
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 

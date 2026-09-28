@@ -131,6 +131,7 @@ type BaseComponentType = Literal[
     "ugrid",
     "tank_controller",
     "pid_controller",
+    "pyranometer",
 ]
 type SpecialComponentType = Literal["valve"]
 

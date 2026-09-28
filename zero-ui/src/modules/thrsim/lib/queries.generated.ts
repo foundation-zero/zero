@@ -1851,6 +1851,12 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureSupply {
     temperature { value timestamp }
   }
+  pvtPyranometerPs {
+    irradiance { value timestamp }
+  }
+  pvtPyranometerSb {
+    irradiance { value timestamp }
+  }
   pvtTemperatureMainString11Return {
     temperature { value timestamp }
   }

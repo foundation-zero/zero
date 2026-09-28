@@ -1381,6 +1381,8 @@ type PvtSensorValuesType {
   pvtSwitchOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: "valve", valveType: "switch")
   pvtMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: "valve", valveType: "mix")
   pvtTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-24", componentType: "temperature_sensor", valveType: null)
+  pvtPyranometerPs: SensorPyranometerType! @jsonSchemaDirective(yardTag: "50009044", componentType: "pyranometer", valveType: null)
+  pvtPyranometerSb: SensorPyranometerType! @jsonSchemaDirective(yardTag: "50009043", componentType: "pyranometer", valveType: null)
   pvtTemperatureMainString11Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-01", componentType: "temperature_sensor", valveType: null)
   pvtTemperatureMainString12Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-19", componentType: "temperature_sensor", valveType: null)
   pvtTemperatureMainString21Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-03", componentType: "temperature_sensor", valveType: null)
@@ -1596,6 +1598,10 @@ type SensorPumpType {
 type SensorPvtType {
   deltaT: FloatStampedType!
   heat: FloatStampedType!
+}
+
+type SensorPyranometerType {
+  irradiance: FloatStampedType!
 }
 
 type SensorShorePowerConverterType {

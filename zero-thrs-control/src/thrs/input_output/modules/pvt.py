@@ -136,6 +136,18 @@ class PvtSensorValues(AmcsModeSensorValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-24", component_type="temperature_sensor"),
     ]
+    pvt_pyranometer_ps: Annotated[
+        sensor.Pyranometer,
+        component_meta(
+            yard_tag="50009044", component_type="pyranometer", included_in_fmu=False
+        ),
+    ]
+    pvt_pyranometer_sb: Annotated[
+        sensor.Pyranometer,
+        component_meta(
+            yard_tag="50009043", component_type="pyranometer", included_in_fmu=False
+        ),
+    ]
     pvt_temperature_main_string1_1_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50009005-01", component_type="temperature_sensor"),
@@ -958,3 +970,21 @@ class PvtSimulationOutputs(ThrsValues):
         return sensor.TemperatureSensor(
             temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
         )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="pyranometer"
+        )
+    )
+    @property
+    def pvt_pyranometer_ps(self) -> sensor.Pyranometer:
+        return sensor.Pyranometer(irradiance=Stamped.stamp(0))
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="pyranometer"
+        )
+    )
+    @property
+    def pvt_pyranometer_sb(self) -> sensor.Pyranometer:
+        return sensor.Pyranometer(irradiance=Stamped.stamp(0))

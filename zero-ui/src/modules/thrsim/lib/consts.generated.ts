@@ -2151,6 +2151,14 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-24",
     componentType: SensorComponentType.Temperature,
   },
+  pvtPyranometerPs: {
+    yardTag: "50009044",
+    componentType: SensorComponentType.Pyranometer,
+  },
+  pvtPyranometerSb: {
+    yardTag: "50009043",
+    componentType: SensorComponentType.Pyranometer,
+  },
   pvtTemperatureMainString11Return: {
     yardTag: "50009005-01",
     componentType: SensorComponentType.Temperature,
