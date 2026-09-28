@@ -83,6 +83,7 @@ def setup_lockstep(
         time_fn=simulation_module.time,
         database=database or mock.Mock(spec=PostgresDatabase),
         machine_state_logging_service_enabled=machine_state_logging_service_enabled,
+        publish_qos=0,
     )
 
     for module in control_modules:
