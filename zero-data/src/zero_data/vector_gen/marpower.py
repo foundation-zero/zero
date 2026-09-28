@@ -3,14 +3,14 @@ from pathlib import Path
 
 from pydantic import BaseModel, TypeAdapter
 
-from zero_data.io_list.thrs import extract_thrs_topics
+from zero_data.io_list.managed_topics import extract_managed_topics
 from zero_data.io_list.types import IOResult
 from zero_data.io_list.utils import detect_same_format
 
 EXTRA_GROUPED_TOPICS = [
-    "marpower/450000-main-power-storage/system-05/",
-    "marpower/450000-main-power-storage/system-5/",
-    "marpower/500000-thrs/vlv/",
+    # "marpower/450000-main-power-storage/system-05/",
+    # "marpower/450000-main-power-storage/system-5/",
+    # "marpower/500000-thrs/vlv/",
     "marpower/450000-dc-distribution/350v-conv/",
     "marpower/450000-dc-distribution/conv/",
     "marpower/450000-dc-distribution/dc-switch/",
@@ -27,7 +27,7 @@ EXTRA_GROUPED_TOPICS = [
 logger = logging.getLogger(__name__)
 
 
-class ThrsTopicMapping(BaseModel):
+class ManagedTopicMapping(BaseModel):
     table: str
     yard_tag: str | None
     technical_name: str
@@ -40,25 +40,25 @@ class MarpowerVectorGenerator:
     def generate(self, io_result: IOResult):
         """Generate the VRL file for the given topics."""
         topics = io_result.topics
-        thrs_topics, invalid_thrs_topic, other_topics = extract_thrs_topics(topics)
-        for topic in invalid_thrs_topic:
-            logger.warning(f"Invalid THRS topic: {topic.topic}")
+        managed_topics, invalid_managed_topics, other_topics = extract_managed_topics(topics)
+        for topic in invalid_managed_topics:
+            logger.warning(f"Invalid managed topic: {topic.topic}")
 
         mapping = {
-            thrs_topic.topic.topic: ThrsTopicMapping(
-                table=f"marpower__thrs__{thrs_topic.component}",
+            managed_topic.topic.topic: ManagedTopicMapping(
+                table=f"marpower__{managed_topic.system_name}__{managed_topic.component}",
                 yard_tag=(
-                    thrs_topic.topic.yard_tag.strip()
-                    if thrs_topic.topic.yard_tag is not None
+                    managed_topic.topic.yard_tag.strip()
+                    if managed_topic.topic.yard_tag is not None
                     else None
                 ),
-                technical_name=thrs_topic.technical_name,
+                technical_name=managed_topic.technical_name,
             )
-            for thrs_topic in sorted(thrs_topics, key=lambda t: t.topic.topic)
+            for managed_topic in sorted(managed_topics, key=lambda t: t.topic.topic)
         }
-        mapping_adapter = TypeAdapter(dict[str, ThrsTopicMapping])
+        mapping_adapter = TypeAdapter(dict[str, ManagedTopicMapping])
 
-        _, squashed, _ = detect_same_format(other_topics + invalid_thrs_topic)
+        _, squashed, _ = detect_same_format(other_topics + invalid_managed_topics)
         grouped_topics = set(
             [topic.topic.removesuffix("#").replace("//", "/") for topic in squashed]
         )
@@ -79,6 +79,6 @@ class MarpowerVectorGenerator:
                     "\n]\n\n",
                 )
                 + (
-                    f"thrs_tables = {str(mapping_adapter.dump_json(mapping, indent=2), 'utf-8')}\n",
+                    f"managed_tables = {str(mapping_adapter.dump_json(mapping, indent=2), 'utf-8')}\n",
                 )
             )

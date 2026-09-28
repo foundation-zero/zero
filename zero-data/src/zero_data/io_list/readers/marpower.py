@@ -13,8 +13,6 @@ _DATA_TYPES = {
     "UInt64": "BIGINT",
     "UInt32": "BIGINT",
     "UInt16": "INTEGER",
-    # Typo in AMCS IO list R2.14
-    #"Unit16": "INTEGER",
     "Int64": "BIGINT",
     "Int32": "INTEGER",
     "Int16": "INTEGER",
