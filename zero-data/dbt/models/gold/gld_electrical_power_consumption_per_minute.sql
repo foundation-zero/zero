@@ -1,5 +1,3 @@
-{{ config(materialized='view') }}
-
 select
     time,
     sum(avg_power) as power,

@@ -1,5 +1,3 @@
-{{ config(materialized='view') }}
-
 with power_tags as (
     select * from {{ ref('stg_marpower__power_tags') }}
 ),

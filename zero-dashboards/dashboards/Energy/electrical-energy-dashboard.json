@@ -684,18 +684,22 @@
               },
               {
                 "color": "light-blue",
-                "value": 2500
+                "value": 2000
               },
               {
                 "color": "blue",
-                "value": 5000
+                "value": 4000
               },
               {
                 "color": "semi-dark-blue",
-                "value": 10000
+                "value": 7000
               },
               {
                 "color": "dark-blue",
+                "value": 10000
+              },
+              {
+                "color": "#194e9f",
                 "value": 15000
               }
             ]

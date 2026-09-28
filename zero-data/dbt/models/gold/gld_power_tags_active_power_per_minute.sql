@@ -1,5 +1,3 @@
-{{ config(materialized='view') }}
-
 select 
     date_bin(INTERVAL '1 minute', ts) as time,
     topic,
