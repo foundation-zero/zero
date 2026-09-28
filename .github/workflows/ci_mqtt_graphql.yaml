@@ -84,6 +84,13 @@ jobs:
       - name: Validate specs (no sanitization collisions)
         run: cargo run --locked -- validate --spec-dir ../specs
         working-directory: zero-mqtt-graphql
+        env:
+          MQTT_DEVICES_TOPIC_PREFIX: devices_topic
+          MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
+          MQTT_SIMULATOR_TOPIC_PREFIX: simulation_topic
+          MQTT_CONTROL_TOPIC_SUFFIX: Command
+          MQTT_CONTROLLER_TOPIC_SUFFIX: set
+          MQTT_SIMULATOR_TOPIC_SUFFIX: set
       - name: Copy specs into image build context
         run: cp -r specs zero-mqtt-graphql/specs
       - name: Upload specs artifact
