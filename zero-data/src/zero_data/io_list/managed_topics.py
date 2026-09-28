@@ -80,13 +80,13 @@ def extract_managed_topics(
 ) -> tuple[list[ManagedTopic], list[IOTopic], list[IOTopic]]:
     """Extract managed topics from the given list of topics."""
 
-    other_topics, managed_topics = partition(
+    other_topics, matched_topics = partition(
         lambda topic: topic.topic.startswith(
             tuple(f"marpower/{system}/" for system in SYSTEMS)
         ),
         topics,
     )
-    parsed_topics = [(extract_parts(topic), topic) for topic in managed_topics]
+    parsed_topics = [(extract_parts(topic), topic) for topic in matched_topics]
     valid_topics = [
         topic_with_parts
         for topic_with_parts in parsed_topics
