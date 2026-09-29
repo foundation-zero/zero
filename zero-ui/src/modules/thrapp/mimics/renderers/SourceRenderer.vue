@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
+import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrsim/lib/consts";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { FieldRenderer } from ".";
 import { getTooltipContext } from "../../components/tooltip";
 import {
   getDefinition,
+  getFieldValueData,
   injectFieldValueSource,
   isParameterField,
   ModuleField,
   serializeField,
 } from "../../mimics/providers";
+import { useTranslations } from "../tooltips";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -18,7 +21,10 @@ const props = defineProps<{
   noLink?: boolean;
 }>();
 
+const { sources } = useTranslations();
+
 const source = computed(() => props.source ?? injectFieldValueSource());
+const sourceData = getFieldValueData();
 
 const definition = computed(() => {
   if (!source.value) return null;
@@ -26,9 +32,25 @@ const definition = computed(() => {
   return getDefinition(source.value);
 });
 
+const backendSource = computed(() => {
+  const sourcedataTyped = sourceData.value as unknown as { source?: string } | undefined;
+
+  if (!sourcedataTyped || (sourcedataTyped && !Object.keys(sourcedataTyped).includes("source")))
+    return null;
+
+  if (!sourcedataTyped.source) return "";
+
+  if (["unknown", "calculated"].includes(sourcedataTyped.source))
+    return sources(sourcedataTyped.source);
+
+  return sourcedataTyped.source.replace(THRS_YARDTAG_PREFIX_REGEX, "");
+});
+
 const sourceName = computed(() => {
+  if (backendSource.value) return backendSource.value;
   if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
-  else if (!definition.value || !("yardTag" in definition.value)) return source.value?.[2];
+  else if (!definition.value || !("yardTag" in definition.value))
+    return snakeCase(source.value?.[2]);
 
   return definition.value.yardTag ?? source.value?.[2];
 });
@@ -37,6 +59,7 @@ const { findTooltipContext } = getTooltipContext();
 
 const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
 const isParameter = computed(() => isParameterField(source.value));
+const showLink = computed(() => !props.noLink && !backendSource.value);
 </script>
 
 <template>
@@ -46,7 +69,7 @@ const isParameter = computed(() => isParameterField(source.value));
     "
   >
     <RouterLink
-      v-if="tooltipContext && !noLink"
+      v-if="tooltipContext && showLink"
       class="cursor-pointer underline"
       :to="{
         query: { ...$route.query, tooltip: serializeField(source) },
@@ -77,7 +100,7 @@ const isParameter = computed(() => isParameterField(source.value));
 
     <FieldRenderer.Placeholder v-else-if="sourceName === 'placeholder'" />
     <slot v-else-if="sourceName">
-      {{ snakeCase(sourceName) }}
+      {{ sourceName }}
     </slot>
 
     <slot v-else />

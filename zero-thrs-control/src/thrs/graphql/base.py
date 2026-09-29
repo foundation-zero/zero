@@ -37,7 +37,7 @@ from thrs.graphql.messaging import (
     DirectiveMessaging,
     SimulationMessaging,
 )
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues
 from thrs.input_output.definitions import (
     control,
     controllers,
@@ -142,6 +142,15 @@ type DhwMessaging = ControlMessaging[
     use_pydantic_alias=False,
 )
 class StampedType[T]:
+    pass
+
+
+@strawberry.experimental.pydantic.type(
+    model=StampedWithSource,
+    all_fields=True,
+    use_pydantic_alias=False,
+)
+class StampedWithSourceType[T]:
     pass
 
 

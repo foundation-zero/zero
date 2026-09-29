@@ -13,17 +13,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       parameters: {},
       source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainFwd"),
       sensors: {
-        flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowMainFwdStrings"),
-        incoming: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureMainFwdStringsSupply",
-        ),
-        outgoing: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureMainFwdStringsReturn",
-        ),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainFwdHeat"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {
@@ -40,17 +30,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainAft"),
 
       sensors: {
-        flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowMainAftStrings"),
-        incoming: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureMainAftStringsSupply",
-        ),
-        outgoing: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureMainAftStringsReturn",
-        ),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainAftHeat"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {
@@ -67,17 +47,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtOwners"),
 
       sensors: {
-        flow: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtFlowOwnersStrings"),
-        incoming: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureOwnersStringsSupply",
-        ),
-        outgoing: getField(
-          SensorComponentType.CalculatedTemperature,
-          "pvt",
-          "pvtTemperatureOwnersStringsReturn",
-        ),
+        heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtOwnersHeat"),
       },
       get tooltip() {
         return fieldTooltip(this.source, {

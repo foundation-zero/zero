@@ -17,6 +17,7 @@ import {
   SeriesChart,
   Stamped,
   StampedChart,
+  StampedWithSource,
   TimeSeriesData,
 } from "@common/types";
 import { ArgumentsType, useIntervalFn, useTimeoutFn } from "@vueuse/core";
@@ -341,7 +342,11 @@ export const logToSeries = <T extends LogEntry, K extends keyof T>(
   ]) ?? [];
 
 export function isStamped<T>(input: unknown[] | Stamped<T>[]): input is Stamped<T>[];
+export function isStamped<T>(
+  input: unknown[] | StampedWithSource<T>[],
+): input is StampedWithSource<T>[];
 export function isStamped<T>(input: unknown | Stamped<T>): input is Stamped<T>;
+export function isStamped<T>(input: unknown | StampedWithSource<T>): input is StampedWithSource<T>;
 export function isStamped(input: unknown): input is Stamped<number>;
 export function isStamped(input: unknown): boolean {
   if (Array.isArray(input)) return isStamped(input[0]);
@@ -353,6 +358,16 @@ export const stamp = <T>(value: MaybeRef<T>, timestamp = new Date()): Stamped<T>
   value: unref(value),
   timestamp,
 });
+export const stampWithSource = <T>(
+  value: MaybeRef<T>,
+  source: string,
+  timestamp = new Date(),
+): StampedWithSource<T> => ({
+  value: unref(value),
+  timestamp,
+  source,
+});
+
 export const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
 
 export const isStampedNumber = (item: unknown): item is Stamped<number> =>

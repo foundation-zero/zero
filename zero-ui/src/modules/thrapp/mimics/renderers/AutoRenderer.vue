@@ -4,7 +4,9 @@ import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField, injectFieldValueSource, isPlaceholderField } from "../providers";
 
-const field = injectFieldValueField<ControlValueFields | SensorValueFields | ControllerFields>();
+const field = injectFieldValueField<
+  ControlValueFields | SensorValueFields | ControllerFields | "charge"
+>();
 const source = injectFieldValueSource();
 
 const editor = computed(() => {
@@ -16,6 +18,8 @@ const editor = computed(() => {
       case "charge":
         return FieldRenderer.Charge;
       case "temperature":
+      case "temperatureSupply":
+      case "temperatureReturn":
       case "temperatureSetpoint":
         return FieldRenderer.Temperature;
       case "on":

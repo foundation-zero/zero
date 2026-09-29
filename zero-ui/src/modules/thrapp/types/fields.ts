@@ -55,7 +55,9 @@ export type CustomFields<Fields extends Record<MimicComponentType, Record<string
   Fields;
 
 export type SensorFieldDefinitions = SensorFields<{
-  [MimicComponentType.Pcm]: EmptyObject;
+  [MimicComponentType.Pcm]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+  };
   [MimicComponentType.BoilerTank]: {
     level: SensorComponentType.Level;
     temperature: SensorComponentType.Temperature;
@@ -67,11 +69,7 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.ManualPump]: EmptyObject;
-  [MimicComponentType.HeatExchanger]: {
-    incoming: SensorComponentType.Temperature;
-    outgoing: SensorComponentType.Temperature;
-    flow: SensorComponentType.Flow;
-  };
+  [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.PressureGauge]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
@@ -82,16 +80,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
-  [MimicComponentType.ExchangeCircuit]: {
-    incoming: SensorComponentType.Temperature;
-    outgoing: SensorComponentType.Temperature;
-    flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
-    heatExchanger:
-      | SensorComponentType.HeatExchanger
-      | SensorComponentType.HvacExchanger
-      | SensorComponentType.HeatPump
-      | SensorComponentType.Pvt;
-  };
+  [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: {
     flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
     flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
@@ -99,20 +88,17 @@ export type SensorFieldDefinitions = SensorFields<{
     tOut: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatPump]: {
-    incoming: SensorComponentType.Temperature;
-    outgoing: SensorComponentType.Temperature;
+    heatTransfer: SensorComponentType.HeatTransferDevice;
   };
-  [MimicComponentType.HVAC]: {
-    incoming: SensorComponentType.Temperature;
-    outgoing: SensorComponentType.Temperature;
-    flow: SensorComponentType.Flow;
-  };
+  [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: {
-    incoming: SensorComponentType.CalculatedTemperature;
-    outgoing: SensorComponentType.CalculatedTemperature;
-    flow: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+  };
+  [MimicComponentType.Thruster]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+    pcs: SensorComponentType.Pcs;
   };
 }>;
 
@@ -151,10 +137,13 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
-  [MimicComponentType.Pcm]: EmptyObject;
+  [MimicComponentType.Pcm]: {
+    chargeController: ControllerStateComponentType.PcmChargeController;
+  };
   [MimicComponentType.BoilerTank]: {
     controller: ControllerStateComponentType.DhwTanksController;
   };
@@ -180,6 +169,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -211,6 +201,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
 export type PIDController<
@@ -244,7 +235,7 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
-    exchangeCircuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
+    exchangeCircuit: ExtractSourceFields<MimicComponentType.ExchangeCircuit>["source"];
   };
   [MimicComponentType.ExchangeCircuit]: {
     width?: number | string;
@@ -289,13 +280,16 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.Pvt]: {
     group: PvtGroup;
   };
+  [MimicComponentType.Thruster]: {
+    titleKey: "fwdTitle" | "aftTitle";
+  };
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.Pcm]: SensorComponentType.Pcm;
   [MimicComponentType.Pump]: SensorComponentType.Pump;
   [MimicComponentType.ManualPump]: undefined;
-  [MimicComponentType.HeatExchanger]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.HeatExchanger]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.PressureSensor]: SensorComponentType.Pressure;
   [MimicComponentType.PressureGauge]: undefined;
   [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
@@ -307,12 +301,13 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.CheckValve]: undefined;
   [MimicComponentType.ThreeWaySwitchValve]: SensorComponentType.Valve;
   [MimicComponentType.HeatPump]: SensorComponentType.HeatPump;
-  [MimicComponentType.HVAC]: SensorComponentType.HvacExchanger;
+  [MimicComponentType.HVAC]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.SwitchValve]: SensorComponentType.Valve;
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
-  [MimicComponentType.ExchangeCircuit]: undefined;
+  [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
+  [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.ConnectingCircuit]: undefined;
 }>;
 

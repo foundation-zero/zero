@@ -37,7 +37,7 @@ const state = getComponentState();
       v-bind="props"
       :state="state"
     >
-      <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+      <CircuitBoxTitle>{{ custom.circuitName }}</CircuitBoxTitle>
 
       <ModeBadges
         :module="custom.modeModule"
@@ -45,20 +45,22 @@ const state = getComponentState();
       />
 
       <ValueList>
-        <ValueListDeltaTItem :source="sensors.heatExchanger" />
+        <ValueListDeltaTItem :source="source" />
         <ValueListTemperatureItem
           class="text-xs"
-          :source="sensors.incoming"
+          :source="source"
+          field="temperatureSupply"
         >
           {{ t("units.Tin") }}
         </ValueListTemperatureItem>
         <ValueListTemperatureItem
           class="text-xs"
-          :source="sensors.outgoing"
+          :source="source"
+          field="temperatureReturn"
         >
           {{ t("units.Tout") }}
         </ValueListTemperatureItem>
-        <ValueListFlowItem :source="sensors.flow" />
+        <ValueListFlowItem :source="source" />
       </ValueList>
     </CircuitBox>
     <slot />

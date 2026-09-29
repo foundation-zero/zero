@@ -110,6 +110,7 @@
         "connectingCircuit": "Connecting circuit"
       },
       "sources": {
+        "unknown": "Unknown",
         "calculated": "Calculated",
         "this": "This component",
         "minTemperature": "Boilers minimum temperature parameter",

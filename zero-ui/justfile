@@ -12,7 +12,7 @@ type_check:
     pnpm typecheck
 
 test:
-    pnpm test:api
+    pnpm test:unit
 
 
 extract_all_schemas:

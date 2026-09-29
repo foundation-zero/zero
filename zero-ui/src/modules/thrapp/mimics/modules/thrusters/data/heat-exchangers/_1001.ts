@@ -14,19 +14,15 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
     exchangeCircuit:
-      THRUSTERS_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.sensors,
+      THRUSTERS_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.source,
   },
-  source: getField(SensorComponentType.HeatExchanger, "thrusters", "thrustersSeawaterExchanger"),
+  source: getField(
+    SensorComponentType.HeatTransferDevice,
+    "thrusters",
+    "thrustersSeawaterExchanger",
+  ),
   parameters: {},
-  sensors: {
-    incoming: getField(
-      SensorComponentType.Temperature,
-      "thrusters",
-      "thrustersTemperatureRecoveryMix",
-    ),
-    outgoing: getField(SensorComponentType.Temperature, "thrusters", "thrustersTemperatureSupply"),
-    flow: getField(SensorComponentType.Flow, "thrusters", "thrustersFlowRecovery"),
-  },
+  sensors: {},
   get tooltip() {
     return tooltip(this.source);
   },

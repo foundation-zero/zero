@@ -85,33 +85,49 @@ class ConsumersSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001003",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def consumers_adsorption_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def consumers_adsorption_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.consumers_temperature_adsorption_supply.temperature,
             temperature_return=self.consumers_temperature_adsorption_return.temperature,
             flow=self.consumers_flow_adsorption.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_adsorption_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_adsorption_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "consumers_flow_adsorption"
+            ),
         )
 
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001007",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def consumers_dhw_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def consumers_dhw_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.consumers_temperature_dhw_supply.temperature,
             temperature_return=self.consumers_temperature_dhw_return.temperature,
             flow=self.consumers_flow_dhw.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_dhw_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "consumers_temperature_dhw_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "consumers_flow_dhw"),
         )
 
 

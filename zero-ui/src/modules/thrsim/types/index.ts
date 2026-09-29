@@ -1,4 +1,4 @@
-import { Stamped, Unstamp } from "@common/types";
+import { Stamped, StampedWithSource, Unstamp } from "@common/types";
 import { Ref, WritableComputedRef } from "vue";
 
 export type SchemaDefinition<T> = {
@@ -47,6 +47,11 @@ export type PIDController = {
   enabled: Stamped<boolean>;
   tuning: Stamped<PID>;
   components: Stamped<PID>;
+};
+
+export type PcmChargeController = {
+  chargingState: Stamped<PcmChargingState>;
+  charge: Stamped<Ratio>;
 };
 
 export const enum PvtMode {
@@ -105,7 +110,7 @@ export type SensorValueFields =
   | keyof PcsSensor
   | keyof LevelSensor
   | keyof DeltaTSensor
-  | keyof HeatExchangerSensor
+  | keyof HeatTransferDeviceSensor
   | keyof Valve
   | keyof PcmSensor
   | keyof LevelSwitchSensor;
@@ -119,7 +124,6 @@ export type SensorFields = {
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
-  [SensorComponentType.PcmInput]: (keyof PcmInputSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
   [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
@@ -164,7 +168,10 @@ export type DeltaTSensor = {
   deltaT: Stamped<number>;
 };
 
-export type HeatExchangerSensor = DeltaTSensor & {
+export type HeatTransferDeviceSensor = DeltaTSensor & {
+  temperatureSupply: StampedWithSource<number | undefined>;
+  temperatureReturn: StampedWithSource<number | undefined>;
+  flow: StampedWithSource<Ratio>;
   heat: Stamped<number>;
 };
 
@@ -203,14 +210,14 @@ export const enum PcmChargingState {
 
 export type PcmSensor = {
   charged: Stamped<boolean>;
-  chargingState: Stamped<PcmChargingState>;
-  heat: Stamped<number>;
-  charge: Stamped<number>;
-  deltaT: Stamped<number>;
 };
 
-export type PcmInputSensor = {
-  charged: Stamped<boolean>;
+export type HeatpumpSensor = {
+  on: Stamped<boolean>;
+};
+
+export type PvtSensor = {
+  power: Stamped<number>;
 };
 
 export type LevelSensor = {
@@ -358,6 +365,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
+  PcmChargeController = "pcmChargeController",
 }
 
 export type ControllerStateDefinition<
@@ -368,14 +376,17 @@ export type DhwTankControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.DhwTanksController>;
 export type PIDControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.PIDController>;
+export type ChargeControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.PcmChargeController>;
 
 export type ControllerStateDefinitions = SchemaDefinitions<
-  DhwTankControllerDefinition | PIDControllerDefinition
+  DhwTankControllerDefinition | PIDControllerDefinition | ChargeControllerDefinition
 >;
 
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
+  [ControllerStateComponentType.PcmChargeController]: PcmChargeController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<
@@ -394,11 +405,9 @@ export const enum SensorComponentType {
   Thruster = "sensor:thruster",
   Pcs = "sensor:pcs",
   Pcm = "sensor:pcm",
-  PcmInput = "sensor:pcmInput",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
-  HeatExchanger = "sensor:heatExchanger",
-  HvacExchanger = "sensor:hvacExchanger",
+  HeatTransferDevice = "sensor:heatTransferDevice",
   HeatPump = "sensor:heatPump",
   Pvt = "sensor:pvt",
   CalculatedFlow = "sensor:calculatedFlow",
@@ -420,11 +429,9 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Thruster,
   SensorComponentType.Pcs,
   SensorComponentType.Pcm,
-  SensorComponentType.PcmInput,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
-  SensorComponentType.HeatExchanger,
-  SensorComponentType.HvacExchanger,
+  SensorComponentType.HeatTransferDevice,
   SensorComponentType.HeatPump,
   SensorComponentType.Pvt,
   SensorComponentType.CalculatedFlow,
@@ -467,11 +474,13 @@ export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> 
   valveType: ValveType;
 };
 export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
-export type PcmInputSensorDefinition = SensorDefinition<SensorComponentType.PcmInput>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
-export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
+export type HeatTransferDeviceSensorDefinition =
+  SensorDefinition<SensorComponentType.HeatTransferDevice>;
+export type HeatPumpSensorDefinition = SensorDefinition<SensorComponentType.HeatPump>;
+export type PvtSensorDefinition = SensorDefinition<SensorComponentType.Pvt>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
 export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
@@ -484,15 +493,13 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
   [SensorComponentType.Pcm]: PcmSensor;
-  [SensorComponentType.PcmInput]: PcmInputSensor;
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
-  [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
-  [SensorComponentType.HvacExchanger]: HeatExchangerSensor;
-  [SensorComponentType.HeatPump]: HeatExchangerSensor;
-  [SensorComponentType.Pvt]: HeatExchangerSensor;
+  [SensorComponentType.HeatTransferDevice]: HeatTransferDeviceSensor;
+  [SensorComponentType.HeatPump]: HeatpumpSensor;
+  [SensorComponentType.Pvt]: PvtSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
   [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
   [SensorComponentType.Brightloop]: BrightloopSensor;

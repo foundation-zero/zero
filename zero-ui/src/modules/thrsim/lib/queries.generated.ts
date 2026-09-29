@@ -128,10 +128,16 @@ export const ADSORPTION_SENSOR_QUERY = `
     temperature { value timestamp }
   }
   adsorptionHtExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   adsorptionDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -290,10 +296,16 @@ export const CONSUMERS_SENSOR_QUERY = `
     externalOutOfRange { value timestamp }
   }
   consumersAdsorptionExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   consumersDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -697,6 +709,9 @@ export const DC_SENSOR_QUERY = `
     active { value timestamp }
   }
   dcDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -1126,30 +1141,51 @@ export const DHW_SENSOR_QUERY = `
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
   }
+  dhwHeatpump {
+    on { value timestamp }
+  }
   dhwFreshwaterFlowSupply {
     flow { value timestamp }
   }
   dhwHvacExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  dhwHeatpump {
+  dhwHeatpumpHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwAdsorptionExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwConsumersExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwDcExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
   dhwDrivesExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -1464,6 +1500,9 @@ export const DRIVES_SENSOR_QUERY = `
     active { value timestamp }
   }
   drivesDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -1643,7 +1682,22 @@ export const PCM_CONTROL_QUERY = `
 `;
 
 export const PCM_CONTROLLER_STATE_QUERY = `
-
+  module1ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module2ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module3ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
+  module4ChargeController {
+    charge { value timestamp }
+    chargingState { value timestamp }
+  }
 `;
 
 export const PCM_PARAMETERS_QUERY = `
@@ -1802,28 +1856,32 @@ export const PCM_SENSOR_QUERY = `
     externalOutOfRange { value timestamp }
   }
   pcmHeatModule1 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule2 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule3 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
   pcmHeatModule4 {
-    charged { value timestamp }
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
-    chargingState { value timestamp }
   }
 `;
 
@@ -2403,6 +2461,15 @@ export const PVT_SENSOR_QUERY = `
   pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
+  pvtPvtMainFwd {
+    power { value timestamp }
+  }
+  pvtPvtMainAft {
+    power { value timestamp }
+  }
+  pvtPvtOwners {
+    power { value timestamp }
+  }
   pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }
   }
@@ -2439,15 +2506,24 @@ export const PVT_SENSOR_QUERY = `
   pvtFlowOwnersStrings {
     flow { value timestamp }
   }
-  pvtPvtMainFwd {
+  pvtPvtMainFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  pvtPvtMainAft {
+  pvtPvtMainAftHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  pvtPvtOwners {
+  pvtPvtOwnersHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -2461,6 +2537,9 @@ export const PVT_SENSOR_QUERY = `
     flow { value timestamp }
   }
   pvtSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -2962,6 +3041,20 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersPcs {
     mode { value timestamp }
   }
+  thrustersThrusterAftHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  thrustersThrusterFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   thrustersTemperatureRecovery {
     temperature { value timestamp }
   }
@@ -2972,6 +3065,9 @@ export const THRUSTERS_SENSOR_QUERY = `
     flow { value timestamp }
   }
   thrustersSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
     heat { value timestamp }
     deltaT { value timestamp }
   }

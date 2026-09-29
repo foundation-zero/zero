@@ -8,6 +8,7 @@ import { Pcm, PcmLayout, PcmTitle } from "../components/pcm";
 import PcmContent from "../components/pcm/PcmContent.vue";
 import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
+import ControllerStateValue from "../providers/ControllerStateValue.vue";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 
@@ -38,24 +39,24 @@ const props = withDefaults(
       </div>
       <PcmTitle>{{ tooltip?.title }}</PcmTitle>
       <PcmContent>
-        <SensorValue
-          :source="source"
+        <ControllerStateValue
+          :source="controllerState.chargeController"
           field="chargingState"
         >
           <FieldRenderer.ChargingMode />
-        </SensorValue>
-        <SensorValue
-          :source="source"
+        </ControllerStateValue>
+        <ControllerStateValue
+          :source="controllerState.chargeController"
           field="charge"
         >
           <FieldRenderer.ChargeState />
-        </SensorValue>
+        </ControllerStateValue>
         <ValueList class="gap-0 text-base font-medium">
           <ValueListSeparator class="my-0.5" />
           <ValueListItem>
             <RiFireLine class="text-heating-medium size-3.5" />
             <SensorValue
-              :source="source"
+              :source="sensors.heatTransfer"
               field="heat"
             >
               <FieldRenderer.Auto />
@@ -66,12 +67,12 @@ const props = withDefaults(
               class="size-3.5"
               icon-class="fill-muted-foreground "
             />
-            <SensorValue
-              :source="source"
+            <ControllerStateValue
+              :source="controllerState.chargeController"
               field="charge"
             >
               <FieldRenderer.Auto />
-            </SensorValue>
+            </ControllerStateValue>
           </ValueListItem>
           <ValueListSeparator class="my-0.5" />
         </ValueList>
