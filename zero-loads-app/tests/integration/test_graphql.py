@@ -103,7 +103,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    runner_sb: variables(variables: ["main-runner-sb-load"]) {
+                    runner_sb: variables(variables: ["main-runner-tail-sb-load"]) {
                         id
                         starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -133,7 +133,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             value
                         }
                     }
-                    runner_ps: variables(variables: ["main-runner-ps-load"]) {
+                    runner_ps: variables(variables: ["main-runner-tail-ps-load"]) {
                         id
                         starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -173,7 +173,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
             "data": {
                 "runner_sb": [
                     {
-                        "id": "main-runner-sb-load",
+                        "id": "main-runner-tail-sb-load",
                         "port_wind": None,
                         "starboard_wind": {
                             "alarmLow": None,
@@ -183,11 +183,11 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             "alarmHigh": 26.4,
                         },
                         "actual": {
-                            "id": "main-runner-sb-load",
+                            "id": "main-runner-tail-sb-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-runner-sb-load",
+                            "id": "main-runner-tail-sb-load",
                             "name": "Runner SB",
                             "unit": "tonne",
                             "scaleMin": None,
@@ -199,7 +199,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                 ],
                 "runner_ps": [
                     {
-                        "id": "main-runner-ps-load",
+                        "id": "main-runner-tail-ps-load",
                         "port_wind": {
                             "alarmLow": None,
                             "warningLow": None,
@@ -209,11 +209,11 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                         },
                         "starboard_wind": None,
                         "actual": {
-                            "id": "main-runner-ps-load",
+                            "id": "main-runner-tail-ps-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-runner-ps-load",
+                            "id": "main-runner-tail-ps-load",
                             "name": "Runner PT",
                             "unit": "tonne",
                             "scaleMin": None,

@@ -140,7 +140,7 @@ class ExportSeedCmd(SeedPaths):
         )
 
         logger.info("Updating sailpack mapping from Google Sheets...")
-        mapping_url = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid=605184652"
+        mapping_url = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid=1005053580"
         try:
             response = requests.get(mapping_url)
             response.raise_for_status()

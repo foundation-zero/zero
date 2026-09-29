@@ -239,6 +239,7 @@ class BladeSheetFeederPs(LoadsModel, ABC):
             display_name="Sheet PT",
             applies_to_tack="port",
             variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -254,6 +255,7 @@ class BladeSheetFeederSb(LoadsModel, ABC):
             display_name="Sheet SB",
             applies_to_tack="starboard",
             variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -547,7 +549,11 @@ class Mast(LoadsModel, ABC):
     storm_jib_load: Annotated[
         Load,
         Field(validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(name="storm_jib_load", display_name="Tack"),
+        VariableMeta(
+            name="storm_jib_load",
+            display_name="Tack",
+            technical_name="storm-jib-tack-load",
+        ),
     ]
     storm_jib_load_failure: Annotated[
         LoadFailure,
@@ -788,11 +794,30 @@ class MainRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             applies_to_tack="port",
             variable_key="main-runner-load",
+            technical_name="main-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="main-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="main-runner-block-ps-load",
+        ),
+    ]
 
 
 class MainRunnerSb(LoadsModel, ABC):
@@ -803,11 +828,30 @@ class MainRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             applies_to_tack="starboard",
             variable_key="main-runner-load",
+            technical_name="main-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="main-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="main-runner-block-sb-load",
+        ),
+    ]
 
 
 class MainSheet(LoadsModel, ABC):
@@ -1131,11 +1175,30 @@ class MizzenRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             applies_to_tack="port",
             variable_key="mizzen-runner-load",
+            technical_name="mizzen-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="mizzen-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="mizzen-runner-block-ps-load",
+        ),
+    ]
 
 
 class MizzenRunnerSb(LoadsModel, ABC):
@@ -1146,11 +1209,30 @@ class MizzenRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             applies_to_tack="starboard",
             variable_key="mizzen-runner-load",
+            technical_name="mizzen-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="mizzen-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="mizzen-runner-block-sb-load",
+        ),
+    ]
 
 
 class MizzenSheet(LoadsModel, ABC):
@@ -1199,6 +1281,7 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
             display_name="Sheet PT",
             applies_to_tack="port",
             variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1214,6 +1297,7 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
             display_name="Sheet SB",
             applies_to_tack="starboard",
             variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure
