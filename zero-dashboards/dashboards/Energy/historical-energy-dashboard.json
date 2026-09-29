@@ -722,10 +722,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tdate_trunc('day', hour) AS day,\r\n\t-- Producers\r\n\tSUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\tSUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n\tSUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n\t-- Consumers\r\n\tSUM(CASE WHEN group_name = 'Domestic' THEN -energy_wh ELSE 0 END) AS domestic,\r\n\tSUM(CASE WHEN group_name = 'HVAC' THEN -energy_wh ELSE 0 END) AS hvac,\r\n\tSUM(CASE WHEN group_name = 'Technical' THEN -energy_wh ELSE 0 END) AS technical,\r\n\tSUM(CASE WHEN group_name = 'Propulsion' THEN -energy_wh ELSE 0 END) AS propulsion\r\nFROM energy.electrical_hourly\r\nGROUP BY day",
+          "rawSql": "SELECT\r\n\tdate_trunc('day', hour) AS day,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy ELSE 0 END)           AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy ELSE 0 END)           AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN -energy ELSE 0 END)       AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN -energy ELSE 0 END)      AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN -energy ELSE 0 END)           AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN -energy ELSE 0 END)     AS propulsion\r\nFROM (\r\n  SELECT\r\n    date_trunc('hour', time) AS hour,\r\n    main_group               AS group_name,\r\n    sub_group                AS sub_group_name,\r\n    SUM(power) / 60          AS energy\r\n  FROM views.gld_electrical_power_consumption_per_minute\r\n  WHERE $__timeFilter(time)\r\n  GROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY day",
           "refId": "A",
           "sql": {
             "columns": [
@@ -837,7 +851,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tmain_group                                      AS group_name,\r\n\tsub_group                                       AS sub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\tSUM(energy)                                     AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "rawSql": "SELECT\r\n\tmain_group                                      AS group_name,\r\n\tsub_group                                       AS sub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy,\r\n\tSUM(energy)                                     AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group\r\n",
           "refId": "A",
           "sql": {
             "columns": [
