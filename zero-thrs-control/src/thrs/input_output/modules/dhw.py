@@ -241,12 +241,9 @@ class DhwSensorValues(AmcsModeSensorValues):
         component_meta(
             yard_tag="25001123-1",
             included_in_fmu=False,
-            topic_override="250000-fresh-water/hot/hot-flow-main-technical-space-bilge-area",
+            topic_override="250000-fresh-water/hot/hot-flow-from-tank",
         ),
-    ] = sensor.FlowSensor(  # TODO: Remove default when topic works
-        flow=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-    )
+    ]
     freshwater_hotwater_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(
@@ -254,9 +251,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             included_in_fmu=False,
             topic_override="250000-fresh-water/hot/hot-temperature-from-tank",
         ),
-    ] = sensor.TemperatureSensor(  # TODO: Remove default when topic works
-        temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
