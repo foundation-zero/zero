@@ -10,17 +10,14 @@ _DATA_TYPES = {
     "Float": "REAL",
     "Double": "REAL",
     "Bool": "BOOLEAN",
-    "Uint32": "BIGINT",
-    "Uint16": "INTEGER",
-    # Typo in AMCS IO list R2.14
-    "Unit16": "INTEGER",
+    "UInt64": "BIGINT",
+    "UInt32": "BIGINT",
+    "UInt16": "INTEGER",
+    "Int64": "BIGINT",
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
-    "Int64": "BIGINT",
-    "UInt32": "BIGINT",
     "DateTime": "TIMESTAMP",
-    "UInt16": "INTEGER",
 }
 
 
