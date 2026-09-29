@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{ mode?: BoilerTankState; state?: MimicCo
   mode: BoilerTankState.Standby,
 });
 
-const badge_mode = computed(() => DHW_TANK_MODE_MODES[props.mode]);
+const badgeMode = computed(() => DHW_TANK_MODE_MODES[props.mode]);
 
 const t = tScoped("thrapp.mimics.boilerTank.modes");
 
@@ -22,7 +22,7 @@ const isAdvisoryEnabled = useAdvisoryEnabled();
 <template>
   <ModeBadge
     v-if="isAdvisoryEnabled && state === MimicComponentState.Normal"
-    :mode="badge_mode"
+    :mode="badgeMode"
     :label="t(mode)"
     :size="ModeBadgeSize.Tank"
   />

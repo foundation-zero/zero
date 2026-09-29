@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{ mode: PvtMode; state?: MimicComponentSt
   state: MimicComponentState.Normal,
 });
 
-const badge_mode = computed(() => PVT_MODE_COLORS[props.mode]);
+const badgeMode = computed(() => PVT_MODE_COLORS[props.mode]);
 
 const t = tScoped("thrapp.mimics.pvt.assets.modes");
 
@@ -21,7 +21,7 @@ const isAdvisoryEnabled = useAdvisoryEnabled();
 <template>
   <ModeBadge
     v-if="isAdvisoryEnabled && state == MimicComponentState.Normal"
-    :mode="badge_mode"
+    :mode="badgeMode"
     :label="t(mode)"
     :size="ModeBadgeSize.Asset"
   />

@@ -9,14 +9,14 @@ const props = withDefaults(defineProps<{ mode: HeatPumpModes; state?: MimicCompo
   state: MimicComponentState.Normal,
 });
 
-const badge_mode = computed(() => HEAT_PUMP_MODE_COLORS[props.mode]);
+const badgeMode = computed(() => HEAT_PUMP_MODE_COLORS[props.mode]);
 
 const t = tScoped("thrapp.mimics.heatPump.modes");
 </script>
 
 <template>
   <ModeBadge
-    :mode="badge_mode"
+    :mode="badgeMode"
     :label="t(mode)"
     :size="ModeBadgeSize.Asset"
   />
