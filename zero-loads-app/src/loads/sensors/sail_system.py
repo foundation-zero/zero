@@ -547,7 +547,11 @@ class Mast(LoadsModel, ABC):
     storm_jib_load: Annotated[
         Load,
         Field(validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(name="storm_jib_load", display_name="Tack"),
+        VariableMeta(
+            name="storm_jib_load",
+            display_name="Tack",
+            technical_name="storm-jib-tack-load",
+        ),
     ]
     storm_jib_load_failure: Annotated[
         LoadFailure,
@@ -793,6 +797,24 @@ class MainRunnerPs(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="main-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="main-runner-block-ps-load",
+        ),
+    ]
 
 
 class MainRunnerSb(LoadsModel, ABC):
@@ -808,6 +830,24 @@ class MainRunnerSb(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="main-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="main-runner-block-sb-load",
+        ),
+    ]
 
 
 class MainSheet(LoadsModel, ABC):
@@ -1136,6 +1176,24 @@ class MizzenRunnerPs(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="mizzen-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="mizzen-runner-block-ps-load",
+        ),
+    ]
 
 
 class MizzenRunnerSb(LoadsModel, ABC):
@@ -1151,6 +1209,24 @@ class MizzenRunnerSb(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="mizzen-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="mizzen-runner-block-sb-load",
+        ),
+    ]
 
 
 class MizzenSheet(LoadsModel, ABC):

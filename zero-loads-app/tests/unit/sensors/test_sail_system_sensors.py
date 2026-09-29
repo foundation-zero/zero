@@ -15,6 +15,7 @@ from loads.sensors.sail_system import (
     MaxLoad,
     RelativePosition,
 )
+from loads.sensors.units import VariableMeta
 
 
 @fixture
@@ -125,3 +126,28 @@ def test_build_alarm_defintitions(message):
     assert alarm.get_active(sensor) is True
     assert alarm.get_actual(sensor) == 15.0
     assert alarm.get_threshold(sensor) == 100.0
+
+
+def test_technical_name_overrides_derived_variable_id(message):
+    class TechnicalNameSensor(LoadsModel, ABC):
+        TOPIC = "test-topic"
+
+        load: Annotated[
+            Load,
+            Field(validation_alias="load"),
+            VariableMeta(technical_name="renamed-load"),
+        ]
+        load_alarm: Annotated[LoadAlarm, Field(validation_alias="load_alarm")]
+        max_load: Annotated[MaxLoad, Field(validation_alias="max_load")]
+
+    sensor = TechnicalNameSensor.model_validate(message)
+    variable_definitions = _build_loads_model_variable_definitions(TechnicalNameSensor)
+    alarm_definitions = _build_sail_system_alarm_definitions(
+        TechnicalNameSensor,
+        variable_definitions,
+    )
+
+    assert [variable.id for variable in variable_definitions] == ["renamed-load"]
+    assert alarm_definitions[0].id == "technical-name-sensor-max-load-alarm"
+    assert alarm_definitions[0].actual_definition.id == "renamed-load"
+    assert alarm_definitions[0].get_actual(sensor) == 15.0

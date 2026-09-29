@@ -252,7 +252,7 @@ export const A2_LOCKS_GROUP = group("Locks", PositionId.ForeOuter, "mast-lock-a2
 export const STORM_JIB_GROUP = group(
   "Storm Jib",
   PositionId.ForeInner,
-  "mast-storm-jib-load",
+  "storm-jib-tack-load",
   "primary-winch-ps-load",
   "primary-winch-sb-load",
 );

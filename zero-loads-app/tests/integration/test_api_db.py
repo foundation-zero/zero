@@ -5,10 +5,6 @@ from loads.api.schema import Base, ReferenceValues
 from loads.config import Settings
 from loads.registry import VARIABLES
 
-LEGACY_VARIABLE_ID_ALIASES = {  # TODO: remove these aliases once the database is updated to use the new variable_ids
-    "storm-jib-tack-load": "mast-storm-jib-load",
-}
-
 
 @pytest.fixture(autouse=True)
 async def seed_api_db_scenarios(scenario_factory):
@@ -55,10 +51,7 @@ async def test_reference_values_variable_ids_in_registry(sessionmanager):
         query = select(ReferenceValues.variable_key).distinct()
         result = await session.execute(query)
 
-        db_variable_keys = {
-            LEGACY_VARIABLE_ID_ALIASES.get(variable_id, variable_id)
-            for variable_id in result.scalars().all()
-        }
+        db_variable_keys = set(result.scalars().all())
 
         registry_variable_keys = set(
             [
