@@ -122,7 +122,6 @@ Some practical details:
 - The A–D exchanger appears to be connected against its port labels on every module, with
   cold water entering the port marked "warm uit". If the ports reflect the internal layout,
   this costs performance. To be verified.
-- Module selection does not use the estimate yet.
 
 ## Possible hardware improvements
 

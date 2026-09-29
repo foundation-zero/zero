@@ -360,6 +360,8 @@ class PcmChargeController:
 
         if not 0 < interval <= PCM_MAX_SAMPLE_GAP:
             self._purged = [0.0] * len(self._purge_volumes)
+            self._full_since = None
+            self._empty_since = None
             return
 
         settled = [

@@ -86,6 +86,8 @@ class PcmParameters(ThrsValues):
 
     @model_validator(mode="after")
     def check_charging_can_anchor_full(self):
+        if self.pcm_charge_flow <= 0:
+            raise ValueError("PCM charge flow must be greater than zero")
         bound = PcmChargeController.minimum_charging_temperature(self.pcm_charge_flow)
         if self.minimum_charging_temperature <= bound:
             raise ValueError(
