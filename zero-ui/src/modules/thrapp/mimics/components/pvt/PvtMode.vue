@@ -1,26 +1,28 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
+import { useAdvisoryEnabled } from "@/modules/thrapp/state";
 import { PvtMode } from "@/modules/thrsim/types";
 import { computed } from "vue";
+import { PVT_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";
-import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../mode-badge";
+import { ModeBadge, ModeBadgeSize } from "../mode-badge";
 
 const props = withDefaults(defineProps<{ mode: PvtMode; state?: MimicComponentState }>(), {
   state: MimicComponentState.Normal,
 });
 
+const badge_mode = computed(() => PVT_MODE_COLORS[props.mode]);
+
 const t = tScoped("thrapp.mimics.pvt.assets.modes");
 
-const modes = computed(() => {
-  if (props.state == MimicComponentState.Manual) return { mode: ModeBadgeMode.ManualControl };
-  if (props.mode == PvtMode.Recovery) return { mode: ModeBadgeMode.Using, label: t("recovery") };
-  else return { mode: ModeBadgeMode.Idle, label: t("idle") };
-});
+const isAdvisoryEnabled = useAdvisoryEnabled();
 </script>
 
 <template>
   <ModeBadge
-    v-bind="modes"
+    v-if="isAdvisoryEnabled && state == MimicComponentState.Normal"
+    :mode="badge_mode"
+    :label="t(mode)"
     :size="ModeBadgeSize.Asset"
   />
 </template>

@@ -3,27 +3,20 @@ import { tScoped } from "@/modules/common/lib/utils";
 import { computed } from "vue";
 import { HEAT_PUMP_MODE_COLORS, HeatPumpModes } from ".";
 import { MimicComponentState } from "..";
-import { ModeBadgeSize } from "../mode-badge";
-import ModeBadge from "../mode-badge/ModeBadge.vue";
+import { ModeBadge, ModeBadgeSize } from "../mode-badge";
 
 const props = withDefaults(defineProps<{ mode: HeatPumpModes; state?: MimicComponentState }>(), {
   state: MimicComponentState.Normal,
 });
 
-const color = computed(() => {
-  if (props.state === MimicComponentState.Normal) {
-    return HEAT_PUMP_MODE_COLORS[props.mode];
-  } else {
-    return HEAT_PUMP_MODE_COLORS[props.state];
-  }
-});
+const badge_mode = computed(() => HEAT_PUMP_MODE_COLORS[props.mode]);
 
 const t = tScoped("thrapp.mimics.heatPump.modes");
 </script>
 
 <template>
   <ModeBadge
-    :mode="color"
+    :mode="badge_mode"
     :label="t(mode)"
     :size="ModeBadgeSize.Asset"
   />
