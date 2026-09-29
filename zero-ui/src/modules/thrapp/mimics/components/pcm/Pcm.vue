@@ -61,17 +61,17 @@ provide("contentRightPadding", contentRightPadding);
         <text
           x="9"
           y="28"
-          >B</text
-        >
-        <text
-          x="9"
-          y="88"
           >A</text
         >
         <text
           x="9"
-          y="115"
+          y="88"
           >D</text
+        >
+        <text
+          x="9"
+          y="115"
+          >B</text
         >
         <text
           x="9"
@@ -93,12 +93,12 @@ provide("contentRightPadding", contentRightPadding);
         <text
           :x="PCM_WIDTH - 16"
           y="115"
-          >A</text
+          >D</text
         >
         <text
           :x="PCM_WIDTH - 16"
           y="173"
-          >D</text
+          >A</text
         >
       </g>
     </g>
