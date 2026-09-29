@@ -6,6 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 from zero_data.io_list.managed_topics import extract_managed_topics
 from zero_data.io_list.types import IOResult
 from zero_data.io_list.utils import detect_same_format
+from zero_data.vector_gen.controller_topics import generate_controller_managed_topics
 
 EXTRA_GROUPED_TOPICS = [
     "marpower/450000-dc-distribution/350v-conv/",
@@ -19,7 +20,6 @@ EXTRA_GROUPED_TOPICS = [
     "termodinamica/ac/",
     "power-tags/",
 ]
-
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +42,8 @@ class MarpowerVectorGenerator:
         )
         for topic in invalid_managed_topics:
             logger.warning(f"Invalid managed topic: {topic.topic}")
+
+        managed_topics += generate_controller_managed_topics()
 
         mapping = {
             managed_topic.topic.topic: ManagedTopicMapping(
