@@ -1,0 +1,59 @@
+,,Equipment (Limiting) Specs,,Relief Load Settings,,Alarms,,SailPack Modelling,,
+Loads app technical name,Function #,Max Load (kg),Validation,Relief Load (kg),Validation,Warning Threshold (kg),Alarm Setting (kg),Max Working Load (kg),Validation,Additional Comments
+,,,,,,,,,,
+aft-winch-ps-load,E4.08,"9,000",Vitters Deck Winch Sheet,???,???,"7,000","9,000","7,000",LC66_TSOnly_TWS45_TWA70,Trisail Sheet rigged as 2:1. ORS Max WL = 9t
+aft-winch-sb-load,E5.08,"9,000",Vitters Deck Winch Sheet,???,???,"7,000","9,000","7,000",LC66_TSOnly_TWS45_TWA70,Trisail Sheet rigged as 2:1. ORS Max WL = 9t
+blade-adjuster-load,1.03,"31,300",Carbolink Build Sheet,"30,000",Bram's Sheet,"28,000","31,000","30,600",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,
+blade-cunningham-load,1.01,"26,109",Harken Drawing,"22,000",Bram's Sheet,"20,000","22,000","22,200",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,Harken - C15789-  HYDR CYL-100X32X500 x 2 cylinders Max Pull each 26.1t @ 350bar / 18.64t @ 250bar. ORS Max WL = 13t - need to account for two cylinders
+blade-sheet-feeder-ps-load,E2.02,???,???,"13,000",Bram's Sheet,"12,000","13,000","16,500",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,"Harken ??? ORS Max Sheet WL = 12.9t, Blade Captive Winch can pull 18t"
+blade-sheet-feeder-sb-load,E3.02,???,???,"13,000",Bram's Sheet,"12,000","13,000","16,500",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,"Harken ??? ORS Max Sheet WL = 12.9t, Blade Captive Winch can pull 18t"
+blade-tweaker-ps-load,2.06,???,???,"6,500",Bram's Sheet,"6,000","6,500","6,500",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,Harken - C16027 -   HYDR CYL-100X32X595. Max Pull @ 350bar = 26.1t  / 18.64t @ 250bar. ORS Max Sheet WL = 13.8t
+blade-tweaker-sb-load,2.07,???,???,"6,500",Bram's Sheet,"6,000","6,500","6,500",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,Harken - C16027 -   HYDR CYL-100X32X595. Max Pull @ 350bar = 26.1t  / 18.64t @ 250bar. ORS Max Sheet WL = 13.8t
+code-zero-tack-load,1.02,???,???,"24,000",Bram's Sheet,"22,000","24,000","23,800",LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,Harken - C16064 - HYDR CYL-100X32X750 x 2 cylinders. Max Pull each 26.1t @ 350bar / 18.64t @ 250bar. ORS Max WL = 12.5t - need to account for two cylinders
+fiber-optic-main-d1-ps,n/a,"38,800",Carbolink Build Sheet,n/a,n/a,"35,000","39,000","39,000",LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,
+fiber-optic-main-d1-sb,n/a,"38,800",Carbolink Build Sheet,n/a,n/a,"35,000","39,000","39,000",LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,
+fiber-optic-main-v1-ps,n/a,"77,500",Carbolink Build Sheet,n/a,n/a,"70,000","77,500","76,000",LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,
+fiber-optic-main-v1-sb,n/a,"77,500",Carbolink Build Sheet,n/a,n/a,"70,000","77,500","76,000",LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,
+fiber-optic-mizzen-d1-ps,n/a,"22,800",Carbolink Build Sheet,n/a,n/a,"20,500","22,800","24,800",LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,
+fiber-optic-mizzen-d1-sb,n/a,"22,800",Carbolink Build Sheet,n/a,n/a,"20,500","22,800","24,800",LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,
+fiber-optic-mizzen-forestay,n/a,"28,500",Carbolink Build Sheet,n/a,n/a,,,"27,900",LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,
+fiber-optic-mizzen-v1-ps,n/a,"43,100",Carbolink Build Sheet,n/a,n/a,"38,000","43,000","42,150",LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,
+fiber-optic-mizzen-v1-sb,n/a,"43,100",Carbolink Build Sheet,n/a,n/a,"38,000","43,000","42,150",LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,
+main-checkstay-deflector-load,2.03,"6,900",YRC Spec,"5,000",Bram's Sheet,"4,250","5,000","4,260",LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,"25,363kg @ 220bar. 1:3 purchase - Cariboni drawing - M_120_0600_A_24851.DWG. Relief load value is line load. ORS Max WL = 6t"
+main-checkstay-ps-load,???,"13,833",Carbolink Build Sheet,n/a,n/a,"12,500","13,500","16,500",LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,Measured with a Cyclops Loadcell. ORS Max WL = 13.833t
+main-checkstay-sb-load,???,"13,833",Carbolink Build Sheet,n/a,n/a,"12,500","13,500","16,500",LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,Measured with a Cyclops Loadcell. ORS Max WL = 13.833t
+main-cunningham-load,2.05,"8,647",YRC Spec,"5,500",YRC Hydro Sheet - P11,"5,000","5,500","6,038",LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,"5,500kg @ 1:1, 2,500kg @ 2:1. Needs logic for 1:1 or 2:1 if reefed. ORS Max WL = 8.05t"
+main-halyard-load,E2.07,"3,000",ORS Max Working Load,"3,000",SW suggestion,"2,500","3,000",n/a,,Winch can pull 6t
+main-outhaul-load,2.01,"22,235",YRC Spec,"18,000",Bram's Sheet,,,"15,300",LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,"22,235kg @ 231bar. Cariboni drawing - CL_115_D_0750 - 0.DWG. ORS Max WL = 11.586t"
+main-preventer-load,2.04,"42,289",YRC Spec,"14,760",YRC Hydro Sheet - P11,"11,000","14,750","12,240",LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"42,289kg @ 235bar - 1:2 purchase - Cariboni drawing - SMT_150_2500 - 5.DWG. ORS Max WL = 21.25t"
+,E4.01,"15,400",ORS Max Working Load,"14,000",SW suggestion,"13,000","14,000","13,400",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,ORS MAX WL = 15.433t. Winch pulls 16t
+,E5.01,"15,400",ORS Max Working Load,"14,000",SW suggestion,"13,000","14,000","13,400",LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,ORS MAX WL = 15.433t. Winch pulls 16t
+main-runner-stay-ps-load,,,,,,,,,,
+main-runner-stay-sb-load,,,,,,,,,,
+main-sheet-load,E2.05,"12,800",ORS Max Working Load,"12,000",SW suggestion,"11,000","12,000","11,700",LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,ORS Maz WL = 12.821t. Winch pulls 15t
+main-vang-load,2.02,"61,111",YRC Spec,"45,750",Bram's Sheet,"40,000","45,750","56,000",Multiple Loadcases set at 56t WL for modelling,"Pull - 61111kg @ 210bar, Push - 28,827kg @ 74bar. Cariboni drawing - VNG_220_4426 - 2.DWG"
+mizzen-checkstay-deflector-load,5.03,755,YRC Spec,755,SW suggestion,550,750,465,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,775kg @ 80bar. Cariboni drawing - CL_040_D_0800 - 0.DWG. ORS Max WL = 850kg
+mizzen-checkstay-ps-load,???,"2,457",Carbolink Build Sheet,n/a,n/a,"2,200","2,450","2,940",LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,Measured with a Cyclops Loadcell
+mizzen-checkstay-sb-load,???,"2,457",Carbolink Build Sheet,n/a,n/a,"2,200","2,450","2,940",LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,Measured with a Cyclops Loadcell
+mizzen-cunningham-load,5.04,"6,176",YRC Spec,"4,000",YRC Hydro Sheet - P11,"3,000","4,000","2,000",Multiple Loadcases set at 2t WL for modelling,"4,000kg @ 1:1, 2,000kg @ 2:1. Needs logic for 1:1 or 2:1 if reefed. ORS Max WL = 5,75t"
+mizzen-halyard-load,E4.04,"2,000",ORS Max Working Load,"2,000",SW suggestion,,,n/a,,Winch can pull 6t.
+mizzen-headsail-tack-adjuster-load,4.02,"14,500",ORS Max Working Load,"14,500",Bram's Sheet,"13,000","14,500","15,260",LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,"25,256kg @ 241bar. Harken drawing C15878 C4.pdf."
+mizzen-outhaul-load,5.01,"15,441",Cariboni Drawing,"11,000",SW suggestion,"10,000","11,000","9,950",LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"15,441kg @ 237bar. Cariboni drawing - CL_095_D_0600 - 0.DWG. ORS MAX WL = 15.411t"
+mizzen-preventer-load,5.06,"26,889",Cariboni Drawing,"9,000",SW suggestion,"8,000","9,000","9,190",LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"26,889kg @ 233bar. 1:2 purchase - Cariboni drawing - SMT_120_2000 - 2.DWG. ORS Max WL = 13.75t"
+,E4.02,"6,000",Vitters Captive Winch Sheet,"5,500",SW suggestion,"5,000","5,500","5,250",LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,ORS Max WL = 6.09t
+,E5.02,"6,000",Vitters Captive Winch Sheet,"5,500",SW suggestion,"5,000","5,500","5,250",LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,ORS Max WL = 6.09t
+mizzen-runner-stay-ps-load,,,,,,,,,,
+mizzen-runner-stay-sb-load,,,,,,,,,,
+mizzen-vang-load,5.02,"33,333",Cariboni Drawing,"25,000",SW suggestion,"20,000","25,000","30,000",LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"Pull - 33,333kg @ 208bar, Push - 22,100kg @ 140bar. Cariboni drawing - VNG_165_5083 - 3.DWG"
+main-runner-block-ps-load,,,,,,,,,,
+main-runner-block-sb-load,,,,,,,,,,
+mizzen-runner-block-ps-load,,,,,,,,,,
+mizzen-runner-block-sb-load,,,,,,,,,,
+mizzen-sheet-load,,,,,,,,,,
+staysail-stay-adjuster-load,,,,,,,,,,
+storm-jib-tack-load,,,,,,,,,,
+staysail-sheet-feeder-ps-load,,,,,,,,,,
+staysail-sheet-feeder-sb-load,,,,,,,,,,
+primary-winch-ps-load,,,,,,,,,,
+primary-winch-sb-load,,,,,,,,,,
+main-headstay-combined-load,,,,,,,,,,
