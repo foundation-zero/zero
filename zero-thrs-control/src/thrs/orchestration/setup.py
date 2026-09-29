@@ -39,6 +39,7 @@ def setup_simulation_module(
     config: Config,
     control_modules: dict[str, ModuleDescription],
     simulation_description: SimulationDescription,
+    subscribe_device_values: bool = True,
 ) -> SimulationUnit:
     sensor_values_cls = {
         module: desc.sensor_values_cls for module, desc in control_modules.items()
@@ -65,6 +66,7 @@ def setup_simulation_module(
             },
             type(simulation_description.simulation_inputs),
             simulation_description.simulation_outputs_cls,
+            subscribe_device_values=subscribe_device_values,
         ),
     )
 
@@ -139,6 +141,7 @@ def setup_control_modules(
     database: PostgresDatabase | None,
     machine_state_logging_service_enabled: bool,
     publish_qos: int = 1,
+    subscribe_device_values: bool = True,
 ) -> list[Module]:
     result = []
 
@@ -155,7 +158,12 @@ def setup_control_modules(
         module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
 
         channel = ControlChannels(
-            connector, config, module_name, module, publish_qos=publish_qos
+            connector,
+            config,
+            module_name,
+            module,
+            publish_qos=publish_qos,
+            subscribe_device_values=subscribe_device_values,
         )
 
         result.append(

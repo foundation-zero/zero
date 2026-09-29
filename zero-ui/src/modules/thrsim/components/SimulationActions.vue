@@ -72,7 +72,7 @@ watchDebounced(
             v-model="playbackRate"
             :step="0.25"
             :min="0.25"
-            :max="10"
+            :max="100"
           >
             <NumberFieldContent>
               <NumberFieldDecrement />

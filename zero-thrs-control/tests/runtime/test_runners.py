@@ -155,7 +155,7 @@ def test_simulation_test_runner():
         )
 
 
-async def test_lockstep_runner_ticks_and_publishes_channels():
+async def test_lockstep_runner_ticks_in_memory_and_publishes_latest_tick():
     control_values = ModelDumpable()
     controller_state = {}
     parameters = ModelDumpable()
@@ -214,19 +214,29 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     persistence = PersistManager(NoopPersistentEngine())
     runner = LockstepRunner([module], simulation_module, persistence)
 
+    sends = [
+        control_channels.send_control_values,
+        control_channels.send_computed_values,
+        control_channels.send_controller_state,
+        control_channels.send_parameters,
+        control_channels.send_control_modes,
+        control_channels.send_manual_control,
+        simulation_channels.send_sensor_values,
+        simulation_channels.send_actuated_control_values,
+        simulation_channels.send_simulation_inputs,
+        simulation_channels.send_simulation_outputs,
+    ]
+
     for _ in range(3):
         await runner.tick()
 
-    assert control_channels.send_control_values.await_count == 3
-    assert simulation_channels.send_sensor_values.await_count == 3
-    assert simulation_channels.send_actuated_control_values.await_count == 3
-    assert control_channels.send_controller_state.await_count == 3
-    assert control_channels.send_computed_values.await_count == 3
-    assert simulation_channels.send_simulation_inputs.await_count == 3
-    assert simulation_channels.send_simulation_outputs.await_count == 3
-    assert control_channels.send_parameters.await_count == 3
-    assert control_channels.send_manual_control.await_count == 3
-    assert control_channels.send_control_modes.await_count == 3
+    assert [send.await_count for send in sends] == [0] * len(sends)
+    control_channels.get_actuated_control_values.assert_not_called()
+
+    await runner.publish()
+    await runner.publish()
+
+    assert [send.await_count for send in sends] == [1] * len(sends)
 
     assert control.initial.call_count == 2
     assert simulation.tick.call_count == 3
@@ -262,44 +272,22 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
         ]
     )
 
-    control_channels.send_control_values.assert_has_awaits(
-        [call(control_values), call(control_values), call(control_values)]
+    control_channels.send_control_values.assert_awaited_once_with(control_values)
+    control_channels.send_computed_values.assert_awaited_once_with(sensor_values)
+    control_channels.send_controller_state.assert_awaited_once_with(controller_state)
+    control_channels.send_parameters.assert_awaited_once_with(parameters)
+    control_channels.send_manual_control.assert_awaited_once_with(control_values)
+    simulation_channels.send_sensor_values.assert_awaited_once_with(
+        combined_sensor_values
     )
-    control_channels.send_computed_values.assert_has_awaits(
-        [call(sensor_values), call(sensor_values), call(sensor_values)]
+    simulation_channels.send_actuated_control_values.assert_awaited_once_with(
+        combined_control_values
     )
-    simulation_channels.send_sensor_values.assert_has_awaits(
-        [
-            call(combined_sensor_values),
-            call(combined_sensor_values),
-            call(combined_sensor_values),
-        ]
+    simulation_channels.send_simulation_inputs.assert_awaited_once_with(
+        SimpleNamespace()
     )
-    simulation_channels.send_actuated_control_values.assert_has_awaits(
-        [
-            call(combined_control_values),
-            call(combined_control_values),
-            call(combined_control_values),
-        ]
-    )
-
-    expected_inputs = SimpleNamespace()
-    expected_outputs = SimpleNamespace()
-    simulation_channels.send_simulation_inputs.assert_has_awaits(
-        [call(expected_inputs), call(expected_inputs), call(expected_inputs)]
-    )
-    simulation_channels.send_simulation_outputs.assert_has_awaits(
-        [call(expected_outputs), call(expected_outputs), call(expected_outputs)]
-    )
-
-    control_channels.send_controller_state.assert_has_awaits(
-        [call(controller_state), call(controller_state), call(controller_state)]
-    )
-    control_channels.send_parameters.assert_has_awaits(
-        [call(parameters), call(parameters), call(parameters)]
-    )
-    control_channels.send_manual_control.assert_has_awaits(
-        [call(control_values), call(control_values), call(control_values)]
+    simulation_channels.send_simulation_outputs.assert_awaited_once_with(
+        SimpleNamespace()
     )
 
 

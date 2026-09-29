@@ -1,7 +1,7 @@
 import logging
 from collections.abc import Callable, Mapping
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
@@ -54,6 +54,12 @@ class ModuleDescription[
         self.alarms = alarms
 
 
+class ModuleTick[S: ThrsValues, C: ThrsValues, CS: ThrsValues](NamedTuple):
+    sensor_values: S | None
+    control_values: C
+    controller_state: CS
+
+
 class Module[
     S: AmcsModeSensorValues,
     C: AmcsWatchdogControlValues,
@@ -104,10 +110,12 @@ class Module[
 
         return self._channels.get_sensor_values()
 
-    def execute_control(self, sensor_values: S) -> tuple[C, CS]:
-        """Execute a control tick, send control values and evaluate alarms."""
+    def execute_control(
+        self, sensor_values: S, actuated_control_values: C | None
+    ) -> tuple[C, CS]:
+        """Execute a control tick and evaluate alarms."""
         control_values, controller_state = self._control.control(
-            sensor_values, self._channels.get_actuated_control_values()
+            sensor_values, actuated_control_values
         )
 
         self._check_alarms(sensor_values, control_values, controller_state)
@@ -178,19 +186,20 @@ class Module[
 
         return alarms
 
-    async def send_control_updates(
-        self, sensor_values: S | None, control_values: C, controller_state: CS
-    ) -> None:
-        if sensor_values is not None:
-            await self._channels.send_computed_values(sensor_values)
-        await self._channels.send_control_values(control_values)
-        await self._channels.send_controller_state(controller_state)
+    async def send_control_updates(self, tick: "ModuleTick[S, C, CS]") -> None:
+        if tick.sensor_values is not None:
+            await self._channels.send_computed_values(tick.sensor_values)
+        await self._channels.send_control_values(tick.control_values)
+        await self._channels.send_controller_state(tick.controller_state)
         await self._channels.send_parameters(self._control.parameters)
         if self._control.mode is not None:
             await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_manual_control(self._control.manual_controls)
 
-    async def tick(self, sensor_values: S | None) -> C:
+    def compute(
+        self, sensor_values: S | None, actuated_control_values: C | None
+    ) -> ModuleTick[S, C, CS]:
+        """Run control for a tick without publishing anything."""
         if sensor_values is None:
             logger.warning(
                 "Module %s has no sensor values - sending last known manual control values",
@@ -199,11 +208,18 @@ class Module[
             control_values = self._control.manual_controls
             _, controller_state = self._control.automatic_control.initial()
         else:
-            control_values, controller_state = self.execute_control(sensor_values)
+            control_values, controller_state = self.execute_control(
+                sensor_values, actuated_control_values
+            )
 
         # Update amcs watchdog timestamp
         control_values.external_available = AmcsExternalAvailable()
 
-        await self.send_control_updates(sensor_values, control_values, controller_state)
+        return ModuleTick(sensor_values, control_values, controller_state)
 
-        return control_values
+    async def tick(self, sensor_values: S | None) -> C:
+        tick = self.compute(sensor_values, self._channels.get_actuated_control_values())
+
+        await self.send_control_updates(tick)
+
+        return tick.control_values

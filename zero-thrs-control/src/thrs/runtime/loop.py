@@ -65,7 +65,7 @@ class Loop:
                     while self._commands.empty():
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
-                            tg.create_task(self._tick_running(runner, hooks))
+                            tg.create_task(runner.tick())
 
                 case Step(seconds):
                     await hooks.stepping(self)
@@ -80,10 +80,6 @@ class Loop:
                     pass
                 case _:
                     assert_never(result)
-
-    async def _tick_running(self, runner: Runner, hooks: LoopHooks):
-        await runner.tick()
-        await hooks.running(self)
 
     async def play(self, playback_rate: float):
         logger.debug("Loop play requested: %s", playback_rate)
