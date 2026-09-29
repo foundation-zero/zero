@@ -139,13 +139,13 @@ class PvtSensorValues(AmcsModeSensorValues):
     pvt_pyranometer_ps: Annotated[
         sensor.Pyranometer,
         component_meta(
-            yard_tag="50009044", component_type="pyranometer", included_in_fmu=False
+            yard_tag="50009043", component_type="pyranometer", included_in_fmu=False
         ),
     ]
     pvt_pyranometer_sb: Annotated[
         sensor.Pyranometer,
         component_meta(
-            yard_tag="50009043", component_type="pyranometer", included_in_fmu=False
+            yard_tag="50009044", component_type="pyranometer", included_in_fmu=False
         ),
     ]
     pvt_temperature_main_string1_1_return: Annotated[

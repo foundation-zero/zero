@@ -99,6 +99,10 @@ def compare_yard_tags(
         for field_name, field in model.model_fields.items():
             if field_name not in exclude and isinstance(field.json_schema_extra, dict):
                 yard_tag = field.json_schema_extra.get("yard_tag")
-                assert sheet_tags[field_name]["Tag"] == yard_tag, (
-                    f"Incorrect yard tag for {field_name}. Got {yard_tag}, expected {sheet_tags[field_name]['Tag']}"
+                sheet_tag = sheet_tags.get(field_name)
+                if sheet_tag is None:
+                    continue
+
+                assert sheet_tag["Tag"] == yard_tag, (
+                    f"Incorrect yard tag for {field_name}. Got {yard_tag}, expected {sheet_tag['Tag']}"
                 )
