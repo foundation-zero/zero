@@ -42,6 +42,7 @@ export const enum ChargeState {
   Full = "full",
   Empty = "empty",
   HalfFull = "half-full",
+  Unknown = "unknown",
 }
 
 export const CHARGING_MODE_COLORS: Record<ChargingMode, string> = {
@@ -54,6 +55,7 @@ export const CHARGE_STATE_COLORS: Record<ChargeState, string> = {
   [ChargeState.Full]: "var(--flows-heat-high)",
   [ChargeState.Empty]: "var(--flows-heat-low)",
   [ChargeState.HalfFull]: "var(--flows-heat-medium)",
+  [ChargeState.Unknown]: "var(--muted-foreground)",
 };
 
 export interface PcmChargingModeProps {

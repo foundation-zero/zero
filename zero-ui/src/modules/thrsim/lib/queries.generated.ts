@@ -1684,30 +1684,40 @@ export const PCM_CONTROL_QUERY = `
 export const PCM_CONTROLLER_STATE_QUERY = `
   module1ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
   module2ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
   module3ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
   module4ChargeController {
     charge { value timestamp }
+    energy { value timestamp }
     chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
 `;
 
 export const PCM_PARAMETERS_QUERY = `
   pcmDischargeFlow
   pcmChargeFlow
-  minimumChargingDt
   minimumChargingTemperature
   pumpTuning
-  supplyingEnabled
-  chargingEnabled
+  chargingRequested
+  supplyingRequested
+  gracePeriod
+  stallDuration
+  retryDelay
   module1FlowBalanceTuning
   module2FlowBalanceTuning
   module3FlowBalanceTuning
@@ -1753,18 +1763,6 @@ export const PCM_SENSOR_QUERY = `
   }
   freshwaterTemperaturePcmReturn {
     temperature { value timestamp }
-  }
-  pcmModule1 {
-    charged { value timestamp }
-  }
-  pcmModule2 {
-    charged { value timestamp }
-  }
-  pcmModule3 {
-    charged { value timestamp }
-  }
-  pcmModule4 {
-    charged { value timestamp }
   }
   pcmFlowModule1 {
     flow { value timestamp }
@@ -1855,7 +1853,38 @@ export const PCM_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowAdsorption {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  pcmTemperatureConsumersReturn {
+    temperature { value timestamp }
+  }
   pcmHeatModule1 {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pcmHeatModule1Freshwater {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }

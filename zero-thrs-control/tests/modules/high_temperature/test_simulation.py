@@ -4,6 +4,8 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
+from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
+from thrs.input_output.base import CombinedValues
 from thrs.input_output.modules.consumers import ConsumersSensorValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
@@ -19,7 +21,15 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
 
 @fixture(
     params=list(
-        simulator_input_field_setters(HighTemperatureSimulationInputs, ignore=[])
+        simulator_input_field_setters(
+            HighTemperatureSimulationInputs,
+            ignore=[
+                ("thrusters_seawater_supply", "flow"),
+                ("pvt_seawater_supply", "flow"),
+                ("pcm_freshwater_supply", "flow"),
+                "mode",
+            ],  # Do not throw an exception
+        )
     )
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
@@ -48,10 +58,34 @@ def test_high_temperature_simulation_inputs(
         with pytest.raises(Exception):
             for _i in range(300):
                 simulation.tick(
-                    {
-                        module_name: module.control(
-                            module.parameters_cls(), simulation.time
-                        ).initial()[0]
-                        for module_name, module in modules.items()
-                    }
+                    CombinedValues(
+                        {
+                            module_name: module.control(
+                                module.parameters_cls(),
+                                simulation.time,
+                                MachineStateLoggingServiceNoop(),
+                            ).initial()[0]
+                            for module_name, module in modules.items()
+                        }
+                    )
                 )
+
+
+def test_high_temperature_simulation_ticks(modules, simulation):
+    result = simulation.tick(
+        CombinedValues(
+            {
+                module_name: module.control(
+                    module.parameters_cls(),
+                    simulation.time,
+                    MachineStateLoggingServiceNoop(),
+                ).initial()[0]
+                for module_name, module in modules.items()
+            }
+        )
+    )
+
+    pcm_sensor_values = result.sensor_values.values["pcm"]
+    assert pcm_sensor_values.freshwater_temperature_pcm_supply.temperature.value == (
+        result.simulation_inputs.pcm_freshwater_supply.temperature.value
+    )

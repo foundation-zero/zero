@@ -99,7 +99,7 @@ const { labels, actions, items, sources } = useTranslations();
         <Partials.ListItem no-source>
           {{ items("energyConsumption") }}
           <template #renderer>
-            <FieldRenderer.PowerConsumption />
+            <FieldRenderer.Energy />
           </template>
         </Partials.ListItem>
       </SensorValue>

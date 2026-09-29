@@ -151,8 +151,15 @@ def build_outputs_from_fmu(
     timestamp: datetime,
     non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] | None = None,
 ) -> tuple[ThrsValues, ...]:
-    if non_fmu_simulation_inputs is None:
-        non_fmu_simulation_inputs = {}
+    stamped_non_fmu_simulation_inputs = {
+        component: {
+            field: value.model_copy(update={"timestamp": timestamp})
+            if isinstance(value, Stamped)
+            else value
+            for field, value in fields.items()
+        }
+        for component, fields in (non_fmu_simulation_inputs or {}).items()
+    }
 
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
@@ -165,7 +172,7 @@ def build_outputs_from_fmu(
     ]
     grouped_by_component = groupby(split_values, key=operator.itemgetter(0))
     combined_values = {
-        component: non_fmu_simulation_inputs.get(component, {})
+        component: stamped_non_fmu_simulation_inputs.get(component, {})
         | {
             field: Stamped(value=value, timestamp=timestamp)
             for _, field, value in field_values
@@ -174,7 +181,7 @@ def build_outputs_from_fmu(
     }
     unused_non_fmu_simulation_inputs = {
         component_name: component
-        for component_name, component in non_fmu_simulation_inputs.items()
+        for component_name, component in stamped_non_fmu_simulation_inputs.items()
         if component_name not in combined_values
     }
     with_extras = combined_values | unused_non_fmu_simulation_inputs

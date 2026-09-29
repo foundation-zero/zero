@@ -149,7 +149,6 @@ type BaseComponentType = Literal[
     "hvac_exchanger",
     "level_sensor",
     "level_switch",
-    "pcm_input",
     "pcm",
     "pcs",
     "power_sensor",

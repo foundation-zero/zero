@@ -10,7 +10,6 @@ from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
     Bar,
     Celsius,
-    Charged,
     Degree,
     DeltaT,
     Empty,
@@ -269,9 +268,15 @@ class HeatTransferDevice(ThrsValues):
             heat_transfer_conversion,
         )
 
-        heat_transfer.delta_t = Stamped.stamp(None)
-        heat_transfer.flow = StampedWithSource.stamp(None, "unknown")
-        heat_transfer.temperature_return = StampedWithSource.stamp(None, "unknown")
+        heat_transfer.delta_t = Stamped.combine(
+            temperature_supply, temperature_return, value=None
+        )
+        heat_transfer.flow = StampedWithSource.combine(
+            flow, value=None, source="unknown"
+        )
+        heat_transfer.temperature_return = StampedWithSource.combine(
+            temperature_return, value=None, source="unknown"
+        )
 
         return heat_transfer
 
@@ -326,6 +331,10 @@ def valves_open_closed(
         valve.position_rel.value < (control.Valve.CLOSED + tolerance)
         for valve in closed_valves
     )
+
+
+def stamped_by_valves[V](valves: Sequence[Valve], value: V) -> Stamped[V]:
+    return Stamped.combine(*(valve.position_rel for valve in valves), value=value)
 
 
 def weighted_combined_measurement[
@@ -412,11 +421,6 @@ class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
 
-# Temporary helper for the FMU charged input that control depends on. This should come from a charge controller
-class Pcm(ThrsValues):
-    charged: Stamped[Charged]
-
-
 class LevelSwitch(ThrsValues):
     empty: Stamped[Empty]
 
@@ -486,7 +490,6 @@ __all__ = [
     "Heatpump",
     "LevelSensor",
     "LevelSwitch",
-    "Pcm",
     "Pcs",
     "PowerSensor",
     "PressureSensor",

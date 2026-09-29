@@ -268,7 +268,9 @@ type ControlValveType {
 }
 
 type ControllerPcmChargeControllerValuesType {
-  charge: FloatStampedType!
+  charge: FloatOptionalStampedType!
+  energy: FloatOptionalStampedType!
+  chargeStatus: PcmChargeStatusStampedType!
   chargingState: PcmChargingStateStampedType!
 }
 
@@ -884,11 +886,13 @@ type Mutation {
   pcmSetAutomationMode(automatic: Boolean!): Boolean!
   pcmParameterSetPcmDischargeFlow(value: Float!): PcmParametersType!
   pcmParameterSetPcmChargeFlow(value: Float!): PcmParametersType!
-  pcmParameterSetMinimumChargingDt(value: Float!): PcmParametersType!
   pcmParameterSetMinimumChargingTemperature(value: Float!): PcmParametersType!
   pcmParameterSetPumpTuning(value: [Float!]!): PcmParametersType!
-  pcmParameterSetSupplyingEnabled(value: Boolean!): PcmParametersType!
-  pcmParameterSetChargingEnabled(value: Boolean!): PcmParametersType!
+  pcmParameterSetChargingRequested(value: Boolean!): PcmParametersType!
+  pcmParameterSetSupplyingRequested(value: Boolean!): PcmParametersType!
+  pcmParameterSetGracePeriod(value: Float!): PcmParametersType!
+  pcmParameterSetStallDuration(value: Float!): PcmParametersType!
+  pcmParameterSetRetryDelay(value: Float!): PcmParametersType!
   pcmParameterSetModule1FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule2FlowBalanceTuning(value: [Float!]!): PcmParametersType!
   pcmParameterSetModule3FlowBalanceTuning(value: [Float!]!): PcmParametersType!
@@ -1159,6 +1163,18 @@ input OverpressureTemperatureBoundaryInputType {
   overpressure: Float!
 }
 
+enum PcmChargeStatus {
+  UNKNOWN
+  EMPTY
+  INTERMEDIATE
+  FULL
+}
+
+type PcmChargeStatusStampedType {
+  value: PcmChargeStatus!
+  timestamp: DateTime!
+}
+
 enum PcmChargingState {
   IDLE
   CHARGING
@@ -1202,11 +1218,31 @@ input PcmInputType {
 type PcmParametersType {
   pcmDischargeFlow: Float!
   pcmChargeFlow: Float!
-  minimumChargingDt: Float!
+
+  """Range for thermal charging"""
   minimumChargingTemperature: Float!
   pumpTuning: [Float!]!
-  supplyingEnabled: Boolean!
-  chargingEnabled: Boolean!
+
+  """Keep trying to charge the PCM modules while possible"""
+  chargingRequested: Boolean!
+
+  """Keep trying to supply heat from the PCM modules while possible"""
+  supplyingRequested: Boolean!
+
+  """
+  Grace period after entering charging/supplying before the stall guard checks a module's charging_state
+  """
+  gracePeriod: Float!
+
+  """
+  How long a module's charging_state may fail to show it actually (dis)charging before it is dropped as stalled
+  """
+  stallDuration: Float!
+
+  """
+  Lockout before retrying a mode after all its modules stalled and were dropped
+  """
+  retryDelay: Float!
   module1FlowBalanceTuning: [Float!]!
   module2FlowBalanceTuning: [Float!]!
   module3FlowBalanceTuning: [Float!]!
@@ -1224,10 +1260,6 @@ type PcmSensorValuesType {
   pcmTemperatureModule4: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-35", componentType: "temperature_sensor", valveType: null)
   freshwaterTemperaturePcmSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-5", componentType: "temperature_sensor", valveType: null)
   freshwaterTemperaturePcmReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "25001038-3", componentType: "temperature_sensor", valveType: null)
-  pcmModule1: SensorPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm_input", valveType: null)
-  pcmModule2: SensorPcmType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm_input", valveType: null)
-  pcmModule3: SensorPcmType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm_input", valveType: null)
-  pcmModule4: SensorPcmType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm_input", valveType: null)
   pcmFlowModule1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-18", componentType: "flow_sensor", valveType: null)
   pcmFlowModule2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-19", componentType: "flow_sensor", valveType: null)
   pcmFlowModule3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-20", componentType: "flow_sensor", valveType: null)
@@ -1241,7 +1273,16 @@ type PcmSensorValuesType {
   pcmSwitchDischarging: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-01", componentType: "valve", valveType: "switch")
   pcmSwitchChargingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001190-01", componentType: "valve", valveType: "switch")
   pcmSwitchConsumers: SensorValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
+  consumersTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-48", componentType: "temperature_sensor", valveType: null)
+  consumersTemperatureAdsorptionReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-49", componentType: "temperature_sensor", valveType: null)
+  consumersFlowDhw: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
+  consumersFlowAdsorption: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-08", componentType: "flow_sensor", valveType: null)
+  consumersFlowBypass: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001192", componentType: "flow_sensor", valveType: null)
+  pcmTemperatureConsumersReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pcmHeatModule1: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
+
+  """Module 1's A-D exchanger, discharged by the freshwater system."""
+  pcmHeatModule1Freshwater: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
   pcmHeatModule2: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
   pcmHeatModule3: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)
   pcmHeatModule4: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm", valveType: null)
@@ -1573,10 +1614,6 @@ type SensorLevelSensorType {
 
 type SensorLevelSwitchType {
   empty: BoolStampedType!
-}
-
-type SensorPcmType {
-  charged: BoolStampedType!
 }
 
 type SensorPcsType {
