@@ -1,3 +1,6 @@
+download_sheets *args:
+    uv run loads download-sheets {{args}}
+
 export_seed:
     uv run loads export-seed
 

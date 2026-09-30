@@ -3,7 +3,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import requests
 import uvicorn
 from generator import DataGenerator
 from generator.base import GeneratorConfig
@@ -25,6 +24,7 @@ from loads.registry import (
     fiber_optic_sensors,
     sail_system_sensors,
 )
+from loads.registry.sheets import TABS, TabName, consistency_problems, download_tab
 from loads.util import ensure_list
 
 setup_logging()
@@ -112,24 +112,6 @@ class SensorsStubCmd(GeneratorSettings):
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
 
 
-LOADS_SHEET_EXPORT_URL = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid={gid}"
-SAILPACK_MAPPING_GID = 1005053580
-MAX_LOADS_GID = 321612479
-
-
-def _download_sheet_tab(gid: int, output: Path) -> None:
-    logger.info(f"Updating {output} from Google Sheets...")
-    try:
-        response = requests.get(LOADS_SHEET_EXPORT_URL.format(gid=gid))
-        response.raise_for_status()
-        output.write_bytes(response.content)
-        logger.info(f"Updated {output}")
-    except Exception as e:
-        logger.warning(
-            f"Failed to fetch gid {gid} from Google Sheets: {e}. Using existing file: {output}"
-        )
-
-
 class SeedPaths(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -139,8 +121,8 @@ class SeedPaths(BaseSettings, cli_kebab_case=True):
     )
 
     input: Path = Path("src/sailpack/load_cases")
-    sailpack_mapping: Path = Path("src/sailpack/sailpack_mapping.csv")
-    max_loads: Path = Path("src/loads/registry/max_loads.csv")
+    sailpack_mapping: Path = TABS["sailpack-mapping"].path
+    max_loads: Path = TABS["max-loads"].path
     reference_values_output: Path = Path(
         "../hasura/seeds/zero/loads_reference_values.sql"
     )
@@ -160,9 +142,6 @@ class ExportSeedCmd(SeedPaths):
         from sailpack.export_reference_values_seed import (
             export_reference_values_seed_sql,
         )
-
-        _download_sheet_tab(SAILPACK_MAPPING_GID, self.sailpack_mapping)
-        _download_sheet_tab(MAX_LOADS_GID, self.max_loads)
 
         logger.info("Exporting sailpack seed SQL...")
         load_case_count, reference_count, conflict_count = (
@@ -192,53 +171,78 @@ class ExportSeedCmd(SeedPaths):
         )
 
 
+def _stale_seed_files(paths: SeedPaths) -> list[Path]:
+    from sailpack.export_load_case_mapping_seed import (
+        export_load_case_mapping_seed_sql,
+    )
+    from sailpack.export_reference_values_seed import (
+        export_reference_values_seed_sql,
+    )
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        generated_reference_values = temp_path / paths.reference_values_output.name
+        generated_case_mappings = temp_path / paths.load_case_mapping_output.name
+        generated_conflicts = temp_path / paths.target_threshold_conflicts_output.name
+
+        export_reference_values_seed_sql(
+            input_source=paths.input,
+            mapping_path=paths.sailpack_mapping,
+            max_loads_path=paths.max_loads,
+            output_sql=generated_reference_values,
+            conflicts_output=generated_conflicts,
+        )
+        export_load_case_mapping_seed_sql(
+            input_source=paths.input, output_sql=generated_case_mappings
+        )
+
+        return [
+            committed
+            for committed, generated in (
+                (paths.reference_values_output, generated_reference_values),
+                (paths.load_case_mapping_output, generated_case_mappings),
+                (paths.target_threshold_conflicts_output, generated_conflicts),
+            )
+            if committed.read_bytes() != generated.read_bytes()
+        ]
+
+
+def _log_stale_seed_files(stale: list[Path]) -> None:
+    for path in stale:
+        logger.error(f"Seed file is out of date: {path}")
+    logger.error(
+        "Run 'uv run loads export-seed' from zero-loads-app to regenerate the seed files."
+    )
+
+
 class CheckSeedCmd(SeedPaths):
     async def cli_cmd(self) -> None:
-        from sailpack.export_load_case_mapping_seed import (
-            export_load_case_mapping_seed_sql,
-        )
-        from sailpack.export_reference_values_seed import (
-            export_reference_values_seed_sql,
-        )
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            generated_reference_values = temp_path / self.reference_values_output.name
-            generated_case_mappings = temp_path / self.load_case_mapping_output.name
-            generated_conflicts = (
-                temp_path / self.target_threshold_conflicts_output.name
-            )
-
-            export_reference_values_seed_sql(
-                input_source=self.input,
-                mapping_path=self.sailpack_mapping,
-                max_loads_path=self.max_loads,
-                output_sql=generated_reference_values,
-                conflicts_output=generated_conflicts,
-            )
-            export_load_case_mapping_seed_sql(
-                input_source=self.input, output_sql=generated_case_mappings
-            )
-
-            stale = [
-                committed
-                for committed, generated in (
-                    (self.reference_values_output, generated_reference_values),
-                    (self.load_case_mapping_output, generated_case_mappings),
-                    (self.target_threshold_conflicts_output, generated_conflicts),
-                )
-                if committed.read_bytes() != generated.read_bytes()
-            ]
-
-        if stale:
-            for path in stale:
-                logger.error(f"Seed file is out of date: {path}")
-            logger.error(
-                "Run 'uv run loads export-seed' from zero-loads-app to regenerate the seed files."
-            )
+        if stale := _stale_seed_files(self):
+            _log_stale_seed_files(stale)
             sys.exit(1)
 
         logger.info("Seed files are consistent with the sailpack export.")
+
+
+class DownloadSheetsCmd(SeedPaths):
+    tabs: list[TabName] = list(TABS)
+
+    async def cli_cmd(self) -> None:
+        for tab_name in self.tabs:
+            tab = TABS[tab_name]
+            download_tab(tab)
+            logger.info(f"Downloaded {tab_name} to {tab.path}")
+
+        if problems := consistency_problems():
+            for problem in problems:
+                logger.error(problem)
+            sys.exit(1)
+        logger.info("Sheet exports are consistent with the registry.")
+
+        if stale := _stale_seed_files(self):
+            _log_stale_seed_files(stale)
+            sys.exit(1)
+        logger.info("Seed files are consistent with the sheet exports.")
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
@@ -259,6 +263,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     sensors_stub: CliSubCommand[SensorsStubCmd]
     export_seed: CliSubCommand[ExportSeedCmd]
     check_seed: CliSubCommand[CheckSeedCmd]
+    download_sheets: CliSubCommand[DownloadSheetsCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

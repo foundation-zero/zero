@@ -92,8 +92,19 @@ The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
 `hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
 load cases in `src/sailpack/load_cases`, with the warning and alarm thresholds from
 `src/loads/registry/max_loads.csv`. Targets above their threshold are dropped and listed in
-`src/sailpack/target_threshold_conflicts.csv`. The export first refreshes the sailpack mapping
-and max loads CSVs from the loads Google Sheet:
+`src/sailpack/target_threshold_conflicts.csv`.
+
+The sailpack mapping, max loads and Vitters IO list CSVs are exports of the loads Google Sheet,
+which is the source of truth. Download them (all tabs, or e.g. `--tabs max-loads`), which also
+checks their technical names against the registry, the Vitters join and whether the seeds need
+regenerating:
+
+```bash
+just download_sheets
+just download_sheets --tabs max-loads
+```
+
+Then regenerate the seeds from the CSVs in the repo:
 
 ```bash
 just export_seed
