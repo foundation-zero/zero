@@ -399,13 +399,15 @@ class ControlChannels[
         module_name: str,
         control_module: ModuleDescription[S, C, P, M, CS],
         publish_qos: int = 1,
+        subscribe_device_values: bool = True,
     ) -> None:
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
             f"500000-thrs/{module_name}",
         )
-        connector._register_listener(sensor_values_mapping)
+        if subscribe_device_values:
+            connector._register_listener(sensor_values_mapping)
 
         parameters_mapping = DirectMqttMapping[P].for_module(
             control_module.parameters_cls,
@@ -452,7 +454,8 @@ class ControlChannels[
             f"500000-thrs/{module_name}",
             context=AMCS_RECEIVE_CONTEXT,
         )
-        connector._register_listener(actuated_control_values_mapping)
+        if subscribe_device_values:
+            connector._register_listener(actuated_control_values_mapping)
         self.send_computed_values = connector._create_publisher(
             PartialMqttMapping[S](
                 control_module.sensor_values_cls,
@@ -518,6 +521,7 @@ class SimulationChannels[
         control_values_clss: ModuleClassMap,
         simulation_inputs_cls: type[I] | tuple[type[I], ...],
         simulation_outputs_cls: type[O] | tuple[type[O], ...],
+        subscribe_device_values: bool = True,
     ) -> None:
         simulation_inputs_topic = (
             f"{config.mqtt_simulator_topic_prefix}/simulation-inputs"
@@ -532,7 +536,8 @@ class SimulationChannels[
             config.mqtt_devices_topic_prefix,
             config.mqtt_control_topic_suffix,
         )
-        connector._register_listener(control_values_mapping)
+        if subscribe_device_values:
+            connector._register_listener(control_values_mapping)
         simulation_inputs_mapping = DirectMqttMapping(
             simulation_inputs_cls,
             simulation_inputs_topic,

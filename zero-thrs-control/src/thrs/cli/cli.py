@@ -1,8 +1,10 @@
 import contextlib
 import logging
 from datetime import datetime, timedelta
+from typing import Annotated
 
 from aiomqtt import Client as MqttClient
+from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -28,7 +30,7 @@ from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.control import ControlRunner
-from thrs.runtime.runners.lockstep import LockstepRunner
+from thrs.runtime.runners.lockstep import LockstepPublisher, LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
 from thrs.runtime.runtime import Runtime
 
@@ -126,6 +128,7 @@ class LockstepCmd(BaseSettings):
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
     restore_manual_control_values: CliImplicitFlag[bool] = False
+    publish_interval_seconds: Annotated[float, Field(gt=0)] = 1.0
 
     async def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -143,6 +146,8 @@ class LockstepCmd(BaseSettings):
             settings,
             mode.control_modules,
             mode.simulation_description,
+            # Lockstep passes device values in memory; receiving its own publishes back only loads the event loop
+            subscribe_device_values=False,
         )
 
         database = setup_database(
@@ -165,8 +170,9 @@ class LockstepCmd(BaseSettings):
             time_fn=simulation_module.time,
             database=database,
             machine_state_logging_service_enabled=self.machine_state_logging,
-            # Lockstep trades delivery guarantees for speed; every tick republishes these values
+            # Lockstep trades delivery guarantees for speed; every publish interval republishes these values
             publish_qos=0,
+            subscribe_device_values=False,
         )
 
         for module in control_modules:
@@ -183,11 +189,17 @@ class LockstepCmd(BaseSettings):
             mode,
             simulation_module.time,
         )
+        publisher = LockstepPublisher(
+            runner,
+            directive_handling.status_hooks(),
+            timedelta(seconds=self.publish_interval_seconds),
+        )
         return Runtime(
             runner,
             connector,
             simulation_module.tick_duration,
             directive_handling,
+            publisher.hooks(),
         )
 
     async def cli_cmd(self) -> None:
