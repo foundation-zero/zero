@@ -61,6 +61,11 @@ export const enum PvtMode {
   Recovery = "recovery",
 }
 
+export const enum DcMode {
+  Idle = "idle",
+  Recovery = "recovery",
+}
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;

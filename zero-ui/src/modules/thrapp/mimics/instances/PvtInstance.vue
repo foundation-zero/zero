@@ -44,7 +44,7 @@ const modeKey = usePvtMode(props.custom.group);
     <Pvt
       v-bind="props"
       :state="state"
-      :height="200"
+      :height="180"
     >
       <YardTag>{{ props.tagId }}</YardTag>
       <PvtTitle class="gap-2 pb-1">
@@ -56,7 +56,10 @@ const modeKey = usePvtMode(props.custom.group);
         :mode="modeKey"
         :state="state"
       />
-      <ValueList class="gap-0 pt-1">
+      <ValueList
+        dense
+        class="gap-0 pt-1"
+      >
         <ValueListSeparator />
 
         <ValueListItem>

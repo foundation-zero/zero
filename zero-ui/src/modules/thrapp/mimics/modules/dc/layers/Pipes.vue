@@ -287,7 +287,7 @@
       letter-spacing="0em"
     >
       <tspan
-        x="9.24036"
+        x="4.24036"
         y="10.3636"
       >
         Bypass A

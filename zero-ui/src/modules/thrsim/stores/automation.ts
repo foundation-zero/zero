@@ -10,7 +10,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { AmcsControlModeSensor, PvtMode } from "../types";
+import { AmcsControlModeSensor, DcMode, PvtMode } from "../types";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };
@@ -21,7 +21,7 @@ export type PvtAutomaticMode = {
 };
 export type AdsorptionAutomaticMode = { mode: string };
 export type ConsumersAutomaticMode = Record<string, never>;
-export type ConvertersAutomaticMode = { mode: string };
+export type ConvertersAutomaticMode = { mode: DcMode };
 export type DcAutomaticMode = {
   brightloopsAft: ConvertersAutomaticMode;
   brightloopsFwd: ConvertersAutomaticMode;

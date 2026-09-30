@@ -1,13 +1,14 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import {
+  DcAutomaticMode,
   DhwAutomaticMode,
   PcmAutomaticMode,
   PvtAutomaticMode,
   ThrustersAutomaticMode,
   useAutomationStore,
 } from "@/modules/thrsim/stores/automation";
-import { AmcsControlMode, PvtMode } from "@/modules/thrsim/types";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
 import { computed, MaybeRef, unref } from "vue";
 
 export { default as ModeBadge } from "./ModeBadge.vue";
@@ -147,6 +148,28 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       };
       return [
         { mode: MODES[thrustersMode.mode], label: t(`modes.thrusters.${thrustersMode.mode}`) },
+      ];
+    } else if (module === "dc") {
+      const { brightloopsAft, brightloopsFwd, ugrids } = automaticMode as DcAutomaticMode;
+
+      const MODES: Record<DcMode, ModeBadgeMode> = {
+        [DcMode.Idle]: ModeBadgeMode.Idle,
+        [DcMode.Recovery]: ModeBadgeMode.Using,
+      };
+
+      return [
+        {
+          mode: MODES[brightloopsAft.mode],
+          label: t(`modes.dc.${brightloopsAft.mode}`, { count: 0 }),
+        },
+        {
+          mode: MODES[brightloopsFwd.mode],
+          label: t(`modes.dc.${brightloopsFwd.mode}`, { count: 1 }),
+        },
+        {
+          mode: MODES[ugrids.mode],
+          label: t(`modes.dc.${ugrids.mode}`, { count: 2 }),
+        },
       ];
     } else {
       return [{ mode: ModeBadgeMode.Active, label: t(`modes.${module}`, automaticMode) }];

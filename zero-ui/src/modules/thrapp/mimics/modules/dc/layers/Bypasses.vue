@@ -1,3 +1,0 @@
-<template>
-  <g></g>
-</template>
