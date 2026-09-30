@@ -19,6 +19,7 @@ from loads.api.schema import (
     AwsRanges,
     LoadCaseMappings,
     LoadCases,
+    MaxThresholds,
     ReferenceValues,
     SailSetsCombined,
 )
@@ -44,6 +45,7 @@ def clear_mutating_tables(
         autocommit=True,
     ) as conn:
         with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM loads.max_thresholds")
             cursor.execute("DELETE FROM loads.reference_values")
             cursor.execute("DELETE FROM loads.load_case_mappings")
             cursor.execute("DELETE FROM loads.load_cases")
@@ -130,6 +132,7 @@ async def sessionmanager(settings: Settings):
 @fixture(autouse=True)
 async def reset_mutable_tables(sessionmanager: SessionManager):
     async with sessionmanager.connect() as connection:
+        await connection.execute(text("DELETE FROM loads.max_thresholds"))
         await connection.execute(text("DELETE FROM loads.reference_values"))
         await connection.execute(text("DELETE FROM loads.load_case_mappings"))
         await connection.execute(text("DELETE FROM loads.load_cases"))
@@ -250,6 +253,26 @@ class ScenarioFactory:
         )
         async with self._manager.session() as session:
             session.add(ReferenceValues(**payload))
+
+    async def create_max_threshold(
+        self,
+        *,
+        variable_id: str,
+        alarm_low: float | None = None,
+        warning_low: float | None = None,
+        warning_high: float | None = None,
+        alarm_high: float | None = None,
+    ) -> None:
+        async with self._manager.session() as session:
+            session.add(
+                MaxThresholds(
+                    variable_id=variable_id,
+                    alarm_low=alarm_low,
+                    warning_low=warning_low,
+                    warning_high=warning_high,
+                    alarm_high=alarm_high,
+                )
+            )
 
     async def create_case_with_mapping(
         self,

@@ -61,44 +61,35 @@ def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
     return max_loads
 
 
-def apply_max_loads(
+def drop_targets_above_thresholds(
     reference_values: pl.DataFrame, max_loads: pl.DataFrame
 ) -> tuple[pl.DataFrame, pl.DataFrame]:
-    """Add warning and alarm thresholds to every load case and tack, with or without a target.
+    """Split the SailPack targets into those within their max thresholds and the conflicts.
 
-    Targets above a threshold would violate the reference_values CHECK constraints, so they are
-    dropped and returned separately as conflicts.
+    The API falls back to the max thresholds wherever a reference value has none, so a target
+    above them would show above its own warning or alarm.
     """
-    load_case_tacks = reference_values.select("Calculation ID", "tack").unique()
-    thresholded_variables = max_loads.filter(
-        pl.col("warning_high").is_not_null() | pl.col("alarm_high").is_not_null()
-    ).select("variable")
-
-    all_reference_values = (
-        load_case_tacks.join(thresholded_variables, how="cross")
-        .join(
-            reference_values.select("Calculation ID", "variable", "value", "tack"),
-            on=["Calculation ID", "variable", "tack"],
-            how="full",
-            coalesce=True,
-        )
-        .select("Calculation ID", "variable", "value", "tack")
-        .join(max_loads, on="variable", how="left")
+    targets = reference_values.filter(pl.col("value").is_not_null()).join(
+        max_loads, on="variable", how="left"
     )
+    exceeds_threshold = (pl.col("value") > pl.col("warning_high")).fill_null(False) | (
+        pl.col("value") > pl.col("alarm_high")
+    ).fill_null(False)
 
-    exceeds_threshold = pl.col("value").is_not_null() & (
-        (pl.col("value") > pl.col("warning_high")).fill_null(False)
-        | (pl.col("value") > pl.col("alarm_high")).fill_null(False)
-    )
-
-    conflicts = all_reference_values.filter(exceeds_threshold).sort(
+    conflicts = targets.filter(exceeds_threshold).sort(
         "variable", "Calculation ID", "tack"
     )
-    reference_values_with_thresholds = all_reference_values.with_columns(
-        pl.when(exceeds_threshold).then(None).otherwise(pl.col("value")).alias("value")
+    targets_within_thresholds = targets.filter(~exceeds_threshold).select(
+        "Calculation ID", "variable", "value", "tack"
     )
 
-    return reference_values_with_thresholds, conflicts
+    return targets_within_thresholds, conflicts
+
+
+def thresholded_variables(max_loads: pl.DataFrame) -> pl.DataFrame:
+    return max_loads.filter(
+        pl.col("warning_high").is_not_null() | pl.col("alarm_high").is_not_null()
+    )
 
 
 def write_conflicts(conflicts: pl.DataFrame, output_csv: Path) -> None:

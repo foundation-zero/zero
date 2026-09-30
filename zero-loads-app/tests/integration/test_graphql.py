@@ -259,6 +259,112 @@ async def test_graphql_load_case_reference_values_per_tack(async_client: AsyncCl
     ]
 
 
+REFERENCE_QUERY = """
+query ($awaRange: AwaRange!, $awsRange: AwsRange!) {
+    variables(variables: ["main-sheet-load"]) {
+        reference(case: {awaRange: $awaRange, awsRange: $awsRange, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+            alarmLow
+            warningLow
+            target
+            warningHigh
+            alarmHigh
+        }
+    }
+}
+"""
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_falls_back_to_max_thresholds_without_load_case(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="main-sheet-load", warning_high=11.0, alarm_high=12.0
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": REFERENCE_QUERY,
+            "variables": {"awaRange": "reaching", "awsRange": "aws_20_25"},
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["variables"][0]["reference"] == {
+        "alarmLow": None,
+        "warningLow": None,
+        "target": None,
+        "warningHigh": 11.0,
+        "alarmHigh": 12.0,
+    }
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_thresholds_override_max_thresholds_per_column(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="main-sheet-load",
+        alarm_low=0.5,
+        warning_high=11.0,
+        alarm_high=12.0,
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": REFERENCE_QUERY,
+            "variables": {"awaRange": "upwind", "awsRange": "aws_20_25"},
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["variables"][0]["reference"] == {
+        "alarmLow": 0.5,
+        "warningLow": None,
+        "target": 9.6,
+        "warningHigh": 13.5,
+        "alarmHigh": 15.0,
+    }
+
+
+@pytest.mark.asyncio
+async def test_graphql_load_case_reference_values_include_max_thresholds(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="mizzen-sheet-load", warning_high=6.0, alarm_high=6.5
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                loadCase(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    referenceValues(tack: starboard) {
+                        id
+                        target
+                        alarmHigh
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert sorted(
+        response.json()["data"]["loadCase"]["referenceValues"],
+        key=lambda value: value["id"],
+    ) == [
+        {"id": "main-runner-tail-sb-load", "target": 17.3, "alarmHigh": 26.4},
+        {"id": "main-sheet-load", "target": 9.6, "alarmHigh": 15.0},
+        {"id": "mizzen-sheet-load", "target": None, "alarmHigh": 6.5},
+    ]
+
+
 @pytest.mark.asyncio
 async def test_graphql_set_reference_values(async_client: AsyncClient):
     insert = await async_client.post(

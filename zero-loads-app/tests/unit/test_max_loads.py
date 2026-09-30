@@ -3,7 +3,11 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from sailpack.max_loads import apply_max_loads, read_max_loads
+from sailpack.max_loads import (
+    drop_targets_above_thresholds,
+    read_max_loads,
+    thresholded_variables,
+)
 
 HEADER = (
     ",,Equipment (Limiting) Specs,,,Relief Load Settings,,Alarms,,SailPack Modelling,,,\n"
@@ -46,78 +50,45 @@ def test_read_max_loads_rejects_warning_above_alarm(tmp_path):
         read_max_loads(path)
 
 
-def test_apply_max_loads_drops_targets_above_thresholds():
+def test_drop_targets_above_thresholds():
     reference_values = pl.DataFrame(
         {
-            "Calculation ID": ["LC1", "LC2", "LC1", "LC2"],
-            "variable": ["main-sheet-load"] * 4,
-            "value": [10.0, 11.5, None, 9.0],
-            "tack": ["port", "port", "starboard", "starboard"],
+            "Calculation ID": ["LC1", "LC2", "LC1", "LC2", "LC1"],
+            "variable": ["main-sheet-load"] * 4 + ["code-zero-tack-load"],
+            "value": [10.0, 11.5, None, 9.0, 30.0],
+            "tack": ["port", "port", "starboard", "starboard", "port"],
         }
     )
     max_loads = pl.DataFrame(
         {
-            "variable": ["main-sheet-load", "primary-winch-ps-load", "a2-tack-load"],
-            "warning_high": [11.0, 11.5, None],
-            "alarm_high": [12.0, 12.5, None],
+            "variable": ["main-sheet-load"],
+            "warning_high": [11.0],
+            "alarm_high": [12.0],
         }
     )
 
-    reference_values_with_thresholds, conflicts = apply_max_loads(
-        reference_values, max_loads
-    )
+    targets, conflicts = drop_targets_above_thresholds(reference_values, max_loads)
 
     assert conflicts.select("Calculation ID", "tack", "value").to_dicts() == [
         {"Calculation ID": "LC2", "tack": "port", "value": 11.5}
     ]
-    assert reference_values_with_thresholds.sort(
-        "variable", "Calculation ID", "tack"
-    ).to_dicts() == [
-        {
-            "Calculation ID": calculation_id,
-            "variable": variable,
-            "value": value,
-            "tack": tack,
-            "warning_high": warning_high,
-            "alarm_high": alarm_high,
-        }
-        for variable, calculation_id, tack, value, warning_high, alarm_high in [
-            ("main-sheet-load", "LC1", "port", 10.0, 11.0, 12.0),
-            ("main-sheet-load", "LC1", "starboard", None, 11.0, 12.0),
-            ("main-sheet-load", "LC2", "port", None, 11.0, 12.0),
-            ("main-sheet-load", "LC2", "starboard", 9.0, 11.0, 12.0),
-            ("primary-winch-ps-load", "LC1", "port", None, 11.5, 12.5),
-            ("primary-winch-ps-load", "LC1", "starboard", None, 11.5, 12.5),
-            ("primary-winch-ps-load", "LC2", "port", None, 11.5, 12.5),
-            ("primary-winch-ps-load", "LC2", "starboard", None, 11.5, 12.5),
-        ]
+    assert targets.sort("variable", "Calculation ID", "tack").rows() == [
+        ("LC1", "code-zero-tack-load", 30.0, "port"),
+        ("LC1", "main-sheet-load", 10.0, "port"),
+        ("LC2", "main-sheet-load", 9.0, "starboard"),
     ]
 
 
-def test_apply_max_loads_adds_thresholds_to_tacks_without_a_target():
-    reference_values = pl.DataFrame(
-        {
-            "Calculation ID": ["LC1", "LC1"],
-            "variable": ["primary-winch-sb-load", "primary-winch-ps-load"],
-            "value": [9.0, 9.0],
-            "tack": ["port", "starboard"],
-        }
-    )
+def test_thresholded_variables_skips_variables_without_thresholds():
     max_loads = pl.DataFrame(
         {
-            "variable": ["primary-winch-ps-load", "primary-winch-sb-load"],
-            "warning_high": [11.5, 11.5],
-            "alarm_high": [12.5, 12.5],
+            "variable": ["main-sheet-load", "a2-tack-load", "main-outhaul-load"],
+            "warning_high": [11.0, None, None],
+            "alarm_high": [12.0, None, 14.0],
         }
     )
 
-    reference_values_with_thresholds, _ = apply_max_loads(reference_values, max_loads)
-
-    assert reference_values_with_thresholds.sort("variable", "tack").select(
-        "variable", "tack", "value", "alarm_high"
-    ).rows() == [
-        ("primary-winch-ps-load", "port", None, 12.5),
-        ("primary-winch-ps-load", "starboard", 9.0, 12.5),
-        ("primary-winch-sb-load", "port", 9.0, 12.5),
-        ("primary-winch-sb-load", "starboard", None, 12.5),
+    assert thresholded_variables(max_loads)["variable"].to_list() == [
+        "main-sheet-load",
+        "main-outhaul-load",
     ]

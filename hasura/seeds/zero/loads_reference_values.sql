@@ -3,6 +3,7 @@
 
 BEGIN;
 
+DELETE FROM loads.max_thresholds;
 DELETE FROM loads.reference_values;
 DELETE FROM loads.load_case_mappings;
 DELETE FROM loads.load_cases;
@@ -439,27543 +440,8354 @@ reference_payload AS (
     FROM jsonb_to_recordset($$[
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 22.304660612951416,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 22.304660612951416
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 16.502883247592194,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 16.502883247592194
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 0.056186363335083846,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.056186363335083846
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 30.172077110940027,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 30.172077110940027
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 11.194546557692995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 11.194546557692995
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.3344465235325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.3344465235325
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 10.756578444218974,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 10.756578444218974
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 19.104893108247975,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 19.104893108247975
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.074311819020767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.074311819020767
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 22.564382332396896,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.564382332396896
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 37.76172291251345,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 37.76172291251345
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 6.927849979350746,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 6.927849979350746
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.1607072751653215,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.1607072751653215
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 2.9154706245251947,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 2.9154706245251947
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 38.80754386054361,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 38.80754386054361
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 7.2548729688527684,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.2548729688527684
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 3.9958599521753095,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.9958599521753095
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 2.44721693952573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.44721693952573
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.46509256473923305,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.46509256473923305
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 8.559905778221921,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 8.559905778221921
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 6.7381827637368525,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 6.7381827637368525
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 6.88111524320493,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 6.88111524320493
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 4.200822910983873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 4.200822910983873
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.5977627426287264,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.5977627426287264
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.5878663967817757,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.5878663967817757
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 8.664936548158648,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.664936548158648
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 22.304660612951416,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 22.304660612951416
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 16.502883247592194,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 16.502883247592194
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 0.056186363335083846,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.056186363335083846
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 11.194546557692995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 11.194546557692995
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 30.172077110940027,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 30.172077110940027
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 10.756578444218974,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 10.756578444218974
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.3344465235325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.3344465235325
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.074311819020767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.074311819020767
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 19.104893108247975,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 19.104893108247975
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 22.564382332396896,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.564382332396896
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 6.927849979350746,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 6.927849979350746
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 37.76172291251345,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 37.76172291251345
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.1607072751653215,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.1607072751653215
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.9154706245251947,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 2.9154706245251947
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 38.80754386054361,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 38.80754386054361
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 7.2548729688527684,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.2548729688527684
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 3.9958599521753095,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.9958599521753095
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 2.44721693952573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.44721693952573
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.46509256473923305,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.46509256473923305
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 8.559905778221921,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 8.559905778221921
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 6.7381827637368525,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 6.7381827637368525
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 6.88111524320493,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 6.88111524320493
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 4.200822910983873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.200822910983873
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.5977627426287264,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.5977627426287264
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.5878663967817757,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.5878663967817757
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 8.664936548158648,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.664936548158648
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 27.570271193526843,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 27.570271193526843
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 16.636466071492304,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 16.636466071492304
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 9.803041813463313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 9.803041813463313
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 4.459422942595076,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 4.459422942595076
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 25.8581676719369,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 25.8581676719369
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 1.277194556754855,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.277194556754855
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 65.57427867824384,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.57427867824384
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 11.992270551105628,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 11.992270551105628
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 13.736291190161777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 13.736291190161777
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.37882457312130036,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 0.37882457312130036
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 34.662397454788334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 34.662397454788334
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 10.042267237027936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 10.042267237027936
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.08698179296701727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.08698179296701727
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9693422320568186,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9693422320568186
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 44.20673726501914,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 44.20673726501914
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 8.810755966614492,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 8.810755966614492
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 19.07236416105398,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 19.07236416105398
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 18.071410726394845,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 18.071410726394845
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.53618208052699,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.53618208052699
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 9.3554883675873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.3554883675873
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.24095894112668445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.24095894112668445
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.299424370197774,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.299424370197774
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 7.749027445661873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 7.749027445661873
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.3493541811588514,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.3493541811588514
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 1.1410624423223017,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 1.1410624423223017
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.2283501501532124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-sheet-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.2283501501532124
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.00469069457969847,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.00469069457969847
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 27.570271193526843,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 27.570271193526843
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 16.636466071492304,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 16.636466071492304
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 9.803041813463313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 9.803041813463313
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 4.459422942595076,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 4.459422942595076
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 1.277194556754855,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.277194556754855
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 25.8581676719369,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 25.8581676719369
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 11.992270551105628,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 11.992270551105628
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 65.57427867824384,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.57427867824384
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.37882457312130036,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.37882457312130036
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 13.736291190161777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 13.736291190161777
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 10.042267237027936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 10.042267237027936
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 34.662397454788334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 34.662397454788334
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.08698179296701727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.08698179296701727
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9693422320568186,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9693422320568186
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 44.20673726501914,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 44.20673726501914
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 8.810755966614492,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 8.810755966614492
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 19.07236416105398,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.07236416105398
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 18.071410726394845,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 18.071410726394845
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.53618208052699,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.53618208052699
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 9.3554883675873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.3554883675873
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.24095894112668445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.24095894112668445
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.299424370197774,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.299424370197774
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 7.749027445661873,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 7.749027445661873
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.3493541811588514,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.3493541811588514
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 1.1410624423223017,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.1410624423223017
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.2283501501532124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-sheet-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.2283501501532124
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.00469069457969847,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.00469069457969847
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 15.978851085742837,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 15.978851085742837
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 22.71897131028435,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 22.71897131028435
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 15.886260853604442,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 15.886260853604442
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 47.66724620538104,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 47.66724620538104
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 42.04901775835785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 42.04901775835785
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 8.17832797132558,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 8.17832797132558
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.436076539898946,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.436076539898946
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 24.91656172087308,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 24.91656172087308
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 23.336307505621185,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 23.336307505621185
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 24.275975995880348,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.275975995880348
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 3.376076437927325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 3.376076437927325
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 20.539735791529218,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 20.539735791529218
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.565070640840654,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 7.565070640840654
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 10.269867895764609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 10.269867895764609
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.36016376642380427,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.36016376642380427
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.473296181672641,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 7.473296181672641
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 8.898961419037082,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.898961419037082
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 15.978851085742837,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 15.978851085742837
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 15.886260853604442,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 15.886260853604442
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 22.71897131028435,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 22.71897131028435
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 42.04901775835785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 42.04901775835785
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 47.66724620538104,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 47.66724620538104
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.436076539898946,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.436076539898946
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 8.17832797132558,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 8.17832797132558
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 24.91656172087308,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 24.91656172087308
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 24.275975995880348,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.275975995880348
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 23.336307505621185,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 23.336307505621185
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 3.376076437927325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 3.376076437927325
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 20.539735791529218,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 20.539735791529218
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.565070640840654,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.565070640840654
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 10.269867895764609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 10.269867895764609
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.36016376642380427,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.36016376642380427
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.473296181672641,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 7.473296181672641
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 8.898961419037082,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.898961419037082
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 13.091728571938429,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "fiber-optic-main-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 13.091728571938429
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 3.437973212055085,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 3.437973212055085
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 15.512840776411926,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.512840776411926
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.976087654805667,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.976087654805667
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 6.912758179398674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 6.912758179398674
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 16.79319645342701,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 16.79319645342701
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.56252135030821,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.56252135030821
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 24.150041043577573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.150041043577573
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0483345484951538,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.0483345484951538
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.899287728225235,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.899287728225235
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 9.689343455716275,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 9.689343455716275
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 8.779756593739963,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 8.779756593739963
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 4.844671727858137,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 4.844671727858137
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 10.680711557973416,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 10.680711557973416
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.017437147241922572,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.017437147241922572
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.12053045637399112,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.12053045637399112
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 3.3906294570352506,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.3906294570352506
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 3.38831303248306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.38831303248306
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.7727766362621282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.7727766362621282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 8.64076927391107,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 8.64076927391107
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 26.77417874605497,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 26.77417874605497
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 13.091728571938429,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 13.091728571938429
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 3.437973212055085,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "fiber-optic-main-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.437973212055085
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 15.512840776411926,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.512840776411926
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 6.912758179398674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 6.912758179398674
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.976087654805667,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.976087654805667
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 16.79319645342701,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 16.79319645342701
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 24.150041043577573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.150041043577573
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.56252135030821,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.56252135030821
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0483345484951538,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0483345484951538
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.899287728225235,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.899287728225235
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.689343455716275,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 9.689343455716275
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 8.779756593739963,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.779756593739963
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 4.844671727858137,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 4.844671727858137
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 10.680711557973416,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 10.680711557973416
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.017437147241922572,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.017437147241922572
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.12053045637399112,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.12053045637399112
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 3.3906294570352506,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.3906294570352506
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 3.38831303248306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.38831303248306
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.7727766362621282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.7727766362621282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 8.64076927391107,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 8.64076927391107
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 26.77417874605497,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 26.77417874605497
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 17.992484691510352,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "fiber-optic-main-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 17.992484691510352
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 3.407075810801854,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.407075810801854
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 64.71108890395803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 64.71108890395803
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 21.674985851437544,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 21.674985851437544
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.593286188453753,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.593286188453753
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.034818210092132,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.034818210092132
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 14.457740410843662,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.457740410843662
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 28.078701697317637,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.078701697317637
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 25.238384157688916,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.238384157688916
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.9950390806238624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.9950390806238624
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 5.473122829916434,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 5.473122829916434
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 14.908658920222502,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 14.908658920222502
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 9.4710222145177,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 9.4710222145177
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 7.454329460111251,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.454329460111251
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 9.718609311028741,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.718609311028741
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.023759387762385727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.023759387762385727
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.14469773062156802,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.14469773062156802
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.928598902895676,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.928598902895676
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.8869185705618126,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.8869185705618126
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.531205865407657,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.531205865407657
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.39544594739284056,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.39544594739284056
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 5.950859875696594,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 5.950859875696594
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 17.992484691510352,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 17.992484691510352
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 3.407075810801854,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "fiber-optic-main-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.407075810801854
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 21.674985851437544,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 21.674985851437544
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 64.71108890395803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 64.71108890395803
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.034818210092132,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.034818210092132
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.593286188453753,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.593286188453753
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 14.457740410843662,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.457740410843662
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 25.238384157688916,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.238384157688916
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 28.078701697317637,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.078701697317637
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.9950390806238624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9950390806238624
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 5.473122829916434,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 5.473122829916434
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 14.908658920222502,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 14.908658920222502
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 9.4710222145177,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.4710222145177
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 7.454329460111251,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.454329460111251
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 9.718609311028741,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.718609311028741
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.023759387762385727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.023759387762385727
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.14469773062156802,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.14469773062156802
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.928598902895676,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.928598902895676
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.8869185705618126,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.8869185705618126
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.531205865407657,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.531205865407657
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.39544594739284056,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.39544594739284056
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 5.950859875696594,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 5.950859875696594
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 17.165596814406552,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 17.165596814406552
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 24.982843274716647,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 24.982843274716647
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 1.945618534361887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.945618534361887
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.5889676902918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.5889676902918
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 12.058858019813087,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 12.058858019813087
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 13.551722555612773,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 13.551722555612773
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 1.990995905839405,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 1.990995905839405
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 21.72046519453636,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 21.72046519453636
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 33.95532623270944,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 33.95532623270944
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 13.78523756838472,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 13.78523756838472
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.12114228610177788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.12114228610177788
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9939173927895867,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9939173927895867
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 4.5313129356100195,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.5313129356100195
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 0.0
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 23.47978157678718,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 23.47978157678718
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 22.44538145034237,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 22.44538145034237
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 11.73989078839359,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.73989078839359
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 4.276587825608133,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 4.276587825608133
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.01193067969184176,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.01193067969184176
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.15387517653836938,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.15387517653836938
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9706678631336899,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9706678631336899
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 5.816359307204805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 5.816359307204805
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 3.3639100877160777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.3639100877160777
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.519616790647163,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.519616790647163
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.7588065241443307,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.7588065241443307
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 4.204391917729296,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.204391917729296
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.007443928354738876,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.007443928354738876
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 9.388731116130382,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 9.388731116130382
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 17.165596814406552,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 17.165596814406552
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 1.945618534361887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.945618534361887
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 24.982843274716647,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 24.982843274716647
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 12.058858019813087,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 12.058858019813087
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.5889676902918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.5889676902918
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 1.990995905839405,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 1.990995905839405
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 13.551722555612773,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 13.551722555612773
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 21.72046519453636,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 21.72046519453636
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 13.78523756838472,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 13.78523756838472
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 33.95532623270944,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 33.95532623270944
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.12114228610177788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.12114228610177788
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9939173927895867,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9939173927895867
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 4.5313129356100195,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.5313129356100195
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 23.47978157678718,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 23.47978157678718
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 22.44538145034237,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 22.44538145034237
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 11.73989078839359,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.73989078839359
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 4.276587825608133,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 4.276587825608133
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.01193067969184176,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.01193067969184176
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.15387517653836938,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.15387517653836938
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9706678631336899,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9706678631336899
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 5.816359307204805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 5.816359307204805
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 3.3639100877160777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.3639100877160777
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.519616790647163,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.519616790647163
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.7588065241443307,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.7588065241443307
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 4.204391917729296,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.204391917729296
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.007443928354738876,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.007443928354738876
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 9.388731116130382,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 9.388731116130382
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "aft-winch-sb-load",
     "tack": "port",
-    "target": 5.974721235080278,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 5.974721235080278
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 22.685524618498672,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 22.685524618498672
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 14.451316198701901,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 14.451316198701901
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 0.04303202418766857,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.04303202418766857
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 23.704119143642323,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 23.704119143642323
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 1.5389557086262893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.5389557086262893
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 65.91017319879877,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.91017319879877
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 15.18041329098112,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.18041329098112
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 15.692004915032147,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.692004915032147
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 14.091152432278097,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "fiber-optic-mizzen-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.091152432278097
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 4.817649248214222,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 4.817649248214222
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.42134673920247995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.42134673920247995
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 2.3011935778272905,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 2.3011935778272905
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 37.13684081720057,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 37.13684081720057
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 7.779516960429913,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.779516960429913
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 16.63157143367001,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 16.63157143367001
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 14.330173912600124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 14.330173912600124
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 8.315785716835006,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.315785716835006
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 6.917448873978372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 6.917448873978372
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.008055758082525634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.008055758082525634
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.45102048100013764,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.45102048100013764
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 7.372854134694315,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.372854134694315
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 7.952815494364476,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 7.952815494364476
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 5.86418399759347,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.86418399759347
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 4.158096801660098,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-sheet-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.158096801660098
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.03569006745422749,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.03569006745422749
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 9.428703991679116,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
+    "target": 9.428703991679116
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "aft-winch-ps-load",
     "tack": "starboard",
-    "target": 5.974721235080278,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 5.974721235080278
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 22.685524618498672,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 22.685524618498672
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 14.451316198701901,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 14.451316198701901
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 0.04303202418766857,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.04303202418766857
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 1.5389557086262893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 1.5389557086262893
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 23.704119143642323,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 23.704119143642323
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 15.18041329098112,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.18041329098112
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 65.91017319879877,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.91017319879877
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 15.692004915032147,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.692004915032147
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 14.091152432278097,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.091152432278097
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 4.817649248214222,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "fiber-optic-mizzen-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 4.817649248214222
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.42134673920247995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.42134673920247995
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.3011935778272905,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 2.3011935778272905
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 37.13684081720057,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 37.13684081720057
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 7.779516960429913,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.779516960429913
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 16.63157143367001,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 16.63157143367001
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 14.330173912600124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 14.330173912600124
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 8.315785716835006,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.315785716835006
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 6.917448873978372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 6.917448873978372
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.008055758082525634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.008055758082525634
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.45102048100013764,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.45102048100013764
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 7.372854134694315,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 7.372854134694315
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 7.952815494364476,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 7.952815494364476
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 5.86418399759347,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 5.86418399759347
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 4.158096801660098,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-sheet-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.158096801660098
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.03569006745422749,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.03569006745422749
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 9.428703991679116,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 9.428703991679116
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 27.84651231562256,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 27.84651231562256
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 18.252206410955832,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 18.252206410955832
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 11.231562256224093,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.231562256224093
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 26.698719746294607,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.698719746294607
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.8846038147583528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.8846038147583528
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.32373950329624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.32373950329624
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 8.676255398122702,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 8.676255398122702
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 11.827790325952288,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 11.827790325952288
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.446941616148226,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.446941616148226
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 23.766933662361765,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 23.766933662361765
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 31.023744092019193,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 31.023744092019193
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 13.499207170644409,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 13.499207170644409
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.11165892532108314,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.11165892532108314
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 1.2507839068387268,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 1.2507839068387268
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 46.0987187265784,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 46.0987187265784
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 7.931046789678432,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 7.931046789678432
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 20.0600612849444,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 20.0600612849444
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 18.779297721444124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 18.779297721444124
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 10.0300306424722,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 10.0300306424722
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 9.827311059332189,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.827311059332189
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.22709080063018464,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.22709080063018464
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.176446594912636,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.176446594912636
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 4.269248134282521,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 4.269248134282521
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 3.253812463991271,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.253812463991271
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 2.232158790208685,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.232158790208685
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 4.567920747655927,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.567920747655927
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 27.84651231562256,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 27.84651231562256
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 18.252206410955832,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 18.252206410955832
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 11.231562256224093,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.231562256224093
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.8846038147583528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.8846038147583528
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 26.698719746294607,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.698719746294607
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 8.676255398122702,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 8.676255398122702
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.32373950329624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.32373950329624
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.446941616148226,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.446941616148226
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 11.827790325952288,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 11.827790325952288
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 23.766933662361765,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 23.766933662361765
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 13.499207170644409,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 13.499207170644409
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 31.023744092019193,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 31.023744092019193
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.11165892532108314,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.11165892532108314
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.2507839068387268,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 1.2507839068387268
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 46.0987187265784,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 46.0987187265784
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 7.931046789678432,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 7.931046789678432
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 20.0600612849444,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 20.0600612849444
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 18.779297721444124,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 18.779297721444124
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 10.0300306424722,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 10.0300306424722
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 9.827311059332189,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 9.827311059332189
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.22709080063018464,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.22709080063018464
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.176446594912636,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.176446594912636
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 4.269248134282521,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 4.269248134282521
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 3.253812463991271,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.253812463991271
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 2.232158790208685,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.232158790208685
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 4.567920747655927,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.567920747655927
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 13.803490488597024,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 13.803490488597024
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "code-zero-tack-load",
     "tack": "port",
-    "target": 11.688395119638205,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.688395119638205
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 26.574620283175193,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.574620283175193
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 4.140251767932984,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 4.140251767932984
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 15.035613588738254,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.035613588738254
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 15.156551931597436,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.156551931597436
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.2252298185415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.2252298185415
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 17.378411588055044,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 17.378411588055044
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 35.49825883456634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 35.49825883456634
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 14.565830329419322,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.565830329419322
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 4.432502434572458,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.432502434572458
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 3.1546960480898165,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 3.1546960480898165
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 19.50064497050471,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 19.50064497050471
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 19.45404393957162,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.45404393957162
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.750322485252354,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.750322485252354
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 1.7896019537762642,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 1.7896019537762642
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 1.9325661668357696,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 1.9325661668357696
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.15336531843188042,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.15336531843188042
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9590430983057415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9590430983057415
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 5.822783519346566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 5.822783519346566
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 5.028628532679355,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 5.028628532679355
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 3.5499705134860875,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.5499705134860875
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.724171862970535,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.724171862970535
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.856087450862425,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.856087450862425
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.4780429606440528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.4780429606440528
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 9.04875773072354,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 9.04875773072354
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 8.067076932489687,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.067076932489687
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 13.803490488597024,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 13.803490488597024
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "code-zero-tack-load",
     "tack": "starboard",
-    "target": 11.688395119638205,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.688395119638205
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 4.140251767932984,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 4.140251767932984
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 26.574620283175193,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.574620283175193
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 15.035613588738254,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 15.035613588738254
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.2252298185415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.2252298185415
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 15.156551931597436,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.156551931597436
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 17.378411588055044,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 17.378411588055044
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 14.565830329419322,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.565830329419322
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 35.49825883456634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 35.49825883456634
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 4.432502434572458,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.432502434572458
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 3.1546960480898165,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 3.1546960480898165
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 19.50064497050471,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.50064497050471
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 19.45404393957162,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 19.45404393957162
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.750322485252354,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.750322485252354
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 1.7896019537762642,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 1.7896019537762642
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 1.9325661668357696,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 1.9325661668357696
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.15336531843188042,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.15336531843188042
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9590430983057415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9590430983057415
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 5.822783519346566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 5.822783519346566
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 5.028628532679355,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 5.028628532679355
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 3.5499705134860875,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.5499705134860875
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.724171862970535,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.724171862970535
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.856087450862425,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.856087450862425
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.4780429606440528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.4780429606440528
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 9.04875773072354,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 9.04875773072354
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 8.067076932489687,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.067076932489687
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 21.359485655142173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 21.359485655142173
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 12.286050792064568,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 12.286050792064568
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 0.04445962688583767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.04445962688583767
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 24.24395690679284,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 24.24395690679284
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 8.632407600964651,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 8.632407600964651
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 62.07257320287764,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 62.07257320287764
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 22.867441990893933,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 22.867441990893933
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 15.327150454028644,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.327150454028644
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.07645322306802,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.07645322306802
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 6.654871949136555,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "fiber-optic-mizzen-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 6.654871949136555
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 9.74175686906334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 9.74175686906334
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 1.7845033727113744,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 1.7845033727113744
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 33.64553644720674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 33.64553644720674
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 4.7171052296145985,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.7171052296145985
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 5.4128576017294385,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 5.4128576017294385
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 19.648299878143913,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 19.648299878143913
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 19.600679130997843,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.600679130997843
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.824149939071956,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.824149939071956
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 2.5184951028128872,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 2.5184951028128872
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 4.921456358695375,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 4.921456358695375
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.25492905324448206,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.25492905324448206
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.5421168288865208,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.5421168288865208
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 3.284403950380609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 3.284403950380609
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 3.025498003905513,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.025498003905513
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 8.569797025487807,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.569797025487807
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 2.141098132389756,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.141098132389756
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 8.209633259064002,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 8.209633259064002
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 6.322240520463155,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 6.322240520463155
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 21.359485655142173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 21.359485655142173
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 12.286050792064568,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 12.286050792064568
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 0.04445962688583767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.04445962688583767
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 8.632407600964651,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 8.632407600964651
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 24.24395690679284,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 24.24395690679284
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 22.867441990893933,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 22.867441990893933
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 62.07257320287764,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 62.07257320287764
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.07645322306802,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.07645322306802
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 15.327150454028644,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.327150454028644
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 6.654871949136555,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 6.654871949136555
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 9.74175686906334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "fiber-optic-mizzen-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 9.74175686906334
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 1.7845033727113744,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 1.7845033727113744
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 33.64553644720674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 33.64553644720674
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 4.7171052296145985,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 4.7171052296145985
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 5.4128576017294385,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 5.4128576017294385
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 19.648299878143913,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.648299878143913
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 19.600679130997843,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 19.600679130997843
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.824149939071956,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.824149939071956
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 2.5184951028128872,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 2.5184951028128872
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 4.921456358695375,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 4.921456358695375
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.25492905324448206,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.25492905324448206
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.5421168288865208,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.5421168288865208
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 3.284403950380609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 3.284403950380609
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 3.025498003905513,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.025498003905513
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 8.569797025487807,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.569797025487807
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 2.141098132389756,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.141098132389756
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 8.209633259064002,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 8.209633259064002
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 6.322240520463155,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 6.322240520463155
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 16.93870995701896,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 16.93870995701896
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 7.406504769722586,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 7.406504769722586
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 3.4244109864224788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 3.4244109864224788
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 25.240729504978766,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 25.240729504978766
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 63.56941463190794,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 63.56941463190794
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 11.202806259018116,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 11.202806259018116
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 12.865657487521222,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 12.865657487521222
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 31.12133093360118,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 31.12133093360118
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 11.685641885863165,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 11.685641885863165
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.11125103883589198,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.11125103883589198
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9055079971244003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9055079971244003
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 3.5690067454227488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 3.5690067454227488
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 46.277780893577315,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 46.277780893577315
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 22.464348171903758,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 22.464348171903758
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 21.51866335598803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 21.51866335598803
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 11.232174085951879,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.232174085951879
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 8.363304492359777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 8.363304492359777
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.07596885786685566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.07596885786685566
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.7655009610825307,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.7655009610825307
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 5.280488498661456,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 5.280488498661456
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 4.703339060739396,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 4.703339060739396
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 2.7608816466377406,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.7608816466377406
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 5.212381394257978,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 5.212381394257978
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 5.092972625718263,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 5.092972625718263
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 16.93870995701896,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 16.93870995701896
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 7.406504769722586,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 7.406504769722586
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 3.4244109864224788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 3.4244109864224788
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 25.240729504978766,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 25.240729504978766
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 11.202806259018116,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 11.202806259018116
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 63.56941463190794,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 63.56941463190794
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.0
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 12.865657487521222,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 12.865657487521222
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 11.685641885863165,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 11.685641885863165
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 31.12133093360118,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 31.12133093360118
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.11125103883589198,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.11125103883589198
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9055079971244003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9055079971244003
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 3.5690067454227488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
+    "target": 3.5690067454227488
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 46.277780893577315,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 46.277780893577315
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 22.464348171903758,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 22.464348171903758
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 21.51866335598803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 21.51866335598803
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 11.232174085951879,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.232174085951879
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 8.363304492359777,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 8.363304492359777
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.07596885786685566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.07596885786685566
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.7655009610825307,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.7655009610825307
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 5.280488498661456,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.280488498661456
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 4.703339060739396,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.703339060739396
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 2.7608816466377406,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.7608816466377406
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 5.212381394257978,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 5.212381394257978
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 5.092972625718263,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 5.092972625718263
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 0.07423534030479317,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.07423534030479317
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 26.970576088674523,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.970576088674523
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 67.49460825052388,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 67.49460825052388
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 6.553716100809145,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 6.553716100809145
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 10.151274900195276,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 10.151274900195276
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 3.598884430463002,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 3.598884430463002
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 24.423121045413062,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.423121045413062
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 17.84105683388313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 17.84105683388313
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.06454803628150285,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.06454803628150285
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9303890727210617,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9303890727210617
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 3.5690067454227488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.5690067454227488
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 8.321292184385086,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 8.321292184385086
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.17814442240724407,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.17814442240724407
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.3315454309065786,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.3315454309065786
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 8.911605900078008,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.911605900078008
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.2552706581758297,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.2552706581758297
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 15.258217638031336,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
+    "target": 15.258217638031336
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 0.07423534030479317,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 0.07423534030479317
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 26.970576088674523,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 26.970576088674523
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 6.553716100809145,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 6.553716100809145
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 67.49460825052388,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 67.49460825052388
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 3.598884430463002,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 3.598884430463002
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 10.151274900195276,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 10.151274900195276
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 17.84105683388313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 17.84105683388313
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 24.423121045413062,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.423121045413062
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.06454803628150285,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.06454803628150285
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9303890727210617,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9303890727210617
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 3.5690067454227488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.5690067454227488
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 8.321292184385086,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 8.321292184385086
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.17814442240724407,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.17814442240724407
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.3315454309065786,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.3315454309065786
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 8.911605900078008,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.911605900078008
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.2552706581758297,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.2552706581758297
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 15.258217638031336,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 15.258217638031336
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 17.3111103179985,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 17.3111103179985
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 33.58007066633356,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 33.58007066633356
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 13.362463226484069,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 13.362463226484069
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 66.9248928023331,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 66.9248928023331
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 17.95608082270704,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "fiber-optic-mizzen-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 17.95608082270704
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 3.4038127189203244,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 3.4038127189203244
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 22.249188050965415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.249188050965415
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 37.057710839073486,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 37.057710839073486
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 7.702120499864888,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 7.702120499864888
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.9210076835616648,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.9210076835616648
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 6.302356054310086,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 6.302356054310086
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 5.4654749583191,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 5.4654749583191
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 18.745035256688062,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 18.745035256688062
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 12.477451525240525,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 12.477451525240525
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.372517628344031,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.372517628344031
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 2.248474249616332,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.248474249616332
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.250034415422188,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.250034415422188
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.8435449414427965,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.8435449414427965
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 6.363539027088761,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 6.363539027088761
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 7.1050118561860325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 7.1050118561860325
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 5.524006668944033,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.524006668944033
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.7148261638785924,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.7148261638785924
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.221212136662367,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 1.221212136662367
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 6.048446717278582,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 6.048446717278582
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 18.842622098270052,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 18.842622098270052
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 17.3111103179985,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 17.3111103179985
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 13.362463226484069,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 13.362463226484069
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 33.58007066633356,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 33.58007066633356
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 17.95608082270704,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 17.95608082270704
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 66.9248928023331,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 66.9248928023331
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 3.4038127189203244,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "fiber-optic-mizzen-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 3.4038127189203244
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 22.249188050965415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.249188050965415
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 7.702120499864888,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 7.702120499864888
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 37.057710839073486,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 37.057710839073486
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.9210076835616648,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.9210076835616648
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 6.302356054310086,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 6.302356054310086
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 5.4654749583191,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 5.4654749583191
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 18.745035256688062,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 18.745035256688062
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 12.477451525240525,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 12.477451525240525
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.372517628344031,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.372517628344031
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 2.248474249616332,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.248474249616332
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.250034415422188,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.250034415422188
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.8435449414427965,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.8435449414427965
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 6.363539027088761,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 6.363539027088761
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 7.1050118561860325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 7.1050118561860325
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 5.524006668944033,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 5.524006668944033
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.7148261638785924,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.7148261638785924
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.221212136662367,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 1.221212136662367
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 6.048446717278582,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 6.048446717278582
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 18.842622098270052,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 18.842622098270052
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 18.22457210158413,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-main-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 18.22457210158413
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 10.034925280294495,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 10.034925280294495
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 14.303763262683995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-mizzen-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 14.303763262683995
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.1353928201781445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.1353928201781445
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 14.782723967919727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-mizzen-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.782723967919727
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 5.137330280982803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 5.137330280982803
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 9.981900037219642,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 9.981900037219642
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 7.620135316341463,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 7.620135316341463
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.602188310993051,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 7.602188310993051
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.8100676581707313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.8100676581707313
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 2.410303212615929,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.410303212615929
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.03324274854308046,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.03324274854308046
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.33925958405775675,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.33925958405775675
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 9.948555317055265,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 9.948555317055265
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.6173280019219476,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.6173280019219476
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.371961883007959,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.371961883007959
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.3684591578163796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.3684591578163796
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.1243390964294637,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 1.1243390964294637
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 18.22457210158413,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 18.22457210158413
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 10.034925280294495,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-main-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 10.034925280294495
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 14.303763262683995,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 14.303763262683995
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.1353928201781445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-mizzen-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.1353928201781445
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 14.782723967919727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.782723967919727
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 5.137330280982803,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "fiber-optic-mizzen-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 5.137330280982803
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 9.981900037219642,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 9.981900037219642
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 7.620135316341463,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 7.620135316341463
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.602188310993051,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.602188310993051
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.8100676581707313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 3.8100676581707313
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 2.410303212615929,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 2.410303212615929
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.03324274854308046,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.03324274854308046
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.33925958405775675,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.33925958405775675
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 9.948555317055265,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 9.948555317055265
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.6173280019219476,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.6173280019219476
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.371961883007959,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.371961883007959
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.3684591578163796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.3684591578163796
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.1243390964294637,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 1.1243390964294637
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 12.699341773184523,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "fiber-optic-main-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 12.699341773184523
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 11.436015356926168,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 11.436015356926168
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 14.39451800563903,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 14.39451800563903
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 15.237415427286587,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.237415427286587
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 4.569756236839288,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 4.569756236839288
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 22.554695028373605,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.554695028373605
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 29.580641707412827,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.580641707412827
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 16.568349028465377,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 16.568349028465377
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 1.057751627722005,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 1.057751627722005
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 7.431487816940545,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 7.431487816940545
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 4.900654147950625,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 4.900654147950625
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 18.44911361168187,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 18.44911361168187
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 11.058618386503037,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 11.058618386503037
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.224556805840935,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.224556805840935
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 4.662856327084173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 4.662856327084173
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.12124425772307566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.12124425772307566
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.9042843376688268,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9042843376688268
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 7.889625161084096,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 7.889625161084096
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.265783932331632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 7.265783932331632
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 4.1250579963596135,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.1250579963596135
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.1635981706291139,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 1.1635981706291139
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 9.02795551997879,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 9.02795551997879
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 12.699341773184523,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 12.699341773184523
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 11.436015356926168,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "fiber-optic-main-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 11.436015356926168
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 14.39451800563903,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 14.39451800563903
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 4.569756236839288,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 4.569756236839288
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 15.237415427286587,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.237415427286587
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 22.554695028373605,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 22.554695028373605
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 16.568349028465377,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 16.568349028465377
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 29.580641707412827,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.580641707412827
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 1.057751627722005,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 1.057751627722005
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 7.431487816940545,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 7.431487816940545
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 4.900654147950625,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 4.900654147950625
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 18.44911361168187,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 18.44911361168187
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 11.058618386503037,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.058618386503037
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.224556805840935,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.224556805840935
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 4.662856327084173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 4.662856327084173
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.12124425772307566,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.12124425772307566
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.9042843376688268,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.9042843376688268
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 7.889625161084096,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 7.889625161084096
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.265783932331632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 7.265783932331632
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 4.1250579963596135,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.1250579963596135
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.1635981706291139,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 1.1635981706291139
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 9.02795551997879,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 9.02795551997879
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 16.96889355692311,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 16.96889355692311
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 32.29889921634809,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.29889921634809
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 7.8398841602382054,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 7.8398841602382054
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 52.52109537915598,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 52.52109537915598
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 32.47959292928778,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 32.47959292928778
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.30378875558932,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.30378875558932
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.317891430814805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.317891430814805
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 14.371778334089623,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.371778334089623
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.71221569037337,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.71221569037337
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 25.66034272661918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.66034272661918
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 9.674455599006796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 9.674455599006796
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 9.65161395583609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 9.65161395583609
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 4.837227799503398,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 4.837227799503398
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 3.670978366720542,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-vang-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 3.670978366720542
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.023555444519790143,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.023555444519790143
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.1436780144085901,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.1436780144085901
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.9646798030712023,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.9646798030712023
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.9252599001697828,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.9252599001697828
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.5500706153477488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.5500706153477488
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.34282859080317946,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.34282859080317946
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 16.96889355692311,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 16.96889355692311
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 7.8398841602382054,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 7.8398841602382054
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 32.29889921634809,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.29889921634809
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 32.47959292928778,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 32.47959292928778
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 52.52109537915598,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 52.52109537915598
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.317891430814805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.317891430814805
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.30378875558932,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.30378875558932
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 14.371778334089623,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.371778334089623
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 25.66034272661918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.66034272661918
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.71221569037337,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.71221569037337
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.674455599006796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 9.674455599006796
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 9.65161395583609,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.65161395583609
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 4.837227799503398,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 4.837227799503398
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 3.670978366720542,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-vang-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 3.670978366720542
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.023555444519790143,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.023555444519790143
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.1436780144085901,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.1436780144085901
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.9646798030712023,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.9646798030712023
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.9252599001697828,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.9252599001697828
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.5500706153477488,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.5500706153477488
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.34282859080317946,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.34282859080317946
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "aft-winch-ps-load",
     "tack": "port",
-    "target": 3.633962668189443,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 3.633962668189443
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 26.841174101247624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 26.841174101247624
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 21.367235498360806,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 21.367235498360806
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 43.303064757078104,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 43.303064757078104
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 35.27555281365196,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 35.27555281365196
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 7.498177257269302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.498177257269302
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.707861502143953,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.707861502143953
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 20.754793940846263,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.754793940846263
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 28.84410068677887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.84410068677887
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 27.533153523374445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.533153523374445
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.11859299556933306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.11859299556933306
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 2.692866575232113,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.692866575232113
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 10.197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 10.197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.507252731564805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 7.507252731564805
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0985810648896415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.0003059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.0003059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.23157755196728752,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.23157755196728752
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 5.8509567852204505,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 5.8509567852204505
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 3.800788240632632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.800788240632632
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": -13.993871505560003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": -13.993871505560003
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "aft-winch-sb-load",
     "tack": "starboard",
-    "target": 3.633962668189443,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 3.633962668189443
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 26.841174101247624,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 26.841174101247624
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 21.367235498360806,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 21.367235498360806
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 35.27555281365196,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 35.27555281365196
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 43.303064757078104,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 43.303064757078104
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.707861502143953,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.707861502143953
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 7.498177257269302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.498177257269302
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 20.754793940846263,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.754793940846263
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 27.533153523374445,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.533153523374445
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 28.84410068677887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.84410068677887
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.11859299556933306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.11859299556933306
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.692866575232113,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.692866575232113
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 10.197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 10.197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.507252731564805,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.507252731564805
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0985810648896415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.0003059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.0003059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.23157755196728752,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.23157755196728752
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 5.8509567852204505,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.8509567852204505
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 3.800788240632632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.800788240632632
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": -13.993871505560003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
+    "target": -13.993871505560003
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "aft-winch-ps-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 24.777472429422893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 24.777472429422893
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 29.25994095843127,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 29.25994095843127
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 44.20316825827372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 44.20316825827372
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 34.09166229038458,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 34.09166229038458
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 7.498381200511898,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.498381200511898
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.708065445386549,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.708065445386549
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 20.75448802598237,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.75448802598237
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 28.84399871515757,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.84399871515757
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 27.53345943823834,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.53345943823834
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.17579907511739484,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.17579907511739484
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 3.9224403848408986,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 3.9224403848408986
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 10.197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 10.197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 6.284307077340376,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 6.284307077340376
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0985810648896415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.0003059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.0003059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.23157755196728752,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.23157755196728752
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 5.8509567852204505,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 5.8509567852204505
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 3.800788240632632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.800788240632632
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": -13.993871505560003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": -13.993871505560003
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "aft-winch-sb-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 24.777472429422893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 24.777472429422893
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 29.25994095843127,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 29.25994095843127
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 34.09166229038458,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 34.09166229038458
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 44.20316825827372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 44.20316825827372
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.708065445386549,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.708065445386549
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 7.498381200511898,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.498381200511898
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 20.75448802598237,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.75448802598237
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 27.53345943823834,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.53345943823834
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 28.84399871515757,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 28.84399871515757
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.17579907511739484,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.17579907511739484
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 3.9224403848408986,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 3.9224403848408986
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 10.197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 10.197162129779283
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 6.284307077340376,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 6.284307077340376
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0985810648896415,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.0003059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.0003059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.23157755196728752,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.23157755196728752
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 5.8509567852204505,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.8509567852204505
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 3.800788240632632,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.800788240632632
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.059148638933785,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 2.0394324259558565,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 2.0394324259558565
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": -13.993871505560003,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": -13.993871505560003
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 16.62045652694855,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 16.62045652694855
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 32.438294422662175,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.438294422662175
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.8479960027124451,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 0.8479960027124451
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 12.685065746202833,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 12.685065746202833
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 10.655524567512861,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 10.655524567512861
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 2.1989160416656044,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 2.1989160416656044
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 24.918601153299036,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.918601153299036
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 16.858764205921492,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 16.858764205921492
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.909077003869823,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.909077003869823
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 5.219825322612717,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 5.219825322612717
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 14.592342950956748,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 14.592342950956748
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 9.405658405265815,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 9.405658405265815
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 7.296171475478374,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-sheet-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.296171475478374
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.14174055360393203,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.14174055360393203
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.0581595142071962,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.0581595142071962
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 8.916908424385493,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.916908424385493
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.6977255229869528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.6977255229869528
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 17.38279636777085,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 17.38279636777085
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 10.70600052005527,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 10.70600052005527
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 16.62045652694855,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 16.62045652694855
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.8479960027124451,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.8479960027124451
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 32.438294422662175,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.438294422662175
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 12.685065746202833,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 12.685065746202833
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 2.1989160416656044,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 2.1989160416656044
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 10.655524567512861,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 10.655524567512861
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 16.858764205921492,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 16.858764205921492
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 24.918601153299036,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.918601153299036
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.909077003869823,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.909077003869823
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 5.219825322612717,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 5.219825322612717
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 14.592342950956748,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 14.592342950956748
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 9.405658405265815,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.405658405265815
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 7.296171475478374,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-sheet-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.296171475478374
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.14174055360393203,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.14174055360393203
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.0581595142071962,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.0581595142071962
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 8.916908424385493,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.916908424385493
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.6977255229869528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.6977255229869528
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 17.38279636777085,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 17.38279636777085
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 10.70600052005527,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 10.70600052005527
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 12.740844223052724,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 12.740844223052724
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 34.47782882023933,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 34.47782882023933
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 4.934304782978897,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 4.934304782978897
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.21819887525302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.21819887525302
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 23.468666670065723,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 23.468666670065723
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 15.709340090652772,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 15.709340090652772
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 29.692504575976507,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.692504575976507
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 14.02130187168911,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.02130187168911
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.21281477364849363,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.21281477364849363
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 4.319415906553206,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 4.319415906553206
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 8.441108839409992,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 8.441108839409992
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 18.75176538369372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 18.75176538369372
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 14.438365802797081,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 14.438365802797081
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 9.37588269184686,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.37588269184686
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 4.394670963070977,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 4.394670963070977
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.06342634844722714,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.06342634844722714
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.20679844799192384,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.20679844799192384
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 1.5472154099514106,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.5472154099514106
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 3.3805631892644277,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.3805631892644277
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 8.951782718869339,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.951782718869339
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.692219055436872,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.692219055436872
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 17.507303717375454,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 17.507303717375454
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 9.169186215476232,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 9.169186215476232
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 29.41932260251972,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 29.41932260251972
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 12.740844223052724,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 12.740844223052724
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 4.934304782978897,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 4.934304782978897
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 34.47782882023933,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 34.47782882023933
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 23.468666670065723,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 23.468666670065723
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.21819887525302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 68.21819887525302
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.0
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 15.709340090652772,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 15.709340090652772
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 14.02130187168911,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 14.02130187168911
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 29.692504575976507,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.692504575976507
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.21281477364849363,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.21281477364849363
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 4.319415906553206,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 4.319415906553206
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 8.441108839409992,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 8.441108839409992
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 18.75176538369372,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 18.75176538369372
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 14.438365802797081,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 14.438365802797081
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 9.37588269184686,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 9.37588269184686
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 4.394670963070977,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 4.394670963070977
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.06342634844722714,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.06342634844722714
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.20679844799192384,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.20679844799192384
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 1.5472154099514106,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 1.5472154099514106
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 3.3805631892644277,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.3805631892644277
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 8.951782718869339,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 8.951782718869339
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.692219055436872,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.692219055436872
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 17.507303717375454,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 17.507303717375454
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 9.169186215476232,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 9.169186215476232
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 29.41932260251972,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 29.41932260251972
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 13.435678850575885,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 13.435678850575885
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 31.520753774224634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 31.520753774224634
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 3.8054789352123306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.8054789352123306
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 65.75629802226041,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.75629802226041
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 22.36767907491345,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 22.36767907491345
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 12.444310748318744,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 12.444310748318744
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.56007403139706,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.56007403139706
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 15.629394339555303,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 15.629394339555303
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.21118322770772893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.21118322770772893
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 3.02009350797673,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 3.02009350797673
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 17.09085161599527,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 17.09085161599527
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 14.069432476941667,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 14.069432476941667
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 8.545425807997635,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.545425807997635
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 7.915343159998573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.915343159998573
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.11420821585352796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.11420821585352796
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.721551192303182,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.721551192303182
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 9.506244520840506,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 9.506244520840506
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 4.970300765297018,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.970300765297018
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 4.081720057308051,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.081720057308051
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 11.105219417436128,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 11.105219417436128
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 13.435678850575885,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 13.435678850575885
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 3.8054789352123306,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.8054789352123306
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 31.520753774224634,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 31.520753774224634
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 22.36767907491345,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 22.36767907491345
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 65.75629802226041,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 65.75629802226041
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 0.0
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 12.444310748318744,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "fiber-optic-mizzen-forestay",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 12.444310748318744
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 15.629394339555303,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 15.629394339555303
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.56007403139706,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.56007403139706
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.21118322770772893,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.21118322770772893
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 3.02009350797673,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 3.02009350797673
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 17.09085161599527,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 17.09085161599527
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 14.069432476941667,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 14.069432476941667
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 8.545425807997635,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.545425807997635
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 7.915343159998573,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.915343159998573
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.11420821585352796,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.11420821585352796
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.721551192303182,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.721551192303182
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 1.5295743194668925,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 1.5295743194668925
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.506244520840506,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 9.506244520840506
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 4.970300765297018,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 4.970300765297018
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 4.081720057308051,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 4.081720057308051
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 11.105219417436128,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 11.105219417436128
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 11.569088322719788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.569088322719788
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 31.582446605109798,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 31.582446605109798
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 3.546267073873341,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.546267073873341
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 67.3275787348381,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 67.3275787348381
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 21.863531379217164,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 21.863531379217164
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.76164133521641,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.76164133521641
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.171766097495067,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.171766097495067
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 16.741700784671625,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 16.741700784671625
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.26180703910102,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.26180703910102
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 24.518770426190393,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.518770426190393
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.4263433486460718,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.4263433486460718
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 3.7526576353800736,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 3.7526576353800736
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 16.543671896111313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 16.543671896111313
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 12.802842968801782,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 12.802842968801782
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 8.271835948055656,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.271835948055656
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 7.8709855047340325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.8709855047340325
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.0008157729703823426,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.0008157729703823426
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.001223659455573514,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.001223659455573514
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 3.2638587266888077,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 3.2638587266888077
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 3.376076437927325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.376076437927325
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.706495082418563,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.706495082418563
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 6.66251982073389,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 6.66251982073389
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "staysail-sheet-sb-load",
     "tack": "port",
-    "target": 7.527952970688258,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 7.527952970688258
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 11.569088322719788,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 11.569088322719788
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 3.546267073873341,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 3.546267073873341
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 31.582446605109798,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 31.582446605109798
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 21.863531379217164,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 21.863531379217164
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 67.3275787348381,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 67.3275787348381
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.171766097495067,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.171766097495067
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.76164133521641,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.76164133521641
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 16.741700784671625,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 16.741700784671625
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 24.518770426190393,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 24.518770426190393
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.26180703910102,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.26180703910102
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.4263433486460718,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.4263433486460718
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 3.7526576353800736,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 3.7526576353800736
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 16.543671896111313,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 16.543671896111313
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 12.802842968801782,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 12.802842968801782
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 8.271835948055656,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.271835948055656
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 7.8709855047340325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 7.8709855047340325
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.0008157729703823426,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.0008157729703823426
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.001223659455573514,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.001223659455573514
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 3.2638587266888077,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 3.2638587266888077
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 3.376076437927325,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.376076437927325
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.706495082418563,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.706495082418563
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 6.66251982073389,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 6.66251982073389
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "staysail-sheet-ps-load",
     "tack": "starboard",
-    "target": 7.527952970688258,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 7.527952970688258
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 12.306547087945425,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "fiber-optic-main-d1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 12.306547087945425
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 16.64401197146834,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 16.64401197146834
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 54.98462777808936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 54.98462777808936
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 33.117527392126775,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 33.117527392126775
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.395665186378631,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.395665186378631
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.324417614577863,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.324417614577863
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 15.194077488235024,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 15.194077488235024
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.565988385432334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.565988385432334
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 25.233591491487918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-deflector-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 25.233591491487918
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-preventer-load",
     "tack": "port",
-    "target": 1.9678483478048059,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 1.9678483478048059
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 23.758571989415348,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 23.758571989415348
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 7.339509414529936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 7.339509414529936
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 11.879285994707674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.879285994707674
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 2.0597247785941173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 2.0597247785941173
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 35.69006745422749,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 35.69006745422749
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.01651940265024244,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.01651940265024244
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.10064599022092152,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10064599022092152
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.1905982203865366,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.1905982203865366
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.1668969525780977,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.1668969525780977
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.1453452504168091,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.1453452504168091
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 8.560619579571005,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.560619579571005
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 12.306547087945425,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 12.306547087945425
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 16.64401197146834,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "fiber-optic-main-d1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 16.64401197146834
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 33.117527392126775,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 33.117527392126775
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 54.98462777808936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 54.98462777808936
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.324417614577863,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.324417614577863
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.395665186378631,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.395665186378631
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 15.194077488235024,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 15.194077488235024
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 25.233591491487918,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.233591491487918
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.565988385432334,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-deflector-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 27.565988385432334
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-preventer-load",
     "tack": "starboard",
-    "target": 1.9678483478048059,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 1.9678483478048059
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 23.758571989415348,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 23.758571989415348
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 7.339509414529936,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 7.339509414529936
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 11.879285994707674,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 11.879285994707674
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 2.0597247785941173,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 2.0597247785941173
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 35.69006745422749,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 35.69006745422749
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.01651940265024244,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.01651940265024244
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.10064599022092152,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
+    "target": 0.10064599022092152
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-preventer-load",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.0
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.1905982203865366,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.1905982203865366
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.1668969525780977,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.1668969525780977
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.1453452504168091,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.1453452504168091
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 1.0197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 1.0197162129779282
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 8.560619579571005,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.560619579571005
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 15.01226208746106,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 15.01226208746106
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 32.16806962622302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.16806962622302
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 8.204738621241708,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 8.204738621241708
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 55.182860609892266,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 55.182860609892266
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 34.15784187260685,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 34.15784187260685
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 9.302259181269852,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.302259181269852
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 7.316361856495337,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.316361856495337
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 14.373205936787793,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.373205936787793
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 27.71160386064558,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.71160386064558
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 25.6596289252701,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.6596289252701
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 1.2611850122111017,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 1.2611850122111017
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 7.093247949095767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 7.093247949095767
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 17.616617295406687,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 17.616617295406687
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 10.568032916439355,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 10.568032916439355
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 8.808308647703344,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.808308647703344
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 5.219723350991419,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 5.219723350991419
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.02345347289849235,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.02345347289849235
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 0.1432701279233989,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 0.1432701279233989
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 2.9640947073926798,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.9640947073926798
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 2.9251579285484848,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.9251579285484848
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 1.5497647004838553,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.5497647004838553
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.3427266191818817,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.3427266191818817
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 8.113779935044077,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "target": 8.113779935044077
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 15.01226208746106,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 15.01226208746106
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 8.204738621241708,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 8.204738621241708
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 32.16806962622302,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 32.16806962622302
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 34.15784187260685,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 34.15784187260685
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 55.182860609892266,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 55.182860609892266
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 7.316361856495337,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 7.316361856495337
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 9.302259181269852,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 9.302259181269852
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 14.373205936787793,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 14.373205936787793
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 25.6596289252701,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 25.6596289252701
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 27.71160386064558,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 27.71160386064558
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 1.2611850122111017,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 1.2611850122111017
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 7.093247949095767,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 7.093247949095767
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 2.5492905324448207,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 2.5492905324448207
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 17.616617295406687,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 17.616617295406687
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 10.568032916439355,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 10.568032916439355
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 8.808308647703344,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 8.808308647703344
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 5.219723350991419,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 5.219723350991419
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.02345347289849235,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.02345347289849235
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.1432701279233989,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 0.1432701279233989
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 2.9640947073926798,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 2.9640947073926798
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 2.9251579285484848,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 2.9251579285484848
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 1.5497647004838553,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 1.5497647004838553
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.3427266191818817,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.3427266191818817
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 8.113779935044077,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 8.113779935044077
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 19.73619941570261,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-tweaker-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 19.73619941570261
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 5.62159351052602,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "code-zero-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 5.62159351052602
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 27.810312390061846,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 27.810312390061846
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "port",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "fiber-optic-main-v1-ps",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 0.0
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "port",
-    "target": 6.612247811434078,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 6.612247811434078
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 8.730912187138319,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 8.730912187138319
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "port",
-    "target": 5.433047982746402,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.433047982746402
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 20.85656161890146,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.85656161890146
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 29.543626008881727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.543626008881727
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "port",
-    "target": 26.65150688563373,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 26.65150688563373
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.07087027680196602,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
+    "target": 0.07087027680196602
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 0.804250177175692,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 0.804250177175692
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 15.292378131166096,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "target": 15.292378131166096
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
-    "target": 20.015805601301157,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 20.015805601301157
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 19.175049583700858,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 19.175049583700858
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
-    "target": 10.007902800650578,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-sheet-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 10.007902800650578
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-vang-load",
     "tack": "port",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "port",
-    "target": 0.37902851636389595,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
+    "target": 0.37902851636389595
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.1580254215251897,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-checkstay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "target": 2.1580254215251897
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 7.635693636605528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-block-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 7.635693636605528
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 5.764761666828122,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-stay-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 5.764761666828122
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 3.992290945429887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.992290945429887
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 0.9697501185420098,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.9697501185420098
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-vang-load",
     "tack": "port",
-    "target": -10.430983057415121,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "primary-winch-ps-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "target": -10.430983057415121
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "port",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "aft-winch-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "aft-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 28.0,
-    "alarm_high": 31.0
+    "target": 0.10197162129779283
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 19.73619941570261,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-sheet-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "target": 19.73619941570261
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 5.62159351052602,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "blade-tweaker-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "code-zero-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 22.0,
-    "alarm_high": 24.0
+    "target": 5.62159351052602
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
-    "target": 0.0,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 0.0
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 27.810312390061846,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "target": 27.810312390061846
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "starboard",
-    "target": 6.612247811434078,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "fiber-optic-main-v1-sb",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 70.0,
-    "alarm_high": 77.5
+    "target": 6.612247811434078
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "starboard",
-    "target": 5.433047982746402,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 5.433047982746402
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 8.730912187138319,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.5,
-    "alarm_high": 22.8
+    "target": 8.730912187138319
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 20.85656161890146,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "target": 20.85656161890146
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "starboard",
-    "target": 26.65150688563373,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 26.65150688563373
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 29.543626008881727,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "target": 29.543626008881727
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.07087027680196602,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 4.25,
-    "alarm_high": 5.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "target": 0.07087027680196602
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 0.804250177175692,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.5,
-    "alarm_high": 3.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-headstay-combined-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "target": 0.804250177175692
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 15.292378131166096,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 14.75
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
+    "target": 15.292378131166096
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
-    "target": 20.015805601301157,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 26.0,
-    "alarm_high": 28.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
+    "target": 20.015805601301157
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 19.175049583700858,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 23.0,
-    "alarm_high": 26.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
+    "target": 19.175049583700858
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 10.007902800650578,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-sheet-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "target": 10.007902800650578
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-vang-load",
     "tack": "starboard",
-    "target": 0.010197162129779282,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 40.0,
-    "alarm_high": 45.75
+    "target": 0.010197162129779282
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-checkstay-deflector-load",
     "tack": "starboard",
-    "target": 0.37902851636389595,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 0.55,
-    "alarm_high": 0.75
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-checkstay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "target": 0.37902851636389595
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.1580254215251897,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-cunningham-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 3.0,
-    "alarm_high": 4.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-halyard-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 2.0,
-    "alarm_high": 2.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-headsail-tack-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 13.0,
-    "alarm_high": 14.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-outhaul-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-preventer-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-block-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "target": 2.1580254215251897
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 7.635693636605528,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.563,
-    "alarm_high": 10.519
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-stay-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
+    "target": 7.635693636605528
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 5.764761666828122,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 9.0,
-    "alarm_high": 11.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 5.764761666828122
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 3.992290945429887,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "target": 3.992290945429887
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 0.9697501185420098,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "target": 0.9697501185420098
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-vang-load",
     "tack": "starboard",
-    "target": -10.430983057415121,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 25.0
+    "target": -10.430983057415121
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 0.10197162129779283,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "primary-winch-sb-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": null,
-    "alarm_high": null
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "staysail-stay-adjuster-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "storm-jib-tack-load",
-    "tack": "starboard",
-    "target": null,
-    "alarm_low": null,
-    "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 27.0
+    "target": 0.10197162129779283
   }
 ]$$::jsonb) AS t(
         load_case_id TEXT,
         variable_id TEXT,
         tack TEXT,
-        target NUMERIC,
-        alarm_low NUMERIC,
-        warning_low NUMERIC,
-        warning_high NUMERIC,
-        alarm_high NUMERIC
+        target NUMERIC
     )
 )
-INSERT INTO loads.reference_values (
-    load_case_id,
-    variable_id,
-    tack,
-    alarm_low,
-    warning_low,
-    target,
-    warning_high,
-    alarm_high
-)
+INSERT INTO loads.reference_values (load_case_id, variable_id, tack, target)
 SELECT
     payload.load_case_id,
     payload.variable_id,
     payload.tack,
-    payload.alarm_low,
-    payload.warning_low,
-    payload.target,
-    payload.warning_high,
-    payload.alarm_high
+    payload.target
 FROM reference_payload AS payload
 JOIN upsert_load_cases AS load_case
     ON load_case.id = payload.load_case_id
 ON CONFLICT (load_case_id, tack, variable_id) DO UPDATE
-SET
-    alarm_low = EXCLUDED.alarm_low,
-    warning_low = EXCLUDED.warning_low,
-    target = EXCLUDED.target,
-    warning_high = EXCLUDED.warning_high,
-    alarm_high = EXCLUDED.alarm_high;
+SET target = EXCLUDED.target;
+
+INSERT INTO loads.max_thresholds (variable_id, warning_high, alarm_high)
+SELECT variable_id, warning_high, alarm_high
+FROM jsonb_to_recordset($$[
+  {
+    "variable_id": "aft-winch-ps-load",
+    "warning_high": 7.0,
+    "alarm_high": 9.0
+  },
+  {
+    "variable_id": "aft-winch-sb-load",
+    "warning_high": 7.0,
+    "alarm_high": 9.0
+  },
+  {
+    "variable_id": "blade-adjuster-load",
+    "warning_high": 28.0,
+    "alarm_high": 31.0
+  },
+  {
+    "variable_id": "blade-cunningham-load",
+    "warning_high": 20.0,
+    "alarm_high": 22.0
+  },
+  {
+    "variable_id": "blade-sheet-ps-load",
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "variable_id": "blade-sheet-sb-load",
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "variable_id": "blade-tweaker-ps-load",
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "variable_id": "blade-tweaker-sb-load",
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "variable_id": "code-zero-tack-load",
+    "warning_high": 22.0,
+    "alarm_high": 24.0
+  },
+  {
+    "variable_id": "fiber-optic-main-d1-ps",
+    "warning_high": 35.0,
+    "alarm_high": 39.0
+  },
+  {
+    "variable_id": "fiber-optic-main-d1-sb",
+    "warning_high": 35.0,
+    "alarm_high": 39.0
+  },
+  {
+    "variable_id": "fiber-optic-main-v1-ps",
+    "warning_high": 70.0,
+    "alarm_high": 77.5
+  },
+  {
+    "variable_id": "fiber-optic-main-v1-sb",
+    "warning_high": 70.0,
+    "alarm_high": 77.5
+  },
+  {
+    "variable_id": "fiber-optic-mizzen-d1-ps",
+    "warning_high": 20.5,
+    "alarm_high": 22.8
+  },
+  {
+    "variable_id": "fiber-optic-mizzen-d1-sb",
+    "warning_high": 20.5,
+    "alarm_high": 22.8
+  },
+  {
+    "variable_id": "fiber-optic-mizzen-forestay",
+    "warning_high": 25.0,
+    "alarm_high": 28.0
+  },
+  {
+    "variable_id": "fiber-optic-mizzen-v1-ps",
+    "warning_high": 38.0,
+    "alarm_high": 43.0
+  },
+  {
+    "variable_id": "fiber-optic-mizzen-v1-sb",
+    "warning_high": 38.0,
+    "alarm_high": 43.0
+  },
+  {
+    "variable_id": "main-checkstay-deflector-load",
+    "warning_high": 4.25,
+    "alarm_high": 5.0
+  },
+  {
+    "variable_id": "main-checkstay-ps-load",
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "variable_id": "main-checkstay-sb-load",
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "variable_id": "main-cunningham-load",
+    "warning_high": 5.0,
+    "alarm_high": 5.5
+  },
+  {
+    "variable_id": "main-halyard-load",
+    "warning_high": 2.5,
+    "alarm_high": 3.0
+  },
+  {
+    "variable_id": "main-headstay-combined-load",
+    "warning_high": 47.5,
+    "alarm_high": 52.6
+  },
+  {
+    "variable_id": "main-preventer-load",
+    "warning_high": 11.0,
+    "alarm_high": 14.75
+  },
+  {
+    "variable_id": "main-runner-block-ps-load",
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "variable_id": "main-runner-block-sb-load",
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "variable_id": "main-runner-stay-ps-load",
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "variable_id": "main-runner-stay-sb-load",
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "variable_id": "main-runner-tail-ps-load",
+    "warning_high": 13.0,
+    "alarm_high": 14.0
+  },
+  {
+    "variable_id": "main-runner-tail-sb-load",
+    "warning_high": 13.0,
+    "alarm_high": 14.0
+  },
+  {
+    "variable_id": "main-sheet-load",
+    "warning_high": 11.0,
+    "alarm_high": 12.0
+  },
+  {
+    "variable_id": "main-vang-load",
+    "warning_high": 40.0,
+    "alarm_high": 45.75
+  },
+  {
+    "variable_id": "mizzen-checkstay-deflector-load",
+    "warning_high": 0.55,
+    "alarm_high": 0.75
+  },
+  {
+    "variable_id": "mizzen-checkstay-ps-load",
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "variable_id": "mizzen-checkstay-sb-load",
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "variable_id": "mizzen-cunningham-load",
+    "warning_high": 3.0,
+    "alarm_high": 4.0
+  },
+  {
+    "variable_id": "mizzen-halyard-load",
+    "warning_high": 2.0,
+    "alarm_high": 2.5
+  },
+  {
+    "variable_id": "mizzen-headsail-tack-adjuster-load",
+    "warning_high": 13.0,
+    "alarm_high": 14.5
+  },
+  {
+    "variable_id": "mizzen-preventer-load",
+    "warning_high": 8.0,
+    "alarm_high": 9.0
+  },
+  {
+    "variable_id": "mizzen-runner-block-ps-load",
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "variable_id": "mizzen-runner-block-sb-load",
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "variable_id": "mizzen-runner-tail-ps-load",
+    "warning_high": 5.0,
+    "alarm_high": 5.5
+  },
+  {
+    "variable_id": "mizzen-runner-tail-sb-load",
+    "warning_high": 5.0,
+    "alarm_high": 5.5
+  },
+  {
+    "variable_id": "mizzen-sheet-load",
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "variable_id": "mizzen-vang-load",
+    "warning_high": 20.0,
+    "alarm_high": 25.0
+  },
+  {
+    "variable_id": "primary-winch-ps-load",
+    "warning_high": 11.5,
+    "alarm_high": 12.5
+  },
+  {
+    "variable_id": "primary-winch-sb-load",
+    "warning_high": 11.5,
+    "alarm_high": 12.5
+  },
+  {
+    "variable_id": "staysail-stay-adjuster-load",
+    "warning_high": 30.0,
+    "alarm_high": 33.0
+  },
+  {
+    "variable_id": "storm-jib-tack-load",
+    "warning_high": 25.0,
+    "alarm_high": 27.0
+  }
+]$$::jsonb) AS t(
+    variable_id TEXT,
+    warning_high NUMERIC,
+    alarm_high NUMERIC
+);
 
 COMMIT;
