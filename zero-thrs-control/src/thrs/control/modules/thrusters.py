@@ -22,6 +22,9 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.module import ModuleDescription
 
+RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
+RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
+
 
 class ThrustersControlMode(ControlMode):
     mode: str
@@ -358,6 +361,8 @@ class ThrustersControl(
             State(
                 name="recovery",
                 on_enter=[
+                    self._set_valves_to_recovery,
+                    self._enable_warmup_mix,
                     self._enable_recovery_temperature_controllers,
                 ],
                 on_exit=[
@@ -536,13 +541,13 @@ class ThrustersControl(
     def _warmup_mix_open(self, sensor_values: ThrustersSensorValues):
         return (
             self._current_control_values.thrusters_mix_recovery.setpoint.value
-            > Valve.MIXING_B_TO_AB + 0.05
+            > RECOVERY_MIX_UPPER_BOUND
         )
 
     def _warmup_mix_closed(self, sensor_values: ThrustersSensorValues):
         return (
             self._current_control_values.thrusters_mix_recovery.setpoint.value
-            < Valve.MIXING_B_TO_AB + 0.1
+            < RECOVERY_MIX_LOWER_BOUND
         )
 
     def _set_recovery_temperature(self, sensor_values: ThrustersSensorValues):
