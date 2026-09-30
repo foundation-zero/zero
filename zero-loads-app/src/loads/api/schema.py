@@ -77,7 +77,8 @@ class ReferenceValues(Base):
     load_case_id = Column(
         String, ForeignKey("load_cases.id"), nullable=False, index=True
     )
-    variable_key = Column(String, nullable=False)
+    variable_id = Column(String, nullable=False)
+    tack = Column(String, nullable=False)
     alarm_low = Column(Float, nullable=True)
     warning_low = Column(Float, nullable=True)
     target = Column(Float, nullable=True)

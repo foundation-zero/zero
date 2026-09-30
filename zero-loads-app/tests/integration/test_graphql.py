@@ -228,6 +228,38 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
 
 
 @pytest.mark.asyncio
+async def test_graphql_load_case_reference_values_per_tack(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                loadCase(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    port: referenceValues(tack: port) {
+                        id
+                    }
+                    starboard: referenceValues(tack: starboard) {
+                        id
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    load_case = response.json()["data"]["loadCase"]
+    assert sorted(value["id"] for value in load_case["port"]) == [
+        "main-runner-tail-ps-load",
+        "main-sheet-load",
+    ]
+    assert sorted(value["id"] for value in load_case["starboard"]) == [
+        "main-runner-tail-sb-load",
+        "main-sheet-load",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_graphql_set_reference_values(async_client: AsyncClient):
     insert = await async_client.post(
         "/graphql",
@@ -238,6 +270,7 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     awaRanges: [upwind, reaching]
                     awsRanges: [aws_0_10, aws_10_15]
                     referenceValue: {id: "blade-adjuster-load", target: 100}
+                    tack: starboard
                     sailSet: ["full-main", "full-mizzen"]
                 )
             }
@@ -260,6 +293,9 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, tack: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
+                    upwind_port: reference(case: {awaRange: upwind, awsRange: aws_0_10, tack: port, sailset: ["full-main", "full-mizzen"]}) {
+                        target
+                    }
                 }
             }
             """
@@ -274,6 +310,7 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     "id": "blade-adjuster-load",
                     "reaching": {"target": 100.0},
                     "upwind": {"target": 100.0},
+                    "upwind_port": None,
                 }
             ]
         }

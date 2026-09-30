@@ -48,20 +48,12 @@ async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
 @pytest.mark.asyncio
 async def test_reference_values_variable_ids_in_registry(sessionmanager):
     async with sessionmanager.session() as session:
-        query = select(ReferenceValues.variable_key).distinct()
+        query = select(ReferenceValues.variable_id).distinct()
         result = await session.execute(query)
 
-        db_variable_keys = set(result.scalars().all())
-
-        registry_variable_keys = set(
-            [
-                var.applicability.variable_key if var.applicability else var.id
-                for var in VARIABLES.values()
-            ]
-        )
-        missing_variables = db_variable_keys - registry_variable_keys
+        missing_variables = set(result.scalars().all()) - VARIABLES.keys()
         assert not missing_variables, (
-            f"The following variable_keys from reference_values are not in VARIABLES registry: {missing_variables}"
+            f"The following variable_ids from reference_values are not in VARIABLES registry: {missing_variables}"
         )
 
 
@@ -80,7 +72,7 @@ async def test_reference_values_include_fixture_sentinel(
                 FROM loads.reference_values reference_values
                 JOIN loads.load_case_mappings load_case_mappings ON load_case_mappings.load_case_id = reference_values.load_case_id
                 JOIN loads.aws_ranges aws_ranges ON aws_ranges.id = load_case_mappings.aws_range_id
-                WHERE reference_values.variable_key = 'main-sheet-load'
+                WHERE reference_values.variable_id = 'main-sheet-load'
                   AND load_case_mappings.awa_range_id = 'reaching'
                   AND aws_ranges.aws_range = '[30,40)'::numrange
                 LIMIT 1

@@ -152,7 +152,8 @@ class LoadCaseMappingFactory(DictFactory):
 
 class ReferenceValueFactory(DictFactory):
     load_case_id = LazyFunction(lambda: str(uuid4()))
-    variable_key = "main-sheet-load"
+    variable_id = "main-sheet-load"
+    tack = "port"
     alarm_low = None
     warning_low = None
     target = 9.6
@@ -229,7 +230,8 @@ class ScenarioFactory:
         self,
         *,
         load_case_id: str,
-        variable_key: str,
+        variable_id: str,
+        tack: str,
         alarm_low: float | None = None,
         warning_low: float | None = None,
         target: float | None = None,
@@ -238,7 +240,8 @@ class ScenarioFactory:
     ) -> None:
         payload = ReferenceValueFactory.build(
             load_case_id=load_case_id,
-            variable_key=variable_key,
+            variable_id=variable_id,
+            tack=tack,
             alarm_low=alarm_low,
             warning_low=warning_low,
             target=target,
@@ -279,16 +282,27 @@ class ScenarioFactory:
             awa_range_id="upwind",
             aws_range="[20,25)",
         )
+        for tack in ("port", "starboard"):
+            await self.create_reference_value(
+                load_case_id=load_case_id,
+                variable_id="main-sheet-load",
+                tack=tack,
+                target=9.6,
+                warning_high=13.5,
+                alarm_high=15.0,
+            )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-sheet-load",
-            target=9.6,
-            warning_high=13.5,
-            alarm_high=15.0,
+            variable_id="main-runner-tail-ps-load",
+            tack="port",
+            target=17.3,
+            warning_high=23.76,
+            alarm_high=26.4,
         )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-runner-load",
+            variable_id="main-runner-tail-sb-load",
+            tack="starboard",
             target=17.3,
             warning_high=23.76,
             alarm_high=26.4,
@@ -340,7 +354,8 @@ class ScenarioFactory:
         )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-sheet-load",
+            variable_id="main-sheet-load",
+            tack="port",
             target=target,
         )
 

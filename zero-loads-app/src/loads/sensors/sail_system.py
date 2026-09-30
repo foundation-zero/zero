@@ -133,8 +133,6 @@ class PrimaryWinchPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Primary PT",
-            applies_to_tack="port",
-            variable_key="primary-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -148,8 +146,6 @@ class PrimaryWinchSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Primary SB",
-            applies_to_tack="starboard",
-            variable_key="primary-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -163,8 +159,6 @@ class AftWinchPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Aft Winch PT",
-            applies_to_tack="port",
-            variable_key="aft-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -178,8 +172,6 @@ class AftWinchSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Aft Winch SB",
-            applies_to_tack="starboard",
-            variable_key="aft-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -237,8 +229,6 @@ class BladeSheetFeederPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet PT",
-            applies_to_tack="port",
-            variable_key="blade-sheet-feeder-load",
             technical_name="blade-sheet-ps-load",
         ),
     ]
@@ -253,8 +243,6 @@ class BladeSheetFeederSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet SB",
-            applies_to_tack="starboard",
-            variable_key="blade-sheet-feeder-load",
             technical_name="blade-sheet-sb-load",
         ),
     ]
@@ -269,8 +257,6 @@ class BladeTweakerPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Tweaker PT",
-            applies_to_tack="port",
-            variable_key="blade-tweaker-load",
         ),
     ]
     load_failure: LoadFailure
@@ -282,8 +268,6 @@ class BladeTweakerPs(LoadsModel, ABC):
             display_name="Tweaker PT",
             scale_min_label="out",
             scale_max_label="in",
-            applies_to_tack="port",
-            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -298,8 +282,6 @@ class BladeTweakerSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Tweaker SB",
-            applies_to_tack="starboard",
-            variable_key="blade-tweaker-load",
         ),
     ]
     load_failure: LoadFailure
@@ -311,8 +293,6 @@ class BladeTweakerSb(LoadsModel, ABC):
             display_name="Tweaker SB",
             scale_min_label="out",
             scale_max_label="in",
-            applies_to_tack="starboard",
-            variable_key="blade-tweaker-relative-position",
         ),
     ]
     max_position_alarm: MaxPositionAlarm
@@ -641,8 +621,6 @@ class MainCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
-            applies_to_tack="port",
-            variable_key="main-checkstay-load",
         ),
     ]
     load_ps_failure: Annotated[
@@ -687,8 +665,6 @@ class MainCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
-            applies_to_tack="starboard",
-            variable_key="main-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -792,8 +768,6 @@ class MainRunnerPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Runner PT",
-            applies_to_tack="port",
-            variable_key="main-runner-load",
             technical_name="main-runner-tail-ps-load",
         ),
     ]
@@ -826,8 +800,6 @@ class MainRunnerSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Runner SB",
-            applies_to_tack="starboard",
-            variable_key="main-runner-load",
             technical_name="main-runner-tail-sb-load",
         ),
     ]
@@ -1001,8 +973,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
-            applies_to_tack="port",
-            variable_key="mizzen-checkstay-load",
         ),
     ]
     load_ps_failure: Annotated[
@@ -1047,8 +1017,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
-            applies_to_tack="starboard",
-            variable_key="mizzen-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -1173,8 +1141,6 @@ class MizzenRunnerPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Runner PT",
-            applies_to_tack="port",
-            variable_key="mizzen-runner-load",
             technical_name="mizzen-runner-tail-ps-load",
         ),
     ]
@@ -1207,8 +1173,6 @@ class MizzenRunnerSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Runner SB",
-            applies_to_tack="starboard",
-            variable_key="mizzen-runner-load",
             technical_name="mizzen-runner-tail-sb-load",
         ),
     ]
@@ -1279,8 +1243,6 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet PT",
-            applies_to_tack="port",
-            variable_key="staysail-sheet-feeder-load",
             technical_name="staysail-sheet-ps-load",
         ),
     ]
@@ -1295,8 +1257,6 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet SB",
-            applies_to_tack="starboard",
-            variable_key="staysail-sheet-feeder-load",
             technical_name="staysail-sheet-sb-load",
         ),
     ]

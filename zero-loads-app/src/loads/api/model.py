@@ -1,6 +1,6 @@
 import logging
 from collections import defaultdict
-from typing import Literal, Sequence
+from typing import Sequence
 
 from sqlalchemy import Column, Subquery, cast, literal, or_, select, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT, insert
@@ -10,7 +10,6 @@ from sqlalchemy.sql.selectable import ScalarSelect
 from strawberry import ID
 
 from loads.registry import ALARMS, VARIABLES, AlarmDefinition, VariableDefinition
-from loads.registry.registry import Applicability
 
 from .schema import (
     AwaRanges,
@@ -33,6 +32,7 @@ from .types import (
     ReferenceValue,
     ReferenceValueInput,
     SailType,
+    Tack,
     Unit,
     VariableType,
 )
@@ -41,16 +41,17 @@ logger = logging.getLogger("api")
 
 
 async def get_loads_reference_values(
-    variable_keys: list[str],
+    variable_ids: list[str],
     case: CaseInput,
     session: AsyncSession,
 ) -> list[ReferenceValue]:
-    """Return all reference values that match the current sails and conditions."""
+    """Return all reference values that match the current sails, conditions and tack."""
 
     mapping_lookup = create_load_case_mapping_subq(case)
 
     query = select(ReferenceValues).where(
-        ReferenceValues.variable_key.in_(variable_keys),
+        ReferenceValues.variable_id.in_(variable_ids),
+        ReferenceValues.tack == case.tack.value,
         ReferenceValues.load_case_id == mapping_lookup.scalar_subquery(),
     )
 
@@ -60,7 +61,7 @@ async def get_loads_reference_values(
     if reference_values:
         return [
             ReferenceValue(
-                id=ref_value.variable_key,  # type: ignore
+                id=ref_value.variable_id,  # type: ignore
                 alarm_low=ref_value.alarm_low,  # type: ignore
                 warning_low=ref_value.warning_low,  # type: ignore
                 target=ref_value.target,  # type: ignore
@@ -124,16 +125,17 @@ async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
 
 
 async def get_reference_values_by_case_ids(
-    load_case_ids: Sequence[str], session: AsyncSession
+    load_case_ids: Sequence[str], tack: Tack, session: AsyncSession
 ) -> dict[str, list[ReferenceValue]]:
-    """Return all reference values grouped by load-case id."""
+    """Return all reference values for a tack grouped by load-case id."""
 
     if not load_case_ids:
         return {}
 
     load_case_id_col = cast(ReferenceValues.load_case_id, TEXT)
     query = select(load_case_id_col.label("load_case_id"), ReferenceValues).where(
-        load_case_id_col.in_([str(load_case_id) for load_case_id in load_case_ids])
+        load_case_id_col.in_([str(load_case_id) for load_case_id in load_case_ids]),
+        ReferenceValues.tack == tack.value,
     )
 
     result = await session.execute(query)
@@ -142,7 +144,7 @@ async def get_reference_values_by_case_ids(
     for load_case_id, ref_value in result.all():
         grouped[str(load_case_id)].append(
             ReferenceValue(
-                id=ref_value.variable_key,  # type: ignore
+                id=ref_value.variable_id,  # type: ignore
                 alarm_low=ref_value.alarm_low,  # type: ignore
                 warning_low=ref_value.warning_low,  # type: ignore
                 target=ref_value.target,  # type: ignore
@@ -191,6 +193,7 @@ async def get_sails_by_case_ids(
 
 async def set_loads_reference_values(
     reference_value: ReferenceValueInput,
+    tack: Tack,
     sail_set: Sequence[str],
     awa_ranges: list[AwaRange],
     aws_ranges: list[AwsRange],
@@ -203,7 +206,8 @@ async def set_loads_reference_values(
     insert_statement = insert(ReferenceValues).from_select(
         [
             ReferenceValues.load_case_id,
-            ReferenceValues.variable_key,
+            ReferenceValues.variable_id,
+            ReferenceValues.tack,
             ReferenceValues.alarm_low,
             ReferenceValues.warning_low,
             ReferenceValues.target,
@@ -213,6 +217,7 @@ async def set_loads_reference_values(
         select(
             load_case_subquery.c.id,
             literal(reference_value.id),
+            literal(tack.value),
             literal(reference_value.alarm_low),
             literal(reference_value.warning_low),
             literal(reference_value.target),
@@ -224,7 +229,8 @@ async def set_loads_reference_values(
     statement = insert_statement.on_conflict_do_update(
         index_elements=[
             ReferenceValues.load_case_id,
-            ReferenceValues.variable_key,
+            ReferenceValues.tack,
+            ReferenceValues.variable_id,
         ],
         set_={
             "alarm_low": insert_statement.excluded.alarm_low,
@@ -259,22 +265,6 @@ def get_variables(ids: Sequence[str]) -> list[VariableType]:
     else:
         logger.info(f"No variables found for ids: {ids}")
         return []
-
-
-def resolve_variable_keys(
-    variables: Sequence[VariableDefinition],
-    tack: Literal["port", "starboard"],
-) -> list[str | None]:
-    def _apply_applicability(variable: VariableDefinition):
-        match variable.applicability:
-            case None:
-                return variable.id
-            case Applicability(key, applies_to_tack) if applies_to_tack == tack:
-                return key
-            case _:
-                return None
-
-    return [_apply_applicability(var) for var in variables]
 
 
 async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:
