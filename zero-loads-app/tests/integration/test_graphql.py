@@ -188,7 +188,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                         },
                         "variable": {
                             "id": "main-runner-tail-sb-load",
-                            "name": "Runner SB",
+                            "name": "Runner Tail SB",
                             "unit": "tonne",
                             "scaleMin": None,
                             "scaleMax": None,
@@ -214,7 +214,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                         },
                         "variable": {
                             "id": "main-runner-tail-ps-load",
-                            "name": "Runner PT",
+                            "name": "Runner Tail PT",
                             "unit": "tonne",
                             "scaleMin": None,
                             "scaleMax": None,
