@@ -884,8 +884,8 @@
     "list": [
       {
         "current": {
-          "text": "grafana-postgresql-datasource",
-          "value": "bf3zesenwtce8e"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -965,8 +965,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "32.9",
-          "value": "32.9"
+          "text": "20",
+          "value": "20"
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
