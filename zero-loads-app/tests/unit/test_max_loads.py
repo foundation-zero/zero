@@ -92,3 +92,32 @@ def test_apply_max_loads_drops_targets_above_thresholds():
             ("primary-winch-ps-load", "LC2", "starboard", None, 11.5, 12.5),
         ]
     ]
+
+
+def test_apply_max_loads_adds_thresholds_to_tacks_without_a_target():
+    reference_values = pl.DataFrame(
+        {
+            "Calculation ID": ["LC1", "LC1"],
+            "variable": ["primary-winch-sb-load", "primary-winch-ps-load"],
+            "value": [9.0, 9.0],
+            "tack": ["port", "starboard"],
+        }
+    )
+    max_loads = pl.DataFrame(
+        {
+            "variable": ["primary-winch-ps-load", "primary-winch-sb-load"],
+            "warning_high": [11.5, 11.5],
+            "alarm_high": [12.5, 12.5],
+        }
+    )
+
+    reference_values_with_thresholds, _ = apply_max_loads(reference_values, max_loads)
+
+    assert reference_values_with_thresholds.sort("variable", "tack").select(
+        "variable", "tack", "value", "alarm_high"
+    ).rows() == [
+        ("primary-winch-ps-load", "port", None, 12.5),
+        ("primary-winch-ps-load", "starboard", 9.0, 12.5),
+        ("primary-winch-sb-load", "port", 9.0, 12.5),
+        ("primary-winch-sb-load", "starboard", None, 12.5),
+    ]

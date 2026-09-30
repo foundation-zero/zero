@@ -453,6 +453,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 0.10197162129779283,
@@ -460,6 +470,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -593,6 +613,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 2.5492905324448207,
@@ -644,6 +674,16 @@ reference_payload AS (
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-runner-stay-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-stay-sb-load",
     "tack": "port",
     "target": null,
     "alarm_low": null,
@@ -713,6 +753,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 2.0394324259558565,
@@ -766,6 +816,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 4.200822910983873,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -913,9 +973,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 0.056186363335083846,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -1033,6 +1113,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 2.9154706245251947,
@@ -1090,6 +1180,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1153,6 +1253,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -1210,6 +1320,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1353,6 +1473,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 9.803041813463313,
@@ -1360,6 +1490,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1493,6 +1633,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 2.5492905324448207,
@@ -1546,6 +1696,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 18.071410726394845,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -1613,6 +1773,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 1.5295743194668925,
@@ -1666,6 +1836,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 1.1410624423223017,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -1813,9 +1993,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 4.459422942595076,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -1933,6 +2133,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9693422320568186,
@@ -1990,6 +2200,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -2053,6 +2273,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.299424370197774,
@@ -2110,6 +2340,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -2253,6 +2493,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -2260,6 +2510,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -2393,6 +2653,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -2446,6 +2716,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.565070640840654,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -2513,6 +2793,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -2566,6 +2856,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 7.473296181672641,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -2713,7 +3013,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -2833,6 +3153,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -2890,6 +3220,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -2953,6 +3293,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -3010,6 +3360,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -3153,6 +3513,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -3160,6 +3530,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -3293,6 +3673,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -3346,6 +3736,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 8.779756593739963,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -3413,6 +3813,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -3466,6 +3876,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.38831303248306,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -3613,7 +4033,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -3733,6 +4173,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.899287728225235,
@@ -3790,6 +4240,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -3853,6 +4313,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.12053045637399112,
@@ -3910,6 +4380,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -4053,6 +4533,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -4060,6 +4550,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
@@ -4193,6 +4693,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -4246,6 +4756,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.4710222145177,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -4313,6 +4833,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -4366,6 +4896,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.8869185705618126,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -4513,7 +5053,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -4633,6 +5193,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 5.473122829916434,
@@ -4690,6 +5260,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
@@ -4753,6 +5333,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.14469773062156802,
@@ -4810,6 +5400,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
@@ -4953,6 +5553,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -4960,6 +5570,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -5093,6 +5713,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 1.5295743194668925,
@@ -5146,6 +5776,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 22.44538145034237,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -5213,6 +5853,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 1.0197162129779282,
@@ -5266,6 +5916,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.519616790647163,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -5413,7 +6073,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -5533,6 +6213,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9939173927895867,
@@ -5590,6 +6280,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -5653,6 +6353,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9706678631336899,
@@ -5710,6 +6420,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -5853,6 +6573,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 0.10197162129779283,
@@ -5860,6 +6590,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -5993,6 +6733,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 2.0394324259558565,
@@ -6046,6 +6796,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.330173912600124,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -6113,6 +6873,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 1.5295743194668925,
@@ -6166,6 +6936,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.86418399759347,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -6313,9 +7093,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 0.04303202418766857,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -6433,6 +7233,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 2.3011935778272905,
@@ -6490,6 +7300,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -6553,6 +7373,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -6610,6 +7440,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -6753,6 +7593,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 11.231562256224093,
@@ -6760,6 +7610,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -6893,6 +7753,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 2.5492905324448207,
@@ -6946,6 +7816,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 18.779297721444124,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -7013,6 +7893,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -7066,6 +7956,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.253812463991271,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -7213,7 +8113,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -7333,6 +8253,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.2507839068387268,
@@ -7390,6 +8320,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -7453,6 +8393,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.176446594912636,
@@ -7510,6 +8460,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -7653,6 +8613,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -7660,6 +8630,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -7793,6 +8773,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 1.5295743194668925,
@@ -7846,6 +8836,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.45404393957162,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -7913,6 +8913,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 1.0197162129779282,
@@ -7966,6 +8976,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.724171862970535,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -8113,7 +9133,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -8233,6 +9273,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.0,
@@ -8290,6 +9340,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -8353,6 +9413,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9590430983057415,
@@ -8410,6 +9480,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -8553,6 +9633,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 0.10197162129779283,
@@ -8560,6 +9650,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -8693,6 +9793,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 1.7845033727113744,
@@ -8746,6 +9856,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.600679130997843,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -8813,6 +9933,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 1.0197162129779282,
@@ -8866,6 +9996,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.569797025487807,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -9013,9 +10153,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 0.04445962688583767,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -9133,6 +10293,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.0,
@@ -9190,6 +10360,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -9253,6 +10433,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.5421168288865208,
@@ -9310,6 +10500,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -9453,6 +10653,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 7.406504769722586,
@@ -9460,6 +10670,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -9593,6 +10813,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -9646,6 +10876,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 21.51866335598803,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -9713,6 +10953,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -9766,6 +11016,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 4.703339060739396,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -9913,9 +11173,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 3.4244109864224788,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -10033,6 +11313,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9055079971244003,
@@ -10090,6 +11380,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -10153,6 +11453,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.7655009610825307,
@@ -10210,6 +11520,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -10353,6 +11673,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": 0.10197162129779283,
@@ -10360,6 +11690,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
@@ -10493,6 +11833,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -10544,6 +11894,16 @@ reference_payload AS (
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-stay-sb-load",
     "tack": "port",
     "target": null,
     "alarm_low": null,
@@ -10613,6 +11973,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -10666,6 +12036,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.911605900078008,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -10813,9 +12193,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 0.07423534030479317,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -10933,6 +12333,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9303890727210617,
@@ -10990,6 +12400,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
@@ -11053,6 +12473,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.3315454309065786,
@@ -11110,6 +12540,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
@@ -11253,6 +12693,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -11260,6 +12710,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -11393,6 +12853,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -11446,6 +12916,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 12.477451525240525,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -11513,6 +12993,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -11566,6 +13056,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.524006668944033,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -11713,7 +13213,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -11833,6 +13353,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 6.302356054310086,
@@ -11890,6 +13420,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -11953,6 +13493,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.8435449414427965,
@@ -12010,6 +13560,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -12153,6 +13713,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -12160,6 +13730,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -12293,6 +13873,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": 2.5492905324448207,
@@ -12346,6 +13936,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.602188310993051,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -12413,6 +14013,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": 2.0394324259558565,
@@ -12466,6 +14076,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.371961883007959,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -12613,7 +14233,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -12733,6 +14373,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.0,
@@ -12790,6 +14440,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -12853,6 +14513,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.33925958405775675,
@@ -12910,6 +14580,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -13053,6 +14733,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -13060,6 +14750,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -13193,6 +14893,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -13246,6 +14956,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 11.058618386503037,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -13313,6 +15033,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -13366,6 +15096,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 7.265783932331632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -13513,7 +15253,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -13633,6 +15393,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 7.431487816940545,
@@ -13690,6 +15460,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -13753,6 +15533,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.9042843376688268,
@@ -13810,6 +15600,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -13953,6 +15753,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -13960,6 +15770,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -14093,6 +15913,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -14146,6 +15976,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.65161395583609,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -14213,6 +16053,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -14266,6 +16116,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.9252599001697828,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -14413,7 +16273,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -14533,6 +16413,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.0,
@@ -14590,6 +16480,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -14653,6 +16553,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.1436780144085901,
@@ -14710,6 +16620,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -14853,6 +16773,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -14860,6 +16790,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -14993,6 +16933,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -15046,6 +16996,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.507252731564805,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -15113,6 +17073,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -15166,6 +17136,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.800788240632632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -15313,7 +17293,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -15433,6 +17433,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 2.692866575232113,
@@ -15490,6 +17500,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -15553,6 +17573,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -15610,6 +17640,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -15753,6 +17793,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -15760,6 +17810,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -15893,6 +17953,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -15946,6 +18016,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 6.284307077340376,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -16013,6 +18093,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -16066,6 +18156,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.800788240632632,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -16213,7 +18313,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -16333,6 +18453,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 3.9224403848408986,
@@ -16390,6 +18520,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -16453,6 +18593,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -16510,6 +18660,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -16653,6 +18813,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -16660,6 +18830,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -16793,6 +18973,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -16846,6 +19036,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.405658405265815,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -16913,6 +19113,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -16966,6 +19176,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.916908424385493,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -17113,7 +19333,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -17233,6 +19473,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 5.219825322612717,
@@ -17290,6 +19540,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -17353,6 +19613,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.0581595142071962,
@@ -17410,6 +19680,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -17553,6 +19833,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -17560,6 +19850,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -17693,6 +19993,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -17746,6 +20056,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.438365802797081,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -17813,6 +20133,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -17866,6 +20196,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.951782718869339,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -18013,7 +20353,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -18133,6 +20493,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 4.319415906553206,
@@ -18190,6 +20560,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -18253,6 +20633,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 1.5472154099514106,
@@ -18310,6 +20700,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -18453,6 +20853,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -18460,6 +20870,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -18593,6 +21013,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -18646,6 +21076,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.069432476941667,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -18713,6 +21153,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -18764,6 +21214,16 @@ reference_payload AS (
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "port",
     "target": null,
     "alarm_low": null,
@@ -18913,7 +21373,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -19033,6 +21513,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 3.02009350797673,
@@ -19090,6 +21580,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -19153,6 +21653,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.721551192303182,
@@ -19210,6 +21720,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -19353,6 +21873,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -19360,6 +21890,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
@@ -19493,6 +22033,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -19546,6 +22096,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 12.802842968801782,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -19613,6 +22173,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -19666,6 +22236,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.376076437927325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -19813,7 +22393,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -19933,6 +22533,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 3.7526576353800736,
@@ -19990,6 +22600,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
@@ -20053,6 +22673,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.001223659455573514,
@@ -20110,6 +22740,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
@@ -20253,6 +22893,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -20260,6 +22910,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
@@ -20393,6 +23053,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -20453,6 +23123,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
     "target": null,
@@ -20506,6 +23186,16 @@ reference_payload AS (
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
     "target": 0.10064599022092152,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 2.2,
@@ -20573,6 +23263,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
     "target": null,
@@ -20713,7 +23413,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -20833,6 +23553,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": null,
@@ -20890,6 +23620,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
@@ -20953,6 +23693,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.10064599022092152,
@@ -21010,6 +23760,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
@@ -21153,6 +23913,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -21160,6 +23930,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
@@ -21293,6 +24073,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -21353,6 +24143,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-tail-ps-load",
     "tack": "port",
     "target": null,
@@ -21406,6 +24206,16 @@ reference_payload AS (
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
     "target": 0.1432701279233989,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 2.2,
@@ -21473,6 +24283,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
     "target": null,
@@ -21613,7 +24433,27 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "blade-tweaker-sb-load",
     "tack": "starboard",
     "target": null,
     "alarm_low": null,
@@ -21733,6 +24573,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 7.093247949095767,
@@ -21790,6 +24640,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
@@ -21853,6 +24713,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.1432701279233989,
@@ -21910,6 +24780,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
@@ -22053,6 +24933,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
     "target": null,
@@ -22060,6 +24950,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 12.0,
     "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
@@ -22193,6 +25093,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-cunningham-load",
     "tack": "port",
     "target": null,
@@ -22246,6 +25156,16 @@ reference_payload AS (
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.175049583700858,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 23.0,
@@ -22313,6 +25233,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-checkstay-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
     "target": null,
@@ -22366,6 +25296,16 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.764761666828122,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-stay-sb-load",
+    "tack": "port",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 9.0,
@@ -22513,9 +25453,29 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.0,
+    "alarm_high": 13.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 5.62159351052602,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.0,
+    "alarm_high": 6.5
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "starboard",
+    "target": null,
     "alarm_low": null,
     "warning_low": null,
     "warning_high": 6.0,
@@ -22633,6 +25593,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 12.5,
+    "alarm_high": 13.5
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.804250177175692,
@@ -22690,6 +25660,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 11.0,
     "alarm_high": 14.75
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 23.0,
+    "alarm_high": 26.0
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
@@ -22753,6 +25733,16 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-checkstay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 2.2,
+    "alarm_high": 2.45
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
     "target": 2.1580254215251897,
@@ -22810,6 +25800,16 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-stay-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.0,
+    "alarm_high": 11.5
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
