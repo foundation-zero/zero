@@ -112,6 +112,24 @@ class SensorsStubCmd(GeneratorSettings):
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
 
 
+LOADS_SHEET_EXPORT_URL = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid={gid}"
+SAILPACK_MAPPING_GID = 1005053580
+MAX_LOADS_GID = 321612479
+
+
+def _download_sheet_tab(gid: int, output: Path) -> None:
+    logger.info(f"Updating {output} from Google Sheets...")
+    try:
+        response = requests.get(LOADS_SHEET_EXPORT_URL.format(gid=gid))
+        response.raise_for_status()
+        output.write_bytes(response.content)
+        logger.info(f"Updated {output}")
+    except Exception as e:
+        logger.warning(
+            f"Failed to fetch gid {gid} from Google Sheets: {e}. Using existing file: {output}"
+        )
+
+
 class SeedPaths(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -122,8 +140,12 @@ class SeedPaths(BaseSettings, cli_kebab_case=True):
 
     input: Path = Path("src/sailpack/load_cases")
     sailpack_mapping: Path = Path("src/sailpack/sailpack_mapping.csv")
+    max_loads: Path = Path("src/loads/registry/max_loads.csv")
     reference_values_output: Path = Path(
         "../hasura/seeds/zero/loads_reference_values.sql"
+    )
+    target_threshold_conflicts_output: Path = Path(
+        "src/sailpack/target_threshold_conflicts.csv"
     )
     load_case_mapping_output: Path = Path(
         "../hasura/seeds/zero/loads_case_mappings.sql"
@@ -139,28 +161,28 @@ class ExportSeedCmd(SeedPaths):
             export_reference_values_seed_sql,
         )
 
-        logger.info("Updating sailpack mapping from Google Sheets...")
-        mapping_url = "https://docs.google.com/spreadsheets/d/11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw/export?format=csv&gid=1005053580"
-        try:
-            response = requests.get(mapping_url)
-            response.raise_for_status()
-            self.sailpack_mapping.write_bytes(response.content)
-            logger.info(f"Mapping updated: {self.sailpack_mapping}")
-        except Exception as e:
-            logger.warning(
-                f"Failed to fetch mapping from Google Sheets: {e}. Using existing file: {self.sailpack_mapping}"
-            )
+        _download_sheet_tab(SAILPACK_MAPPING_GID, self.sailpack_mapping)
+        _download_sheet_tab(MAX_LOADS_GID, self.max_loads)
 
         logger.info("Exporting sailpack seed SQL...")
-        load_case_count, reference_count = export_reference_values_seed_sql(
-            input_source=self.input,
-            mapping_path=self.sailpack_mapping,
-            output_sql=self.reference_values_output,
+        load_case_count, reference_count, conflict_count = (
+            export_reference_values_seed_sql(
+                input_source=self.input,
+                mapping_path=self.sailpack_mapping,
+                max_loads_path=self.max_loads,
+                output_sql=self.reference_values_output,
+                conflicts_output=self.target_threshold_conflicts_output,
+            )
         )
         logger.info(
             f"Generated {self.reference_values_output} with {load_case_count} load cases and "
             f"{reference_count} reference values."
         )
+        if conflict_count:
+            logger.warning(
+                f"Dropped {conflict_count} targets above their warning or alarm threshold, "
+                f"see {self.target_threshold_conflicts_output}."
+            )
 
         load_case_mapping_count, _ = export_load_case_mapping_seed_sql(
             input_source=self.input, output_sql=self.load_case_mapping_output
@@ -183,11 +205,16 @@ class CheckSeedCmd(SeedPaths):
             temp_path = Path(temp_dir)
             generated_reference_values = temp_path / self.reference_values_output.name
             generated_case_mappings = temp_path / self.load_case_mapping_output.name
+            generated_conflicts = (
+                temp_path / self.target_threshold_conflicts_output.name
+            )
 
             export_reference_values_seed_sql(
                 input_source=self.input,
                 mapping_path=self.sailpack_mapping,
+                max_loads_path=self.max_loads,
                 output_sql=generated_reference_values,
+                conflicts_output=generated_conflicts,
             )
             export_load_case_mapping_seed_sql(
                 input_source=self.input, output_sql=generated_case_mappings
@@ -198,6 +225,7 @@ class CheckSeedCmd(SeedPaths):
                 for committed, generated in (
                     (self.reference_values_output, generated_reference_values),
                     (self.load_case_mapping_output, generated_case_mappings),
+                    (self.target_threshold_conflicts_output, generated_conflicts),
                 )
                 if committed.read_bytes() != generated.read_bytes()
             ]

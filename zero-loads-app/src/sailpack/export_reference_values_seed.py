@@ -4,6 +4,7 @@ from typing import Any
 
 import polars as pl
 
+from sailpack.max_loads import apply_max_loads, read_max_loads, write_conflicts
 from sailpack.parse import parse_directory
 from sailpack.seed_utils import (
     build_load_case_records,
@@ -13,14 +14,8 @@ from sailpack.seed_utils import (
     resolve_sail_set_id_sql,
 )
 
-NEWTON_PER_TONNE_FORCE = 9806.65
 
-
-def build_reference_records(
-    sailpack_data: pl.DataFrame, reference_values_mapping: pl.DataFrame
-) -> list[dict[str, Any]]:
-    reference_values = extract_reference_values(sailpack_data, reference_values_mapping)
-
+def build_reference_records(reference_values: pl.DataFrame) -> list[dict[str, Any]]:
     return [
         {
             "load_case_id": row["Calculation ID"],
@@ -29,8 +24,8 @@ def build_reference_records(
             "target": row["value"],
             "alarm_low": None,
             "warning_low": None,
-            "warning_high": None,
-            "alarm_high": None,
+            "warning_high": row["warning_high"],
+            "alarm_high": row["alarm_high"],
         }
         for row in reference_values.iter_rows(named=True)
     ]
@@ -168,13 +163,23 @@ COMMIT;
 
 
 def export_reference_values_seed_sql(
-    input_source: Path, mapping_path: Path, output_sql: Path
-) -> tuple[int, int]:
+    input_source: Path,
+    mapping_path: Path,
+    max_loads_path: Path,
+    output_sql: Path,
+    conflicts_output: Path,
+) -> tuple[int, int, int]:
     sailpack_data = parse_directory(input_source)
-    reference_values_mapping = read_reference_values_mapping(mapping_path)
+    reference_values = extract_reference_values(
+        sailpack_data, read_reference_values_mapping(mapping_path)
+    )
+    reference_values_with_thresholds, conflicts = apply_max_loads(
+        reference_values, read_max_loads(max_loads_path)
+    )
     load_case_records = build_load_case_records(sailpack_data)
-    reference_records = build_reference_records(sailpack_data, reference_values_mapping)
+    reference_records = build_reference_records(reference_values_with_thresholds)
     sql = render_sql(load_case_records, reference_records)
     output_sql.write_text(sql, encoding="utf-8")
+    write_conflicts(conflicts, conflicts_output)
 
-    return len(load_case_records), len(reference_records)
+    return len(load_case_records), len(reference_records), len(conflicts)

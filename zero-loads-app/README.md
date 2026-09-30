@@ -90,7 +90,10 @@ uv run loads generate-jwt --roles captain
 
 The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
 `hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
-load cases in `src/sailpack/load_cases`:
+load cases in `src/sailpack/load_cases`, with the warning and alarm thresholds from
+`src/loads/registry/max_loads.csv`. Targets above their threshold are dropped and listed in
+`src/sailpack/target_threshold_conflicts.csv`. The export first refreshes the sailpack mapping
+and max loads CSVs from the loads Google Sheet:
 
 ```bash
 just export_seed
