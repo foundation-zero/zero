@@ -1,13 +1,13 @@
 version: 2
 
 models:
-  - name: stg_marpower__power_tags
+  - name: slv_power_tags
     description: >
-      Cleaned power-tag telemetry: a curated set of electrical consumption measures with
-      transport metadata dropped. Materialized as a view in the `views` database.
+      Power-tag enriched with metadata: electrical consumption measures with main- and sub-group classifications.
+      Materialized as a view in the `views` database.
     columns:
       - name: ts
-        description: "Ingest time index (renamed from the raw `timestamp`)."
+        description: "Ingest timestamp."
         tests:
           - not_null
       - name: component
@@ -44,26 +44,6 @@ models:
         description: "Table name associated with the raw message."
       - name: topic
         description: "MQTT topic associated with the raw message."
-  - name: stg_power_tag_metadata
-    description: "Static metadata for power tags."
-    columns:
-      - name: ts
-        description: "Mandatory timestamp without valid value."
-      - name: power_tag_id
-        description: "Power tag identifier."
-      - name: panel
-        description: "Panel the power tag is located in."
-      - name: breaker
-        description: "Breaker the power tag is associated with."
-      - name: description
-        description: "Description of the power tag."
-      - name: name
-        description: "Name of the power tag."
-      - name: topic
-        description: "MQTT topic of the power tag."
-        tests:
-          - unique
-          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
       - name: sub_group

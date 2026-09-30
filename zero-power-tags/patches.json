@@ -1,4 +1,7 @@
 {
+  "67F01": {
+    "_consumer": "DISCHARGE PUMP LAZARETTE"
+  },
   "154F01": {
     "_consumer": "CIRCULATION PUMP ADIABATIC PUMP (tech. water purge pump)"
   },
@@ -7,6 +10,9 @@
   },
   "158Q01": {
     "_consumer": "CIRCULATION PUMP PVT PANELS FWD"
+  },
+  "161F01": {
+    "_consumer": "REFRIGERATOR, WINE COOLER,FRIDGE DRAWER"
   },
   "164F01": {
     "_consumer": "115V DISTRIBUTION PANEL"
