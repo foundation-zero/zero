@@ -33,7 +33,7 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     <IrradianceLabelInstance
       :target-x="-52"
       :target-width="PYRANO_METER_WIDTH"
-      :source="getField(SensorComponentType.Pyranometer, 'pvt', 'pvtPyranometerPs')"
+      :source="getField(SensorComponentType.Pyranometer, 'pvt', 'pvtPyranometerSb')"
       y="290"
       tag-id="9044"
     />
@@ -43,7 +43,7 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     />
     <IrradianceLabelInstance
       :target-x="-52"
-      :source="getField(SensorComponentType.Pyranometer, 'pvt', 'pvtPyranometerSb')"
+      :source="getField(SensorComponentType.Pyranometer, 'pvt', 'pvtPyranometerPs')"
       :target-width="PYRANO_METER_WIDTH"
       y="390"
       tag-id="9043"
