@@ -67,8 +67,8 @@ const dashboard = (
 export const MAIN_MAST_GROUP = group(
   "Main mast",
   PositionId.Main,
-  "main-runner-tail-ps-load",
-  "main-runner-tail-sb-load",
+  "main-runner-block-ps-load",
+  "main-runner-block-sb-load",
   "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
@@ -109,8 +109,8 @@ export const MAIN_LOCKS_GROUP = group(
 export const MIZZEN_MAST_GROUP = group(
   "Mizzen mast",
   PositionId.Mizzen,
-  "mizzen-runner-tail-ps-load",
-  "mizzen-runner-tail-sb-load",
+  "mizzen-runner-block-ps-load",
+  "mizzen-runner-block-sb-load",
   "mizzen-checkstay-ps-load",
   "mizzen-checkstay-sb-load",
   "mizzen-checkstay-deflector-load",

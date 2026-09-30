@@ -1,3 +1,4 @@
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -24,11 +25,15 @@ KNOWN_SAIL_ABBREVIATIONS = {
     "MZSS",
 }
 
-SAIL_ABBREVIATION_ALIASES = {"MH0": "C0"}
+SAIL_ABBREVIATION_ALIASES = {"MH0": "C0", "TSONLY": "TS"}
 
 MAPPING_FILE_NAME = "sailpack_mapping.csv"
 
 NEWTON_PER_TONNE_FORCE = 9806.65
+
+# Runner tail purchase and tail angle at the mizzen runner block, from the Vitters PLC formulas.
+RUNNER_BLOCK_PURCHASE = 2
+MIZZEN_RUNNER_TAIL_ANGLE_DEGREES = 17
 
 
 def escape_dollar_quoted_json(value: str) -> str:
@@ -130,6 +135,8 @@ def build_load_case_records(sailpack_data: pl.DataFrame) -> list[dict[str, Any]]
 def extract_reference_values(
     sailpack_data: pl.DataFrame, reference_values_mapping: pl.DataFrame
 ) -> pl.DataFrame:
+    assert_port_tack(extract_load_cases(sailpack_data))
+
     cable_data = (
         sailpack_data.unpivot(
             ["Load (N) - After FSIC", "Trimming value (N or m) - FSIC trimmings"],
@@ -161,7 +168,7 @@ def extract_reference_values(
         .select(
             [
                 "Calculation ID",
-                "Variable key",
+                "Technical name",
                 "Cable name",
                 "value",
                 "Column label",
@@ -186,27 +193,52 @@ def extract_reference_values(
         .alias("value")
     )
 
-    reference_values_extended = (
+    port_tack_reference_values = (
         reference_values.pivot(
             index="Calculation ID",
-            on="Variable key",
+            on="Technical name",
             values="value",
         )
-        .with_columns(
-            (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
-                "main-headstay-combined-load"
-            ),
-            (pl.col("main-runner-load") + pl.col("main-checkstay-load")).alias(
-                "main-runner-combined-load"
-            ),
-            (pl.col("mizzen-runner-load") + pl.col("mizzen-checkstay-load")).alias(
-                "mizzen-runner-combined-load"
-            ),
-        )
+        .pipe(add_derived_loads)
         .unpivot(index="Calculation ID")
-    )  # TODO: check correctness combined runner loads
+        .with_columns(pl.lit("port").alias("tack"))
+    )
 
-    return reference_values_extended
+    starboard_tack_reference_values = port_tack_reference_values.with_columns(
+        pl.col("variable").map_elements(mirror_side, return_dtype=pl.String),
+        pl.lit("starboard").alias("tack"),
+    )
+
+    return pl.concat([port_tack_reference_values, starboard_tack_reference_values])
+
+
+def add_derived_loads(port_tack_loads: pl.DataFrame) -> pl.DataFrame:
+    mizzen_tail_angle = math.radians(MIZZEN_RUNNER_TAIL_ANGLE_DEGREES)
+    return port_tack_loads.with_columns(
+        (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
+            "main-headstay-combined-load"
+        ),
+        (RUNNER_BLOCK_PURCHASE * pl.col("main-runner-tail-ps-load")).alias(
+            "main-runner-block-ps-load"
+        ),
+        (
+            RUNNER_BLOCK_PURCHASE
+            * pl.col("mizzen-runner-tail-ps-load")
+            * math.cos(mizzen_tail_angle)
+        ).alias("mizzen-runner-block-ps-load"),
+    )
+
+
+def mirror_side(technical_name: str) -> str:
+    mirrored = {"ps": "sb", "sb": "ps", "port": "stbd", "stbd": "port"}
+    return "-".join(mirrored.get(part, part) for part in technical_name.split("-"))
+
+
+def assert_port_tack(load_cases: pl.DataFrame) -> None:
+    # SailPack models every load case on port tack; starboard is derived by mirroring.
+    starboard_cases = load_cases.filter(pl.col("twa") >= 0)["calculation_id"].to_list()
+    if starboard_cases:
+        raise ValueError(f"Expected only port tack load cases, got: {starboard_cases}")
 
 
 def read_reference_values_mapping(mapping_path: Path) -> pl.DataFrame:
