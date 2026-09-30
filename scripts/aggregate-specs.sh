@@ -51,6 +51,11 @@ if ! (cd "$REPO_ROOT/zero-atpx-nmea" && uv run python -m zero_atpx_nmea asyncapi
   fail_or_warn "atpx-nmea" || exit 1
 fi
 
+echo "  -> marpower"
+if ! (cd "$REPO_ROOT/zero-data" && uv run python -m zero_data print-asyncapi) > "$SPECS_DIR/marpower.json"; then
+  fail_or_warn "marpower" || exit 1
+fi
+
 if [ "$warnings" -gt 0 ]; then
   echo "Done with $warnings warning(s). Specs in $SPECS_DIR/" >&2
   ls -la "$SPECS_DIR/" >&2
