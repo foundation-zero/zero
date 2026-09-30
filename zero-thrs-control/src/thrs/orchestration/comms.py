@@ -1,8 +1,8 @@
 import json
 import logging
-from asyncio import Event, Future, gather, timeout
+from asyncio import Event, Future, TaskGroup, gather, timeout
 from collections import defaultdict
-from collections.abc import Awaitable, Callable, Coroutine, Mapping
+from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
 from inspect import isawaitable
 from typing import (
@@ -11,7 +11,6 @@ from typing import (
 )
 
 from aiomqtt import Client
-from paho.mqtt.client import topic_matches_sub
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -41,6 +40,8 @@ class MqttReceiveMapping[M](Protocol):
 
     def subscribe_topics(self) -> set[str]: ...
 
+    def receive_topics(self) -> set[str]: ...
+
     def handle_message(self, topic: str, json: str | bytes): ...
 
     def result(self) -> M | None: ...
@@ -66,6 +67,16 @@ class MappingForModule[M](Protocol):
         module_name: str,
         topic_suffix: str | None = None,
     ) -> MqttMapping[M]: ...
+
+
+def _mappings_by_topic[R: MqttReceiveMapping](
+    mappings: Iterable[R],
+) -> dict[str, list[R]]:
+    mappings_by_topic: defaultdict[str, list[R]] = defaultdict(list)
+    for mapping in mappings:
+        for topic in mapping.receive_topics():
+            mappings_by_topic[topic].append(mapping)
+    return dict(mappings_by_topic)
 
 
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
@@ -135,6 +146,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
 
     def subscribe_topics(self) -> set[str]:
         return set(self._subscribe_topics.keys())
+
+    def receive_topics(self) -> set[str]:
+        return set(self._topic_to_field.keys())
 
     def handle_message(self, topic: str, json: str | bytes):
         if topic not in self._topic_to_field:
@@ -207,6 +221,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     def subscribe_topics(self) -> set[str]:
         return {self._topic}
 
+    def receive_topics(self) -> set[str]:
+        return {self._topic}
+
     def handle_message(self, topic: str, json: str | bytes):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
@@ -276,6 +293,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             )
             for name, module_cls in clss.items()
         }
+        self._mappings_by_topic = _mappings_by_topic(self._mappings.values())
         self._allow_incomplete = allow_incomplete
 
     def split_to_topics(self, model: T) -> dict[str, str]:
@@ -292,13 +310,12 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             for topic in mapping.subscribe_topics()
         }
 
+    def receive_topics(self) -> set[str]:
+        return set(self._mappings_by_topic.keys())
+
     def handle_message(self, topic: str, json: str | bytes):
-        for mapping in self._mappings.values():
-            if any(
-                topic_matches_sub(subscribed_topic, topic)
-                for subscribed_topic in mapping.subscribe_topics()
-            ):
-                mapping.handle_message(topic, json)
+        for mapping in self._mappings_by_topic.get(topic, []):
+            mapping.handle_message(topic, json)
 
     def result(self) -> T | None:
         mapping_result: dict[str, ThrsValues] = {
@@ -381,6 +398,7 @@ class ControlChannels[
         config: Config,
         module_name: str,
         control_module: ModuleDescription[S, C, P, M, CS],
+        publish_qos: int = 1,
     ) -> None:
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
@@ -426,6 +444,7 @@ class ControlChannels[
                 config.mqtt_control_topic_suffix,
                 context=AMCS_WRITE_CONTEXT,
             ),
+            qos=publish_qos,
         )
         actuated_control_values_mapping = PartialMqttMapping[C](
             control_module.control_values_cls,
@@ -440,7 +459,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 only_computed_fields=True,
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_controller_state = connector._create_publisher(
             DirectMqttMapping[CS].for_module(
@@ -449,6 +469,7 @@ class ControlChannels[
                 module_name,
                 type_topic="controller-state",
             ),
+            qos=publish_qos,
         )
         self.send_parameters = connector._create_publisher(
             DirectMqttMapping[P].for_module(
@@ -456,7 +477,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="parameters",
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_control_modes = connector._create_publisher(
             DirectMqttMapping[M].for_module(
@@ -464,7 +486,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="control-mode",
-            )
+            ),
+            qos=publish_qos,
         )
         self.send_manual_control = connector._create_publisher(
             DirectMqttMapping[C].for_module(
@@ -472,7 +495,8 @@ class ControlChannels[
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="manual-values",
-            )
+            ),
+            qos=publish_qos,
         )
 
         self.get_sensor_values = sensor_values_mapping.result
@@ -521,12 +545,14 @@ class SimulationChannels[
             control_values_clss,
             config.mqtt_devices_topic_prefix,
         )
-        self._publish_merged = connector._create_publisher(self._merged_mapping)
+        # Every tick overwrites these values, so a lost message is harmless
+        self._publish_merged = connector._create_publisher(self._merged_mapping, qos=0)
         self.send_simulation_inputs = connector._create_publisher(
-            DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic)
+            DirectMqttMapping(simulation_inputs_cls, simulation_inputs_topic), qos=0
         )
         self.send_simulation_outputs = connector._create_publisher(
             DirectMqttMapping(simulation_outputs_cls, simulation_outputs_topic),
+            qos=0,
         )
 
         self.get_control_values = control_values_mapping.result
@@ -768,15 +794,10 @@ class MqttConnector:
         return _publish
 
     async def _listen(self):
+        listeners_by_topic = _mappings_by_topic(self._listeners)
         async for message in self._mqtt_client.messages:
             if message.payload != b"":
-                matching_mappings = [
-                    mapping
-                    for mapping in self._listeners
-                    for topic in mapping.subscribe_topics()
-                    if message.topic.matches(topic)
-                ]
-                for mapping in matching_mappings:
+                for mapping in listeners_by_topic.get(message.topic.value, []):
                     if not isinstance(message.payload, str | bytes):
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
@@ -792,9 +813,12 @@ class MqttConnector:
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool
     ):
         payloads = mapping.split_to_topics(value)
-        for topic, payload in payloads.items():
-            logging.debug("Publishing on %s", topic)
-            await self._mqtt_client.publish(topic, payload, qos=qos, retain=retain)
+        async with TaskGroup() as tg:
+            for topic, payload in payloads.items():
+                logging.debug("Publishing on %s", topic)
+                tg.create_task(
+                    self._mqtt_client.publish(topic, payload, qos=qos, retain=retain)
+                )
 
     async def _start(self):
         for mapping in self._listeners:

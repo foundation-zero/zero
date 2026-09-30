@@ -142,6 +142,14 @@ class TestPartialMqttMapping:
             "base/flow-topic",
         }
 
+    def test_receive_topics(self):
+        mapping = PartialMqttMapping(ValuesWithTopics, "base", "module")
+
+        assert mapping.receive_topics() == {
+            "base/module/go-with-the",
+            "base/flow-topic",
+        }
+
     def test_builder(self):
         mapping = PartialMqttMapping(SimpleInOut, "base", "module")
 
@@ -176,6 +184,11 @@ class TestDirectMqttMapping:
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
 
         assert mapping.subscribe_topics() == {"sensors/data"}
+
+    def test_receive_topics(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+
+        assert mapping.receive_topics() == {"sensors/data"}
 
     def test_builder(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
@@ -314,6 +327,31 @@ class TestControlChannelsAutoclear:
         assert channels.get_manual_controls() is None
 
 
+class TestControlChannelsPublishQos:
+    @pytest.mark.parametrize(
+        ("qos_kwargs", "expected_qos"),
+        [({}, 1), ({"publish_qos": 0}, 0)],
+    )
+    def test_publishers_use_publish_qos(self, settings, qos_kwargs, expected_qos):
+        connector = mock.Mock()
+        description = ModuleDescription(
+            SimpleInOut,
+            SimpleInOut,
+            SimpleParameters,
+            lambda *_args, **_kwargs: mock.Mock(),
+            SimpleMode,
+            SimpleControllerState,
+            mock.Mock,
+        )
+
+        ControlChannels(connector, settings, "testmodule", description, **qos_kwargs)
+
+        publisher_qos = [
+            call.kwargs["qos"] for call in connector._create_publisher.call_args_list
+        ]
+        assert publisher_qos == [expected_qos] * 6
+
+
 class TestCombinedMqttMapping:
     def test_split_to_topics(self):
         clss = {"module1": SimpleInOut}
@@ -337,6 +375,30 @@ class TestCombinedMqttMapping:
         mapping_no_suffix = ModuleMqttMapping(clss, PartialMqttMapping)
 
         assert mapping_no_suffix.subscribe_topics() == {"/500000-thrs/module1/+"}
+
+    def test_receive_topics(self):
+        clss = {"module1": ValuesWithTopics, "module2": ValuesWithTopics}
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
+
+        assert mapping.receive_topics() == {
+            "/500000-thrs/module1/go-with-the",
+            "/500000-thrs/module2/go-with-the",
+            "/flow-topic",
+        }
+
+    def test_handle_message_reaches_only_modules_receiving_the_topic(self):
+        clss = {"module1": ValuesWithTopics, "module2": ValuesWithTopics}
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
+        payload = sensor_value(1, 2).model_dump_json(by_alias=True)
+
+        mapping.handle_message("/500000-thrs/module1/go-with-the", payload)
+        mapping.handle_message("/flow-topic", payload)
+        assert mapping.result() is None
+
+        mapping.handle_message("/500000-thrs/module2/go-with-the", payload)
+        result = mapping.result()
+        assert result
+        assert result.values.keys() == {"module1", "module2"}
 
     def test_builder(self):
         clss = {"module1": SimpleInOut}
@@ -395,6 +457,28 @@ def combined_values(sensor1: FlowSensor, sensor2: FlowSensor):
             "module": ValuesWithTopics(go_with_the=sensor1, go_with_the_topic=sensor2)
         }
     )
+
+
+async def test_mqtt_connector_dispatches_only_received_topics(mock_mqtt_client):
+    connector = MqttConnector(mock_mqtt_client)
+    mapping = PartialMqttMapping(ValuesWithTopics, "base", "module")
+    connector._register_listener(mapping)
+    await mock_mqtt_client.receive_messages(
+        connector,
+        {
+            "base/module/go-with-the": sensor_value(1, 2),
+            "base/module/unknown-component": sensor_value(3, 4),
+        },
+    )
+
+    with mock.patch.object(
+        mapping, "handle_message", wraps=mapping.handle_message
+    ) as handle_message:
+        await (await connector.run())
+
+    assert [call.args[0] for call in handle_message.call_args_list] == [
+        "base/module/go-with-the"
+    ]
 
 
 async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
