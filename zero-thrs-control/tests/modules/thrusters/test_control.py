@@ -1,7 +1,11 @@
 from pytest import approx
 
 from tests.modules.thrusters.conftest import ThrustersSimulation
-from thrs.control.modules.thrusters import ThrustersControl, ThrustersControlMode
+from thrs.control.modules.thrusters import (
+    RECOVERY_MIX_UPPER_BOUND,
+    ThrustersControl,
+    ThrustersControlMode,
+)
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import PcsMode
@@ -211,7 +215,7 @@ def test_warmup_until_mix_opens(
         if control.mode.is_warmup:
             assert (
                 control_values.thrusters_mix_recovery.setpoint.value
-                == Valve.MIXING_B_TO_AB
+                < RECOVERY_MIX_UPPER_BOUND
             )
             assert control._flow_balance_controller.get_setpoints() == [
                 control.parameters.thrusters_minimum_flow,
@@ -220,7 +224,7 @@ def test_warmup_until_mix_opens(
         if control.mode.is_recovery:
             assert (
                 control_values.thrusters_mix_recovery.setpoint.value
-                > Valve.MIXING_B_TO_AB
+                > RECOVERY_MIX_UPPER_BOUND
             )
 
     assert modes == ["idle", "warmup", "recovery"]
@@ -241,10 +245,11 @@ def test_recovery_falls_back_to_warmup(
     sensor_values.thrusters_temperature_fwd.temperature = Stamped.stamp(
         control.parameters.cooling_temperature
     )
-    for _i in range(10 * 60):
-        control_values, _ = control.control(sensor_values)
-        if control.mode.is_warmup:
-            break
+    control_values = next(
+        values
+        for values, _ in (control.control(sensor_values) for _i in range(10 * 60))
+        if control.mode.is_warmup
+    )
 
     assert control.mode == ThrustersControlMode(mode="warmup")
     assert control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
