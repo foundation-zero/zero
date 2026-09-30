@@ -196,6 +196,64 @@ def test_heat_dump_with_hot_sea(
         )
 
 
+def test_warmup_until_mix_opens(
+    control: ThrustersControl, simulation: ThrustersSimulation
+):
+    result = simulation.tick(control.initial()[0])
+
+    modes = [control.mode.mode]
+    for _i in range(500):
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+        if control.mode.mode != modes[-1]:
+            modes.append(control.mode.mode)
+
+        if control.mode.is_warmup:
+            assert (
+                control_values.thrusters_mix_recovery.setpoint.value
+                == Valve.MIXING_B_TO_AB
+            )
+            assert control._flow_balance_controller.get_setpoints() == [
+                control.parameters.thrusters_minimum_flow,
+                control.parameters.thrusters_minimum_flow,
+            ]
+        if control.mode.is_recovery:
+            assert (
+                control_values.thrusters_mix_recovery.setpoint.value
+                > Valve.MIXING_B_TO_AB
+            )
+
+    assert modes == ["idle", "warmup", "recovery"]
+
+
+def test_recovery_falls_back_to_warmup(
+    control: ThrustersControl, simulation: ThrustersSimulation
+):
+    result = simulation.tick(control.initial()[0])
+    while not control.mode.is_recovery:
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+
+    sensor_values = result.sensor_values
+    sensor_values.thrusters_temperature_aft.temperature = Stamped.stamp(
+        control.parameters.cooling_temperature
+    )
+    sensor_values.thrusters_temperature_fwd.temperature = Stamped.stamp(
+        control.parameters.cooling_temperature
+    )
+    for _i in range(10 * 60):
+        control_values, _ = control.control(sensor_values)
+        if control.mode.is_warmup:
+            break
+
+    assert control.mode == ThrustersControlMode(mode="warmup")
+    assert control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
+    assert control._flow_balance_controller.get_setpoints() == [
+        control.parameters.thrusters_minimum_flow,
+        control.parameters.thrusters_minimum_flow,
+    ]
+
+
 def test_recovery_temperature(
     control: ThrustersControl, simulation: ThrustersSimulation
 ):
