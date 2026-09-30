@@ -628,11 +628,11 @@ class ThrustersControl(
                 sensor_values.thrusters_thruster_fwd.active.value,
             ]
         )
-        self._flow_balance_controller.set_setpoint(25.0)
+        self._flow_balance_controller.set_setpoint(self._parameters.cooling_flow)
 
     def _set_cooldown_flow_setpoints(self, sensor_values: ThrustersSensorValues):
         # cool only the last used thrusters by not updating active valves
-        self._flow_balance_controller.set_setpoint(25.0)
+        self._flow_balance_controller.set_setpoint(self._parameters.cooling_flow)
 
     def _control_flow_balance(self, sensor_values: ThrustersSensorValues):
         if self._flow_balance_controller.enabled:

@@ -66,6 +66,24 @@ def test_idle_mix_position(runner: PvtRunner, control: PvtControl):
     assert control_values.pvt_mix_owners.setpoint.value == IDLE_MIX_POSITION
 
 
+def test_groups_follow_their_own_strings(
+    runner: PvtRunner,
+    control: PvtControl,
+    simulation_inputs: PvtSimulationInputs,
+):
+    runner.update_simulation_inputs(_with_heat_flows(simulation_inputs, 0, 16000, 8000))
+
+    sensor_values, *_ = runner.run_until(
+        lambda *_: control.mode.fwd.mode == "warmup", within=timedelta(minutes=5)
+    )
+
+    aft_strings = sensor_values.pvt_max_temperature_main_aft_strings.temperature.value
+    fwd_strings = sensor_values.pvt_max_temperature_main_fwd_strings.temperature.value
+    assert control.mode.aft.mode == "idle"
+    assert aft_strings is not None and fwd_strings is not None
+    assert aft_strings < fwd_strings
+
+
 def test_warmup_until_mix_opens(runner: PvtRunner, control: PvtControl):
     def check_warmup(_, control_values, controller_state):
         if control.mode.aft.mode == "warmup":
