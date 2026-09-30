@@ -7,8 +7,8 @@ def test_state_machine(control):
     assert control.state == "idle"
     assert not control._current_control_values.thrusters_pump1.on.value
 
-    control.to_recovery(sensor_values)
-    assert control.state == "recovery"
+    control.to_warmup(sensor_values)
+    assert control.state == "warmup"
     assert (
         control._current_control_values.thrusters_switch_recovery.setpoint.value
         == Valve.OPEN
@@ -22,6 +22,3 @@ def test_state_machine(control):
         control._current_control_values.thrusters_switch_recovery.setpoint.value
         == Valve.CLOSED
     )
-
-
-# TODO: add state machine test with actual controls
