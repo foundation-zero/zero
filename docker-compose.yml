@@ -155,6 +155,24 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
+      # Drop schema-invalid payloads instead of caching them, so the last valid
+      # value survives (matches thrs-api). Set "false" to cache every payload.
+      STRICT_VALIDATION: "true"
+      # Serve modules{}.sensorValues per field: a field answers as soon as its
+      # own topic is cached, the rest resolve null (sensor fields become
+      # nullable). Off mirrors thrs-api's all-or-nothing sensorValues, which
+      # the 1:1 parity tests assume.
+      ENABLE_OPTIONAL_SENSOR_VALUES: "false"
+      # Serve thrs-api's parameter mutations (write-path) and publish their
+      # changes to MQTT. Off keeps zero-mqtt-graphql read-only.
+      ENABLE_MUTATIONS: "true"
+      # Fill in the THRS spec's topic settings; same values as the THRS services.
+      MQTT_DEVICES_TOPIC_PREFIX: devices_topic
+      MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
+      MQTT_SIMULATOR_TOPIC_PREFIX: simulation_topic
+      MQTT_CONTROL_TOPIC_SUFFIX: Command
+      MQTT_CONTROLLER_TOPIC_SUFFIX: set
+      MQTT_SIMULATOR_TOPIC_SUFFIX: set
     depends_on:
       vernemq:
         condition: service_healthy

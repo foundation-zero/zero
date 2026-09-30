@@ -47,6 +47,7 @@ test = [
   "pytest-timeout>=2.4.0,<3",
   "pytest-xdist>=3.6.1,<4.0.0",
   "httpx>=0.28.1,<0.29",
+  "faststream[mqtt]>=0.7.0,<1.0.0",
 ]
 
 [tool.pytest.ini_options]
@@ -59,6 +60,7 @@ markers = [
   "io: tests that check code against IOlist outside this repo",
   "mqtt: tests requiring a running MQTT broker",
   "slow: Slow tests",
+  "migration: heavy suites against the live thrs-api and/or mqtt-graphql stack; run manually, excluded from default CI",
 ]
 
 [tool.ruff]

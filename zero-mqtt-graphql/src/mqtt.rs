@@ -7,8 +7,11 @@ use log::{debug, error, info, warn};
 use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
 use serde_json::Value;
 
-use crate::asyncapi::{TopicDef, TopicGroupDef};
+use crate::asyncapi::ValidatorSpec;
 use crate::cache::{mqtt_pattern_matches, TopicCache};
+
+const REQUEST_CHANNEL_CAPACITY: usize = 1024;
+const PUBLISH_TIMEOUT: Duration = Duration::from_secs(5);
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -22,6 +25,8 @@ pub struct MqttSubscriber {
     event_loop: EventLoop,
     cache: Arc<TopicCache>,
     listen_only: bool,
+    /// Serve mode: drop schema-invalid payloads so the last valid value survives.
+    strict_validation: bool,
     validators: HashMap<String, Validator>,
     /// Topics to subscribe once the connection is established. Subscribing
     /// from within the polled event loop avoids deadlocking on the bounded
@@ -34,8 +39,8 @@ impl MqttSubscriber {
         connection: MqttConnection,
         cache: Arc<TopicCache>,
         listen_only: bool,
-        topics: &[TopicDef],
-        groups: &[TopicGroupDef],
+        strict_validation: bool,
+        validator_specs: &[ValidatorSpec],
     ) -> anyhow::Result<Self> {
         let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
@@ -46,20 +51,25 @@ impl MqttSubscriber {
             mqttoptions.set_credentials(user, pass);
         }
 
-        let (client, event_loop) = AsyncClient::new(mqttoptions, 10);
+        let (client, event_loop) = AsyncClient::new(mqttoptions, REQUEST_CHANNEL_CAPACITY);
 
-        // Validators are built in both modes: listen-only rejects mismatches
-        // outright, serve mode logs them and still caches the payload.
-        let validators = build_validators(topics, groups);
+        // Listen-only rejects mismatches; serve logs them and (unless strict) caches.
+        let validators = build_validators(validator_specs);
 
         Ok(Self {
             client,
             event_loop,
             cache,
             listen_only,
+            strict_validation,
             validators,
             pending_subscriptions: Vec::new(),
         })
+    }
+
+    /// A handle to the MQTT client for building an [`MqttPublisher`].
+    pub fn client(&self) -> AsyncClient {
+        self.client.clone()
     }
 
     /// Queue topics to subscribe to once the broker connection is up.
@@ -178,9 +188,13 @@ impl MqttSubscriber {
             return;
         }
 
-        // Mismatch details are logged by `validate_payload`; serve mode
-        // caches the payload regardless of validity.
-        let _ = self.validate_payload(topic, &value);
+        if self.validate_payload(topic, &value) == Some(false) && self.strict_validation {
+            warn!(
+                "Dropping schema-invalid payload for topic '{}' (strict validation)",
+                topic
+            );
+            return;
+        }
 
         let rendered = value.to_string();
         let preview_len = rendered
@@ -197,7 +211,7 @@ impl MqttSubscriber {
         } else {
             debug!("Caching payload for topic '{}': {}", topic, rendered);
         }
-        self.cache.insert(topic, flatten_payload(value));
+        self.cache.insert(topic, value);
     }
 
     /// Validate a payload against its topic's compiled schema, logging
@@ -229,60 +243,27 @@ impl MqttSubscriber {
     }
 }
 
-/// Compile one validator per topic and one per topic group, into a single
-/// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
-/// e.g. `power-tags/+/+`)
-fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> HashMap<String, Validator> {
-    let topic_validators: Vec<(String, Validator)> = topics
-        .iter()
-        .filter_map(|td| {
-            let schema_value = td.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((td.topic.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic '{}': {} — skipping validation for this topic",
-                        td.topic, e
-                    );
-                    None
-                }
+/// Compile one validator per [`ValidatorSpec`]; uncompilable schemas are logged
+/// and skipped, and the last spec wins on a duplicate key.
+fn build_validators(specs: &[ValidatorSpec]) -> HashMap<String, Validator> {
+    let mut validators = HashMap::new();
+    for (key, schema) in specs {
+        match Validator::new(schema) {
+            Ok(validator) => {
+                validators.insert(key.clone(), validator);
             }
-        })
-        .collect();
-    if !topic_validators.is_empty() {
+            Err(e) => {
+                warn!("Failed to compile JSON Schema for '{key}': {e} — skipping validation for it")
+            }
+        }
+    }
+    if !validators.is_empty() {
         info!(
-            "Compiled JSON Schema validators for {} topic(s)",
-            topic_validators.len()
+            "Compiled JSON Schema validators for {} key(s)",
+            validators.len()
         );
     }
-
-    let group_validators: Vec<(String, Validator)> = groups
-        .iter()
-        .filter_map(|group| {
-            let schema_value = group.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((group.pattern.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic group '{}': {} — skipping validation for this group",
-                        group.pattern, e
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !group_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic group(s)",
-            group_validators.len()
-        );
-    }
-
-    topic_validators
-        .into_iter()
-        .chain(group_validators)
-        .collect()
+    validators
 }
 
 /// Generate a unique suffix for the MQTT client ID from full-precision
@@ -301,36 +282,81 @@ fn rand_u64() -> u64 {
     x
 }
 
-/// Flatten nested objects one level deep into the payload root.
-///
-/// Services such as hull-temperature publish `{"temperatures": {sensor: value}}`
-/// while their AsyncAPI spec lists the nested keys as top-level fields, so the
-/// GraphQL schema expects them at the top level. Existing top-level keys win on
-/// collision; the wrapper key is kept so the raw payload stays visible.
-fn flatten_payload(value: Value) -> Value {
-    let Value::Object(map) = &value else {
-        return value;
-    };
+/// A [`TopicPublisher`](crate::graphql::TopicPublisher) on the subscriber's client.
+/// Non-retained QoS 1, like thrs-api's transient `/set` commands.
+pub struct MqttPublisher {
+    client: AsyncClient,
+    /// How long a publish may wait for the event loop before failing.
+    timeout: Duration,
+}
 
-    let mut merged = map.clone();
-    for nested in map.values() {
-        if let Value::Object(nested_map) = nested {
-            for (nested_key, nested_value) in nested_map {
-                if !merged.contains_key(nested_key) {
-                    merged.insert(nested_key.clone(), nested_value.clone());
-                }
-            }
+impl MqttPublisher {
+    pub fn new(client: AsyncClient) -> Self {
+        Self {
+            client,
+            timeout: PUBLISH_TIMEOUT,
         }
     }
-    Value::Object(merged)
+}
+
+impl crate::graphql::TopicPublisher for MqttPublisher {
+    fn publish(&self, topic: String, payload: String) -> crate::graphql::PublishFuture {
+        let client = self.client.clone();
+        let timeout = self.timeout;
+        Box::pin(async move {
+            let send = client.publish(topic.clone(), QoS::AtLeastOnce, false, payload.into_bytes());
+            match tokio::time::timeout(timeout, send).await {
+                Ok(result) => result.map_err(anyhow::Error::from),
+                Err(_) => Err(anyhow::anyhow!(
+                    "publishing to '{topic}' timed out after {timeout:?}; \
+                     the MQTT event loop is saturated or unreachable"
+                )),
+            }
+        })
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asyncapi::FieldDef;
+    use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
+    use crate::cache::flatten_payload;
+    use crate::graphql::TopicPublisher;
     use serde_json::json;
     use std::collections::BTreeMap;
+
+    /// A publish fails with a timeout instead of hanging when the event loop never drains.
+    #[tokio::test]
+    async fn test_publish_times_out_when_the_event_loop_never_drains() {
+        let options = MqttOptions::new("test-publisher", "localhost", 1883);
+        // Capacity 1 and an unpolled event loop: publish until one times out.
+        let (client, _event_loop) = AsyncClient::new(options, 1);
+        let publisher = MqttPublisher {
+            client,
+            timeout: Duration::from_millis(50),
+        };
+
+        // Keep publishing until one call cannot enqueue and must time out. The
+        // first few fill the buffer/inflight; a full channel then times out.
+        let mut timed_out = false;
+        for _ in 0..8 {
+            match publisher
+                .publish("some/topic".to_string(), "{}".to_string())
+                .await
+            {
+                Ok(()) => continue,
+                Err(e) => {
+                    assert!(e.to_string().contains("timed out"), "unexpected error: {e}");
+                    timed_out = true;
+                    break;
+                }
+            }
+        }
+        assert!(
+            timed_out,
+            "a publish to an undrained channel should time out"
+        );
+    }
 
     fn group_with_schema(pattern: &str, schema: Value) -> TopicGroupDef {
         TopicGroupDef {
@@ -342,6 +368,7 @@ mod tests {
                 graphql_type: "Float".to_string(),
             }],
             payload_schema: Some(schema),
+            field_schemas: BTreeMap::new(),
             value_extensions: BTreeMap::new(),
             ttl_secs: 300,
         }
@@ -353,7 +380,7 @@ mod tests {
             "power-tags/+/+",
             json!({"type": "object", "required": ["active_power_total"]}),
         )];
-        let validators = build_validators(&[], &groups);
+        let validators = build_validators(&specs_from(&[], &groups));
         assert_eq!(validators.len(), 1);
         assert!(validators.contains_key("power-tags/+/+"));
     }
@@ -362,7 +389,7 @@ mod tests {
     fn test_build_validators_skips_group_without_schema() {
         let mut group = group_with_schema("power-tags/+/+", json!({}));
         group.payload_schema = None;
-        let validators = build_validators(&[], &[group]);
+        let validators = build_validators(&specs_from(&[], &[group]));
         assert!(validators.is_empty());
     }
 
@@ -472,7 +499,60 @@ mod tests {
         assert_eq!(sub.validate_payload("metrics/a", &json!({})), None);
     }
 
+    /// Strict serve mode drops a schema-invalid payload, keeping the last valid value.
+    #[test]
+    fn test_strict_validation_drops_invalid_payload_in_serve_mode() {
+        let group = group_with_schema(
+            "power-tags/+/+",
+            json!({"type": "object", "required": ["active_power_total"]}),
+        );
+        let cache = Arc::new(TopicCache::new());
+        let sub = subscriber_with(false, true, cache.clone(), &[], &[group]);
+        let topic = "power-tags/10P1/breaker3";
+
+        // Cache a valid payload,
+        sub.handle_json_payload(topic, json!({"active_power_total": 42.0}));
+        assert_eq!(
+            cache.get_field(topic, "active_power_total"),
+            Some(json!(42.0))
+        );
+
+        // then a bad one gets dropped and the valid value stays.
+        sub.handle_json_payload(topic, json!({"unexpected": 1.0}));
+        assert_eq!(
+            cache.get_field(topic, "active_power_total"),
+            Some(json!(42.0))
+        );
+    }
+
+    /// Without strict validation an invalid payload is still cached.
+    #[test]
+    fn test_non_strict_serve_mode_caches_invalid_payload() {
+        let group = group_with_schema(
+            "power-tags/+/+",
+            json!({"type": "object", "required": ["active_power_total"]}),
+        );
+        let cache = Arc::new(TopicCache::new());
+        let sub = subscriber_with(false, false, cache.clone(), &[], &[group]);
+        let topic = "power-tags/10P1/breaker3";
+
+        sub.handle_json_payload(topic, json!({"active_power_total": 42.0}));
+        sub.handle_json_payload(topic, json!({"unexpected": 7.0}));
+        assert_eq!(cache.get_field(topic, "active_power_total"), None);
+        assert_eq!(cache.get_field(topic, "unexpected"), Some(json!(7.0)));
+    }
+
     fn test_subscriber(topics: &[TopicDef], groups: &[TopicGroupDef]) -> MqttSubscriber {
+        subscriber_with(true, false, Arc::new(TopicCache::new()), topics, groups)
+    }
+
+    fn subscriber_with(
+        listen_only: bool,
+        strict_validation: bool,
+        cache: Arc<TopicCache>,
+        topics: &[TopicDef],
+        groups: &[TopicGroupDef],
+    ) -> MqttSubscriber {
         let connection = MqttConnection {
             host: "localhost",
             port: 1883,
@@ -481,12 +561,33 @@ mod tests {
         };
         MqttSubscriber::new_with_mode(
             connection,
-            Arc::new(TopicCache::new()),
-            true,
-            topics,
-            groups,
+            cache,
+            listen_only,
+            strict_validation,
+            &specs_from(topics, groups),
         )
         .unwrap()
+    }
+
+    /// Validator specs as `load_specs_and_groups` builds them, minus components wrapping.
+    fn specs_from(topics: &[TopicDef], groups: &[TopicGroupDef]) -> Vec<ValidatorSpec> {
+        let mut specs = Vec::new();
+        for t in topics {
+            if let Some(schema) = &t.payload_schema {
+                specs.push((t.topic.clone(), schema.clone()));
+            }
+        }
+        for g in groups {
+            if let Some(schema) = &g.payload_schema {
+                specs.push((g.pattern.clone(), schema.clone()));
+            }
+        }
+        for g in groups {
+            for (topic, schema) in &g.field_schemas {
+                specs.push((topic.clone(), schema.clone()));
+            }
+        }
+        specs
     }
 
     #[test]
