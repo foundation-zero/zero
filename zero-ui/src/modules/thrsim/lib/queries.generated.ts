@@ -1,4 +1,7 @@
 export const ADSORPTION_CONTROL_QUERY = `
+  adsorptionChiller {
+    enable { value timestamp }
+  }
   adsorptionFlowcontrolWaste {
     setpoint { value timestamp }
   }
@@ -10,9 +13,6 @@ export const ADSORPTION_CONTROL_QUERY = `
   }
   adsorptionSwitchDhw {
     setpoint { value timestamp }
-  }
-  adsorptionChiller {
-    enable { value timestamp }
   }
 `;
 
@@ -21,63 +21,44 @@ export const ADSORPTION_CONTROLLER_STATE_QUERY = `
 `;
 
 export const ADSORPTION_PARAMETERS_QUERY = `
-  chillerEnabled
-  wasteCoolingTemperatureSetpoint
-  wasteRecoveryTemperatureSetpoint
-  hotSupplyTemperatureSetpoint
+  adsorptionColdMinimum
+  adsorptionColdTrigger
   adsorptionCoolingSetpoint
   adsorptionHotMinimum
   adsorptionHotTrigger
-  adsorptionColdMinimum
-  adsorptionColdTrigger
-  hotMixTuning
-  recoveryTuning
-  wasteCoolingTuning
+  chillerEnabled
   freeCoolingEnabled
+  hotMixTuning
+  hotSupplyTemperatureSetpoint
+  recoveryTuning
+  wasteCoolingTemperatureSetpoint
+  wasteCoolingTuning
+  wasteRecoveryTemperatureSetpoint
 `;
 
 export const ADSORPTION_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
+  adsorptionAvailableColdTemperature {
+    temperature { value timestamp }
   }
-  adsorptionFlowcontrolWaste {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  adsorptionAvailableHotTemperature {
+    temperature { value timestamp }
   }
-  adsorptionMixHot {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  adsorptionMixWaste {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  adsorptionSwitchDhw {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  adsorptionAvailableSeawaterTemperature {
+    temperature { value timestamp }
   }
   adsorptionChiller {
     operating { value timestamp }
     noError { value timestamp }
     freeCooling { value timestamp }
   }
-  adsorptionFlowHt {
+  adsorptionDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  adsorptionFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -87,45 +68,23 @@ export const ADSORPTION_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  adsorptionFlowHt {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
   adsorptionFlowWaste {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  adsorptionFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  adsorptionTemperatureHtReturn {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureHtSupply {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureHotReturn {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureHotSupply {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureWasteReturn {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureWasteSupply {
-    temperature { value timestamp }
-  }
-  adsorptionTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  adsorptionAvailableHotTemperature {
-    temperature { value timestamp }
-  }
-  adsorptionAvailableColdTemperature {
-    temperature { value timestamp }
-  }
-  adsorptionAvailableSeawaterTemperature {
-    temperature { value timestamp }
+  adsorptionFlowcontrolWaste {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
   adsorptionHtExchanger {
     temperatureSupply { value timestamp source }
@@ -134,27 +93,61 @@ export const ADSORPTION_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  adsorptionDhwExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  adsorptionMixHot {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  adsorptionMixWaste {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  adsorptionSwitchDhw {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  adsorptionTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHotReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHotSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHtReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureHtSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteReturn {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteSupply {
+    temperature { value timestamp }
+  }
+  mode {
+    mode { value timestamp }
   }
 `;
 
 export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
-  adsorptionCoolingSupply {
+  adsorptionAvailableColdTemperature {
     temperature { value timestamp }
-  }
-  adsorptionSeawaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
   }
   adsorptionAvailableHotTemperature {
-    temperature { value timestamp }
-  }
-  adsorptionAvailableColdTemperature {
     temperature { value timestamp }
   }
   adsorptionAvailableSeawaterTemperature {
@@ -167,7 +160,14 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
+  adsorptionCoolingSupply {
+    temperature { value timestamp }
+  }
   adsorptionDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -177,17 +177,17 @@ export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
 `;
 
 export const ADSORPTION_SIMULATION_OUTPUTS_QUERY = `
+  adsorptionConsumersReturn {
+    temperature { value timestamp }
+  }
   adsorptionCoolingReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  adsorptionSeawaterReturn {
-    temperature { value timestamp }
-  }
   adsorptionDhwReturn {
     temperature { value timestamp }
   }
-  adsorptionConsumersReturn {
+  adsorptionSeawaterReturn {
     temperature { value timestamp }
   }
 `;
@@ -215,35 +215,29 @@ export const CONSUMERS_CONTROLLER_STATE_QUERY = `
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
-  dhwEnabled
-  dhwFlowRatioSetpoint
   adsorptionEnabled
-  adsorptionFlowRatioSetpoint
-  dhwFlowBalanceTuning
-  bypassFlowBalanceTuning
   adsorptionFlowBalanceTuning
+  adsorptionFlowRatioSetpoint
+  bypassFlowBalanceTuning
+  dhwEnabled
+  dhwFlowBalanceTuning
+  dhwFlowRatioSetpoint
 `;
 
 export const CONSUMERS_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
+  consumersAdsorptionExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
-  consumersTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureDhwSupply {
-    temperature { value timestamp }
-  }
-  consumersTemperatureAdsorptionSupply {
-    temperature { value timestamp }
-  }
-  consumersFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
+  consumersDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   consumersFlowAdsorption {
     flow { value timestamp }
@@ -251,6 +245,11 @@ export const CONSUMERS_SENSOR_QUERY = `
     quantity { value timestamp }
   }
   consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -295,19 +294,20 @@ export const CONSUMERS_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  consumersAdsorptionExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  consumersTemperatureAdsorptionReturn {
+    temperature { value timestamp }
   }
-  consumersDhwExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  consumersTemperatureAdsorptionSupply {
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwSupply {
+    temperature { value timestamp }
+  }
+  mode {
+    mode { value timestamp }
   }
 `;
 
@@ -343,6 +343,21 @@ export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const DC_CONTROL_QUERY = `
+  dcMixAft {
+    setpoint { value timestamp }
+  }
+  dcMixExchanger {
+    setpoint { value timestamp }
+  }
+  dcMixFwd {
+    setpoint { value timestamp }
+  }
+  dcMixRecovery {
+    setpoint { value timestamp }
+  }
+  dcMixUgrid {
+    setpoint { value timestamp }
+  }
   dcPumpAft {
     dutypoint { value timestamp }
     on { value timestamp }
@@ -355,43 +370,28 @@ export const DC_CONTROL_QUERY = `
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  dcMixAft {
-    setpoint { value timestamp }
-  }
-  dcMixFwd {
-    setpoint { value timestamp }
-  }
-  dcMixUgrid {
-    setpoint { value timestamp }
-  }
-  dcMixRecovery {
-    setpoint { value timestamp }
-  }
-  dcMixExchanger {
-    setpoint { value timestamp }
-  }
-  dcSwitchAft4 {
-    setpoint { value timestamp }
-  }
-  dcSwitchAft3 {
+  dcSwitchAft1 {
     setpoint { value timestamp }
   }
   dcSwitchAft2 {
     setpoint { value timestamp }
   }
-  dcSwitchAft1 {
+  dcSwitchAft3 {
     setpoint { value timestamp }
   }
-  dcSwitchFwd2 {
+  dcSwitchAft4 {
     setpoint { value timestamp }
   }
   dcSwitchFwd1 {
     setpoint { value timestamp }
   }
-  dcSwitchUgrid2 {
+  dcSwitchFwd2 {
     setpoint { value timestamp }
   }
   dcSwitchUgrid1 {
+    setpoint { value timestamp }
+  }
+  dcSwitchUgrid2 {
     setpoint { value timestamp }
   }
 `;
@@ -401,162 +401,49 @@ export const DC_CONTROLLER_STATE_QUERY = `
 `;
 
 export const DC_PARAMETERS_QUERY = `
-  maximumSupplyTemperature
-  recoveryTemperature
   brightloopFlowSetpoint
-  ugridFlowSetpoint
   brightloopReturnTemperature
-  ugridReturnTemperature
-  heatDumpTuning
-  recoveryMixTuning
-  brightloopsFwdMixTuning
   brightloopsAftMixTuning
-  ugridsMixTuning
-  brightloopsFwdPumpTuning
   brightloopsAftPumpTuning
+  brightloopsFwdMixTuning
+  brightloopsFwdPumpTuning
+  heatDumpTuning
+  maximumSupplyTemperature
+  recoveryMixTuning
+  recoveryTemperature
+  ugridFlowSetpoint
+  ugridReturnTemperature
+  ugridsMixTuning
   ugridsPumpTuning
 `;
 
 export const DC_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
+  dcBrightloopAft1 {
+    active { value timestamp }
   }
-  dcPumpAft {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  dcBrightloopAft2 {
+    active { value timestamp }
   }
-  dcPumpUgrid {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  dcBrightloopAft3 {
+    active { value timestamp }
   }
-  dcPumpFwd {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  dcBrightloopAft4 {
+    active { value timestamp }
   }
-  dcTemperatureAft4Return {
-    temperature { value timestamp }
+  dcBrightloopFwd1 {
+    active { value timestamp }
   }
-  dcTemperatureAft3Return {
-    temperature { value timestamp }
+  dcBrightloopFwd2 {
+    active { value timestamp }
   }
-  dcTemperatureAft2Return {
-    temperature { value timestamp }
+  dcDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
-  dcTemperatureAft1Return {
-    temperature { value timestamp }
-  }
-  dcTemperatureUgrid2Return {
-    temperature { value timestamp }
-  }
-  dcTemperatureUgrid1Return {
-    temperature { value timestamp }
-  }
-  dcTemperatureFwd2Return {
-    temperature { value timestamp }
-  }
-  dcTemperatureFwd1Return {
-    temperature { value timestamp }
-  }
-  dcTemperatureAftSupply {
-    temperature { value timestamp }
-  }
-  dcTemperatureRecoveryMix {
-    temperature { value timestamp }
-  }
-  dcTemperatureSupply {
-    temperature { value timestamp }
-  }
-  dcTemperatureFwdReturn {
-    temperature { value timestamp }
-  }
-  dcTemperatureAftReturn {
-    temperature { value timestamp }
-  }
-  dcTemperatureRecovery {
-    temperature { value timestamp }
-  }
-  dcTemperatureRecoveryReturn {
-    temperature { value timestamp }
-  }
-  dcTemperatureFwdSupply {
-    temperature { value timestamp }
-  }
-  dcTemperatureUgridSupply {
-    temperature { value timestamp }
-  }
-  dcTemperatureUgridReturn {
-    temperature { value timestamp }
-  }
-  dcMixFwd {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dcMixAft {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dcMixUgrid {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dcMixRecovery {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dcMixExchanger {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dcFlowAft4 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  dcFlowAft3 {
+  dcFlowAft1 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -566,22 +453,17 @@ export const DC_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dcFlowAft1 {
+  dcFlowAft3 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dcFlowUgrid2 {
+  dcFlowAft4 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dcFlowUgrid1 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  dcFlowFwd2 {
+  dcFlowAftReturn {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -591,7 +473,7 @@ export const DC_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dcFlowAftReturn {
+  dcFlowFwd2 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -606,12 +488,22 @@ export const DC_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  dcFlowUgrid1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  dcFlowUgrid2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
   dcFlowUgridReturn {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dcSwitchAft4 {
+  dcMixAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -619,7 +511,84 @@ export const DC_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  dcSwitchAft3 {
+  dcMixExchanger {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcMixFwd {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcMixRecovery {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcMixUgrid {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcPressureAft {
+    pressure { value timestamp }
+  }
+  dcPressureFwd {
+    pressure { value timestamp }
+  }
+  dcPressureUgrid {
+    pressure { value timestamp }
+  }
+  dcPumpAft {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcPumpFwd {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcPumpUgrid {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dcSwitchAft1 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -635,7 +604,7 @@ export const DC_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  dcSwitchAft1 {
+  dcSwitchAft3 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -643,7 +612,7 @@ export const DC_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  dcSwitchFwd2 {
+  dcSwitchAft4 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -659,7 +628,7 @@ export const DC_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  dcSwitchUgrid2 {
+  dcSwitchFwd2 {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -675,32 +644,67 @@ export const DC_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  dcPressureAft {
-    pressure { value timestamp }
+  dcSwitchUgrid2 {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  dcPressureUgrid {
-    pressure { value timestamp }
+  dcTemperatureAft1Return {
+    temperature { value timestamp }
   }
-  dcPressureFwd {
-    pressure { value timestamp }
+  dcTemperatureAft2Return {
+    temperature { value timestamp }
   }
-  dcBrightloopAft1 {
-    active { value timestamp }
+  dcTemperatureAft3Return {
+    temperature { value timestamp }
   }
-  dcBrightloopAft2 {
-    active { value timestamp }
+  dcTemperatureAft4Return {
+    temperature { value timestamp }
   }
-  dcBrightloopAft3 {
-    active { value timestamp }
+  dcTemperatureAftReturn {
+    temperature { value timestamp }
   }
-  dcBrightloopAft4 {
-    active { value timestamp }
+  dcTemperatureAftSupply {
+    temperature { value timestamp }
   }
-  dcBrightloopFwd1 {
-    active { value timestamp }
+  dcTemperatureFwd1Return {
+    temperature { value timestamp }
   }
-  dcBrightloopFwd2 {
-    active { value timestamp }
+  dcTemperatureFwd2Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwdReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureFwdSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecoveryMix {
+    temperature { value timestamp }
+  }
+  dcTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureSupply {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgrid1Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgrid2Return {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgridReturn {
+    temperature { value timestamp }
+  }
+  dcTemperatureUgridSupply {
+    temperature { value timestamp }
   }
   dcUgrid1 {
     active { value timestamp }
@@ -708,28 +712,12 @@ export const DC_SENSOR_QUERY = `
   dcUgrid2 {
     active { value timestamp }
   }
-  dcDhwExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  mode {
+    mode { value timestamp }
   }
 `;
 
 export const DC_SIMULATION_INPUTS_QUERY = `
-  dcBrightloopFwd1 {
-    heatFlow { value timestamp }
-  }
-  dcBrightloopFwd2 {
-    heatFlow { value timestamp }
-  }
-  dcUgrid1 {
-    heatFlow { value timestamp }
-  }
-  dcUgrid2 {
-    heatFlow { value timestamp }
-  }
   dcBrightloopAft1 {
     heatFlow { value timestamp }
   }
@@ -741,14 +729,26 @@ export const DC_SIMULATION_INPUTS_QUERY = `
   }
   dcBrightloopAft4 {
     heatFlow { value timestamp }
+  }
+  dcBrightloopFwd1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopFwd2 {
+    heatFlow { value timestamp }
+  }
+  dcDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
   }
   dcSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  dcDhwSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
+  dcUgrid1 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid2 {
+    heatFlow { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -756,67 +756,28 @@ export const DC_SIMULATION_INPUTS_QUERY = `
 `;
 
 export const DC_SIMULATION_OUTPUTS_QUERY = `
-  dcSeawaterReturn {
+  dcDhwReturn {
     temperature { value timestamp }
   }
-  dcDhwReturn {
+  dcSeawaterReturn {
     temperature { value timestamp }
   }
 `;
 
 export const DHW_CONTROL_QUERY = `
-  dhwPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
-  }
-  dhwHeatpump {
-    temperatureSetpoint { value timestamp }
-    on { value timestamp }
-  }
   dhwFlowcontrolDc {
     setpoint { value timestamp }
   }
   dhwFlowcontrolDrives {
     setpoint { value timestamp }
   }
-  dhwSwitchTank3Inlet {
-    setpoint { value timestamp }
+  dhwHeatpump {
+    temperatureSetpoint { value timestamp }
+    on { value timestamp }
   }
-  dhwSwitchTank3BoostingReturn {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank3Outlet {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank3BoostingSupply {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank2Inlet {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank2BoostingReturn {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank2Outlet {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank2BoostingSupply {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank1Inlet {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank1BoostingReturn {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank1Outlet {
-    setpoint { value timestamp }
-  }
-  dhwSwitchTank1BoostingSupply {
-    setpoint { value timestamp }
-  }
-  dhwSwitchLowTemperature {
-    setpoint { value timestamp }
+  dhwPump {
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   dhwSwitchHeatpump {
     setpoint { value timestamp }
@@ -824,17 +785,49 @@ export const DHW_CONTROL_QUERY = `
   dhwSwitchHighTemperature {
     setpoint { value timestamp }
   }
+  dhwSwitchLowTemperature {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank1Outlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank2Outlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3BoostingReturn {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3BoostingSupply {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3Inlet {
+    setpoint { value timestamp }
+  }
+  dhwSwitchTank3Outlet {
+    setpoint { value timestamp }
+  }
 `;
 
 export const DHW_CONTROLLER_STATE_QUERY = `
-  dhwTanksController {
-    tank1State { value timestamp }
-    tank2State { value timestamp }
-    tank3State { value timestamp }
-    timeToFill { value timestamp }
-    timeToHot { value timestamp }
-  }
-  dhwPumpFlowController {
+  dhwDcFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -852,7 +845,7 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  dhwDcFlowController {
+  dhwPumpFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -861,260 +854,50 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
+  dhwTanksController {
+    tank1State { value timestamp }
+    tank2State { value timestamp }
+    tank3State { value timestamp }
+    timeToFill { value timestamp }
+    timeToHot { value timestamp }
+  }
 `;
 
 export const DHW_PARAMETERS_QUERY = `
+  boostingMinimumHeat
+  boostingStallCooldown
+  boostingStallWindow
+  boostingStartupGrace
+  dcFlowTuning
+  dcFlowcontrolMinimumSetpoint
+  drivesFlowTuning
+  drivesFlowcontrolMinimumSetpoint
+  fillingTemperatureSetpoint
+  fullLevelLowerBand
   heatpumpBoostingEnabled
-  htBoostingEnabled
   heatpumpFlowSetpoint
   heatpumpTemperatureSetpoint
+  htBoostingEnabled
   htBoostingFlowSetpoint
-  minimumTankTemperature
-  maximumTankTemperature
   htBoostingMinimumDelta
-  boostingStartupGrace
-  boostingStallWindow
-  boostingStallCooldown
-  boostingMinimumHeat
-  drivesFlowcontrolMinimumSetpoint
-  dcFlowcontrolMinimumSetpoint
-  minimumPumpDutypoint
-  fillingTemperatureSetpoint
-  minimumTankLevel
   maximumTankLevel
-  fullLevelLowerBand
+  maximumTankTemperature
+  minimumPumpDutypoint
+  minimumTankLevel
+  minimumTankTemperature
+  pumpFlowTuning
   tank1Enabled
   tank2Enabled
   tank3Enabled
-  pumpFlowTuning
-  dcFlowTuning
-  drivesFlowTuning
 `;
 
 export const DHW_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
-  }
-  dhwPump {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwTemperatureHvacExchangerReturn {
-    temperature { value timestamp }
-  }
-  dhwTemperatureDcReturn {
-    temperature { value timestamp }
-  }
-  dhwTemperatureTank3 {
-    temperature { value timestamp }
-  }
-  dhwTemperatureTank2 {
-    temperature { value timestamp }
-  }
-  dhwTemperatureTank1 {
-    temperature { value timestamp }
-  }
-  dhwTemperatureDrivesReturn {
-    temperature { value timestamp }
-  }
-  dhwTemperatureFreshwaterSupply {
-    temperature { value timestamp }
-  }
-  dhwTemperatureAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  dhwTemperatureBoostingReturn {
-    temperature { value timestamp }
-  }
-  dhwTemperatureBoostingSupply {
-    temperature { value timestamp }
-  }
-  dhwLevelTank1 {
-    level { value timestamp }
-  }
-  dhwLevelTank2 {
-    level { value timestamp }
-  }
-  dhwLevelTank3 {
-    level { value timestamp }
-  }
-  dhwFlowDc {
+  consumersFlowDhw {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  dhwFlowDrives {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  dhwFlowBoosting {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  dhwFlowcontrolDc {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwFlowcontrolDrives {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank3Inlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank3BoostingReturn {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank3Outlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank3BoostingSupply {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank2Inlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank2BoostingReturn {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank2Outlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank2BoostingSupply {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank1Inlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank1BoostingReturn {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank1Outlet {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchTank1BoostingSupply {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchLowTemperature {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchHeatpump {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwSwitchHighTemperature {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  dhwLevelSwitchTank1 {
-    empty { value timestamp }
-  }
-  dhwLevelSwitchTank2 {
-    empty { value timestamp }
-  }
-  dhwLevelSwitchTank3 {
-    empty { value timestamp }
-  }
-  dhwPressure {
-    pressure { value timestamp }
-  }
-  drivesFlowRecovery {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  drivesTemperatureRecovery {
+  consumersTemperatureDhwSupply {
     temperature { value timestamp }
   }
   dcFlowRecovery {
@@ -1124,42 +907,6 @@ export const DHW_SENSOR_QUERY = `
   }
   dcTemperatureRecovery {
     temperature { value timestamp }
-  }
-  consumersFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  consumersTemperatureDhwSupply {
-    temperature { value timestamp }
-  }
-  freshwaterHotwaterFlow {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  freshwaterHotwaterTemperature {
-    temperature { value timestamp }
-  }
-  dhwHeatpump {
-    on { value timestamp }
-  }
-  dhwFreshwaterFlowSupply {
-    flow { value timestamp }
-  }
-  dhwHvacExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
-  }
-  dhwHeatpumpHeat {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
   }
   dhwAdsorptionExchanger {
     temperatureSupply { value timestamp source }
@@ -1189,17 +936,262 @@ export const DHW_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  dhwFlowBoosting {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  dhwFlowDc {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  dhwFlowDrives {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  dhwFlowcontrolDc {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwFlowcontrolDrives {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwFreshwaterFlowSupply {
+    flow { value timestamp }
+  }
+  dhwHeatpump {
+    on { value timestamp }
+  }
+  dhwHeatpumpHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwHvacExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  dhwLevelSwitchTank1 {
+    empty { value timestamp }
+  }
+  dhwLevelSwitchTank2 {
+    empty { value timestamp }
+  }
+  dhwLevelSwitchTank3 {
+    empty { value timestamp }
+  }
+  dhwLevelTank1 {
+    level { value timestamp }
+  }
+  dhwLevelTank2 {
+    level { value timestamp }
+  }
+  dhwLevelTank3 {
+    level { value timestamp }
+  }
+  dhwPressure {
+    pressure { value timestamp }
+  }
+  dhwPump {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchHeatpump {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchHighTemperature {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchLowTemperature {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank1BoostingReturn {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank1BoostingSupply {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank1Inlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank1Outlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank2BoostingReturn {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank2BoostingSupply {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank2Inlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank2Outlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank3BoostingReturn {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank3BoostingSupply {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank3Inlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwSwitchTank3Outlet {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  dhwTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  dhwTemperatureBoostingReturn {
+    temperature { value timestamp }
+  }
+  dhwTemperatureBoostingSupply {
+    temperature { value timestamp }
+  }
+  dhwTemperatureDcReturn {
+    temperature { value timestamp }
+  }
+  dhwTemperatureDrivesReturn {
+    temperature { value timestamp }
+  }
+  dhwTemperatureFreshwaterSupply {
+    temperature { value timestamp }
+  }
+  dhwTemperatureHvacExchangerReturn {
+    temperature { value timestamp }
+  }
+  dhwTemperatureTank1 {
+    temperature { value timestamp }
+  }
+  dhwTemperatureTank2 {
+    temperature { value timestamp }
+  }
+  dhwTemperatureTank3 {
+    temperature { value timestamp }
+  }
+  drivesFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  drivesTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterFlow {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  freshwaterHotwaterTemperature {
+    temperature { value timestamp }
+  }
+  mode {
+    mode { value timestamp }
+  }
 `;
 
 export const DHW_SIMULATION_INPUTS_QUERY = `
-  dhwDrivesSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  dhwDcSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
   dhwAdsorptionSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -1208,9 +1200,20 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
+  dhwDcSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  dhwDrivesSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   dhwFreshwaterSupply {
     temperature { value timestamp }
     overpressure { value timestamp }
+  }
+  dhwHotwaterDemand {
+    flow { value timestamp }
   }
   dhwHvacExchanger {
     heatFlow { value timestamp }
@@ -1219,26 +1222,27 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
   dhwSeawaterSupply {
     temperature { value timestamp }
   }
-  dhwHotwaterDemand {
-    flow { value timestamp }
-  }
   mode {
     mode { value timestamp }
   }
 `;
 
 export const DHW_SIMULATION_OUTPUTS_QUERY = `
-  dhwDrivesReturn {
-    temperature { value timestamp }
-  }
-  dhwDcReturn {
-    temperature { value timestamp }
-  }
   dhwAdsorptionReturn {
     temperature { value timestamp }
   }
   dhwConsumersReturn {
     temperature { value timestamp }
+  }
+  dhwDcReturn {
+    temperature { value timestamp }
+  }
+  dhwDrivesReturn {
+    temperature { value timestamp }
+  }
+  dhwFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
   }
   dhwSeawaterReturn {
     temperature { value timestamp }
@@ -1246,20 +1250,14 @@ export const DHW_SIMULATION_OUTPUTS_QUERY = `
   dhwSeawaterSupply {
     flow { value timestamp }
   }
-  dhwFreshwaterReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
 `;
 
 export const DRIVES_CONTROL_QUERY = `
-  drivesPump1 {
-    dutypoint { value timestamp }
-    on { value timestamp }
+  drivesFlowcontrolPropdriveAft {
+    setpoint { value timestamp }
   }
-  drivesPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
+  drivesFlowcontrolPropdriveFwd {
+    setpoint { value timestamp }
   }
   drivesMixExchanger {
     setpoint { value timestamp }
@@ -1267,17 +1265,13 @@ export const DRIVES_CONTROL_QUERY = `
   drivesMixRecovery {
     setpoint { value timestamp }
   }
-  drivesFlowcontrolPropdriveAft {
-    setpoint { value timestamp }
+  drivesPump1 {
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
-  drivesFlowcontrolPropdriveFwd {
-    setpoint { value timestamp }
-  }
-  drivesSwitchShorepowerSupply {
-    setpoint { value timestamp }
-  }
-  drivesSwitchShorepowerReturn {
-    setpoint { value timestamp }
+  drivesPump2 {
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   drivesSwitchPropdriveAft1 {
     setpoint { value timestamp }
@@ -1289,6 +1283,12 @@ export const DRIVES_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   drivesSwitchPropdriveFwd2 {
+    setpoint { value timestamp }
+  }
+  drivesSwitchShorepowerReturn {
+    setpoint { value timestamp }
+  }
+  drivesSwitchShorepowerSupply {
     setpoint { value timestamp }
   }
 `;
@@ -1298,111 +1298,27 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
 `;
 
 export const DRIVES_PARAMETERS_QUERY = `
-  shorepowerMaximumSupplyTemperature
-  propulsionMaximumSupplyTemperature
-  recoveryTemperature
-  shorepowerFlowSetpoint
-  propulsionDrivesFlowSetpoint
-  pumpTuning
-  recoveryMixTuning
-  heatDumpTuning
   aftFlowBalanceTuning
   fwdFlowBalanceTuning
+  heatDumpTuning
+  propulsionDrivesFlowSetpoint
+  propulsionMaximumSupplyTemperature
+  pumpTuning
+  recoveryMixTuning
+  recoveryTemperature
+  shorepowerFlowSetpoint
+  shorepowerMaximumSupplyTemperature
 `;
 
 export const DRIVES_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
-  }
-  drivesPump1 {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesPump2 {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesTemperatureShorepowerReturn {
-    temperature { value timestamp }
-  }
-  drivesTemperatureSupply {
-    temperature { value timestamp }
-  }
-  drivesTemperatureRecovery {
-    temperature { value timestamp }
-  }
-  drivesTemperatureRecoveryMix {
-    temperature { value timestamp }
-  }
-  drivesTemperatureRecoveryReturn {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdriveAft1Return {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdriveFwd1Return {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdrivesFwdSupply {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdrivesAftSupply {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdriveAft2Return {
-    temperature { value timestamp }
-  }
-  drivesTemperaturePropdriveFwd2Return {
-    temperature { value timestamp }
-  }
-  drivesMixExchanger {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesMixRecovery {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesFlowShorepower {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
+  drivesDhwExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   drivesFlowPropdriveAft1 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  drivesFlowPropdriveFwd2 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  drivesFlowPropdriveFwd1 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -1412,7 +1328,22 @@ export const DRIVES_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  drivesFlowPropdriveFwd1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  drivesFlowPropdriveFwd2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
   drivesFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  drivesFlowShorepower {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -1433,7 +1364,7 @@ export const DRIVES_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  drivesSwitchShorepowerSupply {
+  drivesMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -1441,39 +1372,7 @@ export const DRIVES_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  drivesSwitchShorepowerReturn {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesSwitchPropdriveAft1 {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesSwitchPropdriveAft2 {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesSwitchPropdriveFwd1 {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  drivesSwitchPropdriveFwd2 {
+  drivesMixRecovery {
     positionRel { value timestamp }
     positionAbs { value timestamp }
     anyFailureActive { value timestamp }
@@ -1496,19 +1395,124 @@ export const DRIVES_SENSOR_QUERY = `
   drivesPropdriveFwd2 {
     active { value timestamp }
   }
+  drivesPump1 {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesPump2 {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
   drivesShorepower {
     active { value timestamp }
   }
-  drivesDhwExchanger {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  drivesSwitchPropdriveAft1 {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesSwitchPropdriveAft2 {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesSwitchPropdriveFwd1 {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesSwitchPropdriveFwd2 {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesSwitchShorepowerReturn {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesSwitchShorepowerSupply {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  drivesTemperaturePropdriveAft1Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveAft2Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveFwd1Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdriveFwd2Return {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdrivesAftSupply {
+    temperature { value timestamp }
+  }
+  drivesTemperaturePropdrivesFwdSupply {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecoveryMix {
+    temperature { value timestamp }
+  }
+  drivesTemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  drivesTemperatureShorepowerReturn {
+    temperature { value timestamp }
+  }
+  drivesTemperatureSupply {
+    temperature { value timestamp }
+  }
+  mode {
+    mode { value timestamp }
   }
 `;
 
 export const DRIVES_SIMULATION_INPUTS_QUERY = `
+  drivesDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   drivesOilCoolerAft {
     heatFlow { value timestamp }
   }
@@ -1527,16 +1531,12 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
   drivesPropdriveFwd2 {
     heatFlow { value timestamp }
   }
-  drivesShorepower {
-    heatFlow { value timestamp }
-  }
   drivesSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  drivesDhwSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
+  drivesShorepower {
+    heatFlow { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -1544,34 +1544,34 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
 `;
 
 export const DRIVES_SIMULATION_OUTPUTS_QUERY = `
-  drivesSeawaterReturn {
+  drivesDhwReturn {
     temperature { value timestamp }
   }
-  drivesDhwReturn {
+  drivesSeawaterReturn {
     temperature { value timestamp }
   }
 `;
 
 export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
-  thrustersThrusterAft {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersThrusterFwd {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersSeawaterSupply {
+  consumersAdsorptionSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  thrustersPcs {
+  consumersDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  mode {
     mode { value timestamp }
   }
-  pvtMainFwd {
-    heatFlow { value timestamp }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
   }
   pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtMainFwd {
     heatFlow { value timestamp }
   }
   pvtOwners {
@@ -1581,44 +1581,24 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmFreshwaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersDhwSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersAdsorptionSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  mode {
+  thrustersPcs {
     mode { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersThrusterAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersThrusterFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
   }
 `;
 
 export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
-  thrustersSeawaterReturn {
-    temperature { value timestamp }
-  }
-  thrustersPcmSupply {
-    flow { value timestamp }
-  }
-  thrustersPcmReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pvtPcmReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pvtPcmSupply {
-    flow { value timestamp }
-  }
-  pvtSeawaterReturn {
-    temperature { value timestamp }
-  }
   consumersAdsorptionReturn {
     temperature { value timestamp }
   }
@@ -1633,7 +1613,7 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmThrustersReturn {
+  pcmFreshwaterReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -1641,20 +1621,33 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmFreshwaterReturn {
+  pcmThrustersReturn {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  pvtPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtPcmSupply {
+    flow { value timestamp }
+  }
+  pvtSeawaterReturn {
+    temperature { value timestamp }
+  }
+  thrustersPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersPcmSupply {
+    flow { value timestamp }
+  }
+  thrustersSeawaterReturn {
+    temperature { value timestamp }
   }
 `;
 
 export const PCM_CONTROL_QUERY = `
-  pcmPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
-  }
-  pcmSwitchChargingReturn {
-    setpoint { value timestamp }
-  }
   pcmFlowcontrolModule1 {
     setpoint { value timestamp }
   }
@@ -1667,7 +1660,14 @@ export const PCM_CONTROL_QUERY = `
   pcmFlowcontrolModule4 {
     setpoint { value timestamp }
   }
-  pcmSwitchDischarging {
+  pcmModule1 {
+    on { value timestamp }
+  }
+  pcmPump {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  pcmSwitchChargingReturn {
     setpoint { value timestamp }
   }
   pcmSwitchChargingSupply {
@@ -1676,8 +1676,8 @@ export const PCM_CONTROL_QUERY = `
   pcmSwitchConsumers {
     setpoint { value timestamp }
   }
-  pcmModule1 {
-    on { value timestamp }
+  pcmSwitchDischarging {
+    setpoint { value timestamp }
   }
 `;
 
@@ -1709,60 +1709,56 @@ export const PCM_CONTROLLER_STATE_QUERY = `
 `;
 
 export const PCM_PARAMETERS_QUERY = `
-  pcmDischargeFlow
-  pcmChargeFlow
-  minimumChargingTemperature
-  pumpTuning
   chargingRequested
-  supplyingRequested
   gracePeriod
-  stallDuration
-  retryDelay
+  minimumChargingTemperature
   module1FlowBalanceTuning
   module2FlowBalanceTuning
   module3FlowBalanceTuning
   module4FlowBalanceTuning
+  pcmChargeFlow
+  pcmDischargeFlow
+  pumpTuning
+  retryDelay
+  stallDuration
+  supplyingRequested
 `;
 
 export const PCM_SENSOR_QUERY = `
-  mode {
-    mode { value timestamp }
-  }
-  pcmPump {
+  consumersFlowAdsorption {
     flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
   }
-  pcmTemperatureProducersReturn {
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  consumersTemperatureAdsorptionReturn {
     temperature { value timestamp }
   }
-  pcmTemperatureProducersSupply {
+  consumersTemperatureDhwReturn {
     temperature { value timestamp }
   }
-  pcmTemperatureModule1 {
+  freshwaterFlowPcm {
+    flow { value timestamp }
     temperature { value timestamp }
+    quantity { value timestamp }
   }
-  pcmTemperatureModule2 {
-    temperature { value timestamp }
-  }
-  pcmTemperatureModule3 {
-    temperature { value timestamp }
-  }
-  pcmTemperatureModule4 {
+  freshwaterTemperaturePcmReturn {
     temperature { value timestamp }
   }
   freshwaterTemperaturePcmSupply {
     temperature { value timestamp }
   }
-  freshwaterTemperaturePcmReturn {
-    temperature { value timestamp }
+  mode {
+    mode { value timestamp }
   }
   pcmFlowModule1 {
     flow { value timestamp }
@@ -1783,19 +1779,6 @@ export const PCM_SENSOR_QUERY = `
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
-  }
-  freshwaterFlowPcm {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  pcmSwitchChargingReturn {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
   }
   pcmFlowcontrolModule1 {
     positionRel { value timestamp }
@@ -1828,54 +1811,6 @@ export const PCM_SENSOR_QUERY = `
     anyWarningActive { value timestamp }
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
-  }
-  pcmSwitchDischarging {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pcmSwitchChargingSupply {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pcmSwitchConsumers {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  consumersTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  consumersFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  consumersFlowAdsorption {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  consumersFlowBypass {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  pcmTemperatureConsumersReturn {
-    temperature { value timestamp }
   }
   pcmHeatModule1 {
     temperatureSupply { value timestamp source }
@@ -1912,9 +1847,84 @@ export const PCM_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  pcmPump {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pcmSwitchChargingReturn {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pcmSwitchChargingSupply {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pcmSwitchConsumers {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pcmSwitchDischarging {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pcmTemperatureConsumersReturn {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule1 {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule2 {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule3 {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule4 {
+    temperature { value timestamp }
+  }
+  pcmTemperatureProducersReturn {
+    temperature { value timestamp }
+  }
+  pcmTemperatureProducersSupply {
+    temperature { value timestamp }
+  }
 `;
 
 export const PCM_SIMULATION_INPUTS_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
+  pcmConsumersSupply {
+    temperature { value timestamp }
+  }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   pcmPvtSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -1923,16 +1933,6 @@ export const PCM_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmFreshwaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pcmConsumersSupply {
-    temperature { value timestamp }
-  }
-  mode {
-    mode { value timestamp }
-  }
 `;
 
 export const PCM_SIMULATION_OUTPUTS_QUERY = `
@@ -1940,7 +1940,7 @@ export const PCM_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmThrustersReturn {
+  pcmFreshwaterReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -1948,18 +1948,30 @@ export const PCM_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmFreshwaterReturn {
+  pcmThrustersReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
 `;
 
 export const PVT_CONTROL_QUERY = `
-  pvtPumpMainFwd {
+  pvtMixExchanger {
+    setpoint { value timestamp }
+  }
+  pvtMixMainAft {
+    setpoint { value timestamp }
+  }
+  pvtMixMainFwd {
+    setpoint { value timestamp }
+  }
+  pvtMixOwners {
+    setpoint { value timestamp }
+  }
+  pvtPumpMainAft {
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  pvtPumpMainAft {
+  pvtPumpMainFwd {
     dutypoint { value timestamp }
     on { value timestamp }
   }
@@ -1967,40 +1979,19 @@ export const PVT_CONTROL_QUERY = `
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  pvtMixMainFwd {
-    setpoint { value timestamp }
-  }
-  pvtMixMainAft {
-    setpoint { value timestamp }
-  }
-  pvtMixOwners {
+  pvtSwitchMainAft {
     setpoint { value timestamp }
   }
   pvtSwitchMainFwd {
     setpoint { value timestamp }
   }
-  pvtSwitchMainAft {
-    setpoint { value timestamp }
-  }
   pvtSwitchOwners {
-    setpoint { value timestamp }
-  }
-  pvtMixExchanger {
     setpoint { value timestamp }
   }
 `;
 
 export const PVT_CONTROLLER_STATE_QUERY = `
   pvtHeatDumpController {
-    setpoint { value timestamp }
-    measurement { value timestamp }
-    output { value timestamp }
-    error { value timestamp }
-    enabled { value timestamp }
-    tuning { value timestamp }
-    components { value timestamp }
-  }
-  pvtMainAftWarmupMixController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2018,7 +2009,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  pvtMainFwdWarmupMixController {
+  pvtMainAftWarmupMixController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2036,7 +2027,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  pvtOwnersWarmupMixController {
+  pvtMainFwdWarmupMixController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2054,218 +2045,84 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
+  pvtOwnersWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const PVT_PARAMETERS_QUERY = `
+  heatDumpTuning
+  mainAftMinimumPumpDutypoint
+  mainAftMixTuning
+  mainAftPumpTuning
+  mainFwdMinimumPumpDutypoint
+  mainFwdMixTuning
+  mainFwdPumpTuning
   maximumSupplyTemperature
+  minimumReturnTemperature
+  ownersMinimumPumpDutypoint
+  ownersMixTuning
+  ownersPumpTuning
+  recoveryActivationStringTemperature
   recoveryTemperature
   warmupTemperature
-  recoveryActivationStringTemperature
-  minimumReturnTemperature
-  mainFwdMinimumPumpDutypoint
-  mainAftMinimumPumpDutypoint
-  ownersMinimumPumpDutypoint
-  heatDumpTuning
-  mainFwdMixTuning
-  mainAftMixTuning
-  ownersMixTuning
-  mainFwdPumpTuning
-  mainAftPumpTuning
-  ownersPumpTuning
 `;
 
 export const PVT_SENSOR_QUERY = `
   mode {
     mode { value timestamp }
   }
-  pvtPumpMainFwd {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtPumpMainAft {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtPumpOwners {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-    pressure { value timestamp }
-    energyConsumption { value timestamp }
-    powerInput { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtTemperatureMainFwdReturn {
+  pcmTemperatureProducersSupply {
     temperature { value timestamp }
-  }
-  pvtTemperatureMainFwdSupply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainAftReturn {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainAftSupply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersSupply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersReturn {
-    temperature { value timestamp }
-  }
-  pvtMixMainFwd {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtMixMainAft {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtMixOwners {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtFlowMainFwdRecovery {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
   }
   pvtFlowMainAftRecovery {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  pvtFlowOwnersRecovery {
+  pvtFlowMainAftStrings {
+    flow { value timestamp }
+  }
+  pvtFlowMainFwdRecovery {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  pvtPressureMainFwd {
-    pressure { value timestamp }
+  pvtFlowMainFwdStrings {
+    flow { value timestamp }
   }
-  pvtPressureMainAft {
-    pressure { value timestamp }
-  }
-  pvtPressureOwners {
-    pressure { value timestamp }
-  }
-  pvtPressureSystem {
-    pressure { value timestamp }
-  }
-  pvtPressureMainVacuum {
-    pressure { value timestamp }
-  }
-  pvtPressureOwnersVacuum {
-    pressure { value timestamp }
-  }
-  pvtSwitchMainFwd {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtSwitchMainAft {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtSwitchOwners {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtMixExchanger {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  pvtTemperatureSupply {
+  pvtFlowMainString10 {
+    flow { value timestamp }
     temperature { value timestamp }
-  }
-  pvtPyranometerPs {
-    irradiance { value timestamp }
-  }
-  pvtPyranometerSb {
-    irradiance { value timestamp }
-  }
-  pvtTemperatureMainString11Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString12Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString21Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString22Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString3Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString4Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString51Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString52Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString61Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString62Return {
-    temperature { value timestamp }
+    quantity { value timestamp }
   }
   pvtFlowMainString11 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  pvtFlowMainString111 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  pvtFlowMainString112 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
   pvtFlowMainString12 {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  pvtFlowMainString13 {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
@@ -2310,51 +2167,6 @@ export const PVT_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  pvtTemperatureMainString1Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString2Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString3Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString4Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString5Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString6Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString71Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString72Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString81Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString82Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString9Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString10Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString111Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString112Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString13Return {
-    temperature { value timestamp }
-  }
   pvtFlowMainString71 {
     flow { value timestamp }
     temperature { value timestamp }
@@ -2380,64 +2192,10 @@ export const PVT_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  pvtFlowMainString10 {
+  pvtFlowOwnersRecovery {
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
-  }
-  pvtFlowMainString111 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  pvtFlowMainString112 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  pvtFlowMainString13 {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  pvtTemperatureMainString7Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString8Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString9Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString10Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString11Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString12Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureMainString13Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString1Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString2Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString3Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString4Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString5Return {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString6Return {
-    temperature { value timestamp }
   }
   pvtFlowOwnersString1 {
     flow { value timestamp }
@@ -2469,35 +2227,8 @@ export const PVT_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
-  pvtTemperatureOwnersString1Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString2Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString3Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString4Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString5Supply {
-    temperature { value timestamp }
-  }
-  pvtTemperatureOwnersString6Supply {
-    temperature { value timestamp }
-  }
-  pcmTemperatureProducersSupply {
-    temperature { value timestamp }
-  }
-  pvtPvtMainFwd {
-    power { value timestamp }
-  }
-  pvtPvtMainAft {
-    power { value timestamp }
-  }
-  pvtPvtOwners {
-    power { value timestamp }
+  pvtFlowOwnersStrings {
+    flow { value timestamp }
   }
   pvtMaxTemperatureMainAftStrings {
     temperature { value timestamp }
@@ -2508,39 +2239,94 @@ export const PVT_SENSOR_QUERY = `
   pvtMaxTemperatureOwnersStrings {
     temperature { value timestamp }
   }
-  pvtTemperatureMainAftStringsSupply {
-    temperature { value timestamp }
+  pvtMixExchanger {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtTemperatureMainFwdStringsSupply {
-    temperature { value timestamp }
+  pvtMixMainAft {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtTemperatureOwnersStringsSupply {
-    temperature { value timestamp }
+  pvtMixMainFwd {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtTemperatureMainAftStringsReturn {
-    temperature { value timestamp }
+  pvtMixOwners {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtTemperatureMainFwdStringsReturn {
-    temperature { value timestamp }
+  pvtPressureMainAft {
+    pressure { value timestamp }
   }
-  pvtTemperatureOwnersStringsReturn {
-    temperature { value timestamp }
+  pvtPressureMainFwd {
+    pressure { value timestamp }
   }
-  pvtFlowMainAftStrings {
+  pvtPressureMainVacuum {
+    pressure { value timestamp }
+  }
+  pvtPressureOwners {
+    pressure { value timestamp }
+  }
+  pvtPressureOwnersVacuum {
+    pressure { value timestamp }
+  }
+  pvtPressureSystem {
+    pressure { value timestamp }
+  }
+  pvtPumpMainAft {
     flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtFlowMainFwdStrings {
+  pvtPumpMainFwd {
     flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtFlowOwnersStrings {
+  pvtPumpOwners {
     flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+    pressure { value timestamp }
+    energyConsumption { value timestamp }
+    powerInput { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
   }
-  pvtPvtMainFwdHeat {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
+  pvtPvtMainAft {
+    power { value timestamp }
   }
   pvtPvtMainAftHeat {
     temperatureSupply { value timestamp source }
@@ -2549,6 +2335,19 @@ export const PVT_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  pvtPvtMainFwd {
+    power { value timestamp }
+  }
+  pvtPvtMainFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtOwners {
+    power { value timestamp }
+  }
   pvtPvtOwnersHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
@@ -2556,14 +2355,14 @@ export const PVT_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  pvtPyranometerPs {
+    irradiance { value timestamp }
+  }
+  pvtPyranometerSb {
+    irradiance { value timestamp }
+  }
   pvtReturnTemperature {
     temperature { value timestamp }
-  }
-  pvtTotalFlow {
-    flow { value timestamp }
-  }
-  pvtSeawaterExchangerFlow {
-    flow { value timestamp }
   }
   pvtSeawaterExchanger {
     temperatureSupply { value timestamp source }
@@ -2572,13 +2371,217 @@ export const PVT_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  pvtSeawaterExchangerFlow {
+    flow { value timestamp }
+  }
+  pvtSwitchMainAft {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pvtSwitchMainFwd {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pvtSwitchOwners {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  pvtTemperatureMainAftReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainAftSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainFwdSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString10Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString10Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString111Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString112Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString11Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString11Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString12Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString12Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString13Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString13Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString1Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString21Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString22Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString2Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString3Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString3Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString4Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString4Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString51Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString52Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString5Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString61Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString62Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString6Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString71Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString72Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString7Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString81Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString82Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString8Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString9Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainString9Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString1Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString1Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString2Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString2Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString3Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString3Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString4Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString4Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString5Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString5Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString6Return {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersString6Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersStringsSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureOwnersSupply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureSupply {
+    temperature { value timestamp }
+  }
+  pvtTotalFlow {
+    flow { value timestamp }
+  }
 `;
 
 export const PVT_SIMULATION_INPUTS_QUERY = `
-  pvtMainFwd {
-    heatFlow { value timestamp }
+  mode {
+    mode { value timestamp }
   }
   pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtMainFwd {
     heatFlow { value timestamp }
   }
   pvtOwners {
@@ -2590,9 +2593,6 @@ export const PVT_SIMULATION_INPUTS_QUERY = `
   pvtSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
-  }
-  mode {
-    mode { value timestamp }
   }
 `;
 
@@ -2830,6 +2830,18 @@ export const THRS_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const THRUSTERS_CONTROL_QUERY = `
+  thrustersFlowcontrolAft {
+    setpoint { value timestamp }
+  }
+  thrustersFlowcontrolFwd {
+    setpoint { value timestamp }
+  }
+  thrustersMixExchanger {
+    setpoint { value timestamp }
+  }
+  thrustersMixRecovery {
+    setpoint { value timestamp }
+  }
   thrustersPump1 {
     dutypoint { value timestamp }
     on { value timestamp }
@@ -2838,49 +2850,19 @@ export const THRUSTERS_CONTROL_QUERY = `
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  thrustersMixRecovery {
-    setpoint { value timestamp }
-  }
-  thrustersMixExchanger {
-    setpoint { value timestamp }
-  }
-  thrustersFlowcontrolAft {
-    setpoint { value timestamp }
-  }
-  thrustersFlowcontrolFwd {
-    setpoint { value timestamp }
-  }
-  thrustersSwitchRecovery {
-    setpoint { value timestamp }
-  }
   thrustersSwitchAft {
     setpoint { value timestamp }
   }
   thrustersSwitchFwd {
     setpoint { value timestamp }
   }
+  thrustersSwitchRecovery {
+    setpoint { value timestamp }
+  }
 `;
 
 export const THRUSTERS_CONTROLLER_STATE_QUERY = `
-  thrustersHeatDumpController {
-    setpoint { value timestamp }
-    measurement { value timestamp }
-    output { value timestamp }
-    error { value timestamp }
-    enabled { value timestamp }
-    tuning { value timestamp }
-    components { value timestamp }
-  }
-  thrustersWarmupMixController {
-    setpoint { value timestamp }
-    measurement { value timestamp }
-    output { value timestamp }
-    error { value timestamp }
-    enabled { value timestamp }
-    tuning { value timestamp }
-    components { value timestamp }
-  }
-  thrustersPumpController {
+  thrustersAftFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2898,6 +2880,15 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
+  thrustersFwdFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
   thrustersFwdRecoveryTemperatureController {
     setpoint { value timestamp }
     measurement { value timestamp }
@@ -2907,7 +2898,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  thrustersAftFlowController {
+  thrustersHeatDumpController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2916,7 +2907,16 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  thrustersFwdFlowController {
+  thrustersPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  thrustersWarmupMixController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -2928,25 +2928,84 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
 `;
 
 export const THRUSTERS_PARAMETERS_QUERY = `
-  maximumSupplyTemperature
-  coolingTemperature
-  coolingFlow
-  recoveryTemperature
-  warmupTemperature
-  thrustersMinimumFlow
-  thrustersMaximumFlow
-  pumpTuning
-  warmupMixTuning
-  heatDumpTuning
   aftFlowBalanceTuning
-  fwdFlowBalanceTuning
   aftTemperatureTuning
+  coolingFlow
+  coolingTemperature
+  fwdFlowBalanceTuning
   fwdTemperatureTuning
+  heatDumpTuning
+  maximumSupplyTemperature
+  pumpTuning
+  recoveryTemperature
+  thrustersMaximumFlow
+  thrustersMinimumFlow
+  warmupMixTuning
+  warmupTemperature
 `;
 
 export const THRUSTERS_SENSOR_QUERY = `
   mode {
     mode { value timestamp }
+  }
+  thrustersFlow {
+    flow { value timestamp }
+  }
+  thrustersFlowAft {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  thrustersFlowFwd {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  thrustersFlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  thrustersFlowcontrolAft {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  thrustersFlowcontrolFwd {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  thrustersMixExchanger {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  thrustersMixRecovery {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+  thrustersPressureDischarge {
+    pressure { value timestamp }
+  }
+  thrustersPressureSystem {
+    pressure { value timestamp }
   }
   thrustersPump1 {
     flow { value timestamp }
@@ -2972,67 +3031,12 @@ export const THRUSTERS_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  thrustersTemperatureAft {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureFwd {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureSupply {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureRecoveryMix {
-    temperature { value timestamp }
-  }
-  thrustersMixRecovery {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  thrustersMixExchanger {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  thrustersFlowFwd {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  thrustersFlowAft {
-    flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
-  }
-  thrustersFlowcontrolAft {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  thrustersFlowcontrolFwd {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
-  }
-  thrustersSwitchRecovery {
-    positionRel { value timestamp }
-    positionAbs { value timestamp }
-    anyFailureActive { value timestamp }
-    anyWarningActive { value timestamp }
-    feedbackFailure { value timestamp }
-    externalOutOfRange { value timestamp }
+  thrustersSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   thrustersSwitchAft {
     positionRel { value timestamp }
@@ -3050,25 +3054,34 @@ export const THRUSTERS_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
-  thrustersFlowRecovery {
-    flow { value timestamp }
+  thrustersSwitchRecovery {
+    positionRel { value timestamp }
+    positionAbs { value timestamp }
+    anyFailureActive { value timestamp }
+    anyWarningActive { value timestamp }
+    feedbackFailure { value timestamp }
+    externalOutOfRange { value timestamp }
+  }
+  thrustersTemperatureAft {
     temperature { value timestamp }
-    quantity { value timestamp }
   }
-  thrustersPressureDischarge {
-    pressure { value timestamp }
+  thrustersTemperatureFwd {
+    temperature { value timestamp }
   }
-  thrustersPressureSystem {
-    pressure { value timestamp }
+  thrustersTemperaturePreCooler {
+    temperature { value timestamp }
+  }
+  thrustersTemperatureRecovery {
+    temperature { value timestamp }
+  }
+  thrustersTemperatureRecoveryMix {
+    temperature { value timestamp }
+  }
+  thrustersTemperatureSupply {
+    temperature { value timestamp }
   }
   thrustersThrusterAft {
     active { value timestamp }
-  }
-  thrustersThrusterFwd {
-    active { value timestamp }
-  }
-  thrustersPcs {
-    mode { value timestamp }
   }
   thrustersThrusterAftHeat {
     temperatureSupply { value timestamp source }
@@ -3077,23 +3090,10 @@ export const THRUSTERS_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
+  thrustersThrusterFwd {
+    active { value timestamp }
+  }
   thrustersThrusterFwdHeat {
-    temperatureSupply { value timestamp source }
-    temperatureReturn { value timestamp source }
-    flow { value timestamp source }
-    heat { value timestamp }
-    deltaT { value timestamp }
-  }
-  thrustersTemperatureRecovery {
-    temperature { value timestamp }
-  }
-  thrustersTemperaturePreCooler {
-    temperature { value timestamp }
-  }
-  thrustersFlow {
-    flow { value timestamp }
-  }
-  thrustersSeawaterExchanger {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }
@@ -3103,6 +3103,19 @@ export const THRUSTERS_SENSOR_QUERY = `
 `;
 
 export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
+  mode {
+    mode { value timestamp }
+  }
+  thrustersPcmSupply {
+    temperature { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   thrustersThrusterAft {
     heatFlow { value timestamp }
     active { value timestamp }
@@ -3111,30 +3124,17 @@ export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
     heatFlow { value timestamp }
     active { value timestamp }
   }
-  thrustersSeawaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  thrustersPcmSupply {
-    temperature { value timestamp }
-  }
-  thrustersPcs {
-    mode { value timestamp }
-  }
-  mode {
-    mode { value timestamp }
-  }
 `;
 
 export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
-  thrustersSeawaterReturn {
+  thrustersPcmReturn {
     temperature { value timestamp }
+    flow { value timestamp }
   }
   thrustersPcmSupply {
     flow { value timestamp }
   }
-  thrustersPcmReturn {
+  thrustersSeawaterReturn {
     temperature { value timestamp }
-    flow { value timestamp }
   }
 `;
