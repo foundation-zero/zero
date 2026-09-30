@@ -2,7 +2,7 @@ import json
 import logging
 from asyncio import Event, Future, TaskGroup, gather, timeout
 from collections import defaultdict
-from collections.abc import Awaitable, Callable, Coroutine, Mapping
+from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
 from inspect import isawaitable
 from typing import (
@@ -10,8 +10,7 @@ from typing import (
     cast,
 )
 
-from aiomqtt import Client, Topic
-from paho.mqtt.client import topic_matches_sub
+from aiomqtt import Client
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -41,6 +40,8 @@ class MqttReceiveMapping[M](Protocol):
 
     def subscribe_topics(self) -> set[str]: ...
 
+    def receive_topics(self) -> set[str]: ...
+
     def handle_message(self, topic: str, json: str | bytes): ...
 
     def result(self) -> M | None: ...
@@ -66,6 +67,16 @@ class MappingForModule[M](Protocol):
         module_name: str,
         topic_suffix: str | None = None,
     ) -> MqttMapping[M]: ...
+
+
+def _mappings_by_topic[R: MqttReceiveMapping](
+    mappings: Iterable[R],
+) -> dict[str, list[R]]:
+    mappings_by_topic: defaultdict[str, list[R]] = defaultdict(list)
+    for mapping in mappings:
+        for topic in mapping.receive_topics():
+            mappings_by_topic[topic].append(mapping)
+    return dict(mappings_by_topic)
 
 
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
@@ -135,6 +146,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
 
     def subscribe_topics(self) -> set[str]:
         return set(self._subscribe_topics.keys())
+
+    def receive_topics(self) -> set[str]:
+        return set(self._topic_to_field.keys())
 
     def handle_message(self, topic: str, json: str | bytes):
         if topic not in self._topic_to_field:
@@ -207,6 +221,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     def subscribe_topics(self) -> set[str]:
         return {self._topic}
 
+    def receive_topics(self) -> set[str]:
+        return {self._topic}
+
     def handle_message(self, topic: str, json: str | bytes):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
@@ -276,6 +293,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             )
             for name, module_cls in clss.items()
         }
+        self._mappings_by_topic = _mappings_by_topic(self._mappings.values())
         self._allow_incomplete = allow_incomplete
 
     def split_to_topics(self, model: T) -> dict[str, str]:
@@ -292,13 +310,12 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             for topic in mapping.subscribe_topics()
         }
 
+    def receive_topics(self) -> set[str]:
+        return set(self._mappings_by_topic.keys())
+
     def handle_message(self, topic: str, json: str | bytes):
-        for mapping in self._mappings.values():
-            if any(
-                topic_matches_sub(subscribed_topic, topic)
-                for subscribed_topic in mapping.subscribe_topics()
-            ):
-                mapping.handle_message(topic, json)
+        for mapping in self._mappings_by_topic.get(topic, []):
+            mapping.handle_message(topic, json)
 
     def result(self) -> T | None:
         mapping_result: dict[str, ThrsValues] = {
@@ -760,7 +777,6 @@ class MqttConnector:
     def __init__(self, mqtt_client: Client):
         self._mqtt_client = mqtt_client
         self._listeners: list[MqttReceiveMapping[object]] = []
-        self._topic_listeners: dict[str, list[MqttReceiveMapping[object]]] = {}
         self._started = False
 
     def _register_listener[T](self, receiver: MqttReceiveMapping[T]) -> None:
@@ -778,9 +794,10 @@ class MqttConnector:
         return _publish
 
     async def _listen(self):
+        listeners_by_topic = _mappings_by_topic(self._listeners)
         async for message in self._mqtt_client.messages:
             if message.payload != b"":
-                for mapping in self._listeners_for(message.topic):
+                for mapping in listeners_by_topic.get(message.topic.value, []):
                     if not isinstance(message.payload, str | bytes):
                         raise ValueError(
                             f"Expected string or bytes, got {type(message.payload)}"
@@ -791,17 +808,6 @@ class MqttConnector:
                         logger.exception(
                             "Failed handling MQTT message, message ignored"
                         )
-
-    def _listeners_for(self, topic: Topic) -> list[MqttReceiveMapping[object]]:
-        # Listeners are fixed once started, so matching each topic once is enough
-        if topic.value not in self._topic_listeners:
-            self._topic_listeners[topic.value] = [
-                mapping
-                for mapping in self._listeners
-                for subscribe_topic in mapping.subscribe_topics()
-                if topic.matches(subscribe_topic)
-            ]
-        return self._topic_listeners[topic.value]
 
     async def _publish_by_mapping[T](
         self, mapping: MqttSendMapping[T], value: T, qos: int, retain: bool

@@ -142,6 +142,14 @@ class TestPartialMqttMapping:
             "base/flow-topic",
         }
 
+    def test_receive_topics(self):
+        mapping = PartialMqttMapping(ValuesWithTopics, "base", "module")
+
+        assert mapping.receive_topics() == {
+            "base/module/go-with-the",
+            "base/flow-topic",
+        }
+
     def test_builder(self):
         mapping = PartialMqttMapping(SimpleInOut, "base", "module")
 
@@ -176,6 +184,11 @@ class TestDirectMqttMapping:
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
 
         assert mapping.subscribe_topics() == {"sensors/data"}
+
+    def test_receive_topics(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+
+        assert mapping.receive_topics() == {"sensors/data"}
 
     def test_builder(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
@@ -363,6 +376,30 @@ class TestCombinedMqttMapping:
 
         assert mapping_no_suffix.subscribe_topics() == {"/500000-thrs/module1/+"}
 
+    def test_receive_topics(self):
+        clss = {"module1": ValuesWithTopics, "module2": ValuesWithTopics}
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
+
+        assert mapping.receive_topics() == {
+            "/500000-thrs/module1/go-with-the",
+            "/500000-thrs/module2/go-with-the",
+            "/flow-topic",
+        }
+
+    def test_handle_message_reaches_only_modules_receiving_the_topic(self):
+        clss = {"module1": ValuesWithTopics, "module2": ValuesWithTopics}
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
+        payload = sensor_value(1, 2).model_dump_json(by_alias=True)
+
+        mapping.handle_message("/500000-thrs/module1/go-with-the", payload)
+        mapping.handle_message("/flow-topic", payload)
+        assert mapping.result() is None
+
+        mapping.handle_message("/500000-thrs/module2/go-with-the", payload)
+        result = mapping.result()
+        assert result
+        assert result.values.keys() == {"module1", "module2"}
+
     def test_builder(self):
         clss = {"module1": SimpleInOut}
         mapping = ModuleMqttMapping(clss, PartialMqttMapping)
@@ -420,6 +457,28 @@ def combined_values(sensor1: FlowSensor, sensor2: FlowSensor):
             "module": ValuesWithTopics(go_with_the=sensor1, go_with_the_topic=sensor2)
         }
     )
+
+
+async def test_mqtt_connector_dispatches_only_received_topics(mock_mqtt_client):
+    connector = MqttConnector(mock_mqtt_client)
+    mapping = PartialMqttMapping(ValuesWithTopics, "base", "module")
+    connector._register_listener(mapping)
+    await mock_mqtt_client.receive_messages(
+        connector,
+        {
+            "base/module/go-with-the": sensor_value(1, 2),
+            "base/module/unknown-component": sensor_value(3, 4),
+        },
+    )
+
+    with mock.patch.object(
+        mapping, "handle_message", wraps=mapping.handle_message
+    ) as handle_message:
+        await (await connector.run())
+
+    assert [call.args[0] for call in handle_message.call_args_list] == [
+        "base/module/go-with-the"
+    ]
 
 
 async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
