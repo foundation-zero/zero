@@ -64,6 +64,10 @@ class PrintAsyncapiCmd(BaseModel):
     ] = None
 
     def cli_cmd(self):
+        # stdout carries the document, so warnings go to stderr.
+        for handler in logging.getLogger().handlers:
+            if isinstance(handler, logging.StreamHandler):
+                handler.setStream(sys.stderr)
         paths = [
             Path(f"io_lists/{file_name}")
             for source, file_names in io_lists
