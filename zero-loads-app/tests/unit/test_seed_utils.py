@@ -2,10 +2,29 @@ import polars as pl
 import pytest
 
 from sailpack.seed_utils import (
+    add_derived_loads,
     assert_port_tack,
     extract_sail_abbreviations,
     mirror_side,
 )
+
+
+def test_add_derived_loads():
+    port_tack_loads = pl.DataFrame(
+        {
+            "Calculation ID": ["LC1"],
+            "blade-adjuster-load": [30.0],
+            "blade-cunningham-load": [20.0],
+            "main-runner-tail-ps-load": [13.0],
+            "mizzen-runner-tail-ps-load": [5.0],
+        }
+    )
+
+    derived = add_derived_loads(port_tack_loads).row(0, named=True)
+
+    assert derived["main-headstay-combined-load"] == 50.0
+    assert derived["main-runner-block-ps-load"] == 26.0
+    assert derived["mizzen-runner-block-ps-load"] == pytest.approx(9.563, abs=1e-3)
 
 
 @pytest.mark.parametrize(

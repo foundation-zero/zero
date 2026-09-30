@@ -75,6 +75,10 @@ main-headstay-combined-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,p
 main-headstay-combined-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,47.887,47.5,52.6
 main-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,12.24,11.0,14.75
 main-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,12.24,11.0,14.75
+main-runner-block-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,26.77,26.0,28.0
+main-runner-block-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,26.848,26.0,28.0
+main-runner-block-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,26.77,26.0,28.0
+main-runner-block-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,26.848,26.0,28.0
 main-runner-stay-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,23.828,23.0,26.0
 main-runner-stay-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,25.865,23.0,26.0
 main-runner-stay-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,23.828,23.0,26.0
@@ -113,6 +117,16 @@ mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240
 mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,13.692,13.0,14.5
 mizzen-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,9.19,8.0,9.0
 mizzen-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,9.19,8.0,9.0
+mizzen-runner-block-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,9.752,9.563,10.519
+mizzen-runner-block-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,9.755,9.563,10.519
+mizzen-runner-block-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,9.891,9.563,10.519
+mizzen-runner-block-ps-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,9.635,9.563,10.519
+mizzen-runner-block-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,10.136,9.563,10.519
+mizzen-runner-block-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,9.752,9.563,10.519
+mizzen-runner-block-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,9.755,9.563,10.519
+mizzen-runner-block-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,9.891,9.563,10.519
+mizzen-runner-block-sb-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,9.635,9.563,10.519
+mizzen-runner-block-sb-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,10.136,9.563,10.519
 mizzen-runner-stay-ps-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,9.117,9.0,11.5
 mizzen-runner-stay-sb-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,9.117,9.0,11.5
 mizzen-runner-tail-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,5.099,5.0,5.5

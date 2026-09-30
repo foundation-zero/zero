@@ -788,7 +788,7 @@ class MainRunnerPs(LoadsModel, ABC):
         Field(validation_alias="i_blockLoad"),
         VariableMeta(
             name="block_load",
-            display_name="Runner PT",
+            display_name="Runner Block PT",
             technical_name="main-runner-block-ps-load",
         ),
     ]
@@ -820,7 +820,7 @@ class MainRunnerSb(LoadsModel, ABC):
         Field(validation_alias="i_blockLoad"),
         VariableMeta(
             name="block_load",
-            display_name="Runner SB",
+            display_name="Runner Block SB",
             technical_name="main-runner-block-sb-load",
         ),
     ]
@@ -1161,7 +1161,7 @@ class MizzenRunnerPs(LoadsModel, ABC):
         Field(validation_alias="i_blockLoad"),
         VariableMeta(
             name="block_load",
-            display_name="Runner PT",
+            display_name="Runner Block PT",
             technical_name="mizzen-runner-block-ps-load",
         ),
     ]
@@ -1193,7 +1193,7 @@ class MizzenRunnerSb(LoadsModel, ABC):
         Field(validation_alias="i_blockLoad"),
         VariableMeta(
             name="block_load",
-            display_name="Runner SB",
+            display_name="Runner Block SB",
             technical_name="mizzen-runner-block-sb-load",
         ),
     ]

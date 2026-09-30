@@ -1,3 +1,4 @@
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -29,6 +30,10 @@ SAIL_ABBREVIATION_ALIASES = {"MH0": "C0", "TSONLY": "TS"}
 MAPPING_FILE_NAME = "sailpack_mapping.csv"
 
 NEWTON_PER_TONNE_FORCE = 9806.65
+
+# Runner tail purchase and tail angle at the mizzen runner block, from the Vitters PLC formulas.
+RUNNER_BLOCK_PURCHASE = 2
+MIZZEN_RUNNER_TAIL_ANGLE_DEGREES = 17
 
 
 def escape_dollar_quoted_json(value: str) -> str:
@@ -194,11 +199,7 @@ def extract_reference_values(
             on="Technical name",
             values="value",
         )
-        .with_columns(
-            (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
-                "main-headstay-combined-load"
-            ),
-        )
+        .pipe(add_derived_loads)
         .unpivot(index="Calculation ID")
         .with_columns(pl.lit("port").alias("tack"))
     )
@@ -209,6 +210,23 @@ def extract_reference_values(
     )
 
     return pl.concat([port_tack_reference_values, starboard_tack_reference_values])
+
+
+def add_derived_loads(port_tack_loads: pl.DataFrame) -> pl.DataFrame:
+    mizzen_tail_angle = math.radians(MIZZEN_RUNNER_TAIL_ANGLE_DEGREES)
+    return port_tack_loads.with_columns(
+        (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
+            "main-headstay-combined-load"
+        ),
+        (RUNNER_BLOCK_PURCHASE * pl.col("main-runner-tail-ps-load")).alias(
+            "main-runner-block-ps-load"
+        ),
+        (
+            RUNNER_BLOCK_PURCHASE
+            * pl.col("mizzen-runner-tail-ps-load")
+            * math.cos(mizzen_tail_angle)
+        ).alias("mizzen-runner-block-ps-load"),
+    )
 
 
 def mirror_side(technical_name: str) -> str:

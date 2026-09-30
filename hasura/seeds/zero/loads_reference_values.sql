@@ -699,6 +699,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": null,
@@ -836,6 +856,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 6.88111524320493,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1209,6 +1249,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -1346,6 +1406,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 6.88111524320493,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1719,6 +1799,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 19.07236416105398,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 18.071410726394845,
@@ -1856,6 +1956,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.3493541811588514,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -2229,6 +2349,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 19.07236416105398,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -2366,6 +2506,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.3493541811588514,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -2739,6 +2899,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 20.539735791529218,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.565070640840654,
@@ -2876,6 +3056,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -3249,6 +3449,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 20.539735791529218,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -3386,6 +3606,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -3759,6 +3999,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 9.689343455716275,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 8.779756593739963,
@@ -3896,6 +4156,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 3.3906294570352506,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -4269,6 +4549,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 9.689343455716275,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -4406,6 +4706,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 3.3906294570352506,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -4779,6 +5099,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 14.908658920222502,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.4710222145177,
@@ -4916,6 +5256,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.928598902895676,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
@@ -5289,6 +5649,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 14.908658920222502,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -5426,6 +5806,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.928598902895676,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412",
@@ -5799,6 +6199,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 23.47978157678718,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 22.44538145034237,
@@ -5936,6 +6356,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 3.3639100877160777,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -6309,6 +6749,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 23.47978157678718,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -6446,6 +6906,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 3.3639100877160777,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -6819,6 +7299,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 16.63157143367001,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.330173912600124,
@@ -6956,6 +7456,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 7.952815494364476,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -7329,6 +7849,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 16.63157143367001,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -7466,6 +8006,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 7.952815494364476,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -7839,6 +8399,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 20.0600612849444,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 18.779297721444124,
@@ -7976,6 +8556,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 4.269248134282521,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -8349,6 +8949,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 20.0600612849444,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -8486,6 +9106,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 4.269248134282521,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -8859,6 +9499,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 19.50064497050471,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.45404393957162,
@@ -8996,6 +9656,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 3.5499705134860875,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -9369,6 +10049,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 19.50064497050471,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -9506,6 +10206,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 3.5499705134860875,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -9879,6 +10599,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 19.648299878143913,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.600679130997843,
@@ -10016,6 +10756,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -10389,6 +11149,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 19.648299878143913,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -10526,6 +11306,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -10899,6 +11699,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 22.464348171903758,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 21.51866335598803,
@@ -11036,6 +11856,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 5.280488498661456,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -11409,6 +12249,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 22.464348171903758,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -11546,6 +12406,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 5.280488498661456,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -11919,6 +12799,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": null,
@@ -12056,6 +12956,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
@@ -12429,6 +13349,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -12566,6 +13506,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410",
@@ -12939,6 +13899,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 18.745035256688062,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 12.477451525240525,
@@ -13076,6 +14056,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 7.1050118561860325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -13449,6 +14449,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 18.745035256688062,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -13586,6 +14606,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 7.1050118561860325,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -13959,6 +14999,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 7.620135316341463,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.602188310993051,
@@ -14096,6 +15156,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.6173280019219476,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -14469,6 +15549,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 7.620135316341463,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -14606,6 +15706,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.6173280019219476,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -14979,6 +16099,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 18.44911361168187,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 11.058618386503037,
@@ -15116,6 +16256,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 7.889625161084096,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -15489,6 +16649,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 18.44911361168187,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -15626,6 +16806,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 7.889625161084096,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -15999,6 +17199,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 9.674455599006796,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.65161395583609,
@@ -16136,6 +17356,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.9646798030712023,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -16509,6 +17749,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 9.674455599006796,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -16646,6 +17906,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.9646798030712023,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -17019,6 +18299,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 10.197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.507252731564805,
@@ -17156,6 +18456,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 5.8509567852204505,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -17529,6 +18849,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 10.197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -17666,6 +19006,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 5.8509567852204505,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -18039,6 +19399,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 10.197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 6.284307077340376,
@@ -18176,6 +19556,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 5.8509567852204505,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -18549,6 +19949,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 10.197162129779283,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -18686,6 +20106,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 5.8509567852204505,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -19059,6 +20499,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 14.592342950956748,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 9.405658405265815,
@@ -19196,6 +20656,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -19569,6 +21049,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 14.592342950956748,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -19706,6 +21206,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -20079,6 +21599,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 18.75176538369372,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.438365802797081,
@@ -20216,6 +21756,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -20589,6 +22149,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 18.75176538369372,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -20726,6 +22306,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -21099,6 +22699,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 17.09085161599527,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 14.069432476941667,
@@ -21236,6 +22856,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 9.506244520840506,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -21609,6 +23249,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 17.09085161599527,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -21746,6 +23406,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 9.506244520840506,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -22119,6 +23799,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 16.543671896111313,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 12.802842968801782,
@@ -22256,6 +23956,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 3.2638587266888077,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
@@ -22629,6 +24349,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 16.543671896111313,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -22766,6 +24506,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 3.2638587266888077,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
@@ -23139,6 +24899,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 23.758571989415348,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 7.339509414529936,
@@ -23276,6 +25056,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.1905982203865366,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
@@ -23649,6 +25449,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 23.758571989415348,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -23786,6 +25606,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.1905982203865366,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418",
@@ -24159,6 +25999,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 17.616617295406687,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 10.568032916439355,
@@ -24296,6 +26156,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 2.9640947073926798,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
@@ -24669,6 +26549,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 17.616617295406687,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -24806,6 +26706,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 2.9640947073926798,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412",
@@ -25179,6 +27099,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "port",
+    "target": 20.015805601301157,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
     "target": 19.175049583700858,
@@ -25316,6 +27256,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "port",
+    "target": 7.635693636605528,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "port",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
@@ -25689,6 +27649,26 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "main-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 20.015805601301157,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 26.0,
+    "alarm_high": 28.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "starboard",
     "target": null,
@@ -25826,6 +27806,26 @@ reference_payload AS (
     "warning_low": null,
     "warning_high": 8.0,
     "alarm_high": 9.0
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-block-ps-load",
+    "tack": "starboard",
+    "target": null,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "mizzen-runner-block-sb-load",
+    "tack": "starboard",
+    "target": 7.635693636605528,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563,
+    "alarm_high": 10.519
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
