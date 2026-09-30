@@ -246,6 +246,32 @@ WITH load_case_payload AS (
     ]
   },
   {
+    "id": "LC66_TSOnly_TWS45_TWA45",
+    "name": "LC66_TSOnly_TWS45_TWA45",
+    "tws": 45.0,
+    "twa": -45.0,
+    "aws": 51.88,
+    "awa": 36.4,
+    "bsp": 10.0,
+    "heel": 13.0,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "id": "LC66_TSOnly_TWS45_TWA70",
+    "name": "LC66_TSOnly_TWS45_TWA70",
+    "tws": 45.0,
+    "twa": -70.0,
+    "aws": 49.48,
+    "awa": 56.5,
+    "bsp": 12.0,
+    "heel": 13.0,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
     "id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "name": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "tws": 24.0,

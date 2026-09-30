@@ -1,7 +1,24 @@
 import polars as pl
 import pytest
 
-from sailpack.seed_utils import assert_port_tack, mirror_side
+from sailpack.seed_utils import (
+    assert_port_tack,
+    extract_sail_abbreviations,
+    mirror_side,
+)
+
+
+@pytest.mark.parametrize(
+    ("calculation_id", "sails"),
+    [
+        ("LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410", ["B", "M1R", "MZ2R"]),
+        ("LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411", ["C0", "FM", "FMZ"]),
+        ("LC66_TSOnly_TWS45_TWA70", ["TS"]),
+        ("LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test", ["FM", "B"]),
+    ],
+)
+def test_extract_sail_abbreviations(calculation_id: str, sails: list[str]):
+    assert extract_sail_abbreviations(calculation_id) == sails
 
 
 @pytest.mark.parametrize(
