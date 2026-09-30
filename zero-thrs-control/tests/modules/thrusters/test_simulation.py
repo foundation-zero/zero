@@ -1,12 +1,15 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from fmpy.fmi1 import FMICallException
+from pydantic import ValidationError
 from pytest import fixture
 
 from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
 from tests.modules.thrusters.conftest import ThrustersSimulation
+from thrs.control.modules.thrusters import ThrustersControl
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
@@ -14,8 +17,6 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.simulation import Simulation
-from thrs.simulation.fmu import Fmu
-from thrs.simulation.models.fmu_paths import thrusters_path
 
 
 def test_computed_collection(
@@ -41,7 +42,14 @@ def test_simulation(simulation, simulation_inputs, control, alarms):
     assert result["time"].len() == 20
 
 
-@fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))
+@fixture(
+    params=list(
+        simulator_input_field_setters(
+            ThrustersSimulationInputs,
+            ignore=["mode"],  # Not a physical quantity
+        )
+    )
+)
 def incorrect_simulation_inputs(
     simulation_inputs: ThrustersSimulationInputs, request: pytest.FixtureRequest
 ) -> ThrustersSimulationInputs:
@@ -49,27 +57,28 @@ def incorrect_simulation_inputs(
     return simulation_inputs
 
 
-def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
-    with Fmu(thrusters_path) as fmu:
-        simulation = Simulation(
-            ThrustersSensorValues,
-            ThrustersSimulationOutputs,
-            fmu,
-            incorrect_simulation_inputs,
-            datetime.now(UTC),
-            timedelta(seconds=5),
-        )
+def test_thrusters_simulation_inputs(
+    incorrect_simulation_inputs: ThrustersSimulationInputs,
+    fmu,
+    control: ThrustersControl,
+):
+    simulation = Simulation(
+        ThrustersSensorValues,
+        ThrustersSimulationOutputs,
+        fmu,
+        incorrect_simulation_inputs,
+        datetime.now(UTC),
+        timedelta(seconds=5),
+    )
 
-        control_values, _ = control.initial()
+    control_values, _ = control.initial()
 
-        control_values.thrusters_pump1.dutypoint.value = 1
-        control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
-        control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
-        control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
-        control_values.thrusters_pump1.on.value = True
+    control_values.thrusters_pump1.dutypoint.value = 1
+    control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
+    control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
+    control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
+    control_values.thrusters_pump1.on.value = True
 
-        with pytest.raises(Exception):
-            for _i in range(100):
-                simulation.tick(
-                    control._current_values,
-                )
+    with pytest.raises((ValidationError, FMICallException)):
+        for _i in range(100):
+            simulation.tick(control_values)
