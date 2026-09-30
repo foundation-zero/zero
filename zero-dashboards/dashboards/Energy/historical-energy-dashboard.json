@@ -23,7 +23,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "description": "Battery state of charge and daily net consumption/production",
@@ -328,7 +328,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -372,7 +372,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -402,7 +402,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -432,7 +432,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -462,7 +462,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -515,7 +515,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -718,7 +718,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -784,7 +784,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "description": "Total energy consumption per group and sub group",
@@ -831,7 +831,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -943,7 +943,7 @@
           "value": "1 Jan 1970"
         },
         "datasource": {
-          "type": "grafana-postgresql-datasource",
+          "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
         "definition": "SELECT to_char(hour, 'MM_DD Mon YYYY') AS day \nFROM energy.electrical_soc_hourly\nWHERE hour > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
@@ -969,7 +969,7 @@
           "value": "20"
         },
         "datasource": {
-          "type": "grafana-postgresql-datasource",
+          "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
         "definition": "SELECT\n  ARG_MAX(avg_daily_consumption,\n  avg_daily_consumption_timestamp)\nFROM energy.energy_metrics",
