@@ -2,10 +2,13 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
+    ThrustersControllerState,
+    ThrustersControlMode,
     ThrustersParameters,
 )
 from thrs.input_output.base import Stamped
@@ -32,6 +35,16 @@ type ThrustersSimulation = Simulation[
     ThrustersControlValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
+]
+
+type ThrustersRunner = SimulationTestRunner[
+    ThrustersSensorValues,
+    ThrustersControlValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+    ThrustersParameters,
+    ThrustersControlMode,
+    ThrustersControllerState,
 ]
 
 
@@ -83,3 +96,13 @@ def fmu():
 @fixture
 def alarms() -> ThrustersAlarms:
     return ThrustersAlarms()
+
+
+@fixture
+def runner(
+    control: ThrustersControl,
+    simulation: ThrustersSimulation,
+    simulation_inputs: ThrustersSimulationInputs,
+    alarms: ThrustersAlarms,
+) -> ThrustersRunner:
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
