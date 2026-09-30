@@ -452,7 +452,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_max_temperature_main_aft_strings(self) -> sensor.CalculatedTemperature:
+    def pvt_max_temperature_main_fwd_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string1_1_return,
@@ -480,7 +480,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_max_temperature_main_fwd_strings(self) -> sensor.CalculatedTemperature:
+    def pvt_max_temperature_main_aft_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string7_1_return,
@@ -533,7 +533,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_temperature_main_aft_strings_supply(self) -> sensor.CalculatedTemperature:
+    def pvt_temperature_main_fwd_strings_supply(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_weighted_sensors(
             [
                 self.pvt_flow_main_string1_1.flow,
@@ -568,7 +568,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_temperature_main_fwd_strings_supply(self) -> sensor.CalculatedTemperature:
+    def pvt_temperature_main_aft_strings_supply(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_weighted_sensors(
             [
                 self.pvt_flow_main_string7_1.flow,
@@ -630,7 +630,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_temperature_main_aft_strings_return(self) -> sensor.CalculatedTemperature:
+    def pvt_temperature_main_fwd_strings_return(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_weighted_sensors(
             [
                 self.pvt_flow_main_string1_1.flow,
@@ -665,7 +665,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_temperature_main_fwd_strings_return(self) -> sensor.CalculatedTemperature:
+    def pvt_temperature_main_aft_strings_return(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_weighted_sensors(
             [
                 self.pvt_flow_main_string7_1.flow,
@@ -727,7 +727,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_flow_main_aft_strings(self) -> sensor.CalculatedFlow:
+    def pvt_flow_main_fwd_strings(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow.from_sensors(
             [
                 self.pvt_flow_main_string1_1,
@@ -749,7 +749,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
     )
     @property
-    def pvt_flow_main_fwd_strings(self) -> sensor.CalculatedFlow:
+    def pvt_flow_main_aft_strings(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow.from_sensors(
             [
                 self.pvt_flow_main_string7_1,

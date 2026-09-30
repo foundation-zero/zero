@@ -270,7 +270,10 @@ def test_flow_cooling(
             fwd=None if fwd_active else OFF,
         )
     )
-    cooling_flow = control.parameters.cooling_flow
+    cooling_flow = 20
+    control.update_parameters(
+        control.parameters.model_copy(update={"cooling_flow": cooling_flow})
+    )
 
     def expected_flow(active: bool) -> float:
         return cooling_flow if active else 0
@@ -354,6 +357,9 @@ def test_cooldown(
     control: ThrustersControl,
     simulation_inputs: ThrustersSimulationInputs,
 ):
+    control.update_parameters(
+        control.parameters.model_copy(update={"cooling_flow": 20})
+    )
     runner.run_until(lambda *_: control.mode.is_recovery, within=timedelta(minutes=10))
 
     runner.update_simulation_inputs(
