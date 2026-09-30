@@ -1,432 +1,394 @@
+from datetime import timedelta
+
+import pytest
 from pytest import approx
 
-from tests.modules.thrusters.conftest import ThrustersSimulation
+from tests.modules.thrusters.conftest import ThrustersRunner
 from thrs.control.modules.thrusters import (
+    RECOVERY_MIX_LOWER_BOUND,
     RECOVERY_MIX_UPPER_BOUND,
     ThrustersControl,
-    ThrustersControlMode,
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.simulation import Pcs, Thruster
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.thrusters import ThrustersSimulationInputs
 
+OFF = Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False))
 
-def test_idle(
-    control: ThrustersControl,
-    simulation: ThrustersSimulation,
+
+def _with_thrusters(
     simulation_inputs: ThrustersSimulationInputs,
-):
-    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
-    simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
-
-    result = simulation.tick(control.initial()[0])
-
-    for _i in range(90):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    assert result.simulation_outputs.thrusters_pcm_supply.flow.value == approx(
-        0, abs=0.1
-    )  # type: ignore
-
-
-def test_cooling(control: ThrustersControl, simulation: ThrustersSimulation):
-    result = simulation.tick(control.initial()[0])
-
-    control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize
-    for _i in range(100):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    assert result.sensor_values.thrusters_temperature_supply.temperature.value
-    assert result.sensor_values.thrusters_temperature_aft.temperature.value
-    assert (
-        result.sensor_values.thrusters_temperature_supply.temperature.value
-        < result.sensor_values.thrusters_temperature_aft.temperature.value
-    )
-
-    assert result.sensor_values.thrusters_temperature_fwd.temperature.value
-    assert (
-        result.sensor_values.thrusters_temperature_supply.temperature.value
-        < result.sensor_values.thrusters_temperature_fwd.temperature.value
-    )
-
-    assert result.sensor_values.thrusters_flow_recovery.flow.value == approx(
-        0, abs=1e-2
-    )
-
-    assert isinstance(result.simulation_outputs.thrusters_pcm_supply.flow.value, float)
-    assert result.simulation_outputs.thrusters_pcm_supply.flow.value == approx(
-        0, abs=1e-2
-    )
-
-    assert isinstance(result.simulation_outputs.thrusters_pcm_return.flow.value, float)
-    assert result.simulation_outputs.thrusters_pcm_return.flow.value == approx(
-        0, abs=1e-2
-    )
-
-    assert isinstance(
-        result.simulation_inputs.thrusters_seawater_supply.temperature.value, float
-    )
-    assert isinstance(
-        result.simulation_outputs.thrusters_seawater_return.temperature.value, float
-    )
-    assert (
-        result.simulation_inputs.thrusters_seawater_supply.temperature.value
-        < result.simulation_outputs.thrusters_seawater_return.temperature.value
+    pcs_mode: PcsMode | None = None,
+    aft: Thruster | None = None,
+    fwd: Thruster | None = None,
+) -> ThrustersSimulationInputs:
+    return simulation_inputs.model_copy(
+        update={
+            "thrusters_pcs": Pcs(
+                mode=Stamped.stamp(pcs_mode)
+                if pcs_mode is not None
+                else simulation_inputs.thrusters_pcs.mode
+            ),
+            "thrusters_thruster_aft": aft or simulation_inputs.thrusters_thruster_aft,
+            "thrusters_thruster_fwd": fwd or simulation_inputs.thrusters_thruster_fwd,
+        }
     )
 
 
-def test_recovery(control: ThrustersControl, simulation: ThrustersSimulation):
-    result = simulation.tick(control.initial()[0])
+def _modes(runner: ThrustersRunner) -> list[str]:
+    return runner.mode_transitions(lambda mode: mode.mode)
 
-    control.to_recovery(result.sensor_values)  # type: ignore
-    for _i in range(200):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
 
-    assert (
-        result.sensor_values.thrusters_temperature_supply.temperature.value
-        < result.sensor_values.thrusters_temperature_aft.temperature.value
-    )
-    assert (
-        result.sensor_values.thrusters_temperature_supply.temperature.value
-        < result.sensor_values.thrusters_temperature_fwd.temperature.value
+def test_idle(runner: ThrustersRunner, simulation_inputs: ThrustersSimulationInputs):
+    runner.update_simulation_inputs(
+        _with_thrusters(simulation_inputs, PcsMode.OFF, aft=OFF, fwd=OFF)
     )
 
-    assert isinstance(result.simulation_outputs.thrusters_pcm_return.flow.value, float)
-    assert isinstance(result.simulation_outputs.thrusters_pcm_supply.flow.value, float)
-    assert result.simulation_outputs.thrusters_pcm_return.flow.value == approx(
-        result.simulation_outputs.thrusters_pcm_supply.flow.value, abs=1e-2
-    )
+    for sensor_values, control_values, _ in runner.ticks_for(timedelta(minutes=2)):
+        assert not control_values.thrusters_pump1.on.value
+        assert not control_values.thrusters_pump2.on.value
+        assert sensor_values.thrusters_flow_recovery.flow.value == approx(0, abs=0.1)
 
-    assert result.sensor_values.thrusters_flow_recovery.flow.value == approx(
-        result.simulation_outputs.thrusters_pcm_return.flow.value, abs=1e-2
-    )
-
-    assert isinstance(
-        result.simulation_outputs.thrusters_pcm_return.temperature.value, float
-    )
-    assert isinstance(
-        result.simulation_inputs.thrusters_pcm_supply.temperature.value, float
-    )
-    assert (
-        result.simulation_outputs.thrusters_pcm_return.temperature.value
-        > result.simulation_inputs.thrusters_pcm_supply.temperature.value
-    )
+    assert _modes(runner) == ["idle"]
 
 
-def test_recovery_mixing(
-    control: ThrustersControl,
-    simulation: ThrustersSimulation,
-    simulation_inputs: ThrustersSimulationInputs,
-):
-    simulation_inputs.thrusters_pcm_supply.temperature = Stamped.stamp(
-        control.parameters.recovery_temperature
-    )
+def test_warmup_until_mix_opens(runner: ThrustersRunner, control: ThrustersControl):
+    minimum_flow = control.parameters.thrusters_minimum_flow
 
-    result = simulation.tick(control.initial()[0])
-
-    # during warm-up the mixing valve should be closed
-    while (
-        result.sensor_values.thrusters_temperature_recovery.temperature.value is None
-        or (
-            result.sensor_values.thrusters_temperature_recovery.temperature.value
-            < control.parameters.warmup_temperature
-        )
-    ):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert control_values.thrusters_mix_recovery.setpoint.value == approx(
-            Valve.MIXING_B_TO_AB,
-            abs=1e-1,
-        )
-
-    # if both aft and fwd are warm, mixing valves should be open
-    for _i in range(20):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert control_values.thrusters_mix_recovery.setpoint.value > 0
-
-
-def test_heat_dump_with_cold_sea(
-    control: ThrustersControl,
-    simulation: ThrustersSimulation,
-    simulation_inputs: ThrustersSimulationInputs,
-):
-    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(10)
-
-    result = simulation.tick(control.initial()[0])
-    control.to_cooling(result.sensor_values)  # type: ignore
-    for _i in range(360):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    for _i in range(30):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert (
-            result.sensor_values.thrusters_temperature_supply.temperature.value
-            == approx(38, abs=1)
-        )
-
-
-def test_heat_dump_with_hot_sea(
-    control: ThrustersControl,
-    simulation: ThrustersSimulation,
-    simulation_inputs: ThrustersSimulationInputs,
-):
-    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
-
-    result = simulation.tick(control.initial()[0])
-    control.to_cooling(result.sensor_values)  # type: ignore
-    for _i in range(500):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    for _i in range(30):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert (
-            result.sensor_values.thrusters_mix_exchanger.position_rel.value
-            == approx(Valve.MIXING_B_TO_AB, abs=1e-4)
-        )
-
-
-def test_warmup_until_mix_opens(
-    control: ThrustersControl, simulation: ThrustersSimulation
-):
-    result = simulation.tick(control.initial()[0])
-
-    modes = [control.mode.mode]
-    for _i in range(500):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-        if control.mode.mode != modes[-1]:
-            modes.append(control.mode.mode)
-
+    def check_warmup(sensor_values, control_values, controller_state):
         if control.mode.is_warmup:
-            assert (
-                control_values.thrusters_mix_recovery.setpoint.value
-                < RECOVERY_MIX_UPPER_BOUND
+            assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+                minimum_flow
             )
-            assert control._flow_balance_controller.get_setpoints() == [
-                control.parameters.thrusters_minimum_flow,
-                control.parameters.thrusters_minimum_flow,
-            ]
-        if control.mode.is_recovery:
-            assert (
-                control_values.thrusters_mix_recovery.setpoint.value
-                > RECOVERY_MIX_UPPER_BOUND
+            assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+                minimum_flow
             )
+            assert not (
+                controller_state.thrusters_aft_recovery_temperature_controller.enabled.value
+            )
+            assert not (
+                controller_state.thrusters_fwd_recovery_temperature_controller.enabled.value
+            )
+            recovery_temperature = (
+                sensor_values.thrusters_temperature_recovery.temperature.value
+            )
+            if (
+                recovery_temperature is None
+                or recovery_temperature < control.parameters.warmup_temperature
+            ):
+                assert control_values.thrusters_mix_recovery.setpoint.value == approx(
+                    Valve.MIXING_B_TO_AB, abs=1e-2
+                )
 
-    assert modes == ["idle", "warmup", "recovery"]
-
-
-def test_recovery_falls_back_to_warmup(
-    control: ThrustersControl, simulation: ThrustersSimulation
-):
-    result = simulation.tick(control.initial()[0])
-    while not control.mode.is_recovery:
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    sensor_values = result.sensor_values
-    sensor_values.thrusters_temperature_aft.temperature = Stamped.stamp(
-        control.parameters.cooling_temperature
-    )
-    sensor_values.thrusters_temperature_fwd.temperature = Stamped.stamp(
-        control.parameters.cooling_temperature
-    )
-    control_values = next(
-        values
-        for values, _ in (control.control(sensor_values) for _i in range(10 * 60))
-        if control.mode.is_warmup
+    _, control_values, controller_state = runner.run_until(
+        lambda *_: control.mode.is_recovery,
+        within=timedelta(minutes=10),
+        check=check_warmup,
     )
 
-    assert control.mode == ThrustersControlMode(mode="warmup")
-    assert control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
-    assert control._flow_balance_controller.get_setpoints() == [
-        control.parameters.thrusters_minimum_flow,
-        control.parameters.thrusters_minimum_flow,
-    ]
+    assert control_values.thrusters_mix_recovery.setpoint.value > (
+        RECOVERY_MIX_UPPER_BOUND
+    )
+    assert controller_state.thrusters_aft_recovery_temperature_controller.enabled.value
+    assert controller_state.thrusters_fwd_recovery_temperature_controller.enabled.value
+    assert _modes(runner) == ["idle", "warmup", "recovery"]
 
 
 def test_recovery_temperature(
-    control: ThrustersControl, simulation: ThrustersSimulation
+    runner: ThrustersRunner,
+    control: ThrustersControl,
+    simulation_inputs: ThrustersSimulationInputs,
 ):
-    result = simulation.tick(control.initial()[0])
-    # set valves and stabilize
-    for _i in range(500):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
+    sensor_values, *_ = runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_temperature_recovery.temperature.value
+            == approx(control.parameters.recovery_temperature, abs=2)
+        ),
+        stable_for=timedelta(minutes=2),
+        within=timedelta(minutes=20),
+    )
 
-    for _i in range(60):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-        assert control.mode == ThrustersControlMode(mode="recovery")
-        assert (
-            result.sensor_values.thrusters_temperature_recovery.temperature.value
-            == approx(
-                control.parameters.recovery_temperature,
-                abs=2,  # TODO: tune control to decrease error margin and warm-up time
-            )
-        )
+    assert _modes(runner) == ["idle", "warmup", "recovery"]
+    assert (
+        sensor_values.thrusters_temperature_supply.temperature.value
+        < sensor_values.thrusters_temperature_aft.temperature.value
+    )
+    assert (
+        sensor_values.thrusters_temperature_supply.temperature.value
+        < sensor_values.thrusters_temperature_fwd.temperature.value
+    )
+
+    simulation_outputs = runner.simulation_outputs
+    assert simulation_outputs is not None
+    assert simulation_outputs.thrusters_pcm_return.flow.value == approx(
+        simulation_outputs.thrusters_pcm_supply.flow.value, abs=1e-2
+    )
+    assert sensor_values.thrusters_flow_recovery.flow.value == approx(
+        simulation_outputs.thrusters_pcm_return.flow.value, abs=1e-2
+    )
+    assert (
+        simulation_outputs.thrusters_pcm_return.temperature.value
+        > simulation_inputs.thrusters_pcm_supply.temperature.value
+    )
 
 
 def test_recovery_single_thruster(
+    runner: ThrustersRunner,
     control: ThrustersControl,
-    simulation: ThrustersSimulation,
     simulation_inputs: ThrustersSimulationInputs,
 ):
-    result = simulation.tick(control.initial()[0])
+    runner.update_simulation_inputs(_with_thrusters(simulation_inputs, aft=OFF))
 
-    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-
-    # set valves and stabilize
-    for _i in range(500):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    for _i in range(60):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert (
-            result.sensor_values.thrusters_temperature_recovery.temperature.value
+    sensor_values, *_ = runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_temperature_recovery.temperature.value
             == approx(
                 control.parameters.recovery_temperature,
                 abs=5,  # TODO: tune control to decrease error margin and warm-up time
             )
+        ),
+        stable_for=timedelta(minutes=2),
+        within=timedelta(minutes=20),
+    )
+
+    assert control.mode.is_recovery
+    assert sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
+    assert sensor_values.thrusters_flow_fwd.flow.value > 0
+
+
+def test_recovery_falls_back_to_warmup(
+    runner: ThrustersRunner,
+    control: ThrustersControl,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    runner.run_until(lambda *_: control.mode.is_recovery, within=timedelta(minutes=10))
+
+    runner.update_simulation_inputs(
+        _with_thrusters(
+            simulation_inputs,
+            aft=Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(True)),
+            fwd=Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(True)),
         )
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value > 0
+    )
+    _, control_values, controller_state = runner.run_until(
+        lambda *_: control.mode.is_warmup, within=timedelta(minutes=20)
+    )
+
+    assert control_values.thrusters_mix_recovery.setpoint.value < (
+        RECOVERY_MIX_LOWER_BOUND
+    )
+    assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+        control.parameters.thrusters_minimum_flow
+    )
+    assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+        control.parameters.thrusters_minimum_flow
+    )
+    assert not (
+        controller_state.thrusters_aft_recovery_temperature_controller.enabled.value
+    )
+
+    runner.run(60)
+
+    assert _modes(runner) == ["idle", "warmup", "recovery", "warmup"]
 
 
 def test_flow_thrusters_off(
+    runner: ThrustersRunner,
     control: ThrustersControl,
-    simulation: ThrustersSimulation,
     simulation_inputs: ThrustersSimulationInputs,
 ):
-    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
+    runner.update_simulation_inputs(
+        _with_thrusters(simulation_inputs, aft=OFF, fwd=OFF)
+    )
 
-    result = simulation.tick(control.initial()[0])
-    # set valves and stabilize
-    for _i in range(120):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
+    runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
+            and sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.1)
+        ),
+        stable_for=timedelta(minutes=1),
+        within=timedelta(minutes=5),
+    )
 
-    for _i in range(60):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.1)
+    assert control.mode.is_warmup
 
 
-def test_flow_cooling(control: ThrustersControl, simulation: ThrustersSimulation):
-    result = simulation.tick(control.initial()[0])
-    control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize
-    for _i in range(200):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
-    for _i in range(60):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-        assert control.mode == ThrustersControlMode(mode="cooling")
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
-        )
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
-        )
-
-
-def test_flow_cooling_single_thruster(
+def test_cooling_dumps_heat_to_seawater(
+    runner: ThrustersRunner,
     control: ThrustersControl,
-    simulation: ThrustersSimulation,
     simulation_inputs: ThrustersSimulationInputs,
 ):
-    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
+    runner.update_simulation_inputs(
+        _with_thrusters(simulation_inputs, PcsMode.MANEUVERING)
+    )
 
-    result = simulation.tick(control.initial()[0])
-    control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize
-    for _i in range(200):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
+    sensor_values, *_ = runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_flow_recovery.flow.value == approx(0, abs=1e-2)
+        ),
+        stable_for=timedelta(minutes=1),
+        within=timedelta(minutes=5),
+    )
 
-    for _i in range(60):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
+    assert _modes(runner) == ["idle", "cooling"]
+    assert (
+        sensor_values.thrusters_temperature_supply.temperature.value
+        < sensor_values.thrusters_temperature_aft.temperature.value
+    )
+    assert (
+        sensor_values.thrusters_temperature_supply.temperature.value
+        < sensor_values.thrusters_temperature_fwd.temperature.value
+    )
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
+    simulation_outputs = runner.simulation_outputs
+    assert simulation_outputs is not None
+    assert simulation_outputs.thrusters_pcm_supply.flow.value == approx(0, abs=1e-2)
+    assert simulation_outputs.thrusters_pcm_return.flow.value == approx(0, abs=1e-2)
+    assert (
+        simulation_inputs.thrusters_seawater_supply.temperature.value
+        < simulation_outputs.thrusters_seawater_return.temperature.value
+    )
+
+
+@pytest.mark.parametrize(
+    ("aft_active", "fwd_active"), [(True, True), (False, True)], ids=["both", "fwd"]
+)
+def test_flow_cooling(
+    runner: ThrustersRunner,
+    control: ThrustersControl,
+    simulation_inputs: ThrustersSimulationInputs,
+    aft_active: bool,
+    fwd_active: bool,
+):
+    runner.update_simulation_inputs(
+        _with_thrusters(
+            simulation_inputs,
+            PcsMode.MANEUVERING,
+            aft=None if aft_active else OFF,
+            fwd=None if fwd_active else OFF,
         )
+    )
+    cooling_flow = control.parameters.cooling_flow
+
+    def expected_flow(active: bool) -> float:
+        return cooling_flow if active else 0
+
+    runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_flow_aft.flow.value
+            == approx(expected_flow(aft_active), abs=1)
+            and sensor_values.thrusters_flow_fwd.flow.value
+            == approx(expected_flow(fwd_active), abs=1)
+        ),
+        stable_for=timedelta(minutes=1),
+        within=timedelta(minutes=5),
+    )
+
+    assert _modes(runner) == ["idle", "cooling"]
+
+
+def test_heat_dump_with_cold_sea(
+    runner: ThrustersRunner,
+    control: ThrustersControl,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    runner.update_simulation_inputs(
+        _with_thrusters(
+            simulation_inputs.model_copy(
+                update={
+                    "thrusters_seawater_supply": simulation_inputs.thrusters_seawater_supply.model_copy(
+                        update={"temperature": Stamped.stamp(10)}
+                    )
+                }
+            ),
+            PcsMode.MANEUVERING,
+        )
+    )
+
+    runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_temperature_supply.temperature.value
+            == approx(control.parameters.cooling_temperature, abs=1)
+        ),
+        stable_for=timedelta(minutes=1),
+        within=timedelta(minutes=10),
+    )
+
+    assert _modes(runner) == ["idle", "cooling"]
+
+
+def test_heat_dump_with_hot_sea(
+    runner: ThrustersRunner,
+    control: ThrustersControl,
+    simulation_inputs: ThrustersSimulationInputs,
+):
+    runner.update_simulation_inputs(
+        _with_thrusters(
+            simulation_inputs.model_copy(
+                update={
+                    "thrusters_seawater_supply": simulation_inputs.thrusters_seawater_supply.model_copy(
+                        update={"temperature": Stamped.stamp(45)}
+                    )
+                }
+            ),
+            PcsMode.MANEUVERING,
+        )
+    )
+
+    runner.run_until_stable(
+        lambda sensor_values, *_: (
+            sensor_values.thrusters_mix_exchanger.position_rel.value
+            == approx(Valve.MIXING_B_TO_AB, abs=1e-4)
+        ),
+        stable_for=timedelta(seconds=30),
+        within=timedelta(minutes=10),
+    )
+
+    assert _modes(runner) == ["idle", "cooling"]
 
 
 def test_cooldown(
+    runner: ThrustersRunner,
     control: ThrustersControl,
-    simulation: ThrustersSimulation,
     simulation_inputs: ThrustersSimulationInputs,
 ):
-    result = simulation.tick(control.initial()[0])
-    control_values, _ = control.control(result.sensor_values)
+    runner.run_until(lambda *_: control.mode.is_recovery, within=timedelta(minutes=10))
 
-    # set valves and stabilize
-    for _i in range(300):
-        result = simulation.tick(control_values)
-        control_values, _ = control.control(result.sensor_values)
+    runner.update_simulation_inputs(
+        _with_thrusters(simulation_inputs, PcsMode.OFF, aft=OFF, fwd=OFF)
+    )
 
-    assert control.mode == ThrustersControlMode(mode="recovery")
-    assert control_values.thrusters_mix_recovery.setpoint.value > 0.0
+    def check_cooldown(_, control_values, controller_state):
+        if control.mode.mode == "cooldown":
+            assert control_values.thrusters_mix_recovery.setpoint.value == (
+                Valve.MIXING_B_TO_AB
+            )
+            assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+                control.parameters.cooling_flow
+            )
+            assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+                control.parameters.cooling_flow
+            )
 
-    simulation_inputs.thrusters_thruster_aft.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_aft.heat_flow = Stamped.stamp(0)
-    simulation_inputs.thrusters_thruster_fwd.active = Stamped.stamp(False)
-    simulation_inputs.thrusters_thruster_fwd.heat_flow = Stamped.stamp(0)
-    simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
+    runner.run_until(
+        lambda *_: control.mode.is_idle,
+        within=timedelta(minutes=15),
+        check=check_cooldown,
+    )
 
-    result = simulation.tick(control_values)
-    control_values, _ = control.control(result.sensor_values)
-
-    assert control.mode == ThrustersControlMode(mode="cooldown")
-    while control.mode == ThrustersControlMode(mode="cooldown"):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
-
+    for sensor_values, control_values, _ in runner.ticks_for(timedelta(seconds=30)):
+        assert control.mode.is_idle
         assert (
-            control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
+            sensor_values.thrusters_temperature_aft.temperature.value
+            < control.parameters.cooling_temperature
         )
-        assert control._flow_balance_controller.get_setpoints() == [
-            control.parameters.cooling_flow,
-            control.parameters.cooling_flow,
-        ]
+        assert (
+            sensor_values.thrusters_temperature_fwd.temperature.value
+            < control.parameters.cooling_temperature
+        )
+        assert not control_values.thrusters_pump1.on.value
+        assert not control_values.thrusters_pump2.on.value
 
-    assert control.mode == ThrustersControlMode(mode="idle")
-
-    assert (
-        result.sensor_values.thrusters_temperature_aft.temperature.value
-        < control.parameters.cooling_temperature
-    )
-    assert (
-        result.sensor_values.thrusters_temperature_fwd.temperature.value
-        < control.parameters.cooling_temperature
-    )
-
-    assert not control_values.thrusters_pump1.on.value
+    assert _modes(runner) == ["idle", "warmup", "recovery", "cooldown", "idle"]
