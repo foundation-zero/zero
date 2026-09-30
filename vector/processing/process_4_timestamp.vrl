@@ -15,4 +15,13 @@ for_each(.) -> |key, value| {
 }
 
 # Default to current time if nothing found
-.timestamp = if is_null(max_ts) { .timestamp } else { max_ts }
+current_timestamp = .timestamp
+.timestamp = if is_null(max_ts) { 
+    if is_null(current_timestamp) {
+        now()
+    } else {
+        current_timestamp
+    } 
+} else {
+    max_ts
+}

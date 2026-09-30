@@ -1,0 +1,12 @@
+test_process:
+    bash test-process.sh
+
+test_atpx:
+    bash test-atpx.sh
+
+test_atpx_nmea:
+    bash test-atpx-nmea.sh
+
+test: test_process test_atpx test_atpx_nmea
+
+check: test
