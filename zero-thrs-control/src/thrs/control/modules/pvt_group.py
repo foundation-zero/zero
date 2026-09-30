@@ -9,10 +9,11 @@ from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
-from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
 IDLE_MIX_POSITION: Ratio = 0.2
+RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
+RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
 
 class PvtGroupSensorValues(ThrsValues):
@@ -214,10 +215,10 @@ class PvtGroupControl(
         )
 
     def _mix_open(self, sensor_values: PvtGroupSensorValues):
-        return self._current_values.mix.setpoint.value > Valve.MIXING_B_TO_AB + 0.05
+        return self._current_values.mix.setpoint.value > RECOVERY_MIX_UPPER_BOUND
 
     def _mix_closed(self, sensor_values: PvtGroupSensorValues):
-        return self._current_values.mix.setpoint.value < Valve.MIXING_B_TO_AB + 0.1
+        return self._current_values.mix.setpoint.value < RECOVERY_MIX_LOWER_BOUND
 
     def _set_mix_to_idle_position(self, sensor_values: PvtGroupSensorValues):
         self._current_values.mix.setpoint = Stamped(
