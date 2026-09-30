@@ -309,17 +309,24 @@ class DcSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001008",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def dc_dhw_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def dc_dhw_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.dc_temperature_recovery_mix.temperature,
             temperature_return=self.dc_temperature_recovery_return.temperature,
             flow=self.dc_flow_recovery.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_recovery_mix"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_recovery_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dc_flow_recovery"),
         )
 
 

@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
-import { RiDropLine, RiFireLine } from "@remixicon/vue";
+import { ThrusterMode } from "@/modules/thrsim/types";
+import { RiFireLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
+import { TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
 import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../components/mode-badge";
 import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, getSensorDefinition, ModuleField } from "../providers";
+import { getMimicDataProvider, getSensorDefinition } from "../providers";
 import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
-    MimicComponentInstanceProps & {
-      source: ModuleField<SensorComponentType.Thruster, "thrusters">;
-      modeSource: ModuleField<SensorComponentType.Pcs, "thrusters">;
-      temperatureSource: ModuleField<SensorComponentType.Temperature, "thrusters">;
-      titleKey: "aftTitle" | "fwdTitle";
-      width?: number | string;
-      height?: number | string;
-      forceHeight?: boolean;
-    }
+    MimicComponentInstanceProps &
+      TooltipComponentContext<MimicComponentType.Thruster> & {
+        width?: number | string;
+        height?: number | string;
+        forceHeight?: boolean;
+      }
   >(),
   {
     width: 180,
-    height: 250,
+    height: 225,
     forceHeight: true,
   },
 );
@@ -33,7 +32,7 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const pcs = getSensorValue(props.modeSource);
+const pcs = getSensorValue(props.sensors.pcs);
 const state = getComponentState();
 const definition = getSensorDefinition(props.source[1], props.source[2]);
 
@@ -60,6 +59,8 @@ const mode = computed(() => {
   const modeKey = (pcs?.value?.mode?.value as ThrusterMode) ?? ThrusterMode.Off;
   return modeLabelMap[modeKey];
 });
+
+const heatTransfer = getSensorValue(props.sensors.heatTransfer);
 </script>
 
 <template>
@@ -69,7 +70,7 @@ const mode = computed(() => {
   >
     <YardTag>{{ definition.yardTag }}</YardTag>
     <HeatPumpTitle class="pb-1">
-      {{ t(`thrapp.mimics.thrusters.assets.${titleKey}`) }}
+      {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
     </HeatPumpTitle>
     <ModeBadge
       v-bind="mode"
@@ -89,25 +90,17 @@ const mode = computed(() => {
       </ValueListItem>
 
       <ValueListItem>
-        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Placeholder />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
-        <span class="flex items-center gap-0.5">
-          <RiDropLine class="text-brand size-3.5" />
-        </span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Placeholder />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
         <span class="flex items-center gap-0.5">
           <RiFireLine class="text-heating-medium size-3.5" />
         </span>
         <span class="text-foreground font-medium">
-          <FieldRenderer.Placeholder />
+          <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
+        </span>
+      </ValueListItem>
+      <ValueListItem>
+        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
+        <span class="text-foreground font-medium">
+          <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
         </span>
       </ValueListItem>
 

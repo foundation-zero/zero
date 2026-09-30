@@ -164,21 +164,18 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.Valve]: "positionRel",
   [SensorComponentType.Thruster]: "active",
   [SensorComponentType.Pcs]: "mode",
-  [SensorComponentType.Pcm]: "charged",
-  [SensorComponentType.PcmInput]: "charged",
   [SensorComponentType.Level]: "level",
   [SensorComponentType.LevelSwitch]: "empty",
-  [SensorComponentType.HeatExchanger]: "deltaT",
-  [SensorComponentType.HvacExchanger]: "deltaT",
-  [SensorComponentType.HeatPump]: "deltaT",
-  [SensorComponentType.Pvt]: "deltaT",
+  [SensorComponentType.HeatTransferDevice]: "deltaT",
+  [SensorComponentType.HeatPump]: "on",
+  [SensorComponentType.Pvt]: "power",
   [SensorComponentType.CalculatedFlow]: "flow",
   [SensorComponentType.AdsorptionChiller]: "operating",
   [SensorComponentType.Brightloop]: "active",
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
-  [SensorComponentType.Irradiance]: "irradiance",
+  [SensorComponentType.Pyranometer]: "irradiance",
   [SensorComponentType.AmcsControlMode]: "mode",
 };
 
@@ -236,6 +233,7 @@ export const [getMimicDataProvider, createMimicDataProvider] =
   createContext<MimicDataProvider>("MimicProvider");
 
 export const provideFieldValue = <T>(value: Ref<T>) => provide("FieldValue", value);
+export const provideFieldValueData = <T>(value: Ref<T>) => provide("FieldValueData", value);
 export const provideFieldValueField = (field?: string) => provide("FieldValueField", field);
 export const injectFieldValueField = <T extends string = string>() =>
   inject<T | undefined>("FieldValueField");
@@ -263,6 +261,9 @@ export const injectFieldValueSource = <
 export const getFieldValue = <T>(
   fallback: Ref<T | undefined> = ref(undefined),
 ): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValue", fallback);
+export const getFieldValueData = <T>(
+  fallback: Ref<T | undefined> = ref(undefined),
+): Ref<T | undefined> => inject<Ref<T | undefined>>("FieldValueData", fallback);
 
 export const getDefinition = (field: ModuleField) => {
   const [_, module, fieldName, customData] = field;

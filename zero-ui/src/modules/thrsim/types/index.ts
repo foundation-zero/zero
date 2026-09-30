@@ -1,4 +1,4 @@
-import { Stamped, Unstamp } from "@common/types";
+import { Stamped, StampedWithSource, Unstamp } from "@common/types";
 import { Ref, WritableComputedRef } from "vue";
 
 export type SchemaDefinition<T> = {
@@ -47,6 +47,13 @@ export type PIDController = {
   enabled: Stamped<boolean>;
   tuning: Stamped<PID>;
   components: Stamped<PID>;
+};
+
+export type PcmChargeController = {
+  chargingState: Stamped<PcmChargingState>;
+  charge: Stamped<Ratio | undefined>;
+  energy: Stamped<number | undefined>;
+  chargeStatus: Stamped<PcmChargeStatus>;
 };
 
 export const enum PvtMode {
@@ -105,9 +112,8 @@ export type SensorValueFields =
   | keyof PcsSensor
   | keyof LevelSensor
   | keyof DeltaTSensor
-  | keyof HeatExchangerSensor
+  | keyof HeatTransferDeviceSensor
   | keyof Valve
-  | keyof PcmSensor
   | keyof LevelSwitchSensor;
 
 export type SensorFields = {
@@ -118,8 +124,6 @@ export type SensorFields = {
   [SensorComponentType.Valve]: (keyof Valve)[];
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
-  [SensorComponentType.Pcm]: (keyof PcmSensor)[];
-  [SensorComponentType.PcmInput]: (keyof PcmInputSensor)[];
   [SensorComponentType.Level]: (keyof LevelSensor)[];
   [SensorComponentType.LevelSwitch]: (keyof LevelSwitchSensor)[];
 };
@@ -136,7 +140,14 @@ export type SimulationFields = {
   [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
 };
 
-export type PumpSensor = {
+export type SensorAlarms = {
+  anyFailureActive: Stamped<boolean>;
+  anyWarningActive: Stamped<boolean>;
+  feedbackFailure: Stamped<boolean>;
+  externalOutOfRange: Stamped<boolean>;
+};
+
+export type PumpSensor = SensorAlarms & {
   flow: Stamped<Ratio>;
   speed: Stamped<number>;
   opTime: Stamped<number>;
@@ -157,11 +168,14 @@ export type DeltaTSensor = {
   deltaT: Stamped<number>;
 };
 
-export type HeatExchangerSensor = DeltaTSensor & {
+export type HeatTransferDeviceSensor = DeltaTSensor & {
+  temperatureSupply: StampedWithSource<number | undefined>;
+  temperatureReturn: StampedWithSource<number | undefined>;
+  flow: StampedWithSource<Ratio>;
   heat: Stamped<number>;
 };
 
-export type Valve = {
+export type Valve = SensorAlarms & {
   positionRel: Stamped<Ratio>;
   positionAbs: Stamped<Degree>;
 };
@@ -194,16 +208,19 @@ export const enum PcmChargingState {
   Idle = "IDLE",
 }
 
-export type PcmSensor = {
-  charged: Stamped<boolean>;
-  chargingState: Stamped<PcmChargingState>;
-  heat: Stamped<number>;
-  charge: Stamped<number>;
-  deltaT: Stamped<number>;
+export const enum PcmChargeStatus {
+  Unknown = "UNKNOWN",
+  Empty = "EMPTY",
+  Intermediate = "INTERMEDIATE",
+  Full = "FULL",
+}
+
+export type HeatpumpSensor = {
+  on: Stamped<boolean>;
 };
 
-export type PcmInputSensor = {
-  charged: Stamped<boolean>;
+export type PvtSensor = {
+  power: Stamped<number>;
 };
 
 export type LevelSensor = {
@@ -219,7 +236,7 @@ export type BrightloopSensor = Toggle;
 export type UgridSensor = Toggle;
 export type PropulsionDriveSensor = Toggle;
 export type ShorePowerConverterSensor = Toggle;
-export type IrradianceSensor = {
+export type PyranometerSensor = {
   irradiance: Stamped<number>;
 };
 
@@ -251,7 +268,7 @@ export type SensorType =
   | UgridSensor
   | PropulsionDriveSensor
   | ShorePowerConverterSensor
-  | IrradianceSensor;
+  | PyranometerSensor;
 
 export type ControlType =
   | PumpControl
@@ -351,6 +368,7 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
   PIDController = "pidController",
+  PcmChargeController = "pcmChargeController",
 }
 
 export type ControllerStateDefinition<
@@ -361,14 +379,17 @@ export type DhwTankControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.DhwTanksController>;
 export type PIDControllerDefinition =
   ControllerStateDefinition<ControllerStateComponentType.PIDController>;
+export type ChargeControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.PcmChargeController>;
 
 export type ControllerStateDefinitions = SchemaDefinitions<
-  DhwTankControllerDefinition | PIDControllerDefinition
+  DhwTankControllerDefinition | PIDControllerDefinition | ChargeControllerDefinition
 >;
 
 export type ControllerStateDefinitionMap = {
   [ControllerStateComponentType.DhwTanksController]: DhwTankController;
   [ControllerStateComponentType.PIDController]: PIDController;
+  [ControllerStateComponentType.PcmChargeController]: PcmChargeController;
 };
 
 export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<
@@ -380,18 +401,15 @@ export const enum SensorComponentType {
   Temperature = "sensor:temperature",
   CalculatedTemperature = "sensor:calculatedTemperature",
   Pressure = "sensor:pressure",
-  Irradiance = "sensor:irradiance",
+  Pyranometer = "sensor:pyranometer",
   Flow = "sensor:flow",
   Pump = "sensor:pump",
   Valve = "sensor:valve",
   Thruster = "sensor:thruster",
   Pcs = "sensor:pcs",
-  Pcm = "sensor:pcm",
-  PcmInput = "sensor:pcmInput",
   Level = "sensor:level",
   LevelSwitch = "sensor:levelSwitch",
-  HeatExchanger = "sensor:heatExchanger",
-  HvacExchanger = "sensor:hvacExchanger",
+  HeatTransferDevice = "sensor:heatTransferDevice",
   HeatPump = "sensor:heatPump",
   Pvt = "sensor:pvt",
   CalculatedFlow = "sensor:calculatedFlow",
@@ -412,12 +430,9 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Valve,
   SensorComponentType.Thruster,
   SensorComponentType.Pcs,
-  SensorComponentType.Pcm,
-  SensorComponentType.PcmInput,
   SensorComponentType.Level,
   SensorComponentType.LevelSwitch,
-  SensorComponentType.HeatExchanger,
-  SensorComponentType.HvacExchanger,
+  SensorComponentType.HeatTransferDevice,
   SensorComponentType.HeatPump,
   SensorComponentType.Pvt,
   SensorComponentType.CalculatedFlow,
@@ -425,7 +440,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
-  SensorComponentType.Irradiance,
+  SensorComponentType.Pyranometer,
 ];
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -459,12 +474,13 @@ export type PumpSensorDefinition = SensorDefinition<SensorComponentType.Pump>;
 export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> & {
   valveType: ValveType;
 };
-export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
-export type PcmInputSensorDefinition = SensorDefinition<SensorComponentType.PcmInput>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
-export type HeatExchangerSensorDefinition = SensorDefinition<SensorComponentType.HeatExchanger>;
+export type HeatTransferDeviceSensorDefinition =
+  SensorDefinition<SensorComponentType.HeatTransferDevice>;
+export type HeatPumpSensorDefinition = SensorDefinition<SensorComponentType.HeatPump>;
+export type PvtSensorDefinition = SensorDefinition<SensorComponentType.Pvt>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
 export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
@@ -476,23 +492,20 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Flow]: FlowSensor;
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
-  [SensorComponentType.Pcm]: PcmSensor;
-  [SensorComponentType.PcmInput]: PcmInputSensor;
   [SensorComponentType.Thruster]: ThrusterSensor;
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.LevelSwitch]: LevelSwitchSensor;
-  [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
-  [SensorComponentType.HvacExchanger]: HeatExchangerSensor;
-  [SensorComponentType.HeatPump]: HeatExchangerSensor;
-  [SensorComponentType.Pvt]: HeatExchangerSensor;
+  [SensorComponentType.HeatTransferDevice]: HeatTransferDeviceSensor;
+  [SensorComponentType.HeatPump]: HeatpumpSensor;
+  [SensorComponentType.Pvt]: PvtSensor;
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
   [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
   [SensorComponentType.Brightloop]: BrightloopSensor;
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
-  [SensorComponentType.Irradiance]: IrradianceSensor;
+  [SensorComponentType.Pyranometer]: PyranometerSensor;
   [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };
 

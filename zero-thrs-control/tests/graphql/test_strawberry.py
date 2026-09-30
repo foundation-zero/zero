@@ -598,7 +598,30 @@ async def test_query_controller_state(app, test_client):
                     }
                     pcm {
                         controllerState {
-                            Empty
+                            module1ChargeController {
+                                charge { value }
+                                energy { value }
+                                chargeStatus { value }
+                                chargingState { value }
+                            }
+                            module2ChargeController {
+                                charge { value }
+                                energy { value }
+                                chargeStatus { value }
+                                chargingState { value }
+                            }
+                            module3ChargeController {
+                                charge { value }
+                                energy { value }
+                                chargeStatus { value }
+                                chargingState { value }
+                            }
+                            module4ChargeController {
+                                charge { value }
+                                energy { value }
+                                chargeStatus { value }
+                                chargingState { value }
+                            }
                         }
                     }
                 }
@@ -1092,7 +1115,64 @@ async def test_query_controller_state(app, test_client):
                     },
                 },
                 "pcm": {
-                    "controllerState": {"Empty": None},
+                    "controllerState": {
+                        "module1ChargeController": {
+                            "charge": {
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "chargeStatus": {
+                                "value": "UNKNOWN",
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module2ChargeController": {
+                            "charge": {
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "chargeStatus": {
+                                "value": "UNKNOWN",
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module3ChargeController": {
+                            "charge": {
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "chargeStatus": {
+                                "value": "UNKNOWN",
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                        "module4ChargeController": {
+                            "charge": {
+                                "value": None,
+                            },
+                            "energy": {
+                                "value": None,
+                            },
+                            "chargeStatus": {
+                                "value": "UNKNOWN",
+                            },
+                            "chargingState": {
+                                "value": "IDLE",
+                            },
+                        },
+                    },
                 },
             }
         }

@@ -1,4 +1,4 @@
-import { stamp } from "@/modules/common/lib/utils";
+import { stamp, stampWithSource } from "@/modules/common/lib/utils";
 import { Stamped } from "@/modules/common/types";
 import {
   AmcsControlMode,
@@ -9,6 +9,7 @@ import {
   ControllerStateDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
+  PcmChargeStatus,
   PcmChargingState,
   PID,
   SensorComponentType,
@@ -62,6 +63,21 @@ export type StampedObject<T extends Record<string, unknown>> = {
   [K in keyof T]: Stamped<T[K] extends Ref<infer U> ? U : T[K]>;
 };
 
+const generateAlarms = () => {
+  // Use different chances to prevent it being in alarm always
+  const anyFailureActive = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const anyWarningActive = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const feedbackFailure = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+  const externalOutOfRange = useRandomizedValue(() => Math.random() < 0.01, 10_000);
+
+  return {
+    anyFailureActive: stamp(anyFailureActive),
+    anyWarningActive: stamp(anyWarningActive),
+    feedbackFailure: stamp(feedbackFailure),
+    externalOutOfRange: stamp(externalOutOfRange),
+  };
+};
+
 export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Temperature]: () => {
     const temperature = useRandomizedNumber(20, 100);
@@ -93,28 +109,6 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const empty = useRandomizedBoolean();
     return computed(() => ({ empty: stamp(empty) }));
   },
-  [SensorComponentType.Pcm]: () => {
-    const charged = useRandomizedBoolean();
-    const chargingState = useRandomizedState([
-      PcmChargingState.Charging,
-      PcmChargingState.Discharging,
-      PcmChargingState.Idle,
-    ]);
-    const heat = useRandomizedNumber(-7000, 7000);
-    const charge = useRandomizedNumber(0, 100);
-    const deltaT = useRandomizedNumber(-20, 20);
-    return computed(() => ({
-      charged: stamp(charged),
-      chargingState: stamp(chargingState),
-      heat: stamp(heat),
-      charge: stamp(charge),
-      deltaT: stamp(deltaT),
-    }));
-  },
-  [SensorComponentType.PcmInput]: () => {
-    const charged = useRandomizedBoolean();
-    return computed(() => ({ charged: stamp(charged) }));
-  },
   [SensorComponentType.Pcs]: () => {
     const mode = useRandomizedState([
       ThrusterMode.Maneuvering,
@@ -142,6 +136,7 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
       pressure: stamp(pressure),
       energyConsumption: stamp(energyConsumption),
       powerInput: stamp(powerInput),
+      ...generateAlarms(),
     }));
   },
   [SensorComponentType.Thruster]: () => {
@@ -151,27 +146,34 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Valve]: () => {
     const positionRel = useRandomizedRatio();
     const positionAbs = useRandomizedDegree();
-    return computed(() => ({ positionRel: stamp(positionRel), positionAbs: stamp(positionAbs) }));
+    return computed(() => ({
+      positionRel: stamp(positionRel),
+      positionAbs: stamp(positionAbs),
+      ...generateAlarms(),
+    }));
   },
-  [SensorComponentType.HeatExchanger]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
+  [SensorComponentType.HeatTransferDevice]: () => {
+    const temperatureSupply = useRandomizedNumber(20, 100);
+    const temperatureReturn = useRandomizedNumber(20, 100);
+
+    const deltaT = computed(() => temperatureReturn.value - temperatureSupply.value);
+    const flow = useRandomizedNumber(0, 10);
     const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
-  },
-  [SensorComponentType.HvacExchanger]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    return computed(() => ({
+      temperatureSupply: stampWithSource(temperatureSupply, "mock"),
+      temperatureReturn: stampWithSource(temperatureReturn, "mock"),
+      deltaT: stamp(deltaT),
+      flow: stampWithSource(flow, "mock"),
+      heat: stamp(heat),
+    }));
   },
   [SensorComponentType.HeatPump]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    const on = useRandomizedBoolean();
+    return computed(() => ({ on: stamp(on) }));
   },
   [SensorComponentType.Pvt]: () => {
-    const deltaT = useRandomizedNumber(-20, 20);
-    const heat = useRandomizedNumber(0, 100);
-    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({ power: stamp(power) }));
   },
   [SensorComponentType.CalculatedFlow]: () => {
     const flow = useRandomizedNumber(0, 10);
@@ -203,7 +205,7 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const active = useRandomizedBoolean();
     return computed(() => ({ active: stamp(active) }));
   },
-  [SensorComponentType.Irradiance]: () => {
+  [SensorComponentType.Pyranometer]: () => {
     const irradiance = useRandomizedNumber(0, 1000);
     return computed(() => ({ irradiance: stamp(irradiance) }));
   },
@@ -287,6 +289,28 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
       enabled: stamp(enabled),
       tuning: stamp(tuning),
       components: stamp(components),
+    }));
+  },
+
+  [ControllerStateComponentType.PcmChargeController]: () => {
+    const chargingState = useRandomizedState([
+      PcmChargingState.Charging,
+      PcmChargingState.Discharging,
+      PcmChargingState.Idle,
+    ]);
+    const chargeStatus = useRandomizedState([
+      PcmChargeStatus.Unknown,
+      PcmChargeStatus.Empty,
+      PcmChargeStatus.Intermediate,
+      PcmChargeStatus.Full,
+    ]);
+    const charge = useRandomizedRatio();
+    const energy = useRandomizedNumber(0, 25_200_000);
+    return computed(() => ({
+      chargingState: stamp(chargingState),
+      chargeStatus: stamp(chargeStatus),
+      charge: stamp(charge),
+      energy: stamp(energy),
     }));
   },
 };

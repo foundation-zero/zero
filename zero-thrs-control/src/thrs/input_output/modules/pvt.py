@@ -136,6 +136,18 @@ class PvtSensorValues(AmcsModeSensorValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-24", component_type="temperature_sensor"),
     ]
+    pvt_pyranometer_ps: Annotated[
+        sensor.Pyranometer,
+        component_meta(
+            yard_tag="50009044", component_type="pyranometer", included_in_fmu=False
+        ),
+    ]
+    pvt_pyranometer_sb: Annotated[
+        sensor.Pyranometer,
+        component_meta(
+            yard_tag="50009043", component_type="pyranometer", included_in_fmu=False
+        ),
+    ]
     pvt_temperature_main_string1_1_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50009005-01", component_type="temperature_sensor"),
@@ -768,52 +780,99 @@ class PvtSensorValues(AmcsModeSensorValues):
             ],
         )
 
+    # TODO: Remove when api is ready since we don't need them for control
+    pvt_pvt_main_fwd: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009001-01", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
+    pvt_pvt_main_aft: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009002-01", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
+    pvt_pvt_owners: Annotated[
+        sensor.Pvt,
+        component_meta(
+            yard_tag="50009001-03", component_type="pvt", included_in_fmu=False
+        ),
+    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
+
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009001-01",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_main_fwd(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_main_fwd_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
             flow=self.pvt_flow_main_fwd_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_fwd_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_fwd_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "pvt_flow_main_fwd_strings"
+            ),
         )
 
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009002-01",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_main_aft(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_main_aft_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
             flow=self.pvt_flow_main_aft_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_aft_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_aft_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "pvt_flow_main_aft_strings"
+            ),
         )
 
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50009001-03",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_pvt_owners(self) -> sensor.Pvt:
-        return sensor.Pvt.from_sensors(
+    def pvt_pvt_owners_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,
             flow=self.pvt_flow_owners_strings.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_strings"),
         )
 
     @computed_field(
@@ -874,17 +933,22 @@ class PvtSensorValues(AmcsModeSensorValues):
     @computed_field(
         json_schema_extra=computed_meta(
             yard_tag="50001002",
-            component_type="heat_exchanger",
+            component_type="heat_transfer",
             included_in_fmu=False,
         )
     )
     @property
-    def pvt_seawater_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
+    def pvt_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
             temperature_supply=self.pvt_temperature_supply.temperature,
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_supply"
+            ),
         )
 
 
@@ -941,6 +1005,24 @@ class PvtSimulationInputs(ThrsValues):
     pvt_pcm_supply: simulation.TemperatureBoundary
     pvt_seawater_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="pyranometer"
+        )
+    )
+    @property
+    def pvt_pyranometer_ps(self) -> sensor.Pyranometer:
+        return sensor.Pyranometer(irradiance=Stamped.stamp(0))
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            included_in_fmu=False, component_type="pyranometer"
+        )
+    )
+    @property
+    def pvt_pyranometer_sb(self) -> sensor.Pyranometer:
+        return sensor.Pyranometer(irradiance=Stamped.stamp(0))
 
 
 class PvtSimulationOutputs(ThrsValues):

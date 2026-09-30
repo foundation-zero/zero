@@ -81,20 +81,18 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorValveType: "Valve",
   SensorThrusterType: "Thruster",
   SensorPcsType: "Pcs",
-  SensorPcmType: "Pcm",
-  SensorPcmInputType: "PcmInput",
   SensorLevelSensorType: "Level",
   SensorLevelSwitchType: "LevelSwitch",
   SensorCalculatedFlowType: "CalculatedFlow",
-  SensorHeatPumpType: "HeatPump",
-  SensorHeatExchangerType: "HeatExchanger",
-  SensorHvacExchangerType: "HvacExchanger",
-  SensorPvtType: "Pvt",
+  SensorHeatTransferDeviceType: "HeatTransferDevice",
   SensorAdsorptionChillerType: "AdsorptionChiller",
   SensorBrightloopType: "Brightloop",
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
+  SensorPvtType: "Pvt",
+  SensorHeatpumpType: "HeatPump",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SensorPyranometerType: "Pyranometer",
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 
@@ -123,7 +121,7 @@ const CONTROL_TYPE_MAP: Record<string, string | null> = {
 const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
   ControllerPidControllerValuesType: "PIDController",
   ControllerTanksControllerValuesType: "DhwTanksController",
-  ControllerPvtControllerValuesType: "PvtController",
+  ControllerPcmChargeControllerValuesType: "PcmChargeController",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {
@@ -200,7 +198,15 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("temperature")) return "Temperature";
   if (lowerFieldName.includes("flowcontrol")) return "FlowControl";
   if (lowerFieldName.includes("flow")) return "Flow";
-  if (lowerFieldName.includes("enabled")) return "Enabled";
+  if (lowerFieldName.includes("enabled") || lowerFieldName.includes("requested")) return "Enabled";
+  if (
+    lowerFieldName.includes("grace") ||
+    lowerFieldName.includes("window") ||
+    lowerFieldName.includes("cooldown") ||
+    lowerFieldName.includes("duration") ||
+    lowerFieldName.includes("delay")
+  )
+    return "Duration";
   if (lowerFieldName.includes("ratio")) return "Ratio";
   if (lowerFieldName.includes("coolingsetpoint")) return "Temperature";
   if (lowerFieldName.includes("dutypoint")) return "Dutypoint";
@@ -208,12 +214,6 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("cold")) return "Temperature";
   if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
-  if (
-    lowerFieldName.includes("grace") ||
-    lowerFieldName.includes("window") ||
-    lowerFieldName.includes("cooldown")
-  )
-    return "Duration";
   if (lowerFieldName.includes("heat")) return "Power";
   if (lowerFieldName.includes("disabled")) return "Disabled";
 

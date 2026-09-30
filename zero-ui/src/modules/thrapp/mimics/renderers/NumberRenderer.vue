@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/modules/common/lib/utils";
+import { cn, isDefined } from "@/modules/common/lib/utils";
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { computed } from "vue";
 import { getFieldValue } from "../providers/index.ts";
@@ -16,14 +16,14 @@ const props = defineProps<
 const fieldValue = getFieldValue<number>();
 const rawValue = computed(() => (props.value !== undefined ? props.value : fieldValue.value));
 const transformedValue = computed(() => {
-  return props.transform && rawValue.value !== undefined
+  return props.transform && isDefined(rawValue.value)
     ? props.transform(rawValue.value)
     : rawValue.value;
 });
 
 const unit = computed(() => {
   if (typeof props.unit === "function") {
-    return transformedValue.value !== undefined && rawValue.value !== undefined
+    return isDefined(transformedValue.value) && isDefined(rawValue.value)
       ? props.unit(Math.abs(rawValue.value), Math.abs(transformedValue.value))
       : undefined;
   } else {

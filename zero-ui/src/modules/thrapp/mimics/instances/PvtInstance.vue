@@ -2,7 +2,6 @@
 import { ZiSolarPanel } from "@/modules/common/components/icons";
 import { usePvtMode } from "@/modules/thrapp/state";
 import { RiDropLine, RiFireLine, RiFlashlightLine } from "@remixicon/vue";
-import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -32,14 +31,9 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const flow = getSensorValue(props.sensors.flow);
-const pvt = getSensorValue(props.source);
+const heatTransfer = getSensorValue(props.sensors.heatTransfer);
 const state = getComponentState();
 const modeKey = usePvtMode(props.custom.group);
-
-const flowRate = computed(() => {
-  return flow.value?.flow?.value;
-});
 </script>
 
 <template>
@@ -70,13 +64,13 @@ const flowRate = computed(() => {
             <RiFireLine class="text-heating-medium size-3.5" />
           </span>
           <span class="text-foreground font-medium">
-            <FieldRenderer.Heat :value="pvt?.heat.value" />
+            <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
           </span>
         </ValueListItem>
         <ValueListItem>
           <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
           <span class="text-foreground font-medium">
-            <FieldRenderer.Temperature :value="pvt?.deltaT.value" />
+            <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
           </span>
         </ValueListItem>
         <ValueListItem>
@@ -84,7 +78,7 @@ const flowRate = computed(() => {
             <RiDropLine class="text-brand size-3.5" />
           </span>
           <span class="text-foreground font-medium">
-            <FieldRenderer.FlowRate :value="flowRate" />
+            <FieldRenderer.FlowRate :value="heatTransfer?.flow?.value" />
           </span>
         </ValueListItem>
         <ValueListItem>

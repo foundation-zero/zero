@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import ThrusterInstance from "../../../instances/ThrusterInstance.vue";
-import { getField } from "../../../providers";
+import { THRUSTERS_MIMIC_DATA } from "../data";
+
+const thrusters = THRUSTERS_MIMIC_DATA[MimicComponentType.Thruster];
 </script>
 
 <template>
@@ -9,23 +11,13 @@ import { getField } from "../../../providers";
     <ThrusterInstance
       x="23"
       y="143"
-      title-key="aftTitle"
-      :source="getField(SensorComponentType.Thruster, 'thrusters', 'thrustersThrusterAft')"
-      :mode-source="getField(SensorComponentType.Pcs, 'thrusters', 'thrustersPcs')"
-      :temperature-source="
-        getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureAft')
-      "
+      v-bind="thrusters['9002-01']"
     />
 
     <ThrusterInstance
       x="23"
       y="401"
-      title-key="fwdTitle"
-      :source="getField(SensorComponentType.Thruster, 'thrusters', 'thrustersThrusterFwd')"
-      :mode-source="getField(SensorComponentType.Pcs, 'thrusters', 'thrustersPcs')"
-      :temperature-source="
-        getField(SensorComponentType.Temperature, 'thrusters', 'thrustersTemperatureFwd')
-      "
+      v-bind="thrusters['9001-01']"
     />
   </g>
 </template>

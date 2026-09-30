@@ -29,13 +29,11 @@ grouped_topics = [
   "marpower/450000-dc-distribution/pwr/",
   "marpower/450000-dynamic-conv-ps/",
   "marpower/450000-dynamic-conv-sb/",
+  "marpower/450000-fire-detection/",
   "marpower/450000-hvac/",
   "marpower/450000-main-power-storage-errors/",
-  "marpower/450000-main-power-storage/system-05/",
-  "marpower/450000-main-power-storage/system-5/",
   "marpower/450000-ugrid/",
   "marpower/450000-underwlights/",
-  "marpower/500000-thrs/vlv/",
   "marpower/550000-navigation-lights/",
   "marpower/battery-dc-converter/",
   "marpower/bms-master/",
@@ -48,7 +46,357 @@ grouped_topics = [
   "termodinamica/ac/"
 ]
 
-thrs_tables = {
+managed_tables = {
+  "marpower/250000-fresh-water/cold/cold-flow-captains-cabin": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001007_12",
+    "technical_name": "cold-flow-captains-cabin"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-cabin-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_2",
+    "technical_name": "cold-flow-crew-cabin-ps-fwd"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-cabin-ps-mid": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001007_6",
+    "technical_name": "cold-flow-crew-cabin-ps-mid"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-cabin-sb-aft": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001007_11",
+    "technical_name": "cold-flow-crew-cabin-sb-aft"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-cabin-sb-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001007_4",
+    "technical_name": "cold-flow-crew-cabin-sb-fwd"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-cabin-sb-mid": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_8",
+    "technical_name": "cold-flow-crew-cabin-sb-mid"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-crew-mess": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_17",
+    "technical_name": "cold-flow-crew-mess"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-dayhead": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_31",
+    "technical_name": "cold-flow-dayhead"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-deck-douche": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_27",
+    "technical_name": "cold-flow-deck-douche"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-deckhouse": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_26",
+    "technical_name": "cold-flow-deckhouse"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-from-tank": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001123_2",
+    "technical_name": "cold-flow-from-tank"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-galley": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_21",
+    "technical_name": "cold-flow-galley"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-guest-cabin-bathroom-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_24",
+    "technical_name": "cold-flow-guest-cabin-bathroom-ps-fwd"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-guest-cabin-ps-aft": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_35",
+    "technical_name": "cold-flow-guest-cabin-ps-aft"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-guest-cabin-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_34",
+    "technical_name": "cold-flow-guest-cabin-ps-fwd"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-guest-cabin-sb": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_32",
+    "technical_name": "cold-flow-guest-cabin-sb"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-laundry": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_14",
+    "technical_name": "cold-flow-laundry"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-lazaret": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_41",
+    "technical_name": "cold-flow-lazaret"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-lower-saloon": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_30",
+    "technical_name": "cold-flow-lower-saloon"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-master-cabin-ps": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_39",
+    "technical_name": "cold-flow-master-cabin-ps"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-master-cabin-sb": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_37",
+    "technical_name": "cold-flow-master-cabin-sb"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-owners-deckhouse": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_C3",
+    "technical_name": "cold-flow-owners-deckhouse"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-technical-space-sink": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_C1",
+    "technical_name": "cold-flow-technical-space-sink"
+  },
+  "marpower/250000-fresh-water/cold/cold-flow-water-softner": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001124",
+    "technical_name": "cold-flow-water-softner"
+  },
+  "marpower/250000-fresh-water/cold/cold-level-tank1": {
+    "table": "marpower__fresh_water__level_sensors",
+    "yard_tag": "25001019-01",
+    "technical_name": "cold-level-tank1"
+  },
+  "marpower/250000-fresh-water/cold/cold-level-tank2": {
+    "table": "marpower__fresh_water__level_sensors",
+    "yard_tag": "25001019-02",
+    "technical_name": "cold-level-tank2"
+  },
+  "marpower/250000-fresh-water/cold/cold-temperature-to-tanks": {
+    "table": "marpower__fresh_water__temperatures",
+    "yard_tag": "25001038_2",
+    "technical_name": "cold-temperature-to-tanks"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-captains-cabin": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_13",
+    "technical_name": "hot-flow-captains-cabin"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-cabin-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_3",
+    "technical_name": "hot-flow-crew-cabin-ps-fwd"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-cabin-ps-mid": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_7",
+    "technical_name": "hot-flow-crew-cabin-ps-mid"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-cabin-sb-aft": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_10",
+    "technical_name": "hot-flow-crew-cabin-sb-aft"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-cabin-sb-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_5",
+    "technical_name": "hot-flow-crew-cabin-sb-fwd"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-cabin-sb-mid": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001007_9",
+    "technical_name": "hot-flow-crew-cabin-sb-mid"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-crew-mess": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_18",
+    "technical_name": "hot-flow-crew-mess"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-dayhead": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_C2",
+    "technical_name": "hot-flow-dayhead"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-deck-douche": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_29",
+    "technical_name": "hot-flow-deck-douche"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-deckhouse": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_28",
+    "technical_name": "hot-flow-deckhouse"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-from-tank": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001123_1",
+    "technical_name": "hot-flow-from-tank"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-galley": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_22",
+    "technical_name": "hot-flow-galley"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-guest-cabin-bathroom-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_25",
+    "technical_name": "hot-flow-guest-cabin-bathroom-ps-fwd"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-guest-cabin-ps-aft": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_38",
+    "technical_name": "hot-flow-guest-cabin-ps-aft"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-guest-cabin-ps-fwd": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_36",
+    "technical_name": "hot-flow-guest-cabin-ps-fwd"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-guest-cabin-sb": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_33",
+    "technical_name": "hot-flow-guest-cabin-sb"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-laundry": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_15",
+    "technical_name": "hot-flow-laundry"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-lazaret": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_43",
+    "technical_name": "hot-flow-lazaret"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-master-cabin-ps": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_42",
+    "technical_name": "hot-flow-master-cabin-ps"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-master-cabin-sb": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_40",
+    "technical_name": "hot-flow-master-cabin-sb"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-owners-deckhouse": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_C4",
+    "technical_name": "hot-flow-owners-deckhouse"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-technical-space-sink": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001037_1",
+    "technical_name": "hot-flow-technical-space-sink"
+  },
+  "marpower/250000-fresh-water/hot/hot-flow-to-pcm": {
+    "table": "marpower__fresh_water__flows",
+    "yard_tag": "25001139",
+    "technical_name": "hot-flow-to-pcm"
+  },
+  "marpower/250000-fresh-water/hot/hot-mix-pcm": {
+    "table": "marpower__fresh_water__valves",
+    "yard_tag": "25001135",
+    "technical_name": "hot-mix-pcm"
+  },
+  "marpower/250000-fresh-water/hot/hot-temperature-from-pcm": {
+    "table": "marpower__fresh_water__temperatures",
+    "yard_tag": "25001038_3",
+    "technical_name": "hot-temperature-from-pcm"
+  },
+  "marpower/250000-fresh-water/hot/hot-temperature-from-tank": {
+    "table": "marpower__fresh_water__temperatures",
+    "yard_tag": "25001038_1",
+    "technical_name": "hot-temperature-from-tank"
+  },
+  "marpower/250000-fresh-water/hot/hot-temperature-to-cabins": {
+    "table": "marpower__fresh_water__temperatures",
+    "yard_tag": "25001038_4",
+    "technical_name": "hot-temperature-to-cabins"
+  },
+  "marpower/250000-fresh-water/hot/hot-temperature-to-pcm": {
+    "table": "marpower__fresh_water__temperatures",
+    "yard_tag": "25001038_5",
+    "technical_name": "hot-temperature-to-pcm"
+  },
+  "marpower/250000-tech-water/clean/clean-level": {
+    "table": "marpower__tech_water__level_sensors",
+    "yard_tag": "25004025-1",
+    "technical_name": "clean-level"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-adiabatic-cooling-line-b03": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004034_1",
+    "technical_name": "cold-flow-adiabatic-cooling-line-b03"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-adiabatic-cooling-line-b07": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004034_2",
+    "technical_name": "cold-flow-adiabatic-cooling-line-b07"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-adiabatic-cooling-line-b08": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004034_3",
+    "technical_name": "cold-flow-adiabatic-cooling-line-b08"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-adiabatic-cooling-line-b09": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004034_4",
+    "technical_name": "cold-flow-adiabatic-cooling-line-b09"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-charcoal-filter": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004037_4",
+    "technical_name": "cold-flow-charcoal-filter"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-reel-deckwash-aft": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004037_3",
+    "technical_name": "cold-flow-reel-deckwash-aft"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-reel-deckwash-fwd": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004037_1",
+    "technical_name": "cold-flow-reel-deckwash-fwd"
+  },
+  "marpower/250000-tech-water/cold/cold-flow-reel-deckwash-mid": {
+    "table": "marpower__tech_water__flows",
+    "yard_tag": "25004037_2",
+    "technical_name": "cold-flow-reel-deckwash-mid"
+  },
+  "marpower/250000-tech-water/dirty/dirty-level": {
+    "table": "marpower__tech_water__level_sensors",
+    "yard_tag": "25004025-2",
+    "technical_name": "dirty-level"
+  },
+  "marpower/340000-sewage/black/blac-level": {
+    "table": "marpower__sewage__level_sensors",
+    "yard_tag": "34001025-02",
+    "technical_name": "blac-level"
+  },
+  "marpower/340000-sewage/grey/grey-level-aft": {
+    "table": "marpower__sewage__level_sensors",
+    "yard_tag": "34001025-01",
+    "technical_name": "grey-level-aft"
+  },
+  "marpower/340000-sewage/grey/grey-level-fwd": {
+    "table": "marpower__sewage__level_sensors",
+    "yard_tag": "34001025-03",
+    "technical_name": "grey-level-fwd"
+  },
+  "marpower/340000-sewage/sludge/sludge-level": {
+    "table": "marpower__sewage__level_sensors",
+    "yard_tag": "34001025-03",
+    "technical_name": "sludge-level"
+  },
+  "marpower/380000-sea-water/cold/cold-flow-low-seawater": {
+    "table": "marpower__sea_water__flows",
+    "yard_tag": "38001164_1",
+    "technical_name": "cold-flow-low-seawater"
+  },
   "marpower/500000-thrs/adsorption/adsorption-flow-dhw": {
     "table": "marpower__thrs__flows",
     "yard_tag": "50001058-10",
@@ -1738,5 +2086,225 @@ thrs_tables = {
     "table": "marpower__thrs__temperatures",
     "yard_tag": "50001038-28",
     "technical_name": "thrusters-temperature-supply"
+  },
+  "thrs/controller/adsorption/adsorption-dhw-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption_dhw_exchanger"
+  },
+  "thrs/controller/adsorption/adsorption-ht-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption_ht_exchanger"
+  },
+  "thrs/controller/consumers/consumers-adsorption-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "consumers_adsorption_exchanger"
+  },
+  "thrs/controller/consumers/consumers-dhw-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "consumers_dhw_exchanger"
+  },
+  "thrs/controller/dc/dc-dhw-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dc_dhw_exchanger"
+  },
+  "thrs/controller/dhw/dhw-adsorption-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_adsorption_exchanger"
+  },
+  "thrs/controller/dhw/dhw-consumers-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_consumers_exchanger"
+  },
+  "thrs/controller/dhw/dhw-dc-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_dc_exchanger"
+  },
+  "thrs/controller/dhw/dhw-drives-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_drives_exchanger"
+  },
+  "thrs/controller/dhw/dhw-freshwater-flow-supply": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "dhw_freshwater_flow_supply"
+  },
+  "thrs/controller/dhw/dhw-heatpump-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_heatpump_heat"
+  },
+  "thrs/controller/dhw/dhw-hvac-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "dhw_hvac_exchanger"
+  },
+  "thrs/controller/drives/drives-dhw-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "drives_dhw_exchanger"
+  },
+  "thrs/controller/pcm/pcm-heat-module1": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pcm_heat_module1"
+  },
+  "thrs/controller/pcm/pcm-heat-module1-freshwater": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pcm_heat_module1_freshwater"
+  },
+  "thrs/controller/pcm/pcm-heat-module2": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pcm_heat_module2"
+  },
+  "thrs/controller/pcm/pcm-heat-module3": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pcm_heat_module3"
+  },
+  "thrs/controller/pcm/pcm-heat-module4": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pcm_heat_module4"
+  },
+  "thrs/controller/pcm/pcm-temperature-consumers-return": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pcm_temperature_consumers_return"
+  },
+  "thrs/controller/pvt/pvt-flow-main-aft-strings": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "pvt_flow_main_aft_strings"
+  },
+  "thrs/controller/pvt/pvt-flow-main-fwd-strings": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "pvt_flow_main_fwd_strings"
+  },
+  "thrs/controller/pvt/pvt-flow-owners-strings": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "pvt_flow_owners_strings"
+  },
+  "thrs/controller/pvt/pvt-max-temperature-main-aft-strings": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_max_temperature_main_aft_strings"
+  },
+  "thrs/controller/pvt/pvt-max-temperature-main-fwd-strings": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_max_temperature_main_fwd_strings"
+  },
+  "thrs/controller/pvt/pvt-max-temperature-owners-strings": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_max_temperature_owners_strings"
+  },
+  "thrs/controller/pvt/pvt-pvt-main-aft-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pvt_pvt_main_aft_heat"
+  },
+  "thrs/controller/pvt/pvt-pvt-main-fwd-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pvt_pvt_main_fwd_heat"
+  },
+  "thrs/controller/pvt/pvt-pvt-owners-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pvt_pvt_owners_heat"
+  },
+  "thrs/controller/pvt/pvt-return-temperature": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_return_temperature"
+  },
+  "thrs/controller/pvt/pvt-seawater-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "pvt_seawater_exchanger"
+  },
+  "thrs/controller/pvt/pvt-seawater-exchanger-flow": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "pvt_seawater_exchanger_flow"
+  },
+  "thrs/controller/pvt/pvt-temperature-main-aft-strings-return": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_main_aft_strings_return"
+  },
+  "thrs/controller/pvt/pvt-temperature-main-aft-strings-supply": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_main_aft_strings_supply"
+  },
+  "thrs/controller/pvt/pvt-temperature-main-fwd-strings-return": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_main_fwd_strings_return"
+  },
+  "thrs/controller/pvt/pvt-temperature-main-fwd-strings-supply": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_main_fwd_strings_supply"
+  },
+  "thrs/controller/pvt/pvt-temperature-owners-strings-return": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_owners_strings_return"
+  },
+  "thrs/controller/pvt/pvt-temperature-owners-strings-supply": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "pvt_temperature_owners_strings_supply"
+  },
+  "thrs/controller/pvt/pvt-total-flow": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "pvt_total_flow"
+  },
+  "thrs/controller/thrusters/thrusters-flow": {
+    "table": "marpower__thrs__calculated_flows",
+    "yard_tag": null,
+    "technical_name": "thrusters_flow"
+  },
+  "thrs/controller/thrusters/thrusters-seawater-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "thrusters_seawater_exchanger"
+  },
+  "thrs/controller/thrusters/thrusters-temperature-pre-cooler": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "thrusters_temperature_pre_cooler"
+  },
+  "thrs/controller/thrusters/thrusters-temperature-recovery": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "thrusters_temperature_recovery"
+  },
+  "thrs/controller/thrusters/thrusters-thruster-aft-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "thrusters_thruster_aft_heat"
+  },
+  "thrs/controller/thrusters/thrusters-thruster-fwd-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "thrusters_thruster_fwd_heat"
   }
 }

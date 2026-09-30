@@ -6,17 +6,20 @@ import { MimicComponentType } from "../../types";
 import { PumpProps, PumpState } from "../components/pump";
 import Pump from "../components/pump/Pump.vue";
 import { getMimicDataProvider } from "../providers";
+import { componentStateFromAlarms } from "../providers/helpers";
 
 const props = defineProps<
   MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.Pump> & PumpProps
 >();
 
-const { getControlValue, getComponentState } = getMimicDataProvider();
-const pump = getControlValue(props.controls.pump);
+const { getControlValue, getComponentState, getSensorValue } = getMimicDataProvider();
+const pumpControl = getControlValue(props.controls.pump);
+const pumpSensor = getSensorValue(props.source);
 const state = getComponentState();
+const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, pumpSensor.value));
 
 const pumpState = computed(() => {
-  if (pump.value?.on.value) return PumpState.Active;
+  if (pumpControl.value?.on.value) return PumpState.Active;
   else return PumpState.Inactive;
 });
 </script>
@@ -29,7 +32,7 @@ const pumpState = computed(() => {
     <Pump
       v-bind="props"
       :pump-state="pumpState"
-      :state="state"
+      :state="stateWithAlarms"
     />
     <slot />
   </MimicTooltipTrigger>

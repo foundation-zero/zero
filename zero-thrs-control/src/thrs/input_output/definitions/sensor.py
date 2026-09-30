@@ -1,17 +1,15 @@
 from collections.abc import Sequence
 from datetime import UTC, datetime
-from enum import Enum
 from typing import Annotated, Self, cast
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
-from thrs.input_output.base import Stamped, ThrsValues, field_meta
+from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
     Bar,
     Celsius,
-    Charged,
     Degree,
     DeltaT,
     Empty,
@@ -27,7 +25,31 @@ from thrs.input_output.definitions.units import (
     Ratio,
     Seconds,
     Watt,
+    WattMeter2,
 )
+
+
+class AmcsComponentAlarms(ThrsValues):
+    any_failure_active: Annotated[
+        Stamped[bool],
+        Field(alias="TF_AnyFailureActive"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    any_warning_active: Annotated[
+        Stamped[bool],
+        Field(alias="TF_AnyWarningActive"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    feedback_failure: Annotated[
+        Stamped[bool],
+        Field(alias="TF_FeedbackFailure"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+    external_out_of_range: Annotated[
+        Stamped[bool],
+        Field(alias="TF_ExternalOutOfRange"),
+        field_meta(included_in_fmu=False),
+    ] = Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
 
 
 class FlowSensor(ThrsValues):
@@ -40,7 +62,7 @@ class FlowSensor(ThrsValues):
     )
 
 
-class Pump(ThrsValues):
+class Pump(AmcsComponentAlarms, ThrsValues):
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
         value=0.0, timestamp=datetime.fromtimestamp(0, UTC)
@@ -173,47 +195,107 @@ class TemperatureDelta(ThrsValues):
 
 
 class HeatTransferDevice(ThrsValues):
-    delta_t: Stamped[DeltaT]
-    heat: Stamped[Watt]
+    temperature_supply: StampedWithSource[Celsius | None]
+    temperature_return: StampedWithSource[Celsius | None]
+    delta_t: Stamped[DeltaT | None]
+    flow: StampedWithSource[LMin | None]
+    heat: Stamped[Watt | None]
 
     @classmethod
     def from_sensors(
         cls,
-        temperature_supply: Stamped[Celsius] | Stamped[OptionalCelsius],
-        temperature_return: Stamped[Celsius] | Stamped[OptionalCelsius],
-        flow: Stamped[LMin],
-        heat_transfer_conversion: float,
+        temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
+        temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
+        flow: Stamped[LMin] | Stamped[LMin | None],
+        temperature_supply_source: str,
+        temperature_return_source: str,
+        flow_source: str,
+        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
     ) -> Self:
-        delta_t = Stamped.combine(
+        delta_t: Stamped[Celsius | None] = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=0.0
+            value=None
             if temperature_supply.value is None or temperature_return.value is None
             else temperature_return.value - temperature_supply.value,
         )
-        heat = Stamped.combine(
-            delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
+        heat_value = (
+            0.0
+            if flow.value == 0.0 or delta_t.value == 0.0
+            else (
+                None
+                if flow.value is None or delta_t.value is None
+                else flow.value * delta_t.value * heat_transfer_conversion
+            )
         )
-        return cls(delta_t=delta_t, heat=heat)
+        heat = Stamped.combine(delta_t, flow, value=heat_value)
+        return cls(
+            temperature_supply=StampedWithSource.from_stamped(
+                temperature_supply,  # type: ignore
+                temperature_supply_source,
+            ),
+            temperature_return=StampedWithSource.from_stamped(
+                temperature_return,  # type: ignore
+                temperature_return_source,
+            ),
+            delta_t=delta_t,
+            flow=StampedWithSource.from_stamped(flow, flow_source),  # type: ignore
+            heat=heat,
+        )
+
+    @classmethod
+    def from_sensors_with_mix_valve(
+        cls,
+        temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
+        temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
+        flow: Stamped[LMin] | Stamped[LMin | None],
+        temperature_supply_source: str,
+        temperature_return_source: str,
+        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
+    ):
+        """
+        Calculate heat transfer device for seawater exchangers where a mix valve determines the ratio that actually passed the heat exchanger.
+
+        Because the mix valve that is in between the sensors we don't know most values
+        """
+        heat_transfer = HeatTransferDevice.from_sensors(
+            temperature_supply,
+            temperature_return,
+            flow,
+            temperature_supply_source,
+            temperature_return_source,
+            "unknown",
+            heat_transfer_conversion,
+        )
+
+        heat_transfer.delta_t = Stamped.combine(
+            temperature_supply, temperature_return, value=None
+        )
+        heat_transfer.flow = StampedWithSource.combine(
+            flow, value=None, source="unknown"
+        )
+        heat_transfer.temperature_return = StampedWithSource.combine(
+            temperature_return, value=None, source="unknown"
+        )
+
+        return heat_transfer
 
 
-class HvacExchanger(HeatTransferDevice):
-    pass
+def extract_source_yardtag(model: ThrsValues, key: str) -> str:
+    klass = type(model)
+    field_info = klass.model_fields.get(key)
+    computed_field_info = klass.model_computed_fields.get(key)
+
+    if not field_info and computed_field_info:
+        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # type: ignore
+        if not yard_tag:
+            return "calculated"
+        return yard_tag
+
+    return field_info.json_schema_extra.get("yard_tag", "unknown")  # type: ignore
 
 
-class HeatPump(HeatTransferDevice):
-    pass
-
-
-class HeatExchanger(HeatTransferDevice):
-    pass
-
-
-class Pvt(HeatTransferDevice):
-    pass
-
-
-class Valve(ThrsValues):
+class Valve(AmcsComponentAlarms, ThrsValues):
     position_rel: Stamped[Ratio]
 
     # Not used in control, only in frontend TODO: Remove when graphql api is split off
@@ -249,6 +331,10 @@ def valves_open_closed(
         valve.position_rel.value < (control.Valve.CLOSED + tolerance)
         for valve in closed_valves
     )
+
+
+def stamped_by_valves[V](valves: Sequence[Valve], value: V) -> Stamped[V]:
+    return Stamped.combine(*(valve.position_rel for valve in valves), value=value)
 
 
 def weighted_combined_measurement[
@@ -323,55 +409,16 @@ class Ugrid(ThrsValues):
     active: Stamped[OnOff]
 
 
+class Heatpump(ThrsValues):
+    on: Stamped[OnOff]
+
+
+class Pvt(ThrsValues):
+    power: Stamped[Watt]
+
+
 class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
-
-
-class PcmChargingState(Enum):
-    CHARGING = "charging"
-    DISCHARGING = "discharging"
-    IDLE = "idle"
-
-
-PCM_CHARGING_DEADBAND: Watt = 100
-
-
-# Temporary helper for the FMU charged input that control depends on.
-class PcmInput(ThrsValues):
-    charged: Stamped[Charged]
-
-
-class Pcm(ThrsValues):
-    delta_t: Stamped[DeltaT]
-    heat: Stamped[Watt]
-    charged: Stamped[Charged]
-    charging_state: Stamped[PcmChargingState]
-
-    @classmethod
-    def from_sensors(
-        cls,
-        temperature_supply: Stamped[Celsius],
-        temperature_return: Stamped[Celsius],
-        flow: Stamped[LMin],
-        charged: Stamped[Charged],
-        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
-    ) -> Self:
-        heat_transfer = HeatTransferDevice.from_sensors(
-            temperature_supply, temperature_return, flow, heat_transfer_conversion
-        )
-        if heat_transfer.heat.value < -PCM_CHARGING_DEADBAND:
-            state = PcmChargingState.CHARGING
-        elif heat_transfer.heat.value > PCM_CHARGING_DEADBAND:
-            state = PcmChargingState.DISCHARGING
-        else:
-            state = PcmChargingState.IDLE
-        charging_state = Stamped.combine(heat_transfer.heat, value=state)
-        return cls(
-            delta_t=heat_transfer.delta_t,
-            heat=heat_transfer.heat,
-            charged=charged,
-            charging_state=charging_state,
-        )
 
 
 class LevelSwitch(ThrsValues):
@@ -429,27 +476,27 @@ class PowerSensor(ThrsValues):
     temperature_cold: Stamped[Celsius]
 
 
+class Pyranometer(ThrsValues):
+    irradiance: Stamped[WattMeter2]
+
+
 __all__ = [
     "AdsorptionChiller",
     "Brightloop",
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowSensor",
-    "HeatExchanger",
-    "HeatPump",
     "HeatTransferDevice",
-    "HvacExchanger",
+    "Heatpump",
     "LevelSensor",
     "LevelSwitch",
-    "Pcm",
-    "PcmChargingState",
-    "PcmInput",
     "Pcs",
     "PowerSensor",
     "PressureSensor",
     "PropulsionDrive",
     "Pump",
     "Pvt",
+    "Pyranometer",
     "ShorePowerConverter",
     "TemperatureDelta",
     "TemperatureSensor",

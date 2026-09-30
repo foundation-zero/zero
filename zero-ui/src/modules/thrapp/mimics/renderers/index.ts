@@ -4,7 +4,6 @@ import Auto from "./AutoRenderer.vue";
 import BoilerTankControllerMode from "./BoilerTankControllerModeRenderer.vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
 import BoilerTankTemperature from "./BoilerTankTemperatureRenderer.vue";
-import Charge from "./ChargeRenderer.vue";
 import ChargeState from "./ChargeStateRenderer.vue";
 import ChargingMode from "./ChargingModeRenderer.vue";
 import Degree from "./DegreeRenderer.vue";
@@ -23,7 +22,6 @@ import Number from "./NumberRenderer.vue";
 import OnOff from "./OnOffRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
 import Placeholder from "./PlaceholderRenderer.vue";
-import PowerConsumption from "./PowerConsumptionRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
 import PvtMode from "./PvtModeRenderer.vue";
@@ -71,8 +69,6 @@ export const FieldRenderer = {
   Empty,
   PvtMode,
   Irradiance,
-  Charge,
   ChargeState,
   ChargingMode,
-  PowerConsumption,
 };

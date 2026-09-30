@@ -110,6 +110,7 @@
         "connectingCircuit": "Connecting circuit"
       },
       "sources": {
+        "unknown": "Unknown",
         "calculated": "Calculated",
         "this": "This component",
         "minTemperature": "Boilers minimum temperature parameter",
@@ -232,7 +233,8 @@
         "states": {
           "empty": "Empty",
           "full": "Full",
-          "half-full": "Half full"
+          "half-full": "Partial",
+          "unknown": "Charge unknown"
         }
       },
       "dhw": {
