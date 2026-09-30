@@ -1,17 +1,13 @@
-from datetime import UTC, datetime, timedelta
-
 import pytest
+from fmpy.fmi1 import FMICallException
+from pydantic import ValidationError
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.input_output.modules.pvt import (
-    PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
-)
-from thrs.orchestration.simulation import Simulation
-from thrs.simulation.fmu import Fmu
-from thrs.simulation.models.fmu_paths import pvt_path
+from tests.modules.pvt.conftest import PvtSimulation
+from thrs.control.modules.pvt import PvtControl
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.modules.pvt import PvtSimulationInputs
 
 
 @fixture(
@@ -19,8 +15,9 @@ from thrs.simulation.models.fmu_paths import pvt_path
         simulator_input_field_setters(
             PvtSimulationInputs,
             ignore=[
-                "pvt_pcm_supply",
-            ],  # Switches don't lend themselves to absurdation
+                "pvt_pcm_supply",  # Switches don't lend themselves to absurdation
+                "mode",  # Not a physical quantity
+            ],
         )
     )
 )
@@ -29,19 +26,21 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return simulation_inputs
 
 
-def test_pvt_simulation_inputs(incorrect_simulation_inputs, control):
-    with Fmu(pvt_path) as fmu:
-        simulation = Simulation(
-            PvtSensorValues,
-            PvtSimulationOutputs,
-            fmu,
-            incorrect_simulation_inputs,
-            datetime.now(UTC),
-            timedelta(seconds=1),
-        )
+def test_pvt_simulation_inputs(
+    incorrect_simulation_inputs: PvtSimulationInputs,
+    simulation: PvtSimulation,
+    control: PvtControl,
+):
+    control_values, _ = control.initial()
+    for pump, mix in [
+        (control_values.pvt_pump_main_aft, control_values.pvt_mix_main_aft),
+        (control_values.pvt_pump_main_fwd, control_values.pvt_mix_main_fwd),
+        (control_values.pvt_pump_owners, control_values.pvt_mix_owners),
+    ]:
+        pump.on.value = True
+        pump.dutypoint.value = 1
+        mix.setpoint.value = Valve.MIXING_A_TO_AB
 
-        with pytest.raises(Exception):
-            for _i in range(100):
-                simulation.tick(
-                    control.initial(datetime.now(UTC)),
-                )
+    with pytest.raises((ValidationError, FMICallException)):
+        for _i in range(100):
+            simulation.tick(control_values)
