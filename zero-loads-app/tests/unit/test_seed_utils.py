@@ -11,10 +11,18 @@ from sailpack.seed_utils import assert_port_tack, mirror_side
         ("blade-sheet-sb-load", "blade-sheet-ps-load"),
         ("fiber-optic-main-v1-ps", "fiber-optic-main-v1-sb"),
         ("blade-tweaker-sb-relative-position", "blade-tweaker-ps-relative-position"),
+        (
+            "fiber-optic-main-rigging-load-d2-port",
+            "fiber-optic-main-rigging-load-d2-stbd",
+        ),
+        (
+            "fiber-optic-mizzen-rigging-sum-load-v3-stbd",
+            "fiber-optic-mizzen-rigging-sum-load-v3-port",
+        ),
         ("main-headstay-combined-load", "main-headstay-combined-load"),
     ],
 )
-def test_mirror_side_swaps_ps_and_sb(technical_name: str, mirrored: str):
+def test_mirror_side_swaps_sides(technical_name: str, mirrored: str):
     assert mirror_side(technical_name) == mirrored
 
 

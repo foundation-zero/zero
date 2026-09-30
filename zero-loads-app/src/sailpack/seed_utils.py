@@ -212,7 +212,7 @@ def extract_reference_values(
 
 
 def mirror_side(technical_name: str) -> str:
-    mirrored = {"ps": "sb", "sb": "ps"}
+    mirrored = {"ps": "sb", "sb": "ps", "port": "stbd", "stbd": "port"}
     return "-".join(mirrored.get(part, part) for part in technical_name.split("-"))
 
 
