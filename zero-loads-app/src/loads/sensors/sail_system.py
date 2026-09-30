@@ -239,6 +239,7 @@ class BladeSheetFeederPs(LoadsModel, ABC):
             display_name="Sheet PT",
             applies_to_tack="port",
             variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -254,6 +255,7 @@ class BladeSheetFeederSb(LoadsModel, ABC):
             display_name="Sheet SB",
             applies_to_tack="starboard",
             variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -792,6 +794,7 @@ class MainRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             applies_to_tack="port",
             variable_key="main-runner-load",
+            technical_name="main-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -825,6 +828,7 @@ class MainRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             applies_to_tack="starboard",
             variable_key="main-runner-load",
+            technical_name="main-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1171,6 +1175,7 @@ class MizzenRunnerPs(LoadsModel, ABC):
             display_name="Runner PT",
             applies_to_tack="port",
             variable_key="mizzen-runner-load",
+            technical_name="mizzen-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1204,6 +1209,7 @@ class MizzenRunnerSb(LoadsModel, ABC):
             display_name="Runner SB",
             applies_to_tack="starboard",
             variable_key="mizzen-runner-load",
+            technical_name="mizzen-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1275,6 +1281,7 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
             display_name="Sheet PT",
             applies_to_tack="port",
             variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1290,6 +1297,7 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
             display_name="Sheet SB",
             applies_to_tack="starboard",
             variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure

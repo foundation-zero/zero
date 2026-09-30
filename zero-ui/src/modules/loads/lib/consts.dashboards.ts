@@ -67,8 +67,8 @@ const dashboard = (
 export const MAIN_MAST_GROUP = group(
   "Main mast",
   PositionId.Main,
-  "main-runner-ps-load",
-  "main-runner-sb-load",
+  "main-runner-tail-ps-load",
+  "main-runner-tail-sb-load",
   "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
@@ -109,8 +109,8 @@ export const MAIN_LOCKS_GROUP = group(
 export const MIZZEN_MAST_GROUP = group(
   "Mizzen mast",
   PositionId.Mizzen,
-  "mizzen-runner-ps-load",
-  "mizzen-runner-sb-load",
+  "mizzen-runner-tail-ps-load",
+  "mizzen-runner-tail-sb-load",
   "mizzen-checkstay-ps-load",
   "mizzen-checkstay-sb-load",
   "mizzen-checkstay-deflector-load",
@@ -192,8 +192,8 @@ export const BLADE_GROUP = group(
   PositionId.ForeOuter,
   "blade-cunningham-load",
   "blade-cunningham-relative-position",
-  "blade-sheet-feeder-ps-load",
-  "blade-sheet-feeder-sb-load",
+  "blade-sheet-ps-load",
+  "blade-sheet-sb-load",
   "blade-adjuster-load",
   ["blade-adjuster-relative-position", false],
   ["blade-tweaker-ps-load", false],
@@ -207,8 +207,8 @@ export const STAYSAIL_GROUP = group(
   PositionId.ForeInner,
   "staysail-stay-adjuster-load",
   "staysail-stay-adjuster-relative-position",
-  "staysail-sheet-feeder-ps-load",
-  "staysail-sheet-feeder-sb-load",
+  "staysail-sheet-ps-load",
+  "staysail-sheet-sb-load",
 );
 
 export const OUTBOARD_LEAD_GROUP = group(

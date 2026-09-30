@@ -5,8 +5,8 @@ blade-adjuster-load,InputReg,138
 blade-adjuster-relative-position,InputReg,137
 blade-cunningham-load,InputReg,118
 blade-cunningham-relative-position,InputReg,117
-blade-sheet-feeder-ps-load,InputReg,1228
-blade-sheet-feeder-sb-load,InputReg,1328
+blade-sheet-ps-load,InputReg,1228
+blade-sheet-sb-load,InputReg,1328
 blade-tweaker-ps-load,InputReg,268
 blade-tweaker-ps-relative-position,InputReg,267
 blade-tweaker-sb-load,InputReg,278
@@ -24,6 +24,8 @@ main-outhaul-load,InputReg,219
 main-outhaul-relative-position,InputReg,217
 main-preventer-load,InputReg,2402
 main-preventer-relative-position,InputReg,247
+main-runner-tail-ps-load,InputReg,1418
+main-runner-tail-sb-load,InputReg,1518
 main-sheet-load,InputReg,1258
 main-traveller-relative-position,InputReg,1457
 main-vang-load,InputReg,2401
@@ -41,13 +43,15 @@ mizzen-outhaul-load,InputReg,519
 mizzen-outhaul-relative-position,InputReg,517
 mizzen-preventer-load,InputReg,2432
 mizzen-preventer-relative-position,InputReg,567
+mizzen-runner-tail-ps-load,InputReg,1428
+mizzen-runner-tail-sb-load,InputReg,1528
 mizzen-sheet-load,InputReg,1548
 mizzen-vang-load,InputReg,2431
 mizzen-vang-relative-position,InputReg,527
 primary-winch-ps-load,InputReg,2128
 primary-winch-sb-load,InputReg,1388
-staysail-sheet-feeder-ps-load,InputReg,1248
-staysail-sheet-feeder-sb-load,InputReg,1348
+staysail-sheet-ps-load,InputReg,1248
+staysail-sheet-sb-load,InputReg,1348
 staysail-stay-adjuster-load,InputReg,148
 staysail-stay-adjuster-relative-position,InputReg,147
 storm-jib-tack-load,InputReg,104

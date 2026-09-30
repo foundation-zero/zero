@@ -1,12 +1,14 @@
 Technical name,Sailpack table name,Sailpack row label,Sailpack column label,Note on getting var from Sailpack
-aft-winch-ps-load,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+blade-adjuster-relative-position,CABLE DATA,CABLE__FS,Trimming value (N or m),Should not be adjusted once rig is set up. For monitoring purposes only
+main-sheet-load,CABLE DATA,CABLE_MAINSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 2:1
 aft-winch-sb-load,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),May also carry loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+aft-winch-ps-load,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+mizzen-runner-stay-ps-load,CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),2 x Mizzen Runner Tail Load Pin load x cos(17) – (Mizzen Check Stay Load Cell x cos(8)).
 aft-winch-sb-load,CABLE DATA,CABLE_MIZZEN_JIB_SHEET,Load (N),
 blade-adjuster-load,CABLE DATA,CABLE__FS,Load (N),
-blade-adjuster-relative-position,CABLE DATA,CABLE__FS,Trimming value (N or m),Should not be adjusted once rig is set up. For monitoring purposes only
 blade-cunningham-load,CABLE DATA,CABLE_BladeTACK,Load (N),
 blade-cunningham-relative-position,CABLE DATA,CABLE_BladeTACK,Trimming value (N or m),
-blade-sheet-feeder-sb-load,CABLE DATA,CABLE_JIBSHEET,Load (N),
+blade-sheet-sb-load,CABLE DATA,CABLE_JIBSHEET,Load (N),
 blade-tweaker-sb-load,CABLE DATA,CABLE_BLADE_UP_DOWN,Load (N),
 blade-tweaker-sb-relative-position,CABLE DATA,CABLE_BLADE_UP_DOWN,Trimming value (N or m),
 code-zero-tack-load,CABLE DATA,CABLE_CODE_0_TACK,Load (N),
@@ -30,7 +32,6 @@ main-outhaul-load,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),
 main-outhaul-relative-position,CABLE DATA,CABLE_MAIN_OUTHAUL,Trimming value (N or m),
 main-preventer-load,CABLE DATA,CABLE_PREVENTER,Load (N),
 main-runner-stay-ps-load,CABLE DATA,CABLE_RUNNER,Load (N),
-main-sheet-load,CABLE DATA,CABLE_MAINSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 2:1
 main-traveller-relative-position,CABLE DATA,CABLE_TRAVELLER_WW,Trimming value (N or m),
 main-traveller-relative-position,CABLE DATA,CABLE_TRAVELLER_LW,Trimming value (N or m),
 main-vang-load,CABLE DATA,CABLE_VANG,Load (N),
@@ -48,8 +49,7 @@ mizzen-headsail-tack-adjuster-relative-position,CABLE DATA,CABLE_MIZZEN_STAYSAIL
 mizzen-outhaul-load,CABLE DATA,CABLE_MIZZENCLEW,Load (N),
 mizzen-outhaul-relative-position,CABLE DATA,CABLE_MIZZENCLEW,Trimming value (N or m),
 mizzen-preventer-load,CABLE DATA,CABLE_MIZZEN_PREVENTER,Load (N),
-mizzen-runner-stay-ps-load,CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),2 x Mizzen Runner Tail Load Pin load x cos(17) – (Mizzen Check Stay Load Cell x cos(8)).
 mizzen-vang-load,CABLE DATA,CABLE_MIZZEN_VANG,Load (N),
 mizzen-vang-relative-position,,,,
-staysail-sheet-feeder-sb-load,CABLE DATA,CABLE_staysail_SHEET,Load (N),
+staysail-sheet-sb-load,CABLE DATA,CABLE_staysail_SHEET,Load (N),
 staysail-stay-adjuster-load,CABLE DATA,CABLE_STAYSAIL_Tack,Load (N),
