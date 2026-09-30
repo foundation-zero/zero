@@ -1,7 +1,7 @@
 from pytest import approx
 
 from thrs.control.modules.pvt import PvtControl, PvtControlMode
-from thrs.control.modules.pvt_group import PvtGroupControlMode
+from thrs.control.modules.pvt_group import IDLE_MIX_POSITION, PvtGroupControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.pvt import (
@@ -78,6 +78,78 @@ def test_recovery(control: PvtControl, simulation: PvtSimulation):
     assert result.simulation_outputs.pvt_pcm_supply.flow.value == approx(
         result.simulation_outputs.pvt_pcm_return.flow.value, abs=1e-5
     )
+
+
+def test_idle_mix_position(control: PvtControl):
+    control_values, _ = control.control(PvtSensorValues.zero())
+
+    assert control.mode.aft == PvtGroupControlMode(mode="idle")
+    assert control_values.pvt_mix_main_aft.setpoint.value == IDLE_MIX_POSITION
+    assert control_values.pvt_mix_main_fwd.setpoint.value == IDLE_MIX_POSITION
+    assert control_values.pvt_mix_owners.setpoint.value == IDLE_MIX_POSITION
+
+
+def test_warmup_until_mix_opens(control: PvtControl, simulation: PvtSimulation):
+    result = simulation.tick(
+        control.control(PvtSensorValues.zero())[0],
+    )
+
+    modes = [control.mode.aft.mode]
+    for _i in range(13 * 60):
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+        if control.mode.aft.mode != modes[-1]:
+            modes.append(control.mode.aft.mode)
+
+        if control.mode.aft.mode == "warmup":
+            assert control_values.pvt_pump_main_aft.on.value
+            assert (
+                control_values.pvt_pump_main_aft.dutypoint.value
+                == control.parameters.main_aft_minimum_pump_dutypoint
+            )
+            assert (
+                control_values.pvt_mix_main_aft.setpoint.value == Valve.MIXING_B_TO_AB
+            )
+        if control.mode.aft.mode == "recovery":
+            assert control_values.pvt_mix_main_aft.setpoint.value > Valve.MIXING_B_TO_AB
+
+    assert modes == ["idle", "warmup", "recovery"]
+
+
+def test_recovery_falls_back_to_warmup_and_idle(
+    control: PvtControl, simulation: PvtSimulation
+):
+    result = simulation.tick(
+        control.control(PvtSensorValues.zero())[0],
+    )
+    while control.mode.aft.mode != "recovery":
+        control_values, _ = control.control(result.sensor_values)
+        result = simulation.tick(control_values)
+
+    sensor_values = result.sensor_values
+    sensor_values.pvt_temperature_main_aft_return.temperature = Stamped.stamp(
+        control.parameters.minimum_return_temperature + 5
+    )
+    for _i in range(10 * 60):
+        control_values, _ = control.control(sensor_values)
+        if control.mode.aft.mode == "warmup":
+            break
+
+    assert control.mode.aft == PvtGroupControlMode(mode="warmup")
+    assert control_values.pvt_mix_main_aft.setpoint.value == Valve.MIXING_B_TO_AB
+    assert (
+        control_values.pvt_pump_main_aft.dutypoint.value
+        == control.parameters.main_aft_minimum_pump_dutypoint
+    )
+
+    sensor_values.pvt_temperature_main_aft_return.temperature = Stamped.stamp(
+        control.parameters.minimum_return_temperature - 5
+    )
+    control_values, _ = control.control(sensor_values)
+
+    assert control.mode.aft == PvtGroupControlMode(mode="idle")
+    assert control_values.pvt_mix_main_aft.setpoint.value == IDLE_MIX_POSITION
+    assert not control_values.pvt_pump_main_aft.on.value
 
 
 def test_heat_dump(

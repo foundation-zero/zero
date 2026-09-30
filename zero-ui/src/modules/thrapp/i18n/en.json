@@ -282,6 +282,7 @@
           },
           "modes": {
             "recovery": "Recovery",
+            "warmup": "Warmup",
             "idle": "Idle",
             "manual": "Manual"
           }
@@ -293,6 +294,7 @@
           "ManualControl": "Manual control",
           "thrusters": {
             "idle": "Idle",
+            "warmup": "Warmup",
             "recovery": "Recovery",
             "cooldown": "Cooldown",
             "cooling": "Cooling"
@@ -306,6 +308,7 @@
           "consumers": "{mode}",
           "pvt": {
             "idle": "AFT - Idle | FWD - Idle | Owners - Idle",
+            "warmup": "AFT - Warmup | FWD - Warmup | Owners - Warmup",
             "recovery": "AFT - Recovery | FWD - Recovery | Owners - Recovery"
           },
           "dhw": {
