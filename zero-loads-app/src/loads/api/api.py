@@ -31,6 +31,7 @@ from .types import (
     LoadsContext,
     ReferenceValueInput,
     SailType,
+    Tack,
     Variable,
 )
 
@@ -96,13 +97,14 @@ class Mutation:
         self,
         info: strawberry.Info[LoadsContext],
         reference_value: ReferenceValueInput,
+        tack: Tack,
         sail_set: list[strawberry.ID],
         awa_ranges: list[AwaRange],
         aws_ranges: list[AwsRange],
     ) -> None:
         async with info.context.sessionmanager.session() as session:
             await set_loads_reference_values(
-                reference_value, sail_set, awa_ranges, aws_ranges, session
+                reference_value, tack, sail_set, awa_ranges, aws_ranges, session
             )
 
 

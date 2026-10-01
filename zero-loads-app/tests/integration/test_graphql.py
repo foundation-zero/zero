@@ -103,7 +103,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    runner_sb: variables(variables: ["main-runner-sb-load"]) {
+                    runner_sb: variables(variables: ["main-runner-tail-sb-load"]) {
                         id
                         starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -133,7 +133,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             value
                         }
                     }
-                    runner_ps: variables(variables: ["main-runner-ps-load"]) {
+                    runner_ps: variables(variables: ["main-runner-tail-ps-load"]) {
                         id
                         starboard_wind: reference(case: {awaRange: upwind, awsRange: aws_20_25, tack: starboard, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
@@ -173,7 +173,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
             "data": {
                 "runner_sb": [
                     {
-                        "id": "main-runner-sb-load",
+                        "id": "main-runner-tail-sb-load",
                         "port_wind": None,
                         "starboard_wind": {
                             "alarmLow": None,
@@ -183,12 +183,12 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                             "alarmHigh": 26.4,
                         },
                         "actual": {
-                            "id": "main-runner-sb-load",
+                            "id": "main-runner-tail-sb-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-runner-sb-load",
-                            "name": "Runner SB",
+                            "id": "main-runner-tail-sb-load",
+                            "name": "Runner Tail SB",
                             "unit": "tonne",
                             "scaleMin": None,
                             "scaleMax": None,
@@ -199,7 +199,7 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                 ],
                 "runner_ps": [
                     {
-                        "id": "main-runner-ps-load",
+                        "id": "main-runner-tail-ps-load",
                         "port_wind": {
                             "alarmLow": None,
                             "warningLow": None,
@@ -209,12 +209,12 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
                         },
                         "starboard_wind": None,
                         "actual": {
-                            "id": "main-runner-ps-load",
+                            "id": "main-runner-tail-ps-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-runner-ps-load",
-                            "name": "Runner PT",
+                            "id": "main-runner-tail-ps-load",
+                            "name": "Runner Tail PT",
                             "unit": "tonne",
                             "scaleMin": None,
                             "scaleMax": None,
@@ -228,6 +228,144 @@ async def test_graphql_symmetry(async_client: AsyncClient, override_dependency):
 
 
 @pytest.mark.asyncio
+async def test_graphql_load_case_reference_values_per_tack(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                loadCase(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    port: referenceValues(tack: port) {
+                        id
+                    }
+                    starboard: referenceValues(tack: starboard) {
+                        id
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    load_case = response.json()["data"]["loadCase"]
+    assert sorted(value["id"] for value in load_case["port"]) == [
+        "main-runner-tail-ps-load",
+        "main-sheet-load",
+    ]
+    assert sorted(value["id"] for value in load_case["starboard"]) == [
+        "main-runner-tail-sb-load",
+        "main-sheet-load",
+    ]
+
+
+REFERENCE_QUERY = """
+query ($awaRange: AwaRange!, $awsRange: AwsRange!) {
+    variables(variables: ["main-sheet-load"]) {
+        reference(case: {awaRange: $awaRange, awsRange: $awsRange, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+            alarmLow
+            warningLow
+            target
+            warningHigh
+            alarmHigh
+        }
+    }
+}
+"""
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_falls_back_to_max_thresholds_without_load_case(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="main-sheet-load", warning_high=11.0, alarm_high=12.0
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": REFERENCE_QUERY,
+            "variables": {"awaRange": "reaching", "awsRange": "aws_20_25"},
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["variables"][0]["reference"] == {
+        "alarmLow": None,
+        "warningLow": None,
+        "target": None,
+        "warningHigh": 11.0,
+        "alarmHigh": 12.0,
+    }
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_thresholds_override_max_thresholds_per_column(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="main-sheet-load",
+        alarm_low=0.5,
+        warning_high=11.0,
+        alarm_high=12.0,
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": REFERENCE_QUERY,
+            "variables": {"awaRange": "upwind", "awsRange": "aws_20_25"},
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["data"]["variables"][0]["reference"] == {
+        "alarmLow": 0.5,
+        "warningLow": None,
+        "target": 9.6,
+        "warningHigh": 13.5,
+        "alarmHigh": 15.0,
+    }
+
+
+@pytest.mark.asyncio
+async def test_graphql_load_case_reference_values_include_max_thresholds(
+    async_client: AsyncClient, scenario_factory
+):
+    await scenario_factory.create_max_threshold(
+        variable_id="mizzen-sheet-load", warning_high=6.0, alarm_high=6.5
+    )
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                loadCase(case: {awaRange: upwind, awsRange: aws_20_25, tack: port, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                    referenceValues(tack: starboard) {
+                        id
+                        target
+                        alarmHigh
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert sorted(
+        response.json()["data"]["loadCase"]["referenceValues"],
+        key=lambda value: value["id"],
+    ) == [
+        {"id": "main-runner-tail-sb-load", "target": 17.3, "alarmHigh": 26.4},
+        {"id": "main-sheet-load", "target": 9.6, "alarmHigh": 15.0},
+        {"id": "mizzen-sheet-load", "target": None, "alarmHigh": 6.5},
+    ]
+
+
+@pytest.mark.asyncio
 async def test_graphql_set_reference_values(async_client: AsyncClient):
     insert = await async_client.post(
         "/graphql",
@@ -238,6 +376,7 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     awaRanges: [upwind, reaching]
                     awsRanges: [aws_0_10, aws_10_15]
                     referenceValue: {id: "blade-adjuster-load", target: 100}
+                    tack: starboard
                     sailSet: ["full-main", "full-mizzen"]
                 )
             }
@@ -260,6 +399,9 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, tack: starboard, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
+                    upwind_port: reference(case: {awaRange: upwind, awsRange: aws_0_10, tack: port, sailset: ["full-main", "full-mizzen"]}) {
+                        target
+                    }
                 }
             }
             """
@@ -274,6 +416,7 @@ async def test_graphql_set_reference_values(async_client: AsyncClient):
                     "id": "blade-adjuster-load",
                     "reaching": {"target": 100.0},
                     "upwind": {"target": 100.0},
+                    "upwind_port": None,
                 }
             ]
         }

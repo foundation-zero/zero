@@ -1,0 +1,171 @@
+technical_name,load_case_id,tack,dropped_target,warning_high,alarm_high
+aft-winch-ps-load,LC66_TSOnly_TWS45_TWA45,starboard,9.788,7.0,9.0
+aft-winch-ps-load,LC66_TSOnly_TWS45_TWA70,starboard,14.016,7.0,9.0
+aft-winch-sb-load,LC66_TSOnly_TWS45_TWA45,port,9.788,7.0,9.0
+aft-winch-sb-load,LC66_TSOnly_TWS45_TWA70,port,14.016,7.0,9.0
+blade-adjuster-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,port,29.339,28.0,31.0
+blade-adjuster-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,starboard,29.339,28.0,31.0
+blade-adjuster-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,30.613,28.0,31.0
+blade-adjuster-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,30.613,28.0,31.0
+blade-adjuster-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,28.15,28.0,31.0
+blade-adjuster-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,28.15,28.0,31.0
+blade-cunningham-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,22.224,20.0,22.0
+blade-cunningham-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,22.224,20.0,22.0
+blade-sheet-ps-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,12.22,12.0,13.0
+blade-sheet-sb-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,12.22,12.0,13.0
+blade-tweaker-ps-load,LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409,starboard,6.007,6.0,6.5
+blade-tweaker-sb-load,LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409,port,6.007,6.0,6.5
+code-zero-tack-load,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,port,23.817,22.0,24.0
+code-zero-tack-load,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,starboard,23.817,22.0,24.0
+fiber-optic-main-d1-ps,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,port,35.89,35.0,39.0
+fiber-optic-main-d1-ps,LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412,port,36.294,35.0,39.0
+fiber-optic-main-d1-ps,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,35.73,35.0,39.0
+fiber-optic-main-d1-ps,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,38.893,35.0,39.0
+fiber-optic-main-d1-ps,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,port,39.055,35.0,39.0
+fiber-optic-main-d1-sb,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,starboard,35.89,35.0,39.0
+fiber-optic-main-d1-sb,LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412,starboard,36.294,35.0,39.0
+fiber-optic-main-d1-sb,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,35.73,35.0,39.0
+fiber-optic-main-d1-sb,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,38.893,35.0,39.0
+fiber-optic-main-d1-sb,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,starboard,39.055,35.0,39.0
+fiber-optic-main-v1-ps,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,port,75.974,70.0,77.5
+fiber-optic-main-v1-ps,LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411,port,72.415,70.0,77.5
+fiber-optic-main-v1-ps,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,72.034,70.0,77.5
+fiber-optic-main-v1-ps,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,73.434,70.0,77.5
+fiber-optic-main-v1-ps,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,72.399,70.0,77.5
+fiber-optic-main-v1-ps,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,70.545,70.0,77.5
+fiber-optic-main-v1-sb,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,starboard,75.974,70.0,77.5
+fiber-optic-main-v1-sb,LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411,starboard,72.415,70.0,77.5
+fiber-optic-main-v1-sb,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,72.034,70.0,77.5
+fiber-optic-main-v1-sb,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,73.434,70.0,77.5
+fiber-optic-main-v1-sb,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,72.399,70.0,77.5
+fiber-optic-main-v1-sb,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,70.545,70.0,77.5
+fiber-optic-mizzen-d1-ps,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,20.663,20.5,22.8
+fiber-optic-mizzen-d1-ps,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,24.828,20.5,22.8
+fiber-optic-mizzen-d1-sb,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,starboard,20.663,20.5,22.8
+fiber-optic-mizzen-d1-sb,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,24.828,20.5,22.8
+fiber-optic-mizzen-forestay,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,port,25.735,25.0,28.0
+fiber-optic-mizzen-forestay,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,starboard,25.735,25.0,28.0
+fiber-optic-mizzen-forestay,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,port,26.195,25.0,28.0
+fiber-optic-mizzen-forestay,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,starboard,26.195,25.0,28.0
+fiber-optic-mizzen-forestay,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,25.504,25.0,28.0
+fiber-optic-mizzen-forestay,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,25.504,25.0,28.0
+fiber-optic-mizzen-forestay,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,25.88,25.0,28.0
+fiber-optic-mizzen-forestay,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,25.88,25.0,28.0
+fiber-optic-mizzen-forestay,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,25.566,25.0,28.0
+fiber-optic-mizzen-forestay,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,25.566,25.0,28.0
+fiber-optic-mizzen-forestay,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,27.879,25.0,28.0
+fiber-optic-mizzen-forestay,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,27.879,25.0,28.0
+fiber-optic-mizzen-v1-ps,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,41.751,38.0,43.0
+fiber-optic-mizzen-v1-ps,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,42.156,38.0,43.0
+fiber-optic-mizzen-v1-ps,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,45.675,38.0,43.0
+fiber-optic-mizzen-v1-sb,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,41.751,38.0,43.0
+fiber-optic-mizzen-v1-sb,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,42.156,38.0,43.0
+fiber-optic-mizzen-v1-sb,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,45.675,38.0,43.0
+main-checkstay-deflector-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,port,4.26,4.25,5.0
+main-checkstay-deflector-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,starboard,4.26,4.25,5.0
+main-checkstay-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,13.043,12.5,13.5
+main-checkstay-ps-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,port,16.489,12.5,13.5
+main-checkstay-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,13.043,12.5,13.5
+main-checkstay-sb-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,starboard,16.489,12.5,13.5
+main-cunningham-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,6.038,5.0,5.5
+main-cunningham-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,6.038,5.0,5.5
+main-headstay-combined-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,52.837,47.5,52.6
+main-headstay-combined-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,52.837,47.5,52.6
+main-headstay-combined-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,47.887,47.5,52.6
+main-headstay-combined-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,47.887,47.5,52.6
+main-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,12.24,11.0,14.75
+main-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,12.24,11.0,14.75
+main-runner-block-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,26.77,26.0,28.0
+main-runner-block-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,26.848,26.0,28.0
+main-runner-block-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,26.77,26.0,28.0
+main-runner-block-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,26.848,26.0,28.0
+main-runner-stay-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,23.828,23.0,26.0
+main-runner-stay-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,25.865,23.0,26.0
+main-runner-stay-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,23.828,23.0,26.0
+main-runner-stay-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,25.865,23.0,26.0
+main-runner-tail-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,13.385,13.0,14.0
+main-runner-tail-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,13.424,13.0,14.0
+main-runner-tail-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,13.385,13.0,14.0
+main-runner-tail-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,13.424,13.0,14.0
+main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,11.152,11.0,12.0
+main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,11.152,11.0,12.0
+main-sheet-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,port,11.708,11.0,12.0
+main-sheet-load,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,starboard,11.708,11.0,12.0
+main-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,56.084,40.0,45.75
+main-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,56.084,40.0,45.75
+main-vang-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,56.084,40.0,45.75
+main-vang-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,starboard,56.084,40.0,45.75
+main-vang-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,56.084,40.0,45.75
+main-vang-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,56.084,40.0,45.75
+main-vang-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,56.084,40.0,45.75
+main-vang-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,56.084,40.0,45.75
+main-vang-load,LC65-2_M3R_TWA70_TWS40_RM12_20240412,port,48.987,40.0,45.75
+main-vang-load,LC65-2_M3R_TWA70_TWS40_RM12_20240412,starboard,48.987,40.0,45.75
+mizzen-checkstay-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,2.943,2.2,2.45
+mizzen-checkstay-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,2.639,2.2,2.45
+mizzen-checkstay-ps-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,2.391,2.2,2.45
+mizzen-checkstay-ps-load,LC66_TSOnly_TWS45_TWA45,port,2.269,2.2,2.45
+mizzen-checkstay-ps-load,LC66_TSOnly_TWS45_TWA70,port,2.269,2.2,2.45
+mizzen-checkstay-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,2.943,2.2,2.45
+mizzen-checkstay-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,2.639,2.2,2.45
+mizzen-checkstay-sb-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,2.391,2.2,2.45
+mizzen-checkstay-sb-load,LC66_TSOnly_TWS45_TWA45,starboard,2.269,2.2,2.45
+mizzen-checkstay-sb-load,LC66_TSOnly_TWS45_TWA70,starboard,2.269,2.2,2.45
+mizzen-headsail-tack-adjuster-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,15.257,13.0,14.5
+mizzen-headsail-tack-adjuster-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,15.257,13.0,14.5
+mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,13.692,13.0,14.5
+mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,13.692,13.0,14.5
+mizzen-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,9.19,8.0,9.0
+mizzen-preventer-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,9.19,8.0,9.0
+mizzen-runner-block-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,9.752,9.563,10.519
+mizzen-runner-block-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,9.755,9.563,10.519
+mizzen-runner-block-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,9.891,9.563,10.519
+mizzen-runner-block-ps-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,9.635,9.563,10.519
+mizzen-runner-block-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,10.136,9.563,10.519
+mizzen-runner-block-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,9.752,9.563,10.519
+mizzen-runner-block-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,9.755,9.563,10.519
+mizzen-runner-block-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,9.891,9.563,10.519
+mizzen-runner-block-sb-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,9.635,9.563,10.519
+mizzen-runner-block-sb-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,10.136,9.563,10.519
+mizzen-runner-stay-ps-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,9.117,9.0,11.5
+mizzen-runner-stay-sb-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,9.117,9.0,11.5
+mizzen-runner-tail-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,5.099,5.0,5.5
+mizzen-runner-tail-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,5.101,5.0,5.5
+mizzen-runner-tail-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,5.172,5.0,5.5
+mizzen-runner-tail-ps-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,5.038,5.0,5.5
+mizzen-runner-tail-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,5.3,5.0,5.5
+mizzen-runner-tail-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,5.099,5.0,5.5
+mizzen-runner-tail-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,5.101,5.0,5.5
+mizzen-runner-tail-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,5.172,5.0,5.5
+mizzen-runner-tail-sb-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,5.038,5.0,5.5
+mizzen-runner-tail-sb-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,5.3,5.0,5.5
+mizzen-sheet-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,port,6.397,6.0,6.5
+mizzen-sheet-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,starboard,6.397,6.0,6.5
+mizzen-sheet-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,6.295,6.0,6.5
+mizzen-sheet-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,6.295,6.0,6.5
+mizzen-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,30.591,20.0,25.0
+mizzen-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,30.591,20.0,25.0
+mizzen-vang-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,30.591,20.0,25.0
+mizzen-vang-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,starboard,30.591,20.0,25.0
+mizzen-vang-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,30.591,20.0,25.0
+mizzen-vang-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,30.591,20.0,25.0
+mizzen-vang-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,30.591,20.0,25.0
+mizzen-vang-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,30.591,20.0,25.0
+primary-winch-ps-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,starboard,16.546,11.5,12.5
+primary-winch-sb-load,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,port,16.546,11.5,12.5
+staysail-stay-adjuster-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,30.348,30.0,33.0
+staysail-stay-adjuster-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,30.348,30.0,33.0
+staysail-stay-adjuster-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,31.092,30.0,33.0
+staysail-stay-adjuster-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,31.092,30.0,33.0
+staysail-stay-adjuster-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,35.243,30.0,33.0
+staysail-stay-adjuster-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,35.243,30.0,33.0
+staysail-stay-adjuster-load,LC8_ SS_M2R_TWA50_TWS27_RM15_20240410,port,36.421,30.0,33.0
+staysail-stay-adjuster-load,LC8_ SS_M2R_TWA50_TWS27_RM15_20240410,starboard,36.421,30.0,33.0
+storm-jib-tack-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,27.355,25.0,27.0
+storm-jib-tack-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,27.355,25.0,27.0
+storm-jib-tack-load,LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412,port,26.074,25.0,27.0
+storm-jib-tack-load,LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412,starboard,26.074,25.0,27.0
+storm-jib-tack-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,port,28.233,25.0,27.0
+storm-jib-tack-load,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,starboard,28.233,25.0,27.0
+storm-jib-tack-load,LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412,port,31.212,25.0,27.0
+storm-jib-tack-load,LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412,starboard,31.212,25.0,27.0
