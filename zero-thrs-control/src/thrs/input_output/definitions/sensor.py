@@ -7,7 +7,6 @@ from pydantic import Field, field_validator
 from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues, field_meta
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
-    WATER_HEAT_TRANSFER_CONVERSION,
     Bar,
     Celsius,
     Degree,
@@ -210,7 +209,7 @@ class HeatTransferDevice(ThrsValues):
         temperature_supply_source: str,
         temperature_return_source: str,
         flow_source: str,
-        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
+        heat_transfer_conversion: float,
     ) -> Self:
         delta_t: Stamped[Celsius | None] = Stamped.combine(
             temperature_supply,
@@ -251,7 +250,7 @@ class HeatTransferDevice(ThrsValues):
         flow: Stamped[LMin] | Stamped[LMin | None],
         temperature_supply_source: str,
         temperature_return_source: str,
-        heat_transfer_conversion: float = WATER_HEAT_TRANSFER_CONVERSION,
+        heat_transfer_conversion: float,
     ):
         """
         Calculate heat transfer device for seawater exchangers where a mix valve determines the ratio that actually passed the heat exchanger.

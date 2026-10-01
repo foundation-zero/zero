@@ -14,7 +14,7 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
-    WATER_HEAT_TRANSFER_CONVERSION,
+    GLYCOL_20_HEAT_TRANSFER_CONVERSION,
     OptionalCelsius,
     PcsMode,
 )
@@ -127,7 +127,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.thrusters_temperature_supply.temperature,
             temperature_return=self.thrusters_temperature_aft.temperature,
             flow=self.thrusters_flow_aft.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_supply"
             ),
@@ -162,7 +162,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.thrusters_temperature_supply.temperature,
             temperature_return=self.thrusters_temperature_fwd.temperature,
             flow=self.thrusters_flow_fwd.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_supply"
             ),
@@ -258,6 +258,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.thrusters_temperature_pre_cooler.temperature,
             temperature_return=self.thrusters_temperature_supply.temperature,  # type: ignore
             flow=self.thrusters_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_pre_cooler"
             ),
