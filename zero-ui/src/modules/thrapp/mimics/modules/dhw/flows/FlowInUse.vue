@@ -10,7 +10,7 @@ import Tank3InUse from "./Tank3InUse.vue";
 const switchTank1 = getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank1Outlet");
 const switchTank2 = getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank2Outlet");
 const switchTank3 = getField(SensorComponentType.Valve, "dhw", "dhwSwitchTank3Outlet");
-const flowSupply = getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow");
+const flowSupply = getField(SensorComponentType.FlowOnly, "dhw", "freshwaterHotwaterFlow");
 </script>
 
 <template>

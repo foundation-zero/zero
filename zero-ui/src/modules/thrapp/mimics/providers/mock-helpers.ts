@@ -101,6 +101,10 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
       quantity: stamp(quantity),
     }));
   },
+  [SensorComponentType.FlowOnly]: () => {
+    const flow = useRandomizedNumber(1, 10);
+    return computed(() => ({ flow: stamp(flow) }));
+  },
   [SensorComponentType.Level]: () => {
     const level = useRandomizedNumber(0, 100);
     return computed(() => ({ level: stamp(level) }));

@@ -77,6 +77,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorCalculatedTemperatureType: "CalculatedTemperature",
   SensorPressureSensorType: "Pressure",
   SensorFlowSensorType: "Flow",
+  SensorFlowOnlySensorType: "FlowOnly",
   SensorPumpType: "Pump",
   SensorValveType: "Valve",
   SensorThrusterType: "Thruster",

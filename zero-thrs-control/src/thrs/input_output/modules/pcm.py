@@ -91,7 +91,7 @@ class PcmSensorValues(AmcsModeSensorValues):
         component_meta(yard_tag="50001057-21", component_type="flow_sensor"),
     ]
     freshwater_flow_pcm: Annotated[
-        sensor.FlowSensor,
+        sensor.FlowOnlySensor,
         component_meta(
             yard_tag="25001139",
             component_type="flow_sensor",
@@ -462,11 +462,8 @@ class PcmSimulationOutputs(ThrsValues):
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
-    def freshwater_flow_pcm(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=self.pcm_freshwater_return.flow,
-            temperature=self.pcm_freshwater_return.temperature,
-        )
+    def freshwater_flow_pcm(self) -> sensor.FlowOnlySensor:
+        return sensor.FlowOnlySensor(flow=self.pcm_freshwater_return.flow)
 
     # The model has a single consumers stream, so all of it goes past the dhw.
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))

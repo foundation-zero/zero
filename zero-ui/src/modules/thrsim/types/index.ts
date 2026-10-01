@@ -186,6 +186,10 @@ export type FlowSensor = {
   quantity: Stamped<number>;
 };
 
+export type FlowOnlySensor = {
+  flow: Stamped<Ratio>;
+};
+
 export type CalculatedFlowSensor = {
   flow: Stamped<Ratio>;
 };
@@ -403,6 +407,7 @@ export const enum SensorComponentType {
   Pressure = "sensor:pressure",
   Pyranometer = "sensor:pyranometer",
   Flow = "sensor:flow",
+  FlowOnly = "sensor:flowOnly",
   Pump = "sensor:pump",
   Valve = "sensor:valve",
   Thruster = "sensor:thruster",
@@ -426,6 +431,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.CalculatedTemperature,
   SensorComponentType.Pressure,
   SensorComponentType.Flow,
+  SensorComponentType.FlowOnly,
   SensorComponentType.Pump,
   SensorComponentType.Valve,
   SensorComponentType.Thruster,
@@ -470,6 +476,7 @@ export type SensorDefinition<T extends SensorComponentType = SensorComponentType
 export type TemperatureSensorDefinition = SensorDefinition<SensorComponentType.Temperature>;
 export type PressureSensorDefinition = SensorDefinition<SensorComponentType.Pressure>;
 export type FlowSensorDefinition = SensorDefinition<SensorComponentType.Flow>;
+export type FlowOnlySensorDefinition = SensorDefinition<SensorComponentType.FlowOnly>;
 export type PumpSensorDefinition = SensorDefinition<SensorComponentType.Pump>;
 export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> & {
   valveType: ValveType;
@@ -490,6 +497,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.CalculatedTemperature]: CalculatedTemperatureSensor;
   [SensorComponentType.Pressure]: PressureSensor;
   [SensorComponentType.Flow]: FlowSensor;
+  [SensorComponentType.FlowOnly]: FlowOnlySensor;
   [SensorComponentType.Pump]: PumpSensor;
   [SensorComponentType.Valve]: Valve;
   [SensorComponentType.Thruster]: ThrusterSensor;

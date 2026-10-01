@@ -62,6 +62,10 @@ class FlowSensor(ThrsValues):
     )
 
 
+class FlowOnlySensor(ThrsValues):
+    flow: Stamped[LMin]
+
+
 class Pump(AmcsComponentAlarms, ThrsValues):
     speed: Stamped[Hz]
     op_time: Stamped[Seconds] = Stamped(  # TODO: Remove default
@@ -485,6 +489,7 @@ __all__ = [
     "Brightloop",
     "CalculatedFlow",
     "CalculatedTemperature",
+    "FlowOnlySensor",
     "FlowSensor",
     "HeatTransferDevice",
     "Heatpump",

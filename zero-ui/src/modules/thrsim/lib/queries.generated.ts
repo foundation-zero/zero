@@ -1180,8 +1180,6 @@ export const DHW_SENSOR_QUERY = `
   }
   freshwaterHotwaterFlow {
     flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
   }
   freshwaterHotwaterTemperature {
     temperature { value timestamp }
@@ -1748,8 +1746,6 @@ export const PCM_SENSOR_QUERY = `
   }
   freshwaterFlowPcm {
     flow { value timestamp }
-    temperature { value timestamp }
-    quantity { value timestamp }
   }
   freshwaterTemperaturePcmReturn {
     temperature { value timestamp }

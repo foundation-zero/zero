@@ -1212,7 +1212,7 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
   },
   freshwaterHotwaterFlow: {
     yardTag: "25001123-1",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.FlowOnly,
   },
   freshwaterHotwaterTemperature: {
     yardTag: "25001038-1",
@@ -1787,7 +1787,7 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   },
   freshwaterFlowPcm: {
     yardTag: "25001139",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.FlowOnly,
   },
   freshwaterTemperaturePcmReturn: {
     yardTag: "25001038-3",
@@ -2283,11 +2283,11 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPyranometerPs: {
-    yardTag: "50009044",
+    yardTag: "50009043",
     componentType: SensorComponentType.Pyranometer,
   },
   pvtPyranometerSb: {
-    yardTag: "50009043",
+    yardTag: "50009044",
     componentType: SensorComponentType.Pyranometer,
   },
   pvtReturnTemperature: {
