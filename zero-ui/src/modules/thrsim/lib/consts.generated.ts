@@ -1720,6 +1720,18 @@ export const PCM_CONTROLLER_STATE = toControllerStateDefinition({
   module4ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
+  module1FlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  module2FlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  module3FlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  module4FlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
 });
 
 export const PCM_PARAMETER_DEFINITION = toParameterDefinition({

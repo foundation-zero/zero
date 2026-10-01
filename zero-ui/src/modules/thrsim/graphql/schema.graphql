@@ -1209,6 +1209,10 @@ type PcmControllerStateType {
   module2ChargeController: ControllerPcmChargeControllerValuesType!
   module3ChargeController: ControllerPcmChargeControllerValuesType!
   module4ChargeController: ControllerPcmChargeControllerValuesType!
+  module1FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  module2FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  module3FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  module4FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 input PcmInputType {
