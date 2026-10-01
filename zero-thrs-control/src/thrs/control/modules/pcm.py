@@ -622,7 +622,7 @@ class PcmControl(
             value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time()
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_charging(self, sensor_values: PcmSensorValues):
