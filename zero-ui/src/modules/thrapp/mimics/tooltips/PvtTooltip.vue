@@ -39,7 +39,7 @@ const mode = usePvtMode(props.custom.group);
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
       <SensorGraph
-        :device="tooltip?.technicalName"
+        :device="tooltip?.technicalName ? `${tooltip.technicalName}-heat` : undefined"
         type="heat_transfers"
         field="heat"
       />

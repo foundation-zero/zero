@@ -80,9 +80,7 @@ def generate_controller_managed_topics():
             component,
             technical_name,
             "thrs",
-            IOTopic(
-                f"thrs/controller/{module}/{technical_name}", [], ""
-            ),
+            IOTopic(f"thrs/controller/{module}/{technical_name}", [], ""),
         )
         for component, data in THRS_CALCULATED_DEVICES.items()
         for module, technical_names in data.items()
