@@ -4,10 +4,18 @@ import pytest
 from pydantic import ValidationError
 from pytest import approx
 
+from tests.modules.pcm.conftest import PcmRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.controllers import PcmChargeController
-from thrs.control.modules.pcm import PcmControl, PcmControlMode, PcmParameters
+from thrs.control.modules.pcm import (
+    PcmControl,
+    PcmControllerState,
+    PcmControlMode,
+    PcmParameters,
+)
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.controllers import PcmChargeStatus, PcmChargingState
+from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -377,4 +385,50 @@ def test_module_inlet_follows_the_switches(
 
     assert result.sensor_values.pcm_heat_module1.temperature_supply.value == approx(
         result.sensor_values.pcm_temperature_producers_return.temperature.value
+    )
+
+
+def test_closed_modules_carry_no_flow_while_charging(
+    runner: PcmRunner,
+    control: PcmControl,
+    simulation_inputs: PcmSimulationInputs,
+):
+    # The freshwater draw keeps module 1 from charging, so it stalls out of the first
+    # charge. Modules 2-4 fill up, and the retry charges module 1 on its own.
+    runner.update_simulation_inputs(
+        simulation_inputs.model_copy(
+            update={
+                "pcm_freshwater_supply": Boundary(
+                    temperature=Stamped.stamp(10), flow=Stamped.stamp(10)
+                )
+            }
+        )
+    )
+    control.update_parameters(PcmParameters(charging_requested=True))
+
+    def only_module1_active(_, __, controller_state: PcmControllerState) -> bool:
+        return control.mode.is_charging and [
+            controller_state.module1_flow_controller.enabled.value,
+            controller_state.module2_flow_controller.enabled.value,
+            controller_state.module3_flow_controller.enabled.value,
+            controller_state.module4_flow_controller.enabled.value,
+        ] == [True, False, False, False]
+
+    def only_module1_flows(sensor_values: PcmSensorValues, *_) -> bool:
+        return sensor_values.pcm_flow_module1.flow.value == approx(
+            control.parameters.pcm_charge_flow, abs=0.5
+        ) and all(
+            flow == approx(0, abs=0.1)
+            for flow in (
+                sensor_values.pcm_flow_module2.flow.value,
+                sensor_values.pcm_flow_module3.flow.value,
+                sensor_values.pcm_flow_module4.flow.value,
+            )
+        )
+
+    runner.run_until(only_module1_active, within=timedelta(minutes=40))
+    runner.run_until_stable(
+        only_module1_flows,
+        stable_for=timedelta(seconds=30),
+        within=timedelta(minutes=3),
     )
