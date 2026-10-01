@@ -316,17 +316,173 @@ class DcSensorValues(AmcsModeSensorValues):
     @property
     def dc_dhw_exchanger(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
-            temperature_supply=self.dc_temperature_recovery_mix.temperature,
+            temperature_supply=self.dc_temperature_recovery.temperature,
             temperature_return=self.dc_temperature_recovery_return.temperature,
             flow=self.dc_flow_recovery.flow,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
-                self, "dc_temperature_recovery_mix"
+                self, "dc_temperature_recovery"
             ),
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "dc_temperature_recovery_return"
             ),
             flow_source=sensor.extract_source_yardtag(self, "dc_flow_recovery"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def dc_total_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.dc_flow_aft_return.flow,
+                self.dc_flow_fwd_return.flow,
+                self.dc_flow_ugrid_return.flow,
+                value=self.dc_flow_aft_return.flow.value
+                + self.dc_flow_fwd_return.flow.value
+                + self.dc_flow_ugrid_return.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001006",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
+            temperature_supply=self.dc_temperature_recovery_mix.temperature,
+            temperature_return=self.dc_temperature_supply.temperature,
+            flow=self.dc_total_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_recovery_mix"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_supply"
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def dc_aft_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.dc_flow_aft1.flow,
+                self.dc_flow_aft2.flow,
+                self.dc_flow_aft3.flow,
+                self.dc_flow_aft4.flow,
+                value=self.dc_flow_aft1.flow.value
+                + self.dc_flow_aft2.flow.value
+                + self.dc_flow_aft3.flow.value
+                + self.dc_flow_aft4.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_aft_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.dc_temperature_aft_supply.temperature,
+            temperature_return=self.dc_temperature_aft_return.temperature,
+            flow=self.dc_aft_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_aft_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_aft_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dc_aft_flow"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def dc_ugrid_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.dc_flow_ugrid1.flow,
+                self.dc_flow_ugrid2.flow,
+                value=self.dc_flow_ugrid1.flow.value + self.dc_flow_ugrid2.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_ugrid_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.dc_temperature_ugrid_supply.temperature,
+            temperature_return=self.dc_temperature_ugrid_return.temperature,
+            flow=self.dc_ugrid_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_ugrid_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_ugrid_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dc_ugrid_flow"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def dc_fwd_flow(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow(
+            flow=Stamped.combine(
+                self.dc_flow_fwd1.flow,
+                self.dc_flow_fwd2.flow,
+                value=self.dc_flow_fwd1.flow.value + self.dc_flow_fwd2.flow.value,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_fwd_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.dc_temperature_fwd_supply.temperature,
+            temperature_return=self.dc_temperature_fwd_return.temperature,
+            flow=self.dc_fwd_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_fwd_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "dc_temperature_fwd_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "dc_fwd_flow"),
         )
 
 

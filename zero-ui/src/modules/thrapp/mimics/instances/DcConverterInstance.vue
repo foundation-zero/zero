@@ -79,7 +79,7 @@ const modeKey = useDcMode(props.custom.group);
           <span class="text-foreground font-medium"><FieldRenderer.Temperature /></span>
         </ValueListItem>
       </SensorValue>
-      <SensorValue :source="props.sensors.heatTransfer">
+      <SensorValue :source="props.sensors.power">
         <ValueListItem>
           <span class="flex items-center gap-0.5">
             <RiFlashlightLine class="text-brand size-3.5" />

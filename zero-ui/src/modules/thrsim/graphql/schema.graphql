@@ -411,6 +411,14 @@ type DcSensorValuesType {
   dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
   dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
   dcDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_transfer", valveType: null)
+  dcTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  dcSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001006", componentType: "heat_transfer", valveType: null)
+  dcAftFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  dcAftHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
+  dcUgridFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  dcUgridHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
+  dcFwdFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  dcFwdHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
 }
 
 type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcControllerStateTypeControlModule {

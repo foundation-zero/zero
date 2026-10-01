@@ -9,6 +9,9 @@ import { getField } from "../../../../providers";
 
 const dcConverter = (
   converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[],
+  heatTransfer: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
+  power: ModuleField<SensorComponentType.Pvt, "dc">,
+  temperature: ModuleField<SensorComponentType.Temperature, "dc">,
   group: DcConverterGroup,
   titleKey: DcConverterTitleKey,
 ) =>
@@ -18,8 +21,9 @@ const dcConverter = (
     custom: { converters, group },
     parameters: {},
     sensors: {
-      heatTransfer: getField(SensorComponentType.HeatTransferDevice, "dc", "placeholder"),
-      temperature: getField(SensorComponentType.Temperature, "dc", "placeholder"),
+      heatTransfer: heatTransfer,
+      power: power,
+      temperature: temperature,
     },
     source: undefined,
     get tooltip(): TooltipContent {
@@ -38,6 +42,9 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft3"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft4"),
       ],
+      getField(SensorComponentType.HeatTransferDevice, "dc", "dcAftHeat"),
+      getField(SensorComponentType.Pvt, "dc", "placeholder"),
+      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsAft",
       "group1",
     ),
@@ -46,6 +53,9 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid1"),
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid2"),
       ],
+      getField(SensorComponentType.HeatTransferDevice, "dc", "dcUgridHeat"),
+      getField(SensorComponentType.Pvt, "dc", "placeholder"),
+      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "ugrids",
       "group2",
     ),
@@ -54,6 +64,9 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd1"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd2"),
       ],
+      getField(SensorComponentType.HeatTransferDevice, "dc", "dcFwdHeat"),
+      getField(SensorComponentType.Pvt, "dc", "placeholder"),
+      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsFwd",
       "group3",
     ),

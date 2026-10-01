@@ -6,15 +6,12 @@ import { getField, ModuleField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
 const heatExchanger = (
-  yardTag: string,
+  source: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
   custom: Partial<{
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
-    exchangeCircuit: ModuleField<SensorComponentType.HeatTransferDevice, "dc">;
   }> = {},
 ) => {
-  const source = getField(SensorComponentType.HeatTransferDevice, "dc", "dcDhwExchanger");
-
   return toInstance<MimicComponentType.HeatExchanger>({
     controls: {},
     controllerState: {},
@@ -31,7 +28,6 @@ const heatExchanger = (
       return fieldTooltip(this.source, {
         title: "Heat exchanger",
         componentType: "Heat exchanger",
-        yardTag,
       });
     },
   });
@@ -39,7 +35,14 @@ const heatExchanger = (
 
 export const DC_HEAT_EXCHANGER_DATA = toFieldsMap({
   [MimicComponentType.HeatExchanger]: {
-    "1006": heatExchanger("1006"),
-    "1002": heatExchanger("1002", { sideB: HeatExchangerPortOrientation.Side }),
+    "1006": heatExchanger(
+      getField(SensorComponentType.HeatTransferDevice, "dc", "dcSeawaterExchanger"),
+    ),
+    "1008": heatExchanger(
+      getField(SensorComponentType.HeatTransferDevice, "dc", "dcDhwExchanger"),
+      {
+        sideB: HeatExchangerPortOrientation.Side,
+      },
+    ),
   },
 });
