@@ -6,6 +6,7 @@ import {
   TooltipComponentContext,
 } from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag/index.ts";
 import HVACInstance from "../instances/HVACInstance.vue";
 import { SensorValue } from "../providers/index.ts";
@@ -32,6 +33,11 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="heat_transfers"
+        field="heat"
+      />
     </TooltipList>
 
     <TooltipList>
