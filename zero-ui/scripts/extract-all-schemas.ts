@@ -304,6 +304,20 @@ const MODULE_TASKS: Tasks = {
       },
     ],
   },
+  THRS: {
+    tasks: [
+      {
+        constName: "THRS_SIMULATION_INPUTS",
+        outputQueryName: "THRS_SIMULATION_INPUTS_QUERY",
+        typeName: "ThrsSimulationInputsType",
+      },
+      {
+        constName: "THRS_SIMULATION_OUTPUTS",
+        outputQueryName: "THRS_SIMULATION_OUTPUTS_QUERY",
+        typeName: "ThrsSimulationOutputsType",
+      },
+    ],
+  },
 };
 
 function runModuleTasks(module: string, moduleTask: ModuleTask): void {

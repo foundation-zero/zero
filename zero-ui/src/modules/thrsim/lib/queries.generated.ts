@@ -2610,49 +2610,10 @@ export const PVT_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const THRS_SIMULATION_INPUTS_QUERY = `
-  thrustersThrusterAft {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersThrusterFwd {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersSeawaterSupply {
+  adsorptionAvailableColdTemperature {
     temperature { value timestamp }
-    flow { value timestamp }
-  }
-  thrustersPcs {
-    mode { value timestamp }
-  }
-  pvtMainFwd {
-    heatFlow { value timestamp }
-  }
-  pvtMainAft {
-    heatFlow { value timestamp }
-  }
-  pvtOwners {
-    heatFlow { value timestamp }
-  }
-  pvtSeawaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pcmFreshwaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  adsorptionCoolingSupply {
-    temperature { value timestamp }
-  }
-  adsorptionSeawaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
   }
   adsorptionAvailableHotTemperature {
-    temperature { value timestamp }
-  }
-  adsorptionAvailableColdTemperature {
     temperature { value timestamp }
   }
   adsorptionAvailableSeawaterTemperature {
@@ -2661,31 +2622,12 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   adsorptionChiller {
     freeCooling { value timestamp }
   }
-  dhwFreshwaterSupply {
-    temperature { value timestamp }
-    overpressure { value timestamp }
-  }
-  dhwHvacExchanger {
-    heatFlow { value timestamp }
-    maximumTemperature { value timestamp }
-  }
-  dhwSeawaterSupply {
+  adsorptionCoolingSupply {
     temperature { value timestamp }
   }
-  dhwHotwaterDemand {
+  adsorptionSeawaterSupply {
+    temperature { value timestamp }
     flow { value timestamp }
-  }
-  dcBrightloopFwd1 {
-    heatFlow { value timestamp }
-  }
-  dcBrightloopFwd2 {
-    heatFlow { value timestamp }
-  }
-  dcUgrid1 {
-    heatFlow { value timestamp }
-  }
-  dcUgrid2 {
-    heatFlow { value timestamp }
   }
   dcBrightloopAft1 {
     heatFlow { value timestamp }
@@ -2699,9 +2641,35 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   dcBrightloopAft4 {
     heatFlow { value timestamp }
   }
+  dcBrightloopFwd1 {
+    heatFlow { value timestamp }
+  }
+  dcBrightloopFwd2 {
+    heatFlow { value timestamp }
+  }
   dcSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  dcUgrid1 {
+    heatFlow { value timestamp }
+  }
+  dcUgrid2 {
+    heatFlow { value timestamp }
+  }
+  dhwFreshwaterSupply {
+    temperature { value timestamp }
+    overpressure { value timestamp }
+  }
+  dhwHotwaterDemand {
+    flow { value timestamp }
+  }
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    temperature { value timestamp }
   }
   drivesOilCoolerAft {
     heatFlow { value timestamp }
@@ -2721,64 +2689,62 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   drivesPropdriveFwd2 {
     heatFlow { value timestamp }
   }
-  drivesShorepower {
-    heatFlow { value timestamp }
-  }
   drivesSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
+  drivesShorepower {
+    heatFlow { value timestamp }
+  }
   mode {
     mode { value timestamp }
+  }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtMainFwd {
+    heatFlow { value timestamp }
+  }
+  pvtOwners {
+    heatFlow { value timestamp }
+  }
+  pvtSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersThrusterAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersThrusterFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
   }
 `;
 
 export const THRS_SIMULATION_OUTPUTS_QUERY = `
-  drivesSeawaterReturn {
+  adsorptionConsumersReturn {
     temperature { value timestamp }
-  }
-  drivesDhwReturn {
-    temperature { value timestamp }
-  }
-  dcSeawaterReturn {
-    temperature { value timestamp }
-  }
-  dcDhwReturn {
-    temperature { value timestamp }
-  }
-  dhwDrivesReturn {
-    temperature { value timestamp }
-  }
-  dhwDcReturn {
-    temperature { value timestamp }
-  }
-  dhwAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  dhwConsumersReturn {
-    temperature { value timestamp }
-  }
-  dhwSeawaterReturn {
-    temperature { value timestamp }
-  }
-  dhwSeawaterSupply {
-    flow { value timestamp }
-  }
-  dhwFreshwaterReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
   }
   adsorptionCoolingReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  adsorptionSeawaterReturn {
-    temperature { value timestamp }
-  }
   adsorptionDhwReturn {
     temperature { value timestamp }
   }
-  adsorptionConsumersReturn {
+  adsorptionSeawaterReturn {
     temperature { value timestamp }
   }
   consumersAdsorptionReturn {
@@ -2791,11 +2757,45 @@ export const THRS_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
+  dcDhwReturn {
+    temperature { value timestamp }
+  }
+  dcSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dhwAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  dhwConsumersReturn {
+    temperature { value timestamp }
+  }
+  dhwDcReturn {
+    temperature { value timestamp }
+  }
+  dhwDrivesReturn {
+    temperature { value timestamp }
+  }
+  dhwFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  dhwSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dhwSeawaterSupply {
+    flow { value timestamp }
+  }
+  drivesDhwReturn {
+    temperature { value timestamp }
+  }
+  drivesSeawaterReturn {
+    temperature { value timestamp }
+  }
   pcmConsumersReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmThrustersReturn {
+  pcmFreshwaterReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -2803,7 +2803,7 @@ export const THRS_SIMULATION_OUTPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmFreshwaterReturn {
+  pcmThrustersReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }
@@ -2817,15 +2817,15 @@ export const THRS_SIMULATION_OUTPUTS_QUERY = `
   pvtSeawaterReturn {
     temperature { value timestamp }
   }
-  thrustersSeawaterReturn {
+  thrustersPcmReturn {
     temperature { value timestamp }
+    flow { value timestamp }
   }
   thrustersPcmSupply {
     flow { value timestamp }
   }
-  thrustersPcmReturn {
+  thrustersSeawaterReturn {
     temperature { value timestamp }
-    flow { value timestamp }
   }
 `;
 

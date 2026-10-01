@@ -2576,43 +2576,10 @@ export const PVT_SIMULATION_OUTPUTS = toSimulationDefinition({
 });
 
 export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
-  thrustersThrusterAft: {
-    componentType: SimulationComponentType.Thruster,
-  },
-  thrustersThrusterFwd: {
-    componentType: SimulationComponentType.Thruster,
-  },
-  thrustersSeawaterSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  thrustersPcs: {
-    componentType: SimulationComponentType.Pcs,
-  },
-  pvtMainFwd: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  pvtMainAft: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  pvtOwners: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  pvtSeawaterSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  pcmFreshwaterSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  adsorptionCoolingSupply: {
+  adsorptionAvailableColdTemperature: {
     componentType: SimulationComponentType.Temperature,
-  },
-  adsorptionSeawaterSupply: {
-    componentType: SimulationComponentType.Boundary,
   },
   adsorptionAvailableHotTemperature: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  adsorptionAvailableColdTemperature: {
     componentType: SimulationComponentType.Temperature,
   },
   adsorptionAvailableSeawaterTemperature: {
@@ -2621,29 +2588,11 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   adsorptionChiller: {
     componentType: SimulationComponentType.AdsorptionChiller,
   },
-  dhwFreshwaterSupply: {
-    componentType: SimulationComponentType.OverpressureTemperature,
-  },
-  dhwHvacExchanger: {
-    componentType: SimulationComponentType.HvacExchanger,
-  },
-  dhwSeawaterSupply: {
+  adsorptionCoolingSupply: {
     componentType: SimulationComponentType.Temperature,
   },
-  dhwHotwaterDemand: {
-    componentType: SimulationComponentType.Flow,
-  },
-  dcBrightloopFwd1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopFwd2: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcUgrid1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcUgrid2: {
-    componentType: SimulationComponentType.HeatSource,
+  adsorptionSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
   },
   dcBrightloopAft1: {
     componentType: SimulationComponentType.HeatSource,
@@ -2657,8 +2606,32 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   dcBrightloopAft4: {
     componentType: SimulationComponentType.HeatSource,
   },
+  dcBrightloopFwd1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcBrightloopFwd2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
   dcSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  dcUgrid1: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dcUgrid2: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  dhwFreshwaterSupply: {
+    componentType: SimulationComponentType.OverpressureTemperature,
+  },
+  dhwHotwaterDemand: {
+    componentType: SimulationComponentType.Flow,
+  },
+  dhwHvacExchanger: {
+    componentType: SimulationComponentType.HvacExchanger,
+  },
+  dhwSeawaterSupply: {
+    componentType: SimulationComponentType.Temperature,
   },
   drivesOilCoolerAft: {
     componentType: SimulationComponentType.HeatSource,
@@ -2678,61 +2651,55 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   drivesPropdriveFwd2: {
     componentType: SimulationComponentType.HeatSource,
   },
-  drivesShorepower: {
-    componentType: SimulationComponentType.HeatSource,
-  },
   drivesSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  drivesShorepower: {
+    componentType: SimulationComponentType.HeatSource,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,
   },
+  pcmFreshwaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pvtMainAft: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtMainFwd: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtOwners: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  thrustersPcs: {
+    componentType: SimulationComponentType.Pcs,
+  },
+  thrustersSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  thrustersThrusterAft: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersThrusterFwd: {
+    componentType: SimulationComponentType.Thruster,
+  },
 });
 
 export const THRS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  drivesSeawaterReturn: {
+  adsorptionConsumersReturn: {
     componentType: SimulationComponentType.Temperature,
-  },
-  drivesDhwReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dcSeawaterReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dcDhwReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwDrivesReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwDcReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwAdsorptionReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwConsumersReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwSeawaterReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  dhwSeawaterSupply: {
-    componentType: SimulationComponentType.Flow,
-  },
-  dhwFreshwaterReturn: {
-    componentType: SimulationComponentType.Boundary,
   },
   adsorptionCoolingReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  adsorptionSeawaterReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
   adsorptionDhwReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  adsorptionConsumersReturn: {
+  adsorptionSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
   consumersAdsorptionReturn: {
@@ -2744,16 +2711,49 @@ export const THRS_SIMULATION_OUTPUTS = toSimulationDefinition({
   consumersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
+  dcDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dcSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwAdsorptionReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwConsumersReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwDcReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwDrivesReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwFreshwaterReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  dhwSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dhwSeawaterSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  drivesDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  drivesSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
   pcmConsumersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmThrustersReturn: {
+  pcmFreshwaterReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmPvtReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmFreshwaterReturn: {
+  pcmThrustersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pvtPcmReturn: {
@@ -2765,14 +2765,14 @@ export const THRS_SIMULATION_OUTPUTS = toSimulationDefinition({
   pvtSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  thrustersSeawaterReturn: {
-    componentType: SimulationComponentType.Temperature,
+  thrustersPcmReturn: {
+    componentType: SimulationComponentType.Boundary,
   },
   thrustersPcmSupply: {
     componentType: SimulationComponentType.Flow,
   },
-  thrustersPcmReturn: {
-    componentType: SimulationComponentType.Boundary,
+  thrustersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
   },
 });
 
