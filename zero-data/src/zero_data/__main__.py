@@ -1,3 +1,4 @@
+import json
 import logging
 import sys
 from pathlib import Path
@@ -6,8 +7,11 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
+from zero_data.asyncapi import build_asyncapi
+from zero_data.config import io_lists
 from zero_data.data_gen import generate_data
 from zero_data.greptime.cli import GreptimeCmd
+from zero_data.io_list import read_io_list
 from zero_data.vector_gen import generate_vector
 
 
@@ -52,6 +56,30 @@ class GenerateVectorCmd(BaseModel):
         generate_vector(Path(self.cache_dir) if self.cache_dir else None)
 
 
+class PrintAsyncapiCmd(BaseModel):
+    """Print the AsyncAPI document of the MarPower topics"""
+
+    cache_dir: Annotated[
+        str | None, Field(description="Directory to cache IO list results")
+    ] = None
+
+    def cli_cmd(self):
+        # stdout carries the document, so warnings go to stderr.
+        for handler in logging.getLogger().handlers:
+            if isinstance(handler, logging.StreamHandler):
+                handler.setStream(sys.stderr)
+        paths = [
+            Path(f"io_lists/{file_name}")
+            for source, file_names in io_lists
+            if source == "marpower"
+            for file_name in file_names
+        ]
+        io_result = read_io_list(
+            paths, "marpower", Path(self.cache_dir) if self.cache_dir else None
+        )
+        print(json.dumps(build_asyncapi(io_result), indent=2))
+
+
 class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     """Zero Data
 
@@ -66,6 +94,7 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     generate_data: CliSubCommand[GenerateDataCmd]
     generate_vector: CliSubCommand[GenerateVectorCmd]
     greptime: CliSubCommand[GreptimeCmd]
+    print_asyncapi: CliSubCommand[PrintAsyncapiCmd]
 
     def cli_cmd(self):
         CliApp.run_subcommand(self)

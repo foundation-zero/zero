@@ -51,6 +51,11 @@ if ! (cd "$REPO_ROOT/zero-atpx-nmea" && uv run python -m zero_atpx_nmea asyncapi
   fail_or_warn "atpx-nmea" || exit 1
 fi
 
+echo "  -> marpower"
+if ! (cd "$REPO_ROOT/zero-data" && uv run python -m zero_data print-asyncapi) > "$SPECS_DIR/marpower.json"; then
+  fail_or_warn "marpower" || exit 1
+fi
+
 # One document (`thrs print-asyncapi`, thrs.spec): the channels of the THRS
 # applications plus the root `x-mqtt-graphql` extension. Sidecar files from
 # earlier generators would be read as AsyncAPI documents, so they are removed
