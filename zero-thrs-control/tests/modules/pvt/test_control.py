@@ -66,6 +66,11 @@ def test_idle_mix_position(runner: PvtRunner, control: PvtControl):
     assert control_values.pvt_mix_owners.setpoint.value == IDLE_MIX_POSITION
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason="PVT FMU wires strings 1-6 to the fwd group and 7-13 to the aft group; "
+    "on board strings 1-6 are aft and 7-13 are fwd",
+)
 def test_groups_follow_their_own_strings(
     runner: PvtRunner,
     control: PvtControl,
