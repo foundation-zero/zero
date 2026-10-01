@@ -475,7 +475,7 @@ function generatePropertyLines(value: ExtractedValue, definitionType: Definition
 
 function generateObjectString(values: ExtractedValues, config: Config): string {
   const entries = Object.entries(values)
-    .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
     .map(([key, value]) => {
       const props = generatePropertyLines(value, config.definitionType);
       return `  ${key}: {\n    ${props.join(",\n    ")},\n  }`;
