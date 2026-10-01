@@ -1,7 +1,7 @@
 /*
  * Normally this metadata should be loaded into a seed table.
  * However, it is currently not possible to create tables the normal way, because GreptimeDB demands that each table has a time index constraint.
- * Therefor we cannot use seeds or create tables in silver/gold layer the usual way; dbt uses regular "CREATE TABLE" statements that lack the time index constraint.
+ * Therefore we cannot use seeds or create tables in silver/gold layer the usual way; dbt uses regular "CREATE TABLE" statements that lack the time index constraint.
  * 
  * The only (simple) solution at the moment is to create a table using a macro.
 */
@@ -77,7 +77,7 @@
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT330F01', 'Exhaust Crew Mess Room', 'exhaust-crew-mess-room', 'power-tags/10P0-3/exhaust-crew-mess-room', 'HVAC', 'Air handling units'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT339F01', 'Submersible Bilge Pump 3', 'submersible-bilge-pump-3', 'power-tags/10P0-3/submersible-bilge-pump-3', 'Technical', 'Grey water'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT342F01', 'Chlorine Dosing Unit 25004035', 'chlorine-dosing-unit-25004035', 'power-tags/10P0-3/chlorine-dosing-unit-25004035', 'Technical', 'Grey water'),
-            ('1970-01-01 00:00:00', 2, '10P0.3', 'PT343F01', 'KVM AFT RACK', 'kvm-aft-rack', 'power-tags/10P0-3/kvm-aft-rack', 'Technical', 'Grey water'),
+            ('1970-01-01 00:00:00', 2, '10P0.3', 'PT343F01', 'KVM AFT RACK', 'kvm-aft-rack', 'power-tags/10P0-3/kvm-aft-rack', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT344F01', 'KVM CAPTAIN''S CABIN SHIPS OFFICE', 'kvm-captain-s-cabin-ships-office', 'power-tags/10P0-3/kvm-captain-s-cabin-ships-office', 'Technical', 'Grey water'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT345F01', 'FWD RACK KVM', 'fwd-rack-kvm', 'power-tags/10P0-3/fwd-rack-kvm', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT352F01', 'Hydrophore 2', 'hydrophore-2', 'power-tags/10P0-3/hydrophore-2', 'Technical', 'Fresh water'),
@@ -146,7 +146,7 @@
             ('1970-01-01 00:00:00', 4, '10P2', 'PT21F01', 'Compressor Fridge System', 'compressor-fridge-system', 'power-tags/10P2/compressor-fridge-system', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT22F01', 'Compressor Freeze System', 'compressor-freeze-system', 'power-tags/10P2/compressor-freeze-system', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT23F01', 'Discharge Pump Galley/Crew Mess', 'discharge-pump-galley/crew-mess', 'power-tags/10P2/discharge-pump-galleycrew-mess', 'Technical', 'Grey water'),
-            ('1970-01-01 00:00:00', 4, '10P2', 'PT25F01', 'Water Tight Hinge Door', 'water-tight-hinge-dooor', 'power-tags/10P2/water-tight-hinge-door', 'Technical', 'Technical'),
+            ('1970-01-01 00:00:00', 4, '10P2', 'PT25F01', 'Water Tight Hinge Door', 'water-tight-hinge-door', 'power-tags/10P2/water-tight-hinge-door', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT40F01', 'Ventilation Rack', 'ventilation-rack', 'power-tags/10P2/ventilation-rack', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT50F01', 'FCU: Galley Aft', 'fcu-galley-aft', 'power-tags/10P2/fcu-galley-aft', 'HVAC', 'Fan coil units'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT50F02', 'FCU: Galley Fwd', 'fcu-galley-fwd', 'power-tags/10P2/fcu-galley-fwd', 'HVAC', 'Fan coil units'),
