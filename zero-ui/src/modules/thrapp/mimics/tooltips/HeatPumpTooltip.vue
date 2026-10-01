@@ -7,6 +7,7 @@ import {
 } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import HeatPumpInstance from "../instances/HeatPumpInstance.vue";
 import { ControlValue, ControlValueForm, SensorValue } from "../providers";
@@ -31,6 +32,11 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="heat_transfers"
+        field="heat"
+      />
       <Partials.ManualControl />
     </TooltipList>
 

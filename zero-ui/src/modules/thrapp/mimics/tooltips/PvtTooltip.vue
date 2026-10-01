@@ -13,6 +13,7 @@ import {
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { ComponentOrientation } from "../components";
+import { SensorGraph } from "../components/sensor-graph";
 import { PvtInstance } from "../instances";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
@@ -37,6 +38,11 @@ const mode = usePvtMode(props.custom.group);
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="heat_transfers"
+        field="heat"
+      />
     </TooltipList>
 
     <TooltipList>

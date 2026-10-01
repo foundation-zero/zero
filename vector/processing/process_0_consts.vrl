@@ -2090,221 +2090,221 @@ managed_tables = {
   "thrs/controller/adsorption/adsorption-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "adsorption_dhw_exchanger"
+    "technical_name": "adsorption-dhw-exchanger"
   },
   "thrs/controller/adsorption/adsorption-ht-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "adsorption_ht_exchanger"
+    "technical_name": "adsorption-ht-exchanger"
   },
   "thrs/controller/consumers/consumers-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "consumers_adsorption_exchanger"
+    "technical_name": "consumers-adsorption-exchanger"
   },
   "thrs/controller/consumers/consumers-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "consumers_dhw_exchanger"
+    "technical_name": "consumers-dhw-exchanger"
   },
   "thrs/controller/dc/dc-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dc_dhw_exchanger"
+    "technical_name": "dc-dhw-exchanger"
   },
   "thrs/controller/dhw/dhw-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_adsorption_exchanger"
+    "technical_name": "dhw-adsorption-exchanger"
   },
   "thrs/controller/dhw/dhw-consumers-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_consumers_exchanger"
+    "technical_name": "dhw-consumers-exchanger"
   },
   "thrs/controller/dhw/dhw-dc-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_dc_exchanger"
+    "technical_name": "dhw-dc-exchanger"
   },
   "thrs/controller/dhw/dhw-drives-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_drives_exchanger"
+    "technical_name": "dhw-drives-exchanger"
   },
   "thrs/controller/dhw/dhw-freshwater-flow-supply": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "dhw_freshwater_flow_supply"
+    "technical_name": "dhw-freshwater-flow-supply"
   },
   "thrs/controller/dhw/dhw-heatpump-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_heatpump_heat"
+    "technical_name": "dhw-heatpump-heat"
   },
   "thrs/controller/dhw/dhw-hvac-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "dhw_hvac_exchanger"
+    "technical_name": "dhw-hvac-exchanger"
   },
   "thrs/controller/drives/drives-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "drives_dhw_exchanger"
+    "technical_name": "drives-dhw-exchanger"
   },
   "thrs/controller/pcm/pcm-heat-module1": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pcm_heat_module1"
+    "technical_name": "pcm-heat-module1"
   },
   "thrs/controller/pcm/pcm-heat-module1-freshwater": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pcm_heat_module1_freshwater"
+    "technical_name": "pcm-heat-module1-freshwater"
   },
   "thrs/controller/pcm/pcm-heat-module2": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pcm_heat_module2"
+    "technical_name": "pcm-heat-module2"
   },
   "thrs/controller/pcm/pcm-heat-module3": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pcm_heat_module3"
+    "technical_name": "pcm-heat-module3"
   },
   "thrs/controller/pcm/pcm-heat-module4": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pcm_heat_module4"
+    "technical_name": "pcm-heat-module4"
   },
   "thrs/controller/pcm/pcm-temperature-consumers-return": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pcm_temperature_consumers_return"
+    "technical_name": "pcm-temperature-consumers-return"
   },
   "thrs/controller/pvt/pvt-flow-main-aft-strings": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "pvt_flow_main_aft_strings"
+    "technical_name": "pvt-flow-main-aft-strings"
   },
   "thrs/controller/pvt/pvt-flow-main-fwd-strings": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "pvt_flow_main_fwd_strings"
+    "technical_name": "pvt-flow-main-fwd-strings"
   },
   "thrs/controller/pvt/pvt-flow-owners-strings": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "pvt_flow_owners_strings"
+    "technical_name": "pvt-flow-owners-strings"
   },
   "thrs/controller/pvt/pvt-max-temperature-main-aft-strings": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_max_temperature_main_aft_strings"
+    "technical_name": "pvt-max-temperature-main-aft-strings"
   },
   "thrs/controller/pvt/pvt-max-temperature-main-fwd-strings": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_max_temperature_main_fwd_strings"
+    "technical_name": "pvt-max-temperature-main-fwd-strings"
   },
   "thrs/controller/pvt/pvt-max-temperature-owners-strings": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_max_temperature_owners_strings"
+    "technical_name": "pvt-max-temperature-owners-strings"
   },
   "thrs/controller/pvt/pvt-pvt-main-aft-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pvt_pvt_main_aft_heat"
+    "technical_name": "pvt-pvt-main-aft-heat"
   },
   "thrs/controller/pvt/pvt-pvt-main-fwd-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pvt_pvt_main_fwd_heat"
+    "technical_name": "pvt-pvt-main-fwd-heat"
   },
   "thrs/controller/pvt/pvt-pvt-owners-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pvt_pvt_owners_heat"
+    "technical_name": "pvt-pvt-owners-heat"
   },
   "thrs/controller/pvt/pvt-return-temperature": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_return_temperature"
+    "technical_name": "pvt-return-temperature"
   },
   "thrs/controller/pvt/pvt-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "pvt_seawater_exchanger"
+    "technical_name": "pvt-seawater-exchanger"
   },
   "thrs/controller/pvt/pvt-seawater-exchanger-flow": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "pvt_seawater_exchanger_flow"
+    "technical_name": "pvt-seawater-exchanger-flow"
   },
   "thrs/controller/pvt/pvt-temperature-main-aft-strings-return": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_main_aft_strings_return"
+    "technical_name": "pvt-temperature-main-aft-strings-return"
   },
   "thrs/controller/pvt/pvt-temperature-main-aft-strings-supply": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_main_aft_strings_supply"
+    "technical_name": "pvt-temperature-main-aft-strings-supply"
   },
   "thrs/controller/pvt/pvt-temperature-main-fwd-strings-return": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_main_fwd_strings_return"
+    "technical_name": "pvt-temperature-main-fwd-strings-return"
   },
   "thrs/controller/pvt/pvt-temperature-main-fwd-strings-supply": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_main_fwd_strings_supply"
+    "technical_name": "pvt-temperature-main-fwd-strings-supply"
   },
   "thrs/controller/pvt/pvt-temperature-owners-strings-return": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_owners_strings_return"
+    "technical_name": "pvt-temperature-owners-strings-return"
   },
   "thrs/controller/pvt/pvt-temperature-owners-strings-supply": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "pvt_temperature_owners_strings_supply"
+    "technical_name": "pvt-temperature-owners-strings-supply"
   },
   "thrs/controller/pvt/pvt-total-flow": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "pvt_total_flow"
+    "technical_name": "pvt-total-flow"
   },
   "thrs/controller/thrusters/thrusters-flow": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
-    "technical_name": "thrusters_flow"
+    "technical_name": "thrusters-flow"
   },
   "thrs/controller/thrusters/thrusters-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "thrusters_seawater_exchanger"
+    "technical_name": "thrusters-seawater-exchanger"
   },
   "thrs/controller/thrusters/thrusters-temperature-pre-cooler": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "thrusters_temperature_pre_cooler"
+    "technical_name": "thrusters-temperature-pre-cooler"
   },
   "thrs/controller/thrusters/thrusters-temperature-recovery": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
-    "technical_name": "thrusters_temperature_recovery"
+    "technical_name": "thrusters-temperature-recovery"
   },
   "thrs/controller/thrusters/thrusters-thruster-aft-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "thrusters_thruster_aft_heat"
+    "technical_name": "thrusters-thruster-aft-heat"
   },
   "thrs/controller/thrusters/thrusters-thruster-fwd-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
-    "technical_name": "thrusters_thruster_fwd_heat"
+    "technical_name": "thrusters-thruster-fwd-heat"
   }
 }

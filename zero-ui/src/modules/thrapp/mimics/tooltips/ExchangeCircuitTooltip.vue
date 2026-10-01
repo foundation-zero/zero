@@ -11,6 +11,7 @@ import {
   TooltipListItemAction,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import LoopCircuitInstance from "../instances/LoopCircuitInstance.vue";
 import { SensorValue } from "../providers";
@@ -36,6 +37,11 @@ const { labels, items, actions } = useTranslations();
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="heat_transfers"
+        field="heat"
+      />
     </TooltipList>
 
     <TooltipList>
