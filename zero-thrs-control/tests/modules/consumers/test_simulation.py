@@ -1,20 +1,17 @@
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 
 import pytest
+from fmpy.fmi1 import FMICallException
+from pydantic import ValidationError
 from pytest import approx, fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
+from tests.modules.consumers.conftest import ConsumersRunner, ConsumersSimulation
+from thrs.control.modules.consumers import ConsumersControl
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.modules.consumers import (
-    ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
-)
-from thrs.orchestration.simulation import Simulation
-from thrs.simulation.fmu import Fmu
-from thrs.simulation.models.fmu_paths import consumers_path
+from thrs.input_output.modules.consumers import ConsumersSimulationInputs
 
 
 @fixture(
@@ -22,9 +19,10 @@ from thrs.simulation.models.fmu_paths import consumers_path
         simulator_input_field_setters(
             ConsumersSimulationInputs,
             ignore=[
+                "mode",  # Not a physical quantity
+                # The FMU tolerates this, even with the control running
                 ("consumers_pcm_supply", "flow"),
-                "mode",
-            ],  # Do not throw an exception
+            ],
         )
     )
 )
@@ -33,22 +31,16 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return simulation_inputs
 
 
-def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
-    with Fmu(consumers_path) as fmu:
-        simulation = Simulation(
-            ConsumersSensorValues,
-            ConsumersSimulationOutputs,
-            fmu,
-            incorrect_simulation_inputs,
-            datetime.now(UTC),
-            timedelta(seconds=1),
-        )
+def test_consumers_simulation_inputs(
+    incorrect_simulation_inputs: ConsumersSimulationInputs,
+    simulation: ConsumersSimulation,
+    control: ConsumersControl,
+):
+    control_values, _ = control.initial()
 
-        with pytest.raises(Exception):
-            for _i in range(300):
-                simulation.tick(
-                    control.initial()[0],
-                )
+    with pytest.raises((ValidationError, FMICallException)):
+        for _i in range(300):
+            simulation.tick(control_values)
 
 
 @pytest.mark.xfail(
@@ -56,21 +48,29 @@ def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
     reason="Consumer FMU wires the DHW supply flow to the booster source's "
     "overpressure input instead of its volume flow input",
 )
-def test_dhw_exchanger_balances_heat(simulation, simulation_inputs, control):
+def test_dhw_exchanger_balances_heat(
+    runner: ConsumersRunner, simulation_inputs: ConsumersSimulationInputs
+):
     dhw_inlet, dhw_flow = 10.0, 29.0
-    simulation_inputs.consumers_dhw_supply = Boundary(
-        temperature=Stamped.stamp(dhw_inlet), flow=Stamped.stamp(dhw_flow)
+    runner.update_simulation_inputs(
+        simulation_inputs.model_copy(
+            update={
+                "consumers_dhw_supply": Boundary(
+                    temperature=Stamped.stamp(dhw_inlet), flow=Stamped.stamp(dhw_flow)
+                )
+            }
+        )
     )
 
-    result = simulation.tick(control.initial()[0])
-    for _i in range(600):
-        control_values, _ = control.control(result.sensor_values)
-        result = simulation.tick(control_values)
+    for _ in runner.ticks_for(timedelta(minutes=10)):
+        pass
+    sensor_values, *_ = runner.tick()
 
-    dhw_outlet = result.simulation_outputs.consumers_dhw_return.temperature.value
+    simulation_outputs = runner.simulation_outputs
+    assert simulation_outputs is not None
+    dhw_outlet = simulation_outputs.consumers_dhw_return.temperature.value
     heat_to_dhw = dhw_flow * (dhw_outlet - dhw_inlet) * WATER_HEAT_TRANSFER_CONVERSION
-    heat_from_high_temperature = (
-        -result.sensor_values.consumers_dhw_exchanger.heat.value
-    )
+    exchanger_heat = sensor_values.consumers_dhw_exchanger.heat.value
 
-    assert heat_to_dhw == approx(heat_from_high_temperature, rel=0.1)
+    assert exchanger_heat is not None
+    assert heat_to_dhw == approx(-exchanger_heat, rel=0.1)
