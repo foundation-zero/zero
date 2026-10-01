@@ -13,7 +13,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
@@ -215,7 +215,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
             temperature_supply=self.drives_temperature_recovery_mix.temperature,
             temperature_return=self.drives_temperature_recovery_return.temperature,
             flow=self.drives_flow_recovery.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "drives_temperature_recovery_mix"
             ),

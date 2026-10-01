@@ -6,7 +6,9 @@ from pydantic.alias_generators import to_snake
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta, valve_meta
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.definitions.units import (
+    GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+)
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
@@ -95,7 +97,7 @@ class ConsumersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.consumers_temperature_adsorption_supply.temperature,
             temperature_return=self.consumers_temperature_adsorption_return.temperature,
             flow=self.consumers_flow_adsorption.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "consumers_temperature_adsorption_supply"
             ),
@@ -120,7 +122,7 @@ class ConsumersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.consumers_temperature_dhw_supply.temperature,
             temperature_return=self.consumers_temperature_dhw_return.temperature,
             flow=self.consumers_flow_dhw.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "consumers_temperature_dhw_supply"
             ),

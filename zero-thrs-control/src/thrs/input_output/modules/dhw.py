@@ -339,6 +339,7 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_supply=sensor.stamped_by_valves(source_switch, None),
                 temperature_return=sensor.stamped_by_valves(source_switch, None),
                 flow=sensor.stamped_by_valves(source_switch, 0.0),
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
                 temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
@@ -347,6 +348,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,
             temperature_return=sensor.stamped_by_valves(self._boosting_switches, None),
             flow=sensor.stamped_by_valves(self._boosting_switches, None),
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_boosting_supply"
             ),
@@ -408,6 +410,7 @@ class DhwSensorValues(AmcsModeSensorValues):
                 temperature_supply=sensor.stamped_by_valves(source_switch, None),
                 temperature_return=sensor.stamped_by_valves(source_switch, None),
                 flow=sensor.stamped_by_valves(source_switch, 0.0),
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
                 temperature_supply_source="unknown",
                 temperature_return_source="unknown",
                 flow_source="Calculated",
@@ -416,6 +419,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_supply=self.dhw_temperature_boosting_supply.temperature,
             temperature_return=sensor.stamped_by_valves(self._boosting_switches, None),
             flow=sensor.stamped_by_valves(self._boosting_switches, None),
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_boosting_supply"
             ),
@@ -491,6 +495,7 @@ class DhwSensorValues(AmcsModeSensorValues):
             temperature_supply=sensor.stamped_by_valves(drives_valves, None),
             temperature_return=self.dhw_temperature_drives_return.temperature,
             flow=sensor.stamped_by_valves(drives_valves, None),
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source="unknown",
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "dhw_temperature_drives_return"

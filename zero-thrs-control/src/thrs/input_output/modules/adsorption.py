@@ -14,7 +14,7 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
-    WATER_HEAT_TRANSFER_CONVERSION,
+    GLYCOL_20_HEAT_TRANSFER_CONVERSION,
     AdsorptionChillerMode,
     FreeCoolingMode,
     TankControlMode,
@@ -159,7 +159,7 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
             temperature_supply=self.adsorption_temperature_ht_supply.temperature,
             temperature_return=self.adsorption_temperature_ht_return.temperature,
             flow=self.adsorption_flow_ht.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "adsorption_temperature_ht_supply"
             ),
@@ -182,7 +182,7 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
             temperature_supply=self.adsorption_temperature_waste_supply.temperature,
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
             flow=self.adsorption_flow_dhw.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "adsorption_temperature_waste_supply"
             ),

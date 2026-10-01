@@ -13,7 +13,10 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION, Celsius
+from thrs.input_output.definitions.units import (
+    GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+    Celsius,
+)
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
 
@@ -815,7 +818,7 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pvt_temperature_main_fwd_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_fwd_strings_return.temperature,
             flow=self.pvt_flow_main_fwd_strings.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_main_fwd_strings_supply"
             ),
@@ -840,7 +843,7 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pvt_temperature_main_aft_strings_supply.temperature,
             temperature_return=self.pvt_temperature_main_aft_strings_return.temperature,
             flow=self.pvt_flow_main_aft_strings.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_main_aft_strings_supply"
             ),
@@ -865,7 +868,7 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pvt_temperature_owners_strings_supply.temperature,
             temperature_return=self.pvt_temperature_owners_strings_return.temperature,
             flow=self.pvt_flow_owners_strings.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_owners_strings_supply"
             ),
@@ -943,6 +946,7 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pvt_temperature_supply.temperature,
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_supply"
             ),
