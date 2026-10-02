@@ -2,11 +2,11 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 
-const props = defineProps<{ class?: HTMLAttributes["class"] }>();
+const props = defineProps<{ class?: HTMLAttributes["class"]; dense?: boolean }>();
 </script>
 
 <template>
-  <ul :class="cn('grid gap-0.5', props.class)">
+  <ul :class="cn('grid gap-0.5', { 'gap-0 leading-[1.3]': dense }, props.class)">
     <slot />
   </ul>
 </template>

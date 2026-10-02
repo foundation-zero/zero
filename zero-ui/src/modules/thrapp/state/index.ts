@@ -1,15 +1,28 @@
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
-import { type PvtAutomaticMode, useAutomationStore } from "@/modules/thrsim/stores/automation";
-import { AmcsControlMode, PvtMode } from "@/modules/thrsim/types";
+import {
+  DcAutomaticMode,
+  type PvtAutomaticMode,
+  useAutomationStore,
+} from "@/modules/thrsim/stores/automation";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export type PvtGroup = keyof PvtAutomaticMode;
+export type DcConverterGroup = keyof DcAutomaticMode;
 
 export const usePvtMode = (group: PvtGroup) => {
   const { control } = toRefs(useAutomationStore());
 
   return computed(
     () => control.value?.modules?.pvt.controlMode?.automaticMode?.[group].mode ?? PvtMode.Idle,
+  );
+};
+
+export const useDcMode = (group: DcConverterGroup) => {
+  const { control } = toRefs(useAutomationStore());
+
+  return computed(
+    () => control.value?.modules?.dc.controlMode?.automaticMode?.[group]?.mode ?? DcMode.Idle,
   );
 };
 

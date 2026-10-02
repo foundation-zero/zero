@@ -9,7 +9,7 @@ import { BoilerTankStateField, MimicComponentType } from ".";
 import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
-import type { PvtGroup } from "../state";
+import type { DcConverterGroup, PvtGroup } from "../state";
 
 export type ComponentFields<
   Type extends
@@ -81,6 +81,10 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.CheckValve]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.DcConverter]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+    temperature: SensorComponentType.Temperature;
+  };
   [MimicComponentType.ConnectingCircuit]: {
     flowIn:
       | SensorComponentType.Flow
@@ -138,6 +142,7 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.DcConverter]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
     valve: ControlComponentType.Valve;
@@ -172,6 +177,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.DcConverter]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
@@ -188,6 +194,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
     enabled: ParametersType.Enabled;
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.DcConverter]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.ManualPump]: EmptyObject;
@@ -249,6 +256,10 @@ export type CustomFieldDefinitions = CustomFields<{
     forceHeight?: boolean;
     circuitName: string;
     modeModule?: keyof ControlStatus["modules"];
+  };
+  [MimicComponentType.DcConverter]: {
+    converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
+    group: DcConverterGroup;
   };
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
@@ -312,6 +323,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
+  [MimicComponentType.DcConverter]: undefined;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.ConnectingCircuit]: undefined;

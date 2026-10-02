@@ -15,7 +15,7 @@ defineProps<
 <template>
   <Label
     v-bind="$props"
-    min-width="55"
+    min-width="50"
   >
     {{ tagId }}
     <template #value>

@@ -18,6 +18,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 - [Pressure Gauge](/mimics/pressure-gauge) - Stateless directional pressure gauge icon for mimic diagrams
 - [Pressure Sensor](/mimics/pressure-sensor) - Stateless directional pressure sensor icon for mimic diagrams
 - [Level Switch](/mimics/level-switch) - Stateless directional level switch icon for mimic diagrams
+- [DC Converter](/mimics/dc-converter) - DC/AC converter asset card with channel status graphic
 
 ## Authoring
 

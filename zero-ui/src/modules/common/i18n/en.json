@@ -37,7 +37,8 @@
     "estimatedTime": "Est. time",
     "degrees": "°",
     "hertz": "Hz",
-    "irradiance": "W/m²"
+    "irradiance": "W/m²",
+    "temp": "T"
   },
   "apps": {
     "loads": "Loads",
@@ -105,7 +106,8 @@
     "to": "To",
     "from": "From",
     "in": "In",
-    "out": "Out"
+    "out": "Out",
+    "internal": "internal"
   },
   "views": {
     "splash": {

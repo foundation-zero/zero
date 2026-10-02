@@ -149,6 +149,33 @@ Batch script that extracts all schema values and generates GraphQL queries for a
 - Ensuring all modules are up to date
 - Want to regenerate both TypeScript definitions and GraphQL queries in one go
 
+### `convert-direction-arrows.ts`
+
+Converts the raw, Figma-exported arrow `<path>`s in a mimic module's `DirectionArrows.vue` into `<line>` elements with a `marker-end` arrowhead, matching the hand-authored convention used across mimic modules.
+
+**Usage:**
+
+```bash
+pnpm convert-direction-arrows <module>
+
+# Example
+pnpm convert-direction-arrows dc
+```
+
+`<module>` is the folder name under `src/modules/thrapp/mimics/modules/<module>/layers/DirectionArrows.vue`.
+
+**What it does:**
+
+1. Reads the module's `DirectionArrows.vue` and locates every `<path>` with `fill-opacity="0.55"` (the signature of a Figma-exported arrow: an end-cap square, a chevron, and a thin rectangle spanning the arrow's length).
+2. Parses each path's `d` attribute (supports absolute `M`/`L`/`H`/`V`/`C` commands) to recover the rectangle's two endpoints and locate the chevron subpath (identified by its cubic-bezier `C` commands).
+3. Determines which endpoint carries the arrowhead by finding the endpoint closest to the chevron, then emits `x1`/`y1`/`x2`/`y2` for a `<line>` with the arrowhead end as `x2`/`y2`.
+4. Merges a shared `flows-dir-arrow` marker (using the `stroke-flows-pipe-arrow` token) into the file's `<defs>`, alongside any pre-existing defs (e.g. Figma reference-image patterns), and wraps all lines in a single `<g marker-end="url(#flows-dir-arrow)">`.
+5. Preserves any non-arrow content (e.g. a reference-image `<rect>`) unchanged, and formats the result with Prettier.
+
+Paths without a detectable chevron are left untouched and reported as skipped — this can happen if the file mixes arrow paths with unrelated translucent shapes.
+
+**Note:** this only handles the raw Figma export shape. Run it once per module right after pasting in the exported SVG, before any manual position tweaks.
+
 ## Generated Output
 
 The scripts generate constants in `src/lib/consts.generated.ts` and `src/lib/queries.generated.ts`:
