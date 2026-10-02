@@ -1,8 +1,13 @@
 pub mod asyncapi;
 pub mod cache;
 pub mod config;
+pub mod extension;
 pub mod graphql;
 pub mod http;
 pub mod metadata;
+pub mod model;
+pub mod model_validation;
 pub mod mqtt;
 pub mod naming;
+pub mod pyrepr;
+pub mod schema;

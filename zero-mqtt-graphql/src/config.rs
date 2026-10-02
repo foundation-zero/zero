@@ -4,6 +4,9 @@ use serde::Deserialize;
 /// config nor an AsyncAPI `x-ttl` extension specifies one.
 pub const DEFAULT_TTL_SECS: u64 = 300;
 
+/// The TTL of a value that never expires (`x-ttl: "unbounded"`).
+pub const TTL_UNBOUNDED_SECS: u64 = u64::MAX;
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct AppConfig {
     #[serde(default = "default_host")]
@@ -20,6 +23,17 @@ pub struct AppConfig {
     /// may override this with an `x-ttl` extension.
     #[serde(default = "default_ttl")]
     pub default_ttl_secs: u64,
+    /// Serve mode drops schema-invalid payloads instead of caching them.
+    /// Env: `STRICT_VALIDATION`.
+    #[serde(default)]
+    pub strict_validation: bool,
+    /// Serve each `stampedFields` field independently (nullable) instead of
+    /// all-or-nothing. Env: `ENABLE_OPTIONAL_SENSOR_VALUES`.
+    #[serde(default)]
+    pub enable_optional_sensor_values: bool,
+    /// Expose the extension's mutations and lifecycle directives. Env: `ENABLE_MUTATIONS`.
+    #[serde(default)]
+    pub enable_mutations: bool,
 }
 
 // function indirect needed by serde

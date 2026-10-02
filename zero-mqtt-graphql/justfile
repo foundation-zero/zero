@@ -1,0 +1,38 @@
+set dotenv-load := true
+
+spec_dir := "../specs"
+
+default: check
+
+# Generate the AsyncAPI specs of all services into ../specs
+specs:
+    just --justfile ../justfile --working-directory .. specs
+
+# Serve the GraphQL API on http://localhost:5103 (needs `just specs` once and a broker)
+run:
+    cargo run --locked -- --spec-dir {{ spec_dir }} serve
+
+# Regenerate the specs, then serve
+run_fresh: specs run
+
+# Validate the specs and GraphQL names, no broker needed
+validate:
+    cargo run --locked -- --spec-dir {{ spec_dir }} validate
+
+# Print the GraphQL schema (SDL), no broker needed
+print_schema:
+    cargo run --locked -- --spec-dir {{ spec_dir }} print-schema
+
+check: format lint test
+
+test *args:
+    cargo test --locked {{ args }}
+
+lint:
+    cargo clippy --all --all-features --locked
+
+format:
+    cargo fmt --check
+
+format_fix:
+    cargo fmt

@@ -12,12 +12,22 @@ defaultTtlSecs: 300
 # Command to run: "serve" (default), "validate" or "listen"
 command: serve
 
+strictValidation: false  # drop schema-invalid payloads
+enableOptionalSensorValues: false  # sensor fields nullable, per field
+enableMutations: false  # serve mutations and directives
+
 mqtt:
   host: ""
   port: 1883
   username: ""
   existingSecret: ""
   existingSecretPasswordKey: password
+  devicesTopicPrefix: ""
+  controllerTopicPrefix: ""
+  simulatorTopicPrefix: ""
+  controlTopicSuffix: ""
+  controllerTopicSuffix: ""
+  simulatorTopicSuffix: ""
 
 resources: {}
 

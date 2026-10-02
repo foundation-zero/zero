@@ -7,9 +7,32 @@ use serde_json::Value;
 use crate::asyncapi::{TopicDef, TopicGroupDef};
 
 struct Entry {
+    /// The payload for field resolution (flattened, see [`flatten_payload`]).
     value: Value,
+    /// The payload exactly as published, for whole-object consumers.
+    raw: Value,
     inserted: Instant,
     ttl_secs: u64,
+}
+
+/// Flatten one level of nested objects for field resolution: specs list nested
+/// keys as top-level fields. Top-level keys win; the wrapper key is kept.
+pub(crate) fn flatten_payload(value: Value) -> Value {
+    let Value::Object(map) = &value else {
+        return value;
+    };
+
+    let mut merged = map.clone();
+    for nested in map.values() {
+        if let Value::Object(nested_map) = nested {
+            for (nested_key, nested_value) in nested_map {
+                if !merged.contains_key(nested_key) {
+                    merged.insert(nested_key.clone(), nested_value.clone());
+                }
+            }
+        }
+    }
+    Value::Object(merged)
 }
 
 pub struct TopicCache {
@@ -80,17 +103,25 @@ impl TopicCache {
         self.data.insert(
             topic.to_string(),
             Entry {
-                value: payload,
+                value: flatten_payload(payload.clone()),
+                raw: payload,
                 inserted: Instant::now(),
                 ttl_secs: ttl,
             },
         );
     }
 
-    /// Get the full cached payload for a topic, or `None` if missing or expired.
+    /// The flattened cached payload for a topic, or `None` if missing or expired.
     pub fn get(&self, topic: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         Some(entry.value.clone())
+    }
+
+    /// The cached payload as published, or `None` if missing or expired. Mutations
+    /// republish from this so flattened keys don't leak in.
+    pub fn get_raw(&self, topic: &str) -> Option<Value> {
+        let entry = self.get_entry_if_fresh(topic)?;
+        Some(entry.raw.clone())
     }
 
     /// Get a specific field from a topic's cached payload.
@@ -222,6 +253,7 @@ mod tests {
             params: Vec::new(),
             fields: Vec::new(),
             payload_schema: None,
+            field_schemas: BTreeMap::new(),
             value_extensions: BTreeMap::new(),
             ttl_secs,
         }
@@ -283,17 +315,21 @@ mod tests {
     }
 
     #[test]
-    fn test_get_field_returns_raw_nested_payload() {
+    fn test_get_field_reads_flattened_view_and_get_raw_the_published_payload() {
         let cache = TopicCache::new();
-        cache.insert("test/topic", json!({"nested": {"v": 1.0}, "flat": 2}));
+        let payload = json!({"nested": {"v": 1.0}, "flat": 2});
+        cache.insert("test/topic", payload.clone());
 
         assert_eq!(cache.get_field("test/topic", "flat").unwrap(), json!(2));
         assert_eq!(
             cache.get_field("test/topic", "nested").unwrap(),
             json!({"v": 1.0})
         );
-        // The cache stores payloads verbatim; flattening happens at insert time upstream
-        assert!(cache.get_field("test/topic", "v").is_none());
+        // Field resolution sees one level of nesting flattened in...
+        assert_eq!(cache.get_field("test/topic", "v").unwrap(), json!(1.0));
+        assert_eq!(cache.get("test/topic").unwrap()["v"], json!(1.0));
+        // ...while the raw payload stays exactly as published.
+        assert_eq!(cache.get_raw("test/topic").unwrap(), payload);
     }
 
     #[test]
@@ -340,6 +376,15 @@ mod tests {
         assert!(cache.get("logs/a/b").is_none());
         // Exact-match keys still win over patterns for the same topic
         assert!(cache.get("other/topic").is_some());
+    }
+
+    #[test]
+    fn test_unbounded_ttl_never_expires() {
+        let cache = TopicCache::with_ttl(crate::config::TTL_UNBOUNDED_SECS, HashMap::new());
+        cache.insert("state", json!({"v": 1}));
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        cache.evict_expired();
+        assert_eq!(cache.get_field("state", "v"), Some(json!(1)));
     }
 
     #[test]
