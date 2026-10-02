@@ -10,7 +10,7 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrsim/types";
-import { Ref } from "vue";
+import { Ref, toRef } from "vue";
 import {
   createMimicDataProvider,
   getControlDefinition,
@@ -33,6 +33,8 @@ const getSensorValue = <Type extends SensorComponentType, Module extends keyof T
   module,
   field,
 ]: ModuleField<Type, Module>): Ref<SensorDefinitionMap[Type] | undefined> => {
+  if (field === "placeholder") return toRef(undefined);
+
   const { componentType } = getSensorDefinition(module, field);
   return SENSOR_VALUES_FACTORY[componentType]() as Ref<SensorDefinitionMap[Type] | undefined>;
 };
