@@ -6,7 +6,6 @@ import { MimicComponentInstanceProps } from ".";
 import { TooltipComponentContext } from "../../components/tooltip";
 import { useDcMode } from "../../state";
 import { MimicComponentType } from "../../types";
-import { MimicComponentState } from "../components";
 import { DcMode } from "../components/dc-converter";
 import DcConverter from "../components/dc-converter/DcConverter.vue";
 import DcConverterStatus from "../components/dc-converter/DcConverterStatus.vue";
@@ -37,7 +36,7 @@ const modeKey = useDcMode(props.custom.group);
 <template>
   <DcConverter
     v-bind="props"
-    :state="MimicComponentState.Normal"
+    :state="state"
   >
     <div class="flex items-center justify-between">
       <YardTag class="flex flex-row-reverse items-center gap-0">

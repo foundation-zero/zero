@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { DC_CONVERTER_HEIGHT, DC_CONVERTER_WIDTH } from ".";
 import { MimicComponentBaseProps } from "..";
 import { Pvt } from "../pvt";
 
 withDefaults(defineProps<MimicComponentBaseProps & { width?: number; height?: number }>(), {
-  width: 200,
-  height: 205,
+  width: () => DC_CONVERTER_WIDTH,
+  height: () => DC_CONVERTER_HEIGHT,
 });
 </script>
 

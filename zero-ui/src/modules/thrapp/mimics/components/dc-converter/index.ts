@@ -6,7 +6,7 @@ export { default as DcConverterStatus } from "./DcConverterStatus.vue";
 export { default as DcMode } from "./DcMode.vue";
 
 export const DC_CONVERTER_WIDTH = 200;
-export const DC_CONVERTER_HEIGHT = 198;
+export const DC_CONVERTER_HEIGHT = 205;
 
 export const DC_MODE_COLORS: Record<DcMode, ModeBadgeMode> = {
   [DcMode.Recovery]: ModeBadgeMode.Active,
