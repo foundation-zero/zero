@@ -360,6 +360,7 @@ class DcSensorValues(AmcsModeSensorValues):
             temperature_supply=self.dc_temperature_recovery_mix.temperature,
             temperature_return=self.dc_temperature_supply.temperature,
             flow=self.dc_total_flow.flow,
+            mix_valve=self.dc_mix_exchanger,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "dc_temperature_recovery_mix"

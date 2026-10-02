@@ -946,6 +946,7 @@ class PvtSensorValues(AmcsModeSensorValues):
             temperature_supply=self.pvt_temperature_supply.temperature,
             temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.pvt_seawater_exchanger_flow.flow,
+            mix_valve=self.pvt_mix_exchanger,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "pvt_temperature_supply"
