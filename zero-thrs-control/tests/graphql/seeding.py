@@ -72,6 +72,21 @@ def control_mode_instance(cls: type[ThrsValues]) -> ThrsValues:
     return cls(**values)
 
 
+def device_payloads(
+    module: str, sensors: ThrsValues, actuated: ThrsValues, prefix: str
+) -> dict[str, dict[str, Any]]:
+    """A module's device topics as a device publishes them: per component its
+    sensor readings merged with its actuated (``CC_*``) control keys."""
+    payloads: dict[str, dict[str, Any]] = {}
+    for model, context in ((sensors, None), (actuated, AMCS_RECEIVE_CONTEXT)):
+        mapping = PartialMqttMapping(
+            type(model), prefix, device_module_prefix(module), context=context
+        )
+        for topic, payload in mapping.split_to_topics(model).items():
+            payloads.setdefault(topic, {}).update(json.loads(payload))
+    return payloads
+
+
 async def seed_all(mqtt: MqttClient) -> None:
     modules = all_module_descriptions()
     # A device publishes one payload per component carrying both its sensor
@@ -79,22 +94,20 @@ async def seed_all(mqtt: MqttClient) -> None:
     # sensorValues and controlValues off the same topics. Merge the two
     # serializations per topic so both sections complete. A topic two modules
     # share carries the module seeded last.
-    device_payloads: dict[str, dict[str, Any]] = {}
+    all_payloads: dict[str, dict[str, Any]] = {}
     sensor_mappings: dict[str, PartialMqttMapping[Any]] = {}
     for module, desc in modules.items():
         sensors = seeded(desc.sensor_values_cls)
         actuated = seeded(desc.control_values_cls)
         module_prefix = device_module_prefix(module)
         for prefix in DEVICES_PREFIXES:
-            sensor_mapping = PartialMqttMapping(type(sensors), prefix, module_prefix)
-            sensor_mappings.setdefault(module, sensor_mapping)
-            for topic, payload in sensor_mapping.split_to_topics(sensors).items():
-                device_payloads.setdefault(topic, {}).update(json.loads(payload))
-            actuated_mapping = PartialMqttMapping(
-                type(actuated), prefix, module_prefix, context=AMCS_RECEIVE_CONTEXT
+            sensor_mappings.setdefault(
+                module, PartialMqttMapping(type(sensors), prefix, module_prefix)
             )
-            for topic, payload in actuated_mapping.split_to_topics(actuated).items():
-                device_payloads.setdefault(topic, {}).update(json.loads(payload))
+            for topic, payload in device_payloads(
+                module, sensors, actuated, prefix
+            ).items():
+                all_payloads.setdefault(topic, {}).update(payload)
         objects = {
             "manual-values": seeded(desc.control_values_cls),
             "parameters": desc.parameters_cls(),
@@ -109,13 +122,13 @@ async def seed_all(mqtt: MqttClient) -> None:
                 await mqtt.publish(
                     f"{prefix}/{module}/{kind}", payload=payload, retain=True
                 )
-    for topic, payload in device_payloads.items():
+    for topic, payload in all_payloads.items():
         await mqtt.publish(topic, payload=json.dumps(payload), retain=True)
 
     # The computed sensor fields, as the control loop publishes them for the
     # sensor values it receives from these device topics.
     for module, mapping in sensor_mappings.items():
-        for topic, payload in device_payloads.items():
+        for topic, payload in all_payloads.items():
             mapping.handle_message(topic, json.dumps(payload))
         sensors = mapping.result()
         assert sensors is not None, f"{module}: seeded sensor values incomplete"

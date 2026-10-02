@@ -260,7 +260,7 @@ impl LifecycleMemberSpec {
         let mutations = self
             .mutations
             .iter()
-            .map(|mutation| mutation.resolve(resolver, &object_sections))
+            .map(|mutation| mutation.resolve(resolver, &object_sections, &[]))
             .collect::<anyhow::Result<Vec<_>>>()?;
         Ok(LifecycleMemberDef {
             name: self.name.clone(),

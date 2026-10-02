@@ -750,6 +750,7 @@ fn cooling_flow_mutation() -> Vec<ModuleMutations> {
             arg_name: "value".to_string(),
             key: "CoolingFlow".to_string(),
             state_topic: "thrs/controller/thrusters/parameters".to_string(),
+            state_section: None,
             set_topic: "thrs/controller/thrusters/parameters/set".to_string(),
             state: None,
             target: None,
@@ -1092,6 +1093,7 @@ async fn test_control_mutation_restamps_component_and_publishes() {
             arg_name: "value".to_string(),
             key: "thrusters_pump_1".to_string(),
             state_topic: "thrs/controller/thrusters/manual-values".to_string(),
+            state_section: None,
             set_topic: "thrs/controller/thrusters/manual-values/set".to_string(),
             state: None,
             target: None,
@@ -1200,6 +1202,7 @@ async fn test_parameter_mutation_returns_modified_object_and_automation_mode() {
                 arg_name: "value".to_string(),
                 key: "CoolingFlow".to_string(),
                 state_topic: "thrs/controller/thrusters/parameters".to_string(),
+                state_section: None,
                 set_topic: "thrs/controller/thrusters/parameters/set".to_string(),
                 state: None,
                 target: None,
@@ -1220,6 +1223,7 @@ async fn test_parameter_mutation_returns_modified_object_and_automation_mode() {
                 arg_name: "automatic".to_string(),
                 key: "Mode".to_string(),
                 state_topic: "thrs/controller/thrusters/automation-mode".to_string(),
+                state_section: None,
                 set_topic: "thrs/controller/thrusters/automation-mode/set".to_string(),
                 state: None,
                 target: None,
@@ -1357,6 +1361,7 @@ async fn test_simulation_mutation_rederives_mirror_fields_from_the_new_component
             arg_name: "value".to_string(),
             key: "DhwDrivesSupply".to_string(),
             state_topic: "thrs/simulator/simulation-inputs".to_string(),
+            state_section: None,
             set_topic: "thrs/simulator/simulation-inputs/set".to_string(),
             state: None,
             target: None,
@@ -2620,4 +2625,217 @@ async fn test_simulation_query_status_union_and_directive_preconditions() {
     assert_eq!(topic, "thrs/simulator/simulation-inputs/set");
     let published: serde_json::Value = serde_json::from_str(&payload).unwrap();
     assert_eq!(published["ThrustersPcs"]["Mode"]["Value"], json!(0));
+}
+
+/// Echoes a published control-values object as the device would: the pump
+/// component on its device topic, `Dutypoint` under its actuated key, next to a
+/// sensor reading and with the timestamp in a shorter RFC 3339 form.
+struct DeviceEchoPublisher {
+    cache: Arc<TopicCache>,
+    sent: Arc<std::sync::Mutex<Vec<(String, String)>>>,
+}
+
+impl TopicPublisher for DeviceEchoPublisher {
+    fn publish(&self, topic: String, payload: String) -> PublishFuture {
+        let cache = self.cache.clone();
+        let sent = self.sent.clone();
+        Box::pin(async move {
+            sent.lock().unwrap().push((topic, payload.clone()));
+            let published: serde_json::Value = serde_json::from_str(&payload).unwrap();
+            let pump = published["pump1"].clone();
+            let mut dutypoint = pump["Dutypoint"].clone();
+            let stamp = dutypoint["TimeStamp"].as_str().unwrap().to_string();
+            let shorter =
+                humantime::format_rfc3339_nanos(humantime::parse_rfc3339_weak(&stamp).unwrap());
+            dutypoint["TimeStamp"] = json!(shorter.to_string());
+            tokio::spawn(async move {
+                tokio::time::sleep(std::time::Duration::from_millis(60)).await;
+                cache.insert(
+                    "dev/thrusters/pump1",
+                    json!({"CC_DutyPoint": dutypoint, "Flow": {"Value": 3.0, "TimeStamp": "t"}}),
+                );
+            });
+            Ok(())
+        })
+    }
+}
+
+fn pump_section() -> ObjectSectionDef {
+    use crate::model::views::ObjectFieldDef;
+    let leaf = |key: &str, actuated: Option<&str>| LeafDef {
+        gql: field_name(key),
+        key: key.to_string(),
+        r#type: "Float".to_string(),
+        enum_values: None,
+        enum_type: None,
+        optional: false,
+        actuated_key: actuated.map(str::to_string),
+        default: None,
+    };
+    let component = |key: &str, topic: &str, leaves: Vec<LeafDef>| ObjectFieldDef {
+        gql: field_name(key),
+        key: key.to_string(),
+        r#type: None,
+        type_name: Some("ControlPumpType".to_string()),
+        optional: false,
+        operation: None,
+        topic: Some(topic.to_string()),
+        leaves,
+    };
+    ObjectSectionDef {
+        operation: None,
+        topic: String::new(),
+        type_name: "ThrustersControlValuesType".to_string(),
+        fields: vec![
+            component(
+                "pump1",
+                "dev/thrusters/pump1",
+                vec![leaf("Dutypoint", Some("CC_DutyPoint"))],
+            ),
+            component(
+                "valve",
+                "dev/thrusters/valve",
+                vec![
+                    leaf("Setpoint", None),
+                    LeafDef {
+                        optional: true,
+                        default: Some(json!({"Value": null, "TimeStamp": "1970-01-01T00:00:00Z"})),
+                        ..leaf("ControlMode", None)
+                    },
+                ],
+            ),
+        ],
+    }
+}
+
+fn section_mutation(timeout_s: f64) -> Vec<ModuleMutations> {
+    use crate::model::mutations::InputFieldDef;
+    vec![ModuleMutations {
+        module: "thrusters".to_string(),
+        mutations: vec![MutationDef {
+            derived: Vec::new(),
+            gql: "thrustersControlSetPump1".to_string(),
+            kind: MutationKind::SetComponent,
+            arg_type: String::new(),
+            arg_name: "value".to_string(),
+            key: "pump1".to_string(),
+            state_topic: String::new(),
+            state_section: Some(pump_section()),
+            set_topic: "ctl/thrusters/manual-values/set".to_string(),
+            state: None,
+            target: None,
+            returns: None,
+            true_value: None,
+            false_value: None,
+            input_type_name: Some("PumpInputType".to_string()),
+            missing_error: Some("No control values available to modify".to_string()),
+            confirm: Some(ConfirmDef {
+                operation: None,
+                topic: String::new(),
+                key: None,
+                presence: false,
+                timeout_s,
+                timeout_error: "Timeout when setting control values".to_string(),
+            }),
+            model: None,
+            input_fields: vec![InputFieldDef {
+                gql: "dutypoint".to_string(),
+                key: "Dutypoint".to_string(),
+                r#type: "Float".to_string(),
+                enum_values: None,
+                enum_type: None,
+                required: true,
+            }],
+        }],
+        parameters_object: Default::default(),
+        control_values_object: Default::default(),
+    }]
+}
+
+#[tokio::test]
+async fn test_control_mutation_modifies_and_awaits_the_actuated_device_values() {
+    let cache = Arc::new(TopicCache::new());
+    cache.insert(
+        "dev/thrusters/pump1",
+        json!({"CC_DutyPoint": {"Value": 0.5, "TimeStamp": "2026-01-01T00:00:00Z"},
+               "Dutypoint": {"Value": 0.1, "TimeStamp": "2026-01-01T00:00:00Z"},
+               "Flow": {"Value": 3.0, "TimeStamp": "t"}}),
+    );
+    cache.insert(
+        "dev/thrusters/valve",
+        json!({"Setpoint": {"Value": 0.2, "TimeStamp": "2026-01-01T00:00:00Z"}}),
+    );
+    let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let publisher: Arc<dyn TopicPublisher> = Arc::new(DeviceEchoPublisher {
+        cache: cache.clone(),
+        sent: sent.clone(),
+    });
+    let schema = build_schema(
+        cache,
+        SchemaInputs {
+            views: &schema_views(&[], &section_mutation(2.0)),
+            publisher: Some(publisher),
+            ..Default::default()
+        },
+    )
+    .unwrap();
+
+    let resp = schema
+        .execute("mutation { thrustersControlSetPump1(value: { dutypoint: 0.8 }) }")
+        .await;
+    assert!(resp.errors.is_empty(), "{:?}", resp.errors);
+
+    let sent = sent.lock().unwrap();
+    assert_eq!(sent.len(), 1);
+    assert_eq!(sent[0].0, "ctl/thrusters/manual-values/set");
+    let published: serde_json::Value = serde_json::from_str(&sent[0].1).unwrap();
+    // The actual (`CC_`) value is the state, under the model key; the device's
+    // requested value and its sensor reading are not part of the object.
+    assert_eq!(published["pump1"]["Dutypoint"]["Value"], json!(0.8));
+    assert_eq!(published["pump1"].as_object().unwrap().len(), 1);
+    // A leaf the device does not report takes its default.
+    assert_eq!(
+        published["valve"]["ControlMode"]["TimeStamp"],
+        json!("1970-01-01T00:00:00Z")
+    );
+    assert_eq!(published["valve"]["Setpoint"]["Value"], json!(0.2));
+}
+
+#[tokio::test]
+async fn test_control_mutation_times_out_without_a_device_echo_and_needs_every_component() {
+    let cache = Arc::new(TopicCache::new());
+    let sent = Arc::new(std::sync::Mutex::new(Vec::new()));
+    let publisher: Arc<dyn TopicPublisher> = Arc::new(CapturingPublisher { sent: sent.clone() });
+    let schema = build_schema(
+        cache.clone(),
+        SchemaInputs {
+            views: &schema_views(&[], &section_mutation(0.2)),
+            publisher: Some(publisher),
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let query = "mutation { thrustersControlSetPump1(value: { dutypoint: 0.8 }) }";
+
+    cache.insert(
+        "dev/thrusters/pump1",
+        json!({"CC_DutyPoint": {"Value": 0.5, "TimeStamp": "2026-01-01T00:00:00Z"}}),
+    );
+    let resp = schema.execute(query).await;
+    assert_eq!(
+        resp.errors[0].message,
+        "No control values available to modify"
+    );
+    assert!(sent.lock().unwrap().is_empty());
+
+    cache.insert(
+        "dev/thrusters/valve",
+        json!({"Setpoint": {"Value": 0.2, "TimeStamp": "2026-01-01T00:00:00Z"}}),
+    );
+    let resp = schema.execute(query).await;
+    assert_eq!(
+        resp.errors[0].message,
+        "Timeout when setting control values"
+    );
+    assert_eq!(sent.lock().unwrap().len(), 1);
 }

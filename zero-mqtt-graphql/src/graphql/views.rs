@@ -368,6 +368,40 @@ impl RequiredTopic {
     }
 }
 
+/// A per-topic section's object as the producer's model would serialize it: each
+/// component's stamped leaves under their model keys (actuated keys renamed), or
+/// `None` until every component is complete, as thrs-api builds it.
+pub(super) fn assembled_object(
+    cache: &TopicCache,
+    section: &ObjectSectionDef,
+) -> Option<serde_json::Map<String, JsonValue>> {
+    let mut object = serde_json::Map::new();
+    for field in &section.fields {
+        let Some(topic) = &field.topic else { continue };
+        let required = RequiredTopic::new(topic, &field.leaves);
+        let payload = cache.get_raw(topic)?;
+        if !required.satisfied_by(&payload) {
+            return None;
+        }
+        let JsonValue::Object(mut rekeyed) = required.rekeyed(payload) else {
+            return None;
+        };
+        // A leaf the device does not report takes its default, as the model does.
+        let component: serde_json::Map<String, JsonValue> = field
+            .leaves
+            .iter()
+            .filter_map(|l| {
+                rekeyed
+                    .remove(&l.key)
+                    .or_else(|| l.default.clone())
+                    .map(|v| (l.key.clone(), v))
+            })
+            .collect();
+        object.insert(field.key.clone(), JsonValue::Object(component));
+    }
+    Some(object)
+}
+
 /// Whether every required topic is cached and complete, as thrs-api requires.
 pub(super) fn section_complete(cache: &TopicCache, required: &[RequiredTopic]) -> bool {
     required

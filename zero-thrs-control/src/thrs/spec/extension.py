@@ -530,14 +530,15 @@ def _member_mutations(
         }
     )
 
-    cv_state, cv_target = state_of("manual-values"), target_of("manual-values")
+    # thrs-api modifies and awaits the actuated values (the controlValues
+    # section), and sends the result to manual-values.
     mutations += _component_mutations(
         description.control_values_cls,
         lambda name: contract.CONTROL_MUTATION_NAME.format(
             module=module_name, field=name
         ),
-        state=cv_state,
-        target=cv_target,
+        state_section=field_name(contract.CONTROL_VALUES_SECTION),
+        target=target_of("manual-values"),
         returns=contract.CONTROL_VALUES_SECTION,
         missing_error=contract.NO_CONTROL_VALUES_ERROR,
         timeout_error=contract.CONTROL_VALUES_TIMEOUT_ERROR,
@@ -550,13 +551,18 @@ def _component_mutations(
     object_cls: type[ThrsValues],
     python_name: Any,
     *,
-    state: dict[str, Any],
+    state: dict[str, Any] | None = None,
+    state_section: str | None = None,
     target: dict[str, Any],
     returns: str,
     missing_error: str,
     timeout_error: str,
 ) -> list[dict[str, Any]]:
-    """One ``setComponent`` mutation per stamped component of a whole object."""
+    """One ``setComponent`` mutation per stamped component of a whole object,
+    read from ``state`` or assembled from the member's ``state_section``."""
+    source = (
+        {"state": state} if state_section is None else {"stateSection": state_section}
+    )
     return [
         {
             "gql": field_name(python_name(name)),
@@ -564,7 +570,7 @@ def _component_mutations(
             "argName": field_name(contract.VALUE_ARGUMENT),
             "key": wire_key(name, fld),
             "inputTypeName": input_type_name(component_cls),
-            "state": state,
+            **source,
             "target": target,
             "returns": field_name(returns),
             "missingError": missing_error,
