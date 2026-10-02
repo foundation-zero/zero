@@ -1,0 +1,34 @@
+// Boosting mode of the DHW module.
+// Redrawn for the manual from the machine in src/thrs/control/modules/dhw.py.
+// Check against: uv run python .../module_facts.py dhw --diagram /tmp/dhw-truth.png
+digraph dhw_states {
+  rankdir=TB;
+  bgcolor="white";
+  nodesep=0.5;
+  ranksep=1.05;
+  node [shape=box, style="rounded,filled", fillcolor="#f4f4f4", color="#333333",
+        fontname="Helvetica", fontsize=10, margin="0.2,0.12"];
+  edge [fontname="Helvetica", fontsize=9, color="#333333"];
+
+  idle [fillcolor="#e0e0e0", label=<<b>Idle</b><br align="left"/>
+      <font point-size="9">on entry: close the boosting valves, stop the pump,<br align="left"/>
+      disable pump flow control<br align="left"/></font>>];
+
+  ht [label=<<b>High-temperature boosting</b><br align="left"/>
+      <font point-size="9">on entry: open the high-temperature source valve<br align="left"/>
+      pump flow held at ht_boosting_flow_setpoint<br align="left"/></font>>];
+
+  hp [label=<<b>Heatpump boosting</b><br align="left"/>
+      <font point-size="9">on entry: open the heatpump source valve,<br align="left"/>
+      start the heatpump at heatpump_temperature_setpoint<br align="left"/>
+      pump flow held at heatpump_flow_setpoint<br align="left"/></font>>];
+
+  idle -> ht [label="  a tank needs boosting, HT boosting\l  enabled, and the consumers DHW supply\l  exceeds the tank by more than\l  ht_boosting_minimum_delta\l"];
+  ht -> idle [label="  no tank needs boosting, the supply\l  margin is lost, or heat transfer stays\l  below boosting_minimum_heat\l"];
+
+  ht -> hp [label="  high-temperature\l  boosting becomes\l  unavailable\l"];
+  hp -> ht [label="  high-temperature\l  boosting becomes\l  available\l"];
+
+  idle -> hp [label="  a tank needs boosting, heatpump\l  boosting enabled, high-temperature\l  boosting unavailable, and the heatpump\l  is not in its stall cooldown\l"];
+  hp -> idle [label="  no tank needs boosting, or heat\l  transfer stays below\l  boosting_minimum_heat\l"];
+}

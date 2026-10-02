@@ -1,0 +1,26 @@
+{
+  "skill_name": "thrs-module-manual",
+  "evals": [
+    {
+      "id": 0,
+      "name": "pcm-clean-state-machine",
+      "prompt": "Write a manual for the PCM control module.",
+      "expected_output": "One-page markdown manual at zero-thrs-control/docs/manuals/pcm.md with a redrawn state diagram (.dot + .png under figures/), a tuning table covering the operating parameters with directional guidance, PID gains collapsed to one row, and no alarms section content (PcmAlarms is empty). Should handle the 'boosting' state having no inbound transition.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "pvt-no-toplevel-machine",
+      "prompt": "Can you write up a functional description for the PVT module? It's for the engineer on board who'll be commissioning it.",
+      "expected_output": "One-page manual at zero-thrs-control/docs/manuals/pvt.md. PvtControl has no top-level state machine; the three PvtGroupControl sub-controls each run an identical idle/recovery machine. Should draw that machine once with a caption, and separately describe the continuous heat-dump PID. Must carry the validator constraints (recovery > warmup > minimum return) across in words. 7 of 15 parameters are PID triplets and must collapse.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "dhw-one-page-discipline",
+      "prompt": "I need a manual for the DHW module for the onboard engineer — same style as the others.",
+      "expected_output": "One-page manual at zero-thrs-control/docs/manuals/dhw.md despite ~23 parameters, 13 alarms and a 4-state boosting machine (one state unreachable). Hardest test of the one-page rule: the operating/gains split and alarm grouping must do real work. Tank lifecycle belongs in prose, not a second diagram.",
+      "files": []
+    }
+  ]
+}
